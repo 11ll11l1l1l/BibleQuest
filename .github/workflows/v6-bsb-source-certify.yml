@@ -1,0 +1,151 @@
+name: V6 BSB Source Certification
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+    paths:
+      - "scripts/v6-hays-source-inventory.mjs"
+      - "scripts/v6-fetch-hays-source-shard.mjs"
+      - "scripts/v6-merge-hays-source-shards.mjs"
+      - ".github/workflows/v6-bsb-source-certify.yml"
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character V6 candidate SHA
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v6-bsb-source-certify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
+  BQ_HAYS_SHARD_COUNT: "16"
+
+jobs:
+  source-shard:
+    name: Hays source shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+    steps:
+      - name: Checkout exact selected commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Ensure ffprobe is available
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffprobe -version | head -n 1
+
+      - name: Download, inspect, hash, and discard assigned Hays chapters
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/bsb-source"
+          node scripts/v6-fetch-hays-source-shard.mjs             "${{ matrix.shard }}"             "${BQ_HAYS_SHARD_COUNT}"             "${RUNNER_TEMP}/bsb-source/bsb-hays-source-shard-${{ matrix.shard }}.json"
+
+      - name: Upload shard evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-hays-source-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/bsb-source/bsb-hays-source-shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  aggregate:
+    name: Aggregate exact 1,189-chapter Hays inventory
+    needs: source-shard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout exact selected commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Download all shard evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bsb-hays-source-shard-*
+          path: ${{ runner.temp }}/bsb-source-shards
+          merge-multiple: true
+
+      - name: Aggregate and fail closed unless all 1,189 chapters verify
+        id: aggregate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v6-merge-hays-source-shards.mjs             "${RUNNER_TEMP}/bsb-source-shards"             "${RUNNER_TEMP}/bsb-hays-inventory.json"             | tee "${RUNNER_TEMP}/bsb-hays-summary.json"
+          node --input-type=module <<'NODE' >> "$GITHUB_OUTPUT"
+          import { readFile } from 'node:fs/promises';
+          const inventory = JSON.parse(await readFile(process.env.RUNNER_TEMP + '/bsb-hays-inventory.json', 'utf8'));
+          console.log('inventory_sha256=' + inventory.inventorySha256);
+          console.log('content_version=' + inventory.contentVersion);
+          console.log('chapters=' + inventory.chapters);
+          console.log('total_bytes=' + inventory.totalBytes);
+          NODE
+
+      - name: Publish exact source inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsb-hays-exact-source-inventory-${{ env.BQ_EXACT_SHA }}
+          path: |
+            ${{ runner.temp }}/bsb-hays-inventory.json
+            ${{ runner.temp }}/bsb-hays-summary.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Certification summary
+        shell: bash
+        run: |
+          {
+            echo "### BSB Hays exact-source certification"
+            echo "- Candidate SHA: `${BQ_EXACT_SHA}`"
+            echo "- Chapters: `${{ steps.aggregate.outputs.chapters }}`"
+            echo "- Total bytes: `${{ steps.aggregate.outputs.total_bytes }}`"
+            echo "- Inventory SHA-256: `${{ steps.aggregate.outputs.inventory_sha256 }}`"
+            echo "- Content version: `${{ steps.aggregate.outputs.content_version }}`"
+            echo "- Audio binaries retained: **no**"
+          } >> "$GITHUB_STEP_SUMMARY"
