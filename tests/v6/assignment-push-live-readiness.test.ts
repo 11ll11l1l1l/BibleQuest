@@ -12,33 +12,47 @@ const pinnedEvidence = JSON.parse(readFileSync(
 function snapshot(overrides = {}) {
   return {
     schemaVersion: 1,
-    observedAt: '2026-10-02T13:28:09.97186+00:00',
-    extensions: { pgCron: true, pgNet: true },
-    dueFunction: {
-      exists: true,
-      securityDefiner: true,
-      serviceRoleExecute: true,
-      authenticatedExecute: false,
-      anonExecute: false,
-      hasRetryReady: false,
+    evidenceClass: 'TEST',
+    edgeFunction: {
+      slug: 'bq-assignment-reminders',
+      status: 'ACTIVE',
+      version: 1,
+      verifyJwt: false,
+      last24Hours: {
+        http200: 288,
+        httpNon2xx: 0,
+      },
     },
-    indexes: { dueOnce: true, dueScan: true, retryDue: false },
-    scheduler: { exists: true, schedule: '*/5 * * * *', active: true },
-    vaultNames: { projectUrl: true, schedulerSecret: true },
-    migrationHistory: {
-      dueReminderCanonicalOrReviewedEquivalent: true,
-      dueReminderCanonicalVersion: false,
-      retryRedispatchCanonicalVersion: false,
+    assignment_push_readiness: {
+      schemaVersion: 1,
+      observedAt: '2026-10-02T13:28:09.97186+00:00',
+      extensions: { pgCron: true, pgNet: true },
+      dueFunction: {
+        exists: true,
+        securityDefiner: true,
+        serviceRoleExecute: true,
+        authenticatedExecute: false,
+        anonExecute: false,
+        hasRetryReady: false,
+      },
+      indexes: { dueOnce: true, dueScan: true, retryDue: false },
+      scheduler: { exists: true, schedule: '*/5 * * * *', active: true },
+      vaultNames: { projectUrl: true, schedulerSecret: true },
+      migrationHistory: {
+        dueReminderCanonicalOrReviewedEquivalent: true,
+        dueReminderCanonicalVersion: false,
+        retryRedispatchCanonicalVersion: false,
+      },
+      last24Hours: {
+        cronSucceeded: 268,
+        cronFailed: 0,
+        assignmentNotifications: 0,
+        dueNotifications: 0,
+        duePushDelivered: 0,
+      },
+      qaGap: { dueAssignmentsNow: 0 },
+      ...overrides,
     },
-    last24Hours: {
-      cronSucceeded: 268,
-      cronFailed: 0,
-      assignmentNotifications: 0,
-      dueNotifications: 0,
-      duePushDelivered: 0,
-    },
-    qaGap: { dueAssignmentsNow: 0 },
-    ...overrides,
   };
 }
 
@@ -46,6 +60,8 @@ test('classifies the observed live backend as operational without overclaiming Q
   const result = evaluateAssignmentPushReadiness(snapshot());
   assert.equal(result.backendReady, true);
   assert.equal(result.retryHardeningReady, false);
+  assert.equal(result.schedulerDispatchReady, true);
+  assert.equal(result.releaseBackendReady, false);
   assert.equal(result.liveDueDeliveryObserved, false);
   assert.equal(result.rowReadyForPass, false);
   assert.deepEqual(result.counts, {
@@ -103,6 +119,8 @@ test('marks the row ready only after real due notification and delivered push ev
   }));
   assert.equal(result.backendReady, true);
   assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.schedulerDispatchReady, true);
+  assert.equal(result.releaseBackendReady, true);
   assert.equal(result.liveDueDeliveryObserved, true);
   assert.equal(result.rowReadyForPass, true);
   assert.deepEqual(result.blockers, []);
@@ -123,6 +141,44 @@ test('fails closed for unsafe scheduler authority or cadence drift', () => {
   assert.equal(result.backendReady, false);
   assert.ok(result.blockers.includes('backend:authenticatedDenied'));
   assert.ok(result.blockers.includes('backend:schedulerCadence'));
+});
+
+test('fails closed when actual Edge Function dispatch evidence is missing even if database and live-delivery counters look ready', () => {
+  const candidate = snapshot({
+    dueFunction: {
+      exists: true,
+      securityDefiner: true,
+      serviceRoleExecute: true,
+      authenticatedExecute: false,
+      anonExecute: false,
+      hasRetryReady: true,
+    },
+    indexes: { dueOnce: true, dueScan: true, retryDue: true },
+    migrationHistory: {
+      dueReminderCanonicalOrReviewedEquivalent: true,
+      dueReminderCanonicalVersion: true,
+      retryRedispatchCanonicalVersion: true,
+    },
+    last24Hours: {
+      cronSucceeded: 288,
+      cronFailed: 0,
+      assignmentNotifications: 3,
+      dueNotifications: 1,
+      duePushDelivered: 1,
+    },
+    qaGap: { dueAssignmentsNow: 1 },
+  });
+  candidate.edgeFunction = null;
+
+  const result = evaluateAssignmentPushReadiness(candidate);
+  assert.equal(result.backendReady, true);
+  assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.schedulerDispatchReady, false);
+  assert.equal(result.releaseBackendReady, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.ok(result.blockers.includes('dispatch:edgeFunctionActive'));
+  assert.ok(result.blockers.includes('dispatch:edgeFunctionHttp200Observed'));
 });
 
 test('rejects malformed or negative readiness counts instead of manufacturing evidence', () => {
@@ -146,6 +202,8 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
   const result = evaluateAssignmentPushReadiness(pinnedEvidence.assignment_push_readiness);
   assert.equal(result.backendReady, true);
   assert.equal(result.retryHardeningReady, false);
+  assert.equal(result.schedulerDispatchReady, true);
+  assert.equal(result.releaseBackendReady, false);
   assert.equal(result.liveDueDeliveryObserved, false);
   assert.equal(result.rowReadyForPass, false);
   assert.equal(result.counts.cronSucceeded24h, 269);

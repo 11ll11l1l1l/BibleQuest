@@ -14,7 +14,16 @@ function malformed(message) {
   return error;
 }
 
-export function evaluateAssignmentPushReadiness(snapshot) {
+export function evaluateAssignmentPushReadiness(input) {
+  const envelope = input
+    && typeof input === 'object'
+    && !Array.isArray(input)
+    && Object.prototype.hasOwnProperty.call(input, 'assignment_push_readiness')
+    ? input
+    : null;
+  const snapshot = envelope ? envelope.assignment_push_readiness : input;
+  const edgeFunction = envelope?.edgeFunction ?? snapshot?.edgeFunction ?? null;
+
   if (!snapshot || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
     throw malformed('Assignment push readiness snapshot must be an object.');
   }
@@ -43,6 +52,22 @@ export function evaluateAssignmentPushReadiness(snapshot) {
   })) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
       throw malformed(`Assignment push readiness snapshot is missing ${name}.`);
+    }
+  }
+
+  const edgeHttp = edgeFunction?.last24Hours ?? null;
+  if (edgeFunction !== null) {
+    if (!edgeFunction || typeof edgeFunction !== 'object' || Array.isArray(edgeFunction)) {
+      throw malformed('Assignment push readiness edgeFunction evidence must be an object.');
+    }
+    if (!edgeHttp || typeof edgeHttp !== 'object' || Array.isArray(edgeHttp)) {
+      throw malformed('Assignment push readiness edgeFunction.last24Hours evidence is required.');
+    }
+    for (const [name, value] of Object.entries({
+      http200: edgeHttp.http200,
+      httpNon2xx: edgeHttp.httpNon2xx,
+    })) {
+      if (!integer(value)) throw malformed('Assignment push readiness edge count ' + name + ' must be a non-negative integer.');
     }
   }
 
@@ -82,12 +107,23 @@ export function evaluateAssignmentPushReadiness(snapshot) {
     retryMigrationRecorded: migrationHistory.retryRedispatchCanonicalVersion === true,
   });
 
+  const dispatchChecks = Object.freeze({
+    edgeFunctionSlug: edgeFunction?.slug === 'bq-assignment-reminders',
+    edgeFunctionActive: edgeFunction?.status === 'ACTIVE',
+    edgeFunctionVersion: Number.isInteger(edgeFunction?.version) && edgeFunction.version > 0,
+    schedulerAuthMode: edgeFunction?.verifyJwt === false,
+    edgeFunctionHttp200Observed: integer(edgeHttp?.http200) && edgeHttp.http200 > 0,
+    edgeFunctionNoHttpFailures: integer(edgeHttp?.httpNon2xx) && edgeHttp.httpNon2xx === 0,
+  });
+
   const backendReady = Object.values(backendChecks).every(Boolean);
   const retryHardeningReady = Object.values(retryChecks).every(Boolean);
+  const schedulerDispatchReady = Object.values(dispatchChecks).every(Boolean);
+  const releaseBackendReady = backendReady && retryHardeningReady && schedulerDispatchReady;
   const liveDueNotificationObserved = last24Hours.dueNotifications > 0;
   const liveDuePushDelivered = last24Hours.duePushDelivered > 0;
   const liveDueDeliveryObserved = liveDueNotificationObserved && liveDuePushDelivered;
-  const rowReadyForPass = backendReady && liveDueDeliveryObserved;
+  const rowReadyForPass = releaseBackendReady && liveDueDeliveryObserved;
 
   const blockers = [];
   for (const [name, passed] of Object.entries(backendChecks)) {
@@ -95,6 +131,9 @@ export function evaluateAssignmentPushReadiness(snapshot) {
   }
   for (const [name, passed] of Object.entries(retryChecks)) {
     if (!passed) blockers.push(`retry:${name}`);
+  }
+  for (const [name, passed] of Object.entries(dispatchChecks)) {
+    if (!passed) blockers.push(`dispatch:${name}`);
   }
   if (!liveDueNotificationObserved) blockers.push('live:dueNotification');
   if (!liveDuePushDelivered) blockers.push('live:duePushDelivered');
@@ -105,6 +144,8 @@ export function evaluateAssignmentPushReadiness(snapshot) {
     observedAt: typeof snapshot.observedAt === 'string' ? snapshot.observedAt : null,
     backendReady,
     retryHardeningReady,
+    schedulerDispatchReady,
+    releaseBackendReady,
     liveDueNotificationObserved,
     liveDuePushDelivered,
     liveDueDeliveryObserved,
@@ -119,6 +160,7 @@ export function evaluateAssignmentPushReadiness(snapshot) {
     }),
     backendChecks,
     retryChecks,
+    dispatchChecks,
     blockers: Object.freeze(blockers),
   });
 }
@@ -128,11 +170,12 @@ async function main(argv) {
     throw new Error('Usage: node scripts/v6-assignment-push-live-readiness.mjs <snapshot.json>');
   }
   const input = JSON.parse(await readFile(resolve(argv[0]), 'utf8'));
-  const snapshot = input.assignment_push_readiness ?? input.assignmentPushReadiness ?? input.readiness ?? input;
-  const result = evaluateAssignmentPushReadiness(snapshot);
+  const result = evaluateAssignmentPushReadiness(input);
   process.stdout.write(JSON.stringify(result, null, 2) + '\n');
   if (!result.backendReady) process.exitCode = 2;
-  else if (!result.rowReadyForPass) process.exitCode = 3;
+  else if (!result.retryHardeningReady) process.exitCode = 3;
+  else if (!result.schedulerDispatchReady) process.exitCode = 4;
+  else if (!result.liveDueDeliveryObserved) process.exitCode = 5;
 }
 
 const invokedAsCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);

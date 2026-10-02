@@ -118,10 +118,14 @@ test('live readiness proof is read-only, non-secret and fail-closed on missing d
 
   assert.match(readinessScript, /backendReady/);
   assert.match(readinessScript, /retryHardeningReady/);
+  assert.match(readinessScript, /schedulerDispatchReady/);
+  assert.match(readinessScript, /releaseBackendReady/);
   assert.match(readinessScript, /liveDueDeliveryObserved/);
   assert.match(readinessScript, /rowReadyForPass/);
   assert.match(readinessScript, /process\.exitCode = 2/);
   assert.match(readinessScript, /process\.exitCode = 3/);
+  assert.match(readinessScript, /process\.exitCode = 4/);
+  assert.match(readinessScript, /process\.exitCode = 5/);
 
   const evidence = JSON.parse(pinnedLiveEvidence);
   assert.equal(evidence.evidenceClass, 'LIVE-READ-ONLY');
