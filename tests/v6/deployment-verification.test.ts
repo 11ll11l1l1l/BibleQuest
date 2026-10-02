@@ -31,7 +31,8 @@ function createFixture({ buildSha = exactSha } = {}) {
     totalBytes: files.reduce((sum, file) => sum + file.bytes, 0),
     files,
   };
-  payloads.set('bq-artifact-integrity.json', Buffer.from(JSON.stringify(integrity)));
+  const integrityBytes = Buffer.from(JSON.stringify(integrity));
+  payloads.set('bq-artifact-integrity.json', integrityBytes);
 
   const fetchImpl = async input => {
     const url = input instanceof URL ? input : new URL(input);
@@ -40,7 +41,7 @@ function createFixture({ buildSha = exactSha } = {}) {
     if (!bytes) return new Response('missing', { status: 404 });
     return new Response(bytes, { status: 200 });
   };
-  return { payloads, fetchImpl, integrity };
+  return { payloads, fetchImpl, integrity, integritySha256: sha256(integrityBytes) };
 }
 
 test('deployment URL accepts only BibleQuest Cloudflare Pages HTTPS hosts', () => {
@@ -60,6 +61,7 @@ test('deployed artifact verifier proves exact source SHA and every declared file
     deploymentUrl: 'https://preview.mybiblequest.pages.dev',
     expectedSha: exactSha,
     expectedArtifactSha256: fixture.integrity.artifactSha256,
+    expectedIntegritySha256: fixture.integritySha256,
     fetchImpl: fixture.fetchImpl,
     concurrency: 2,
   });
@@ -67,6 +69,7 @@ test('deployed artifact verifier proves exact source SHA and every declared file
   assert.equal(result.deploymentOrigin, 'https://preview.mybiblequest.pages.dev');
   assert.equal(result.sourceSha, exactSha);
   assert.equal(result.artifactSha256, fixture.integrity.artifactSha256);
+  assert.equal(result.integritySha256, fixture.integritySha256);
   assert.equal(result.fileCount, fixture.integrity.fileCount);
   assert.equal(result.totalBytes, fixture.integrity.totalBytes);
 });
@@ -109,6 +112,25 @@ test('deployed artifact verifier rejects a self-consistent deployment that is no
       fetchImpl: fixture.fetchImpl,
     }),
     /Deployed artifact digest mismatch/,
+  );
+});
+
+test('deployed artifact verifier rejects a semantically equivalent but byte-different integrity manifest', async () => {
+  const fixture = createFixture();
+  fixture.payloads.set(
+    'bq-artifact-integrity.json',
+    Buffer.from(JSON.stringify(fixture.integrity, null, 2) + '\n'),
+  );
+
+  await assert.rejects(
+    verifyDeployedArtifact({
+      deploymentUrl: 'https://preview.mybiblequest.pages.dev',
+      expectedSha: exactSha,
+      expectedArtifactSha256: fixture.integrity.artifactSha256,
+      expectedIntegritySha256: fixture.integritySha256,
+      fetchImpl: fixture.fetchImpl,
+    }),
+    /integrity manifest byte digest mismatch/,
   );
 });
 

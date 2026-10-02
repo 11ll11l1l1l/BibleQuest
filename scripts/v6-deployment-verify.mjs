@@ -83,7 +83,7 @@ async function fetchJson(baseUrl, path, fetchImpl) {
     );
   }
   try {
-    return JSON.parse(text);
+    return Object.freeze({ json: JSON.parse(text), bytes });
   } catch {
     throw new Error(`Deployment artifact is not valid JSON: ${path}`);
   }
@@ -153,14 +153,19 @@ export async function verifyDeployedArtifact({
   deploymentUrl,
   expectedSha,
   expectedArtifactSha256,
+  expectedIntegritySha256,
   fetchImpl = globalThis.fetch,
   concurrency = DEFAULT_CONCURRENCY,
 } = {}) {
   const sourceSha = String(expectedSha || '').trim().toLowerCase();
   const certifiedArtifactSha256 = String(expectedArtifactSha256 || '').trim().toLowerCase();
+  const certifiedIntegritySha256 = String(expectedIntegritySha256 || '').trim().toLowerCase();
   if (!SHA_PATTERN.test(sourceSha)) throw new Error('Deployment verification requires the full 40-character Git commit SHA.');
   if (!SHA256_PATTERN.test(certifiedArtifactSha256)) {
     throw new Error('Deployment verification requires the certified build artifact SHA-256.');
+  }
+  if (certifiedIntegritySha256 && !SHA256_PATTERN.test(certifiedIntegritySha256)) {
+    throw new Error('Deployment verification integrity-manifest digest must be SHA-256.');
   }
   if (typeof fetchImpl !== 'function') throw new Error('Deployment verification requires a fetch implementation.');
   if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 32) {
@@ -171,10 +176,17 @@ export async function verifyDeployedArtifact({
   // A Pages bot success comment can precede edge propagation by several seconds.
   // Retry only the two immutable metadata files; once both are readable, every
   // declared artifact is still verified exactly once against its recorded bytes.
-  const [build, integrity] = await Promise.all([
+  const [buildMetadata, integrityMetadata] = await Promise.all([
     fetchDeploymentMetadata(baseUrl, 'bq-build.json', fetchImpl),
     fetchDeploymentMetadata(baseUrl, 'bq-artifact-integrity.json', fetchImpl),
   ]);
+  const build = buildMetadata.json;
+  const integrity = integrityMetadata.json;
+  const integritySha256 = sha256(integrityMetadata.bytes);
+
+  if (certifiedIntegritySha256 && integritySha256 !== certifiedIntegritySha256) {
+    throw new Error(`Deployed integrity manifest byte digest mismatch: expected certified ${certifiedIntegritySha256}, got ${integritySha256}`);
+  }
 
   if (String(build?.sha || '').toLowerCase() !== sourceSha) {
     throw new Error(`Deployed build SHA mismatch: expected ${sourceSha}, got ${String(build?.sha || '<missing>')}`);
@@ -218,6 +230,7 @@ export async function verifyDeployedArtifact({
     deploymentOrigin: baseUrl.origin,
     sourceSha,
     artifactSha256,
+    integritySha256,
     fileCount: actual.length,
     totalBytes,
   });
@@ -229,6 +242,7 @@ if (invokedAsCli) {
     deploymentUrl: process.argv[2] || process.env.BQ_DEPLOYMENT_URL,
     expectedSha: process.argv[3] || process.env.BQ_EXPECTED_SHA,
     expectedArtifactSha256: process.argv[4] || process.env.BQ_EXPECTED_ARTIFACT_SHA256,
+    expectedIntegritySha256: process.argv[5] || process.env.BQ_EXPECTED_INTEGRITY_SHA256,
   }).then(
     result => console.log(JSON.stringify(result, null, 2)),
     error => {
