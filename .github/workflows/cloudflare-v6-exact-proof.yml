@@ -1,0 +1,112 @@
+name: Temporary V6 exact-SHA Cloudflare proof
+
+on:
+  push:
+    branches:
+      - "ops/cloudflare-v6-proof-46d5f51"
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      BQ_EXPECTED_SHA: 46d5f519b515c32f27b1a0d7f86e79cfafdc7a2b
+      BQ_DEPLOYMENT_URL: https://4c7e4eef.mybiblequest.pages.dev
+    steps:
+      - name: Checkout exact current V6 integration
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXPECTED_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Validate existing deployment verifier tests unchanged
+        run: |
+          node --experimental-strip-types --test             tests/v6/deployment-verification.test.ts             tests/v6/cloudflare-preview-workflow.test.ts
+
+      - name: Build exact V6 artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        run: npm run build:v6
+
+      - name: Export exact local artifact identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, appendFileSync } from 'node:fs';
+          const bytes = readFileSync('dist-v6/bq-artifact-integrity.json');
+          const manifest = JSON.parse(bytes.toString('utf8'));
+          if (manifest.sourceSha !== process.env.BQ_EXPECTED_SHA) throw new Error('local source SHA mismatch');
+          const integritySha256 = createHash('sha256').update(bytes).digest('hex');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_ARTIFACT_SHA256=' + manifest.artifactSha256.toLowerCase() + '\n');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_INTEGRITY_SHA256=' + integritySha256 + '\n');
+          console.log(JSON.stringify({
+            sourceSha: manifest.sourceSha,
+            artifactSha256: manifest.artifactSha256,
+            integritySha256,
+            fileCount: manifest.fileCount,
+            totalBytes: manifest.totalBytes
+          }, null, 2));
+          NODE
+
+      - name: Probe deployed metadata shape
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in bq-build.json bq-artifact-integrity.json; do
+            curl -fsS --max-time 20 "${BQ_DEPLOYMENT_URL}/$path" -o "$path.remote"
+            printf '%s: ' "$path"
+            if jq -e . "$path.remote" >/dev/null 2>&1; then
+              echo "valid JSON"
+            else
+              echo "NOT JSON"
+              head -c 160 "$path.remote" | tr '\n' ' '
+              echo
+            fi
+          done
+
+      - name: Run existing exact-SHA verifier unchanged and preserve result
+        id: verify
+        shell: bash
+        run: |
+          set +e
+          node scripts/v6-deployment-verify.mjs > verifier-output.json 2> verifier-error.log
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          if [ "$status" -eq 0 ]; then
+            cat verifier-output.json
+          else
+            cat verifier-error.log >&2
+          fi
+
+      - name: Require current external blocker to be evidenced
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.verify.outputs.status }}" -eq 0 ]; then
+            echo "Exact-SHA verifier unexpectedly passed; Cloudflare configuration may already be fixed."
+            exit 0
+          fi
+          grep -E 'returned HTML|not valid JSON|mismatch|different publish root' verifier-error.log
+          echo "Current exact-SHA deployment remains externally blocked as expected."
