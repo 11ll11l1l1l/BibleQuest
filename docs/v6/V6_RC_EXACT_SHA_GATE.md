@@ -26,14 +26,14 @@ Do not mix final feature work into the RC-certification PR. First integrate ever
 node scripts/v6-rc-candidate-marker.mjs --write <exact-integration-base-sha>
 ```
 
-Commit only `docs/v6/RC_CANDIDATE.json` and open the RC PR to `v6/architecture-upgrade`. The RC workflow rejects the candidate if the marker's declared base differs from the PR base SHA or if any other file differs from that base. The commit containing the marker is the immutable candidate SHA; the marker deliberately does not self-reference its own SHA.
+Commit only `docs/v6/RC_CANDIDATE.json` as one commit and open the RC PR to `v6/architecture-upgrade`. The candidate commit must have exactly one parent, that parent must be the SHA declared in the marker, and a PR-triggered certification additionally requires that parent to equal the PR's exact base SHA. The only changed path may be the canonical generated marker. These same parent/marker checks also run for manual exact-SHA recertification, so a manually dispatched gate cannot certify an arbitrary neighboring SHA.
 
-Creating the marker fans out the candidate-sensitive V6 workflows through their existing PR path filters, while inherited regression runs on every V6 PR. This avoids manually assembling a candidate from nearby or mixed SHAs.
+The commit containing the marker is the immutable candidate SHA; the marker deliberately does not self-reference its own SHA. Creating the marker fans out the candidate-sensitive V6 workflows through their existing PR path filters, while inherited regression runs on every V6 PR.
 
 ## Operating sequence
 
 1. Finish integration and re-fetch the exact live `v6/architecture-upgrade` SHA.
-2. Cut the marker-only RC candidate as described above.
+2. Cut exactly one marker commit from that SHA as described above.
 3. Let every required automated workflow execute on that exact marker commit. Do not substitute a nearby PR or ancestor.
 4. For `V6 Deployed Artifact Verification`, verify the exact candidate against the matching Cloudflare Pages preview/deployment.
 5. Confirm `V6 V4 Rollback Reference Guard` succeeds on the same candidate so the immutable V4 fallback still exists at the recorded SHA.
