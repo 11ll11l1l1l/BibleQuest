@@ -189,7 +189,7 @@ async function main(argv) {
   if (!result.backendReady) process.exitCode = 2;
   else if (!result.retryHardeningReady) process.exitCode = 3;
   else if (!result.schedulerDispatchReady) process.exitCode = 4;
-  else if (!result.liveDueDeliveryObserved) process.exitCode = 5;
+  else if (!result.liveAssignedDeliveryObserved || !result.liveDueDeliveryObserved) process.exitCode = 5;
 }
 
 const invokedAsCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
