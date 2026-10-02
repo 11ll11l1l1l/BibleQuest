@@ -4,7 +4,7 @@ import { createSessionService } from '../app/session.js';
 import { createPushSubscriptionService } from '../app/push-subscription.js';
 import { createPushSubscriptionPersistence } from '../app/push-subscription-persistence.js';
 import { createApi } from '../core/api.js';
-import { authStorage } from '../core/storage.js';
+import { authStorage, privateStorage } from '../core/storage.js';
 
 const VAPID_PUBLIC_KEY = 'BKxJ2WXSqmiA9ZEmx8bItafM4fp_R4NkTC4F45BGZjjDqnfK-C3Goqb25CVgWsSSwMZsvOczx8LNv2vstkdqRmI';
 const OWNER_KEY = 'bq:v5:push-owner';
@@ -153,7 +153,7 @@ function evidenceProgress() {
 function saveEvidenceProgress() {
   if (!evidenceStorageKey) return;
   try {
-    localStorage.setItem(evidenceStorageKey, JSON.stringify(evidenceProgress()));
+    privateStorage.write(evidenceStorageKey, evidenceProgress());
   } catch {
     setMessage('Could not persist physical push evidence progress on this device.', 'error');
   }
@@ -163,9 +163,9 @@ function restoreEvidenceProgress() {
   if (!evidenceStorageKey) return;
   let saved = null;
   try {
-    saved = JSON.parse(localStorage.getItem(evidenceStorageKey) || 'null');
+    saved = privateStorage.read(evidenceStorageKey, null);
   } catch {
-    localStorage.removeItem(evidenceStorageKey);
+    privateStorage.remove(evidenceStorageKey);
   }
   if (!saved || typeof saved !== 'object') return;
   fields.tester.value = String(saved.metadata?.tester || '');
