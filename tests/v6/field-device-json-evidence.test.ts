@@ -88,7 +88,7 @@ test('background-media is independent from PWA and manual accessibility',()=>{
 test('PASS fails closed on unchecked physical sub-steps or missing observations',()=>{
   const r=record();
   r.gates[0].steps[0].checked=false;
-  assert.throws(()=>validateFieldDeviceEvidence(r,sha),/PASS requires every physical sub-check/);
+  assert.throws(()=>validateFieldDeviceEvidence(r,sha),/PASS requires every physical sub-step/);
 
   const r2=record();
   r2.gates[1].notes='short';
