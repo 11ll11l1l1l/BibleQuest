@@ -78,3 +78,58 @@ For the aggregate push row, retain both evidence classes on the same exact candi
 Before transcribing a push PASS into this record, validate the exported JSON against this record's exact Candidate SHA with 'scripts/v6-validate-push-field-evidence.mjs'. Retain the sanitized JSON as a durable issue/PR/artifact reference so the Markdown record is not the only evidence copy. A successful physical JSON validation never substitutes for the separate BUILT-BROWSER half of the aggregate push row.
 
 Do not copy account identifiers, push endpoints, subscription keys, tokens, or server secrets into this record.
+
+
+## Consolidated final-RC human field package
+
+Do not initialize this package until the release-candidate worker has selected the final exact 40-character RC SHA. Initializing the package does not mark any field row PASS.
+
+Create the package skeleton:
+
+```bash
+node scripts/v6-field-certification-package.mjs init <exact-rc-sha> field-certification.json
+```
+
+Keep the two existing harness exports beside that file using the default names `field-device.json` and `field-push.json`, or edit only the relative paths under `artifacts`. The consolidated package deliberately reuses the existing `PWA-A11Y-MEDIA` and `PUSH` evidence formats rather than defining replacement physical evidence.
+
+Before the human run, fill the package `references` only with durable, sanitized references. The required references are the exact-RC automated gate, the same-SHA built-browser push gate, the already accepted assignment-due backend/delivery evidence, the real assignment-assigned durable-notification evidence, the assignment-assigned canonical dispatch/ledger evidence, and the disposable-assignment cleanup record. Screenshot/video references are optional and must not contain private account or credential material.
+
+### One bounded human session
+
+1. **Exact candidate preflight.** Open the immutable candidate on the physical device. Confirm the harness-reported build SHA equals the final RC SHA. Record the deployed origin, device model, OS/browser/PWA environment, tester, timestamp and durable evidence reference. A different SHA invalidates the session.
+2. **Installed PWA offline.** Install and launch the exact candidate in standalone mode, warm the service worker/content while online, confirm the exact build identity, disable networking, cold-launch the installed PWA, verify the offline shell and previously installed Reader content, verify network-only features do not report false success, fully close/relaunch while still offline, reconnect networking, verify recovery/synchronization, then export only after the harness shows networking restored.
+3. **BSB background/lock-screen + manual accessibility.** Start verified Barry Hays BSB audio and note the active chapter/position. Background the app, lock the device, exercise play/pause, previous/next, seek and stop/dismiss where the platform exposes them, then return to BibleQuest and verify Reader/chapter/position coherence. Unsupported controls must be recorded as unavailable-but-safe, not invented. During the same audio session perform the bounded keyboard/focus, screen-reader, large-text/reflow, touch/overflow, reduced-motion/contrast and Reader-autoscroll/manual-navigation checks in `/v6-field-device.html`.
+4. **Assignment-assigned + physical push.** In `/v6-push-device-field.html`, use a controlled QA recipient and a real authenticated Leader/Owner application session. For P1, enable assignment push, fully close BibleQuest, create one disposable assignment through the real `bq-assignment` path, confirm the durable assignment notification and canonical `assignment_assigned` dispatch/ledger record, observe a real OS notification, tap it and verify the exact candidate opens the correct Assignments destination with the durable Notification Center item. For P2, disable push, create the second disposable assignment, verify no OS push for at least 90 seconds while the durable in-app fallback remains, then archive/clean up only the disposable field records. Do not use a test-only authentication or privileged-send bypass.
+5. **Due-path reuse.** Do not rerun P3 merely to repeat already accepted due-path scheduler/delivery evidence. Leave P3 PENDING when the final field package references the accepted due backend/delivery evidence. If that evidence is later rejected, missing, or no longer valid for the release environment, P3 must be executed using the canonical scheduler before the combined assignment assigned/due row can close.
+6. **Export and validate.** Export the non-push and push JSON records, save them beside `field-certification.json`, fill only sanitized package references, and run:
+
+```bash
+node scripts/v6-field-certification-package.mjs validate field-certification.json <exact-rc-sha> field
+```
+
+The validator fails if either physical export belongs to another SHA, any mandatory physical step is absent, installed-PWA evidence was exported from a browser tab or before network recovery, P1/P2 are incomplete, supporting live/backend/browser references are missing, or a physical reference is represented only by headless/automation evidence.
+
+A successful `field` profile is a machine-readable **ready-for-review** package. It does not edit this Markdown record or the acceptance checklist automatically.
+
+## Final production human checklist
+
+Keep this section unexecuted until the exact candidate has passed automated RC certification and the field package above is accepted for the same SHA. The initialized package already contains these ten post-production observations as PENDING:
+
+1. automated RC gates are still PASS for the exact SHA;
+2. all accepted field evidence is bound to that same SHA;
+3. production promotion was authorized for exactly that SHA;
+4. deployed production reports the exact build SHA;
+5. production route smoke passes;
+6. production PWA smoke passes;
+7. production offline smoke passes;
+8. a real production push smoke passes;
+9. BSB audio startup/background-control smoke remains coherent;
+10. post-production exact-SHA evidence is preserved durably.
+
+After those observations genuinely occur, mark only the package observations actually seen as PASS with concrete notes, set the production-promotion and post-production evidence references, then run:
+
+```bash
+node scripts/v6-field-certification-package.mjs validate field-certification.json <exact-rc-sha> final
+```
+
+The `final` profile fails unless all ten post-production observations are real PASS records. CI/headless evidence cannot substitute for the physical records.
