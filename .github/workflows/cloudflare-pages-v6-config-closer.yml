@@ -1,0 +1,94 @@
+name: Temporary Cloudflare Pages V6 configuration closer
+
+on:
+  push:
+    branches:
+      - "ops/cloudflare-v6-config-46d5f51"
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CF_PROJECT: mybiblequest
+      CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CF_ACCOUNT_ID_SECRET: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CF_ACCOUNT_ID_VAR: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Resolve configured Cloudflare credentials
+        id: creds
+        shell: bash
+        run: |
+          set -euo pipefail
+          account_id="${CF_ACCOUNT_ID_SECRET:-${CF_ACCOUNT_ID_VAR:-}}"
+          if [ -z "${CF_API_TOKEN:-}" ]; then
+            echo "BLOCKED: repository secret CLOUDFLARE_API_TOKEN is absent." >&2
+            exit 20
+          fi
+          if [ -z "$account_id" ]; then
+            echo "BLOCKED: CLOUDFLARE_ACCOUNT_ID is absent from repository secrets/variables." >&2
+            exit 21
+          fi
+          echo "::add-mask::$account_id"
+          echo "account_id=$account_id" >> "$GITHUB_OUTPUT"
+
+      - name: Read current Pages project settings
+        id: before
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > before.json
+          jq -e '.success == true and .result.name == env.CF_PROJECT and .result.source.type == "github"' before.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config,previewSetting:.result.source.config.preview_deployment_setting}' before.json
+          jq -r '.result.build_config.build_command // ""' before.json | sed 's/^/before build_command: /'
+          jq -r '.result.build_config.destination_dir // ""' before.json | sed 's/^/before destination_dir: /'
+          jq -r '.result.build_config.root_dir // ""' before.json | sed 's/^/before root_dir: /'
+
+      - name: Patch only V6 Pages build settings when needed
+        id: patch
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_build="$(jq -r '.result.build_config.build_command // ""' before.json)"
+          current_dest="$(jq -r '.result.build_config.destination_dir // ""' before.json)"
+          current_root="$(jq -r '.result.build_config.root_dir // ""' before.json)"
+          if [ "$current_build" = "npm run build:v6" ] && [ "$current_dest" = "dist-v6" ] && [ -z "$current_root" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            cp before.json after.json
+            echo "Pages build settings already match V6 target."
+            exit 0
+          fi
+          jq -n '{build_config:{build_command:"npm run build:v6",destination_dir:"dist-v6",root_dir:""}}' > patch.json
+          curl --fail-with-body --silent --show-error             --request PATCH             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             --data @patch.json             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > after.json
+          jq -e '.success == true and .result.source.type == "github"' after.json >/dev/null
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Confirm target settings persisted
+        env:
+          CF_ACCOUNT_ID: ${{ steps.creds.outputs.account_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_API_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > persisted.json
+          jq -e '
+            .success == true
+            and .result.name == env.CF_PROJECT
+            and .result.source.type == "github"
+            and .result.build_config.build_command == "npm run build:v6"
+            and .result.build_config.destination_dir == "dist-v6"
+            and ((.result.build_config.root_dir // "") == "")
+          ' persisted.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config,previewSetting:.result.source.config.preview_deployment_setting}' persisted.json
+          preview="$(jq -r '.result.source.config.preview_deployment_setting // ""' persisted.json)"
+          if [ "$preview" = "none" ]; then
+            echo "BLOCKED: preview deployments are disabled." >&2
+            exit 22
+          fi
+          echo "Cloudflare Pages V6 build configuration persisted successfully."
