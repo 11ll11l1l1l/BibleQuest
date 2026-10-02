@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 import { evaluateAssignmentPushReadiness } from '../../scripts/v6-assignment-push-live-readiness.mjs';
 
@@ -8,6 +10,18 @@ const pinnedEvidence = JSON.parse(readFileSync(
   new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json', import.meta.url),
   'utf8',
 ));
+
+const productionQaEvidence = JSON.parse(readFileSync(
+  new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json', import.meta.url),
+  'utf8',
+));
+
+const readinessScriptPath = fileURLToPath(
+  new URL('../../scripts/v6-assignment-push-live-readiness.mjs', import.meta.url),
+);
+const productionQaEvidencePath = fileURLToPath(
+  new URL('../../docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json', import.meta.url),
+);
 
 function snapshot(overrides = {}) {
   return {
@@ -41,12 +55,15 @@ function snapshot(overrides = {}) {
       migrationHistory: {
         dueReminderCanonicalOrReviewedEquivalent: true,
         dueReminderCanonicalVersion: false,
+        retryRedispatchCanonicalOrReviewedEquivalent: false,
         retryRedispatchCanonicalVersion: false,
       },
       last24Hours: {
         cronSucceeded: 268,
         cronFailed: 0,
         assignmentNotifications: 0,
+        assignedNotifications: 0,
+        assignedPushDelivered: 0,
         dueNotifications: 0,
         duePushDelivered: 0,
       },
@@ -68,6 +85,8 @@ test('classifies the observed live backend as operational without overclaiming Q
     cronSucceeded24h: 268,
     cronFailed24h: 0,
     assignmentNotifications24h: 0,
+    assignedNotifications24h: 0,
+    assignedPushDelivered24h: 0,
     dueNotifications24h: 0,
     duePushDelivered24h: 0,
     dueAssignmentsNow: 0,
@@ -75,6 +94,8 @@ test('classifies the observed live backend as operational without overclaiming Q
   assert.ok(result.blockers.includes('retry:retryDueIndex'));
   assert.ok(result.blockers.includes('retry:retryFunctionPath'));
   assert.ok(result.blockers.includes('retry:retryMigrationRecorded'));
+  assert.ok(result.blockers.includes('live:assignedNotification'));
+  assert.ok(result.blockers.includes('live:assignedPushDelivered'));
   assert.ok(result.blockers.includes('live:dueNotification'));
   assert.ok(result.blockers.includes('live:duePushDelivered'));
   assert.ok(result.blockers.includes('qa:noCurrentDueAssignment'));
@@ -92,7 +113,29 @@ test('accepts a reviewed equivalent due-reminder migration record without preten
   assert.equal(result.backendChecks.dueMigrationRecorded, true);
 });
 
-test('marks the row ready only after real due notification and delivered push evidence exist', () => {
+test('accepts a reviewed equivalent retry-redispatch migration record without pretending it is the canonical version', () => {
+  const result = evaluateAssignmentPushReadiness(snapshot({
+    dueFunction: {
+      exists: true,
+      securityDefiner: true,
+      serviceRoleExecute: true,
+      authenticatedExecute: false,
+      anonExecute: false,
+      hasRetryReady: true,
+    },
+    indexes: { dueOnce: true, dueScan: true, retryDue: true },
+    migrationHistory: {
+      dueReminderCanonicalOrReviewedEquivalent: true,
+      dueReminderCanonicalVersion: false,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
+      retryRedispatchCanonicalVersion: false,
+    },
+  }));
+  assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.retryChecks.retryMigrationRecorded, true);
+});
+
+test('marks the row ready only after real assigned and due delivery evidence both exist', () => {
   const result = evaluateAssignmentPushReadiness(snapshot({
     dueFunction: {
       exists: true,
@@ -106,12 +149,15 @@ test('marks the row ready only after real due notification and delivered push ev
     migrationHistory: {
       dueReminderCanonicalOrReviewedEquivalent: true,
       dueReminderCanonicalVersion: true,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
       retryRedispatchCanonicalVersion: true,
     },
     last24Hours: {
       cronSucceeded: 288,
       cronFailed: 0,
       assignmentNotifications: 3,
+      assignedNotifications: 2,
+      assignedPushDelivered: 1,
       dueNotifications: 1,
       duePushDelivered: 1,
     },
@@ -121,9 +167,47 @@ test('marks the row ready only after real due notification and delivered push ev
   assert.equal(result.retryHardeningReady, true);
   assert.equal(result.schedulerDispatchReady, true);
   assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedDeliveryObserved, true);
   assert.equal(result.liveDueDeliveryObserved, true);
   assert.equal(result.rowReadyForPass, true);
   assert.deepEqual(result.blockers, []);
+});
+
+test('does not pass the combined assigned/due row when only due delivery is proven', () => {
+  const result = evaluateAssignmentPushReadiness(snapshot({
+    dueFunction: {
+      exists: true,
+      securityDefiner: true,
+      serviceRoleExecute: true,
+      authenticatedExecute: false,
+      anonExecute: false,
+      hasRetryReady: true,
+    },
+    indexes: { dueOnce: true, dueScan: true, retryDue: true },
+    migrationHistory: {
+      dueReminderCanonicalOrReviewedEquivalent: true,
+      dueReminderCanonicalVersion: false,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
+      retryRedispatchCanonicalVersion: false,
+    },
+    last24Hours: {
+      cronSucceeded: 288,
+      cronFailed: 0,
+      assignmentNotifications: 2,
+      assignedNotifications: 1,
+      assignedPushDelivered: 0,
+      dueNotifications: 1,
+      duePushDelivered: 1,
+    },
+    qaGap: { dueAssignmentsNow: 1 },
+  }));
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedNotificationObserved, true);
+  assert.equal(result.liveAssignedPushDelivered, false);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.ok(result.blockers.includes('live:assignedPushDelivered'));
 });
 
 test('fails closed for unsafe scheduler authority or cadence drift', () => {
@@ -157,12 +241,15 @@ test('fails closed when actual Edge Function dispatch evidence is missing even i
     migrationHistory: {
       dueReminderCanonicalOrReviewedEquivalent: true,
       dueReminderCanonicalVersion: true,
+      retryRedispatchCanonicalOrReviewedEquivalent: true,
       retryRedispatchCanonicalVersion: true,
     },
     last24Hours: {
       cronSucceeded: 288,
       cronFailed: 0,
       assignmentNotifications: 3,
+      assignedNotifications: 2,
+      assignedPushDelivered: 1,
       dueNotifications: 1,
       duePushDelivered: 1,
     },
@@ -212,8 +299,46 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
     'retry:retryDueIndex',
     'retry:retryFunctionPath',
     'retry:retryMigrationRecorded',
+    'live:assignedNotification',
+    'live:assignedPushDelivered',
     'live:dueNotification',
     'live:duePushDelivered',
     'qa:noCurrentDueAssignment',
   ]);
+});
+
+
+test('pinned production QA evidence proves the due path while keeping assigned transport open', () => {
+  assert.equal(productionQaEvidence.evidenceClass, 'LIVE-PRODUCTION-QA');
+  assert.equal(productionQaEvidence.qaProbe.idempotencyObserved, true);
+  assert.equal(productionQaEvidence.qaProbe.physicalDeviceEvidenceClaimed, false);
+  const result = evaluateAssignmentPushReadiness(productionQaEvidence);
+  assert.equal(result.backendReady, true);
+  assert.equal(result.retryHardeningReady, true);
+  assert.equal(result.schedulerDispatchReady, true);
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedNotificationObserved, true);
+  assert.equal(result.liveAssignedPushDelivered, false);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.equal(result.counts.assignedNotifications24h, 1);
+  assert.equal(result.counts.assignedPushDelivered24h, 0);
+  assert.equal(result.counts.dueNotifications24h, 1);
+  assert.equal(result.counts.duePushDelivered24h, 1);
+  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
+});
+
+test('CLI exits 5 while the live assigned delivery blocker remains', () => {
+  const run = spawnSync(process.execPath, [readinessScriptPath, productionQaEvidencePath], {
+    encoding: 'utf8',
+  });
+  assert.equal(run.status, 5);
+  assert.equal(run.stderr, '');
+  const result = JSON.parse(run.stdout);
+  assert.equal(result.releaseBackendReady, true);
+  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveDueDeliveryObserved, true);
+  assert.equal(result.rowReadyForPass, false);
+  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
 });

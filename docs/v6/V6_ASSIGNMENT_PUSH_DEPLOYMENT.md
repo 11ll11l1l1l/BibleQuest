@@ -1,6 +1,6 @@
 # BibleQuest V6 Assignment Push Deployment Handoff
 
-Status checked: 2026-10-02.
+Status checked: 2026-10-03 JST (2026-10-02 UTC).
 
 ## Acceptance target
 
@@ -21,7 +21,7 @@ The repository contains:
 - service-worker push/click coverage for the canonical `/#/assignments` deep link;
 - `supabase/ops/assignment-due-reminder-cron.sql`, an explicit operator-applied Cron setup.
 
-## Connected-project observation
+## Connected-project observation — initial 2026-10-02 snapshot
 
 The connected BibleQuest Supabase project was inspected read-only on 2026-10-02. The non-secret snapshot is pinned at
 `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json`.
@@ -42,6 +42,18 @@ Observed state:
 
 Therefore the deployed scheduler-to-Edge-Function path is operational, but the combined assignment assigned/due acceptance row remains OPEN. The checked-in retry-redispatch hardening is not yet live, and no eligible live due notification has yet exercised the canonical sender. The evaluator now fails closed on both conditions instead of allowing a delivery counter to PASS while retry hardening or real scheduler dispatch evidence is missing.
 
+## Production QA execution — 2026-10-03 JST
+
+Task 3 executed the live backend path against the controlled project owner account only; no ordinary member was targeted.
+
+Production was first reconciled to the repository push contract. The additive notification-preference, invalid-subscription cleanup, retry/rate-control, server-enforcement, assignment retry-redispatch, and notification-producer category migrations are live as reviewed-equivalent migration records. The due enqueue function now contains the bounded `retry_ready` path and the retry due index is present. The exact repository `bq-push-delivery` source from candidate `75bfaaf31dd5417e6188968c08d8dd8b2020d152` is deployed as ACTIVE version 4.
+
+A disposable member-targeted assignment was created for the controlled owner account with an already active assignment push subscription. The real five-minute scheduler—not a manual reminder invocation—produced one `assignment_due` notification. The corresponding `bq-assignment-reminders` request returned HTTP 200 from `pg_net/0.20.4`, `bq-push-delivery` version 4 returned HTTP 200, and the delivery ledger recorded one delivered due push. A second real scheduler run left the counts at exactly one due notification and one delivered push, proving scheduler idempotency. The disposable assignment was then archived while the sanitized notification/delivery evidence was retained.
+
+The same run also proved one durable assigned notification but **zero ledger-confirmed assigned push deliveries**. Production has no historical ledger-confirmed assigned push delivery either. The assignment producer has now been reconciled to emit the canonical `assignments` delivery category, but this acceptance row remains OPEN until one controlled assignment is created through the real authenticated `bq-assignment` application path and its assigned notification is ledger-confirmed as delivered. Direct database insertion is not accepted as a substitute for that dispatch path.
+
+Sanitized evidence is pinned at `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json`. It deliberately reports the due path as proven while keeping `live:assignedPushDelivered` as the remaining backend blocker. No physical-device P1/P2/P3 result is claimed by this evidence.
+
 ## Read-only readiness snapshot
 
 Run `supabase/ops/assignment-push-live-readiness.sql` with a read-only production inspection connection. The query returns only booleans/counts and never returns Vault values, user IDs, assignment IDs, notification IDs, subscription endpoints, or other account data.
@@ -54,7 +66,7 @@ Evaluate the combined evidence envelope with:
 node scripts/v6-assignment-push-live-readiness.mjs /path/to/evidence.json
 ```
 
-Exit status `0` means all backend, retry, scheduler-dispatch and live due-delivery conditions pass. Exit `2` means the database scheduler/backend contract is unsafe; `3` means retry redispatch is not live; `4` means sanitized Edge Function dispatch evidence is missing or unhealthy; and `5` means the hardened backend is ready but eligible live due-delivery evidence is still missing. SQL-only evidence intentionally cannot PASS because a successful Cron row proves the SQL job ran, not that the asynchronous HTTP request reached the Edge Function.
+Exit status `0` means all backend, retry, scheduler-dispatch and live due-delivery conditions pass. Exit `2` means the database scheduler/backend contract is unsafe; `3` means retry redispatch is not live; `4` means sanitized Edge Function dispatch evidence is missing or unhealthy; and `5` means the hardened backend is ready but real assigned and/or due delivery evidence is still missing. SQL-only evidence intentionally cannot PASS because a successful Cron row proves the SQL job ran, not that the asynchronous HTTP request reached the Edge Function.
 
 ## Production-safe release sequence
 
@@ -103,7 +115,9 @@ This second gate is also read-only. It exits non-zero unless the canonical `assi
 
 ## Exact remaining live evidence action
 
-After the reviewed retry-redispatch migration is deployed and the evaluator reports `retryHardeningReady: true`, exactly one live acceptance action remains for this backend row: create one disposable eligible near-due assignment for a controlled test recipient, allow the real scheduler to enqueue it, and capture sanitized evidence that the resulting `assignment_due` notification was delivered through `bq-push-delivery`. A physical-device notification display is not required for this backend row and belongs to the separate field-evidence task.
+The retry-redispatch path is live and the real due scheduler/delivery path is now proven. The remaining backend action is narrower: using a controlled authenticated leader/owner browser session, create one disposable assignment through the real `bq-assignment` Edge Function and capture sanitized evidence that its `assignment` notification is delivered through `bq-push-delivery`. The readiness evaluator intentionally cannot PASS the combined assigned/due row until `assignedPushDelivered > 0`.
+
+Do not manufacture this evidence by inserting a delivery-ledger row, fabricating a retry state, weakening sender authentication, or routing the assigned notification through the due scheduler. Physical-device P1/P2/P3 evidence remains a separate field-evidence gate.
 
 ## Security boundaries
 

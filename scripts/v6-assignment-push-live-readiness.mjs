@@ -75,6 +75,8 @@ export function evaluateAssignmentPushReadiness(input) {
     cronSucceeded: last24Hours.cronSucceeded,
     cronFailed: last24Hours.cronFailed,
     assignmentNotifications: last24Hours.assignmentNotifications,
+    assignedNotifications: last24Hours.assignedNotifications ?? 0,
+    assignedPushDelivered: last24Hours.assignedPushDelivered ?? 0,
     dueNotifications: last24Hours.dueNotifications,
     duePushDelivered: last24Hours.duePushDelivered,
     dueAssignmentsNow: qaGap.dueAssignmentsNow,
@@ -104,7 +106,9 @@ export function evaluateAssignmentPushReadiness(input) {
   const retryChecks = Object.freeze({
     retryDueIndex: indexes.retryDue === true,
     retryFunctionPath: dueFunction.hasRetryReady === true,
-    retryMigrationRecorded: migrationHistory.retryRedispatchCanonicalVersion === true,
+    retryMigrationRecorded:
+      migrationHistory.retryRedispatchCanonicalOrReviewedEquivalent === true
+      || migrationHistory.retryRedispatchCanonicalVersion === true,
   });
 
   const dispatchChecks = Object.freeze({
@@ -120,10 +124,13 @@ export function evaluateAssignmentPushReadiness(input) {
   const retryHardeningReady = Object.values(retryChecks).every(Boolean);
   const schedulerDispatchReady = Object.values(dispatchChecks).every(Boolean);
   const releaseBackendReady = backendReady && retryHardeningReady && schedulerDispatchReady;
+  const liveAssignedNotificationObserved = (last24Hours.assignedNotifications ?? 0) > 0;
+  const liveAssignedPushDelivered = (last24Hours.assignedPushDelivered ?? 0) > 0;
+  const liveAssignedDeliveryObserved = liveAssignedNotificationObserved && liveAssignedPushDelivered;
   const liveDueNotificationObserved = last24Hours.dueNotifications > 0;
   const liveDuePushDelivered = last24Hours.duePushDelivered > 0;
   const liveDueDeliveryObserved = liveDueNotificationObserved && liveDuePushDelivered;
-  const rowReadyForPass = releaseBackendReady && liveDueDeliveryObserved;
+  const rowReadyForPass = releaseBackendReady && liveAssignedDeliveryObserved && liveDueDeliveryObserved;
 
   const blockers = [];
   for (const [name, passed] of Object.entries(backendChecks)) {
@@ -135,6 +142,8 @@ export function evaluateAssignmentPushReadiness(input) {
   for (const [name, passed] of Object.entries(dispatchChecks)) {
     if (!passed) blockers.push(`dispatch:${name}`);
   }
+  if (!liveAssignedNotificationObserved) blockers.push('live:assignedNotification');
+  if (!liveAssignedPushDelivered) blockers.push('live:assignedPushDelivered');
   if (!liveDueNotificationObserved) blockers.push('live:dueNotification');
   if (!liveDuePushDelivered) blockers.push('live:duePushDelivered');
   if (qaGap.dueAssignmentsNow === 0 && !liveDueDeliveryObserved) blockers.push('qa:noCurrentDueAssignment');
@@ -146,6 +155,9 @@ export function evaluateAssignmentPushReadiness(input) {
     retryHardeningReady,
     schedulerDispatchReady,
     releaseBackendReady,
+    liveAssignedNotificationObserved,
+    liveAssignedPushDelivered,
+    liveAssignedDeliveryObserved,
     liveDueNotificationObserved,
     liveDuePushDelivered,
     liveDueDeliveryObserved,
@@ -154,6 +166,8 @@ export function evaluateAssignmentPushReadiness(input) {
       cronSucceeded24h: last24Hours.cronSucceeded,
       cronFailed24h: last24Hours.cronFailed,
       assignmentNotifications24h: last24Hours.assignmentNotifications,
+      assignedNotifications24h: last24Hours.assignedNotifications ?? 0,
+      assignedPushDelivered24h: last24Hours.assignedPushDelivered ?? 0,
       dueNotifications24h: last24Hours.dueNotifications,
       duePushDelivered24h: last24Hours.duePushDelivered,
       dueAssignmentsNow: qaGap.dueAssignmentsNow,
@@ -175,7 +189,7 @@ async function main(argv) {
   if (!result.backendReady) process.exitCode = 2;
   else if (!result.retryHardeningReady) process.exitCode = 3;
   else if (!result.schedulerDispatchReady) process.exitCode = 4;
-  else if (!result.liveDueDeliveryObserved) process.exitCode = 5;
+  else if (!result.liveAssignedDeliveryObserved || !result.liveDueDeliveryObserved) process.exitCode = 5;
 }
 
 const invokedAsCli = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);

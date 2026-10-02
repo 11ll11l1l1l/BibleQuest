@@ -75,6 +75,12 @@ select jsonb_build_object(
       from supabase_migrations.schema_migrations
       where version = '20260928140000'
     ),
+    'retryRedispatchCanonicalOrReviewedEquivalent', exists(
+      select 1
+      from supabase_migrations.schema_migrations
+      where version = '20261001113000'
+         or name = 'assignment_push_retry_redispatch_20261001113000'
+    ),
     'retryRedispatchCanonicalVersion', exists(
       select 1
       from supabase_migrations.schema_migrations
@@ -113,6 +119,21 @@ select jsonb_build_object(
       from public.bible_notifications
       where notification_type in ('assignment', 'assignment_due')
         and created_at >= clock_timestamp() - interval '24 hours'
+    ),
+    'assignedNotifications', (
+      select count(*)
+      from public.bible_notifications
+      where notification_type = 'assignment'
+        and created_at >= clock_timestamp() - interval '24 hours'
+    ),
+    'assignedPushDelivered', (
+      select count(*)
+      from public.bible_push_delivery_ledger ledger
+      join public.bible_notifications notification
+        on notification.id = ledger.notification_id
+      where notification.notification_type = 'assignment'
+        and ledger.delivered_at is not null
+        and ledger.delivered_at >= clock_timestamp() - interval '24 hours'
     ),
     'dueNotifications', (
       select count(*)
