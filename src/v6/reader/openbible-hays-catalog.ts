@@ -188,10 +188,16 @@ export function bindOpenBibleHaysAlignmentIdentity(
   }
   const byChapter = new Map(bundle.chapters.map(row => [`${row.book.toUpperCase()}:${row.chapter}`, row]));
   if (byChapter.size !== EXPECTED_BSB_CHAPTERS) throw new Error('Hays alignment identity is incomplete.');
+  const sourceIdentityAlreadyBound = manifest.source.audioIdentity === 'exact'
+    && manifest.contentVersion === bundle.audioContentVersion;
   const segments = manifest.segments.map(segment => {
     const row = byChapter.get(`${segment.book.toUpperCase()}:${segment.chapter}`);
     if (!row) throw new Error('Hays alignment identity is missing an audio chapter.');
-    return Object.freeze({ ...segment, sha256: row.audioSha256, byteLength: row.audioByteLength });
+    if (sourceIdentityAlreadyBound && (segment.sha256?.toLowerCase() !== row.audioSha256.toLowerCase()
+      || segment.byteLength !== row.audioByteLength)) {
+      throw new Error(`Hays alignment/source identity mismatch for ${segment.book.toUpperCase()}:${segment.chapter}.`);
+    }
+    return Object.freeze({ ...segment, sha256: row.audioSha256.toLowerCase(), byteLength: row.audioByteLength });
   });
   return Object.freeze({
     ...manifest,
