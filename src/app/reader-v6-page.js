@@ -18,15 +18,22 @@ export async function loadReaderPage(args) {
     import('../v6/reader/openbible-hays-catalog.ts'),
   ]);
   const scriptureContentVersion = await catalogModule.loadCurrentBsbScriptureContentVersion();
-  const haysAlignment = scriptureContentVersion
-    ? await catalogModule.loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, args.books)
-    : null;
+  const [haysSourceInventory, haysAlignment] = scriptureContentVersion
+    ? await Promise.all([
+      catalogModule.loadOpenBibleHaysSourceInventory(),
+      catalogModule.loadOpenBibleHaysAlignmentBundle(scriptureContentVersion, args.books),
+    ])
+    : [null, null];
   const haysStreamManifest = scriptureContentVersion
     ? catalogModule.createOpenBibleNarratorStreamingManifest('hays', scriptureContentVersion, args.books, haysAlignment?.alignmentSource)
     : null;
-  const haysManifest = haysAlignment && haysStreamManifest
-    ? catalogModule.bindOpenBibleHaysAlignmentIdentity(haysStreamManifest, haysAlignment)
-    : haysStreamManifest;
+  let haysManifest = haysStreamManifest;
+  if (haysManifest && haysSourceInventory) {
+    haysManifest = catalogModule.bindOpenBibleHaysSourceIdentity(haysManifest, haysSourceInventory);
+  }
+  if (haysManifest && haysAlignment) {
+    haysManifest = catalogModule.bindOpenBibleHaysAlignmentIdentity(haysManifest, haysAlignment);
+  }
   const souerManifest = scriptureContentVersion
     ? catalogModule.createOpenBibleNarratorStreamingManifest('souer', scriptureContentVersion, args.books)
     : null;
