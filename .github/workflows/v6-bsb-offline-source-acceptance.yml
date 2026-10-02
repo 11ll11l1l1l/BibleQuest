@@ -10,6 +10,7 @@ on:
       - "src/v6/reader/openbible-hays-catalog.ts"
       - "src/app/reader-v6-page.js"
       - "scripts/v6-materialize-hays-runtime-source.mjs"
+      - "docs/v6/BSB_AUDIO_SOURCE_REVIEW.md"
       - "tests/v6/audio-policy.test.ts"
       - "tests/v6/audio-provider.test.ts"
       - "tests/v6/openbible-hays-catalog.test.ts"
