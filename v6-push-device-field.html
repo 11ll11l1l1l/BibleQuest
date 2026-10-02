@@ -113,7 +113,10 @@
     <h2>P1 — enabled delivery</h2>
     <p>Enable assignment push, then complete the normal leader-to-QA-member assignment flow with the app fully closed.</p>
     <label class="check"><input type="checkbox" data-push-step="enabled-ready"> Sanitized state shows granted permission, active worker, browser subscription, matching owner marker, and lifecycle persistence.</label>
+    <label class="check"><input type="checkbox" data-push-step="real-auth-session"> The Leader/Owner action and QA recipient used real authenticated application sessions with no test-only auth bypass.</label>
     <label class="check"><input type="checkbox" data-push-step="app-closed"> Browser/PWA was fully closed before the server-side assignment action.</label>
+    <label class="check"><input type="checkbox" data-push-step="durable-assignment-record"> The real bq-assignment path created the durable assignment notification for the approved QA recipient.</label>
+    <label class="check"><input type="checkbox" data-push-step="canonical-dispatch"> The canonical push ledger/dispatch path recorded the assignment_assigned delivery attempt for the controlled subscription.</label>
     <label class="check"><input type="checkbox" data-push-step="os-notification-arrived"> A real OS notification arrived while BibleQuest was closed.</label>
     <label class="check"><input type="checkbox" data-push-step="opened-assignments"> Tapping the OS notification opened this exact candidate at Assignments.</label>
     <label class="check"><input type="checkbox" data-push-step="durable-notification-center"> The durable in-app Notification Center item was present after opening.</label>
@@ -132,6 +135,7 @@
     <label class="check"><input type="checkbox" data-push-step="app-closed"> Browser/PWA was fully closed before the second assignment action.</label>
     <label class="check"><input type="checkbox" data-push-step="no-os-push-90s"> No OS notification arrived during at least 90 seconds of observation.</label>
     <label class="check"><input type="checkbox" data-push-step="notification-center-fallback"> Reopening BibleQuest showed the durable Notification Center item.</label>
+    <label class="check"><input type="checkbox" data-push-step="cleanup-complete"> Disposable assignments/notifications created for P1/P2 were archived or cleaned up without touching unrelated user data.</label>
     <label>Verdict
       <select data-push-gate-status><option>PENDING</option><option>PASS</option><option>FAIL</option></select>
     </label>
