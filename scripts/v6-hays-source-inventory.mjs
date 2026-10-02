@@ -21,7 +21,7 @@ const BOOKS = Object.freeze([
   ['MRK', 'Mrk', 16], ['LUK', 'Luk', 24], ['JHN', 'Jhn', 21], ['ACT', 'Act', 28], ['ROM', 'Rom', 16],
   ['1CO', '1Co', 16], ['2CO', '2Co', 13], ['GAL', 'Gal', 6], ['EPH', 'Eph', 6], ['PHP', 'Php', 4],
   ['COL', 'Col', 4], ['1TH', '1Th', 5], ['2TH', '2Th', 3], ['1TI', '1Ti', 6], ['2TI', '2Ti', 4],
-  ['TIT', 'Tit', 3], ['PHM', 'Phm', 1], ['HEB', 'Heb', 13], ['JAS', 'Jas', 5], ['1PE', '1Pe', 5],
+  ['TIT', 'Tts', 3], ['PHM', 'Phm', 1], ['HEB', 'Heb', 13], ['JAS', 'Jas', 5], ['1PE', '1Pe', 5],
   ['2PE', '2Pe', 3], ['1JN', '1Jn', 5], ['2JN', '2Jn', 1], ['3JN', '3Jn', 1], ['JUD', 'Jud', 1],
   ['REV', 'Rev', 22],
 ]);
