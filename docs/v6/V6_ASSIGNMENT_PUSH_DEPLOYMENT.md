@@ -1,6 +1,6 @@
 # BibleQuest V6 Assignment Push Deployment Handoff
 
-Status checked: 2026-09-30.
+Status checked: 2026-10-02.
 
 ## Acceptance target
 
@@ -23,19 +23,35 @@ The repository contains:
 
 ## Connected-project observation
 
-The connected BibleQuest Supabase project was inspected read-only on 2026-09-30.
+The connected BibleQuest Supabase project was inspected read-only on 2026-10-02. The non-secret snapshot is pinned at
+`docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json`.
 
 Observed state:
 
-- `pg_net` is installed;
-- Supabase Vault is installed;
-- `pg_cron` is available but not installed;
-- the live migration history does not yet include the September 28 assignment-due-reminder migration;
-- `public.bible_enqueue_assignment_due_notifications_v6()` is not present;
-- `bq-assignment-reminders` is not deployed;
-- `bq-assignment` and `bq-push-delivery` are deployed.
+- `pg_cron` and `pg_net` are installed;
+- one active `bq-assignment-due-reminders-v6` Cron job runs every five minutes;
+- both required Vault names exist without exposing their values;
+- `public.bible_enqueue_assignment_due_notifications_v6()` exists as SECURITY DEFINER, is executable by `service_role`, and is denied to `authenticated` and `anon`;
+- the due-reminder idempotency and scheduler-scan indexes are live;
+- `bq-assignment-reminders` is ACTIVE (version 1);
+- the prior 24-hour observation contained 269 successful Cron runs and zero failed runs;
+- production migration history records the reviewed equivalent `20261001150641 assignment_due_reminders_v6_20260928140000` rather than the repository's canonical `20260928140000` version;
+- the later retry-redispatch migration `20261001113000_assignment_push_retry_redispatch.sql` is not live: its retry index and `retry_ready` function path are absent;
+- there were zero current due assignments, zero due notifications and zero delivered due pushes during the observation window.
 
-Therefore the repository due-reminder implementation is not yet a live due Web Push path.
+Therefore the base due scheduler is operational, but the combined assignment assigned/due acceptance row remains OPEN until a designated eligible live due notification is created and dispatched through the canonical push sender. Retry redispatch is a separate release-hardening gap that should be rolled out through the reviewed migration path before the final V6 candidate.
+
+## Read-only readiness snapshot
+
+Run `supabase/ops/assignment-push-live-readiness.sql` with a read-only production inspection connection. The query returns only booleans/counts and never returns Vault values, user IDs, assignment IDs, notification IDs, subscription endpoints, or other account data.
+
+Save the returned `assignment_push_readiness` object as JSON, then evaluate it with:
+
+```bash
+node scripts/v6-assignment-push-live-readiness.mjs /path/to/snapshot.json
+```
+
+Exit status `0` means the backend and real due delivery evidence satisfy this gate. Exit status `2` means the scheduler/backend contract is not safe. Exit status `3` means the backend is operational but the live due-delivery acceptance evidence is still missing. The evaluator reports retry hardening separately so a healthy base scheduler is not confused with final-candidate migration parity.
 
 ## Production-safe release sequence
 
@@ -67,7 +83,7 @@ This second gate is also read-only. It exits non-zero unless the canonical `assi
 3. Deploy the exact reviewed `bq-assignment-reminders` Edge Function.
 4. In Supabase Vault, configure:
    - `bq_assignment_reminder_project_url` with the project API URL;
-   - `bq_assignment_reminder_secret_key` with one server-only Supabase secret accepted by the reminder Edge Function.
+   - `bq_assignment_reminder_scheduler_secret` with one server-only Supabase secret accepted by the reminder Edge Function.
 5. Apply `supabase/ops/assignment-due-reminder-cron.sql`.
 6. Verify without exposing secret values:
    - `pg_cron` is installed;
