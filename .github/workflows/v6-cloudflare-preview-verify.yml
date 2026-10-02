@@ -1,0 +1,180 @@
+name: V6 Cloudflare Exact-SHA Preview Verification
+
+on:
+  pull_request:
+    branches:
+      - v6/architecture-upgrade
+
+permissions:
+  contents: read
+  checks: read
+
+concurrency:
+  group: v6-cloudflare-preview-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: true
+
+env:
+  BQ_EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  verify-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXPECTED_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXPECTED_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Build exact-SHA V6 artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        run: npm run build:v6
+
+      - name: Export certified local artifact digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, appendFileSync } from 'node:fs';
+          const manifestBytes = readFileSync('dist-v6/bq-artifact-integrity.json');
+          const manifest = JSON.parse(manifestBytes.toString('utf8'));
+          if (manifest.sourceSha !== process.env.BQ_EXPECTED_SHA || !/^[a-f0-9]{64}$/i.test(String(manifest.artifactSha256 || ''))) {
+            throw new Error('Local V6 artifact identity does not match the exact PR head.');
+          }
+          const integritySha256 = createHash('sha256').update(manifestBytes).digest('hex');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_ARTIFACT_SHA256=' + manifest.artifactSha256.toLowerCase() + '\n');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_INTEGRITY_SHA256=' + integritySha256 + '\n');
+          NODE
+
+      - name: Resolve immutable Cloudflare preview for exact head
+        id: preview
+        uses: actions/github-script@v7
+        env:
+          EXPECTED_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const exactSha = String(process.env.EXPECTED_SHA || '').toLowerCase();
+            const shortSha = exactSha.slice(0, 7);
+            if (!/^[0-9a-f]{40}$/.test(exactSha)) {
+              core.setFailed('Exact 40-character PR head SHA is required.');
+              return;
+            }
+
+            for (let attempt = 1; attempt <= 60; attempt += 1) {
+              const checks = await github.paginate(github.rest.checks.listForRef, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: exactSha,
+                per_page: 100,
+              });
+              const matchingChecks = checks
+                .filter((check) =>
+                  check.name === 'Cloudflare Pages: mybiblequest'
+                  && String(check.head_sha || '').toLowerCase() === exactSha
+                )
+                .sort((a, b) => String(b.started_at || '').localeCompare(String(a.started_at || '')));
+              const check = matchingChecks[0];
+              if (check?.status === 'completed') {
+                if (check.conclusion !== 'success') {
+                  core.setFailed('Cloudflare Pages exact-head check completed with conclusion: ' + String(check.conclusion || '<missing>'));
+                  return;
+                }
+                const body = String(check.output?.summary || '');
+                if (!body.includes('<code>' + shortSha + '</code>') || !body.includes('Deploy successful!')) {
+                  core.setFailed('Cloudflare Pages successful check did not report the expected exact-head short SHA.');
+                  return;
+                }
+                const previewUrl = body.match(/<strong>Preview URL:<\/strong>[\s\S]{0,400}?href=['"](https:\/\/[a-z0-9-]+\.mybiblequest\.pages\.dev)['"]/i)?.[1];
+                const branchUrl = body.match(/<strong>Branch Preview URL:<\/strong>[\s\S]{0,400}?href=['"](https:\/\/[a-z0-9-]+\.mybiblequest\.pages\.dev)['"]/i)?.[1];
+                if (!previewUrl) {
+                  core.setFailed('Cloudflare Pages exact-head check did not expose an immutable Preview URL.');
+                  return;
+                }
+                const parsed = new URL(previewUrl);
+                if (parsed.hostname === 'mybiblequest.pages.dev' || previewUrl === branchUrl) {
+                  core.setFailed('Cloudflare Pages check did not provide a distinct immutable Preview URL.');
+                  return;
+                }
+                core.info('Using immutable Cloudflare preview for exact head ' + exactSha + ': ' + previewUrl);
+                core.setOutput('url', previewUrl);
+                return;
+              }
+              if (attempt < 60) await new Promise(resolve => setTimeout(resolve, 10000));
+            }
+            core.setFailed('Cloudflare Pages check for exact head ' + exactSha + ' was not published within the verification window.');
+
+      - name: Verify deployed preview bytes and exact source identity
+        id: deployed
+        env:
+          BQ_DEPLOYMENT_URL: ${{ steps.preview.outputs.url }}
+        shell: bash
+        run: |
+          set +e
+          node scripts/v6-deployment-verify.mjs > v6-cloudflare-preview-evidence.json 2> v6-cloudflare-preview-error.log
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const error = readFileSync('v6-cloudflare-preview-error.log', 'utf8').trim();
+          writeFileSync('v6-cloudflare-preview-diagnostic.json', JSON.stringify({
+            schemaVersion: 1,
+            candidateSha: process.env.BQ_EXPECTED_SHA,
+            deploymentUrl: process.env.BQ_DEPLOYMENT_URL,
+            artifactSha256: process.env.BQ_EXPECTED_ARTIFACT_SHA256,
+            integritySha256: process.env.BQ_EXPECTED_INTEGRITY_SHA256,
+            verified: false,
+            error,
+          }, null, 2) + '\n');
+          NODE
+          cat v6-cloudflare-preview-error.log >&2
+          exit "$status"
+          fi
+
+      - name: Publish exact-preview summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## V6 Cloudflare exact-SHA preview'
+            echo
+            if [ -s v6-cloudflare-preview-evidence.json ]; then
+              cat v6-cloudflare-preview-evidence.json
+            elif [ -s v6-cloudflare-preview-diagnostic.json ]; then
+              cat v6-cloudflare-preview-diagnostic.json
+            else
+              echo 'No deployed-preview evidence file was produced.'
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload exact-preview evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-cloudflare-preview-${{ env.BQ_EXPECTED_SHA }}
+          path: |
+            v6-cloudflare-preview-evidence.json
+            v6-cloudflare-preview-diagnostic.json
+            v6-cloudflare-preview-error.log
+          if-no-files-found: error
+          retention-days: 30
