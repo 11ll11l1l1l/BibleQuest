@@ -133,3 +133,38 @@ test('RC certification rejects deployment evidence bound to another SHA', async 
     /Deployment evidence source SHA does not match/i,
   );
 });
+
+test('RC certification rejects predeploy evidence from another repository', async () => {
+  await assert.rejects(
+    withEvidence(
+      predeployEvidence({ repository: 'other/repo' }),
+      deploymentEvidence(),
+      ({ predeployPath, deploymentPath }) => assembleRcCertification({
+        repository: 'example/repo',
+        candidateSha,
+        predeployEvidencePath: predeployPath,
+        deploymentEvidencePath: deploymentPath,
+        certifyingRunId: '9004',
+      }),
+    ),
+    /repository does not match/i,
+  );
+});
+
+test('RC certification rejects deployment evidence without integrity-manifest identity', async () => {
+  await assert.rejects(
+    withEvidence(
+      predeployEvidence(),
+      deploymentEvidence({ integritySha256: '' }),
+      ({ predeployPath, deploymentPath }) => assembleRcCertification({
+        repository: 'example/repo',
+        candidateSha,
+        predeployEvidencePath: predeployPath,
+        deploymentEvidencePath: deploymentPath,
+        certifyingRunId: '9005',
+      }),
+    ),
+    /integrity-manifest SHA-256/i,
+  );
+});
+
