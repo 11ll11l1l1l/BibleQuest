@@ -64,7 +64,7 @@ jobs:
           parent_sha="${commit_and_parents[1]}"
           [[ "${parent_sha}" =~ ^[0-9a-f]{40}$ ]]
 
-          git fetch --no-tags origin v6/architecture-upgrade
+          git fetch --no-tags origin +refs/heads/v6/architecture-upgrade:refs/remotes/origin/v6/architecture-upgrade
           git merge-base --is-ancestor "${parent_sha}" "origin/v6/architecture-upgrade"
 
           if [[ -n "${BQ_RC_PR_BASE_SHA}" ]]; then
