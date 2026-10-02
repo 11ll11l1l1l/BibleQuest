@@ -9,6 +9,10 @@ on:
       - 'scripts/v6-prepare-local-supabase.mjs'
       - 'scripts/v6-prepare-v4-upgrade-supabase.mjs'
       - 'scripts/v6-migration-history-guard.mjs'
+      - 'scripts/v6-assignment-push-live-readiness.mjs'
+      - 'tests/v6/assignment-push-live-readiness.test.ts'
+      - 'docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json'
+      - 'docs/v6/V6_ASSIGNMENT_PUSH_DEPLOYMENT.md'
       - 'tests/v6/database-ci-contract.test.mjs'
       - 'tests/v6/v4-v6-upgrade-database.test.mjs'
       - 'tests/v6/migration-history-guard.test.ts'
@@ -56,7 +60,14 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Run no-Docker database CI contract
-        run: node --test tests/v6/database-ci-contract.test.mjs tests/v6/v4-v6-upgrade-database.test.mjs tests/v6/sensitive-domain-tenant-matrix.test.ts
+        run: >
+          node --experimental-strip-types --test
+          tests/v6/database-ci-contract.test.mjs
+          tests/v6/v4-v6-upgrade-database.test.mjs
+          tests/v6/sensitive-domain-tenant-matrix.test.ts
+          tests/v6/assignment-assigned-due-push.test.ts
+          tests/v6/assignment-push-service-worker.test.ts
+          tests/v6/assignment-push-live-readiness.test.ts
 
       - name: Validate local migration identity inventory
         run: npm run check:v6-migration-history
