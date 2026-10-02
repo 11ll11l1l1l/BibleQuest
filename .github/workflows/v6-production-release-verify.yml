@@ -1,0 +1,176 @@
+name: V6 Certified SHA Production Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full lowercase 40-character marker-only V6 RC SHA with durable exact-SHA certification
+        required: true
+        type: string
+      production_url:
+        description: BibleQuest production Cloudflare Pages URL
+        required: true
+        default: https://mybiblequest.pages.dev
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: v6-production-verify-${{ inputs.candidate_sha }}
+  cancel-in-progress: false
+
+env:
+  BQ_RC_CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+
+jobs:
+  verify-production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact certified candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          fetch-depth: 0
+
+      - name: Prove exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_RC_CANDIDATE_SHA}" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "${BQ_RC_CANDIDATE_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Require production origin
+        env:
+          BQ_PRODUCTION_URL: ${{ inputs.production_url }}
+        run: |
+          node -e "const u=new URL(process.env.BQ_PRODUCTION_URL);if(u.origin!=='https://mybiblequest.pages.dev'||u.pathname!=='/')throw new Error('Production verification must target https://mybiblequest.pages.dev/');"
+
+      - name: Use candidate-pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Require marker-only candidate cut from official V6 integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f docs/v6/RC_CANDIDATE.json
+
+          read -r -a commit_and_parents <<< "$(git rev-list --parents -n 1 "${BQ_RC_CANDIDATE_SHA}")"
+          test "${#commit_and_parents[@]}" -eq 2
+          test "${commit_and_parents[0]}" = "${BQ_RC_CANDIDATE_SHA}"
+          parent_sha="${commit_and_parents[1]}"
+          [[ "${parent_sha}" =~ ^[0-9a-f]{40}$ ]]
+
+          git fetch --no-tags origin +refs/heads/v6/architecture-upgrade:refs/remotes/origin/v6/architecture-upgrade
+          git merge-base --is-ancestor "${parent_sha}" "origin/v6/architecture-upgrade"
+          node scripts/v6-rc-candidate-marker.mjs --validate docs/v6/RC_CANDIDATE.json "${parent_sha}"
+
+          mapfile -t changed < <(git diff --name-only "${parent_sha}" "${BQ_RC_CANDIDATE_SHA}")
+          printf 'Production candidate changed files:\n%s\n' "${changed[*]}"
+          test "${#changed[@]}" -eq 1
+          test "${changed[0]}" = "docs/v6/RC_CANDIDATE.json"
+
+      - name: Resolve exact-SHA certification workflow runs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          resolve_run() {
+            local workflow="$1"
+            gh api --method GET "repos/${GITHUB_REPOSITORY}/actions/runs" \
+              -f head_sha="${BQ_RC_CANDIDATE_SHA}" \
+              -f per_page=100 \
+              --jq ".workflow_runs | map(select(.name == \"${workflow}\" and .status == \"completed\" and .conclusion == \"success\")) | sort_by(.updated_at) | reverse | .[0].id"
+          }
+
+          rc_gate_run="$(resolve_run "V6 RC Exact-SHA Automated Gate")"
+          deployment_run="$(resolve_run "V6 Deployed Artifact Verification")"
+          cloudflare_run="$(resolve_run "V6 Cloudflare Exact-SHA Preview Verification")"
+          for value in "${rc_gate_run}" "${deployment_run}" "${cloudflare_run}"; do
+            test -n "${value}"
+            test "${value}" != "null"
+            [[ "${value}" =~ ^[0-9]+$ ]]
+          done
+          echo "BQ_RC_GATE_RUN_ID=${rc_gate_run}" >> "${GITHUB_ENV}"
+          echo "BQ_RC_DEPLOYMENT_RUN_ID=${deployment_run}" >> "${GITHUB_ENV}"
+          echo "BQ_CLOUDFLARE_PREVIEW_RUN_ID=${cloudflare_run}" >> "${GITHUB_ENV}"
+
+      - name: Download exact RC automated-gate evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${BQ_RC_GATE_RUN_ID}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name "v6-rc-exact-sha-evidence-${BQ_RC_CANDIDATE_SHA}" \
+            --dir rc-gate
+
+      - name: Download exact RC certification artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${BQ_RC_DEPLOYMENT_RUN_ID}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name "v6-rc-certification-${BQ_RC_CANDIDATE_SHA}" \
+            --dir rc-certification
+
+      - name: Download immutable Cloudflare exact-preview evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${BQ_CLOUDFLARE_PREVIEW_RUN_ID}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --name "v6-cloudflare-preview-${BQ_RC_CANDIDATE_SHA}" \
+            --dir cloudflare-preview
+      - name: Bind production proof to exact certified artifacts
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const sha=process.env.BQ_RC_CANDIDATE_SHA.toLowerCase();const g=JSON.parse(fs.readFileSync('rc-gate/v6-rc-exact-sha-evidence.json','utf8'));const c=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const p=JSON.parse(fs.readFileSync('cloudflare-preview/v6-cloudflare-preview-evidence.json','utf8'));if(String(g.candidateSha||'').toLowerCase()!==sha)throw new Error('RC gate SHA mismatch');if(String(c.candidateSha||'').toLowerCase()!==sha)throw new Error('RC certification SHA mismatch');if(String(p.sourceSha||'').toLowerCase()!==sha)throw new Error('Cloudflare exact-preview SHA mismatch');const a=String(c.artifactSha256||'').toLowerCase();const pa=String(p.artifactSha256||'').toLowerCase();const i=String(p.integritySha256||'').toLowerCase();const ci=String(c.deployment?.integritySha256||'').toLowerCase();if(!/^[0-9a-f]{64}$/.test(a)||pa!==a)throw new Error('Certified artifact digest mismatch');if(!/^[0-9a-f]{64}$/.test(i)||(ci&&ci!==i))throw new Error('Certified integrity digest mismatch');const u=new URL(String(p.deploymentOrigin||''));if(u.protocol!=='https:'||u.hostname==='mybiblequest.pages.dev'||!u.hostname.endsWith('.mybiblequest.pages.dev'))throw new Error('Exact-preview origin is not immutable');fs.appendFileSync(process.env.GITHUB_ENV,'BQ_CERTIFIED_ARTIFACT_SHA256='+a+'\nBQ_EXPECTED_ARTIFACT_SHA256='+a+'\nBQ_EXPECTED_INTEGRITY_SHA256='+i+'\n');"
+      - name: Verify production bytes equal the certified RC artifact
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.production_url }}
+          BQ_EXPECTED_SHA: ${{ env.BQ_RC_CANDIDATE_SHA }}
+        run: node scripts/v6-deployment-verify.mjs > v6-production-deployment-evidence.json
+
+      - name: Run exact-SHA route PWA offline and push smoke
+        env:
+          BQ_DEPLOYMENT_URL: ${{ inputs.production_url }}
+          BQ_EXPECTED_SHA: ${{ env.BQ_RC_CANDIDATE_SHA }}
+          BQ_LIVE_SMOKE_OUTPUT: v6-production-smoke-evidence.json
+        run: node scripts/v6-live-smoke.mjs
+
+      - name: Require complete production smoke contract
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const s=JSON.parse(fs.readFileSync('v6-production-smoke-evidence.json','utf8'));const sha=process.env.BQ_RC_CANDIDATE_SHA.toLowerCase();if(String(s.sourceSha||'').toLowerCase()!==sha)throw new Error('Production smoke SHA mismatch');const passed=new Set((Array.isArray(s.checks)?s.checks:[]).filter(x=>x?.ok===true).map(x=>String(x.kind||'')));for(const k of ['html-shell','exact-sha','pwa-manifest','route-shortcuts','offline-cache-contract','push-worker-contract'])if(!passed.has(k))throw new Error('Production smoke missing '+k);"
+      - name: Assemble production promotion evidence
+        shell: bash
+        run: |
+          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('rc-certification/v6-rc-certification.json','utf8'));const g=JSON.parse(fs.readFileSync('rc-gate/v6-rc-exact-sha-evidence.json','utf8'));const cp=JSON.parse(fs.readFileSync('cloudflare-preview/v6-cloudflare-preview-evidence.json','utf8'));const d=JSON.parse(fs.readFileSync('v6-production-deployment-evidence.json','utf8'));const s=JSON.parse(fs.readFileSync('v6-production-smoke-evidence.json','utf8'));const out={schemaVersion:2,repository:process.env.GITHUB_REPOSITORY,candidateSha:process.env.BQ_RC_CANDIDATE_SHA.toLowerCase(),artifactSha256:process.env.BQ_CERTIFIED_ARTIFACT_SHA256,integritySha256:process.env.BQ_EXPECTED_INTEGRITY_SHA256,productionOrigin:d.deploymentOrigin,verifiedAt:new Date().toISOString(),sourceRcCertification:{certifyingRunId:c.certifyingRunId,previewOrigin:c.deploymentOrigin},sourceWorkflowRuns:{rcAutomatedGate:Number(process.env.BQ_RC_GATE_RUN_ID),deployedArtifactVerification:Number(process.env.BQ_RC_DEPLOYMENT_RUN_ID),cloudflareExactPreview:Number(process.env.BQ_CLOUDFLARE_PREVIEW_RUN_ID)},gates:g,cloudflarePreview:cp,deployment:d,smoke:s};fs.writeFileSync('v6-production-promotion-evidence.json',JSON.stringify(out,null,2)+'\n');"
+      - name: Publish production evidence summary
+        shell: bash
+        run: |
+          {
+            echo '## V6 certified-SHA production verification'
+            echo
+            cat v6-production-promotion-evidence.json
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload production promotion evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: v6-production-promotion-evidence-${{ env.BQ_RC_CANDIDATE_SHA }}
+          path: |
+            v6-production-promotion-evidence.json
+            v6-production-deployment-evidence.json
+            v6-production-smoke-evidence.json
+            rc-gate/v6-rc-exact-sha-evidence.json
+            rc-certification/v6-rc-certification.json
+            cloudflare-preview/v6-cloudflare-preview-evidence.json
+          if-no-files-found: error
+          retention-days: 90
