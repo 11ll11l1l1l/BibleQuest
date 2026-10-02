@@ -31,16 +31,18 @@ test('RC marker fans out every path-filtered exact-SHA component gate', async ()
   assert.match(inherited, /pull_request:[\s\S]*v6\/architecture-upgrade/);
 });
 
-test('pre-deployment evidence is the six non-deployment gates and full evidence adds Cloudflare verification', () => {
+test('pre-deployment evidence includes every non-deployment exact-candidate gate and full evidence adds deployed verification', () => {
   assert.deepEqual(PREDEPLOY_REQUIRED_WORKFLOWS, [
     'V6 Phase 1 Build Gate',
     'V6 Database CI',
     'V6 Client Artifact Security',
     'V6 Dependency Security',
+    'V6 PR Serialization Guard',
+    'V6 Cloudflare Exact-SHA Preview Verification',
     'V6 V4 Rollback Reference Guard',
     'BibleQuest inherited regression',
   ]);
-  assert.equal(DEFAULT_REQUIRED_WORKFLOWS.length, 7);
+  assert.equal(DEFAULT_REQUIRED_WORKFLOWS.length, 9);
   assert.ok(DEFAULT_REQUIRED_WORKFLOWS.includes('V6 Deployed Artifact Verification'));
 });
 
@@ -78,13 +80,24 @@ test('RC certification rejects cross-SHA evidence and preserves deployed artifac
     const deploymentPath = join(directory, 'deployment.json');
     const outputPath = join(directory, 'certification.json');
     await writeFile(predeployPath, JSON.stringify({
+      schemaVersion: 1,
+      repository: 'example/repo',
       candidateSha,
+      verifiedAt: '2026-10-02T00:00:00Z',
       requiredWorkflowCount: PREDEPLOY_REQUIRED_WORKFLOWS.length,
-      workflows: [],
+      profile: 'predeploy',
+      workflows: PREDEPLOY_REQUIRED_WORKFLOWS.map((workflow, index) => ({
+        workflow,
+        runId: 1000 + index,
+        url: `https://github.com/example/repo/actions/runs/${1000 + index}`,
+        event: 'pull_request',
+        completedAt: '2026-10-02T00:00:00Z',
+      })),
     }), 'utf8');
     await writeFile(deploymentPath, JSON.stringify({
       sourceSha: candidateSha,
       artifactSha256: artifactSha,
+      integritySha256: 'd'.repeat(64),
       deploymentOrigin: 'https://candidate.mybiblequest.pages.dev',
       fileCount: 10,
       totalBytes: 100,
@@ -102,6 +115,7 @@ test('RC certification rejects cross-SHA evidence and preserves deployed artifac
 
     assert.equal(certification.candidateSha, candidateSha);
     assert.equal(certification.artifactSha256, artifactSha);
+    assert.equal(certification.integritySha256, 'd'.repeat(64));
     assert.equal(certification.deploymentOrigin, 'https://candidate.mybiblequest.pages.dev');
     assert.equal(JSON.parse(await readFile(outputPath, 'utf8')).certifyingRunId, '123');
 
