@@ -146,7 +146,7 @@ function evidenceMetadata() {
 function evidenceProgress() {
   return Object.freeze({
     metadata: evidenceMetadata(),
-    gates: Object.freeze($('[data-push-gate]').map(pushGateSnapshot)),
+    gates: Object.freeze(all('[data-push-gate]').map(pushGateSnapshot)),
   });
 }
 
@@ -173,7 +173,7 @@ function restoreEvidenceProgress() {
   fields.environment.value = String(saved.metadata?.environment || '');
   fields.reference.value = String(saved.metadata?.durableEvidenceReference || '');
   const gates = new Map((Array.isArray(saved.gates) ? saved.gates : []).map(gate => [String(gate?.id || ''), gate]));
-  for (const section of $('[data-push-gate]')) {
+  for (const section of all('[data-push-gate]')) {
     const gate = gates.get(String(section.dataset.pushGate || ''));
     if (!gate) continue;
     const status = section.querySelector('[data-push-gate-status]');
@@ -192,7 +192,7 @@ async function physicalEvidenceRecord() {
   return buildPhysicalPushEvidence({
     candidateSha: artifactBuildSha,
     metadata: evidenceMetadata(),
-    gates: $('[data-push-gate]').map(pushGateSnapshot),
+    gates: all('[data-push-gate]').map(pushGateSnapshot),
     sanitizedSnapshot: await sanitizedSnapshot(),
   });
 }
@@ -360,7 +360,7 @@ $('[data-field-copy-evidence]').addEventListener('click', async () => {
   }
 });
 
-for (const control of $('[data-field-tester],[data-field-device],[data-field-environment],[data-field-reference],[data-push-gate] input,[data-push-gate] select,[data-push-gate] textarea')) {
+for (const control of all('[data-field-tester],[data-field-device],[data-field-environment],[data-field-reference],[data-push-gate] input,[data-push-gate] select,[data-push-gate] textarea')) {
   control.addEventListener('change', saveEvidenceProgress);
   control.addEventListener('input', saveEvidenceProgress);
 }
