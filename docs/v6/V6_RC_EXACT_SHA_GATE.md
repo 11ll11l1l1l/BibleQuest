@@ -26,7 +26,7 @@ Do not mix final feature work into the RC-certification PR. First integrate ever
 node scripts/v6-rc-candidate-marker.mjs --write <exact-integration-base-sha>
 ```
 
-Commit only `docs/v6/RC_CANDIDATE.json` as one commit and open the RC PR to `v6/architecture-upgrade`. The candidate commit must have exactly one parent, that parent must be the SHA declared in the marker, and a PR-triggered certification additionally requires that parent to equal the PR's exact base SHA. The only changed path may be the canonical generated marker. These same parent/marker checks also run for manual exact-SHA recertification, so a manually dispatched gate cannot certify an arbitrary neighboring SHA.
+Commit only `docs/v6/RC_CANDIDATE.json` as one commit and open the RC PR to `v6/architecture-upgrade`. The candidate commit must have exactly one parent, that parent must be the SHA declared in the marker and must belong to the official `v6/architecture-upgrade` history, and a PR-triggered certification additionally requires that parent to equal the PR's exact base SHA. The only changed path may be the canonical generated marker. These same parent/marker checks also run for manual exact-SHA recertification, so a manually dispatched gate cannot certify an arbitrary neighboring SHA.
 
 The commit containing the marker is the immutable candidate SHA; the marker deliberately does not self-reference its own SHA. Creating the marker fans out the candidate-sensitive V6 workflows through their existing PR path filters, while inherited regression runs on every V6 PR.
 
