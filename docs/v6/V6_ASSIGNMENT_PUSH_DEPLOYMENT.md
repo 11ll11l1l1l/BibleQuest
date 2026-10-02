@@ -1,6 +1,6 @@
 # BibleQuest V6 Assignment Push Deployment Handoff
 
-Status checked: 2026-10-02.
+Status checked: 2026-10-03 JST (2026-10-02 UTC).
 
 ## Acceptance target
 
@@ -21,7 +21,7 @@ The repository contains:
 - service-worker push/click coverage for the canonical `/#/assignments` deep link;
 - `supabase/ops/assignment-due-reminder-cron.sql`, an explicit operator-applied Cron setup.
 
-## Connected-project observation
+## Connected-project observation — initial 2026-10-02 snapshot
 
 The connected BibleQuest Supabase project was inspected read-only on 2026-10-02. The non-secret snapshot is pinned at
 `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json`.
