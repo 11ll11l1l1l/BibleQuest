@@ -2,6 +2,7 @@ import {
   assertDeclaredEligibility,
   evidenceText,
   normalizePhysicalGateSet,
+  requireApprovedBibleQuestOrigin,
   requireEvidenceMetadata,
   requireEvidenceTimestamp,
   requireExactCandidateSha,
@@ -32,18 +33,19 @@ function sanitizedState(snapshot, candidateSha) {
   });
 }
 
-export function buildPhysicalPushEvidence({candidateSha,metadata,gates,sanitizedSnapshot,observedAt=new Date().toISOString()}={}) {
+export function buildPhysicalPushEvidence({candidateSha,metadata,gates,sanitizedSnapshot,origin,observedAt=new Date().toISOString()}={}) {
   const sha = requireExactCandidateSha(candidateSha, 'Physical push evidence');
   const normalizedMetadata = requireEvidenceMetadata(metadata, 'Physical push evidence');
   const normalizedGates = normalizePhysicalGateSet(gates, PUSH_FIELD_GATE_STEPS, 'Physical push evidence');
   const state = sanitizedState(sanitizedSnapshot, sha);
+  const approvedOrigin = requireApprovedBibleQuestOrigin(origin);
   const observed = requireEvidenceTimestamp(observedAt);
   const gateStatus = Object.fromEntries(normalizedGates.map(gate => [gate.id, gate.status]));
   const physicalDevicePushEvidenceComplete = gateStatus.p1 === 'PASS' && gateStatus.p2 === 'PASS';
   const assignmentAssignedDuePhysicalEvidenceComplete = gateStatus.p1 === 'PASS' && gateStatus.p3 === 'PASS';
   return Object.freeze({
     schemaVersion:1,evidenceClass:'PHYSICAL-DEVICE',evidenceType:'PUSH',candidateSha:sha,observedAt:observed,
-    ...normalizedMetadata,
+    ...normalizedMetadata,origin:approvedOrigin,
     sanitizedPushStateAtExport:state,
     gates:normalizedGates,
     checklistEligibility:Object.freeze({
@@ -73,6 +75,7 @@ export function validatePhysicalPushEvidence(record, expectedCandidateSha) {
       owner_marker_matches_current_account:record.sanitizedPushStateAtExport?.ownerMarkerMatchesCurrentAccount,
       lifecycle_persistence_verified_this_session:record.sanitizedPushStateAtExport?.lifecyclePersistenceVerifiedThisSession,
     },
+    origin:record.origin,
     observedAt:record.observedAt,
   });
   if (expectedCandidateSha && rebuilt.candidateSha !== requireExactCandidateSha(expectedCandidateSha,'Expected release candidate')) {
