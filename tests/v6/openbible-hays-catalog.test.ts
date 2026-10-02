@@ -3,7 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { SCRIPTURE_PACKAGE_SOURCES, buildScripturePackageManifest } from '../../scripts/v6-generate-scripture-manifests.mjs';
-import { bindOpenBibleHaysAlignmentIdentity, createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysAlignmentBundle, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
+import { bindOpenBibleHaysAlignmentIdentity, bindOpenBibleHaysSourceIdentity, createOpenBibleHaysStreamingManifest, createOpenBibleNarratorStreamingManifest, loadCurrentBsbScriptureContentVersion, loadOpenBibleHaysAlignmentBundle, loadOpenBibleHaysSourceInventory, loadOpenBibleHaysStreamingManifest, loadOpenBibleNarratorStreamingManifest } from '../../src/v6/reader/openbible-hays-catalog.ts';
 import { audioOfflineEligibility } from '../../src/v6/reader/audio-policy.ts';
 
 const root = new URL('../../', import.meta.url);
@@ -34,6 +34,60 @@ test('OpenBible Hays catalog creates direct source URLs for all 1,189 BSB chapte
   assert.equal(gen?.byteLength, undefined);
   assert.equal(manifest.source.scriptureContentVersion, 'bsb-test-scripture-revision');
   assert.throws(() => createOpenBibleHaysStreamingManifest('v1', books.slice(0, 65)), /66-book inventory/i);
+});
+
+test('certified Hays source identity enables offline chapter packages without claiming verse timing', async () => {
+  const bibleDirectory = new URL('data/packs/bible/', root);
+  const files = (await readdir(bibleDirectory)).filter(name => /^[1-3]?[A-Z]{2,3}\.json$/.test(name));
+  const books = await Promise.all(files.map(async name => {
+    const rows = JSON.parse(await readFile(new URL(name, bibleDirectory), 'utf8'));
+    return { code: name.slice(0, -5), name, chapters: Math.max(...rows.map(row => row.c)) };
+  }));
+  const manifest = createOpenBibleHaysStreamingManifest('sha256-current-bsb', books);
+  const inventorySha256 = 'c'.repeat(64);
+  const inventoryFiles = manifest.segments.map((segment, index) => ({
+    book: segment.book,
+    chapter: segment.chapter,
+    filename: new URL(segment.url).pathname.split('/').at(-1),
+    byteLength: 1000 + index,
+    sha256: 'd'.repeat(64),
+    durationSeconds: 10 + index / 1000,
+    sourceUrl: segment.url,
+  }));
+  const totalBytes = inventoryFiles.reduce((sum, row) => sum + row.byteLength, 0);
+  const inventory = {
+    schemaVersion: 1,
+    translationId: 'bsb',
+    narrator: 'Barry Hays',
+    source: 'OpenBible Barry Hays',
+    sourceBaseUrl: 'https://openbible.com/audio/hays/',
+    chapters: 1189,
+    totalBytes,
+    totalDurationSeconds: inventoryFiles.reduce((sum, row) => sum + row.durationSeconds, 0),
+    inventorySha256,
+    contentVersion: `sha256-${inventorySha256}`,
+    files: inventoryFiles,
+  };
+  const calls: string[] = [];
+  const loaded = await loadOpenBibleHaysSourceInventory(async (url: string | URL | Request) => {
+    calls.push(String(url));
+    return { ok: true, async json() { return inventory; } } as Response;
+  });
+  assert.ok(loaded);
+  assert.deepEqual(calls, ['/data/v6-audio/bsb-hays-source-inventory.json']);
+  const bound = bindOpenBibleHaysSourceIdentity(manifest, loaded!);
+  assert.equal(bound.contentVersion, `sha256-${inventorySha256}`);
+  assert.equal(bound.source.delivery, 'downloadable');
+  assert.equal(bound.source.audioIdentity, 'exact');
+  assert.equal(bound.source.textAlignment, 'unverified');
+  assert.equal(bound.alignmentSource, undefined);
+  assert.equal(bound.segments[0].sha256, 'd'.repeat(64));
+  assert.equal(bound.segments[0].byteLength, 1000);
+  assert.deepEqual(audioOfflineEligibility(bound), {
+    eligible: true,
+    reason: 'eligible',
+    totalBytes,
+  });
 });
 
 test('OpenBible Souer alternative maps every chapter to its original direct-stream filename', async () => {
@@ -249,6 +303,7 @@ test('live Hays timing loader enables only a complete exact-revision corpus and 
   assert.equal(bound.source.rights, 'verified');
   assert.equal(bound.source.delivery, 'downloadable');
   assert.equal(bound.source.textAlignment, 'exact');
+  assert.equal(bound.source.audioIdentity, 'exact');
   assert.deepEqual(audioOfflineEligibility(bound), {
     eligible: true,
     reason: 'eligible',
