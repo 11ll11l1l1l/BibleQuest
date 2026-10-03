@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "intent": "v6-release-candidate",
+  "baseIntegrationSha": "ac9b8d3876b69453bdebcf991f08e270f30be673",
+  "candidateIdentity": "commit-containing-this-marker",
+  "automatedGateProfile": "full"
+}
