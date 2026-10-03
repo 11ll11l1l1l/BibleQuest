@@ -1,0 +1,375 @@
+/* BibleQuest V6 modern UI foundation.
+   Phase 1 owns shared visual tokens, shell chrome, navigation, focus, motion,
+   and reusable presentation primitives only. Feature behavior stays unchanged. */
+
+:root {
+  /* Semantic surfaces */
+  --bq-bg: #f7f5ef;
+  --bq-surface: #fffefa;
+  --bq-surface-muted: #f1efe8;
+  --bq-surface-strong: #e8e5dc;
+  --bq-text: #16211d;
+  --bq-text-secondary: #56635e;
+  --bq-text-muted: #75807b;
+  --bq-border: #dfe2dd;
+  --bq-border-strong: #c8cec9;
+
+  /* Brand + section accents */
+  --bq-brand: #123f35;
+  --bq-brand-hover: #1d5749;
+  --bq-brand-soft: #e8f1ed;
+  --bq-accent-home: #c69435;
+  --bq-accent-learn: #526fa8;
+  --bq-accent-play: #8265a8;
+  --bq-accent-grow: #39765e;
+  --bq-accent-ministry: #397d79;
+  --bq-danger: #ad4747;
+  --bq-warning: #aa701d;
+  --bq-success: #2f7755;
+  --bq-focus: #2c6d9e;
+
+  /* Typography */
+  --bq-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bq-font-editorial: Lora, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --bq-type-display: clamp(2rem, 5vw, 2.25rem);
+  --bq-type-page: clamp(1.65rem, 4vw, 1.9rem);
+  --bq-type-section: clamp(1.2rem, 3vw, 1.375rem);
+  --bq-type-title: 1.0625rem;
+  --bq-type-body: 1rem;
+  --bq-type-meta: .8125rem;
+  --bq-leading-tight: 1.15;
+  --bq-leading-body: 1.58;
+
+  /* Spacing */
+  --bq-space-1: 4px;
+  --bq-space-2: 8px;
+  --bq-space-3: 12px;
+  --bq-space-4: 16px;
+  --bq-space-6: 24px;
+  --bq-space-8: 32px;
+  --bq-space-12: 48px;
+
+  /* Shape, depth, motion */
+  --bq-radius-control: 12px;
+  --bq-radius-surface: 16px;
+  --bq-radius-hero: 22px;
+  --bq-radius-pill: 999px;
+  --bq-shadow-1: 0 1px 2px rgb(18 63 53 / 4%), 0 8px 28px rgb(18 63 53 / 5%);
+  --bq-shadow-2: 0 16px 44px rgb(18 63 53 / 11%);
+  --bq-motion-fast: 150ms;
+  --bq-motion-base: 200ms;
+  --bq-ease: cubic-bezier(.2, 0, 0, 1);
+  --bq-tap-target: 44px;
+  --bq-content-max: 1040px;
+
+  /* Compatibility aliases consumed by inherited presentation layers. */
+  --surface-base: var(--bq-bg);
+  --surface-raised: var(--bq-surface);
+  --surface-subtle: var(--bq-surface-muted);
+  --forest-900: var(--bq-brand);
+  --forest-700: var(--bq-brand-hover);
+  --ink-900: var(--bq-text);
+  --ink-700: var(--bq-text-secondary);
+  --ink-500: var(--bq-text-muted);
+  --line-200: var(--bq-border);
+  --success: var(--bq-success);
+  --warning: var(--bq-warning);
+  --danger: var(--bq-danger);
+  --focus: var(--bq-focus);
+  --font-ui: var(--bq-font-ui);
+  --font-display: var(--bq-font-editorial);
+  --tap-target: var(--bq-tap-target);
+}
+
+/* Opt-in dark-compatible semantic structure. No automatic theme switch in Phase 1. */
+html[data-bq-theme="dark"] {
+  color-scheme: dark;
+  --bq-bg: #101714;
+  --bq-surface: #17211d;
+  --bq-surface-muted: #202b26;
+  --bq-surface-strong: #2a3631;
+  --bq-text: #f3f5f1;
+  --bq-text-secondary: #c1cbc5;
+  --bq-text-muted: #98a49e;
+  --bq-border: #33413b;
+  --bq-border-strong: #46554f;
+  --bq-brand: #d7eee3;
+  --bq-brand-hover: #b8dfcd;
+  --bq-brand-soft: #20382f;
+  --bq-focus: #86bfea;
+}
+
+html {
+  background: var(--bq-bg);
+  color: var(--bq-text);
+  font-family: var(--bq-font-ui);
+}
+
+body {
+  background:
+    radial-gradient(circle at 14% -8%, color-mix(in srgb, var(--bq-accent-home) 11%, transparent) 0, transparent 30%),
+    radial-gradient(circle at 94% 4%, color-mix(in srgb, var(--bq-brand) 6%, transparent) 0, transparent 26%),
+    var(--bq-bg);
+  color: var(--bq-text);
+  font-family: var(--bq-font-ui);
+  line-height: var(--bq-leading-body);
+}
+
+/* Editorial type is intentional, not a default for app controls. */
+:is(.bq-scripture, [data-scripture], .bq-editorial-title) {
+  font-family: var(--bq-font-editorial);
+}
+
+:is(h1, .bq-page-title) {
+  color: var(--bq-text);
+  font-size: var(--bq-type-page);
+  line-height: var(--bq-leading-tight);
+  letter-spacing: -.035em;
+}
+
+:is(h2, .bq-section-title) {
+  color: var(--bq-text);
+  font-size: var(--bq-type-section);
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+
+/* Global shell: quieter chrome and stronger content focus. */
+.bq-shell {
+  min-height: 100dvh;
+  padding-bottom: calc(82px + env(safe-area-inset-bottom));
+}
+
+.bq-topbar {
+  width: min(calc(100% - 28px), var(--bq-content-max));
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 10px 0;
+  gap: var(--bq-space-3);
+  background: color-mix(in srgb, var(--bq-bg) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+
+.bq-brand { gap: 10px; }
+.bq-brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bq-brand);
+  box-shadow: none;
+}
+.bq-brand strong {
+  color: var(--bq-brand);
+  font-family: var(--bq-font-editorial);
+  font-size: 18px;
+  letter-spacing: -.025em;
+}
+
+.bq-top-actions { gap: 6px; }
+.bq-progress-chip,
+.bq-session-chip {
+  min-height: var(--bq-tap-target);
+  border-color: color-mix(in srgb, var(--bq-border) 82%, transparent);
+  background: color-mix(in srgb, var(--bq-surface) 90%, transparent);
+  box-shadow: none;
+}
+
+.bq-main {
+  width: min(calc(100% - 28px), var(--bq-content-max));
+  padding: var(--bq-space-3) 0 var(--bq-space-12);
+}
+
+/* Surface hierarchy: nested content should not become a stack of floating cards. */
+.bq-panel,
+.bq-surface {
+  border: 1px solid color-mix(in srgb, var(--bq-border) 86%, transparent);
+  border-radius: var(--bq-radius-surface);
+  background: var(--bq-surface);
+  box-shadow: var(--bq-shadow-1);
+}
+
+:is(.bq-panel, .bq-surface) :is(.bq-panel, .bq-surface) {
+  border-color: color-mix(in srgb, var(--bq-border) 72%, transparent);
+  background: color-mix(in srgb, var(--bq-surface-muted) 54%, var(--bq-surface));
+  box-shadow: none;
+}
+
+.bq-eyebrow {
+  color: var(--bq-text-secondary) !important;
+  font-size: .72rem !important;
+  letter-spacing: .09em !important;
+}
+
+/* Shared Phase-1 primitives for progressively disclosed V6 surfaces. */
+.bq-v6-page-header {
+  display: grid;
+  gap: var(--bq-space-2);
+  margin: var(--bq-space-4) 0 var(--bq-space-6);
+}
+.bq-v6-page-header > * { margin: 0; }
+.bq-v6-page-header p { max-width: 62ch; color: var(--bq-text-secondary); }
+
+.bq-v6-section {
+  display: grid;
+  gap: var(--bq-space-3);
+  margin-block: var(--bq-space-6);
+}
+.bq-v6-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bq-space-3);
+}
+
+.bq-v6-hero {
+  padding: clamp(20px, 5vw, 32px);
+  border: 1px solid color-mix(in srgb, var(--bq-brand) 10%, var(--bq-border));
+  border-radius: var(--bq-radius-hero);
+  background: linear-gradient(145deg, var(--bq-surface), color-mix(in srgb, var(--bq-brand-soft) 58%, var(--bq-surface)));
+  box-shadow: var(--bq-shadow-1);
+}
+
+.bq-v6-nav-row {
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--bq-space-3);
+  padding: 9px 4px;
+  border-bottom: 1px solid var(--bq-border);
+  color: var(--bq-text);
+  text-decoration: none;
+}
+.bq-v6-nav-row:last-child { border-bottom: 0; }
+.bq-v6-nav-row__meta { color: var(--bq-text-muted); font-size: var(--bq-type-meta); }
+
+.bq-v6-segmented {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+}
+.bq-v6-segmented > * {
+  min-height: var(--bq-tap-target);
+  padding-inline: 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--bq-text-secondary);
+}
+.bq-v6-segmented > [aria-selected="true"],
+.bq-v6-segmented > [aria-current="true"] {
+  background: var(--bq-surface);
+  color: var(--bq-text);
+  box-shadow: 0 1px 4px rgb(18 63 53 / 8%);
+}
+
+.bq-v6-inline-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bq-space-2);
+  padding: 10px 12px;
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text-secondary);
+  font-size: var(--bq-type-meta);
+}
+
+.bq-v6-skeleton {
+  min-height: 1em;
+  border-radius: 8px;
+  background: linear-gradient(100deg, var(--bq-surface-muted) 20%, var(--bq-surface-strong) 36%, var(--bq-surface-muted) 52%);
+  background-size: 220% 100%;
+  animation: bq-v6-skeleton 1.4s var(--bq-ease) infinite;
+}
+@keyframes bq-v6-skeleton { to { background-position-x: -220%; } }
+
+/* Buttons and controls gain a consistent modern geometry without changing behavior. */
+.bq-primary-button,
+.bq-secondary-button,
+.bq-button {
+  min-height: var(--bq-tap-target);
+  border-radius: var(--bq-radius-control);
+  font-weight: 750;
+  transition:
+    transform var(--bq-motion-fast) var(--bq-ease),
+    background var(--bq-motion-base) var(--bq-ease),
+    border-color var(--bq-motion-base) var(--bq-ease),
+    box-shadow var(--bq-motion-base) var(--bq-ease);
+}
+.bq-primary-button,
+.bq-button--primary {
+  border-color: var(--bq-brand);
+  background: var(--bq-brand);
+  box-shadow: none;
+}
+
+/* Bottom navigation: slimmer, calmer and unmistakably selected. */
+.bq-nav {
+  bottom: max(8px, env(safe-area-inset-bottom));
+  width: min(calc(100% - 20px), 520px);
+  height: 68px;
+  padding: 5px;
+  border: 1px solid color-mix(in srgb, var(--bq-border) 88%, transparent);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--bq-surface) 94%, transparent);
+  box-shadow: var(--bq-shadow-2);
+  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+}
+.bq-nav a {
+  min-height: var(--bq-tap-target);
+  gap: 3px;
+  border-radius: 17px;
+  color: var(--bq-text-muted);
+  transition: color var(--bq-motion-base) var(--bq-ease), background var(--bq-motion-base) var(--bq-ease), transform var(--bq-motion-fast) var(--bq-ease);
+}
+.bq-nav a > span { font-size: 20px; }
+.bq-nav a small { font-size: .67rem; font-weight: 720; }
+.bq-nav a[aria-current] {
+  background: var(--bq-brand-soft);
+  color: var(--bq-brand);
+}
+.bq-nav a[aria-current]::after { display: none; }
+
+/* Accessible interaction baseline. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bq-focus) 82%, white);
+  outline-offset: 3px;
+}
+
+:where(button, [role="button"], a.bq-v6-nav-row) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .bq-topbar,
+  .bq-main { width: calc(100% - 20px); }
+  .bq-topbar { min-height: 58px; padding: 7px 0; }
+  .bq-brand-mark { width: 38px; height: 38px; }
+  .bq-progress-chip { padding-inline: 9px; }
+  .bq-session-chip { padding-inline: 9px; }
+  .bq-main { padding-top: var(--bq-space-2); }
+  .bq-panel,
+  .bq-surface { border-radius: 15px; }
+  .bq-nav { width: calc(100% - 12px); bottom: max(6px, env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 390px) {
+  .bq-brand strong { font-size: 16px; }
+  .bq-progress-chip { display: none; }
+  .bq-session-chip { max-width: 108px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .bq-v6-skeleton { animation: none; }
+}
