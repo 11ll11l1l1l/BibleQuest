@@ -360,7 +360,7 @@ body {
 
 @media (max-width: 390px) {
   .bq-brand strong { font-size: 16px; }
-  .bq-progress-chip { display: none; }
+  .bq-progress-chip { min-width: var(--bq-tap-target); padding-inline: 7px; }
   .bq-session-chip { max-width: 108px; }
 }
 
