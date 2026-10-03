@@ -12,8 +12,8 @@
   --bq-surface-muted: #171a19;
   --bq-surface-strong: #202322;
   --bq-text: #f4f3ee;
-  --bq-text-secondary: #c1c0b8;
-  --bq-text-muted: #8d918c;
+  --bq-text-secondary: #d2d1ca;
+  --bq-text-muted: #a9aca5;
   --bq-border: #272b29;
   --bq-border-strong: #3a3f3c;
 
@@ -35,7 +35,7 @@
   --bq-shadow-1: 0 1px 0 rgb(255 255 255 / 3%), 0 12px 30px rgb(0 0 0 / 28%);
   --bq-shadow-2: 0 22px 54px rgb(0 0 0 / 48%);
 
-  /* Keep inherited V4/V5 surfaces on the V6 palette. */
+  /* Keep inherited V4/V5 surfaces and legacy tokens on the V6 palette. */
   --surface-base: var(--bq-bg);
   --surface-raised: var(--bq-surface);
   --surface-subtle: var(--bq-surface-muted);
@@ -49,6 +49,14 @@
   --warning: var(--bq-warning);
   --danger: var(--bq-danger);
   --focus: var(--bq-focus);
+
+  /* Earliest inherited component styles still read these names directly. */
+  --green: var(--bq-brand);
+  --gold: var(--bq-accent-home);
+  --paper: var(--bq-surface);
+  --ink: var(--bq-text);
+  --muted: var(--bq-text-secondary);
+  --line: var(--bq-border);
 }
 
 html,
@@ -156,6 +164,101 @@ a.bq-secondary-button {
   background: var(--bq-surface-muted);
   color: var(--bq-text);
   box-shadow: none;
+}
+
+/* Grow/progress used several legacy light-theme literals. Neutralize them here,
+   after every inherited stylesheet, so the page remains readable on V6 black. */
+.bq-progress-chip,
+.bq-progress-head,
+.bq-progress-note,
+.bq-progress-stats > div,
+.bq-badge-card,
+.bq-achievement-card {
+  border-color: var(--bq-border) !important;
+  background: linear-gradient(160deg, #121513 0%, #0d100f 100%) !important;
+  color: var(--bq-text) !important;
+  box-shadow: none !important;
+}
+
+.bq-progress-head,
+.bq-progress-hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--bq-text) !important;
+}
+
+.bq-progress-hero > img {
+  opacity: .16 !important;
+}
+
+.bq-progress-hero-copy :is(h1, h2, h3),
+.bq-progress-section-heading :is(h1, h2, h3),
+.bq-progress-title :is(h1, h2, h3),
+.bq-progress-head :is(h1, h2, h3) {
+  color: var(--bq-text) !important;
+}
+
+.bq-progress-hero-copy :is(p, small),
+.bq-progress-section-heading + .bq-section-copy,
+.bq-progress-title small,
+.bq-progress-note,
+.bq-progress-chip small {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-progress-stats b,
+.bq-progress-chip b {
+  color: #e6c86f !important;
+}
+
+.bq-progress-stats span:not(.bq-progress-stat-art) {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-progress-stat-art {
+  background: color-mix(in srgb, var(--bq-accent-grow) 14%, var(--bq-surface-muted)) !important;
+  color: #a9c6b0 !important;
+}
+
+.bq-progress-art-wrap {
+  background: linear-gradient(145deg, #1a1e1b 0%, #18150e 100%) !important;
+  border-color: var(--bq-border) !important;
+  color: #e6c86f !important;
+  box-shadow: none !important;
+}
+
+.bq-badge-card b,
+.bq-achievement-card :is(h3, b, strong) {
+  color: var(--bq-text) !important;
+}
+
+.bq-badge-card p,
+.bq-achievement-card :is(p, small) {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-badge-card.is-locked,
+.bq-achievement-card.is-locked {
+  opacity: .9 !important;
+}
+
+.bq-badge-card.is-locked > span,
+.bq-achievement-card.is-locked .bq-achievement-badge {
+  background: #1b201c !important;
+  color: #d8dad3 !important;
+  box-shadow: inset 0 0 0 1px var(--bq-border) !important;
+}
+
+.bq-badge-card.is-unlocked {
+  border-color: color-mix(in srgb, var(--bq-accent-grow) 34%, var(--bq-border)) !important;
+  background: linear-gradient(160deg, #131914 0%, #0e120f 100%) !important;
+}
+
+.bq-badge-card.is-unlocked > span,
+.bq-achievement-card:not(.is-locked) .bq-achievement-badge {
+  background: var(--bq-brand-soft) !important;
+  color: #e6c86f !important;
+  box-shadow: none !important;
 }
 
 /* Selected/progress states remain visible without turning the UI into a bright dashboard. */
