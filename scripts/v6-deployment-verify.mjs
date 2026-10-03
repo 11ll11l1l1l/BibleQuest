@@ -11,11 +11,11 @@ const ROOT_HOST = 'mybiblequest.pages.dev';
 // Keep explicit denial-of-service bounds while allowing the real exact build.
 const MAX_FILES = 2000;
 const MAX_TOTAL_BYTES = 256 * 1024 * 1024;
-const DEFAULT_CONCURRENCY = 8;
+const DEFAULT_CONCURRENCY = 2;
 const METADATA_ATTEMPTS = 18;
 const METADATA_RETRY_MS = 5000;
-const ARTIFACT_FETCH_ATTEMPTS = 3;
-const ARTIFACT_FETCH_RETRY_MS = 500;
+const ARTIFACT_FETCH_ATTEMPTS = 5;
+const ARTIFACT_FETCH_RETRY_MS = 1000;
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const sleep = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms));
