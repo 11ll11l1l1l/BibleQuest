@@ -1,0 +1,397 @@
+/* BibleQuest V6 black theme.
+   Loaded after the V6 foundation and Phase 2 experience so the application
+   defaults to a focused, low-glare Bible reading surface without changing
+   feature behavior or data boundaries. */
+
+:root {
+  color-scheme: dark;
+
+  /* Near-black hierarchy */
+  --bq-bg: #080909;
+  --bq-surface: #101212;
+  --bq-surface-muted: #171a19;
+  --bq-surface-strong: #202322;
+  --bq-text: #f4f3ee;
+  --bq-text-secondary: #d2d1ca;
+  --bq-text-muted: #a9aca5;
+  --bq-border: #272b29;
+  --bq-border-strong: #3a3f3c;
+
+  /* Restrained Scripture-first accents */
+  --bq-brand: #d7ba72;
+  --bq-brand-hover: #e5cb87;
+  --bq-brand-soft: #2b2518;
+  --bq-accent-home: #d7ba72;
+  --bq-accent-learn: #91a6c9;
+  --bq-accent-play: #a390be;
+  --bq-accent-grow: #86aa91;
+  --bq-accent-ministry: #80aaa5;
+  --bq-danger: #db7777;
+  --bq-warning: #d8a45f;
+  --bq-success: #8fba99;
+  --bq-focus: #e6ca82;
+
+  /* Depth should come from tonal separation, not bright card shadows. */
+  --bq-shadow-1: 0 1px 0 rgb(255 255 255 / 3%), 0 12px 30px rgb(0 0 0 / 28%);
+  --bq-shadow-2: 0 22px 54px rgb(0 0 0 / 48%);
+
+  /* Keep inherited V4/V5 surfaces and legacy tokens on the V6 palette. */
+  --surface-base: var(--bq-bg);
+  --surface-raised: var(--bq-surface);
+  --surface-subtle: var(--bq-surface-muted);
+  --forest-900: var(--bq-brand);
+  --forest-700: var(--bq-brand-hover);
+  --ink-900: var(--bq-text);
+  --ink-700: var(--bq-text-secondary);
+  --ink-500: var(--bq-text-muted);
+  --line-200: var(--bq-border);
+  --success: var(--bq-success);
+  --warning: var(--bq-warning);
+  --danger: var(--bq-danger);
+  --focus: var(--bq-focus);
+
+  /* Earliest inherited component styles still read these names directly. */
+  --green: var(--bq-brand);
+  --gold: var(--bq-accent-home);
+  --paper: var(--bq-surface);
+  --ink: var(--bq-text);
+  --muted: var(--bq-text-secondary);
+  --line: var(--bq-border);
+}
+
+html,
+body {
+  background: var(--bq-bg);
+  color: var(--bq-text);
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 12% -8%, rgb(215 186 114 / 7%) 0, transparent 28%),
+    radial-gradient(circle at 92% 1%, rgb(128 170 165 / 4%) 0, transparent 24%);
+}
+
+/* Chrome stays visually quiet so Scripture and the active task remain dominant. */
+.bq-topbar {
+  background: rgb(8 9 9 / 88%);
+  border-color: rgb(255 255 255 / 6%);
+}
+
+.bq-panel,
+.bq-surface,
+.bq-card,
+.bq-hero,
+dialog,
+[role="dialog"] {
+  border-color: var(--bq-border);
+  background-color: var(--bq-surface);
+  color: var(--bq-text);
+}
+
+/* Reader: warm off-white text on matte black with a slightly raised page surface. */
+.bq-reader-passage {
+  background: rgb(8 9 9 / 94%);
+}
+
+.bq-reader-layout .bq-scripture-panel {
+  border-color: rgb(255 255 255 / 7%);
+  background: #0d0f0e;
+  box-shadow: none;
+}
+
+.bq-scripture-panel [data-reader-verse-text],
+.bq-scripture,
+[data-scripture] {
+  color: #f2f0e8;
+}
+
+/* The inherited Reader stylesheet predates the V6 dark surface and hard-codes
+   dark verse text with !important. Override those literals here so Scripture
+   remains readable at normal and highlighted/audio-current states. */
+.bq-reader-title h2,
+.bq-reader-title .bq-eyebrow,
+.bq-scripture-panel .bq-reader-title h2 {
+  color: var(--bq-text) !important;
+}
+
+.bq-verse {
+  color: var(--bq-text) !important;
+  opacity: 1 !important;
+}
+
+.bq-verse > span {
+  color: #b9b9b2 !important;
+}
+
+.bq-verse p,
+.bq-verse [data-reader-verse-text],
+.bq-scripture-panel .bq-verse p[data-reader-verse-text] {
+  color: #f5f3eb !important;
+  opacity: 1 !important;
+}
+
+.bq-verse:hover,
+.bq-verse:focus-visible {
+  background: #171a19 !important;
+}
+
+.bq-verse.is-highlighted {
+  background: var(--bq-brand-soft) !important;
+  box-shadow: inset 3px 0 var(--bq-brand) !important;
+}
+
+.bq-verse.is-highlighted p,
+.bq-verse.is-highlighted [data-reader-verse-text] {
+  color: #fff9e9 !important;
+}
+
+.bq-verse.is-audio-current,
+.bq-verse.is-speech-current {
+  background: #172019 !important;
+  outline-color: color-mix(in srgb, var(--bq-accent-grow) 72%, white) !important;
+}
+
+.bq-reader-source,
+.bq-reader-offline-manager,
+.bq-reader-speech,
+.bq-licensed-reader-panel,
+.bq-search-list button,
+.bq-verse-dialog {
+  border-color: var(--bq-border) !important;
+  background: var(--bq-surface-muted) !important;
+  color: var(--bq-text) !important;
+  box-shadow: none !important;
+}
+
+.bq-reader-source :is(b, span, small),
+.bq-reader-offline-manager :is(b, span, small),
+.bq-reader-speech :is(b, span, small),
+.bq-licensed-reader-panel :is(h3, p, small),
+.bq-search-list button :is(b, span),
+.bq-verse-dialog :is(h2, p) {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-reader-audio {
+  border-color: rgb(255 255 255 / 12%);
+  background: rgb(16 18 18 / 96%);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 52%);
+}
+
+.bq-reader-audio__title b {
+  color: var(--bq-text) !important;
+}
+
+.bq-reader-audio__title small,
+.bq-reader-audio-position > span {
+  color: var(--bq-text-secondary) !important;
+}
+
+/* Keep offline-audio state usable without letting it become a narrow column
+   that turns the sticky player into a tall overlay on phone screens. */
+.bq-reader-audio__offline {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--bq-border);
+  color: var(--bq-text-secondary);
+}
+
+.bq-reader-audio__offline > :is(span, b, small) {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--bq-text-secondary) !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bq-reader-audio__offline progress {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.bq-reader-audio__offline .bq-secondary-button {
+  width: auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.bq-reader-audio__play,
+.bq-reader-audio__more > summary {
+  background: var(--bq-brand);
+  color: #11120f;
+}
+
+.bq-reader-audio__more > summary {
+  background: var(--bq-surface-strong);
+  color: var(--bq-text);
+}
+
+/* Form controls must never flash a white inherited browser surface. */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+  border-color: var(--bq-border-strong);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  color-scheme: dark;
+}
+
+:where(input, textarea)::placeholder {
+  color: var(--bq-text-muted);
+  opacity: 1;
+}
+
+:where(input, select, textarea, button, summary, a):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bq-focus) 72%, transparent);
+  outline-offset: 3px;
+}
+
+/* Primary actions use the warm accent with dark ink; secondary actions stay tonal. */
+.bq-primary-button,
+button.bq-primary-button,
+a.bq-primary-button {
+  border-color: var(--bq-brand);
+  background: var(--bq-brand);
+  color: #11120f;
+  box-shadow: none;
+}
+
+.bq-primary-button:hover,
+button.bq-primary-button:hover,
+a.bq-primary-button:hover {
+  background: var(--bq-brand-hover);
+  color: #11120f;
+}
+
+.bq-secondary-button,
+button.bq-secondary-button,
+a.bq-secondary-button {
+  border-color: var(--bq-border-strong);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  box-shadow: none;
+}
+
+/* Grow/progress used several legacy light-theme literals. Neutralize them here,
+   after every inherited stylesheet, so the page remains readable on V6 black. */
+.bq-progress-chip,
+.bq-progress-head,
+.bq-progress-note,
+.bq-progress-stats > div,
+.bq-badge-card,
+.bq-achievement-card {
+  border-color: var(--bq-border) !important;
+  background: linear-gradient(160deg, #121513 0%, #0d100f 100%) !important;
+  color: var(--bq-text) !important;
+  box-shadow: none !important;
+}
+
+.bq-progress-head,
+.bq-progress-hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--bq-text) !important;
+}
+
+.bq-progress-hero > img {
+  opacity: .16 !important;
+}
+
+.bq-progress-hero-copy :is(h1, h2, h3),
+.bq-progress-section-heading :is(h1, h2, h3),
+.bq-progress-title :is(h1, h2, h3),
+.bq-progress-head :is(h1, h2, h3) {
+  color: var(--bq-text) !important;
+}
+
+.bq-progress-hero-copy :is(p, small),
+.bq-progress-section-heading + .bq-section-copy,
+.bq-progress-title small,
+.bq-progress-note,
+.bq-progress-chip small {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-progress-stats b,
+.bq-progress-chip b {
+  color: #e6c86f !important;
+}
+
+.bq-progress-stats span:not(.bq-progress-stat-art) {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-progress-stat-art {
+  background: color-mix(in srgb, var(--bq-accent-grow) 14%, var(--bq-surface-muted)) !important;
+  color: #a9c6b0 !important;
+}
+
+.bq-progress-art-wrap {
+  background: linear-gradient(145deg, #1a1e1b 0%, #18150e 100%) !important;
+  border-color: var(--bq-border) !important;
+  color: #e6c86f !important;
+  box-shadow: none !important;
+}
+
+.bq-badge-card b,
+.bq-achievement-card :is(h3, b, strong) {
+  color: var(--bq-text) !important;
+}
+
+.bq-badge-card p,
+.bq-achievement-card :is(p, small) {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-badge-card.is-locked,
+.bq-achievement-card.is-locked {
+  opacity: .9 !important;
+}
+
+.bq-badge-card.is-locked > span,
+.bq-achievement-card.is-locked .bq-achievement-badge {
+  background: #1b201c !important;
+  color: #d8dad3 !important;
+  box-shadow: inset 0 0 0 1px var(--bq-border) !important;
+}
+
+.bq-badge-card.is-unlocked {
+  border-color: color-mix(in srgb, var(--bq-accent-grow) 34%, var(--bq-border)) !important;
+  background: linear-gradient(160deg, #131914 0%, #0e120f 100%) !important;
+}
+
+.bq-badge-card.is-unlocked > span,
+.bq-achievement-card:not(.is-locked) .bq-achievement-badge {
+  background: var(--bq-brand-soft) !important;
+  color: #e6c86f !important;
+  box-shadow: none !important;
+}
+
+/* Selected/progress states remain visible without turning the UI into a bright dashboard. */
+[aria-current="page"],
+[aria-selected="true"],
+.is-active,
+.bq-active {
+  --bq-selection-bg: color-mix(in srgb, var(--bq-brand) 18%, var(--bq-surface));
+}
+
+::selection {
+  background: rgb(215 186 114 / 34%);
+  color: var(--bq-text);
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bq-bg); }
+::-webkit-scrollbar-thumb {
+  border: 2px solid var(--bq-bg);
+  border-radius: 999px;
+  background: #393d3a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { background-image: none; }
+}
