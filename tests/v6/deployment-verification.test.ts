@@ -12,13 +12,16 @@ import {
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const exactSha = 'a'.repeat(40);
 
-function createFixture({ buildSha = exactSha } = {}) {
+function createFixture({ buildSha = exactSha, extraFiles = 0 } = {}) {
   const payloads = new Map([
     ['index.html', Buffer.from('<!doctype html><title>BibleQuest</title>')],
     ['bq-build.json', Buffer.from(JSON.stringify({ sha: buildSha }))],
     ['manifest.webmanifest', Buffer.from(JSON.stringify({ name: 'BibleQuest', display: 'standalone' }))],
     ['offline-shell-sw.js', Buffer.from('self.addEventListener("fetch",()=>{});')],
   ]);
+  for (let index = 0; index < extraFiles; index += 1) {
+    payloads.set(`assets/corpus-${String(index).padStart(4, '0')}.json`, Buffer.from(`{"index":${index}}`));
+  }
   const files = [...payloads.entries()]
     .map(([path, bytes]) => ({ path, bytes: bytes.byteLength, sha256: sha256(bytes) }))
     .sort((a, b) => a.path.localeCompare(b.path));
@@ -72,6 +75,20 @@ test('deployed artifact verifier proves exact source SHA and every declared file
   assert.equal(result.integritySha256, fixture.integritySha256);
   assert.equal(result.fileCount, fixture.integrity.fileCount);
   assert.equal(result.totalBytes, fixture.integrity.totalBytes);
+});
+
+test('deployed artifact verifier accepts the certified V6 inventory scale above the obsolete 1,000-file ceiling', async () => {
+  const fixture = createFixture({ extraFiles: 1013 });
+  assert.equal(fixture.integrity.fileCount, 1017);
+  const result = await verifyDeployedArtifact({
+    deploymentUrl: 'https://preview.mybiblequest.pages.dev',
+    expectedSha: exactSha,
+    expectedArtifactSha256: fixture.integrity.artifactSha256,
+    expectedIntegritySha256: fixture.integritySha256,
+    fetchImpl: fixture.fetchImpl,
+    concurrency: 16,
+  });
+  assert.equal(result.fileCount, 1017);
 });
 
 test('deployed artifact verifier rejects build identity mismatch', async () => {
