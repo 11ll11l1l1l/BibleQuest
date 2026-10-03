@@ -105,10 +105,120 @@ dialog,
   color: #f2f0e8;
 }
 
+/* The inherited Reader stylesheet predates the V6 dark surface and hard-codes
+   dark verse text with !important. Override those literals here so Scripture
+   remains readable at normal and highlighted/audio-current states. */
+.bq-reader-title h2,
+.bq-reader-title .bq-eyebrow,
+.bq-scripture-panel .bq-reader-title h2 {
+  color: var(--bq-text) !important;
+}
+
+.bq-verse {
+  color: var(--bq-text) !important;
+  opacity: 1 !important;
+}
+
+.bq-verse > span {
+  color: #b9b9b2 !important;
+}
+
+.bq-verse p,
+.bq-verse [data-reader-verse-text],
+.bq-scripture-panel .bq-verse p[data-reader-verse-text] {
+  color: #f5f3eb !important;
+  opacity: 1 !important;
+}
+
+.bq-verse:hover,
+.bq-verse:focus-visible {
+  background: #171a19 !important;
+}
+
+.bq-verse.is-highlighted {
+  background: var(--bq-brand-soft) !important;
+  box-shadow: inset 3px 0 var(--bq-brand) !important;
+}
+
+.bq-verse.is-highlighted p,
+.bq-verse.is-highlighted [data-reader-verse-text] {
+  color: #fff9e9 !important;
+}
+
+.bq-verse.is-audio-current,
+.bq-verse.is-speech-current {
+  background: #172019 !important;
+  outline-color: color-mix(in srgb, var(--bq-accent-grow) 72%, white) !important;
+}
+
+.bq-reader-source,
+.bq-reader-offline-manager,
+.bq-reader-speech,
+.bq-licensed-reader-panel,
+.bq-search-list button,
+.bq-verse-dialog {
+  border-color: var(--bq-border) !important;
+  background: var(--bq-surface-muted) !important;
+  color: var(--bq-text) !important;
+  box-shadow: none !important;
+}
+
+.bq-reader-source :is(b, span, small),
+.bq-reader-offline-manager :is(b, span, small),
+.bq-reader-speech :is(b, span, small),
+.bq-licensed-reader-panel :is(h3, p, small),
+.bq-search-list button :is(b, span),
+.bq-verse-dialog :is(h2, p) {
+  color: var(--bq-text-secondary) !important;
+}
+
 .bq-reader-audio {
   border-color: rgb(255 255 255 / 12%);
   background: rgb(16 18 18 / 96%);
   box-shadow: 0 18px 48px rgb(0 0 0 / 52%);
+}
+
+.bq-reader-audio__title b {
+  color: var(--bq-text) !important;
+}
+
+.bq-reader-audio__title small,
+.bq-reader-audio-position > span {
+  color: var(--bq-text-secondary) !important;
+}
+
+/* Keep offline-audio state usable without letting it become a narrow column
+   that turns the sticky player into a tall overlay on phone screens. */
+.bq-reader-audio__offline {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+  padding-top: 7px;
+  border-top: 1px solid var(--bq-border);
+  color: var(--bq-text-secondary);
+}
+
+.bq-reader-audio__offline > :is(span, b, small) {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--bq-text-secondary) !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bq-reader-audio__offline progress {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.bq-reader-audio__offline .bq-secondary-button {
+  width: auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  white-space: nowrap;
 }
 
 .bq-reader-audio__play,
