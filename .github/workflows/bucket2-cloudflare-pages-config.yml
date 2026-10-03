@@ -1,0 +1,91 @@
+name: Temporary Bucket 2 Cloudflare Pages config operation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "ops/cloudflare-pages-config-7c05412"
+    paths:
+      - ".github/workflows/bucket2-cloudflare-pages-config.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CF_ACCOUNT_ID: 8b30c697e7318b17d58c341a9fe52107
+      CF_PROJECT: mybiblequest
+      TOKEN_PRIMARY: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TOKEN_ALT: ${{ secrets.CF_API_TOKEN }}
+      TOKEN_PAGES: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
+    steps:
+      - name: Resolve already-exposed Cloudflare settings credential
+        id: auth
+        shell: bash
+        run: |
+          set -euo pipefail
+          token=""
+          for candidate in "${TOKEN_PRIMARY:-}" "${TOKEN_ALT:-}" "${TOKEN_PAGES:-}"; do
+            if [ -n "$candidate" ]; then token="$candidate"; break; fi
+          done
+          if [ -z "$token" ]; then
+            echo "No Cloudflare Pages settings-write credential is exposed to this Actions job." >&2
+            exit 20
+          fi
+          echo "::add-mask::$token"
+          {
+            echo "token<<EOF"
+            echo "$token"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Read existing GitHub-backed Pages project settings
+        id: before
+        env:
+          CF_TOKEN: ${{ steps.auth.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > before.json
+          jq -e '
+            .success == true
+            and .result.name == env.CF_PROJECT
+            and .result.source.type == "github"
+          ' before.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config,previewSetting:.result.source.config.preview_deployment_setting}' before.json
+
+      - name: Patch only required V6 build settings
+        env:
+          CF_TOKEN: ${{ steps.auth.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n '{build_config:{build_command:"npm run build:v6",destination_dir:"dist-v6",root_dir:""}}' > patch.json
+          curl --fail-with-body --silent --show-error             --request PATCH             -H "Authorization: Bearer ${CF_TOKEN}"             -H "Content-Type: application/json"             --data @patch.json             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > patched.json
+          jq -e '
+            .success == true
+            and .result.source.type == "github"
+            and .result.build_config.build_command == "npm run build:v6"
+            and .result.build_config.destination_dir == "dist-v6"
+            and ((.result.build_config.root_dir // "") == "")
+          ' patched.json >/dev/null
+
+      - name: Confirm settings persisted and previews remain enabled
+        env:
+          CF_TOKEN: ${{ steps.auth.outputs.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error             -H "Authorization: Bearer ${CF_TOKEN}"             -H "Content-Type: application/json"             "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}"             > persisted.json
+          jq -e '
+            .success == true
+            and .result.source.type == "github"
+            and .result.build_config.build_command == "npm run build:v6"
+            and .result.build_config.destination_dir == "dist-v6"
+            and ((.result.build_config.root_dir // "") == "")
+            and ((.result.source.config.preview_deployment_setting // "") != "none")
+          ' persisted.json >/dev/null
+          jq '{name:.result.name,sourceType:.result.source.type,productionBranch:.result.production_branch,buildConfig:.result.build_config,previewSetting:.result.source.config.preview_deployment_setting}' persisted.json
