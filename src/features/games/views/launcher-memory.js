@@ -1,12 +1,24 @@
 export function renderLauncherView({games,escapeHtml}){
   const memory=games.kidsMemory.mode;
-  const cards=games.modes.map(mode=>{
+  const art={
+    'quick-recall':'assets/v4/games/game-quick-recall.png',
+    'character-detective':'assets/v4/games/game-character-detective.png',
+    'timeline-challenge':'assets/v4/games/game-timeline.png',
+    'context-challenge':'assets/v4/games/game-context-challenge.png',
+    'mixed-quest':'assets/v4/games/game-mixed-quest.png',
+    'per-book-recall':'assets/v4/games/game-per-book-recall.png'
+  };
+  const gameCard=(mode,featured=false)=>{
     const last=mode.id==='per-book-recall'?null:games.lastResult(mode.id);
     const result=last?`<p class="bq-game-score" data-game-last="${escapeHtml(mode.id)}">Last result: <b>${last.score}/${last.total}</b> · +${last.gained} XP</p>`:'';
     const label=mode.id==='per-book-recall'?'Open recall library':`Play ${escapeHtml(mode.title)}`;
-    return `<article class="bq-panel bq-game-card"><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2><p>${escapeHtml(mode.description)}</p>${result}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">${label}</button></article>`;
-  }).join('');
-  return `<section class="bq-panel bq-games-head"><p class="bq-eyebrow">PLAY</p><h1>Bible games for every kind of practice</h1><p>Choose a game to review Scripture, strengthen recall, or play together. Your progress stays consistent across supported modes.</p></section><section class="bq-game-launcher" aria-label="BibleQuest games">${cards}<article class="bq-panel bq-game-card" data-memory-launch-card><span>${escapeHtml(memory.kicker)}</span><h2>${escapeHtml(memory.title)}</h2><p>${escapeHtml(memory.description)}</p><button type="button" class="bq-primary-button" data-memory-open>Play ${escapeHtml(memory.title)}</button></article><article class="bq-panel bq-game-card" data-same-room-card><span>PASS-AND-PLAY</span><h2>Play Together</h2><p>Share one device with 2–6 players, rotate turns, and keep a local scoreboard.</p><button type="button" class="bq-primary-button" data-same-room-open>Play Together</button></article></section><div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;
+    return `<article class="bq-game-tile${featured?' is-featured':''}"><img src="${art[mode.id]||art['quick-recall']}" alt="" loading="lazy"><div><span>${escapeHtml(mode.kicker)}</span><h2>${escapeHtml(mode.title)}</h2>${featured?`<p>${escapeHtml(mode.description)}</p>`:''}${result}<button type="button" class="bq-primary-button" data-game-launch="${escapeHtml(mode.id)}">${label}</button></div></article>`;
+  };
+  const byId=new Map(games.modes.map(mode=>[mode.id,mode]));
+  const quick=['character-detective','timeline-challenge'].map(id=>byId.get(id)).filter(Boolean).map(mode=>gameCard(mode)).join('');
+  const deeper=['context-challenge','mixed-quest'].map(id=>byId.get(id)).filter(Boolean).map(mode=>gameCard(mode)).join('');
+  const library=byId.get('per-book-recall');
+  return `<header class="bq-v6-page-header"><p class="bq-eyebrow">PLAY</p><h1>Play</h1></header><section class="bq-game-featured">${gameCard(byId.get('quick-recall')||games.modes[0],true)}</section><section class="bq-game-section"><h2>Quick games</h2><div class="bq-game-tile-grid">${quick}<article class="bq-game-tile" data-memory-launch-card><img src="assets/v4/games/game-memory-meadow.png" alt="" loading="lazy"><div><span>${escapeHtml(memory.kicker)}</span><h2>${escapeHtml(memory.title)}</h2><button type="button" class="bq-primary-button" data-memory-open>Play</button></div></article></div></section><section class="bq-game-section"><h2>Think deeper</h2><div class="bq-game-tile-grid">${deeper}</div></section><section class="bq-game-together"><div><span>PLAY TOGETHER</span><h2>Pass, play, and learn together</h2><p>2–6 players · one device</p></div><button type="button" class="bq-primary-button" data-same-room-open>Start</button></section>${library?`<section class="bq-game-section"><h2>Bible library games</h2>${gameCard(library)}</section>`:''}<div class="bq-game-footer"><button type="button" class="bq-secondary-button" data-game-home>Back home</button></div>`;
 }
 
 export function renderMemoryView({state,escapeHtml}){
