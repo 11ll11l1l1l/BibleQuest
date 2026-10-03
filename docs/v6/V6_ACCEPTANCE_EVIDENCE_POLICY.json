@@ -276,7 +276,25 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "597ce317e6946141535e872d252657e95db6a617",
+        "classes": [
+          "DATABASE",
+          "EXTERNAL-LIVE"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "V6 Database CI",
+            "id": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37065592928"
+          },
+          {
+            "kind": "live-record",
+            "name": "Assignment assigned/due production readiness",
+            "id": "docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json"
+          }
+        ]
+      }
     },
     {
       "row": "Physical-device push acceptance passes.",
