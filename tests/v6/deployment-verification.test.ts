@@ -91,6 +91,27 @@ test('deployed artifact verifier accepts the certified V6 inventory scale above 
   assert.equal(result.fileCount, 1017);
 });
 
+test('deployed artifact verifier retries transient public-file fetch failures without weakening byte checks', async () => {
+  const fixture = createFixture();
+  let indexAttempts = 0;
+  const transientFetch = async input => {
+    const url = input instanceof URL ? input : new URL(input);
+    if (url.pathname === '/index.html' && indexAttempts++ === 0) {
+      throw new TypeError('transient network failure');
+    }
+    return fixture.fetchImpl(input);
+  };
+  const result = await verifyDeployedArtifact({
+    deploymentUrl: 'https://preview.mybiblequest.pages.dev',
+    expectedSha: exactSha,
+    expectedArtifactSha256: fixture.integrity.artifactSha256,
+    expectedIntegritySha256: fixture.integritySha256,
+    fetchImpl: transientFetch,
+  });
+  assert.equal(result.artifactSha256, fixture.integrity.artifactSha256);
+  assert.equal(indexAttempts, 2);
+});
+
 test('deployed artifact verifier rejects build identity mismatch', async () => {
   const fixture = createFixture({ buildSha: 'b'.repeat(40) });
   await assert.rejects(
