@@ -3,6 +3,11 @@ import { readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 
 export const V6_ARTIFACT_INTEGRITY_FILE = 'bq-artifact-integrity.json';
+// Cloudflare Pages consumes these deployment-control files instead of exposing
+// their source bytes at the corresponding public URLs. Their repository/build
+// presence is validated separately; the deployed-byte inventory contains only
+// artifacts that can be fetched back from the immutable preview.
+const DEPLOYMENT_CONTROL_FILES = new Set(['_headers', '_redirects']);
 
 async function walk(directory) {
   const files = [];
@@ -21,7 +26,7 @@ async function inventory(outDir) {
   const root = resolve(outDir);
   const paths = (await walk(root))
     .map((file) => ({ file, path: normalizePath(root, file) }))
-    .filter(({ path }) => path !== V6_ARTIFACT_INTEGRITY_FILE)
+    .filter(({ path }) => path !== V6_ARTIFACT_INTEGRITY_FILE && !DEPLOYMENT_CONTROL_FILES.has(path))
     .sort((a, b) => a.path.localeCompare(b.path));
 
   const files = [];
