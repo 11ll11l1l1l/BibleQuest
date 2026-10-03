@@ -384,12 +384,15 @@ a.bq-secondary-button {
   color: var(--bq-text);
 }
 
+@media (hover: hover) and (pointer: fine) {
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--bq-bg); }
 ::-webkit-scrollbar-thumb {
   border: 2px solid var(--bq-bg);
   border-radius: 999px;
   background: #393d3a;
+}
+
 }
 
 @media (prefers-reduced-motion: reduce) {
