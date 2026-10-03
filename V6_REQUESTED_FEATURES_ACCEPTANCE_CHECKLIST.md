@@ -42,6 +42,8 @@ Sixteenth acceptance reconciliation evidence from exact PR head `52ad9364c8d4359
 
 BSB corpus certification on 2026-10-03: PR #1096 exact candidate `001fecb1297c9c7842e27f0da737b42f46e515cb` replays only BSB changes onto integration base `c545ee39098d629f3f1776d9296479845376850c`. Source acceptance `37073450758` and retained-shard finalization/real-manifest Reader acceptance `37073450667` passed. The 16 successful shards from `37004858231` were reused without corpus realignment, producing 1,189 canonical chapters / 30,969 verses bound to current Reader BSB `sha256-381de303bc2e07dc645d`, Hays inventory `522c547472358cc13290f55ddf0ec1d2e2987ecdd44032dc0edfb1c4628310c2`, and immutable aligner revision `bdb859afc427b215b78e12ee4a7798c32b7b91e0`. Exact-candidate Phase-1 `37073454572`, inherited regression `37073454316`, artifact security `37073454401`, and serialization `37073454325` passed before integration. This promotes exactly the four source/timing/highlight-seek/autoscroll rows below. Details and artifact identities are pinned in `docs/v6/evidence/BSB_HAYS_CORPUS_CERTIFICATION_20261003.json`. Background/lock-screen physical-device acceptance and hosted Cloudflare artifact identity remain OPEN. Inventory becomes **198 checked / 13 open (211 total, 93.8%)**.
 
+Assignment-push production certification on 2026-10-03: the existing accepted due-path evidence remains intact (`assignment_due` durable notification, ledger-confirmed delivery, scheduler HTTP 200, and duplicate-free second pass). At 02:35:58 UTC, a controlled owner created a genuine assignment through the normal authenticated application path for the controlled subscribed account. Production created the canonical durable `assignment` notification and a normal delivery-ledger row with `delivered_at` at 02:35:59 UTC. The sanitized snapshot in `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json` now evaluates with `assignedPushDelivered = 1`, `duePushDelivered = 1`, `rowReadyForPass = true`, and no blockers. This promotes only the combined backend `Assignment assigned/due push is supported.` row. Physical-device push remains OPEN. Inventory becomes **199 checked / 12 open (211 total, 94.3%)**.
+
 ## A. Phase 0 — V6 authority and baseline
 
 - [x] `V6_ACTIVE_STATUS.md` accepted as current authority.
@@ -207,7 +209,7 @@ Local candidate evidence (2026-09-28; code SHA `c95ccd02bb006f2e8a4a95e604064394
 - [x] Notification destinations are restricted to the integrated V6 deep-link allowlist.
 - [x] Expired/invalid push subscriptions are cleaned safely.
 - [x] Delivery is deduplicated/idempotent/rate-limited.
-- [ ] Assignment assigned/due push is supported.
+- [x] Assignment assigned/due push is supported.
 - [x] Leader/congregation announcement push is supported.
 - [x] Encouragement push is supported.
 - [x] In-app Notification Center remains the durable fallback.
