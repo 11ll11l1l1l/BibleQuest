@@ -1,0 +1,122 @@
+name: Temporary Bucket 2 exact-SHA Cloudflare proof
+
+on:
+  push:
+    branches:
+      - "ops/cloudflare-bucket2-proof-7c05412"
+
+permissions:
+  contents: read
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      BQ_EXPECTED_SHA: 7c054126bbb06ac273f2d557c7d75583a04cc471
+      BQ_DEPLOYMENT_URL: https://05e24198.mybiblequest.pages.dev
+    steps:
+      - name: Checkout exact V6 integration
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXPECTED_SHA }}
+
+      - name: Prove exact checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXPECTED_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Validate existing Cloudflare verifier tests unchanged
+        run: |
+          node --experimental-strip-types --test             tests/v6/deployment-verification.test.ts             tests/v6/cloudflare-preview-workflow.test.ts
+
+      - name: Build exact V6 artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXPECTED_SHA }}
+        run: npm run build:v6
+
+      - name: Export exact local artifact identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { readFileSync, appendFileSync, writeFileSync } from 'node:fs';
+          const bytes = readFileSync('dist-v6/bq-artifact-integrity.json');
+          const manifest = JSON.parse(bytes.toString('utf8'));
+          if (manifest.sourceSha !== process.env.BQ_EXPECTED_SHA) throw new Error('local source SHA mismatch');
+          const integritySha256 = createHash('sha256').update(bytes).digest('hex');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_ARTIFACT_SHA256=' + manifest.artifactSha256.toLowerCase() + '\n');
+          appendFileSync(process.env.GITHUB_ENV, 'BQ_EXPECTED_INTEGRITY_SHA256=' + integritySha256 + '\n');
+          writeFileSync('bucket2-local-artifact.json', JSON.stringify({
+            sourceSha: manifest.sourceSha,
+            artifactSha256: manifest.artifactSha256,
+            integritySha256,
+            fileCount: manifest.fileCount,
+            totalBytes: manifest.totalBytes
+          }, null, 2) + '\n');
+          console.log(readFileSync('bucket2-local-artifact.json','utf8'));
+          NODE
+
+      - name: Probe exact deployed metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > bucket2-metadata-probe.txt
+          for path in bq-build.json bq-artifact-integrity.json; do
+            curl -fsS --max-time 20 "${BQ_DEPLOYMENT_URL}/$path" -o "$path.remote"
+            if jq -e . "$path.remote" >/dev/null 2>&1; then
+              echo "$path: JSON" | tee -a bucket2-metadata-probe.txt
+            else
+              echo "$path: HTML_OR_NON_JSON" | tee -a bucket2-metadata-probe.txt
+            fi
+          done
+
+      - name: Run existing deployed-byte verifier unchanged
+        id: verifier
+        shell: bash
+        run: |
+          set +e
+          node scripts/v6-deployment-verify.mjs > bucket2-verifier-output.json 2> bucket2-verifier-error.log
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          if [ "$status" -eq 0 ]; then
+            cat bucket2-verifier-output.json
+          else
+            cat bucket2-verifier-error.log >&2
+          fi
+
+      - name: Upload durable Bucket 2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bucket2-cloudflare-proof-${{ env.BQ_EXPECTED_SHA }}
+          path: |
+            bucket2-local-artifact.json
+            bucket2-metadata-probe.txt
+            bucket2-verifier-output.json
+            bucket2-verifier-error.log
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Fail closed if deployed bytes are not exact
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.verifier.outputs.status }}" -ne 0 ]; then
+            echo "Bucket 2 remains blocked by hosted Pages configuration." >&2
+            exit 1
+          fi
