@@ -6,8 +6,11 @@ const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
 const HOST_SUFFIX = '.mybiblequest.pages.dev';
 const ROOT_HOST = 'mybiblequest.pages.dev';
-const MAX_FILES = 1000;
-const MAX_TOTAL_BYTES = 50 * 1024 * 1024;
+// The certified V6 build currently contains 1,017 files and about 123 MB,
+// primarily because the complete timing/offline manifests are release assets.
+// Keep explicit denial-of-service bounds while allowing the real exact build.
+const MAX_FILES = 2000;
+const MAX_TOTAL_BYTES = 256 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
 const METADATA_ATTEMPTS = 18;
 const METADATA_RETRY_MS = 5000;
