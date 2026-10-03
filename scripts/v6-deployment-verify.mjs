@@ -66,7 +66,10 @@ async function fetchBytes(baseUrl, path, fetchImpl) {
   if (target.origin !== baseUrl.origin) throw new Error(`Artifact target escaped deployment origin: ${safePath}`);
   const response = await fetchImpl(target, {
     cache: 'no-store',
-    redirect: 'error',
+    // Pages canonicalizes some .html routes to extensionless same-origin URLs.
+    // Follow that platform redirect, then enforce the existing same-origin
+    // check before accepting or hashing any response bytes.
+    redirect: 'follow',
     headers: { accept: 'application/octet-stream' },
     signal: AbortSignal.timeout(15000),
   });
