@@ -50,9 +50,9 @@ Production was first reconciled to the repository push contract. The additive no
 
 A disposable member-targeted assignment was created for the controlled owner account with an already active assignment push subscription. The real five-minute scheduler—not a manual reminder invocation—produced one `assignment_due` notification. The corresponding `bq-assignment-reminders` request returned HTTP 200 from `pg_net/0.20.4`, `bq-push-delivery` version 4 returned HTTP 200, and the delivery ledger recorded one delivered due push. A second real scheduler run left the counts at exactly one due notification and one delivered push, proving scheduler idempotency. The disposable assignment was then archived while the sanitized notification/delivery evidence was retained.
 
-The same run also proved one durable assigned notification but **zero ledger-confirmed assigned push deliveries**. Production has no historical ledger-confirmed assigned push delivery either. The assignment producer has now been reconciled to emit the canonical `assignments` delivery category, but this acceptance row remains OPEN until one controlled assignment is created through the real authenticated `bq-assignment` application path and its assigned notification is ledger-confirmed as delivered. Direct database insertion is not accepted as a substitute for that dispatch path.
+On 2026-10-03 at 02:35:58 UTC, the controlled owner used the normal authenticated BibleQuest assignment path to create a real assignment for the controlled subscribed account. Production created the durable canonical `assignment` notification with the `assignments` delivery category, created one delivery-ledger row, and recorded `delivered_at` at 02:35:59 UTC. This closes the previously missing assigned half without direct database insertion, fabricated ledger evidence, or scheduler substitution.
 
-Sanitized evidence is pinned at `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json`. It deliberately reports the due path as proven while keeping `live:assignedPushDelivered` as the remaining backend blocker. No physical-device P1/P2/P3 result is claimed by this evidence.
+Sanitized evidence is pinned at `docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261003.json`. The evaluator now reports both live assigned and due delivery as proven and `rowReadyForPass = true`. No physical-device P1/P2/P3 result is claimed by this evidence.
 
 ## Read-only readiness snapshot
 
@@ -113,9 +113,9 @@ This second gate is also read-only. It exits non-zero unless the canonical `assi
    - the resulting push payload resolves to `/#/assignments`.
 8. Remove disposable test data and record exact migration/function/job evidence in the acceptance checklist.
 
-## Exact remaining live evidence action
+## Final live evidence result
 
-The retry-redispatch path is live and the real due scheduler/delivery path is now proven. The remaining backend action is narrower: using a controlled authenticated leader/owner browser session, create one disposable assignment through the real `bq-assignment` Edge Function and capture sanitized evidence that its `assignment` notification is delivered through `bq-push-delivery`. The readiness evaluator intentionally cannot PASS the combined assigned/due row until `assignedPushDelivered > 0`.
+The retry-redispatch path, real due scheduler/delivery path, and genuine authenticated assigned-delivery path are all proven. The sanitized snapshot records `assignedPushDelivered = 1`, `duePushDelivered = 1`, and the readiness evaluator returns `rowReadyForPass = true` with no blockers.
 
 Do not manufacture this evidence by inserting a delivery-ledger row, fabricating a retry state, weakening sender authentication, or routing the assigned notification through the due scheduler. Physical-device P1/P2/P3 evidence remains a separate field-evidence gate.
 
