@@ -70,25 +70,25 @@ export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, 
   const card=(attr,title,detail)=>`<button type="button" class="bq-learning-card" ${attr}><b>${escapeHtml(t(title))}</b><span>${escapeHtml(t(detail))}</span></button>`;
   return {
     title:t('learn.title'),
-    html:`<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(t('learn.eyebrow'))}</p><h1>${escapeHtml(t('learn.title'))}</h1><p>${escapeHtml(t('learn.description'))}</p></section>` +
-      `<section class="bq-panel bq-learn-primary" data-learn-primary><button type="button" class="bq-learn-primary-button" data-open-reader><span class="bq-learn-primary-icon" aria-hidden="true">${iconSvg('bible',{size:28})}</span><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.reader'))}</b><span>${escapeHtml(t('learn.reader.detail'))}</span></span></button></section>` +
-      `<div class="bq-learn-group"><p class="bq-eyebrow">${escapeHtml(t('learn.studyGroup'))}</p><div class="bq-learning-grid">` +
-        card('data-open-study','learn.study','learn.study.detail') +
+    html:`<header class="bq-v6-page-header"><p class="bq-eyebrow">${escapeHtml(t('learn.eyebrow'))}</p><h1>${escapeHtml(t('learn.title'))}</h1></header>` +
+      `<section class="bq-v6-hero bq-learn-continue"><p class="bq-eyebrow">CONTINUE LEARNING</p><h2>${escapeHtml(t('learn.study'))}</h2><p>${escapeHtml(t('learn.study.detail'))}</p><button type="button" class="bq-primary-button" data-open-study>Continue</button></section>` +
+      `<section class="bq-learn-entry" data-learn-primary><div class="bq-v6-section-header"><h2>Read the Bible</h2></div><button type="button" class="bq-learn-primary-button" data-open-reader><span class="bq-learn-primary-icon" aria-hidden="true">${iconSvg('bible',{size:28})}</span><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.reader'))}</b><span>${escapeHtml(t('learn.reader.detail'))}</span></span><span aria-hidden="true">›</span></button></section>` +
+      `<section class="bq-learn-entry"><div class="bq-v6-section-header"><h2>Study a topic</h2></div><div class="bq-learning-grid bq-learn-topics">` +
         card('data-open-deep-questions','learn.deep','learn.deep.detail') +
         card('data-open-story-journey','learn.story','learn.story.detail') +
         card('data-open-wisdom-situations','learn.wisdom','learn.wisdom.detail') +
-      `</div></div>` +
-      `<div class="bq-learn-group"><p class="bq-eyebrow">${escapeHtml(t('learn.exploreGroup'))}</p><div class="bq-learning-grid">` +
+      `</div></section>` +
+      `<section class="bq-learn-entry"><div class="bq-v6-section-header"><h2>Practice Scripture</h2></div><div class="bq-learning-grid bq-learn-practice">` +
         card('data-open-bible-world','learn.world','learn.world.detail') +
         card('data-open-explorer','learn.explorer','learn.explorer.detail') +
         card('data-open-adaptive-learning','learn.adaptive','learn.adaptive.detail') +
         card('data-open-open-review','learn.review','learn.review.detail') +
-      `</div></div>` +
-      `<div class="bq-learn-group"><p class="bq-eyebrow">${escapeHtml(t('learn.notesGroup'))}</p><div class="bq-learning-grid">` +
+      `</div></section>` +
+      `<section class="bq-learn-entry"><div class="bq-v6-section-header"><h2>My library</h2></div><div class="bq-learning-grid bq-learn-library">` +
         card('data-open-private-notes','learn.privateNotes','learn.privateNotes.detail') +
         card('data-open-cloud-notes','learn.cloudNotes','learn.cloudNotes.detail') +
-      `</div></div>` +
-      `<section class="bq-panel" data-doctrinal-policy><p class="bq-eyebrow">${escapeHtml(t('learn.safetyEyebrow'))}</p><h2>${escapeHtml(t('learn.safetyHeading'))}</h2><p>${escapeHtml(t('learn.safety'))}</p><p><small>${escapeHtml(DOCTRINAL_SAFETY.authority)}</small></p></section>${guide}`,
+      `</div></section>` +
+      `<details class="bq-learn-info" data-doctrinal-policy><summary>${escapeHtml(t('learn.safetyHeading'))}</summary><p>${escapeHtml(t('learn.safety'))}</p><p><small>${escapeHtml(DOCTRINAL_SAFETY.authority)}</small></p>${guide}</details>`,
     mount(root) {
       const reader=root.querySelector('[data-open-reader]'),study=root.querySelector('[data-open-study]'),deep=root.querySelector('[data-open-deep-questions]'),story=root.querySelector('[data-open-story-journey]'),wisdom=root.querySelector('[data-open-wisdom-situations]'),bibleWorld=root.querySelector('[data-open-bible-world]'),explorer=root.querySelector('[data-open-explorer]'),adaptive=root.querySelector('[data-open-adaptive-learning]'),openReview=root.querySelector('[data-open-open-review]'),privateNotes=root.querySelector('[data-open-private-notes]'),cloudNotes=root.querySelector('[data-open-cloud-notes]');
       const goReader=()=>onReader?.(),goStudy=()=>onStudy?.(),goDeep=()=>onDeepQuestions?.(),goStory=()=>onStoryJourney?.(),goWisdom=()=>onWisdomSituations?.(),goBibleWorld=()=>onBibleWorld?.(),goExplorer=()=>onExplorer?.(),goAdaptive=()=>onAdaptiveLearning?.(),goOpenReview=()=>onOpenReview?.(),goPrivateNotes=()=>onPrivateNotes?.(),goCloudNotes=()=>onCloudNotes?.();
