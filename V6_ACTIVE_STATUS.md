@@ -9,6 +9,15 @@ Current production product parity baseline: `7420bbba789ce21e02ac667f98558681e71
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
 Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084a`
 
+## Owner release decision — 2026-10-04 JST
+
+- The owner explicitly instructed: "Skip rhe manual operatir test for now. Continue release".
+- Physical/manual device evidence and its dependent aggregate acceptance rows are temporarily OWNER-WAIVED for frozen candidate `7997d60e6069aa406ec005c32e33e46fee39bc12`. This supersedes the physical-evidence promotion boundary below. No physical observation is represented as PASS.
+- Automated certification remains SUCCESS on the same SHA. Production promotion and essential machine smoke remain mandatory and authorized.
+- Decision record: `docs/v6/evidence/RC_20261003/OWNER_MANUAL_TEST_WAIVER_20261004.json`.
+- Inventory stays **202 PASS / 9 unchecked**, including seven owner-waived physical-dependent rows and two outstanding production-operation rows. The physical component of post-production smoke is also deferred; it must not be claimed as tested.
+- Production is not yet promoted. Preserve `main` and V5 rollback history; use the exact certified Cloudflare artifact for production.
+
 ## Final release checkpoint — 2026-10-03 JST
 
 - Frozen release candidate: `7997d60e6069aa406ec005c32e33e46fee39bc12`; source integration base `c6da68b264977048ebebfed74dd34ff86f16060b`.
