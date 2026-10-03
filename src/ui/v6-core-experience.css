@@ -57,6 +57,7 @@
 .bq-home-today-row__icon { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 12px; background: var(--bq-brand-soft); color: var(--bq-brand); }
 .bq-home-today-row b,
 .bq-home-today-row small { display: block; }
+.bq-home-today-row h2 { margin: 0; font: 750 var(--bq-type-item)/1.25 var(--bq-font-interface); }
 .bq-home-today-row small { overflow: hidden; color: var(--bq-text-muted); text-overflow: ellipsis; white-space: nowrap; }
 
 /* Existing lower-priority Home features stay reachable but stop competing above the fold. */
