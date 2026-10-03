@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "evidenceClass": "LIVE-PRODUCTION-QA",
-  "repositoryBaseSha": "75bfaaf31dd5417e6188968c08d8dd8b2020d152",
-  "observedAt": "2026-10-02T21:10:43.17838+00:00",
+  "repositoryBaseSha": "7c054126bbb06ac273f2d557c7d75583a04cc471",
+  "observedAt": "2026-10-03T02:39:10.352666+00:00",
   "edgeFunction": {
     "slug": "bq-assignment-reminders",
     "status": "ACTIVE",
@@ -32,9 +32,11 @@
   "qaProbe": {
     "recipientClass": "controlled-owner-account",
     "ordinaryMemberTargeted": false,
-    "disposableAssignmentArchived": true,
-    "assignedDurableNotifications": 1,
-    "assignedPushDelivered": 0,
+    "disposableAssignmentArchived": false,
+    "assignedDurableNotifications": 2,
+    "assignedPushDelivered": 1,
+    "latestAssignedNotificationAt": "2026-10-03T02:35:58.895928+00:00",
+    "latestAssignedDeliveredAt": "2026-10-03T02:35:59.821+00:00",
     "dueDurableNotifications": 1,
     "duePushDelivered": 1,
     "pendingDueDeliveryClaims": 0,
@@ -48,7 +50,7 @@
   },
   "assignment_push_readiness": {
     "schemaVersion": 1,
-    "observedAt": "2026-10-02T21:10:43.17838+00:00",
+    "observedAt": "2026-10-03T02:39:10.352666+00:00",
     "extensions": {
       "pgCron": true,
       "pgNet": true
@@ -84,9 +86,9 @@
     "last24Hours": {
       "cronSucceeded": 288,
       "cronFailed": 0,
-      "assignmentNotifications": 2,
-      "assignedNotifications": 1,
-      "assignedPushDelivered": 0,
+      "assignmentNotifications": 3,
+      "assignedNotifications": 2,
+      "assignedPushDelivered": 1,
       "dueNotifications": 1,
       "duePushDelivered": 1
     },
