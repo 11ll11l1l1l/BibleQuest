@@ -79,7 +79,8 @@
   backdrop-filter: blur(18px);
 }
 .bq-reader-passage label { position: relative; margin: 0; }
-.bq-reader-passage label:nth-child(2) { grid-column: 1; color: var(--bq-text-muted); font-size: var(--bq-type-meta); }
+.bq-reader-app-title { grid-column: 1 / -1; margin: 0; color: var(--bq-text-muted); font: 700 var(--bq-type-meta)/1 var(--bq-font-interface); letter-spacing: .04em; }
+.bq-reader-passage label:nth-of-type(2) { grid-column: 1; color: var(--bq-text-muted); font-size: var(--bq-type-meta); }
 .bq-reader-passage__chapter { grid-column: 2; grid-row: 1 / span 2; }
 .bq-reader-passage__book { font-family: var(--bq-font-editorial); font-size: var(--bq-type-section); font-weight: 750; }
 .bq-reader-passage select {
