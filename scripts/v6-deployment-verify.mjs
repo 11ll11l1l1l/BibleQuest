@@ -14,6 +14,8 @@ const MAX_TOTAL_BYTES = 256 * 1024 * 1024;
 const DEFAULT_CONCURRENCY = 8;
 const METADATA_ATTEMPTS = 18;
 const METADATA_RETRY_MS = 5000;
+const ARTIFACT_FETCH_ATTEMPTS = 3;
+const ARTIFACT_FETCH_RETRY_MS = 500;
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const sleep = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms));
@@ -73,6 +75,22 @@ async function fetchBytes(baseUrl, path, fetchImpl) {
     throw new Error(`Deployment artifact redirected off origin: ${safePath}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+async function fetchArtifactBytes(baseUrl, path, fetchImpl) {
+  let lastError;
+  for (let attempt = 1; attempt <= ARTIFACT_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchBytes(baseUrl, path, fetchImpl);
+    } catch (error) {
+      lastError = error;
+      if (attempt < ARTIFACT_FETCH_ATTEMPTS) await sleep(ARTIFACT_FETCH_RETRY_MS);
+    }
+  }
+  throw new Error(
+    `Deployment artifact fetch failed after ${ARTIFACT_FETCH_ATTEMPTS} attempts for ${path}: ${lastError?.message || lastError}`,
+    { cause: lastError },
+  );
 }
 
 async function fetchJson(baseUrl, path, fetchImpl) {
@@ -210,7 +228,7 @@ export async function verifyDeployedArtifact({
       const index = cursor;
       cursor += 1;
       const expected = entries[index];
-      const bytes = await fetchBytes(baseUrl, expected.path, fetchImpl);
+      const bytes = await fetchArtifactBytes(baseUrl, expected.path, fetchImpl);
       const digest = sha256(bytes);
       if (bytes.byteLength !== expected.bytes) {
         throw new Error(`Deployed artifact byte count mismatch for ${expected.path}: expected ${expected.bytes}, got ${bytes.byteLength}`);
