@@ -273,6 +273,8 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         host.querySelector('.bq-reader-passage')?.insertAdjacentHTML('afterbegin', '<h1 class="bq-reader-app-title">Bible Reader</h1>');
         const managedOffline = host.querySelector('[data-reader-offline-package]');
         if (managedOffline) host.querySelector('.bq-reader-settings')?.after(managedOffline);
+        const autoNextControl = host.querySelector('[data-reader-audio-auto-next]')?.closest('label');
+        if (autoNextControl) host.querySelector('.bq-reader-audio__more')?.before(autoNextControl);
         void renderOfflinePackageControls();
         void refreshAudioPackage();
         void applyFurigana(chapter,japanese);
