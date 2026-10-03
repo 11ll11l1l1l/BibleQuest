@@ -127,7 +127,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       </div><img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"></section>
       ${quest ? `<section class="bq-hero bq-v6-hero bq-home-journey" data-home-bible-quest>
         <p class="bq-eyebrow">CONTINUE YOUR JOURNEY</p>
-        <h2>${escapeHtml(quest.complete ? homeTx('home.quest.complete') : `${quest.next?.book || ''} ${quest.next?.chapter || ''}`)}</h2>
+        <h2>${escapeHtml(quest.complete ? homeTx('home.quest.complete') : `${quest.next?.book || ''} ${quest.next?.chapter || ''}`)} <small>${escapeHtml(homeTx('home.quest.title'))}</small></h2>
         <p>${escapeHtml(homeTx('home.quest.title'))} · ${escapeHtml(String(quest.percent))}% ${escapeHtml(homeTx('home.quest.completeLabel'))}</p>
         <div class="bq-progress-stats">
           <div><b>${quest.completedChapters}/${quest.totalChapters}</b><span>${escapeHtml(homeTx('home.quest.chapters'))}</span></div>
