@@ -6,11 +6,16 @@ const SHA_PATTERN = /^[0-9a-f]{40}$/i;
 const SHA256_PATTERN = /^[0-9a-f]{64}$/i;
 const HOST_SUFFIX = '.mybiblequest.pages.dev';
 const ROOT_HOST = 'mybiblequest.pages.dev';
-const MAX_FILES = 1000;
-const MAX_TOTAL_BYTES = 50 * 1024 * 1024;
-const DEFAULT_CONCURRENCY = 8;
+// The certified V6 build currently contains 1,017 files and about 123 MB,
+// primarily because the complete timing/offline manifests are release assets.
+// Keep explicit denial-of-service bounds while allowing the real exact build.
+const MAX_FILES = 2000;
+const MAX_TOTAL_BYTES = 256 * 1024 * 1024;
+const DEFAULT_CONCURRENCY = 2;
 const METADATA_ATTEMPTS = 18;
 const METADATA_RETRY_MS = 5000;
+const ARTIFACT_FETCH_ATTEMPTS = 5;
+const ARTIFACT_FETCH_RETRY_MS = 1000;
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const sleep = ms => new Promise(resolveSleep => setTimeout(resolveSleep, ms));
@@ -61,7 +66,10 @@ async function fetchBytes(baseUrl, path, fetchImpl) {
   if (target.origin !== baseUrl.origin) throw new Error(`Artifact target escaped deployment origin: ${safePath}`);
   const response = await fetchImpl(target, {
     cache: 'no-store',
-    redirect: 'error',
+    // Pages canonicalizes some .html routes to extensionless same-origin URLs.
+    // Follow that platform redirect, then enforce the existing same-origin
+    // check before accepting or hashing any response bytes.
+    redirect: 'follow',
     headers: { accept: 'application/octet-stream' },
     signal: AbortSignal.timeout(15000),
   });
@@ -70,6 +78,22 @@ async function fetchBytes(baseUrl, path, fetchImpl) {
     throw new Error(`Deployment artifact redirected off origin: ${safePath}`);
   }
   return Buffer.from(await response.arrayBuffer());
+}
+
+async function fetchArtifactBytes(baseUrl, path, fetchImpl) {
+  let lastError;
+  for (let attempt = 1; attempt <= ARTIFACT_FETCH_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchBytes(baseUrl, path, fetchImpl);
+    } catch (error) {
+      lastError = error;
+      if (attempt < ARTIFACT_FETCH_ATTEMPTS) await sleep(ARTIFACT_FETCH_RETRY_MS);
+    }
+  }
+  throw new Error(
+    `Deployment artifact fetch failed after ${ARTIFACT_FETCH_ATTEMPTS} attempts for ${path}: ${lastError?.message || lastError}`,
+    { cause: lastError },
+  );
 }
 
 async function fetchJson(baseUrl, path, fetchImpl) {
@@ -207,7 +231,7 @@ export async function verifyDeployedArtifact({
       const index = cursor;
       cursor += 1;
       const expected = entries[index];
-      const bytes = await fetchBytes(baseUrl, expected.path, fetchImpl);
+      const bytes = await fetchArtifactBytes(baseUrl, expected.path, fetchImpl);
       const digest = sha256(bytes);
       if (bytes.byteLength !== expected.bytes) {
         throw new Error(`Deployed artifact byte count mismatch for ${expected.path}: expected ${expected.bytes}, got ${bytes.byteLength}`);

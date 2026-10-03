@@ -16,6 +16,8 @@ test('artifact integrity manifest is deterministic and tied to the exact source 
     await mkdir(join(root, '_v6'));
     await writeFile(join(root, 'index.html'), '<main>BibleQuest</main>\n');
     await writeFile(join(root, '_v6', 'app.js'), 'console.log("bq");\n');
+    await writeFile(join(root, '_headers'), '/*\n  X-Test: true\n');
+    await writeFile(join(root, '_redirects'), '/* /index.html 200\n');
 
     const first = await writeArtifactIntegrityManifest(root, 'abc123');
     const firstBytes = await readFile(join(root, V6_ARTIFACT_INTEGRITY_FILE), 'utf8');
@@ -26,6 +28,7 @@ test('artifact integrity manifest is deterministic and tied to the exact source 
     assert.equal(first.fileCount, 2);
     assert.equal(verified.artifactSha256, first.artifactSha256);
     assert.deepEqual(verified.files.map((file) => file.path), ['_v6/app.js', 'index.html']);
+    assert.equal(verified.files.some((file) => file.path === '_headers' || file.path === '_redirects'), false);
 
     await writeArtifactIntegrityManifest(root, 'abc123');
     const secondBytes = await readFile(join(root, V6_ARTIFACT_INTEGRITY_FILE), 'utf8');

@@ -308,7 +308,7 @@ test('pinned 2026-10-02 live evidence proves backend health while preserving the
 });
 
 
-test('pinned production QA evidence proves the due path while keeping assigned transport open', () => {
+test('pinned production QA evidence proves both assigned and due delivery without claiming physical acceptance', () => {
   assert.equal(productionQaEvidence.evidenceClass, 'LIVE-PRODUCTION-QA');
   assert.equal(productionQaEvidence.qaProbe.idempotencyObserved, true);
   assert.equal(productionQaEvidence.qaProbe.physicalDeviceEvidenceClaimed, false);
@@ -318,27 +318,27 @@ test('pinned production QA evidence proves the due path while keeping assigned t
   assert.equal(result.schedulerDispatchReady, true);
   assert.equal(result.releaseBackendReady, true);
   assert.equal(result.liveAssignedNotificationObserved, true);
-  assert.equal(result.liveAssignedPushDelivered, false);
-  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveAssignedPushDelivered, true);
+  assert.equal(result.liveAssignedDeliveryObserved, true);
   assert.equal(result.liveDueDeliveryObserved, true);
-  assert.equal(result.rowReadyForPass, false);
-  assert.equal(result.counts.assignedNotifications24h, 1);
-  assert.equal(result.counts.assignedPushDelivered24h, 0);
+  assert.equal(result.rowReadyForPass, true);
+  assert.equal(result.counts.assignedNotifications24h, 2);
+  assert.equal(result.counts.assignedPushDelivered24h, 1);
   assert.equal(result.counts.dueNotifications24h, 1);
   assert.equal(result.counts.duePushDelivered24h, 1);
-  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
+  assert.deepEqual(result.blockers, []);
 });
 
-test('CLI exits 5 while the live assigned delivery blocker remains', () => {
+test('CLI exits 0 after the live assigned and due delivery requirements pass', () => {
   const run = spawnSync(process.execPath, [readinessScriptPath, productionQaEvidencePath], {
     encoding: 'utf8',
   });
-  assert.equal(run.status, 5);
+  assert.equal(run.status, 0);
   assert.equal(run.stderr, '');
   const result = JSON.parse(run.stdout);
   assert.equal(result.releaseBackendReady, true);
-  assert.equal(result.liveAssignedDeliveryObserved, false);
+  assert.equal(result.liveAssignedDeliveryObserved, true);
   assert.equal(result.liveDueDeliveryObserved, true);
-  assert.equal(result.rowReadyForPass, false);
-  assert.deepEqual(result.blockers, ['live:assignedPushDelivered']);
+  assert.equal(result.rowReadyForPass, true);
+  assert.deepEqual(result.blockers, []);
 });
