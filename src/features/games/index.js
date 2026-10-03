@@ -22,7 +22,14 @@ export function gamesPage({games,onHome}){
       const memoryWidth=()=>Math.max(1,Math.round(root.getBoundingClientRect().width||window.innerWidth||390));
       const render=state=>{
         if(disposed)return;
-        if(state.phase==='launcher'){host.innerHTML=renderLauncherView({games,escapeHtml});return;}
+        if(state.phase==='launcher'){
+          host.innerHTML=renderLauncherView({games,escapeHtml});
+          const heading=host.querySelector('.bq-v6-page-header');
+          heading?.classList.add('bq-games-head');
+          const title=heading?.querySelector('h1');
+          if(title)title.textContent='Bible games for every kind of practice';
+          return;
+        }
         if(state.phase==='memory'){host.innerHTML=renderMemoryView({state,escapeHtml});return;}
         if(state.phase==='memory-complete'){host.innerHTML=renderMemoryCompleteView(state);return;}
         if(state.phase==='same-room-setup'){host.innerHTML=renderSameRoomSetupView();return;}

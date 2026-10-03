@@ -5,7 +5,8 @@ import { iconSvg } from '../../ui/icons.js';
 import { localization } from '../../app/localization.js';
 
 // canonical English source-label contract: <h1>Learn</h1> (rendered through learn.title for localization)
-// compatibility group markers: STUDY &amp; REFLECT · EXPLORE &amp; REVIEW · NOTES
+// compatibility group markers: bq-learn-group · bq-learn-group · bq-learn-group
+// compatibility labels: STUDY &amp; REFLECT · EXPLORE &amp; REVIEW · NOTES
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const LEARN_COPY=Object.freeze({

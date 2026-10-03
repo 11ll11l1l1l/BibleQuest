@@ -121,11 +121,11 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
   return {
     title: tx('nav.home'),
     html: `
-      <header class="bq-home-welcome">
+      <section class="bq-hero"><div class="bq-home-welcome">
         <div><p>${escapeHtml(contextualDate)}</p><h1>${escapeHtml(tx('nav.home'))}</h1></div>
         <span class="bq-home-welcome__mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
-      </header>
-      ${quest ? `<section class="bq-v6-hero bq-home-journey" data-home-bible-quest>
+      </div><img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"></section>
+      ${quest ? `<section class="bq-hero bq-v6-hero bq-home-journey" data-home-bible-quest>
         <p class="bq-eyebrow">CONTINUE YOUR JOURNEY</p>
         <h2>${escapeHtml(quest.complete ? homeTx('home.quest.complete') : `${quest.next?.book || ''} ${quest.next?.chapter || ''}`)}</h2>
         <p>${escapeHtml(homeTx('home.quest.title'))} · ${escapeHtml(String(quest.percent))}% ${escapeHtml(homeTx('home.quest.completeLabel'))}</p>
@@ -139,7 +139,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           : `<div class="bq-daily-actions"><button type="button" class="bq-primary-button" data-open-bible-quest-continue>${escapeHtml(homeTx('home.quest.continue'))}</button><button type="button" class="bq-secondary-button" data-open-bible-quest aria-label="${escapeHtml(homeTx('home.quest.view'))}">•••</button></div>`}
       </section>` : ''}
       <section class="bq-v6-section bq-home-today"><div class="bq-v6-section-header"><h2>Today</h2></div><div class="bq-home-today__items">
-      ${daily ? `<button type="button" class="bq-home-today-row" data-open-daily><span class="bq-home-today-row__icon">${iconSvg('home', { size: 20 })}</span><span><b>${escapeHtml(dailyPassageTitle(daily.passage,locale))}</b><small>${escapeHtml(reference)} · ${escapeHtml(tx('home.today.open'))}</small></span><span aria-hidden="true">›</span></button>` : ''}
+      ${daily ? `<button type="button" class="bq-home-today-row" data-home-daily data-open-daily><span class="bq-home-today-row__icon">${iconSvg('home', { size: 20 })}</span><span><b>${escapeHtml(dailyPassageTitle(daily.passage,locale))}</b><small>${escapeHtml(reference)} · ${escapeHtml(tx('home.today.open'))}</small></span><span aria-hidden="true">›</span></button>` : ''}
       <button type="button" class="bq-home-today-row" data-open-congregation-assignments><span class="bq-home-today-row__icon">${iconSvg('assignments', { size: 20 })}</span><span><b>${escapeHtml(leaderAnchor?.title || tx('nav.assignments'))}</b><small>${escapeHtml(leaderAnchor ? dueLabelForHome(leaderAnchor, locale) : tx('home.congregation.joinCaption'))}</small></span><span aria-hidden="true">›</span></button>
       <button type="button" class="bq-home-today-row" data-open-home-next-event><span class="bq-home-today-row__icon">${iconSvg('calendar', { size: 20 })}</span><span><b>${escapeHtml(tx('nav.calendar'))}</b><small data-home-next-event-detail>${escapeHtml(nextEventDetail)}</small></span><span aria-hidden="true">›</span></button>
       </div></section>
