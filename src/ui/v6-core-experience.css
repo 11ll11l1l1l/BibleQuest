@@ -101,6 +101,7 @@
 .bq-reader-controls { order: 2; display: grid; gap: var(--bq-space-3); padding: 0 2px; border: 0; background: transparent; box-shadow: none; }
 .bq-scripture-panel .bq-reader-title { margin-bottom: var(--bq-space-6); }
 .bq-scripture-panel [data-reader-verse-text] { font-family: var(--bq-font-editorial); font-size: clamp(1.05rem, 4.2vw, 1.22rem); line-height: 1.78; }
+@media (max-width: 430px) { .bq-reader-layout .bq-scripture-panel { padding: 12px; } }
 .bq-reader-toolbar { display: flex; align-items: center; gap: var(--bq-space-2); overflow-x: auto; }
 .bq-reader-toolbar > button,
 .bq-reader-toolbar form button { min-height: var(--bq-tap-target); }
