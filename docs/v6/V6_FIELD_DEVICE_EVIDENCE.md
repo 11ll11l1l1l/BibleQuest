@@ -2,7 +2,7 @@
 
 Status: PENDING
 Evidence class: PHYSICAL-DEVICE
-Candidate SHA: PENDING
+Candidate SHA: 7997d60e6069aa406ec005c32e33e46fee39bc12
 Evidence date (JST): PENDING
 Tester: PENDING
 

@@ -1,0 +1,77 @@
+{
+  "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "productionStatus": "NOT_PROMOTED",
+  "physicalStatus": "PENDING",
+  "workflows": [
+    {
+      "name": "V6 PR Serialization Guard",
+      "runId": 37127216062,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127216062"
+    },
+    {
+      "name": "V6 Dependency Security",
+      "runId": 37127215799,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215799"
+    },
+    {
+      "name": "V6 V4 Rollback Reference Guard",
+      "runId": 37127215821,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215821"
+    },
+    {
+      "name": "V6 Client Artifact Security",
+      "runId": 37127215812,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215812"
+    },
+    {
+      "name": "V6 Cloudflare Exact-SHA Preview Verification",
+      "runId": 37127215782,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215782"
+    },
+    {
+      "name": "V6 Phase 1 Build Gate",
+      "runId": 37127215695,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215695"
+    },
+    {
+      "name": "V6 Database CI",
+      "runId": 37127215819,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215819"
+    },
+    {
+      "name": "V6 Deployed Artifact Verification",
+      "runId": 37127215778,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215778"
+    },
+    {
+      "name": "BibleQuest inherited regression",
+      "runId": 37127215716,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215716"
+    },
+    {
+      "name": "V6 RC Exact-SHA Automated Gate",
+      "runId": 37127215783,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215783"
+    }
+  ]
+}

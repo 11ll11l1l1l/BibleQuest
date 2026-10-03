@@ -9,6 +9,18 @@ Current production product parity baseline: `7420bbba789ce21e02ac667f98558681e71
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
 Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084a`
 
+## Final release checkpoint — 2026-10-03 JST
+
+- Frozen release candidate: `7997d60e6069aa406ec005c32e33e46fee39bc12`; source integration base `c6da68b264977048ebebfed74dd34ff86f16060b`.
+- All ten existing exact-candidate workflows passed. Automated RC run `37127215783`; deployed-artifact certificate run `37127215778`; Cloudflare preview verification run `37127215782`.
+- Immutable preview: https://c5053016.mybiblequest.pages.dev. Durable certificate: `docs/v6/evidence/RC_20261003/v6-rc-certification.json`.
+- Current authoritative inventory: **202 PASS / 9 OPEN / 211 total**. The later historical checkpoints below are superseded by this checkpoint.
+- Machine-solvable RC preparation is complete. Genuine same-candidate physical observations remain required: installed-PWA offline, manual accessibility, background/lock-screen audio, physical push P1/P2 and their aggregate field records. The existing due-path backend evidence is retained; do not repeat P3 solely to duplicate it.
+- Production remains V5. Production promotion and essential post-production smoke remain OPEN. Production release is authorized by the owner, but may occur only after required physical evidence is accepted.
+- V5 rollback preserved: `rollback/v5-pre-v6-production-20261003` at `1cab2110cd15285e9ee388f7889b9fd284823274`; existing V4 rollback remains intact.
+- #1121 was rejected for real mobile viewport expansion. #1122 is merged with all applicable gates green; the final candidate includes its desktop-only scrollbar fix.
+- This evidence-only checkpoint does not replace the frozen candidate SHA or authorize releasing a newer status/documentation build.
+
 ## Authority
 
 This file is the authoritative source for current BibleQuest V6 phase, scope, blockers and next work. Repository branch/commit/CI/live-backend evidence overrides stale chat context. Detailed execution is in `DEVELOPMENT_PLAN_V6.md`; acceptance inventory is in `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`; Phase-0 evidence is in `docs/v6/V6_PHASE0_BOOTSTRAP.md`.
