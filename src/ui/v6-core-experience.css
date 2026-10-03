@@ -58,6 +58,7 @@
 .bq-home-today-row b,
 .bq-home-today-row small { display: block; }
 .bq-home-today-row h2 { margin: 0; font: 750 var(--bq-type-item)/1.25 var(--bq-font-interface); }
+.bq-home-today-row p { margin: 2px 0 0; color: var(--bq-text-muted); font-size: var(--bq-type-meta); }
 .bq-home-today-row small { overflow: hidden; color: var(--bq-text-muted); text-overflow: ellipsis; white-space: nowrap; }
 
 /* Existing lower-priority Home features stay reachable but stop competing above the fold. */
