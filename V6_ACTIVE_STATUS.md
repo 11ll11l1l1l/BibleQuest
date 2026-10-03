@@ -1,6 +1,6 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-10-02 JST
+Updated: 2026-10-04 JST
 Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
 V5.0 production ancestry baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
@@ -9,6 +9,15 @@ Current production product parity baseline: `7420bbba789ce21e02ac667f98558681e71
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
 Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084a`
 
+## Production release — 2026-10-04 JST
+
+- Released exact certified SHA: `7997d60e6069aa406ec005c32e33e46fee39bc12`; `main` points to this SHA and https://mybiblequest.pages.dev serves its certified artifact.
+- Production deployed-byte verification PASS: 1,015 files / 122,895,955 bytes; artifact SHA256 `0d927196b403c595c11aba811daf725ba1d64575e3e44a35a10d17c8874853ad`; integrity SHA256 `c329b1d32c8f60254c0d4ebeca679cd2cfe00da906d032aec7d74e88004d2faf`.
+- Existing machine production smoke PASS (HTML, exact SHA, manifest, route shortcuts, offline-cache contract, push-worker contract). Live guest browser routes and protected-route denial verified. Authenticated production session observation was not performed.
+- Acceptance: **203 PASS / 8 OPEN / 211**. Physical/manual rows and physical-dependent post-production aggregate remain OPEN/OWNER-WAIVED, never PASS.
+- V5 backup verified: `rollback/v5-pre-v6-production-20261003` → `1cab2110cd15285e9ee388f7889b9fd284823274`. Owner explicitly authorized replacing main from this backed-up state.
+- Durable evidence: `docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json`.
+
 ## Owner release decision — 2026-10-04 JST
 
 - The owner explicitly instructed: "Skip rhe manual operatir test for now. Continue release".
@@ -16,7 +25,7 @@ Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084
 - Automated certification remains SUCCESS on the same SHA. Production promotion and essential machine smoke remain mandatory and authorized.
 - Decision record: `docs/v6/evidence/RC_20261003/OWNER_MANUAL_TEST_WAIVER_20261004.json`.
 - Inventory stays **202 PASS / 9 unchecked**, including seven owner-waived physical-dependent rows and two outstanding production-operation rows. The physical component of post-production smoke is also deferred; it must not be claimed as tested.
-- Production is not yet promoted. Preserve `main` and V5 rollback history; use the exact certified Cloudflare artifact for production.
+- Production has now been promoted using the owner's subsequent main-replacement authorization; main is pinned to the certified SHA and V5 history is preserved on the rollback branch.
 
 ## Final release checkpoint — 2026-10-03 JST
 

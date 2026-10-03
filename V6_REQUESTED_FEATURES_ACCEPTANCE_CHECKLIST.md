@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-10-03 JST
+Updated: 2026-10-04 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -311,7 +311,7 @@ Production backend activation evidence (2026-10-02 JST; merged PR #1029): the ad
 - [x] One exact V6 RC SHA passes all applicable automated gates.
 - [ ] Required field/device evidence is attached to exact candidate.
 - [x] No WAIVED item is represented as PASS.
-- [ ] Production promotion uses the exact certified candidate.
+- [x] Production promotion uses the exact certified candidate.
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [x] V4 rollback reference remains available through V6 production acceptance.
 
@@ -340,3 +340,6 @@ Final exact-RC automated/deployment checkpoint (2026-10-03 JST): candidate `7997
 
 
 Owner waiver (2026-10-04 JST): the owner explicitly deferred manual operator/device testing and authorized continuation of the release. The seven physical-dependent unchecked rows are OWNER-WAIVED, never PASS. Machine certification, exact-artifact promotion and production machine smoke remain mandatory. Decision: `docs/v6/evidence/RC_20261003/OWNER_MANUAL_TEST_WAIVER_20261004.json`. Inventory remains **202 PASS / 9 unchecked**, with physical portions of post-production smoke deferred.
+
+
+Production release (2026-10-04 JST): owner explicitly authorized replacing main after preserving V5. Main and production now serve frozen candidate `7997d60e6069aa406ec005c32e33e46fee39bc12`. Existing exact-candidate verifier passed all 1,015 production files / 122,895,955 bytes with the same certified artifact and integrity digests. Existing live smoke passed six route/PWA/offline/push contract checks; live browser confirmed Home/Reader/account entry and signed-out assignment/notification/privileged-route denial. Evidence: `docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json`. Acceptance is **203 PASS / 8 OPEN / 211 total**. The post-production aggregate remains OPEN because its typed policy requires physical evidence; no waiver was converted to PASS. Authenticated production session observation was not performed. V5 rollback remains `rollback/v5-pre-v6-production-20261003` at `1cab2110cd15285e9ee388f7889b9fd284823274`.

@@ -22,7 +22,7 @@
   ],
   "rows": [
     {
-      "row": "V4\u2192V6 route/feature parity matrix is complete.",
+      "row": "V4→V6 route/feature parity matrix is complete.",
       "options": [
         {
           "id": "automated-route-parity",
@@ -500,7 +500,19 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+        "classes": [
+          "DEPLOYED"
+        ],
+        "references": [
+          {
+            "kind": "deployment-record",
+            "name": "Exact certified SHA production promotion and deployed-byte verification",
+            "id": "docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json"
+          }
+        ]
+      }
     },
     {
       "row": "Post-production exact-SHA + route + PWA + offline + push smoke passes.",
