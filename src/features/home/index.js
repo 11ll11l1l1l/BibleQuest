@@ -122,7 +122,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
     title: tx('nav.home'),
     html: `
       <section class="bq-hero"><div class="bq-home-welcome">
-        <div><p>${escapeHtml(contextualDate)}</p><h1>${escapeHtml(tx('nav.home'))}</h1></div>
+        <div><p>${escapeHtml(contextualDate)}</p><h1>BibleQuest</h1></div>
         <span class="bq-home-welcome__mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
       </div><img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"></section>
       ${quest ? `<section class="bq-hero bq-v6-hero bq-home-journey" data-home-bible-quest>
