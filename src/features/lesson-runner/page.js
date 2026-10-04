@@ -1,11 +1,18 @@
 import { localization } from '../../app/localization.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
-const COPY = { en: { title: 'Lesson', back: 'Back', previous: 'Previous', next: 'Save and continue', previewNext: 'Next step', complete: 'Complete lesson', reload: 'Reload lesson', loading: 'Loading lesson…', saving: 'Saving…', completed: 'Lesson completed', readonly: 'Mentor preview — progress is read only.', scripture: 'Open Scripture', unavailable: 'No lesson text is available for this step.', idle: 'Reload this lesson after selecting your account and congregation.' } };
+const COPY = { en: { title: 'Lesson', back: 'Back', previous: 'Previous', next: 'Save and continue', previewNext: 'Next step', complete: 'Complete lesson', reload: 'Reload lesson', loading: 'Loading lesson…', saving: 'Saving…', completed: 'Lesson completed', readonly: 'Mentor preview — progress is read only.', scripture: 'Open Scripture', unavailable: 'No lesson text is available for this step.', idle: 'Reload this lesson after selecting your account and congregation.', response: 'Your private response', responseHint: 'Private to you unless you explicitly share it with your mentor.', responseLoading: 'Restoring your saved response…' } };
 function stepText(content) {
   if (typeof content === 'string') return content;
   if (typeof content?.text === 'string') return content.text;
   if (typeof content?.body === 'string') return content.body;
   return '';
+}
+function responseEditor(state, step, t) {
+  if (!state.writable || step.type === 'scripture') return '';
+  const value = state.responseDrafts?.[step.id] ?? '';
+  return `<label for="lesson-response-${escape(step.id)}">${t('response')}</label>
+    <textarea id="lesson-response-${escape(step.id)}" data-lesson-response="${escape(step.id)}" rows="5">${escape(value)}</textarea>
+    <p class="bq-help">${t('responseHint')}</p>`;
 }
 export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeContext }) {
   if (typeof subscribeContext !== 'function') throw new TypeError('Lesson page requires account/congregation invalidation wiring.');
@@ -22,10 +29,12 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeC
           host.innerHTML = `<p role="status">${state.error ? escape(state.error) : t(state.status === 'loading' ? 'loading' : 'idle')}</p><button type="button" data-lesson-reload ${state.status === 'loading' ? 'disabled' : ''}>${t('reload')}</button>`;
           return;
         }
-        const step = state.lesson.steps[state.stepIndex], busy = state.status === 'saving';
+        const step = state.lesson.steps[state.stepIndex], busy = state.status === 'saving' || state.status === 'saving-response';
+        const responseStatus = state.responseError ? escape(state.responseError) : state.responseStatus === 'loading' ? t('responseLoading') : '';
         host.innerHTML = `<h1 tabindex="-1" data-lesson-heading>${escape(step.type)}</h1><p>${state.stepIndex + 1} / ${state.lesson.steps.length}</p>
           <p>${escape(stepText(step.content) || localization.t('unavailable', { dictionaries: COPY })).replace(/\n/g, '<br>')}</p>
-          ${state.writable ? '' : `<p>${t('readonly')}</p>`}<p role="status">${state.error ? escape(state.error) : busy ? t('saving') : state.status === 'completed' ? t('completed') : ''}</p>
+          ${responseEditor(state, step, t)}
+          ${state.writable ? '' : `<p>${t('readonly')}</p>`}<p role="status">${state.error ? escape(state.error) : busy ? t('saving') : state.status === 'completed' ? t('completed') : responseStatus}</p>
           ${(step.scriptureRefs ?? []).map((ref, index) => `<button type="button" data-lesson-scripture="${index}">${t('scripture')} ${escape(typeof ref === 'string' ? ref : ref.label || `${ref.book || ''} ${ref.chapter || ''}`)}</button>`).join('')}
           <button type="button" data-lesson-previous ${busy || state.stepIndex === 0 ? 'disabled' : ''}>${t('previous')}</button>
           ${state.stepIndex < state.lesson.steps.length - 1 ? `<button type="button" data-lesson-next ${busy ? 'disabled' : ''}>${t(state.writable && state.progress?.status !== 'completed' ? 'next' : 'previewNext')}</button>` : state.writable && state.progress?.status !== 'completed' ? `<button type="button" data-lesson-complete ${busy ? 'disabled' : ''}>${t('complete')}</button>` : ''}`;
@@ -45,11 +54,17 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeC
           : target.hasAttribute('data-lesson-next') ? runner.move(1) : target.hasAttribute('data-lesson-previous') ? runner.move(-1) : null;
         if (action) void action.then(() => { if (!disposed) host.querySelector('[data-lesson-heading]')?.focus(); });
       };
+      const input = event => {
+        const target = event.target.closest?.('[data-lesson-response]');
+        if (!target || disposed || typeof runner.updateResponse !== 'function') return;
+        runner.updateResponse(target.value, target.getAttribute('data-lesson-response'));
+      };
       page.addEventListener('click', click);
+      page.addEventListener('input', input);
       const unsubscribe = runner.subscribe(render);
       const unsubscribeContext = subscribeContext(() => runner.invalidate());
       render(runner.getState()); void runner.load();
-      return () => { disposed = true; unsubscribe(); unsubscribeContext(); page.removeEventListener('click', click); runner.dispose(); };
+      return () => { disposed = true; unsubscribe(); unsubscribeContext(); page.removeEventListener('click', click); page.removeEventListener('input', input); runner.dispose(); };
     },
   };
 }
