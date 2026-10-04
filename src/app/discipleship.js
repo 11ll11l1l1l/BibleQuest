@@ -159,6 +159,46 @@ function assertOperationalProgress(progress, pair, requestedRevisionId) {
   return Array.isArray(progress) ? Object.freeze(safeRows) : safeRows[0];
 }
 
+function privateResponseSnapshot(value) {
+  if (Array.isArray(value)) return Object.freeze(value.map(privateResponseSnapshot));
+  if (value && typeof value === 'object') {
+    return Object.freeze(Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, privateResponseSnapshot(entry)])));
+  }
+  return value;
+}
+
+function normalizePrivateResponses(rows, pair, revisionId) {
+  if (!Array.isArray(rows)) fail('BQ_DISCIPLESHIP_RESPONSE_INVALID', 'Private lesson responses were unavailable.');
+  const ids = new Set();
+  const steps = new Set();
+  return Object.freeze(rows.map(row => {
+    const id = identifier(row?.id);
+    const stepId = identifier(row?.stepId ?? row?.lesson_step_id);
+    const learnerId = identifier(row?.learnerId ?? row?.learner_id);
+    const sourceRevision = identifier(row?.lessonRevisionId ?? row?.lesson_revision_id);
+    const pairId = identifier(row?.pairId ?? row?.pair_id);
+    const congregationId = identifier(row?.congregationId ?? row?.congregation_id);
+    if (learnerId !== pair.menteeId || sourceRevision !== revisionId
+        || (pairId && pairId !== pair.id) || (congregationId && congregationId !== pair.congregationId)) {
+      fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'Private lesson responses were outside the requested learner or revision.');
+    }
+    if (!id || !stepId || !Object.hasOwn(row, 'response') || row.response === undefined
+        || ids.has(id) || steps.has(stepId)) {
+      fail('BQ_DISCIPLESHIP_RESPONSE_INVALID', 'Private lesson responses were incomplete or duplicated.');
+    }
+    const audienceUserIds = row.audienceUserIds;
+    if (!Array.isArray(audienceUserIds) || audienceUserIds.length > 1
+        || audienceUserIds.some(recipient => recipient !== pair.mentorId)) {
+      fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'Private lesson response audience was outside the paired mentor.');
+    }
+    ids.add(id);
+    steps.add(stepId);
+    return Object.freeze({ id, stepId, lessonRevisionId: revisionId, visibility: audienceUserIds.length ? 'shared' : 'owner',
+      audienceUserIds: Object.freeze([...audienceUserIds]),
+      response: privateResponseSnapshot(row.response), updatedAt: row.updatedAt ?? row.updated_at ?? null });
+  }));
+}
+
 export function createDiscipleshipService({ repository, session, membership }) {
   if (!repository || !session?.getState || !membership?.getActive) {
     throw new Error('Discipleship service requires repository, session and congregation membership boundaries.');
@@ -248,6 +288,18 @@ export function createDiscipleshipService({ repository, session, membership }) {
     });
   }
 
+  async function loadPrivateResponses(pairId, lessonRevisionId) {
+    return inContext(async context => {
+      const pair = await resolvePair(pairId, context);
+      if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee can read personal lesson responses.');
+      const revisionId = identifier(lessonRevisionId);
+      if (!revisionId) fail('BQ_DISCIPLESHIP_LESSON_REQUIRED', 'Choose a published lesson revision first.');
+      const responses = await repository.loadPrivateResponses(revisionId, pair, context);
+      assertCurrent(context);
+      return normalizePrivateResponses(responses, pair, revisionId);
+    });
+  }
+
   async function saveProgress(pairId, lessonRevisionId, progress) {
     return inContext(async context => {
       const pair = await resolvePair(pairId, context);
@@ -298,6 +350,7 @@ export function createDiscipleshipService({ repository, session, membership }) {
     loadCurriculum,
     loadLesson,
     loadOperationalProgress,
+    loadPrivateResponses,
     saveProgress,
     savePrivateResponse,
     shareResponse,

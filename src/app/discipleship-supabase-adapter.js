@@ -98,6 +98,20 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       const selected = await assignment(client, pair, revisionId);
       return rows(client.from('v7_learner_progress').select(PROGRESS_COLUMNS).eq('assignment_id', selected.id).eq('learner_id', pair.menteeId).eq('lesson_revision_id', revisionId));
     },
+    async loadPrivateResponses(revisionId, pair, context) {
+      scope(pair, context, true);
+      const client = await db(context);
+      const selected = await assignment(client, pair, revisionId);
+      assertContext(context);
+      const result = await rows(client.from('v7_lesson_responses')
+        .select('id,assignment_id,learner_id,lesson_revision_id,lesson_step_id,response,updated_at,shares:v7_response_shares!v7_response_shares_response_id_fkey(recipient_id,share_state)')
+        .eq('assignment_id', selected.id).eq('learner_id', context.userId)
+        .eq('lesson_revision_id', required(revisionId)).order('lesson_step_id'));
+      assertContext(context);
+      return result.map(row => ({ ...row, pairId: pair.id, congregationId: pair.congregationId,
+        audienceUserIds: (row.shares ?? []).filter(share => share.share_state === 'shared').map(share => share.recipient_id),
+      }));
+    },
     async saveProgress(revisionId, progress, pair, context) {
       scope(pair, context, true);
       const client = await db(context);

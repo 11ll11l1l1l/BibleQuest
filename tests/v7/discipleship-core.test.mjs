@@ -140,3 +140,65 @@ test('drops a read result when the active congregation changes mid-request', asy
   complete([{ id: 'pair-1', congregationId: 'cong-1', mentorId: 'mentor-1', menteeId: 'mentee-1', state: 'active' }]);
   await assert.rejects(pending, { code: 'BQ_DISCIPLESHIP_CONTEXT_STALE' });
 });
+
+function privateReadFixture({ userId = 'mentee-1', rows, loader } = {}) {
+  const active = { congregationId: 'cong-1', userId };
+  const repository = {
+    async getPair() { return { id: 'pair-1', congregationId: 'cong-1', mentorId: 'mentor-1', menteeId: 'mentee-1', state: 'active' }; },
+    loadPrivateResponses: loader ?? (async () => rows),
+  };
+  const service = createDiscipleshipService({ repository,
+    session: { getState: () => ({ authenticated: true, user: { id: userId } }) },
+    membership: { getActive: () => active } });
+  return { active, service };
+}
+const privateRow = patch => ({ id: 'response-1', learner_id: 'mentee-1', lesson_revision_id: 'r1',
+  lesson_step_id: 'step-reflect', audienceUserIds: [], response: { text: 'Synthetic private fixture', action: { done: false } }, ...patch });
+
+test('owner-only resume reads return immutable private data without operational/audit extras', async () => {
+  const raw = privateRow({ audit: 'not projected' });
+  const { service } = privateReadFixture({ rows: [raw] });
+  const [response] = await service.loadPrivateResponses('pair-1', 'r1');
+  assert.equal(response.visibility, 'owner');
+  assert.equal(response.stepId, 'step-reflect');
+  assert.equal(Object.hasOwn(response, 'audit'), false);
+  assert.equal(Object.isFrozen(response.response.action), true);
+  raw.response.action.done = true;
+  assert.equal(response.response.action.done, false);
+  assert.deepEqual(await privateReadFixture({ rows: [] }).service.loadPrivateResponses('pair-1', 'r1'), []);
+});
+
+test('mentor access is denied before opening the private-response reader', async () => {
+  let read = false;
+  const { service } = privateReadFixture({ userId: 'mentor-1', loader: async () => { read = true; return []; } });
+  await assert.rejects(service.loadPrivateResponses('pair-1', 'r1'), { code: 'BQ_DISCIPLESHIP_RESPONSE_DENIED' });
+  assert.equal(read, false);
+});
+
+test('private resume rejects foreign learners/revisions and duplicate response steps', async () => {
+  for (const rows of [[privateRow({ learner_id: 'other' })], [privateRow({ lesson_revision_id: 'old' })],
+    [privateRow({ pairId: 'other-pair' })], [privateRow({ congregationId: 'other-church' })]]) {
+    await assert.rejects(privateReadFixture({ rows }).service.loadPrivateResponses('pair-1', 'r1'),
+      { code: 'BQ_DISCIPLESHIP_RESPONSE_SCOPE' });
+  }
+  await assert.rejects(privateReadFixture({ rows: [privateRow(), privateRow({ id: 'response-2' })] }).service.loadPrivateResponses('pair-1', 'r1'),
+    { code: 'BQ_DISCIPLESHIP_RESPONSE_INVALID' });
+});
+
+test('private resume drops late responses after an account/congregation change', async () => {
+  let complete;
+  const f = privateReadFixture({ loader: () => new Promise(resolve => { complete = resolve; }) });
+  const pending = f.service.loadPrivateResponses('pair-1', 'r1');
+  await new Promise(resolve => setImmediate(resolve));
+  f.active.congregationId = 'cong-2';
+  complete([privateRow()]);
+  await assert.rejects(pending, { code: 'BQ_DISCIPLESHIP_CONTEXT_STALE' });
+});
+
+test('owner resume reports existing sharing rather than relabeling shared reflection as private', async () => {
+  const [response] = await privateReadFixture({ rows: [privateRow({ audienceUserIds: ['mentor-1'] })] }).service.loadPrivateResponses('pair-1', 'r1');
+  assert.equal(response.visibility, 'shared');
+  assert.deepEqual(response.audienceUserIds, ['mentor-1']);
+  await assert.rejects(privateReadFixture({ rows: [privateRow({ audienceUserIds: ['other-user'] })] }).service.loadPrivateResponses('pair-1', 'r1'),
+    { code: 'BQ_DISCIPLESHIP_RESPONSE_SCOPE' });
+});
