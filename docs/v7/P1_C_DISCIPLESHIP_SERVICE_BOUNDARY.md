@@ -28,17 +28,19 @@ The shared session must expose `getState()`. The existing congregation-membershi
 | `savePrivateResponse({ lessonRevisionId, stepId, response, visibility: 'owner', pair, context })` | Persist one mentee response as private by default. Never copy its body into operational progress or audit payloads. |
 | `setResponseShare({ lessonRevisionId, stepId, responseId, audienceUserIds, pair, context })` | Set item-level audience only after the UI names the recipient and the mentee confirms. This service limits the audience to the paired mentor. |
 
-The adapter maps accepted conceptual contracts to the physical schema selected by Lane A. The service does not assume tables or bypass database policy.
+The adapter maps accepted conceptual contracts to the physical schema selected by Lane A. The normalized hierarchy returned by `loadCurriculum` is an ordered array of tracks, each with a revision, title, position, ordered modules, and ordered lessons. Modules and lessons also carry stable IDs, revision IDs, titles, and positions. The service rejects duplicate IDs/positions, missing version/order fields, and child rows that name a different parent or scope. The service does not assume tables or bypass database policy.
 
 ## Existing V6 boundaries
 
 - **Assignments:** V6 assignments retain assignment lifecycle and completion authority. This service accepts a pair and published revision; it does not create a parallel assignment system.
 - **Reader:** Scripture steps retain canonical Scripture references. The existing Reader service owns passage loading and reading progress. The current Reader API has no generic `openReference` method, so route integration must use its actual book/chapter boundary and preserve return context.
-- **Communications:** pair messages remain in the existing V6 one-to-one communication capability, scoped to an active pair. No thread engine or group messaging is added here.
-- **Routes/shell:** the service can be injected into the approved `one-to-one`, pair, track, module, lesson, and thread destinations. Global route registration and shell links remain with the shared router integration owner.
+- **Communications:** Lane A's P1 inventory found no V6 pair-private messaging capability: congregation broadcasts and group/session messages do not meet this boundary. This is an unresolved mismatch with the frozen P0-A/P0-C contract. Lane C does not bind pair messages to those broader systems or add a transport; resolve the contract through Lane A's integration coordination before implementing pair messaging.
+- **Routes/shell:** the service can be injected into the approved `one-to-one`, pair, track, module, and lesson destinations. The approved thread route remains unbound while the pair-private messaging contract gap is unresolved. Global route registration and shell links remain with the shared router integration owner.
+
+Operational progress is projected to pair/learner/revision IDs, current step ID, status, and lifecycle timestamps. Reflection, discussion, prayer, and action response bodies are read or written through a separate owner-private response interface; they are never included in the progress projection.
 
 ## Local verification
 
 Focused checks: `node --trace-uncaught tests/v7/discipleship-core.test.mjs`.
 
-These checks cover missing session/scope, participant and congregation denial, inactive pairing, lesson sequence/revision binding, private progress projection, mentee-only writes and stale congregation results. They do not certify a backend adapter, RLS policy, browser route or physical device path.
+These checks cover missing session/scope, participant and congregation denial, inactive pairing, lesson sequence/revision binding, versioned hierarchy normalization, progress revision binding/private projection, mentee-only writes and stale congregation results. They do not certify a backend adapter, RLS policy, browser route or physical device path.
