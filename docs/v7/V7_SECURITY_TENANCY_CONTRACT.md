@@ -3,7 +3,7 @@
 Status: **P0-C contract for integration**
 Owner: **Lane C — Security, privacy and tenancy**
 Baseline: current V7 scope in `DEVELOPMENT_PLAN_V7.md`
-Applies to: Library (Books, Devotionals, Past Teachings) and structured ONE 2 ONE discipleship
+Applies to: Library (Books, Devotionals, Past Teachings), structured ONE 2 ONE discipleship, and pair-scoped communication through existing V6 capability
 
 This contract defines authorization and privacy behavior expected in V7. It does not claim that runtime policies or tests are already implemented. V6 server authorization, RLS, session handling and congregation isolation remain authoritative until a reviewed V7 change proves otherwise.
 
@@ -26,7 +26,7 @@ Every protected V7 record has one explicit authorization owner and visibility cl
 |---|---|---|
 | Published Library catalog | Published Books, Devotionals and Past Teachings | Read according to publication and licensing state. Only an explicitly authorized content owner may create, edit, publish or archive an item. |
 | Congregation content | Past Teachings or resources explicitly owned by a congregation | Requires current membership and the content-specific capability in that congregation. An ID, URL or membership in another congregation grants no access. |
-| ONE 2 ONE relationship | Pair, assigned track/module/lesson, operational progress | Requires the active, accepted relationship or the program capability required for that operation, within its authorized congregation. |
+| ONE 2 ONE relationship | Pair, assigned track/module/lesson, operational progress, and a pair-scoped thread/messages | Pair data and messages require the active, accepted relationship and are visible only to its two participants. Program operations also require the relevant capability and congregation scope. |
 | Personal learner data | Private reflection, prayer/action response, draft or personal note | Owner-only unless the owner explicitly shares one item with a named recipient and the audience is shown before submission. |
 | Public entry point | Published public content and approved onboarding routes | Public access only to intentionally public material. A deep link to protected content does not make it public. |
 
@@ -37,8 +37,8 @@ A record with no congregation scope is global only when its data contract explic
 | Actor | Library | ONE 2 ONE |
 |---|---|---|
 | Guest | Read published public items only | No access to protected pair, assignment or learner data. A protected deep link waits for authentication and then performs authorization. |
-| Member / Mentee | Read items available in the active congregation; manage own personal data | See own active program, assigned lessons and progress. Private responses remain private unless individually shared. |
-| Mentor | Same Library access as their congregation membership | While a pair is active and accepted, see assigned material and only the operational progress disclosed to the mentee. No default access to private reflection, prayer/action text, drafts or unrelated mentees. |
+| Member / Mentee | Read items available in the active congregation; manage own personal data | See own active program, assigned lessons and progress; exchange messages only in their own active pair. Private responses remain private unless individually shared. |
+| Mentor | Same Library access as their congregation membership | While a pair is active and accepted, see assigned material, only the operational progress disclosed to the mentee, and messages in that same pair thread. No access to another pair's thread or to private reflection, prayer/action text, drafts or unrelated mentees. |
 | Authorized author / Leader / Pastor / congregation Admin | Create or manage only content for which the actor has an explicit capability in the item's global or congregation scope | Manage program or assignment operations only when the relevant capability is granted. No role grants blanket access to private learner responses. |
 | Platform Admin / Owner | Explicit platform operations only, separate from congregation roles and purpose-limited | No routine browsing of private pair content or learner responses. Any exceptional authorized access is purpose-limited and audited. |
 
@@ -50,7 +50,7 @@ An actor may hold more than one role. Authorization uses the current resource sc
 - A mentor's default visibility is limited to the assigned curriculum and the operational progress needed to support the learner, with the sharing expectation disclosed to the mentee.
 - A mentor cannot browse private reflection, prayer/action text, personal notes, drafts, or answers merely because a lesson is complete or the mentor is a Leader, Pastor or Admin.
 - Sharing is per item. Before a learner shares, the UI names the recipient and audience; the backend stores and enforces that scope.
-- Ending, declining or suspending a pair immediately blocks new pair-scoped access. Historical audit metadata remains protected; ending a pair does not publish or erase private content.
+- A pair thread belongs to exactly one active pair. Only its two current participants may read or send messages; a pair ID, route or congregation role does not authorize access. This uses an existing V6 communication capability and does not create a group chat system.\n- Ending, declining or suspending a pair immediately blocks pair-thread reads and sends through that relationship. Retained message records remain protected under the accepted retention policy; they are never exposed to other pairs or congregation staff by default. Ending a pair does not publish or erase private lesson responses.
 - A program operator may access enrollment and operational status only to the extent needed for the assigned program task. It does not confer access to personal response text.
 
 ## 5. Protected routes and deep links
@@ -71,7 +71,7 @@ P0-C freezes intended behavior; it does not mark future runtime checks as passed
 | SEC-TEN-02 | Changing congregation, object, parent or recipient identifiers cannot expose another congregation's Library or discipleship records. | P1-A and P1-C | Same-tenant allow plus cross-tenant read/write denial for affected V7 records. |
 | SEC-TEN-03 | Congregation Admin and other congregation roles cannot exercise platform Admin/Owner capabilities. | P1-A | Tenant-admin denial for a platform-only operation; valid platform path remains separately tested. |
 | SEC-TEN-04 | Mentor access requires an active, accepted pair and is limited to assigned content and disclosed operational progress. | P1-C | Paired allow; unpaired, unrelated-pair, ended-pair and cross-congregation denial. |
-| SEC-TEN-05 | Private learner responses remain private unless the learner explicitly shares an item with a named audience. | P1-C and P3-C | Private-response API/RLS denial plus explicit-share allow and audience UI assertion. |
+| SEC-TEN-04A | Pair-thread reads and sends are limited to the two participants in that active pair; ended-pair access and cross-pair ID substitution fail closed. | P1-C and existing V6 communication owner | Pair participant allow; outsider, wrong pair, ended pair, wrong congregation and changed-ID denial. |\n| SEC-TEN-05 | Private learner responses remain private unless the learner explicitly shares an item with a named audience. | P1-C and P3-C | Private-response API/RLS denial plus explicit-share allow and audience UI assertion. |
 | SEC-TEN-06 | Authoring and publishing require the content-specific capability in the item's global or congregation scope. | P1-A and P1-B | Authorized create/edit/publish case plus wrong-role and wrong-congregation denial. |
 | SEC-TEN-07 | Protected deep links wait for session/scope resolution and do not expose cached or guessed-ID content. | P1-C and integration owner | Signed-out, wrong-tenant, unauthorized-ID, refresh and session-restoration cases. |
 | SEC-TEN-08 | Account, congregation or pair revocation takes effect on the next request and stale in-flight results cannot appear in a new context. | P1-C and affected route owner | Revocation and context-switch tests on the changed routes/services. |
@@ -83,7 +83,7 @@ Reuse existing V6 tenant, role, session, assignment and deep-link tests where th
 
 - **Lane C owns:** the V7 role/capability boundaries, congregation and pair visibility, private reflection/progress rules, and protected deep-link/session requirements.
 - **Lane C does not own:** schema/RLS migrations (P1-A), Library or discipleship implementation, global route wiring, or broad V6 recertification.
-- **V7 exclusions:** Conversation Deck/realtime groups, central Google Drive or external media storage, full media moderation, full Ilocano rollout, bulk content ingestion, Couples expansion and a second whole-app redesign remain V8 scope. This contract does not authorize implementation of them.
+- **V7 exclusions:** Conversation Deck/realtime group messaging, central Google Drive or external media storage, full media moderation, full Ilocano rollout, bulk content ingestion, Couples expansion and a second whole-app redesign remain V8 scope. Only existing V6 communication reused for an authorized one-to-one pair is covered here; no new messaging system is authorized.
 - **Integration owner:** reconcile this contract with the accepted P0-A domain model, P0-B route map and P0-D acceptance matrix before the P0 exit gate.
 
 ## 8. Handoff
