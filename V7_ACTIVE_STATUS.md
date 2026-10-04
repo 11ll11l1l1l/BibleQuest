@@ -2,7 +2,7 @@
 
 Updated: 2026-10-04 JST
 
-Phase: **P0 — scope freeze and contracts ACTIVE**.
+Phase: **P1 — shared foundation ACTIVE**. P0 scope/contracts were frozen in the integrated P0 contract change.
 Development branch: `v7/development`.
 Production baseline: V6 `7997d60e6069aa406ec005c32e33e46fee39bc12` on `main`.
 Canonical roadmap: `DEVELOPMENT_PLAN_V7.md`.
@@ -157,7 +157,13 @@ Phase 0 is complete only when:
 - acceptance/evidence requirements exist before implementation;
 - no V7 feature depends on an undefined V8 realtime/media/Ilocano-rollout system.
 
-Do not mark P0 complete merely because four documents or plans exist. Integrate/reconcile conflicting contracts once, then record the accepted outcome here.
+P0 exit accepted in the serialized freeze: narrowed scope, Library/ONE 2 ONE data and security contracts, eight proposed unique route keys with entry/return behavior, acceptance/provenance evidence rows, and V8 exclusions are aligned across P0-A/B/C/D. P1 changes must follow these frozen contracts.
+
+## P0 completion record
+
+- Integrated contract set: `docs/v7/V7_DATA_ARCHITECTURE.md`, `docs/v7/P0_B_NAVIGATION_INFORMATION_ARCHITECTURE.md`, `docs/v7/V7_SECURITY_TENANCY_CONTRACT.md`, and `docs/v7/V7_ACCEPTANCE_AND_CONTENT_CONTRACT.md`.
+- V7 scope: Library plus structured ONE 2 ONE; Conversation Decks, new group realtime/chat, central Drive media pipeline/full moderation, full Ilocano rollout, bulk content, Couples expansion, recommendations beyond MVP, and unrelated redesign are V8.
+- P1 begins only from this integrated contract set. Runtime routes, database schema, authorization changes, and feature evidence remain unimplemented/open.
 
 ## Planned V7 phases after P0
 
@@ -192,4 +198,4 @@ The V6 owner-waived physical acceptance rows remain recorded in the original V6 
 
 ## Immediate next action
 
-Complete, automatically integrate and reconcile P0-A/P0-B/P0-C/P0-D against the narrowed roadmap. Once the P0 exit gate is satisfied, the same lane chats continue automatically as P1-A/P1-B/P1-C/P1-D without waiting for a new user phase or integration instruction.
+P1 is active. Lane A owns the single P1-A database/RLS/generated-contract surface; begin with the frozen P0 model and a bounded inventory of existing V6 tables/policies before creating additive V7 migrations. Lanes B–D continue their assigned P1 foundation work. Shared schema changes remain serialized under Lane A.
