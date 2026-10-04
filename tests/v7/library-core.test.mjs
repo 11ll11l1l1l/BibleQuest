@@ -213,3 +213,31 @@ test('new requests clear old results immediately and reset permits a fresh scope
   assert.equal(service.getState().query, 'new');
   assert.equal(service.getState().error, null);
 });
+
+test('cancelled list responses are discarded before accessing their content', async () => {
+  let complete;
+  const service = createLibraryService({ repository: {
+    listPublished: () => new Promise(resolve => { complete = resolve; }),
+    getPublishedById: async () => null,
+  } });
+  const pending = service.list();
+  const cleared = service.reset();
+  let accessed = false;
+  complete({ get items() { accessed = true; throw new Error('stale payload'); } });
+  await pending;
+  assert.equal(accessed, false);
+  assert.equal(service.getState(), cleared);
+});
+
+test('detail lookup refuses a published record belonging to another item', async () => {
+  const service = createLibraryService({ repository: {
+    listPublished: async () => ({ items: [], nextCursor: null }),
+    getPublishedById: async () => item(),
+  } });
+  const state = await service.getItem('another-item');
+  assert.equal(state.status, 'error');
+  assert.equal(state.selectedItem, null);
+  assert.deepEqual(state.items, []);
+  assert.equal(state.error, 'Library returned a different item than requested.');
+  assert.equal((await service.getItem('devotional-1')).selectedItem.id, 'devotional-1');
+});
