@@ -1,0 +1,72 @@
+.bq-library form {
+  display: grid;
+  gap: 10px;
+  margin-block: 20px;
+}
+.bq-library input,
+.bq-library select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: inherit;
+  font: inherit;
+}
+.bq-library .bq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.bq-library button {
+  min-height: 44px;
+  font: inherit;
+}
+.bq-library [data-library-results] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.bq-library-card__open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+  color: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.bq-library-card__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.bq-library-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: .85rem;
+}
+.bq-library button:focus-visible,
+.bq-library input:focus-visible,
+.bq-library select:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+.bq-library button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+.bq-library [hidden] {
+  display: none;
+}

@@ -57,7 +57,7 @@ const makeRow = (id = 'item-1', revisionId = 'revision-1') => ({
   },
 });
 
-function makeClient({ rows = [], detail = null, error = null } = {}) {
+function makeClient({ rows = [], detail = null, error = null, taxonomy = [] } = {}) {
   const calls = [];
   const client = {
     from(table) {
@@ -71,7 +71,7 @@ function makeClient({ rows = [], detail = null, error = null } = {}) {
         order(column, options) { call.orders.push([column, options]); return this; },
         range(start, end) { call.ranges.push([start, end]); return this; },
         maybeSingle: async () => ({ data: detail, error }),
-        then(resolve, reject) { return Promise.resolve({ data: rows, error }).then(resolve, reject); },
+        then(resolve, reject) { return Promise.resolve({ data: table === 'v7_library_taxonomy' ? taxonomy : rows, error }).then(resolve, reject); },
       };
       return query;
     },
@@ -134,4 +134,32 @@ test('database errors stay visible and invalid cursors fail before opening the c
   });
   await assert.rejects(adapter.listPublished({ cursor: '-1' }), { code: 'BQ_LIBRARY_CURSOR' });
   assert.equal(opened, 0);
+});
+
+test('taxonomy filtering uses a separate inner relationship and preserves all presentation labels', async () => {
+  const { client, calls } = makeClient({ rows: [makeRow()], taxonomy: [
+    { id: 'topic.hope', kind: 'topic', labels: { en: 'Hope' } },
+  ] });
+  const result = await createLibrarySupabaseAdapter(client).listPublished({
+    taxonomyId: 'topic.hope', includeTaxonomy: true, contentType: 'devotional',
+  });
+  assert.match(calls[0].selections[0], /filter_taxonomy_links:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey!inner\(taxonomy_id\)/);
+  assert.match(calls[0].selections[0], /taxonomy_links:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey\(display_order/);
+  assert.ok(calls[0].filters.some(([kind, column, value]) =>
+    kind === 'eq' && column === 'revision.filter_taxonomy_links.taxonomy_id' && value === 'topic.hope'));
+  assert.equal(result.items[0].taxonomyLinks[0].labels.en, 'Hope');
+  assert.equal(calls[1].table, 'v7_library_taxonomy');
+  assert.deepEqual(calls[1].ranges, [[0, 199]]);
+  assert.deepEqual(result.taxonomy[0], { id: 'topic.hope', kind: 'topic', labels: { en: 'Hope' } });
+});
+
+test('malformed taxonomy filters fail before opening a client and unfiltered items need no taxonomy', async () => {
+  let opened = 0;
+  const { client, calls } = makeClient();
+  const adapter = createLibrarySupabaseAdapter(async () => { opened++; return client; });
+  await assert.rejects(adapter.listPublished({ taxonomyId: 'topic.hope),id.eq.other' }), { code: 'BQ_LIBRARY_TAXONOMY' });
+  assert.equal(opened, 0);
+  await adapter.listPublished();
+  assert.equal(calls.length, 1);
+  assert.doesNotMatch(calls[0].selections[0], /filter_taxonomy_links/);
 });
