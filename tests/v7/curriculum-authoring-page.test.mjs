@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {curriculumAuthoringPage,renderCurriculumAuthoring} from '../../src/features/curriculum-authoring/index.js';
+import { V7_CONTENT_KEY_INVENTORY } from '../../src/content/locales/v7-content.js';
 
 const base=()=>({status:'ready',tracks:[],modules:[],lessons:[],revisions:[],steps:[],selected:{trackId:null,moduleId:null,lessonId:null,revisionId:null},readiness:null,error:null});
 
@@ -17,17 +18,33 @@ test('authoring render escapes dynamic content and exposes no client publish mut
   assert.match(html,/data-authoring-form="track-update"/);assert.match(html,/data-authoring-form="step-save"/);
 });
 
-test('incomplete readiness renders blockers without implying publication success',()=>{
+test('incomplete readiness renders localized blocker messages without implying publication success',()=>{
   const state=base();state.readiness={ready:false,stepCount:5,blockers:['seven_steps_incomplete','lesson_not_draft'],request:null};
   const html=renderCurriculumAuthoring(state);
-  assert.match(html,/5\/7 steps complete/);assert.match(html,/seven steps incomplete/);assert.match(html,/lesson not draft/);
+  assert.match(html,/5\/7 steps complete/);assert.match(html,/All seven lesson steps are required/);assert.match(html,/Lesson is no longer a draft/);
   assert.doesNotMatch(html,/Ready for atomic publication/);
 });
 
-test('busy authoring disables reload/readiness controls',()=>{
+test('authoring strings are registered in the V7 locale inventory and renderer accepts translation injection',()=>{
+  for(const key of ['v7.authoring.title','v7.authoring.track.create','v7.authoring.step.scripture','v7.authoring.readiness.ready','v7.authoring.nav.congregation']){
+    assert.equal(V7_CONTENT_KEY_INVENTORY.includes(key),true,key);
+  }
+  const html=renderCurriculumAuthoring(base(),{translate:key=>`[${key}]`});
+  assert.match(html,/\[v7\.authoring\.title\]/);assert.match(html,/\[v7\.authoring\.track\.create\]/);
+  assert.doesNotMatch(html,/>ONE 2 ONE curriculum</);
+});
+
+test('repository error text is not rendered directly into the authoring surface',()=>{
+  const state=base();state.error='<sensitive backend detail>';
+  const html=renderCurriculumAuthoring(state);
+  assert.match(html,/Curriculum authoring could not complete this action/);
+  assert.doesNotMatch(html,/sensitive backend detail/);
+});
+
+test('busy authoring disables reload, readiness and the authoring fieldset',()=>{
   const state=base();state.status='saving';state.selected.revisionId='revision-1';
   const html=renderCurriculumAuthoring(state);
-  assert.match(html,/data-authoring-action="reload" disabled/);assert.match(html,/data-authoring-action="readiness" disabled/);assert.match(html,/saving…/);
+  assert.match(html,/data-authoring-action="reload" disabled/);assert.match(html,/data-authoring-action="readiness" disabled/);assert.match(html,/<fieldset disabled>/);assert.match(html,/Saving…/);
 });
 
 test('page lifecycle loads, invalidates on context change and disposes cleanly',async()=>{

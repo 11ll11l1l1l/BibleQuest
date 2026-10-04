@@ -1,53 +1,60 @@
+import { localization } from '../../app/localization.js';
+
 const STEPS=Object.freeze(['scripture','understand','discuss','reflect','apply','pray','action']);
-const STEP_LABELS=Object.freeze(['Scripture','Understand','Discuss','Reflect','Apply','Pray','Action']);
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const attr=escapeHtml;
 const busy=state=>['loading','saving','checking'].includes(state?.status);
 const selected=(rows,id)=>rows?.find(row=>row.id===id)||null;
 const number=value=>Number.isInteger(value)?value:0;
-function optionRows(rows,kind,currentId){
-  if(!rows?.length)return `<p>No ${kind}s yet.</p>`;
-  return `<ul>${rows.map(row=>`<li><button type="button" data-authoring-select="${kind}" data-id="${attr(row.id)}"${row.id===currentId?' aria-current="true"':''}>${escapeHtml(row.title||`${kind} ${row.revisionNumber??''}`)}</button>${row.publicationState?` <small>${escapeHtml(row.publicationState)}</small>`:''}</li>`).join('')}</ul>`;
+const defaultTranslate=(key,values)=>localization.t(key,{values});
+function optionRows(rows,kind,currentId,t){
+  if(!rows?.length)return `<p>${escapeHtml(t(`v7.authoring.${kind}.empty`))}</p>`;
+  return `<ul>${rows.map(row=>{const fallback=`${t(`v7.authoring.${kind}`)} ${row.revisionNumber??''}`.trim();return `<li><button type="button" data-authoring-select="${kind}" data-id="${attr(row.id)}"${row.id===currentId?' aria-current="true"':''}>${escapeHtml(row.title||fallback)}</button></li>`;}).join('')}</ul>`;
 }
-function trackForm(track){
-  return `<form data-authoring-form="${track?'track-update':'track-create'}"><h3>${track?'Edit track':'New track'}</h3><label>Title <input name="title" maxlength="240" required value="${attr(track?.title||'')}"></label><label>Summary <textarea name="summary" maxlength="4000">${escapeHtml(track?.summary||'')}</textarea></label><label>Language <input name="locale" required value="${attr(track?.locale||'en')}"></label><label>Audience <input name="audience" maxlength="240" value="${attr(track?.audience||'')}"></label><label>Order <input name="position" type="number" min="0" step="1" value="${number(track?.position)}"></label><button type="submit" class="bq-primary-button">${track?'Save track':'Create track'}</button></form>`;
+function trackForm(track,t){
+  return `<form data-authoring-form="${track?'track-update':'track-create'}"><h3>${escapeHtml(t(track?'v7.authoring.track.edit':'v7.authoring.track.new'))}</h3><label>${escapeHtml(t('v7.authoring.field.title'))} <input name="title" maxlength="240" required value="${attr(track?.title||'')}"></label><label>${escapeHtml(t('v7.authoring.field.summary'))} <textarea name="summary" maxlength="4000">${escapeHtml(track?.summary||'')}</textarea></label><label>${escapeHtml(t('v7.authoring.field.language'))} <input name="locale" required value="${attr(track?.locale||'en')}"></label><label>${escapeHtml(t('v7.authoring.field.audience'))} <input name="audience" maxlength="240" value="${attr(track?.audience||'')}"></label><label>${escapeHtml(t('v7.authoring.field.order'))} <input name="position" type="number" min="0" step="1" value="${number(track?.position)}"></label><button type="submit" class="bq-primary-button">${escapeHtml(t(track?'v7.authoring.track.save':'v7.authoring.track.create'))}</button></form>`;
 }
-function moduleForm(module){
-  return `<form data-authoring-form="${module?'module-update':'module-create'}"><h3>${module?'Edit module':'New module'}</h3><label>Title <input name="title" maxlength="240" required value="${attr(module?.title||'')}"></label><label>Summary <textarea name="summary" maxlength="4000">${escapeHtml(module?.summary||'')}</textarea></label><label>Order <input name="position" type="number" min="0" step="1" value="${number(module?.position)}"></label><button type="submit" class="bq-primary-button">${module?'Save module':'Create module'}</button></form>`;
+function moduleForm(module,t){
+  return `<form data-authoring-form="${module?'module-update':'module-create'}"><h3>${escapeHtml(t(module?'v7.authoring.module.edit':'v7.authoring.module.new'))}</h3><label>${escapeHtml(t('v7.authoring.field.title'))} <input name="title" maxlength="240" required value="${attr(module?.title||'')}"></label><label>${escapeHtml(t('v7.authoring.field.summary'))} <textarea name="summary" maxlength="4000">${escapeHtml(module?.summary||'')}</textarea></label><label>${escapeHtml(t('v7.authoring.field.order'))} <input name="position" type="number" min="0" step="1" value="${number(module?.position)}"></label><button type="submit" class="bq-primary-button">${escapeHtml(t(module?'v7.authoring.module.save':'v7.authoring.module.create'))}</button></form>`;
 }
-function lessonForm(lesson){
-  return `<form data-authoring-form="${lesson?'lesson-update':'lesson-create'}"><h3>${lesson?'Edit lesson':'New lesson'}</h3><label>Title <input name="title" maxlength="240" required value="${attr(lesson?.title||'')}"></label><label>Order <input name="position" type="number" min="0" step="1" value="${number(lesson?.position)}"></label><button type="submit" class="bq-primary-button">${lesson?'Save lesson':'Create lesson'}</button></form>`;
+function lessonForm(lesson,t){
+  return `<form data-authoring-form="${lesson?'lesson-update':'lesson-create'}"><h3>${escapeHtml(t(lesson?'v7.authoring.lesson.edit':'v7.authoring.lesson.new'))}</h3><label>${escapeHtml(t('v7.authoring.field.title'))} <input name="title" maxlength="240" required value="${attr(lesson?.title||'')}"></label><label>${escapeHtml(t('v7.authoring.field.order'))} <input name="position" type="number" min="0" step="1" value="${number(lesson?.position)}"></label><button type="submit" class="bq-primary-button">${escapeHtml(t(lesson?'v7.authoring.lesson.save':'v7.authoring.lesson.create'))}</button></form>`;
 }
-function revisionForm(){return '<form data-authoring-form="revision-create"><h3>New lesson revision</h3><label>Language <input name="locale" required value="en"></label><label>Summary <textarea name="summary" maxlength="4000"></textarea></label><button type="submit" class="bq-primary-button">Create revision</button></form>';}
-function stepEditor(state){
+function revisionForm(t){return `<form data-authoring-form="revision-create"><h3>${escapeHtml(t('v7.authoring.revision.new'))}</h3><label>${escapeHtml(t('v7.authoring.field.language'))} <input name="locale" required value="en"></label><label>${escapeHtml(t('v7.authoring.field.summary'))} <textarea name="summary" maxlength="4000"></textarea></label><button type="submit" class="bq-primary-button">${escapeHtml(t('v7.authoring.revision.create'))}</button></form>`;}
+function stepEditor(state,t){
   if(!state.selected?.revisionId)return '';
   const byPosition=new Map((state.steps||[]).map(row=>[row.position,row]));
-  const list=STEPS.map((type,index)=>{const row=byPosition.get(index);return `<li><strong>${STEP_LABELS[index]}</strong> — ${row?'Saved':'Not saved'}</li>`;}).join('');
-  return `<section><h2>Seven-step lesson</h2><ol>${list}</ol><form data-authoring-form="step-save"><label>Step <select name="position">${STEPS.map((type,index)=>`<option value="${index}">${index+1}. ${STEP_LABELS[index]}</option>`).join('')}</select></label><label>Content JSON <textarea name="content" required>{}</textarea></label><label>Scripture references JSON <textarea name="scriptureRefs">[]</textarea></label><label>Library revision ID <input name="libraryRevisionId"></label><button type="submit" class="bq-primary-button">Save step</button></form></section>`;
+  const list=STEPS.map((type,index)=>{const row=byPosition.get(index);return `<li><strong>${escapeHtml(t(`v7.authoring.step.${type}`))}</strong> — ${escapeHtml(t(row?'v7.authoring.steps.saved':'v7.authoring.steps.notSaved'))}</li>`;}).join('');
+  return `<section><h2>${escapeHtml(t('v7.authoring.steps.title'))}</h2><ol>${list}</ol><form data-authoring-form="step-save"><label>${escapeHtml(t('v7.authoring.steps.step'))} <select name="position">${STEPS.map((type,index)=>`<option value="${index}">${index+1}. ${escapeHtml(t(`v7.authoring.step.${type}`))}</option>`).join('')}</select></label><label>${escapeHtml(t('v7.authoring.steps.content'))} <textarea name="content" required>{}</textarea></label><label>${escapeHtml(t('v7.authoring.steps.scriptureRefs'))} <textarea name="scriptureRefs">[]</textarea></label><label>${escapeHtml(t('v7.authoring.steps.libraryRevision'))} <input name="libraryRevisionId"></label><button type="submit" class="bq-primary-button">${escapeHtml(t('v7.authoring.steps.save'))}</button></form></section>`;
 }
-function readinessView(readiness){
-  if(!readiness)return '<p>Select a lesson revision to check publication readiness.</p>';
-  if(readiness.ready)return `<p><strong>Ready for atomic publication.</strong> ${number(readiness.stepCount)}/7 steps complete.</p><p><small>Publication becomes actionable only after the shared atomic backend boundary is connected.</small></p>`;
-  const blockers=(readiness.blockers||[]).map(item=>`<li>${escapeHtml(String(item).replaceAll('_',' '))}</li>`).join('');
-  return `<p>${number(readiness.stepCount)}/7 steps complete.</p>${blockers?`<ul>${blockers}</ul>`:''}`;
+function readinessView(readiness,t){
+  if(!readiness)return `<p>${escapeHtml(t('v7.authoring.readiness.selectRevision'))}</p>`;
+  const count=escapeHtml(t('v7.authoring.readiness.steps',{count:number(readiness.stepCount)}));
+  if(readiness.ready)return `<p><strong>${escapeHtml(t('v7.authoring.readiness.ready'))}</strong> ${count}</p><p><small>${escapeHtml(t('v7.authoring.readiness.backendPending'))}</small></p>`;
+  const known=new Set(['track_not_draft','module_not_draft','lesson_not_draft','revision_already_published','seven_steps_incomplete']);
+  const blockers=(readiness.blockers||[]).map(item=>`<li>${escapeHtml(t(known.has(item)?`v7.authoring.readiness.${item}`:'v7.authoring.error'))}</li>`).join('');
+  return `<p>${count}</p>${blockers?`<ul>${blockers}</ul>`:''}`;
 }
 
-export function renderCurriculumAuthoring(state,{localError=null}={}){
-  const track=selected(state.tracks,state.selected?.trackId),module=selected(state.modules,state.selected?.moduleId),lesson=selected(state.lessons,state.selected?.lessonId);
+export function renderCurriculumAuthoring(state,{localErrorKey=null,translate=defaultTranslate}={}){
+  const t=(key,values)=>translate(key,values),track=selected(state.tracks,state.selected?.trackId),module=selected(state.modules,state.selected?.moduleId),lesson=selected(state.lessons,state.selected?.lessonId);
   const isBusy=busy(state),disabled=isBusy?' disabled':'';
-  return `<section class="bq-panel"><p class="bq-eyebrow">CURRICULUM AUTHORING</p><h1>ONE 2 ONE curriculum</h1><p>Create the discipleship path from track to the seven lesson steps.</p><p role="status" aria-live="polite">${escapeHtml(localError||state.error||(isBusy?`${state.status}…`:''))}</p><div><button type="button" data-authoring-action="reload"${disabled}>Reload</button><button type="button" data-authoring-action="readiness"${!state.selected?.revisionId||isBusy?' disabled':''}>Check readiness</button></div><fieldset${disabled}><section><h2>Tracks</h2>${optionRows(state.tracks,'track',state.selected?.trackId)}${trackForm()}${track?trackForm(track):''}</section>${track?`<section><h2>Modules</h2>${optionRows(state.modules,'module',state.selected?.moduleId)}${moduleForm()}${module?moduleForm(module):''}</section>`:''}${module?`<section><h2>Lessons</h2>${optionRows(state.lessons,'lesson',state.selected?.lessonId)}${lessonForm()}${lesson?lessonForm(lesson):''}</section>`:''}${lesson?`<section><h2>Revisions</h2>${optionRows(state.revisions,'revision',state.selected?.revisionId)}${revisionForm()}</section>`:''}${stepEditor(state)}</fieldset><section><h2>Publication readiness</h2>${readinessView(state.readiness)}</section></section>`;
+  const statusKey=localErrorKey||(state.error?'v7.authoring.error':isBusy?`v7.authoring.${state.status}`:null);
+  return `<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(t('v7.authoring.eyebrow'))}</p><h1>${escapeHtml(t('v7.authoring.title'))}</h1><p>${escapeHtml(t('v7.authoring.intro'))}</p><p role="status" aria-live="polite">${statusKey?escapeHtml(t(statusKey)):''}</p><div><button type="button" data-authoring-action="reload"${disabled}>${escapeHtml(t('v7.authoring.reload'))}</button><button type="button" data-authoring-action="readiness"${!state.selected?.revisionId||isBusy?' disabled':''}>${escapeHtml(t('v7.authoring.checkReadiness'))}</button></div><fieldset${disabled}><section><h2>${escapeHtml(t('v7.authoring.tracks'))}</h2>${optionRows(state.tracks,'track',state.selected?.trackId,t)}${trackForm(null,t)}${track?trackForm(track,t):''}</section>${track?`<section><h2>${escapeHtml(t('v7.authoring.modules'))}</h2>${optionRows(state.modules,'module',state.selected?.moduleId,t)}${moduleForm(null,t)}${module?moduleForm(module,t):''}</section>`:''}${module?`<section><h2>${escapeHtml(t('v7.authoring.lessons'))}</h2>${optionRows(state.lessons,'lesson',state.selected?.lessonId,t)}${lessonForm(null,t)}${lesson?lessonForm(lesson,t):''}</section>`:''}${lesson?`<section><h2>${escapeHtml(t('v7.authoring.revisions'))}</h2>${optionRows(state.revisions,'revision',state.selected?.revisionId,t)}${revisionForm(t)}</section>`:''}${stepEditor(state,t)}</fieldset><section><h2>${escapeHtml(t('v7.authoring.readiness.title'))}</h2>${readinessView(state.readiness,t)}</section></section>`;
 }
 
+function uiError(key){throw Object.assign(new Error(key),{uiKey:key});}
 function formValue(form,name){return form.elements?.namedItem(name)?.value??'';}
-function position(form){const value=Number(formValue(form,'position'));if(!Number.isInteger(value)||value<0)throw new Error('Order must be a non-negative integer.');return value;}
-function json(form,name,fallback){const raw=formValue(form,name).trim();return raw?JSON.parse(raw):fallback;}
+function position(form){const value=Number(formValue(form,'position'));if(!Number.isInteger(value)||value<0)uiError('v7.authoring.invalidOrder');return value;}
+function json(form,name,fallback){const raw=formValue(form,name).trim();if(!raw)return fallback;try{return JSON.parse(raw);}catch{uiError('v7.authoring.invalidJson');}}
 
 export function curriculumAuthoringPage({controller,subscribeContext=()=>()=>{},onBack=()=>{},onAccount=()=>{},onCongregation=()=>{}}){
   if(!controller?.getState||!controller?.subscribe||!controller?.load)throw new TypeError('Curriculum authoring page requires the feature-local controller.');
-  return {title:'Curriculum authoring',html:'<main data-curriculum-authoring></main><nav><button type="button" data-authoring-nav="back">Back</button><button type="button" data-authoring-nav="account">Account</button><button type="button" data-authoring-nav="congregation">Choose congregation</button></nav>',mount(root){
-    const host=root.querySelector('[data-curriculum-authoring]');let localError=null,disposed=false;
-    const render=state=>{if(!disposed&&host)host.innerHTML=renderCurriculumAuthoring(state,{localError});};
-    const run=async work=>{localError=null;render(controller.getState());try{await work();}catch(error){localError=error?.message||'Authoring action failed.';render(controller.getState());}};
+  const t=(key,values)=>localization.t(key,{values});
+  return {title:t('v7.authoring.title'),html:`<main data-curriculum-authoring></main><nav><button type="button" data-authoring-nav="back">${escapeHtml(t('v7.authoring.nav.back'))}</button><button type="button" data-authoring-nav="account">${escapeHtml(t('v7.authoring.nav.account'))}</button><button type="button" data-authoring-nav="congregation">${escapeHtml(t('v7.authoring.nav.congregation'))}</button></nav>`,mount(root){
+    const host=root.querySelector('[data-curriculum-authoring]');let localErrorKey=null,disposed=false;
+    const render=state=>{if(!disposed&&host)host.innerHTML=renderCurriculumAuthoring(state,{localErrorKey});};
+    const run=async work=>{localErrorKey=null;render(controller.getState());try{await work();}catch(error){localErrorKey=error?.uiKey||'v7.authoring.error';render(controller.getState());}};
     const click=event=>{
       const button=event.target?.closest?.('button');if(!button)return;
       const kind=button.getAttribute('data-authoring-select'),id=button.getAttribute('data-id');
@@ -63,8 +70,8 @@ export function curriculumAuthoringPage({controller,subscribeContext=()=>()=>{},
       if(kind==='step-save')return controller.saveStep({position:position(form),content:json(form,'content',{}),scriptureRefs:json(form,'scriptureRefs',[]),libraryRevisionId:formValue(form,'libraryRevisionId').trim()||null});
     });};
     root.addEventListener('click',click);root.addEventListener('submit',submit);
-    const unsubscribe=controller.subscribe(state=>{localError=null;render(state);});
-    const unsubscribeContext=subscribeContext(()=>{controller.invalidate();localError='Account or congregation changed. Reload curriculum authoring.';render(controller.getState());});
+    const unsubscribe=controller.subscribe(state=>{localErrorKey=null;render(state);});
+    const unsubscribeContext=subscribeContext(()=>{controller.invalidate();localErrorKey='v7.authoring.contextChanged';render(controller.getState());});
     render(controller.getState());void run(()=>controller.load());
     return()=>{disposed=true;unsubscribe();unsubscribeContext();root.removeEventListener('click',click);root.removeEventListener('submit',submit);controller.dispose();};
   }};
