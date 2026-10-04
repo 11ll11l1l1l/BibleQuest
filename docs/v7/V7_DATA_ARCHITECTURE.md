@@ -1,14 +1,14 @@
 # V7 data architecture contract
 
-Status: P0-A contract accepted in the serialized P0 freeze
+Status: P0-A contract accepted in the serialized P0 freeze; pair messaging implementation dependency OPEN after P1 inventory
 Reviewed against `v7/development` at `00ecb3c3a46606a342b0c259d7ce97579dd9317d`; original Lane A task began at `cb484bc839f9874659f501a755d93ae78dbceed6`
 Scope: logical entities, ownership, and relationships for Library content and structured ONE 2 ONE discipleship. This is a logical contract, not a migration or claim that physical tables already exist.
 
 ## V7 scope boundary
 
-V7 includes the Library (Books, Devotionals, and Past Teachings) and structured ONE 2 ONE discipleship: mentor/mentee pairing and relationship state, Track → Module → Lesson curriculum, the seven-step lesson flow, individual progress, deep links/QR, and authorized direct communication scoped to an active pair.
+V7 includes the Library (Books, Devotionals, and Past Teachings) and structured ONE 2 ONE discipleship: mentor/mentee pairing and relationship state, Track → Module → Lesson curriculum, the seven-step lesson flow, individual progress, deep links/QR, and the product intent for authorized direct communication scoped to an active pair. Pair communication is an OPEN implementation dependency: the P1-A inventory found no V6 pair-private message capability. This contract does not claim one exists or authorize a V7 message store/adapter.
 
-Conversation Decks and broader group/realtime communication, the central Google Drive media pipeline and full media moderation, full Ilocano rollout, bulk content ingestion, expanded Books, Couples expansion, recommendations, and unrelated whole-app redesign are deferred to V8. Existing V6 group, congregation, Reader, media-reference, messaging, and Live Room authorities remain available to existing V6 features; this P0-A contract does not extend them with new V7 group or media-storage systems.
+Conversation Decks and broader group/realtime communication, the central Google Drive media pipeline and full media moderation, full Ilocano rollout, bulk content ingestion, expanded Books, Couples expansion, recommendations, and unrelated whole-app redesign are deferred to V8. Existing V6 group, congregation, Reader, media-reference, messaging, and Live Room authorities remain available to existing V6 features. The P1-A inventory found no private pair-message capability; broad group or congregation-broadcast messaging does not satisfy that gap.
 
 ## Design rules
 
@@ -64,9 +64,9 @@ Books, Devotionals, and Past Teachings may use different body formats while shar
 
 ### Direct communication
 
-- **Pair thread** — communication context scoped to one pair. It should map to the existing V6 communication capability after P1 inventory; do not create a second general chat or realtime transport system.
-- **Pair message** — message authored by one participant and addressed to the other participant through that pair context. Message body is never copied into security/audit logs. If existing V6 storage is reused, its existing lifecycle remains authoritative unless a reviewed V7 contract changes it.
-- A pair ID, route, or congregation role alone never authorizes reading or sending. Ending, declining, or suspending a pair blocks new sends. Access to retained thread history follows P0-C's rules and the existing V6 retention contract; this data model does not invent a new retention period.
+- **Pair thread (OPEN dependency)** — the intended communication context is scoped to one pair. The P1-A inventory found no matching V6 private message capability. Do not claim this capability is available, add a V7 message store/adapter, or wire a thread route until the integration owner resolves the existing-capability gap or records an explicit scope decision.
+- **Pair message** — if communication is later authorized and a compatible backend capability is identified, messages must be authored by one participant and scoped to the other participant through that pair context. Message bodies must never enter security/audit logs. No message persistence is authorized by this contract while the capability gap remains open.
+- If pair communication is authorized, a pair ID, route, or congregation role alone never authorizes reading or sending. Ending, declining, or suspending a pair blocks new sends. Access to retained history follows P0-C and the owning backend's retention rules; these constraints do not assert that a compatible V6 pair-message store exists.
 
 ### Links and history
 
@@ -77,7 +77,7 @@ Deep links and QR codes resolve to stable track/module/lesson IDs and pass throu
 - Library item 1 → many immutable content revisions; revision 1 → many locale translations.
 - Library item many ↔ many controlled categories/tags; a lesson or step can reference a Library revision and canonical Scripture or existing media references.
 - Track 1 → many ordered modules; module 1 → many ordered lessons; lesson 1 → many ordered steps.
-- Mentor pair 1 → many assignments and pair lifecycle events; pair communication uses the existing V6 messaging owner.
+- Mentor pair 1 → many assignments and pair lifecycle events; pair communication remains an OPEN dependency until a compatible existing owner is identified or the scope is explicitly reconciled.
 - Learner progress belongs to one user and one published lesson revision; responses belong to one learner and one lesson step.
 - A response share explicitly links one response to one authorized recipient/scope; it does not change ownership of the original response.
 - Every tenant-scoped record must resolve to its authorized parent scope; P0-C defines and proves the enforcement rules.
@@ -104,7 +104,7 @@ The older `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is historical planning input o
 
 ### P0-A acceptance
 
-- Logical entities and relationships cover the approved V7 Library and structured ONE 2 ONE scope, including pair lifecycle, assignment, progress, private-by-default responses with item-level sharing, and pair-scoped communication.
+- Logical entities and relationships cover the approved V7 Library and structured ONE 2 ONE scope, including pair lifecycle, assignment, progress, and private-by-default responses with item-level sharing. Pair-scoped communication intent and its unresolved V6 capability dependency are explicit; no backend capability or duplicate message store is claimed.
 - V6 authority reuse and V8 exclusions are explicit.
 - Content provenance, revisions, learner history, and private data ownership are preserved.
 - P0-C remains the sole owner of role, tenant, authorization, retention, and denial policy.
