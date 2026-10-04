@@ -3,7 +3,7 @@
 Status: **P0-C security/privacy/tenancy contract accepted in the serialized P0 freeze**
 Owner: **Lane C — Security, privacy and tenancy**
 Baseline: current V7 scope in `DEVELOPMENT_PLAN_V7.md`
-Applies to: Library (Books, Devotionals, Past Teachings), structured ONE 2 ONE discipleship, and pair-scoped communication through existing V6 capability
+Applies to: Library (Books, Devotionals, Past Teachings) and structured ONE 2 ONE. Pair-communication rules apply only if a compatible backend capability is verified and authorized; the P1-A inventory found no V6 pair-private capability, so this part remains OPEN.
 
 This contract defines authorization and privacy behavior expected in V7. It does not claim that runtime policies or tests are already implemented. V6 server authorization, RLS, session handling and congregation isolation remain authoritative until a reviewed V7 change proves otherwise.
 
@@ -26,7 +26,7 @@ Every protected V7 record has one explicit authorization owner and visibility cl
 |---|---|---|
 | Published Library catalog | Published Books, Devotionals and Past Teachings | Read according to publication and licensing state. Only an explicitly authorized content owner may create, edit, publish or archive an item. |
 | Congregation content | Past Teachings or resources explicitly owned by a congregation | Requires current membership and the content-specific capability in that congregation. An ID, URL or membership in another congregation grants no access. |
-| ONE 2 ONE relationship | Pair, assigned track/module/lesson, operational progress, and a pair-scoped thread/messages | Pair data and messages require the active, accepted relationship and are visible only to its two participants. Program operations also require the relevant capability and congregation scope. |
+| ONE 2 ONE relationship | Pair, assigned track/module/lesson, operational progress, and pair communication only if its backend dependency is resolved | Pair and progress data require the active, accepted relationship. If pair messaging is later authorized, it must be visible only to its two participants. Program operations also require the relevant capability and congregation scope. |
 | Personal learner data | Private reflection, prayer/action response, draft or personal note | Owner-only unless the owner explicitly shares one item with a named recipient and the audience is shown before submission. |
 | Public entry point | Published public content and approved onboarding routes | Public access only to intentionally public material. A deep link to protected content does not make it public. |
 
@@ -50,8 +50,8 @@ An actor may hold more than one role. Authorization uses the current resource sc
 - A mentor's default visibility is limited to the assigned curriculum and the operational progress needed to support the learner, with the sharing expectation disclosed to the mentee.
 - A mentor cannot browse private reflection, prayer/action text, personal notes, drafts, or answers merely because a lesson is complete or the mentor is a Leader, Pastor or Admin.
 - Sharing is per item. Before a learner shares, the UI names the recipient and audience; the backend stores and enforces that scope.
-- A pair thread belongs to exactly one active pair. Only its two current participants may read or send messages; a pair ID, route or congregation role does not authorize access. This uses an existing V6 communication capability and does not create a group chat system.
-- Ending, declining or suspending a pair immediately blocks new sends. The two former participants may read retained thread history only while authenticated and still authorized for its owning scope; no other pair member, congregation staff member or platform operator receives access by default. Retain or delete message records under the existing V6 data-retention rules. Ending a pair does not publish or erase private lesson responses.
+- If pair messaging is authorized, a thread belongs to exactly one active pair and only its two current participants may read or send. A pair ID, route or congregation role does not authorize access. The current P1-A inventory found no compatible V6 pair-private backend; this contract does not assert one exists or authorize a V7 message table/adapter.
+- If pair messaging is later implemented, ending, declining or suspending a pair immediately blocks new sends. Retained history remains limited to former participants under the owning backend's retention rules. No V7 retention behavior is defined while the capability gap remains open. Ending a pair does not publish or erase private lesson responses.
 - A program operator may access enrollment and operational status only to the extent needed for the assigned program task. It does not confer access to personal response text.
 
 ## 5. Protected routes and deep links
@@ -85,7 +85,7 @@ Reuse existing V6 tenant, role, session, assignment and deep-link tests where th
 
 - **Lane C owns:** the V7 role/capability boundaries, congregation and pair visibility, private reflection/progress rules, and protected deep-link/session requirements.
 - **Lane C does not own:** schema/RLS migrations (P1-A), Library or discipleship implementation, global route wiring, or broad V6 recertification.
-- **V7 exclusions:** Conversation Deck/realtime group messaging, central Google Drive or external media storage, full media moderation, full Ilocano rollout, bulk content ingestion, Couples expansion and a second whole-app redesign remain V8 scope. Only existing V6 communication reused for an authorized one-to-one pair is covered here; no new messaging system is authorized.
+- **V7 exclusions:** Conversation Deck/realtime group messaging, central Google Drive or external media storage, full media moderation, full Ilocano rollout, bulk content ingestion, Couples expansion and a second whole-app redesign remain V8 scope. Pair-private communication remains an OPEN V7 dependency because no compatible V6 capability was found; do not create a new messaging system without explicit contract resolution.
 - **P0 freeze:** this contract was accepted with the P0-A, P0-B and P0-D contracts. P1 implementation follows the current lane ownership and does not reopen the frozen contract.
 
 ## 8. Handoff
