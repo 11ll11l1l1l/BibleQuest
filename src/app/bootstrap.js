@@ -120,6 +120,8 @@ const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', 
 const accountPage = args => lazyFeaturePage('account', 'accountPage', args);
 const backupPage = args => lazyFeaturePage('backup', 'backupPage', args);
 const accessibilityPage = args => lazyFeaturePage('accessibility', 'accessibilityPage', args);
+const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
+const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
 const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
 const deepQuestionsPage = args => lazyFeaturePage('deep-questions', 'deepQuestionsPage', args);
@@ -340,6 +342,15 @@ function boot(root){
   const reloadAfterLocalDataChange=()=>location.reload();
   const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)};
   const openFreeReader=()=>navigateGeneral('reader');
+  const libraryParams=()=>new URLSearchParams(location.hash.split('?').slice(1).join('?'));
+  const navigateLibrary=target=>{
+    const params=new URLSearchParams();
+    if(target.resourceId)params.set('id',target.resourceId);
+    const context=target.returnTo||target;
+    if(context.query)params.set('query',context.query);
+    if(context.contentType)params.set('contentType',context.contentType);
+    router.navigate(`${target.routeKey}?${params}`);
+  };
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const openChallengeScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
   const openExplorerScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
@@ -353,7 +364,9 @@ function boot(root){
     home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||''}),
+    'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType')})}),
+    learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),

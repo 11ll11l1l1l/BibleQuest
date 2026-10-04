@@ -204,3 +204,9 @@ P1 is active. P1-C's discipleship service boundary and P1-D's content foundation
 Library service is now composed through the existing API repository factory. Account authentication/identity/remote-availability changes reset its state; congregation selection, membership reload and clear invalidate pending reads and cached results. Page disposal removes the session subscription. This closes Lane B’s Library reset handoff without adding a second tenant owner.
 
 Verification: 44 V7/active-congregation tests, 10 affected V6 bootstrap/settings tests, congregation edge regression, bootstrap syntax and diff whitespace passed locally on Node 24.19.0. This is development verification, not pinned-toolchain release certification. P1 remains active: shared route wiring and the discipleship database adapter remain incomplete; P2-A is not yet eligible. No V7 DDL was applied to the connected production project.
+
+## Lane A — Library route foundation (2026-10-04)
+
+Learn now launches the lazy `library` route. Library item selection reaches the ratified `library-item` route with an encoded ID; return navigation restores search/type context. The shared detail foundation displays escaped published metadata, source, attribution and permitted uses, and clears its content on context reset. The router preserves query parameters without changing existing route keys. Type-specific article/book content and representative catalog publication remain P2 work.
+
+Verification: 33 V7 tests, 4 affected V6 routing/lazy-loading tests, Learn composition regression, build, typecheck and diff whitespace passed locally on Node 24.19.0. Browser smoke was attempted but Chromium is absent; browser/visual acceptance remains UNVERIFIED. Live data acceptance remains open because production V7 DDL is not applied. P1 still needs discipleship database/route integration; do not mark P2 eligible yet.
