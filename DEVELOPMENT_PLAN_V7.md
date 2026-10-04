@@ -88,6 +88,41 @@ Single-owner/shared surfaces include migrations/schema ordering and generated DB
 
 Use the smallest checks that detect the risk introduced by the change. Full accumulated regression belongs at phase/integration/release boundaries, not after every small edit. Existing V6 evidence remains valid unless V7 changes its inputs or exposes an actual regression.
 
+### Persistent lane command contract
+
+Lane letters A, B, C and D persist for the entire V7 lifecycle. The user does **not** need to know or specify the current phase.
+
+The command:
+
+`Continue V7 lane A`
+
+means: resolve the current eligible V7 assignment for persistent lane A from the live repository and continue execution immediately.
+
+The same applies to lanes B, C and D.
+
+Required behavior:
+
+- read the live `V7_ACTIVE_STATUS.md` and current `v7/development` head first;
+- determine which phase is currently active/eligible and which assignment belongs to the requested lane letter;
+- continue unfinished work for that lane if present;
+- when that lane's current assignment is complete and the next same-letter assignment is eligible, continue directly into it without asking the user for the next phase;
+- when an entire phase exit gate is satisfied, advance to the next phase rather than stopping merely because the previous phase finished;
+- if another lane still blocks a genuine shared gate, do not fabricate readiness; perform safe non-overlapping gate-closing work or record the exact dependency;
+- P2 and P3 may overlap after P1 contracts are frozen, as already permitted below;
+- optional lane E in P3 is supplemental only and never changes A–D continuity;
+- after V7 release is complete, a V7 continuation command reports completion and stops; it does not silently begin V8.
+
+Persistent lane map:
+
+| Lane | P0 | P1 | P2 | P3 | P4 | P5 |
+|---|---|---|---|---|---|---|
+| **A** | Domain/data contracts | DB/RLS/generated contracts | Books MVP | Pairing + relationship security | Library UX/a11y evidence | Browser/mobile/a11y release evidence |
+| **B** | UX/information architecture | Library core | Devotionals MVP | Tracks/modules/lessons authoring | ONE 2 ONE journey evidence | Backend/RLS/security release evidence |
+| **C** | Security/privacy/tenancy | Discipleship core | Past Teachings MVP | Mentee lesson runner | Backend/RLS/privacy hardening | Build/PWA/offline/performance release evidence |
+| **D** | Acceptance/content/provenance | Taxonomy/provenance/localization | Library discovery | Progress/reflection/prayer/action | Cross-cutting regression | Content/provenance/localization release evidence |
+
+P3-E remains an optional extra lane for QR/deep-link/V6 integration bridges. If lane E is not separately active, the integration owner assigns that bounded work to an available lane without changing the persistent A–D meanings above.
+
 ---
 
 # Phase 0 — Scope freeze and contracts
