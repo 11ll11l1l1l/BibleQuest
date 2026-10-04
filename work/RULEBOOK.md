@@ -84,6 +84,25 @@ Use one executor by default. Parallel agents require explicit authorization or a
 
 Before parallel writes, assign each worker: one concrete outcome, starting branch/SHA, owned files or surface, exclusions, existing checks and handoff destination. A few lines in the existing task record are sufficient; no new claims system is required.
 
+### Persistent named project lanes
+
+A project may define persistent lane letters such as A, B, C and D across multiple phases. The lane letter is the durable identity; the phase-specific assignment changes as the roadmap advances.
+
+For BibleQuest V7, a command such as **`Continue V7 lane A`** is complete instruction. The executor must not ask the user which phase is current. It must:
+
+1. fetch the live `v7/development` head and read `V7_ACTIVE_STATUS.md` plus the lane table in `DEVELOPMENT_PLAN_V7.md`;
+2. resolve the current eligible assignment for lane A from repository state, not from chat memory;
+3. continue unfinished lane-A work if it is still active;
+4. if the current lane-A assignment is complete and the next phase/lane-A assignment is eligible, advance to it automatically in the same run;
+5. if a shared phase gate is still genuinely unmet, perform a bounded, non-overlapping action that helps close that gate or record the exact dependency; do not invent the next phase early;
+6. continue crossing phase boundaries without requiring a new user prompt until the requested execution window ends, a genuine external/human boundary is reached, or V7 is complete.
+
+A lane may advance when either the active-status authority already marks the next phase READY/ACTIVE or the governing phase exit gate is objectively satisfied by integrated repository/evidence state. When status is stale, reconcile it as a bounded integration action only if doing so does not race another active status owner; otherwise use the live integrated evidence and leave one concise handoff for the status owner.
+
+Phase transitions do not erase the lane identity. Example: lane A may be P0-A in Phase 0, then P1-A, P2-A, P3-A, P4-A and P5-A without the user ever naming those phases. Optional extra lanes such as P3-E do not change A–D continuity.
+
+The continuation command never authorizes scope expansion. A V7 lane stops after V7 completion; it does not silently begin V8.
+
 - One integration owner serializes merges and current-status/checklist edits. Workers do not repeatedly rewrite shared status files.
 - Shared shell, schema, workflow, generated manifest and shared owner changes are assigned to one worker or sequenced explicitly. Do not let two agents patch the same failure independently.
 - Each worker produces a commit/PR or evidence, not just a plan. Cap tasks so they fit a meaningful execution window; split large corpus work along existing deterministic shard boundaries.
