@@ -277,7 +277,7 @@ alter table public.v7_lesson_responses enable row level security;
 alter table public.v7_response_shares enable row level security;
 
 create policy "v7 library published read" on public.v7_library_items for select to authenticated
-using (publication_state='published' and (congregation_id is null or private.is_bible_congregation_member(congregation_id)));
+using ((publication_state='published' and (congregation_id is null or private.is_bible_congregation_member(congregation_id))) or private.bible_can_review_content(congregation_id));
 create policy "v7 library editor insert" on public.v7_library_items for insert to authenticated
 with check (created_by=(select auth.uid()) and private.bible_can_review_content(congregation_id));
 create policy "v7 library editor update" on public.v7_library_items for update to authenticated
@@ -287,8 +287,8 @@ with check (private.bible_can_review_content(congregation_id));
 create policy "v7 library revision read" on public.v7_library_revisions for select to authenticated
 using (exists (
   select 1 from public.v7_library_items i
-  where i.id=item_id and i.current_revision_id=id and i.publication_state='published'
-    and (i.congregation_id is null or private.is_bible_congregation_member(i.congregation_id))
+  where i.id=item_id and ((i.current_revision_id=id and i.publication_state='published'
+    and (i.congregation_id is null or private.is_bible_congregation_member(i.congregation_id))) or private.bible_can_review_content(i.congregation_id))
 ));
 create policy "v7 library revision editor insert" on public.v7_library_revisions for insert to authenticated
 with check (created_by=(select auth.uid()) and private.bible_can_review_content((select i.congregation_id from public.v7_library_items i where i.id=item_id)));
@@ -389,7 +389,7 @@ using (learner_id=(select auth.uid()) or exists (select 1 from public.v7_respons
 create policy "v7 response learner insert" on public.v7_lesson_responses for insert to authenticated
 with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=public.v7_lesson_responses.lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response learner update" on public.v7_lesson_responses for update to authenticated
-using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
+using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=public.v7_lesson_responses.lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response owner delete" on public.v7_lesson_responses for delete to authenticated
 using (learner_id=(select auth.uid()));
 create policy "v7 response share participant read" on public.v7_response_shares for select to authenticated
