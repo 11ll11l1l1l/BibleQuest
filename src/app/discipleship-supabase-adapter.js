@@ -122,38 +122,71 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       if (!['not_started', 'in_progress', 'completed'].includes(status) || (status === 'completed' && !progress.completedAt)) {
         fail('BQ_DISCIPLESHIP_PROGRESS_INVALID', 'Progress requires a valid status and completion timestamp.');
       }
+      const requestedRevisionId = required(revisionId);
+      const currentStepId = progress.currentStepId || null;
       assertContext(context);
-      return rows(client.from('v7_learner_progress').upsert({ assignment_id: selected.id, learner_id: context.userId,
-        lesson_revision_id: required(revisionId), current_step_id: progress.currentStepId || null, status,
+      const result = await rows(client.from('v7_learner_progress').upsert({ assignment_id: selected.id, learner_id: context.userId,
+        lesson_revision_id: requestedRevisionId, current_step_id: currentStepId, status,
         started_at: progress.startedAt || null, completed_at: progress.completedAt || null,
       }, { onConflict: 'assignment_id,learner_id' }).select(PROGRESS_COLUMNS));
+      assertContext(context);
+      if (result.length !== 1) fail('BQ_DISCIPLESHIP_PROGRESS_ACK_INVALID', 'Lesson progress persistence was not acknowledged safely.');
+      const saved = result[0];
+      if (saved.assignment_id !== selected.id || saved.learner_id !== context.userId
+          || saved.lesson_revision_id !== requestedRevisionId || saved.status !== status
+          || (saved.current_step_id ?? null) !== currentStepId) {
+        fail('BQ_DISCIPLESHIP_PROGRESS_ACK_INVALID', 'Lesson progress persistence acknowledgement did not match the requested state.');
+      }
+      return saved;
     },
     async savePrivateResponse({ lessonRevisionId, stepId, response, pair, context }) {
       scope(pair, context, true);
       const client = await db(context);
       const selected = await assignment(client, pair, lessonRevisionId);
+      const requestedRevisionId = required(lessonRevisionId);
+      const requestedStepId = required(stepId);
       assertContext(context);
-      const result = await rows(client.from('v7_lesson_responses').upsert({ assignment_id: selected.id, lesson_revision_id: required(lessonRevisionId),
-        lesson_step_id: required(stepId), learner_id: context.userId, response,
-      }, { onConflict: 'assignment_id,lesson_step_id,learner_id' }).select('id'));
-      return result[0];
+      const result = await rows(client.from('v7_lesson_responses').upsert({ assignment_id: selected.id, lesson_revision_id: requestedRevisionId,
+        lesson_step_id: requestedStepId, learner_id: context.userId, response,
+      }, { onConflict: 'assignment_id,lesson_step_id,learner_id' })
+        .select('id,assignment_id,learner_id,lesson_revision_id,lesson_step_id,updated_at'));
+      assertContext(context);
+      if (result.length !== 1) fail('BQ_DISCIPLESHIP_RESPONSE_ACK_INVALID', 'Private response persistence was not acknowledged safely.');
+      const saved = result[0];
+      if (!String(saved.id ?? '').trim() || saved.assignment_id !== selected.id || saved.learner_id !== context.userId
+          || saved.lesson_revision_id !== requestedRevisionId || saved.lesson_step_id !== requestedStepId) {
+        fail('BQ_DISCIPLESHIP_RESPONSE_ACK_INVALID', 'Private response persistence acknowledgement did not match the requested lesson step.');
+      }
+      return saved;
     },
     async setResponseShare({ lessonRevisionId, stepId, responseId, audienceUserIds, pair, context }) {
       scope(pair, context, true);
       if (audienceUserIds?.length !== 1 || audienceUserIds[0] !== pair.mentorId) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'Only the paired mentor can receive this response.');
       const client = await db(context);
       const selected = await assignment(client, pair, lessonRevisionId);
-      const owned = await rows(client.from('v7_lesson_responses').select('id').eq('id', required(responseId)).eq('assignment_id', selected.id)
+      const requestedResponseId = required(responseId);
+      const owned = await rows(client.from('v7_lesson_responses').select('id').eq('id', requestedResponseId).eq('assignment_id', selected.id)
         .eq('lesson_revision_id', required(lessonRevisionId)).eq('lesson_step_id', required(stepId)).eq('learner_id', context.userId));
       if (owned.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'This response does not belong to the requested assignment and step.');
       assertContext(context);
-      return rows(client.from('v7_response_shares').upsert({ response_id: responseId, recipient_id: pair.mentorId, share_state: 'shared', revoked_at: null }, { onConflict: 'response_id,recipient_id' }).select('id,share_state'));
+      const result = await rows(client.from('v7_response_shares').upsert({ response_id: requestedResponseId, recipient_id: pair.mentorId, share_state: 'shared', revoked_at: null }, { onConflict: 'response_id,recipient_id' })
+        .select('id,response_id,recipient_id,share_state,revoked_at'));
+      assertContext(context);
+      if (result.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_ACK_INVALID', 'Response sharing was not acknowledged safely.');
+      const saved = result[0];
+      if (!String(saved.id ?? '').trim() || saved.response_id !== requestedResponseId
+          || saved.recipient_id !== pair.mentorId || saved.share_state !== 'shared') {
+        fail('BQ_DISCIPLESHIP_SHARE_ACK_INVALID', 'Response sharing acknowledgement did not match the named mentor.');
+      }
+      return result;
     },
     async revokeResponseShare({ lessonRevisionId, stepId, responseId, recipientId, pair, context }) {
       scope(pair, context, true, false);
-      if (required(recipientId) !== pair.mentorId) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'Only the paired mentor share can be revoked.');
+      const requestedRecipientId = required(recipientId);
+      const requestedResponseId = required(responseId);
+      if (requestedRecipientId !== pair.mentorId) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'Only the paired mentor share can be revoked.');
       const client = await db(context);
-      const owned = await rows(client.from('v7_lesson_responses').select('id,assignment_id').eq('id', required(responseId))
+      const owned = await rows(client.from('v7_lesson_responses').select('id,assignment_id').eq('id', requestedResponseId)
         .eq('lesson_revision_id', required(lessonRevisionId)).eq('lesson_step_id', required(stepId)).eq('learner_id', context.userId));
       if (owned.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'This response does not belong to the requested learner, revision and step.');
       const linked = await rows(client.from('v7_pair_assignments').select('id,pair_id').eq('id', owned[0].assignment_id).eq('pair_id', pair.id));
@@ -161,10 +194,16 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       assertContext(context);
       const result = await rows(client.from('v7_response_shares')
         .update({ share_state: 'revoked', revoked_at: new Date().toISOString() })
-        .eq('response_id', responseId).eq('recipient_id', recipientId).eq('share_state', 'shared')
-        .select('id,share_state,revoked_at'));
+        .eq('response_id', requestedResponseId).eq('recipient_id', requestedRecipientId).eq('share_state', 'shared')
+        .select('id,response_id,recipient_id,share_state,revoked_at'));
+      assertContext(context);
       if (result.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_NOT_FOUND', 'This response is not currently shared with the paired mentor.');
-      return result[0];
+      const saved = result[0];
+      if (!String(saved.id ?? '').trim() || saved.response_id !== requestedResponseId
+          || saved.recipient_id !== requestedRecipientId || saved.share_state !== 'revoked' || !saved.revoked_at) {
+        fail('BQ_DISCIPLESHIP_SHARE_ACK_INVALID', 'Response share revocation acknowledgement did not match the requested share.');
+      }
+      return saved;
     },
   });
 }
