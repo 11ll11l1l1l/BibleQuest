@@ -270,19 +270,19 @@ grant execute on function private.v7_pair_has_user(uuid,uuid,boolean) to authent
 
 create or replace function private.v7_response_is_owned(target_response uuid, target_user uuid)
 returns boolean language sql stable security definer set search_path = ''
-as $
+as $bq$
   select exists (select 1 from public.v7_lesson_responses r where r.id=target_response and target_user=(select auth.uid()) and r.learner_id=target_user);
-$;
+$bq$;
 
 create or replace function private.v7_response_shared_with(target_response uuid, target_user uuid)
 returns boolean language sql stable security definer set search_path = ''
-as $
+as $bq$
   select exists (select 1 from public.v7_response_shares s where s.response_id=target_response and target_user=(select auth.uid()) and s.recipient_id=target_user and s.share_state='shared');
-$;
+$bq$;
 
 create or replace function private.v7_response_share_authorized(target_response uuid, target_user uuid, target_recipient uuid, require_active boolean)
 returns boolean language sql stable security definer set search_path = ''
-as $
+as $bq$
   select exists (
     select 1
     from public.v7_lesson_responses r
@@ -291,7 +291,7 @@ as $
     where r.id=target_response and target_user=(select auth.uid()) and r.learner_id=target_user and p.mentor_id=target_recipient
       and (not require_active or p.state='active')
   );
-$;
+$bq$;
 
 revoke all on function private.v7_response_is_owned(uuid,uuid) from public,anon;
 revoke all on function private.v7_response_shared_with(uuid,uuid) from public,anon;
@@ -302,14 +302,15 @@ grant execute on function private.v7_response_share_authorized(uuid,uuid,uuid,bo
 
 create or replace function private.v7_guard_published_library_revision()
 returns trigger language plpgsql set search_path = ''
-as $
+as $bq$
 begin
   if old.publication_state='published' then
     raise exception 'Published V7 Library revisions are immutable';
   end if;
-  return case when tg_op='DELETE' then old else new end;
+  if tg_op='DELETE' then return old; end if;
+  return new;
 end;
-$;
+$bq$;
 
 create trigger v7_library_revision_immutable
 before update or delete on public.v7_library_revisions
@@ -317,7 +318,7 @@ for each row execute function private.v7_guard_published_library_revision();
 
 create or replace function private.v7_guard_published_lesson_revision()
 returns trigger language plpgsql set search_path = ''
-as $
+as $bq$
 declare step_count bigint;
 begin
   if tg_op='DELETE' then
@@ -336,7 +337,7 @@ begin
   end if;
   return new;
 end;
-$;
+$bq$;
 
 create trigger v7_lesson_revision_immutable
 before insert or update or delete on public.v7_lesson_revisions
@@ -344,7 +345,7 @@ for each row execute function private.v7_guard_published_lesson_revision();
 
 create or replace function private.v7_guard_lesson_step_revision()
 returns trigger language plpgsql set search_path = ''
-as $
+as $bq$
 begin
   if tg_op <> 'INSERT' and exists (select 1 from public.v7_lesson_revisions r where r.id=old.lesson_revision_id and r.published_at is not null) then
     raise exception 'Steps in a published V7 lesson revision are immutable';
@@ -354,7 +355,7 @@ begin
   end if;
   return case when tg_op='DELETE' then old else new end;
 end;
-$;
+$bq$;
 
 create trigger v7_lesson_step_immutable
 before insert or update or delete on public.v7_lesson_steps
