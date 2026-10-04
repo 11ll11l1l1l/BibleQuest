@@ -169,3 +169,41 @@ test('published current translations remain reviewed while historical drafts sta
   item.translations.push(translatedFixture('fixture-r2', 'ja', 'draft'));
   assert.throws(() => parseV7ContentBundle(input), error => error.code === 'unreviewed_translation_published');
 });
+
+test('unsupported import fields report their exact path instead of silently discarding data', () => {
+  const cases = [
+    ['bundle.extra', input => { input.extra = { preserve: 'bundle metadata' }; }],
+    ['taxonomy[0].extra', input => { input.taxonomy[0].extra = 'term metadata'; }],
+    ['items[0].extra', input => { input.items[0].extra = 'item metadata'; }],
+    ['items[0].source.extra', input => { input.items[0].source.extra = 'source evidence'; }],
+    ['items[0].sourceContent.extra', input => { input.items[0].sourceContent.extra = 'content blocks'; }],
+    ['items[0].review.extra', input => { input.items[0].review.extra = 'review evidence'; }],
+    ['items[0].taxonomyLinks[0].extra', input => { input.items[0].taxonomyLinks[0].extra = 'link metadata'; }],
+    ['items[0].translations[0].extra', input => {
+      input.items[0].translations = [{ ...translatedFixture('fixture-r1'), extra: 'translation metadata' }];
+    }],
+    ['items[0].translations[0].content.extra', input => {
+      input.items[0].translations = [translatedFixture('fixture-r1')];
+      input.items[0].translations[0].content.extra = 'translated blocks';
+    }],
+  ];
+  for (const [path, mutate] of cases) {
+    const input = structuredClone(fixture);
+    mutate(input);
+    const before = structuredClone(input);
+    assert.throws(() => parseV7ContentBundle(input),
+      error => error instanceof V7ContentContractError && error.code === 'unknown_field' && error.path === path,
+      path);
+    assert.deepEqual(input, before, path + ' leaves source data intact');
+  }
+});
+
+test('recognized source provenance survives normalization and a JSON round trip', () => {
+  const input = structuredClone(fixture);
+  input.items[0].source = { kind: 'external', title: 'Fixture source', uri: 'https://example.org/fixture',
+    catalogId: 'fixture:catalog:1', revision: 'source-r1', date: '2026-10-01T12:00:00Z',
+    checksum: 'fixture-checksum', creator: 'Fixture author', organization: 'Fixture organization' };
+  const parsed = parseV7ContentBundle(input);
+  assert.deepEqual(parsed.items[0].source, input.items[0].source);
+  assert.deepEqual(parseV7ContentBundle(JSON.parse(JSON.stringify(parsed))), parsed);
+});
