@@ -1,6 +1,6 @@
 # V7 P0-B — Navigation and Information Architecture
 
-Status: P0-B proposal; not integrated. Current route keys are mapped below; final navigation placement and discipleship scope remain open.
+Status: P0-B revised proposal; not integrated. Route families are mapped below; navigation ratification and cross-lane data/security/communication reconciliation remain open.
 Owner: P0-B UX / information architecture
 Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: product-facing route and hierarchy decisions for Library, ONE 2 ONE, and small groups. This is a design contract; it does not change runtime routes or feature behavior.
@@ -17,9 +17,9 @@ This lane owns navigation hierarchy and the journeys below. It does not own sche
 |---|---|---|
 | Today | Resume a daily or assigned journey | Today, with one prominent Continue action and a small set of relevant next steps |
 | Bible | Read Scripture and open a passage in context | Reader at the selected/default passage |
-| Grow | Continue personal formation and individual discipleship curriculum | Grow overview with personal progress and available curriculum |
+| Grow | Continue personal formation, ONE 2 ONE pairing, curriculum, and learner-scoped communication | Grow overview with personal progress, active/pending pair state, and available curriculum |
 | Library | Find a book, devotional, or past teaching | Library browse with three explicit content types |
-| Community | Participate in congregation and group journeys | Community overview, with active congregation and groups |
+| Community | Participate in congregation, group journeys, and authorized small-group communication | Community overview, with active congregation, groups, and upcoming sessions |
 
 These labels are a proposed V7 hierarchy, not the current shell. At the baseline, `src/ui/shell.js` exposes `home`, `learn`, `play`, `grow`, and `more`. The table below shows a candidate regrouping for review; it is not yet ratified. Secondary destinations remain reachable from a clearly labeled More area, and no accepted capability becomes unreachable when a page is regrouped. The mobile/desktop presentation remains a P1 design decision.
 
@@ -70,9 +70,18 @@ Use topic/category tags to help people browse by need, while retaining the three
 
 Opening a Scripture reference from any Library item uses the shared Bible destination with the exact reference and translation context available to that item. Back returns to the item and reading position. Do not create an independent Scripture renderer inside Library.
 
-## Discipleship curriculum journey (scope pending)
+## ONE 2 ONE journey
 
-Candidate entry is **Grow → Discipleship**. V7's P0-A/P0-D drafts propose a curriculum foundation with individual lesson progress and exclude mentor/mentee pairing, synchronized pair status, private responses, and review workflows. That proposal conflicts with the user's earlier ONE 2 ONE requirement for pairing and the later question about reducing V7 scope. P0-B keeps this as an explicit freeze decision; it does not silently include or defer pairing.
+Entry is **Grow → ONE 2 ONE**. V7 includes mentor/mentee pairing, Track → Module → Lesson progress, the seven-step lesson flow, deep links/QR, and direct communication scoped to an active authorized pair.
+
+| Route | Learner view | Mentor view |
+|---|---|---|
+| ONE 2 ONE overview | Pair status, next lesson, and communication entry for an accepted active pair | Assigned active mentees and their explicitly shared lesson progress |
+| Pairing | Accept, decline, or view an authorized invitation and current pair status | Invite or manage a pairing only where the approved role/action permits |
+| Track / module | Published tracks and module progress | Assigned track context only where the accepted sharing contract permits |
+| Lesson | Current step, saved progress, and explicit sharing controls | Only progress or responses the learner explicitly shares under the approved contract |
+| Pair communication | Private direct conversation with the active mentor/mentee | Conversation limited to the same active pair |
+| Pair closure | End or leave a pairing and see its closed state | Closed-pair state; no ongoing access from the former relationship |
 
 | Step | Learner screen | Completion action |
 |---|---|---|
@@ -84,27 +93,26 @@ Candidate entry is **Grow → Discipleship**. V7's P0-A/P0-D drafts propose a cu
 | 6 | Pray | Use or write a prayer |
 | 7 | Action | Record the next action and finish/resume the lesson |
 
-A lesson can be resumed at its last saved step. Track → module → lesson remains the hierarchy; the learner sees progress at all three levels. Deep links and QR codes open the intended published track/module/lesson after required session state has loaded.
+Learners can resume the last saved lesson step. Deep links and QR codes open the intended published track, module, lesson, or authorized pair entry after session state has loaded; Back restores the originating context. Pairing does not itself reveal a learner's private reflection, prayer, notes, or answers. Any sharing is explicit and limited to the approved audience. Pair state, visible progress, message access, and pair termination must follow the P0-A data model and P0-C authorization contract; a route or pairing label grants no authority.
 
-For the curriculum-only proposal, learner reflections, prayer text, discussion answers, and notes remain private to the learner. If V7 includes mentor pairing, the route and visibility rules must be explicitly ratified against P0-A and P0-C before implementation; do not infer mentor access from a route or pairing label.
-
-The seven lesson steps remain a useful reusable curriculum structure regardless of whether paired mentoring is V7 or V8.
+The P0-D product decision includes pairing and scoped direct communication in V7. P0-A's current draft omits pair/message relationships and P0-C must bind the pair visibility and denial cases, so those remain cross-lane reconciliation items before P0 freeze.
 
 ## Small-group journey
 
-Entry is **Community → Groups → selected group**. The group home separates membership and schedule information from a live conversation session.
+Entry is **Community → Groups → selected group**. The group home separates membership and schedule information, the Leader Conversation Deck, live sessions, and authorized small-group communication.
 
 | Route | Leader view | Participant view |
 |---|---|---|
 | Groups | Create/join eligible groups; list active memberships | Join by valid invite and open memberships |
-| Group home | Members, upcoming session, prepared conversation deck | Session details and group resources |
+| Group home | Members, upcoming session, prepared deck, and group communication entry | Session details, group resources, and authorized group communication |
 | Deck setup | Choose/order prompt cards; attach Scripture to a card; save a session flow | Not shown |
-| Live conversation | Current card, previous/next navigation, broadcast action | Current prompt and Scripture only |
+| Live conversation | Current card, previous/next navigation, and broadcast action | Current prompt and Scripture only |
+| Group communication | Communicate within the selected authorized group/session audience | View and send only within the same authorized group/session audience |
 | Session wrap-up | Close session and retain approved shared next steps | Shared next steps, if the leader publishes them |
 
-During a live conversation, left/right moves between prepared cards and up broadcasts the selected card. Participant phones show the prompt and Scripture, without leader controls or a free-form group chat surface. The deck is a facilitation tool, not a second messaging product.
+During a live conversation, left/right moves between prepared cards and up broadcasts the selected card. Participant phones show the prompt and Scripture, without leader controls. The deck remains a facilitation surface; the separately scoped communication path must not turn deck display into an unrestricted chat or expose unrelated group/private content. Use an existing V6 communication capability where it meets the approved scope, or define a bounded V7 surface during P0 reconciliation.
 
-Never expose private notes, reflections, lesson answers, or a member's unshared prayer content in the group route. Existing group membership, congregation, role, and trusted mutation boundaries remain authoritative; a visible route or invite code does not authorize access by itself.
+Never expose private notes, reflections, lesson answers, or a member's unshared prayer content in group routes. Group communication is limited to authorized membership and the approved group/session audience; congregation, role, and server authorization remain authoritative. A visible route or invite code does not authorize access by itself. P0-A/C/D must reconcile message ownership, audience, retention, lifecycle, and denial behavior before implementation.
 
 ## Journey links and shared components
 
@@ -120,13 +128,13 @@ P0-B is not ready to integrate until the following are reconciled with P0-A/C/D 
 
 - The five primary destinations and More hierarchy are reviewed against the complete V6 route/surface inventory. The inventory must use route keys from the live router/registry and assign each route a product family, canonical entry, session/congregation prerequisite, deep-link behavior, and disposition. The conceptual labels in this draft are not route IDs.
 - Library has the three required content types, browse/detail paths, source attribution, and Reader handoff.
-- The track/module/lesson hierarchy and seven lesson steps are retained. V7 pairing scope remains an explicit product decision; the P0-B route map must match the ratified decision and P0-A/C data/security boundaries.
-- Group membership, deck setup, live session, and wrap-up are distinct destinations with leader/participant presentation boundaries.
-- Private reflection and group-content boundaries are explicit and consistent with P0-A/C.
+- The track/module/lesson hierarchy, seven lesson steps, mentor/mentee pairing, deep links/QR, and scoped direct communication are represented. P0-A must map pair/message relationships and P0-C must define visibility/denial boundaries before P0 freeze.
+- Group membership, deck setup, live session, scoped small-group communication, and wrap-up are distinct destinations with leader/participant presentation boundaries and explicit message audience/lifecycle ownership.
+- Private reflections, prayers, notes, and answers remain private unless explicitly shared; pair/group messages remain scoped to the authorized relationship or audience under P0-A/C/D.
 - Route behavior states session/congregation hydration and destination-local loading/error/empty states.
 - The approved central Drive media contract is reflected; the older ImageKit-first proposal is not treated as active.
 - No runtime route, backend, schema, or content-policy change was introduced by this architecture deliverable.
 
 ## Next implementation boundary
 
-P1 route implementation and P2/P3 feature lanes start only after the integration owner freezes the P0 contracts and resolves the V7 discipleship scope. P0-B does not mark feature implementation or user acceptance complete.
+The V7 product decision includes mentor/mentee pairing and scoped direct/small-group communication. P0-B remains open only for cross-lane reconciliation of route placement, P0-A pair/message modeling, P0-C visibility/denial rules, and the integration owner's serialized route/ownership freeze. P1 route implementation starts after that combined P0 freeze. P0-B does not mark feature implementation or user acceptance complete.
