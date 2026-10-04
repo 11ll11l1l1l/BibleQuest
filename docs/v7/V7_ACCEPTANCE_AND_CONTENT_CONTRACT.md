@@ -30,6 +30,7 @@ This contract defines how V7 scope, content provenance, permissions, and evidenc
 - [ ] Keyboard/focus, contrast, text scaling, reduced motion, and sound-off behavior are checked on affected routes; physical-only behavior is labeled separately.
 - [ ] Responsive behavior is checked at representative phone, tablet, and desktop widths.
 - [ ] Reader, Bible translations, BSB audio, offline behavior, push, assignments, congregation isolation, and existing security contracts continue to use their V6 owners. V7 presentation work does not fork those engines.
+- [ ] ONE 2 ONE includes mentor/mentee pairing, Track → Module → Lesson progress, the seven-step lesson flow, and private communication scoped to active authorized relationships. Pairing, assignment visibility, response visibility, and direct messaging have explicit role/tenant denial cases.
 - [ ] V7 media/file flows follow the approved centralized BibleQuest Google Drive model: Drive stores bytes, Supabase stores metadata/authorization/moderation state, no Drive credentials reach clients, and all delivery is authorized by BibleQuest. Reconcile the older ImageKit-first document before media implementation.
 - [ ] The final candidate passes the existing required feature, security, database, browser/PWA, artifact, and exact-SHA release gates. No evidence transfers to a changed SHA unless the governing gate permits it.
 
@@ -40,7 +41,7 @@ This contract defines how V7 scope, content provenance, permissions, and evidenc
 | Licensed Scripture and translation assets | Global catalog, subject to each source's license and attribution | Never fabricate or silently substitute text. Keep translation/source identity and licensing visible to the owning content policy. |
 | BibleQuest-created or licensed learning content | Global only after content approval and rights are recorded | Discipleship tracks use Track → Module → Lesson and the accepted Scripture → Understand → Discuss → Reflect → Apply → Pray → Action structure. Content is BibleQuest-created, church-approved, or properly licensed. |
 | Congregation content and ministry operations | Explicit active congregation; narrower group/team/couple/family scope where applicable | Use the active V6 tenant context and server authorization. Do not infer a congregation or widen a scoped item to global. |
-| Personal progress, reflections, and private notes | Owning user unless an explicit existing share contract says otherwise | Preserve privacy through route changes, account switching, sync, and offline behavior. |
+| Personal progress, reflections, and private notes | Owning user unless an explicit existing share contract says otherwise; ONE 2 ONE pairing has only the explicitly approved shared progress/communication scope | Preserve privacy through route changes, account switching, sync, and offline behavior. Pairing does not grant blanket access to all private notes, prayers, or reflections. |
 | Uploaded photos and files | Metadata/permissions/moderation in Supabase; bytes in the central BibleQuest Google Drive account | Preserve owner, exact scope, visibility, Drive file ID, checksum, type, size, review state, and lifecycle. Private by default; no Drive credentials or direct Drive access for users. |
 | Shared global resources | Explicitly public/global by approved owner and license | Global visibility is deliberate and auditable; absence of congregation_id alone is not proof of public authorization. |
 
@@ -48,8 +49,8 @@ This contract defines how V7 scope, content provenance, permissions, and evidenc
 
 The role names Member, Leader, Pastor, and Admin are not substitutes for action-level authorization. For each route and mutation, the acceptance matrix must record: action, allowed role, required congregation/group context, server-side authority, and denial evidence.
 
-- Member: access only published/global content and the user's own records, plus resources explicitly shared with that user under existing V6 rules.
-- Leader: receives no new capability from the label alone. Any group or congregation action must match an existing V6 permission; otherwise it remains unavailable pending an approved V7 decision.
+- Member: access only published/global content and the user's own records, plus resources explicitly shared with that user under existing V6 rules. ONE 2 ONE access is limited to the active accepted pair, assigned lesson, and explicit message/share scope.
+- Leader: may facilitate assigned small-group sessions and manage their prepared conversation decks only under existing/approved scoped authority. Group leadership does not expose a member's ONE 2 ONE private messages, prayer, or reflection.
 - Pastor: may moderate or publish congregation-owned material only where the existing V6 authorization permits it. This does not grant global publishing or cross-congregation access.
 - Admin: system-wide policy/provider and global-content actions remain behind existing privileged Admin checks. Admin status does not waive provenance, licensing, audit, or least-privilege requirements.
 
@@ -103,9 +104,9 @@ Evidence records name candidate SHA, environment, role/scope, route/action, tool
 ## Cross-lane decisions that must be reconciled before P0 freeze
 
 1. **Route hierarchy:** P0-B proposes the five primary destinations and a More area described above. Treat this as the design proposal; P0 integration must accept it and map all existing V6 routes to it before Phase 0 closes.
-2. **ONE 2 ONE scope:** P0-A's curriculum-only model matches the approved V7 roadmap. P0-B's active paired journey and P0-C's pairing access policy conflict with the approved deferral of real pairing to V8. V7 acceptance covers tracks/modules/lessons and individual progress only; remove pairing-dependent V7 requirements or obtain an explicit roadmap change before freezing.
+2. **ONE 2 ONE scope:** the approved V7 roadmap includes mentor/mentee pairing, Track → Module → Lesson, the seven-step flow, deep links/QR, and scoped small-group/direct communication. P0-B/C cover parts of the paired journey; P0-A currently omits pairing and private communication entities. The P0 integration owner must update or explicitly map those logical relationships, message ownership, visibility, and lifecycle before freezing. Private responses, prayer, notes, and progress must each have an explicit audience; pairing alone does not make them visible.
 3. **Media storage:** the approved V7 decision is one central BibleQuest Google Drive account for bytes, with Supabase as metadata/moderation/permission authority. P0-A reflects this. The older ImageKit-first docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md and any P0-C references to it must be reconciled as superseded before media implementation.
-4. **Admin meaning:** preserve P0-C's distinction between congregation Admin and platform Admin/Owner. The route and feature contract must name which one is meant; neither role grants access to personal reflections or another congregation's records by default.
+4. **Admin meaning:** preserve P0-C's distinction between congregation Admin and platform Admin/Owner. The route and feature contract must name which one is meant; neither role grants access to personal reflections, private pair messages, or another congregation's records by default.
 
 ## Route agreement and Phase 0 handoff
 
