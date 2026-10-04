@@ -1,56 +1,56 @@
-import {
-  LIBRARY_ROUTE_KEYS,
-  createLibraryContentTypeRegistry,
-  presentLibraryItem,
-} from './contracts.js';
+import { localization } from '../../app/localization.js';
+import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
+import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId } from './discovery.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  "'": '&#39;',
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[character]));
 
-const itemCard = (item, registry) => {
-  const view = presentLibraryItem(item, registry);
-  const readingTime = view.readingMinutes ? `<span>${view.readingMinutes} min read</span>` : '';
-  return `<li class="bq-library-card"><button type="button" class="bq-library-card__open" data-library-item="${escapeHtml(view.id)}"><span class="bq-eyebrow">${escapeHtml(view.contentTypeLabel)}</span><span class="bq-library-card__title">${escapeHtml(view.title)}</span><span>${escapeHtml(view.supportingText)}</span><span class="bq-library-card__meta">${escapeHtml(view.locale || 'Language not specified')} ${readingTime}</span></button></li>`;
-};
-
 export function createLibraryPage({
-  service,
-  registry = createLibraryContentTypeRegistry(),
-  navigate,
-  initialQuery = '',
-  initialContentType = '',
+  service, registry = createLibraryContentTypeRegistry(), navigate,
+  initialQuery = '', initialContentType = '', initialTaxonomyId,
 } = {}) {
   if (typeof service?.list !== 'function' || typeof service?.getState !== 'function' || typeof service?.subscribe !== 'function') {
     throw new Error('Library page requires a Library service.');
   }
-  if (typeof navigate !== 'function') {
-    throw new Error('Library page requires the app route integration callback.');
-  }
-
-  const typeOptions = registry.list().map(type =>
-    `<option value="${escapeHtml(type.id)}">${escapeHtml(type.label)}</option>`).join('');
+  if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
+  const t = (key, values) => localization.t(key, { values });
+  const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
+    ? t('v7.library.type.' + type.id) : type.label;
+  const typeOptions = () => registry.list().map(type =>
+    `<option value="${escapeHtml(type.id)}">${escapeHtml(typeLabel(type))}</option>`).join('');
+  const itemCard = item => {
+    const view = presentLibraryItem(item, registry);
+    const definition = registry.get(item.contentType);
+    const supportingText = item.summary || (['book', 'devotional', 'past_teaching'].includes(item.contentType)
+      ? t('v7.library.description.' + item.contentType) : view.supportingText);
+    const readingTime = view.readingMinutes
+      ? `<span>${escapeHtml(t('v7.library.readingTime', { minutes: view.readingMinutes }))}</span>` : '';
+    return `<li class="bq-library-card"><button type="button" class="bq-library-card__open" data-library-item="${escapeHtml(view.id)}"><span class="bq-eyebrow">${escapeHtml(typeLabel(definition))}</span><span class="bq-library-card__title">${escapeHtml(view.title)}</span><span>${escapeHtml(supportingText)}</span><span class="bq-library-card__meta"><span lang="${escapeHtml(view.locale || '')}">${escapeHtml(view.locale || t('v7.library.languageUnknown'))}</span> ${readingTime}</span></button></li>`;
+  };
 
   return Object.freeze({
-    title: 'Library',
+    title: t('v7.library.title'),
     html: `<main class="bq-panel bq-library" data-library-page>
-      <p class="bq-eyebrow">LEARN</p>
-      <h1>Library</h1>
-      <p>Browse trusted Books, Devotionals, and Past Teachings.</p>
+      <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
+      <h1>${escapeHtml(t('v7.library.title'))}</h1>
+      <p>${escapeHtml(t('v7.library.intro'))}</p>
       <form data-library-search>
-        <label for="bq-library-query">Search Library</label>
+        <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
         <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
-        <label for="bq-library-type">Content type</label>
-        <select id="bq-library-type" name="contentType"><option value="">All content</option>${typeOptions}</select>
-        <button type="submit" class="bq-primary-button">Search</button>
+        <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
+        <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
+        <label for="bq-library-taxonomy">${escapeHtml(t('v7.library.taxonomy'))}</label>
+        <select id="bq-library-taxonomy" name="taxonomyId"><option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option></select>
+        <div class="bq-actions">
+          <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
+          <button type="button" class="bq-secondary-button" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
+        </div>
       </form>
-      <p data-library-status role="status" aria-live="polite">Loading Library…</p>
-      <button type="button" data-library-retry hidden>Retry</button>
-      <ul data-library-results aria-label="Library items"></ul>
+      <p data-library-status role="status" aria-live="polite">${escapeHtml(t('v7.library.loading'))}</p>
+      <button type="button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
+      <ul data-library-results aria-label="${escapeHtml(t('v7.library.items'))}"></ul>
+      <button type="button" class="bq-secondary-button" data-library-more hidden>${escapeHtml(t('v7.library.more'))}</button>
     </main>`,
     mount(root) {
       const page = root.querySelector('[data-library-page]');
@@ -60,69 +60,106 @@ export function createLibraryPage({
       const form = page.querySelector('[data-library-search]');
       const queryInput = page.querySelector('[name="query"]');
       const typeInput = page.querySelector('[name="contentType"]');
+      const termInput = page.querySelector('[name="taxonomyId"]');
       const retry = page.querySelector('[data-library-retry]');
-      const restoredQuery = String(initialQuery ?? '').trim().slice(0, 120);
-      const initialType = String(initialContentType ?? '').trim();
-      queryInput.value = restoredQuery;
-      typeInput.value = registry.has(initialType) ? initialType : '';
-      let lastRequest = { query: queryInput.value, contentType: typeInput.value };
+      const more = page.querySelector('[data-library-more]');
+      queryInput.value = String(initialQuery ?? '').trim().slice(0, 120);
+      typeInput.value = registry.has(String(initialContentType ?? '').trim()) ? String(initialContentType).trim() : '';
+      let restoredTerm;
+      try { restoredTerm = normalizeLibraryTaxonomyId(initialTaxonomyId ?? service.getState().taxonomyId); }
+      catch { restoredTerm = ''; }
       let disposed = false;
-      let unsubscribe = null;
-
+      let lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: restoredTerm, includeTaxonomy: true };
+      let lastTaxonomy;
+      let lastLocale;
+      let started = false;
+      const updateTerms = current => {
+        const locale = localization.getLocale();
+        if (lastTaxonomy === current.taxonomy && lastLocale === locale) return;
+        const selected = current.status === 'idle' && started ? '' : termInput.value || restoredTerm;
+        const terms = current.taxonomy ?? [];
+        termInput.innerHTML = `<option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option>`
+          + ['category', 'topic', 'tag'].map(kind => {
+            const options = terms.filter(term => term.kind === kind).map(term => {
+              const label = libraryTaxonomyLabel(term, locale);
+              return `<option value="${escapeHtml(term.id)}" lang="${escapeHtml(label.locale || locale)}">${escapeHtml(label.label)}</option>`;
+            }).join('');
+            return options ? `<optgroup label="${escapeHtml(t('v7.content.taxonomy.' + kind))}">${options}</optgroup>` : '';
+          }).join('');
+        // Retain a restored filter until taxonomy arrives, including an unknown/removed term.
+        // The backend returns an empty result for unknown IDs rather than broadening the search.
+        if (selected && !terms.some(term => term.id === selected)) {
+          termInput.innerHTML += `<option value="${escapeHtml(selected)}">${escapeHtml(selected)}</option>`;
+        }
+        termInput.value = selected;
+        lastTaxonomy = current.taxonomy;
+        lastLocale = locale;
+      };
       const render = current => {
         if (disposed) return;
+        if (started && current.status === 'idle') {
+          queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
+          lastRequest = { query: '', contentType: '', taxonomyId: '', includeTaxonomy: true };
+        }
+        updateTerms(current);
         const messages = {
-          idle: 'Browse Books, Devotionals, and Past Teachings.',
-          loading: 'Loading Library…',
-          empty: 'No published items match this search.',
-          error: current.error || 'Library could not load. Try again.',
-          ready: `${current.items.length} Library item${current.items.length === 1 ? '' : 's'}`,
+          idle: t('v7.library.intro'), loading: t('v7.library.loading'),
+          empty: t('v7.library.empty'), error: globalThis.navigator?.onLine === false
+            ? t('v7.library.offline') : t('v7.library.error'),
+          ready: t('v7.library.count', { count: current.items.length }),
         };
-        status.textContent = messages[current.status] || 'Library is unavailable.';
-        results.innerHTML = current.status === 'ready'
-          ? current.items.map(item => itemCard(item, registry)).join('')
-          : '';
+        status.textContent = current.loadingMore ? t('v7.library.loadingMore')
+          : current.moreError ? t('v7.library.moreError') : messages[current.status] || t('v7.library.unavailable');
+        results.innerHTML = current.status === 'ready' ? current.items.map(itemCard).join('') : '';
         status.setAttribute('data-library-state', current.status);
-        results.setAttribute('aria-busy', String(current.status === 'loading'));
+        results.setAttribute('aria-busy', String(current.status === 'loading' || Boolean(current.loadingMore)));
         retry.hidden = current.status !== 'error';
+        more.hidden = current.status !== 'ready' || !current.nextCursor || typeof service.loadMore !== 'function';
+        more.disabled = Boolean(current.loadingMore);
       };
-
+      const submit = () => {
+        lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: termInput.value };
+        restoredTerm = termInput.value;
+        void service.list({ ...lastRequest });
+      };
       const onSubmit = event => {
         if (event.target !== form) return;
         event.preventDefault();
-        lastRequest = { query: queryInput.value, contentType: typeInput.value };
-        void service.list({ ...lastRequest });
+        submit();
       };
       const onClick = event => {
         const target = event.target instanceof Element
-          ? event.target.closest('[data-library-item], [data-library-retry]') : null;
+          ? event.target.closest('[data-library-item], [data-library-retry], [data-library-clear], [data-library-more]') : null;
         if (!target) return;
         if (target.hasAttribute('data-library-retry')) {
           if (!retry.hidden) void service.list({ ...lastRequest });
           return;
         }
+        if (target.hasAttribute('data-library-more')) {
+          if (!more.hidden && !more.disabled) void service.loadMore();
+          return;
+        }
+        if (target.hasAttribute('data-library-clear')) {
+          queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
+          submit();
+          return;
+        }
         const current = service.getState();
-        navigate({
-          routeKey: LIBRARY_ROUTE_KEYS.item,
-          resourceId: target.getAttribute('data-library-item'),
-          returnTo: {
-            routeKey: LIBRARY_ROUTE_KEYS.browse,
-            query: current.query,
-            contentType: current.contentType,
-          },
-        });
+        navigate({ routeKey: LIBRARY_ROUTE_KEYS.item, resourceId: target.getAttribute('data-library-item'),
+          returnTo: { routeKey: LIBRARY_ROUTE_KEYS.browse, query: current.query,
+            contentType: current.contentType, taxonomyId: current.taxonomyId || '' } });
       };
-
       form.addEventListener('submit', onSubmit);
       page.addEventListener('click', onClick);
-      unsubscribe = service.subscribe(render);
+      const unsubscribe = service.subscribe(render);
       render(service.getState());
+      started = true;
       void service.list({ ...lastRequest });
       return () => {
         disposed = true;
         form.removeEventListener('submit', onSubmit);
         page.removeEventListener('click', onClick);
-        unsubscribe?.();
+        unsubscribe();
       };
     },
   });

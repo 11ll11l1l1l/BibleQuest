@@ -5,6 +5,8 @@ import {
   normalizeLibraryItem,
 } from './contracts.js';
 
+import { normalizeLibraryTaxonomy, normalizeLibraryTaxonomyId } from './discovery.js';
+
 const cleanQuery = value => String(value ?? '').trim().slice(0, 120);
 
 export function createLibraryService({ repository, registry = createLibraryContentTypeRegistry() } = {}) {
@@ -12,7 +14,8 @@ export function createLibraryService({ repository, registry = createLibraryConte
     throw libraryError('Library service requires a Library repository.', 'BQ_LIBRARY_REPOSITORY');
   }
 
-  let state = createLibraryViewState();
+  const emptyDiscovery = () => ({ taxonomy: Object.freeze([]), taxonomyId: '', loadingMore: false, moreError: null });
+  let state = createLibraryViewState(emptyDiscovery());
   let requestId = 0;
   const listeners = new Set();
   const snapshot = () => state;
@@ -26,7 +29,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
     getState: snapshot,
     reset() {
       requestId += 1;
-      return publish(createLibraryViewState());
+      return publish(createLibraryViewState(emptyDiscovery()));
     },
     subscribe(listener) {
       if (typeof listener !== 'function') throw new TypeError('Library subscriber must be a function.');
@@ -34,21 +37,29 @@ export function createLibraryService({ repository, registry = createLibraryConte
       return () => listeners.delete(listener);
     },
 
-    async list({ query = '', contentType = '', limit = 24, cursor = null } = {}) {
+    async list({ query = '', contentType = '', taxonomyId = '', includeTaxonomy = false, limit = 24, cursor = null, append = false } = {}) {
       const normalizedQuery = cleanQuery(query);
       const typeId = String(contentType ?? '').trim();
       if (typeId && !registry.has(typeId)) {
         throw libraryError('Choose a supported Library content type.', 'BQ_LIBRARY_CONTENT_TYPE');
       }
+      const termId = normalizeLibraryTaxonomyId(taxonomyId);
+      if (append && (state.loadingMore || state.status !== 'ready' || !state.nextCursor
+          || normalizedQuery !== state.query || typeId !== state.contentType || termId !== state.taxonomyId
+          || cursor !== state.nextCursor)) return state;
+      const previousItems = append ? state.items : [];
       const boundedLimit = Math.max(1, Math.min(60, Math.floor(Number(limit) || 24)));
       const operation = ++requestId;
-      publish({
+      publish(append ? { loadingMore: true, moreError: null } : {
         status: 'loading',
         items: [],
         error: null,
         selectedItem: null,
         query: normalizedQuery,
         contentType: typeId,
+        taxonomyId: termId,
+        loadingMore: false,
+        moreError: null,
         nextCursor: null,
       });
 
@@ -58,17 +69,25 @@ export function createLibraryService({ repository, registry = createLibraryConte
           contentType: typeId || null,
           limit: boundedLimit,
           cursor: cursor ?? null,
+          ...(termId ? { taxonomyId: termId } : {}),
+          ...(includeTaxonomy ? { includeTaxonomy: true } : {}),
         });
         if (operation !== requestId) return state;
-        const items = result.items.map(item => normalizeLibraryItem(item, registry));
+        const incoming = result.items.map(item => normalizeLibraryItem(item, registry));
+        const items = append ? [...new Map([...previousItems, ...incoming].map(item => [item.id, item])).values()] : incoming;
+        const taxonomy = result.taxonomy ? normalizeLibraryTaxonomy(result.taxonomy) : state.taxonomy;
         return publish({
           status: items.length ? 'ready' : 'empty',
           items,
+          taxonomy,
+          loadingMore: false,
+          moreError: null,
           nextCursor: result.nextCursor ?? null,
           error: null,
         });
       } catch (error) {
         if (operation !== requestId) return state;
+        if (append) return publish({ loadingMore: false, moreError: error?.message || 'Library could not load more items. Try again.' });
         publish({
           status: 'error',
           items: [],
@@ -80,11 +99,16 @@ export function createLibraryService({ repository, registry = createLibraryConte
       }
     },
 
+    async loadMore() {
+      return this.list({ query: state.query, contentType: state.contentType, taxonomyId: state.taxonomyId,
+        cursor: state.nextCursor, append: true });
+    },
+
     async getItem(id) {
       const key = String(id ?? '').trim();
       if (!key) throw libraryError('A Library item id is required.', 'BQ_LIBRARY_ITEM_ID');
       const operation = ++requestId;
-      publish({ status: 'loading', items: [], error: null, selectedItem: null, nextCursor: null });
+      publish({ status: 'loading', items: [], error: null, selectedItem: null, nextCursor: null, loadingMore: false, moreError: null });
       try {
         const record = await repository.getPublishedById(key);
         if (operation !== requestId) return state;
