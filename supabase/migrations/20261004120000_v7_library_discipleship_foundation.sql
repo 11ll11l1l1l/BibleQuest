@@ -318,7 +318,7 @@ for each row execute function private.v7_guard_published_library_revision();
 create or replace function private.v7_guard_published_lesson_revision()
 returns trigger language plpgsql set search_path = ''
 as $
-declare revision_id uuid;
+declare step_count bigint;
 begin
   if tg_op='DELETE' then
     if old.published_at is not null then raise exception 'Published V7 lesson revisions are immutable'; end if;
@@ -331,8 +331,8 @@ begin
     raise exception 'Create a draft lesson revision and publish it after its steps are complete';
   end if;
   if tg_op='UPDATE' and old.published_at is null and new.published_at is not null then
-    select count(*) into revision_id from public.v7_lesson_steps s where s.lesson_revision_id=new.id;
-    if revision_id <> 7 then raise exception 'A published lesson revision must contain all seven ordered steps'; end if;
+    select count(*) into step_count from public.v7_lesson_steps s where s.lesson_revision_id=new.id;
+    if step_count <> 7 then raise exception 'A published lesson revision must contain all seven ordered steps'; end if;
   end if;
   return new;
 end;
