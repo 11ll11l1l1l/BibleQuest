@@ -134,6 +134,42 @@ jobs:
           BQ_BASE_URL: http://127.0.0.1:4173/
         run: node tests/v3-accessibility-smoke.mjs
 
+      - name: Seal successful exact-SHA certification
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+          const candidateSha = process.env.BQ_EXACT_SHA;
+          const integrity = JSON.parse(await readFile('dist-v6/bq-artifact-integrity.json', 'utf8'));
+          if (integrity.sourceSha !== candidateSha) {
+            throw new Error(`artifact source SHA ${integrity.sourceSha} does not match candidate ${candidateSha}`);
+          }
+          const certification = {
+            schemaVersion: 1,
+            candidateSha,
+            artifactSha256: integrity.artifactSha256,
+            fileCount: integrity.fileCount,
+            totalBytes: integrity.totalBytes,
+            checks: [
+              'lint',
+              'format',
+              'typecheck',
+              'v7-unit-contract',
+              'exact-sha-build-identity',
+              'artifact-integrity',
+              'performance-budgets',
+              'built-artifact-browser-parity',
+              'pwa-built-artifact',
+              'built-artifact-accessibility'
+            ]
+          };
+          await mkdir('artifacts/v7', { recursive: true });
+          await writeFile('artifacts/v7/certification.json', `${JSON.stringify(certification, null, 2)}\n`, 'utf8');
+          NODE
+          sha256sum artifacts/v7/build-report.json artifacts/v7/certification.json dist-v6/bq-artifact-integrity.json > artifacts/v7/evidence.sha256
+
       - name: Preview diagnostics
         if: always()
         run: cat /tmp/bq-v7-preview.log || true
@@ -147,4 +183,6 @@ jobs:
           retention-days: 14
           path: |
             artifacts/v7/build-report.json
+            artifacts/v7/certification.json
+            artifacts/v7/evidence.sha256
             dist-v6/
