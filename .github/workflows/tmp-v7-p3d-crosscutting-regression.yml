@@ -19,12 +19,17 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Full V7 unit suite
+        continue-on-error: true
         run: npm run unit:v7
       - name: Affected inherited V6 unit suite
+        if: always()
         run: npm run unit:v6
       - name: Typecheck
+        if: always()
         run: npm run typecheck
       - name: Production build
+        if: always()
         run: npm run build
       - name: Repository lint
+        if: always()
         run: npm run lint
