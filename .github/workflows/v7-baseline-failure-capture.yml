@@ -1,0 +1,43 @@
+name: V7 baseline failure capture
+
+on:
+  push:
+    branches:
+      - v7/p3-d-owner-history-after-pair-end-20261004
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v7/p3-d-owner-history-after-pair-end-20261004
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+      - name: Capture baseline failures individually
+        run: |
+          git fetch origin v7/development
+          rm -rf /tmp/bq-v7-baseline
+          git worktree add --detach /tmp/bq-v7-baseline origin/v7/development
+          : > V7_BASELINE_FAILURES.tmp
+          for test_file in /tmp/bq-v7-baseline/tests/v7/*.test.mjs; do
+            rel="tests/v7/$(basename "$test_file")"
+            if ! (cd /tmp/bq-v7-baseline && node --test "$rel" >/dev/null 2>&1); then
+              echo "$rel" >> V7_BASELINE_FAILURES.tmp
+            fi
+          done
+          if [ ! -s V7_BASELINE_FAILURES.tmp ]; then
+            echo "NONE" > V7_BASELINE_FAILURES.tmp
+          fi
+      - name: Commit diagnostic result to feature branch
+        run: |
+          git config user.name 'BibleQuest V7 Lane D'
+          git config user.email '138889199+11ll11l1l@users.noreply.github.com'
+          git add V7_BASELINE_FAILURES.tmp
+          git commit -m 'ci(v7): record baseline failing test files'
+          git push origin HEAD:v7/p3-d-owner-history-after-pair-end-20261004
