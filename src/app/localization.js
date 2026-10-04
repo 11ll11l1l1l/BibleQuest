@@ -3,11 +3,13 @@ import { en, LOCALE_KEY_INVENTORY } from '../content/locales/en.js';
 import { tl } from '../content/locales/tl.js';
 import { ceb } from '../content/locales/ceb.js';
 import { v5CloseoutLocales } from '../content/locales/v5-closeout.js';
+import { v7ContentEn, V7_CONTENT_KEY_INVENTORY } from '../content/locales/v7-content.js';
 
 const STORAGE_KEY = 'locale';
 const DEFAULT_LOCALE = 'en';
+const keyInventory = Object.freeze([...new Set([...LOCALE_KEY_INVENTORY, ...V7_CONTENT_KEY_INVENTORY])].sort());
 const dictionaries = Object.freeze({
-  en: Object.freeze({ ...en, ...v5CloseoutLocales.en }),
+  en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn }),
   tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl }),
   ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb })
 });
@@ -39,7 +41,7 @@ export function setLocale(locale) {
 export function getMissingLocaleKeys(locale, localeDictionaries = dictionaries) {
   const normalized = normalizeLocale(locale);
   const dictionary = localeDictionaries[normalized] || {};
-  return LOCALE_KEY_INVENTORY.filter(key => !String(dictionary[key] ?? '').trim());
+  return keyInventory.filter(key => !String(dictionary[key] ?? '').trim());
 }
 
 export function t(key, options = {}) {
@@ -56,7 +58,7 @@ export function t(key, options = {}) {
 export const localization = Object.freeze({
   DEFAULT_LOCALE,
   supportedLocales,
-  keyInventory: LOCALE_KEY_INVENTORY,
+  keyInventory,
   getLocale,
   setLocale,
   t,
