@@ -44,3 +44,15 @@ Operational progress is projected to pair/learner/revision IDs, current step ID,
 Focused checks: `node --trace-uncaught tests/v7/discipleship-core.test.mjs`.
 
 These checks cover missing session/scope, participant and congregation denial, inactive pairing, lesson sequence/revision binding, versioned hierarchy normalization, progress revision binding/private projection, mentee-only writes and stale congregation results. They do not certify a backend adapter, RLS policy, browser route or physical device path.
+
+## Integrated schema adapter (2026-10-04)
+
+`src/app/discipleship-supabase-adapter.js` binds the service to Lane A's integrated `v7_*` tables. `createSupabaseDiscipleshipService({ client, session, membership })` accepts the existing authenticated client or its provider and composes a context guard before client resolution and immediately before mutations. Shared API/bootstrap/route registration remains with Lane A; this factory is its injection interface.
+
+Curriculum is restricted to non-cancelled pair assignments and their exact published lesson revisions. Track/module versions come from their physical `revision_id`; lesson versions come from the assigned `v7_lesson_revisions.id`, never the logical lesson revision token or latest revision. Draft/withdrawn hierarchy and other-congregation tracks are rejected even for author clients with broader RLS visibility. Empty assignments return empty curriculum. Multiple active assignments for one requested revision fail explicitly rather than selecting an arbitrary assignment; supporting an explicit assignment selector is a future bounded interface change.
+
+Progress maps the database states `not_started`, `in_progress`, and `completed` and uses the physical assignment/learner conflict key. Completion requires its timestamp. Writes allowlist fields and use the current mentee identity. Responses are persisted separately and create no sharing row by default. Explicit sharing validates the response's assignment, lesson revision, step, and owner before granting the paired mentor access. No private body is selected for operational progress or sharing validation.
+
+Verification: `node --test tests/v7/discipleship*.test.mjs` — 12 passing tests on Node 24.19.0. Includes assigned-revision retention, unassigned revision rejection, cross-tenant curriculum denial, ambiguous assignment denial, mentee-only writes, private progress projection, response sharing scope, and context switching during assignment lookup before mutation. These are local service/query-contract checks; live database and route/browser evidence remain open. No schema change or connected-project DDL was performed.
+
+Next shared integration: bind the factory to the existing API client/session/congregation owners and approved ONE 2 ONE routes. Lane A owns those shared surfaces and the P1 exit-gate reconciliation. Pair-private messaging remains the separately recorded contract dependency.
