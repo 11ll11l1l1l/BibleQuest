@@ -290,7 +290,10 @@ export function createDiscipleshipService({ repository, session, membership }) {
 
   async function loadPrivateResponses(pairId, lessonRevisionId) {
     return inContext(async context => {
-      const pair = await resolvePair(pairId, context);
+      // Personal responses remain learner-owned after a pair is suspended or ended.
+      // Only this owner-history read relaxes the active-pair requirement; operational
+      // progress, curriculum, writes and mentor visibility remain active-pair scoped.
+      const pair = await resolvePair(pairId, context, { active: false });
       if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee can read personal lesson responses.');
       const revisionId = identifier(lessonRevisionId);
       if (!revisionId) fail('BQ_DISCIPLESHIP_LESSON_REQUIRED', 'Choose a published lesson revision first.');
