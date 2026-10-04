@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(19);
 
 create function pg_temp.v7_sqlstate(statement text)
 returns text language plpgsql security invoker as $bq$
