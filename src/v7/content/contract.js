@@ -163,6 +163,7 @@ function validateContentItem(item, taxonomy, position) {
     reject('rights_uses', `${path}.rights.allowedUses`, 'must be an array of non-empty use descriptions');
   }
   if (item.rights.status === 'verified') {
+    if (!item.rights.allowedUses.length) reject('rights_uses', `${path}.rights.allowedUses`, 'verified rights require at least one permitted use');
     requiredString(item.rights.holder, `${path}.rights.holder`);
     requiredString(item.rights.basis, `${path}.rights.basis`);
     if (typeof item.rights.attribution !== 'string') reject('rights_attribution', `${path}.rights.attribution`, 'must be an explicit string (empty only when no attribution is required)');
