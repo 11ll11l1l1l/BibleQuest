@@ -155,6 +155,9 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       key = context();
       if (key !== loadedContext) fail('BQ_LESSON_CONTEXT_STALE', 'Reload after your account or congregation changes.');
       if (!state.writable) fail('BQ_LESSON_WRITE_DENIED', 'Only the mentee can save lesson progress.');
+      // Claim the write synchronously before the first await so a same-tick second
+      // navigation cannot enter another progress save while this one is in flight.
+      publish({ status: 'saving', error: null });
       await persistResponse(state.stepIndex, token, key);
       const progress = { status: completed ? 'completed' : 'in_progress', currentStepId: state.lesson.steps[target].id,
         startedAt: state.progress?.startedAt || now(), completedAt: completed ? now() : null };
