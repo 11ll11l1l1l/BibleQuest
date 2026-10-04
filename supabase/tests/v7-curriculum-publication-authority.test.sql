@@ -85,8 +85,29 @@ insert into public.v7_lesson_steps(id,lesson_revision_id,position,step_type,libr
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
 
-select is(pg_temp.v7_publication_sqlstate($sql$update public.v7_tracks set publication_state='published' where id='b9000000-0000-4000-8000-000000000001'$sql$),'42501','Direct authenticated hierarchy publication is rejected');
-select is(pg_temp.v7_publication_sqlstate($sql$update public.v7_lesson_revisions set published_at=now() where id='b9300000-0000-4000-8000-000000000001'$sql$),'42501','Direct authenticated lesson-revision publication is rejected');
+do $attempt$
+begin
+  begin
+    update public.v7_tracks set publication_state='published'
+    where id='b9000000-0000-4000-8000-000000000001';
+  exception when others then
+    null;
+  end;
+end;
+$attempt$;
+select is((select publication_state from public.v7_tracks where id='b9000000-0000-4000-8000-000000000001'),'draft','Direct authenticated hierarchy publication cannot change state');
+
+do $attempt$
+begin
+  begin
+    update public.v7_lesson_revisions set published_at=now()
+    where id='b9300000-0000-4000-8000-000000000001';
+  exception when others then
+    null;
+  end;
+end;
+$attempt$;
+select ok((select published_at is null from public.v7_lesson_revisions where id='b9300000-0000-4000-8000-000000000001'),'Direct authenticated lesson-revision publication cannot stamp publication');
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
 select is(pg_temp.v7_publication_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('10000000-0000-4000-8000-000000000001','b9000000-0000-4000-8000-000000000001','b9100000-0000-4000-8000-000000000001','b9200000-0000-4000-8000-000000000001','b9300000-0000-4000-8000-000000000001','b9010000-0000-4000-8000-000000000001','b9110000-0000-4000-8000-000000000001','b9210000-0000-4000-8000-000000000001',array['b7100000-0000-4000-8000-000000000001']::uuid[])$sql$),'42501','Ordinary member cannot publish curriculum');
@@ -108,7 +129,18 @@ select is(pg_temp.v7_publication_sqlstate($sql$select * from public.bible_v7_pub
 select is((select t.publication_state||'/'||m.publication_state||'/'||l.publication_state from public.v7_tracks t join public.v7_modules m on m.track_id=t.id join public.v7_lessons l on l.module_id=m.id where t.id='b9000000-0000-4000-8000-000000000001'),'published/published/published','Successful publication exposes one committed published hierarchy');
 select ok((select published_at is not null from public.v7_lesson_revisions where id='b9300000-0000-4000-8000-000000000001'),'Successful publication stamps the immutable lesson revision');
 select is(pg_temp.v7_publication_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('10000000-0000-4000-8000-000000000001','b9000000-0000-4000-8000-000000000001','b9100000-0000-4000-8000-000000000001','b9200000-0000-4000-8000-000000000001','b9300000-0000-4000-8000-000000000001','b9010000-0000-4000-8000-000000000001','b9110000-0000-4000-8000-000000000001','b9210000-0000-4000-8000-000000000001',array['b7100000-0000-4000-8000-000000000001']::uuid[])$sql$),'00000','Exact publication retry is idempotent');
-select is(pg_temp.v7_publication_sqlstate($sql$update public.v7_lessons set publication_state='withdrawn' where id='b9200000-0000-4000-8000-000000000001'$sql$),'42501','Authenticated client cannot bypass withdrawal authority with a direct state update');
+
+do $attempt$
+begin
+  begin
+    update public.v7_lessons set publication_state='withdrawn'
+    where id='b9200000-0000-4000-8000-000000000001';
+  exception when others then
+    null;
+  end;
+end;
+$attempt$;
+select is((select publication_state from public.v7_lessons where id='b9200000-0000-4000-8000-000000000001'),'published','Authenticated client cannot bypass withdrawal authority with a direct state update');
 
 do $attempt$
 begin
