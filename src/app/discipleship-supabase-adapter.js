@@ -99,7 +99,9 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       return rows(client.from('v7_learner_progress').select(PROGRESS_COLUMNS).eq('assignment_id', selected.id).eq('learner_id', pair.menteeId).eq('lesson_revision_id', revisionId));
     },
     async loadPrivateResponses(revisionId, pair, context) {
-      scope(pair, context, true);
+      // Owner history remains readable after pair end; write=true still limits this
+      // repository path to the mentee, and RLS independently enforces row ownership.
+      scope(pair, context, true, false);
       const client = await db(context);
       const selected = await assignment(client, pair, revisionId);
       assertContext(context);
