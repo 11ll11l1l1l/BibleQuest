@@ -1,7 +1,7 @@
 # V7 data architecture contract
 
-Status: P0-A proposal for the P0 contract freeze  
-Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`  
+Status: P0-A proposal for the P0 contract freeze
+Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: logical entities, ownership and relationships for Library, discipleship content, moderated media and groups. This is a logical contract, not a migration or claim that these physical tables already exist.
 
 ## Design rules
