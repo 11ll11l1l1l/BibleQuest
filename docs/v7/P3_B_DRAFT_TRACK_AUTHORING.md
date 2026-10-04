@@ -1,0 +1,11 @@
+# P3-B Draft track authoring boundary
+
+Starting integration: `4167cef1be50b2f99783051cc653bb53b3c146a8`. Lane B owns `src/features/curriculum-authoring/tracks.js` and its focused test. Uses the integrated `v7_tracks` table and authenticated RLS without schema/policy changes.
+
+`createTrackAuthoringRepository({client,getContext})` offers bounded congregation-scoped list, draft creation and optimistic draft updates. Composition must supply the existing authenticated client/provider and a current context callback returning `userId`, `congregationId` and `canAuthor`. Derive that capability from existing trusted membership/role state; never form values or user-editable metadata. The client capability is a UX guard; database RLS remains authorization. Keep global/null-congregation authoring outside this scoped interface.
+
+Creation sets the actor, tenant and draft state internally. Updates require the caller's loaded revision ID and match ID, congregation, draft state and revision atomically, then rotate revision identity. Empty update results mean stale/noneditable draft conflict. Published tracks cannot be edited through this draft method. Account/congregation changes and capability revocation invalidate pending responses. A reported stale response after a completed write does not undo persistence; reload the original scope before retrying.
+
+Lane A shared composition/navigation handoff: bind the existing API/session/membership owners when adding the authorized author surface. No new route key, session owner or tenant store is introduced here. Module/lesson editing, seven-step revision preparation, publish/archive and assignment/start UX remain P3-B work. Do not publish hierarchy/revisions through a chain of nontransactional client writes; review revision immutability and atomic publication with the schema owner.
+
+Evidence: eight focused Node tests on Node 24 cover draft validation, actor/tenant stamping, expected-revision filters, no-row conflict, capability/identifier denial, account switching, cross-scope response denial and database errors. Queries are exercised through thenable client doubles; this is not live backend/RLS certification. No production writes or V7 DDL occurred. Browser and complete author journey acceptance remain open.
