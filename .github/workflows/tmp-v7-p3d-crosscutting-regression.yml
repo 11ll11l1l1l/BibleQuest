@@ -1,0 +1,30 @@
+name: Temporary V7 Lane D cross-cutting regression
+
+on:
+  push:
+    branches:
+      - v7/p3-d-crosscutting-regression-20261004
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+          cache: npm
+      - run: npm ci
+      - name: Full V7 unit suite
+        run: npm run unit:v7
+      - name: Affected inherited V6 unit suite
+        run: npm run unit:v6
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
+      - name: Repository lint
+        run: npm run lint
