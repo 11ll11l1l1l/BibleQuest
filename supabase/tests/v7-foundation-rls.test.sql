@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(27);
+select plan(29);
 
 select ok((select relrowsecurity from pg_class where oid='public.v7_library_items'::regclass),'V7 Library items enable RLS');
 select ok((select relrowsecurity from pg_class where oid='public.v7_lesson_responses'::regclass),'V7 private responses enable RLS');
@@ -62,7 +62,7 @@ select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[
 select results_eq($$select count(*)::bigint from public.v7_pair_assignments$$,array[1::bigint],'Mentee can read pair assignment');
 select results_eq($$select count(*)::bigint from public.v7_learner_progress$$,array[1::bigint],'Mentee can read operational progress');
 select results_eq($$select count(*)::bigint from public.v7_lesson_responses$$,array[2::bigint],'Learner can read own private and shared responses');
-select is((select count(*)::integer from public.v7_response_shares where recipient_id=(select auth.uid())),0,'Learner cannot read share records addressed to the mentor');
+select results_eq($select count(*)::bigint from public.v7_response_shares$,array[1::bigint],'Learner can read share metadata for an owned response');
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
 select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[1::bigint],'Mentor can read own pair');
