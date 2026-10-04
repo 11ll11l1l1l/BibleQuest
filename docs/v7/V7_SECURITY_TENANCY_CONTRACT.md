@@ -1,8 +1,8 @@
 # BibleQuest V7 Security and Tenancy Contract (P0-C)
 
-Status: **Proposed contract for Phase 0 review**  
-Owner: **P0-C — Security / tenancy**  
-Baseline: V7 preparation branch `v7/development`, commit `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`  
+Status: **Proposed contract for Phase 0 review**
+Owner: **P0-C — Security / tenancy**
+Baseline: V7 preparation branch `v7/development`, commit `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: role authority, tenant boundaries, mentor/mentee visibility, and moderation for V7 Library, Discipleship, Conversation Deck, and Media surfaces.
 
 This document defines the proposed V7 product contract. It does not change runtime behavior, database policies, or migrations. Existing V5/V6 authorization and RLS remain authoritative until a separately reviewed implementation proves the V7 contract.
