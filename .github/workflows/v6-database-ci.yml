@@ -112,6 +112,15 @@ jobs:
           sha256sum --check database.types.sha256
           echo "Generated local DB types are deterministic and match the reviewed canonical digest."
 
+      - name: Preserve generated database types for the V7 contract
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bq-v7-database-types
+          path: /tmp/database.types.ts
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Verify source tree remains unchanged
         run: |
           set -euo pipefail
