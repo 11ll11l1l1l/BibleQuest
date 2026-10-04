@@ -1,8 +1,8 @@
 # V7 P0-B — Navigation and Information Architecture
 
-Status: DRAFT FOR P0 INTEGRATION  
-Owner: P0-B UX / information architecture  
-Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`  
+Status: DRAFT FOR P0 INTEGRATION
+Owner: P0-B UX / information architecture
+Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: product-facing route and hierarchy decisions for Library, ONE 2 ONE, and small groups. This is a design contract; it does not change runtime routes or feature behavior.
 
 ## Goal
