@@ -13,6 +13,9 @@ globalThis.localStorage = {
 const { en, LOCALE_KEY_INVENTORY } = await import('../src/content/locales/en.js');
 const { tl } = await import('../src/content/locales/tl.js');
 const { ceb } = await import('../src/content/locales/ceb.js');
+const { V7_CONTENT_KEY_INVENTORY } = await import('../src/content/locales/v7-content.js');
+const { V7_ASSIGNMENT_KEY_INVENTORY } = await import('../src/content/locales/v7-assignment.js');
+const { V7_PUBLICATION_HANDOFF_KEY_INVENTORY } = await import('../src/content/locales/v7-publication-handoff.js');
 const { localization, getLocale, setLocale, t, getMissingLocaleKeys } = await import('../src/app/localization.js');
 
 test('English is the canonical stable-key inventory and Tagalog matches it', () => {
@@ -27,7 +30,11 @@ test('Tagalog lookup uses the shared key inventory', () => {
 });
 
 test('missing localized values fall back deterministically to English and remain detectable', () => {
-  const custom = { en, tl: { ...tl, 'nav.calendar': '' } };
+  const custom = {
+    en: Object.fromEntries(localization.keyInventory.map(key => [key, t(key, { locale: 'en' })])),
+    tl: Object.fromEntries(localization.keyInventory.map(key => [key, t(key, { locale: 'tl' })]))
+  };
+  custom.tl['nav.calendar'] = '';
   assert.equal(t('nav.calendar', { locale: 'tl', dictionaries: custom }), 'Calendar');
   assert.deepEqual(getMissingLocaleKeys('tl', custom), ['nav.calendar']);
 });
@@ -50,7 +57,10 @@ test('foundation exposes English, Tagalog, and reviewed Cebuano through one inve
   assert.deepEqual(Object.keys(ceb).sort(), LOCALE_KEY_INVENTORY);
   assert.equal(getMissingLocaleKeys('ceb').length,0);
   assert.deepEqual(localization.supportedLocales, ['en', 'tl', 'ceb']);
-  assert.equal(localization.keyInventory, LOCALE_KEY_INVENTORY);
+  assert.deepEqual(localization.keyInventory, [...new Set([
+    ...LOCALE_KEY_INVENTORY, ...V7_CONTENT_KEY_INVENTORY,
+    ...V7_ASSIGNMENT_KEY_INVENTORY, ...V7_PUBLICATION_HANDOFF_KEY_INVENTORY
+  ])].sort());
 });
 
 test('Cebuano language tags normalize and reviewed member chrome does not leak English',()=>{

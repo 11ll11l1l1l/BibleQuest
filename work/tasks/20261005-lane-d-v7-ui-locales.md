@@ -10,6 +10,8 @@ Added 150 Tagalog and 150 Cebuano interface translations for Library discovery/p
 
 ## Evidence and limits
 
-236 V7 tests and 5 affected inherited V6 localization/settings tests pass locally on Node 24.19.0. Checks exercise exact key coverage, placeholder parity/interpolation, regional-locale normalization, source-language notices, approved English fallback, and actual Library/assignment/publication renderers across English → Tagalog → Cebuano → English. Syntax and diff whitespace checks pass.
+236 V7 tests, 5 inherited V6 localization/settings tests and 14 inherited V5 foundation/Cebuano/shell tests pass locally on Node 24.19.0. Checks exercise exact key coverage, placeholder parity/interpolation, regional-locale normalization, source-language notices, approved English fallback, and actual Library/assignment/publication renderers across English → Tagalog → Cebuano → English. Syntax and diff whitespace checks pass.
 
 The existing exact-SHA V7 CI workflow is the pinned-toolchain build/PWA/performance evidence path; its result and integrated identity are recorded on the associated PR. Local render assertions are not narrow-viewport browser or native-speaker review evidence. Source text is not translated or newly approved. Release-candidate certification remains gated by shared P3/P4 completion; canonical phase status remains owned by Lane A.
+
+The inherited foundation test assumed the pre-V7 inventory object. Its missing-value fixture now uses the complete composed inventory, and its inventory assertion checks the exact legacy-plus-V7 union. Missing-key detection, English fallback and legacy translation assertions remain intact.
