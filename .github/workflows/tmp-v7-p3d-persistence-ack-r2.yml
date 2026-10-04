@@ -1,0 +1,32 @@
+name: Temporary V7 P3-D persistence acknowledgement r2
+
+on:
+  push:
+    branches:
+      - v7/p3-d-persistence-ack-r2-20261004
+
+permissions:
+  contents: read
+
+jobs:
+  focused-v7-p3d:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+      - name: Check adapter syntax
+        run: node --check src/app/discipleship-supabase-adapter.js
+      - name: Run affected discipleship tests
+        run: >-
+          node --test
+          tests/v7/discipleship-supabase-adapter.test.mjs
+          tests/v7/discipleship-share-ack.test.mjs
+          tests/v7/discipleship-share-revocation.test.mjs
+          tests/v7/discipleship-core.test.mjs
+          tests/v7/discipleship-lesson-state.test.mjs
+          tests/v7/discipleship-progress-mutation-recovery.test.mjs
+          tests/v7/discipleship-private-response-mutation-recovery.test.mjs
+          tests/v7/lesson-runner-responses.test.mjs
+          tests/v7/lesson-runner-response-page.test.mjs
