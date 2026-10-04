@@ -1,6 +1,6 @@
 BibleQuest canonical work entry point: work/README.md
 
-1. Read work/RULES.md.
+1. Read work/RULEBOOK.md section 1 and only task-relevant sections.
 2. Read V7_ACTIVE_STATUS.md for development or V6_ACTIVE_STATUS.md for production.
 3. Fetch the assigned branch and record HEAD.
 4. Execute the bounded task and run affected existing checks.
@@ -8,6 +8,7 @@ BibleQuest canonical work entry point: work/README.md
 
 Task handoff: work/templates/TASK.md
 Release procedure: work/RELEASE.md
+Canonical policy: work/RULEBOOK.md
 Lessons learned: work/LESSONS_LEARNED.md
 Documentation policy: work/DOCUMENTATION.md
 

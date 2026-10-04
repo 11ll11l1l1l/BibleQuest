@@ -4,7 +4,7 @@ Canonical entry point for development, maintenance and production release work. 
 
 ## Start here
 
-1. Read [rules](RULES.md).
+1. Read the fast-start section of the [rulebook](RULEBOOK.md) and task-relevant sections only.
 2. Read [current V7 status](../V7_ACTIVE_STATUS.md) for development or [V6 production status](../V6_ACTIVE_STATUS.md) for production maintenance.
 3. Fetch the task's branch and record its current SHA. Inspect only files needed for the task.
 4. Use the [task template](templates/TASK.md) for nontrivial work. Execute, verify affected behavior, then update the relevant status with evidence.
@@ -13,8 +13,9 @@ Canonical entry point for development, maintenance and production release work. 
 
 | File | Purpose |
 |---|---|
-| [RULES.md](RULES.md) | Work and production safety rules |
-| [LESSONS_LEARNED.md](LESSONS_LEARNED.md) | Concrete lessons from V6 release and cleanup |
+| [RULEBOOK.md](RULEBOOK.md) | Canonical comprehensive rules, with task-scoped checking |
+| [RULES.md](RULES.md) | Short rulebook navigation |
+| [LESSONS_LEARNED.md](LESSONS_LEARNED.md) | V1–V6 issue ledger, evidence limits and rule mapping |
 | [RELEASE.md](RELEASE.md) | Existing exact-SHA release procedure |
 | [DOCUMENTATION.md](DOCUMENTATION.md) | Authority, naming and archival rules |
 | [templates/TASK.md](templates/TASK.md) | Task scope and final handoff |

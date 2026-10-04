@@ -11,3 +11,5 @@ Cleanup archives 42 unreferenced V3–V5 root documents, repairs affected Markdo
 Next action: define the first V7 objective. Read [starting point](docs/V7_STARTING_POINT.md). V6 owner-waived physical acceptance remains OPEN in the original V6 checklist.
 
 Canonical work folder established: [work/README.md](work/README.md). Repository-wide agent rules, release procedure, documentation policy, lessons learned, task template and plain-text entry point now share one linked authority. This is documentation preparation; production and runtime are unchanged.
+
+V1–V6 lessons consolidated into [canonical rulebook](work/RULEBOOK.md) and [qualified issue ledger](work/LESSONS_LEARNED.md). New work uses task-scoped checks and explicit multi-agent ownership instead of legacy blanket-check/fixed-team prescriptions. V1 incident history remains undocumented; V2 architectural records and V3–V6 repository/recovered history are distinguished. Production evidence and release gates remain intact.

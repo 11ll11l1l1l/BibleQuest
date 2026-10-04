@@ -1,6 +1,6 @@
 # Production release procedure
 
-Use the existing [exact-SHA gate contract](../docs/v6/V6_RC_EXACT_SHA_GATE.md); this procedure does not replace it.
+Apply [rulebook sections 8–9](RULEBOOK.md) and use the existing [exact-SHA gate contract](../docs/v6/V6_RC_EXACT_SHA_GATE.md); this procedure does not replace it.
 
 1. Fetch the intended release branch and freeze one candidate SHA. Read only current unchecked acceptance rows and separate required automation, physical/human verification and post-production checks.
 2. Run the existing minimum exact-SHA workflows required by the gate contract. Preserve run URLs and certificates. Fix actual failures only; a source fix establishes a new candidate.

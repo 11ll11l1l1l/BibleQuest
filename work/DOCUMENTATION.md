@@ -9,3 +9,5 @@
 - Do not archive application text data, migrations, scripts or tests as documentation. Do not rewrite historical evidence to match a later outcome.
 - Before moving documentation, search references in runtime, scripts, tests and workflows. Retain referenced paths or update their consumers in an intentional validated change.
 - Before publishing documentation-only work, run `git diff --check`, check changed local links and confirm the diff has no unintended runtime changes. Reuse affected existing validators where file moves or contracts require them.
+
+Operating policy is maintained only in [RULEBOOK.md](RULEBOOK.md). Other guides are navigation/procedure references. Historical agent prescriptions do not add new-work gates; evidence and existing release contracts remain intact.
