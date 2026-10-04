@@ -36,3 +36,10 @@ test('bootstrap connects Library reset to account lifecycle and disposal', () =>
   assert.match(source, /JSON\.stringify\(\[current\.authenticated===true,current\.user\?\.id/);
   assert.match(source, /unsubscribeLibrarySession\(\);library\.reset\(\)/);
 });
+
+test('bootstrap preserves Library taxonomy through browse, item, reload, and return routes', () => {
+  const source = readFileSync(new URL('../../src/app/bootstrap.js', import.meta.url), 'utf8');
+  assert.match(source, /if\(context\.taxonomyId\)params\.set\('taxonomyId',context\.taxonomyId\)/);
+  assert.match(source, /initialTaxonomyId:libraryParams\(\)\.get\('taxonomyId'\)\|\|''/);
+  assert.match(source, /'library-item':\(\)=>libraryItemPage\([\s\S]*taxonomyId:libraryParams\(\)\.get\('taxonomyId'\)\|\|''/);
+});
