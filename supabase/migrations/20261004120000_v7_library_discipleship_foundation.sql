@@ -241,7 +241,7 @@ create index if not exists v7_progress_learner_updated_idx on public.v7_learner_
 create index if not exists v7_responses_learner_updated_idx on public.v7_lesson_responses(learner_id, updated_at desc);
 create index if not exists v7_response_shares_recipient_idx on public.v7_response_shares(recipient_id, share_state);
 
-create or replace function private.v7_pair_has_user(target_pair uuid, target_user uuid default (select auth.uid()), require_active boolean default false)
+create or replace function private.v7_pair_has_user(target_pair uuid, target_user uuid, require_active boolean)
 returns boolean
 language sql
 stable
@@ -366,8 +366,8 @@ create policy "v7 pair leader invitation" on public.v7_mentor_pairs for insert t
 with check (
   initiated_by=(select auth.uid()) and state='invited'
   and private.bible_can_review_content(congregation_id)
-  and exists (select 1 from public.bible_congregation_members m where m.congregation_id=congregation_id and m.user_id=mentor_id and m.active)
-  and exists (select 1 from public.bible_congregation_members m where m.congregation_id=congregation_id and m.user_id=mentee_id and m.active)
+  and exists (select 1 from public.bible_congregation_members m where m.congregation_id=public.v7_mentor_pairs.congregation_id and m.user_id=mentor_id and m.active)
+  and exists (select 1 from public.bible_congregation_members m where m.congregation_id=public.v7_mentor_pairs.congregation_id and m.user_id=mentee_id and m.active)
 );
 create policy "v7 pair event participant read" on public.v7_pair_events for select to authenticated
 using (private.v7_pair_has_user(pair_id,(select auth.uid()),false));
@@ -387,7 +387,7 @@ using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()
 create policy "v7 response learner read" on public.v7_lesson_responses for select to authenticated
 using (learner_id=(select auth.uid()) or exists (select 1 from public.v7_response_shares s where s.response_id=id and s.recipient_id=(select auth.uid()) and s.share_state='shared' and exists (select 1 from public.v7_pair_assignments a where a.id=assignment_id and private.v7_pair_has_user(a.pair_id,(select auth.uid()),true))));
 create policy "v7 response learner insert" on public.v7_lesson_responses for insert to authenticated
-with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
+with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=public.v7_lesson_responses.lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response learner update" on public.v7_lesson_responses for update to authenticated
 using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response owner delete" on public.v7_lesson_responses for delete to authenticated
@@ -401,6 +401,7 @@ create policy "v7 response share owner update" on public.v7_response_shares for 
 using (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())))
 with check (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())));
 
+revoke all on public.v7_library_items,public.v7_library_revisions,public.v7_library_translations,public.v7_library_taxonomy,public.v7_library_revision_taxonomy,public.v7_tracks,public.v7_modules,public.v7_lessons,public.v7_lesson_revisions,public.v7_lesson_steps,public.v7_mentor_pairs,public.v7_pair_events,public.v7_pair_assignments,public.v7_learner_progress,public.v7_lesson_responses,public.v7_response_shares from public,anon,authenticated;
 grant select,insert,update on public.v7_library_items to authenticated;
 grant select,insert,update on public.v7_library_revisions to authenticated;
 grant select,insert,update,delete on public.v7_library_translations to authenticated;
