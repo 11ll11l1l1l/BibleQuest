@@ -9,6 +9,41 @@ Canonical roadmap: `DEVELOPMENT_PLAN_V7.md`.
 Operational rules: `work/RULEBOOK.md`.
 Deferred V8 scope: `DEVELOPMENT_PLAN_V8.md`.
 
+## Persistent lane command
+
+The user may issue only:
+
+- `Continue V7 lane A`
+- `Continue V7 lane B`
+- `Continue V7 lane C`
+- `Continue V7 lane D`
+
+That is sufficient instruction regardless of whether V7 is currently in P0, P1, P2, P3, P4 or P5.
+
+The executor must resolve the live phase and same-letter assignment from this file plus `DEVELOPMENT_PLAN_V7.md`. Do **not** ask the user which phase to continue.
+
+If the requested lane's assignment in the current phase is already complete:
+
+1. check whether the next same-letter assignment is eligible;
+2. if eligible, continue directly into that next phase assignment in the same run;
+3. if the entire current phase exit gate is already satisfied but this file has not yet advanced, reconcile the phase transition safely and continue;
+4. if a real shared prerequisite is still open, do bounded non-overlapping work that helps close it or record the exact blocker rather than pretending the next phase is ready.
+
+A lane may cross more than one completed phase in one continuation run. Finishing a phase is not, by itself, a reason to stop and wait for another user instruction.
+
+A–D are persistent identities. P3-E is supplemental only and does not alter A–D continuation. V7 continuation stops at completed V7 and never silently enters V8.
+
+## Persistent A–D progression
+
+| Lane | P0 | P1 | P2 | P3 | P4 | P5 |
+|---|---|---|---|---|---|---|
+| **A** | Domain/data contracts | DB/RLS/generated contracts | Books MVP | Pairing + relationship security | Library UX/a11y evidence | Browser/mobile/a11y release evidence |
+| **B** | UX/information architecture | Library core | Devotionals MVP | Tracks/modules/lessons authoring | ONE 2 ONE journey evidence | Backend/RLS/security release evidence |
+| **C** | Security/privacy/tenancy | Discipleship core | Past Teachings MVP | Mentee lesson runner | Backend/RLS/privacy hardening | Build/PWA/offline/performance release evidence |
+| **D** | Acceptance/content/provenance | Taxonomy/provenance/localization | Library discovery | Progress/reflection/prayer/action | Cross-cutting regression | Content/provenance/localization release evidence |
+
+The live phase/eligibility gates below determine which cell is executable. The table is a durable lookup, not permission to skip prerequisites.
+
 ## Current V7 objective
 
 **BibleQuest V7 = Library + structured ONE 2 ONE discipleship.**
@@ -69,6 +104,7 @@ After P1 contracts are frozen, independent P2 Library and P3 ONE 2 ONE work may 
 
 - Exact starting SHA per lane.
 - One concrete outcome and explicit owned/excluded surface per chat.
+- Persistent lane letter across phase transitions; the executor resolves the phase automatically.
 - One owner for shared schema/migrations/generated DB contracts, global router/navigation wiring, service worker/deployment configuration and canonical status edits.
 - No broad historical repository audit at task start.
 - No unrelated refactors or V8 scope creep.
@@ -85,4 +121,4 @@ The V6 owner-waived physical acceptance rows remain recorded in the original V6 
 
 ## Immediate next action
 
-Complete and reconcile P0-A/P0-B/P0-C/P0-D against the narrowed roadmap. Then freeze the accepted Phase-0 contracts and dispatch P1-A through P1-D from one exact integration SHA.
+Complete and reconcile P0-A/P0-B/P0-C/P0-D against the narrowed roadmap. Once the P0 exit gate is satisfied, the same lane chats may continue automatically as P1-A/P1-B/P1-C/P1-D without waiting for a new user phase instruction.
