@@ -3400,6 +3400,28 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: number
       }
+      bible_v7_transition_mentor_pair: {
+        Args: { p_action: string; p_pair_id: string }
+        Returns: {
+          congregation_id: string
+          created_at: string
+          ended_at: string | null
+          id: string
+          initiated_by: string
+          mentee_accepted_at: string | null
+          mentee_id: string
+          mentor_accepted_at: string | null
+          mentor_id: string
+          state: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "v7_mentor_pairs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
