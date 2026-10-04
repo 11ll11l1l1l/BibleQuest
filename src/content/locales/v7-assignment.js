@@ -4,6 +4,7 @@ export const v7AssignmentEn = Object.freeze({
   'v7.assignment.intro': 'Choose an active mentee pair and the exact published lesson revision to prepare for assignment.',
   'v7.assignment.reload': 'Reload pairs',
   'v7.assignment.loading': 'Loading…',
+  'v7.assignment.creating': 'Creating assignment…',
   'v7.assignment.error': 'Assignment preparation could not complete this action. Try again.',
   'v7.assignment.contextChanged': 'Account or congregation changed. Reload assignment preparation.',
   'v7.assignment.pairs': 'Mentee pairs',
@@ -24,6 +25,8 @@ export const v7AssignmentEn = Object.freeze({
   'v7.assignment.review.module': 'Module',
   'v7.assignment.review.lesson': 'Lesson',
   'v7.assignment.prepare': 'Prepare assignment request',
+  'v7.assignment.create': 'Create assignment',
+  'v7.assignment.created': 'Assignment created. Status: {status}.',
   'v7.assignment.backendPending': 'This does not create an assignment. Creation becomes available only through the shared race-safe backend boundary.',
   'v7.assignment.back': 'Back'
 });
