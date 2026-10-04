@@ -121,9 +121,9 @@ The Leader Conversation Deck, participant broadcast/realtime small-group session
 ## Journey links and shared components
 
 - Existing Home/Today and V6 notification/assignment surfaces may link to a Library item or ONE 2 ONE lesson using their current contracts; each link returns to its source context.
-- Library, lessons, and group cards use one Scripture handoff to the shared Reader.
+- Library items and ONE 2 ONE lesson steps use one Scripture handoff to the shared Reader.
 - A learner may explicitly share a lesson response only where the approved V7 feature contract permits it; private reflection remains separate. Group-session sharing is unchanged V6 behavior and outside this lane.
-- Language selection follows the existing account/app preference. Shelf, lesson step, group prompt, and empty/error states all use the selected language when translations exist.
+- Language selection follows the existing account/app preference. Library shelves, lesson steps, pair-thread states, and empty/error states all use the selected language when translations exist.
 - Any media or Scripture attachment uses existing V6 capabilities within their current contract. Central Drive media ingest and expanded moderation are V8 scope.
 
 ## P0-B acceptance and reconciliation
@@ -134,7 +134,7 @@ P0-B is ready for integration-owner review when the following match the narrowed
 - Library has the three required content types, browse/detail paths, source attribution, and Reader handoff.
 - Track/module/lesson, seven lesson steps, pairing, deep links/QR, and reuse of V6 pair communication match P0-A/C. Pair access and private-response boundaries remain explicit.
 - Conversation Deck, realtime group sessions, and new group chat are excluded from V7 and recorded for V8; existing V6 group routes remain intact.
-- Private reflections, prayers, notes, and answers remain private unless explicitly shared; pair/group messages remain scoped to the authorized relationship or audience under P0-A/C/D.
+- Private reflections, prayers, notes, and answers remain private unless explicitly shared; ONE 2 ONE messages are visible only to current pair participants under P0-A/C/D. Existing V6 group messaging remains unchanged and outside V7.
 - Route behavior states session/congregation hydration and destination-local loading/error/empty states.
 - Central Drive/media pipeline, bulk ingestion, and full Ilocano rollout are V8 deferrals; V7 content uses existing V6 capabilities.
 - No runtime route, backend, schema, or content-policy change was introduced by this architecture deliverable.
