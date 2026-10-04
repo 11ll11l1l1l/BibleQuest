@@ -139,7 +139,6 @@ create table if not exists public.v7_lesson_revisions (
   created_at timestamptz not null default now(),
   unique (lesson_id, revision_number),
   unique (id, lesson_id),
-  check ((published_at is null) or published_at <= now())
 );
 
 create table if not exists public.v7_lesson_steps (
@@ -214,12 +213,13 @@ create table if not exists public.v7_lesson_responses (
   id uuid primary key default gen_random_uuid(),
   assignment_id uuid not null references public.v7_pair_assignments(id) on delete cascade,
   lesson_revision_id uuid not null references public.v7_lesson_revisions(id) on delete restrict,
-  lesson_step_id uuid not null references public.v7_lesson_steps(id) on delete restrict,
+  lesson_step_id uuid not null,
   learner_id uuid not null references auth.users(id) on delete cascade,
   response jsonb not null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  unique (assignment_id, lesson_step_id, learner_id)
+  unique (assignment_id, lesson_step_id, learner_id),
+  foreign key (lesson_step_id, lesson_revision_id) references public.v7_lesson_steps(id, lesson_revision_id) on delete restrict
 );
 
 create table if not exists public.v7_response_shares (
@@ -323,7 +323,7 @@ with check (exists (select 1 from public.v7_library_revisions r join public.v7_l
   where r.id=revision_id and private.bible_can_review_content(i.congregation_id)));
 
 create policy "v7 tracks published read" on public.v7_tracks for select to authenticated
-using (publication_state='published' and (congregation_id is null or private.is_bible_congregation_member(congregation_id)));
+using ((publication_state='published' and (congregation_id is null or private.is_bible_congregation_member(congregation_id))) or private.bible_can_review_content(congregation_id));
 create policy "v7 tracks editor insert" on public.v7_tracks for insert to authenticated
 with check (created_by=(select auth.uid()) and private.bible_can_review_content(congregation_id));
 create policy "v7 tracks editor update" on public.v7_tracks for update to authenticated
@@ -399,7 +399,8 @@ with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pa
   where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and p.state='active'));
 create policy "v7 response share owner update" on public.v7_response_shares for update to authenticated
 using (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())))
-with check (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())));
+with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pair_assignments a on a.id=r.assignment_id join public.v7_mentor_pairs p on p.id=a.pair_id
+  where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and p.state='active'));
 
 revoke all on public.v7_library_items,public.v7_library_revisions,public.v7_library_translations,public.v7_library_taxonomy,public.v7_library_revision_taxonomy,public.v7_tracks,public.v7_modules,public.v7_lessons,public.v7_lesson_revisions,public.v7_lesson_steps,public.v7_mentor_pairs,public.v7_pair_events,public.v7_pair_assignments,public.v7_learner_progress,public.v7_lesson_responses,public.v7_response_shares from public,anon,authenticated;
 grant select,insert,update on public.v7_library_items to authenticated;
