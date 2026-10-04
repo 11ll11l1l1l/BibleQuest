@@ -110,4 +110,4 @@ The older `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is historical planning input o
 - P0-C remains the sole owner of role, tenant, authorization, retention, and denial policy.
 - No runtime, migration, workflow, release, production, or existing acceptance evidence is changed by this lane.
 
-This proposal is ready for P0 integration review. P0 as a whole remains open until P0-A/B/C/D are reconciled and frozen together.
+This contract is accepted as the P0-A data/domain model for V7. P1 schema work must implement it through reviewed, additive migrations and preserve P0-C's single authorization ownership.
