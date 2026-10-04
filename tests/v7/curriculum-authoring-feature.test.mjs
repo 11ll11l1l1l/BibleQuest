@@ -18,7 +18,9 @@ function assertFeatureShape(feature) {
   assert.equal(typeof feature.repositories.hierarchy.listModules, 'function');
   assert.equal(typeof feature.repositories.revisions.listRevisions, 'function');
   assert.equal(typeof feature.repositories.readiness.inspect, 'function');
+  assert.equal(typeof feature.repositories.withdrawal.prepare, 'function');
   assert.equal(typeof feature.preparePublication, 'function');
+  assert.equal(typeof feature.prepareWithdrawal, 'function');
   assert.equal(typeof feature.publication.publish, 'function');
   assert.equal(typeof feature.publication.withdraw, 'function');
 }
