@@ -198,4 +198,4 @@ The V6 owner-waived physical acceptance rows remain recorded in the original V6 
 
 ## Immediate next action
 
-P1 is active. Lane A owns the single P1-A database/RLS/generated-contract surface; begin with the frozen P0 model and a bounded inventory of existing V6 tables/policies before creating additive V7 migrations. Lanes B–D continue their assigned P1 foundation work. Shared schema changes remain serialized under Lane A.
+P1 is active. P1-C's discipleship service boundary and P1-D's content foundation are integrated on `v7/development`. Lane A completed the read-only V6 reuse/schema inventory in `docs/v7/P1_A_V6_REUSE_AND_SCHEMA_INVENTORY.md`. V6 assignments and ministry broadcasts do not satisfy pair-private messaging; keep that contract gap open while progressing the independent additive Library, curriculum, pairing, progress, and private-response schema. The connected Supabase project has no development branch, so no V7 DDL has been applied; validate migrations only on an isolated disposable database. Lanes B–D continue their assigned P1 foundation work. Shared schema/generated contracts remain serialized under Lane A.
