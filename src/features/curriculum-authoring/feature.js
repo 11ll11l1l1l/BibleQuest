@@ -5,6 +5,7 @@ import { createPublicationReadinessRepository } from './publication-readiness.js
 import { createCurriculumAuthoringController } from './controller.js';
 import { preparePublicationRequest } from './publication-request.js';
 import { createCurriculumPublicationAuthority } from './publication-authority.js';
+import { createWithdrawalPreparationRepository } from './withdrawal-preparation.js';
 
 // Feature-local dependency composition only. The caller remains the owner of the
 // authenticated client, active account/congregation context, routing, and lifecycle.
@@ -16,10 +17,12 @@ export function createCurriculumAuthoringFeature({ client, getContext, newRevisi
   const hierarchy = createHierarchyAuthoringRepository({ client, getContext, newRevisionId });
   const revisions = createLessonRevisionAuthoringRepository({ client, getContext });
   const readiness = createPublicationReadinessRepository({ client, getContext });
-  const repositories = Object.freeze({ tracks, hierarchy, revisions, readiness });
+  const withdrawal = createWithdrawalPreparationRepository({ client, getContext });
+  const repositories = Object.freeze({ tracks, hierarchy, revisions, readiness, withdrawal });
   const controller = createCurriculumAuthoringController(repositories);
   const preparePublication = () => preparePublicationRequest(controller.getState());
+  const prepareWithdrawal = (trackId, moduleId, lessonId) => withdrawal.prepare(trackId, moduleId, lessonId);
   const publication = createCurriculumPublicationAuthority({ client, getContext });
 
-  return Object.freeze({ controller, repositories, preparePublication, publication });
+  return Object.freeze({ controller, repositories, preparePublication, prepareWithdrawal, publication });
 }
