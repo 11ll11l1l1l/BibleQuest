@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - v6/architecture-upgrade
+      - v7/development
     paths:
       - 'supabase/**'
       - 'scripts/v6-prepare-local-supabase.mjs'
