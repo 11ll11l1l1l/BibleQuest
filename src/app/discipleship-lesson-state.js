@@ -162,6 +162,9 @@ export function createDiscipleshipLessonStateService({ discipleship, clock = () 
   // Serialize same-lesson progress writes in one client instance so a slower older request
   // cannot overwrite a newer navigation/completion request. Backend/RLS remains authority.
   const mutationTails = new Map();
+  // Private response text has the same last-write ordering risk. Serialize per exact
+  // pair + lesson revision + step so unrelated response steps can still save independently.
+  const responseMutationTails = new Map();
 
   function enqueue(pairId, lessonRevisionId, operation) {
     const key = `${pairId}\u0000${lessonRevisionId}`;
@@ -171,6 +174,18 @@ export function createDiscipleshipLessonStateService({ discipleship, clock = () 
     mutationTails.set(key, tail);
     void tail.finally(() => {
       if (mutationTails.get(key) === tail) mutationTails.delete(key);
+    });
+    return run;
+  }
+
+  function enqueueResponse(pairId, lessonRevisionId, stepId, operation) {
+    const key = `${pairId}\u0000${lessonRevisionId}\u0000${stepId}`;
+    const previous = responseMutationTails.get(key) ?? Promise.resolve();
+    const run = previous.catch(() => undefined).then(operation);
+    const tail = run.catch(() => undefined);
+    responseMutationTails.set(key, tail);
+    void tail.finally(() => {
+      if (responseMutationTails.get(key) === tail) responseMutationTails.delete(key);
     });
     return run;
   }
@@ -245,12 +260,18 @@ export function createDiscipleshipLessonStateService({ discipleship, clock = () 
   }
 
   async function savePrivateStepResponse(pairId, lessonRevisionId, stepId, response) {
-    const resolved = await lessonFor(pairId, lessonRevisionId);
+    const pair = id(pairId);
+    const revision = id(lessonRevisionId);
     const target = id(stepId);
-    if (!resolved.lesson.steps.some(step => step.id === target)) {
-      fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'The response step is outside the assigned lesson revision.');
-    }
-    return discipleship.savePrivateResponse(resolved.pairId, resolved.revisionId, target, response);
+    if (!pair || !revision) fail('BQ_DISCIPLESHIP_STATE_SCOPE_REQUIRED', 'Choose a ONE 2 ONE pair and assigned lesson revision first.');
+    if (!target) fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'The response step is outside the assigned lesson revision.');
+    return enqueueResponse(pair, revision, target, async () => {
+      const resolved = await lessonFor(pair, revision);
+      if (!resolved.lesson.steps.some(step => step.id === target)) {
+        fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'The response step is outside the assigned lesson revision.');
+      }
+      return discipleship.savePrivateResponse(resolved.pairId, resolved.revisionId, target, response);
+    });
   }
 
   return Object.freeze({ load, saveCurrentStep, complete, savePrivateStepResponse });
