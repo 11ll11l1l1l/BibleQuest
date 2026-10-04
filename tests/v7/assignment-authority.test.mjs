@@ -77,10 +77,11 @@ test('account or congregation changes invalidate an in-flight assignment result'
     membership: { getActive: () => active },
   });
   const pending = authority.createAssignment(request);
+  await new Promise(r => setImmediate(r));
+  assert.equal(calls, 1);
   active = { userId: 'mentor-1', congregationId: 'church-2' };
   resolve({ data: [{ assignment_id: 'assignment-1', assignment_status: 'assigned' }], error: null });
   await assert.rejects(pending, { code: 'BQ_ASSIGNMENT_CONTEXT_STALE' });
-  assert.equal(calls, 1);
 });
 
 test('requires every immutable hierarchy identifier before opening the RPC', async () => {
