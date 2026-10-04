@@ -127,4 +127,4 @@ The transfer manifest records exclusions; it does not schedule or authorize V8 w
 
 ## 8. P0-D exit condition
 
-P0-D is ready for integration-owner review when the acceptance rows, content rules, evidence semantics, localization readiness, and V8 transfer items above are reconciled with the live P0-A/B/C drafts. Phase 0 closes only when the serialized integration owner accepts the combined contracts in `V7_ACTIVE_STATUS.md`. The pairing/data, exact route map, and backend/security implementation remain owned by their respective lanes.
+The P0-D acceptance, content, evidence, localization-readiness, and V8 transfer contract is accepted in the serialized P0 freeze. This does not mark product implementation, content review, backend/security behavior, or release evidence PASS. The pairing/data, route map, and backend/security implementation remain owned by their respective lanes.
