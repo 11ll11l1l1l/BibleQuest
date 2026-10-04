@@ -62,22 +62,94 @@ function normalizeLesson(row, pair) {
   });
 }
 
-function assertOperationalProgress(progress, pair) {
+function normalizePosition(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const position = Number(value);
+  return Number.isInteger(position) && position >= 0 ? position : null;
+}
+
+function normalizeCurriculumNode(row, kind, pair) {
+  const id = identifier(row?.id);
+  const revisionId = identifier(row?.revisionId ?? row?.revision_id);
+  const title = identifier(row?.title);
+  const position = normalizePosition(row?.position);
+  const rowPairId = identifier(row?.pairId ?? row?.pair_id);
+  const rowCongregationId = identifier(row?.congregationId ?? row?.congregation_id);
+  if (!id || !revisionId || !title || position === null) {
+    fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', `${kind} must include an id, revision, title, and ordered position.`);
+  }
+  if ((rowPairId && rowPairId !== pair.id)
+    || (rowCongregationId && rowCongregationId !== pair.congregationId)) {
+    fail('BQ_DISCIPLESHIP_CURRICULUM_SCOPE', 'Curriculum data was outside the selected pair.');
+  }
+  return { id, revisionId, title, position };
+}
+
+function normalizeChildren(rows, parent, kind, pair) {
+  if (!Array.isArray(rows)) fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', `${kind} hierarchy was invalid.`);
+  const normalized = rows.map(row => {
+    const node = normalizeCurriculumNode(row, kind, pair);
+    const declaredParent = identifier(row?.[`${parent.kind}Id`] ?? row?.[`${parent.kind}_id`]);
+    if (declaredParent && declaredParent !== parent.id) {
+      fail('BQ_DISCIPLESHIP_CURRICULUM_SCOPE', `${kind} did not belong to its requested parent.`);
+    }
+    return Object.freeze({ ...node, ...(parent.kind === 'track' ? { trackId: parent.id } : { moduleId: parent.id }) });
+  });
+  const ids = new Set();
+  const positions = new Set();
+  for (const node of normalized) {
+    if (ids.has(node.id) || positions.has(node.position)) {
+      fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', `${kind} hierarchy contains duplicate ids or positions.`);
+    }
+    ids.add(node.id);
+    positions.add(node.position);
+  }
+  return Object.freeze(normalized.sort((a, b) => a.position - b.position));
+}
+
+function normalizeCurriculum(rows, pair) {
+  if (!Array.isArray(rows)) fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', 'Curriculum response was invalid.');
+  const tracks = rows.map(row => {
+    const track = normalizeCurriculumNode(row, 'Track', pair);
+    const rawModules = Array.isArray(row.modules) ? row.modules : [];
+    const modules = normalizeChildren(rawModules, { kind: 'track', id: track.id }, 'Module', pair).map(module => {
+      const rawModule = rawModules.find(candidate => identifier(candidate?.id) === module.id);
+      const lessons = normalizeChildren(rawModule?.lessons, { kind: 'module', id: module.id }, 'Lesson', pair);
+      return Object.freeze({ ...module, lessons });
+    });
+    return Object.freeze({ ...track, modules: Object.freeze(modules) });
+  });
+  const ids = new Set();
+  const positions = new Set();
+  for (const track of tracks) {
+    if (ids.has(track.id) || positions.has(track.position)) {
+      fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', 'Track hierarchy contains duplicate ids or positions.');
+    }
+    ids.add(track.id);
+    positions.add(track.position);
+  }
+  return Object.freeze(tracks.sort((a, b) => a.position - b.position));
+}
+
+function assertOperationalProgress(progress, pair, requestedRevisionId) {
   const rows = Array.isArray(progress) ? progress : [progress];
   const safeRows = rows.map(row => {
     const rowPairId = identifier(row?.pairId ?? row?.pair_id);
     const rowCongregationId = identifier(row?.congregationId ?? row?.congregation_id);
     const learnerId = identifier(row?.learnerId ?? row?.learner_id ?? row?.userId ?? row?.user_id);
+    const lessonRevisionId = identifier(row?.lessonRevisionId ?? row?.lesson_revision_id);
     if ((rowPairId && rowPairId !== pair.id)
       || (rowCongregationId && rowCongregationId !== pair.congregationId)
-      || (learnerId && learnerId !== pair.menteeId)) {
+      || (learnerId && learnerId !== pair.menteeId)
+      || (lessonRevisionId && lessonRevisionId !== requestedRevisionId)) {
       fail('BQ_DISCIPLESHIP_PROGRESS_SCOPE', 'Progress data was outside the selected pair.');
     }
     if (!row || typeof row !== 'object') return row;
     return Object.freeze({
       pairId: pair.id,
       learnerId: pair.menteeId,
-      lessonRevisionId: identifier(row.lessonRevisionId ?? row.lesson_revision_id),
+      lessonRevisionId: requestedRevisionId,
+      currentStepId: identifier(row.currentStepId ?? row.current_step_id) || null,
       status: identifier(row.status),
       startedAt: row.startedAt ?? row.started_at ?? null,
       completedAt: row.completedAt ?? row.completed_at ?? null,
@@ -146,16 +218,7 @@ export function createDiscipleshipService({ repository, session, membership }) {
       const pair = await resolvePair(pairId, context);
       const curriculum = await repository.loadCurriculum(pair, context);
       assertCurrent(context);
-      if (!Array.isArray(curriculum)) fail('BQ_DISCIPLESHIP_CURRICULUM_RESPONSE', 'Curriculum response was invalid.');
-      return Object.freeze(curriculum.map(track => {
-        const trackPairId = identifier(track?.pairId ?? track?.pair_id);
-        const trackCongregationId = identifier(track?.congregationId ?? track?.congregation_id);
-        if ((trackPairId && trackPairId !== pair.id)
-          || (trackCongregationId && trackCongregationId !== pair.congregationId)) {
-          fail('BQ_DISCIPLESHIP_CURRICULUM_SCOPE', 'Curriculum data was outside the selected pair.');
-        }
-        return Object.freeze({ ...track });
-      }));
+      return normalizeCurriculum(curriculum, pair);
     });
   }
 
@@ -177,9 +240,11 @@ export function createDiscipleshipService({ repository, session, membership }) {
   async function loadOperationalProgress(pairId, lessonRevisionId) {
     return inContext(async context => {
       const pair = await resolvePair(pairId, context);
-      const progress = await repository.loadOperationalProgress(identifier(lessonRevisionId), pair, context);
+      const revisionId = identifier(lessonRevisionId);
+      if (!revisionId) fail('BQ_DISCIPLESHIP_LESSON_REQUIRED', 'Choose a published lesson revision first.');
+      const progress = await repository.loadOperationalProgress(revisionId, pair, context);
       assertCurrent(context);
-      return assertOperationalProgress(progress, pair);
+      return assertOperationalProgress(progress, pair, revisionId);
     });
   }
 
