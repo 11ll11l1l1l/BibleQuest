@@ -30,7 +30,7 @@ This contract defines how V7 scope, content provenance, permissions, and evidenc
 - [ ] Keyboard/focus, contrast, text scaling, reduced motion, and sound-off behavior are checked on affected routes; physical-only behavior is labeled separately.
 - [ ] Responsive behavior is checked at representative phone, tablet, and desktop widths.
 - [ ] Reader, Bible translations, BSB audio, offline behavior, push, assignments, congregation isolation, and existing security contracts continue to use their V6 owners. V7 presentation work does not fork those engines.
-- [ ] V7 media/file flows preserve the approved strict-zero-cost and provider-neutral contract in docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md, including private authorization, quota fail-closed behavior, and no Supabase Storage blob use.
+- [ ] V7 media/file flows follow the approved centralized BibleQuest Google Drive model: Drive stores bytes, Supabase stores metadata/authorization/moderation state, no Drive credentials reach clients, and all delivery is authorized by BibleQuest. Reconcile the older ImageKit-first document before media implementation.
 - [ ] The final candidate passes the existing required feature, security, database, browser/PWA, artifact, and exact-SHA release gates. No evidence transfers to a changed SHA unless the governing gate permits it.
 
 ## Domain and ownership contract
@@ -41,7 +41,7 @@ This contract defines how V7 scope, content provenance, permissions, and evidenc
 | BibleQuest-created or licensed learning content | Global only after content approval and rights are recorded | Discipleship tracks use Track → Module → Lesson and the accepted Scripture → Understand → Discuss → Reflect → Apply → Pray → Action structure. Content is BibleQuest-created, church-approved, or properly licensed. |
 | Congregation content and ministry operations | Explicit active congregation; narrower group/team/couple/family scope where applicable | Use the active V6 tenant context and server authorization. Do not infer a congregation or widen a scoped item to global. |
 | Personal progress, reflections, and private notes | Owning user unless an explicit existing share contract says otherwise | Preserve privacy through route changes, account switching, sync, and offline behavior. |
-| Uploaded photos and files | Metadata/permissions in Supabase; bytes in the approved external provider | Preserve owner, exact scope, visibility, moderation, provider-neutral object identity, checksum, type, size, and lifecycle. Private by default; no permanent signed URL in metadata. |
+| Uploaded photos and files | Metadata/permissions/moderation in Supabase; bytes in the central BibleQuest Google Drive account | Preserve owner, exact scope, visibility, Drive file ID, checksum, type, size, review state, and lifecycle. Private by default; no Drive credentials or direct Drive access for users. |
 | Shared global resources | Explicitly public/global by approved owner and license | Global visibility is deliberate and auditable; absence of congregation_id alone is not proof of public authorization. |
 
 ### Role boundary
@@ -69,9 +69,11 @@ Every published or reviewable content record must retain, as applicable:
 
 Unknown or unverified rights/provenance means unpublished and unavailable for reuse. Do not infer a public-domain or church-approval license from availability on the web. BibleQuest-authored material must still identify its authoring/review process; Scripture excerpts and media retain their separate translation/audio source identity.
 
-For uploaded media, additionally preserve the provider-neutral asset metadata and deletion/moderation lifecycle required by V7_FREE_MEDIA_FILE_STORAGE.md. Do not store provider secrets or long-lived signed URLs in the client, evidence, or metadata.
+For uploaded media, preserve the Drive file ID, checksum, uploader, scope, safe display metadata, review state, and deletion/moderation lifecycle defined by the P0-A data contract. Do not expose Drive credentials or store direct user-facing Drive access as authorization.
 
 V7 does not rewrite or regenerate the V6 BSB corpus. Preserve its human-narration source, text/audio revision identity, checksums, timings, and existing evidence.
+
+The approved staged discipleship scope for V7 is the reusable Track → Module → Lesson curriculum and individual learner progress. Real mentor/mentee pairing, synchronized pair status, private responses, prayer/action review, and discipleship-chain oversight are deferred to V8. Do not add these capabilities to V7 through route design or a role label.
 
 ## Evidence classes and states
 
@@ -97,8 +99,16 @@ State vocabulary:
 
 Evidence records name candidate SHA, environment, role/scope, route/action, tool/device, timestamp, result, and durable artifact reference. Sanitize personal data, tokens, signed URLs, and private notes. A green CI check, screenshot, guest-only visit, or UI affordance must not be presented as proof of a different evidence class.
 
+
+## Cross-lane decisions that must be reconciled before P0 freeze
+
+1. **Route hierarchy:** P0-B proposes the five primary destinations and a More area described above. Treat this as the design proposal; P0 integration must accept it and map all existing V6 routes to it before Phase 0 closes.
+2. **ONE 2 ONE scope:** P0-A's curriculum-only model matches the approved V7 roadmap. P0-B's active paired journey and P0-C's pairing access policy conflict with the approved deferral of real pairing to V8. V7 acceptance covers tracks/modules/lessons and individual progress only; remove pairing-dependent V7 requirements or obtain an explicit roadmap change before freezing.
+3. **Media storage:** the approved V7 decision is one central BibleQuest Google Drive account for bytes, with Supabase as metadata/moderation/permission authority. P0-A reflects this. The older ImageKit-first docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md and any P0-C references to it must be reconciled as superseded before media implementation.
+4. **Admin meaning:** preserve P0-C's distinction between congregation Admin and platform Admin/Owner. The route and feature contract must name which one is meant; neither role grants access to personal reflections or another congregation's records by default.
+
 ## Route agreement and Phase 0 handoff
 
-Route names are intentionally not guessed here. The architecture/route owner supplies the exact current V6 route IDs and proposes the V7 destinations; P0-D checks each against the acceptance rows above. The integration owner records the final agreed route map and ownership matrix in the single V7 status authority after the parallel lanes reconcile.
+Use the P0-B navigation proposal as the route-family starting point: Today, Bible, Grow, Library, and Community are the five primary destinations; Play, Calendar, Progress details, Notifications, Account, and role-authorized Ministry/Admin remain reachable from More. The exact V7 route IDs and mapping from every current V6 route must be inventoried from the live router by the implementation owner; this contract does not invent URL keys. The integration owner records the accepted map and ownership matrix in the single V7 status authority after the parallel lanes reconcile.
 
 P0-D is complete when the Phase 0 contract checklist is closed with no unresolved route, scope, permission, provenance, or evidence-owner row; the V7 acceptance checklist is usable against the implementation; and the integration owner has accepted the route/ownership matrix. Until then, this document is a bounded working contract, not a claim that Phase 0 has passed.
