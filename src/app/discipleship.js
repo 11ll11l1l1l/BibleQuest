@@ -345,6 +345,23 @@ export function createDiscipleshipService({ repository, session, membership }) {
     });
   }
 
+  async function revokeResponseShare(pairId, lessonRevisionId, stepId, responseId) {
+    return inContext(async context => {
+      const pair = await resolvePair(pairId, context, { active: false });
+      if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'Only the mentee can revoke sharing for a personal response.');
+      const result = await repository.revokeResponseShare({
+        lessonRevisionId: identifier(lessonRevisionId),
+        stepId: identifier(stepId),
+        responseId: identifier(responseId),
+        recipientId: pair.mentorId,
+        pair,
+        context,
+      });
+      assertCurrent(context);
+      return result;
+    });
+  }
+
   return Object.freeze({
     listPairs,
     loadCurriculum,
@@ -354,6 +371,7 @@ export function createDiscipleshipService({ repository, session, membership }) {
     saveProgress,
     savePrivateResponse,
     shareResponse,
+    revokeResponseShare,
   });
 }
 

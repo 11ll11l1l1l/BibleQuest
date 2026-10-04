@@ -15,9 +15,9 @@ function required(value) {
   if (!id) fail('BQ_DISCIPLESHIP_IDENTIFIER_REQUIRED', 'A discipleship identifier is required.');
   return id;
 }
-function scope(pair, context, write = false) {
+function scope(pair, context, write = false, requireActive = true) {
   if (!context?.userId || !context?.congregationId || pair?.congregationId !== context.congregationId
-      || ![pair.mentorId, pair.menteeId].includes(context.userId) || pair.state !== 'active'
+      || ![pair.mentorId, pair.menteeId].includes(context.userId) || (requireActive && pair.state !== 'active')
       || (write && pair.menteeId !== context.userId)) {
     fail('BQ_DISCIPLESHIP_SCOPE_DENIED', 'This operation is outside the active pair.');
   }
@@ -146,6 +146,23 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       if (owned.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'This response does not belong to the requested assignment and step.');
       assertContext(context);
       return rows(client.from('v7_response_shares').upsert({ response_id: responseId, recipient_id: pair.mentorId, share_state: 'shared', revoked_at: null }, { onConflict: 'response_id,recipient_id' }).select('id,share_state'));
+    },
+    async revokeResponseShare({ lessonRevisionId, stepId, responseId, recipientId, pair, context }) {
+      scope(pair, context, true, false);
+      if (required(recipientId) !== pair.mentorId) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'Only the paired mentor share can be revoked.');
+      const client = await db(context);
+      const owned = await rows(client.from('v7_lesson_responses').select('id,assignment_id').eq('id', required(responseId))
+        .eq('lesson_revision_id', required(lessonRevisionId)).eq('lesson_step_id', required(stepId)).eq('learner_id', context.userId));
+      if (owned.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'This response does not belong to the requested learner, revision and step.');
+      const linked = await rows(client.from('v7_pair_assignments').select('id,pair_id').eq('id', owned[0].assignment_id).eq('pair_id', pair.id));
+      if (linked.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_DENIED', 'This response does not belong to the requested ONE 2 ONE pair.');
+      assertContext(context);
+      const result = await rows(client.from('v7_response_shares')
+        .update({ share_state: 'revoked', revoked_at: new Date().toISOString() })
+        .eq('response_id', responseId).eq('recipient_id', recipientId).eq('share_state', 'shared')
+        .select('id,share_state,revoked_at'));
+      if (result.length !== 1) fail('BQ_DISCIPLESHIP_SHARE_NOT_FOUND', 'This response is not currently shared with the paired mentor.');
+      return result[0];
     },
   });
 }
