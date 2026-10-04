@@ -259,6 +259,7 @@ as $$
   select exists (
     select 1 from public.v7_mentor_pairs p
     where p.id=target_pair
+      and target_user=(select auth.uid())
       and target_user in (p.mentor_id,p.mentee_id)
       and (not require_active or p.state='active')
   );
@@ -270,13 +271,13 @@ grant execute on function private.v7_pair_has_user(uuid,uuid,boolean) to authent
 create or replace function private.v7_response_is_owned(target_response uuid, target_user uuid)
 returns boolean language sql stable security definer set search_path = ''
 as $
-  select exists (select 1 from public.v7_lesson_responses r where r.id=target_response and r.learner_id=target_user);
+  select exists (select 1 from public.v7_lesson_responses r where r.id=target_response and target_user=(select auth.uid()) and r.learner_id=target_user);
 $;
 
 create or replace function private.v7_response_shared_with(target_response uuid, target_user uuid)
 returns boolean language sql stable security definer set search_path = ''
 as $
-  select exists (select 1 from public.v7_response_shares s where s.response_id=target_response and s.recipient_id=target_user and s.share_state='shared');
+  select exists (select 1 from public.v7_response_shares s where s.response_id=target_response and target_user=(select auth.uid()) and s.recipient_id=target_user and s.share_state='shared');
 $;
 
 create or replace function private.v7_response_share_authorized(target_response uuid, target_user uuid, target_recipient uuid, require_active boolean)
@@ -287,7 +288,7 @@ as $
     from public.v7_lesson_responses r
     join public.v7_pair_assignments a on a.id=r.assignment_id
     join public.v7_mentor_pairs p on p.id=a.pair_id
-    where r.id=target_response and r.learner_id=target_user and p.mentor_id=target_recipient
+    where r.id=target_response and target_user=(select auth.uid()) and r.learner_id=target_user and p.mentor_id=target_recipient
       and (not require_active or p.state='active')
   );
 $;
@@ -298,6 +299,66 @@ revoke all on function private.v7_response_share_authorized(uuid,uuid,uuid,boole
 grant execute on function private.v7_response_is_owned(uuid,uuid) to authenticated;
 grant execute on function private.v7_response_shared_with(uuid,uuid) to authenticated;
 grant execute on function private.v7_response_share_authorized(uuid,uuid,uuid,boolean) to authenticated;
+
+create or replace function private.v7_guard_published_library_revision()
+returns trigger language plpgsql set search_path = ''
+as $
+begin
+  if old.publication_state='published' then
+    raise exception 'Published V7 Library revisions are immutable';
+  end if;
+  return case when tg_op='DELETE' then old else new end;
+end;
+$;
+
+create trigger v7_library_revision_immutable
+before update or delete on public.v7_library_revisions
+for each row execute function private.v7_guard_published_library_revision();
+
+create or replace function private.v7_guard_published_lesson_revision()
+returns trigger language plpgsql set search_path = ''
+as $
+declare revision_id uuid;
+begin
+  if tg_op='DELETE' then
+    if old.published_at is not null then raise exception 'Published V7 lesson revisions are immutable'; end if;
+    return old;
+  end if;
+  if tg_op='UPDATE' and old.published_at is not null then
+    raise exception 'Published V7 lesson revisions are immutable';
+  end if;
+  if tg_op='INSERT' and new.published_at is not null then
+    raise exception 'Create a draft lesson revision and publish it after its steps are complete';
+  end if;
+  if tg_op='UPDATE' and old.published_at is null and new.published_at is not null then
+    select count(*) into revision_id from public.v7_lesson_steps s where s.lesson_revision_id=new.id;
+    if revision_id <> 7 then raise exception 'A published lesson revision must contain all seven ordered steps'; end if;
+  end if;
+  return new;
+end;
+$;
+
+create trigger v7_lesson_revision_immutable
+before insert or update or delete on public.v7_lesson_revisions
+for each row execute function private.v7_guard_published_lesson_revision();
+
+create or replace function private.v7_guard_lesson_step_revision()
+returns trigger language plpgsql set search_path = ''
+as $
+begin
+  if tg_op <> 'INSERT' and exists (select 1 from public.v7_lesson_revisions r where r.id=old.lesson_revision_id and r.published_at is not null) then
+    raise exception 'Steps in a published V7 lesson revision are immutable';
+  end if;
+  if tg_op <> 'DELETE' and exists (select 1 from public.v7_lesson_revisions r where r.id=new.lesson_revision_id and r.published_at is not null) then
+    raise exception 'Steps in a published V7 lesson revision are immutable';
+  end if;
+  return case when tg_op='DELETE' then old else new end;
+end;
+$;
+
+create trigger v7_lesson_step_immutable
+before insert or update or delete on public.v7_lesson_steps
+for each row execute function private.v7_guard_lesson_step_revision();
 
 alter table public.v7_library_items enable row level security;
 alter table public.v7_library_revisions enable row level security;
