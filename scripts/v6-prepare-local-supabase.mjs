@@ -113,7 +113,7 @@ for (const name of v6ForwardMigrations) {
 const testFiles = fs.existsSync(path.join(sourceSupabase, 'tests'))
   ? fs
       .readdirSync(path.join(sourceSupabase, 'tests'), { withFileTypes: true })
-      .filter((entry) => entry.isFile() && /^v6-.*\.test\.sql$/.test(entry.name))
+      .filter((entry) => entry.isFile() && /^v[67]-.*\.test\.sql$/.test(entry.name))
       .map((entry) => entry.name)
       .sort()
   : [];
