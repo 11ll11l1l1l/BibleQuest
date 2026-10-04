@@ -25,7 +25,7 @@ export function createLibraryPage({
   initialQuery = '',
   initialContentType = '',
 } = {}) {
-  if (typeof service?.list !== 'function' || typeof service?.getState !== 'function') {
+  if (typeof service?.list !== 'function' || typeof service?.getState !== 'function' || typeof service?.subscribe !== 'function') {
     throw new Error('Library page requires a Library service.');
   }
   if (typeof navigate !== 'function') {
@@ -49,6 +49,7 @@ export function createLibraryPage({
         <button type="submit" class="bq-primary-button">Search</button>
       </form>
       <p data-library-status role="status" aria-live="polite">Loading Library…</p>
+      <button type="button" data-library-retry hidden>Retry</button>
       <ul data-library-results aria-label="Library items"></ul>
     </main>`,
     mount(root) {
@@ -57,6 +58,14 @@ export function createLibraryPage({
       const status = page.querySelector('[data-library-status]');
       const results = page.querySelector('[data-library-results]');
       const form = page.querySelector('[data-library-search]');
+      const queryInput = page.querySelector('[name="query"]');
+      const typeInput = page.querySelector('[name="contentType"]');
+      const retry = page.querySelector('[data-library-retry]');
+      const restoredQuery = String(initialQuery ?? '').trim().slice(0, 120);
+      const initialType = String(initialContentType ?? '').trim();
+      queryInput.value = restoredQuery;
+      typeInput.value = registry.has(initialType) ? initialType : '';
+      let lastRequest = { query: queryInput.value, contentType: typeInput.value };
       let disposed = false;
       let unsubscribe = null;
 
@@ -74,27 +83,32 @@ export function createLibraryPage({
           ? current.items.map(item => itemCard(item, registry)).join('')
           : '';
         status.setAttribute('data-library-state', current.status);
+        results.setAttribute('aria-busy', String(current.status === 'loading'));
+        retry.hidden = current.status !== 'error';
       };
 
       const onSubmit = event => {
         if (event.target !== form) return;
         event.preventDefault();
-        const values = new FormData(form);
-        void service.list({
-          query: values.get('query'),
-          contentType: values.get('contentType'),
-        });
+        lastRequest = { query: queryInput.value, contentType: typeInput.value };
+        void service.list({ ...lastRequest });
       };
       const onClick = event => {
-        const target = event.target instanceof Element ? event.target.closest('[data-library-item]') : null;
+        const target = event.target instanceof Element
+          ? event.target.closest('[data-library-item], [data-library-retry]') : null;
         if (!target) return;
+        if (target.hasAttribute('data-library-retry')) {
+          if (!retry.hidden) void service.list({ ...lastRequest });
+          return;
+        }
+        const current = service.getState();
         navigate({
           routeKey: LIBRARY_ROUTE_KEYS.item,
           resourceId: target.getAttribute('data-library-item'),
           returnTo: {
             routeKey: LIBRARY_ROUTE_KEYS.browse,
-            query: page.querySelector('[name="query"]').value,
-            contentType: page.querySelector('[name="contentType"]').value,
+            query: current.query,
+            contentType: current.contentType,
           },
         });
       };
@@ -103,9 +117,7 @@ export function createLibraryPage({
       page.addEventListener('click', onClick);
       unsubscribe = service.subscribe(render);
       render(service.getState());
-      page.querySelector('[name="query"]').value = initialQuery;
-      page.querySelector('[name="contentType"]').value = initialContentType;
-      void service.list({query:initialQuery, contentType:initialContentType});
+      void service.list({ ...lastRequest });
       return () => {
         disposed = true;
         form.removeEventListener('submit', onSubmit);
