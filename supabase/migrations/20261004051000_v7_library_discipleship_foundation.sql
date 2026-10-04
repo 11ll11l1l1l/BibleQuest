@@ -477,10 +477,32 @@ using (private.v7_pair_has_user(pair_id,(select auth.uid()),false));
 create policy "v7 pair assignments participant read" on public.v7_pair_assignments for select to authenticated
 using (private.v7_pair_has_user(pair_id,(select auth.uid()),false));
 create policy "v7 pair mentor assignment insert" on public.v7_pair_assignments for insert to authenticated
-with check (assigned_by=(select auth.uid()) and exists (select 1 from public.v7_mentor_pairs p where p.id=pair_id and p.mentor_id=(select auth.uid()) and p.state='active'));
+with check (
+  assigned_by=(select auth.uid()) and exists (
+    select 1 from public.v7_mentor_pairs p
+    join public.v7_lesson_revisions r on r.id=public.v7_pair_assignments.lesson_revision_id
+    join public.v7_lessons l on l.id=r.lesson_id
+    join public.v7_modules m on m.id=l.module_id
+    join public.v7_tracks t on t.id=m.track_id
+    where p.id=public.v7_pair_assignments.pair_id and p.mentor_id=(select auth.uid()) and p.state='active'
+      and r.published_at is not null and l.publication_state='published' and m.publication_state='published'
+      and t.publication_state='published' and (t.congregation_id is null or t.congregation_id=p.congregation_id)
+  )
+);
 create policy "v7 pair assignment mentor update" on public.v7_pair_assignments for update to authenticated
 using (exists (select 1 from public.v7_mentor_pairs p where p.id=pair_id and p.mentor_id=(select auth.uid()) and p.state='active'))
-with check (exists (select 1 from public.v7_mentor_pairs p where p.id=pair_id and p.mentor_id=(select auth.uid()) and p.state='active'));
+with check (
+  exists (
+    select 1 from public.v7_mentor_pairs p
+    join public.v7_lesson_revisions r on r.id=public.v7_pair_assignments.lesson_revision_id
+    join public.v7_lessons l on l.id=r.lesson_id
+    join public.v7_modules m on m.id=l.module_id
+    join public.v7_tracks t on t.id=m.track_id
+    where p.id=public.v7_pair_assignments.pair_id and p.mentor_id=(select auth.uid()) and p.state='active'
+      and r.published_at is not null and l.publication_state='published' and m.publication_state='published'
+      and t.publication_state='published' and (t.congregation_id is null or t.congregation_id=p.congregation_id)
+  )
+);
 create policy "v7 progress pair participants read" on public.v7_learner_progress for select to authenticated
 using (exists (select 1 from public.v7_pair_assignments a where a.id=assignment_id and private.v7_pair_has_user(a.pair_id,(select auth.uid()),true)));
 create policy "v7 progress learner insert" on public.v7_learner_progress for insert to authenticated
