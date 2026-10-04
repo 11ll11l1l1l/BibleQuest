@@ -142,7 +142,7 @@ create table if not exists public.v7_lesson_revisions (
   created_by uuid not null references auth.users(id) on delete restrict,
   created_at timestamptz not null default now(),
   unique (lesson_id, revision_number),
-  unique (id, lesson_id),
+  unique (id, lesson_id)
 );
 
 create table if not exists public.v7_lesson_steps (
