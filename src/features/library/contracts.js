@@ -6,7 +6,7 @@ export const LIBRARY_ROUTE_KEYS = Object.freeze({
 export const LIBRARY_CONTENT_TYPES = Object.freeze({
   book: 'book',
   devotional: 'devotional',
-  pastTeaching: 'past-teaching',
+  pastTeaching: 'past_teaching',
 });
 
 export const LIBRARY_PUBLICATION_STATES = Object.freeze({
@@ -25,12 +25,20 @@ export function libraryError(message, code = 'BQ_LIBRARY_INVALID') {
   return error;
 }
 
+function snapshotData(value) {
+  if (Array.isArray(value)) return Object.freeze(value.map(snapshotData));
+  if (value && typeof value === 'object') {
+    return Object.freeze(Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, snapshotData(entry)])));
+  }
+  return value;
+}
+
 export function createLibraryContentTypeRegistry(additionalTypes = []) {
   const definitions = new Map();
   for (const definition of [...BUILT_IN_CONTENT_TYPES, ...additionalTypes]) {
     const id = String(definition?.id ?? '').trim();
     const label = String(definition?.label ?? '').trim();
-    if (!/^[a-z][a-z0-9-]*$/.test(id) || !label) {
+    if (!/^[a-z][a-z0-9_-]*$/.test(id) || !label) {
       throw libraryError('A Library content type needs a stable id and display label.', 'BQ_LIBRARY_CONTENT_TYPE');
     }
     if (definitions.has(id)) {
@@ -64,8 +72,46 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   }
   if (!title) throw libraryError('Library returned a published item without a title.', 'BQ_LIBRARY_ITEM');
 
+  const source = record.source;
+  const sourceContent = record.sourceContent;
+  const rights = record.rights;
+  const review = record.review;
+  const taxonomyLinks = record.taxonomyLinks;
+  const translations = record.translations;
+  const sourceLocale = String(record.sourceLocale ?? record.locale ?? '').trim();
+  const sourceTitle = String(source?.title ?? '').trim();
+  const sourceContentTitle = String(sourceContent?.title ?? '').trim();
+
+  if (!source || !sourceTitle || source.kind === 'fixture' || (!source.uri && !source.catalogId)) {
+    throw libraryError('Published Library items require a non-fixture source identity.', 'BQ_LIBRARY_PROVENANCE');
+  }
+  if (!sourceContent || !sourceContentTitle || !sourceLocale) {
+    throw libraryError('Published Library items require source-language content and locale.', 'BQ_LIBRARY_PROVENANCE');
+  }
+  if (rights?.status !== 'verified' || !String(rights.holder ?? '').trim()
+      || !String(rights.basis ?? '').trim() || typeof rights.attribution !== 'string'
+      || !Array.isArray(rights.allowedUses)
+      || rights.allowedUses.some(use => typeof use !== 'string' || !use.trim())) {
+    throw libraryError('Published Library items require verified rights and an attribution basis.', 'BQ_LIBRARY_RIGHTS');
+  }
+  if (review?.status !== 'approved' || !String(review.reviewer ?? '').trim()
+      || !Number.isFinite(Date.parse(review.decidedAt))) {
+    throw libraryError('Published Library items require an approved publication review.', 'BQ_LIBRARY_REVIEW');
+  }
+  if (!Array.isArray(taxonomyLinks) || !Array.isArray(translations)) {
+    throw libraryError('Published Library items require taxonomy links and translation records.', 'BQ_LIBRARY_CONTENT_CONTRACT');
+  }
+  for (const translation of translations) {
+    if (translation?.reviewStatus !== 'reviewed' || translation.translatedFromRevision !== revisionId
+        || !String(translation.locale ?? '').trim() || !String(translation.translatedBy ?? '').trim()
+        || !String(translation.reviewedBy ?? '').trim() || !Number.isFinite(Date.parse(translation.reviewedAt))
+        || !String(translation.content?.title ?? '').trim()) {
+      throw libraryError('Published Library items can expose only reviewed translations for the current revision.', 'BQ_LIBRARY_TRANSLATION');
+    }
+  }
+
   const summary = String(record.summary ?? '').trim();
-  const locale = String(record.locale ?? '').trim();
+  const requestedLocale = String(record.locale ?? sourceLocale).trim();
   const readingMinutes = Number(record.readingMinutes);
   return Object.freeze({
     id,
@@ -74,9 +120,18 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
     publicationState: LIBRARY_PUBLICATION_STATES.published,
     title,
     summary,
-    locale: locale || null,
+    locale: requestedLocale || sourceLocale,
+    sourceLocale,
     readingMinutes: Number.isFinite(readingMinutes) && readingMinutes > 0 ? Math.ceil(readingMinutes) : null,
     updatedAt: String(record.updatedAt ?? '').trim() || null,
+    source: snapshotData(source),
+    sourceContent: snapshotData(sourceContent),
+    rights: snapshotData(rights),
+    review: snapshotData(review),
+    taxonomyLinks: snapshotData(taxonomyLinks),
+    translations: snapshotData(translations),
+    revisionHistory: snapshotData(Array.isArray(record.revisionHistory) ? record.revisionHistory : []),
+    derivatives: snapshotData(Array.isArray(record.derivatives) ? record.derivatives : []),
   });
 }
 
