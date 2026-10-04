@@ -22,6 +22,8 @@ export function createLibraryPage({
   service,
   registry = createLibraryContentTypeRegistry(),
   navigate,
+  initialQuery = '',
+  initialContentType = '',
 } = {}) {
   if (typeof service?.list !== 'function' || typeof service?.getState !== 'function') {
     throw new Error('Library page requires a Library service.');
@@ -101,7 +103,9 @@ export function createLibraryPage({
       page.addEventListener('click', onClick);
       unsubscribe = service.subscribe(render);
       render(service.getState());
-      void service.list();
+      page.querySelector('[name="query"]').value = initialQuery;
+      page.querySelector('[name="contentType"]').value = initialContentType;
+      void service.list({query:initialQuery, contentType:initialContentType});
       return () => {
         disposed = true;
         form.removeEventListener('submit', onSubmit);

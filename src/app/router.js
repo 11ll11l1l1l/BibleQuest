@@ -25,7 +25,9 @@ export function createRouter({ routes, onRoute }) {
 
   const navigate = route => {
     const target = normalize(route);
-    const next = `#/${target}`;
+    const query = String(route || '').split('?').slice(1).join('?');
+    const params = new URLSearchParams(query);
+    const next = `#/${target}${params.size ? `?${params}` : ''}`;
     if (location.hash === next) return resolve(true);
     history.pushState(null, '', next);
     resolve(true);
