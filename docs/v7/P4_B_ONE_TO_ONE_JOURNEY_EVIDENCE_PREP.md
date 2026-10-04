@@ -2,16 +2,20 @@
 
 Status: preparation only. This document does **not** claim P3 exit or P4 browser/mobile certification.
 
-Lane B has now integrated the feature-local mentor-side pieces needed to preserve exact identity across the intended journey:
+Lane B has now integrated the feature-local pieces needed to preserve exact identity across the intended journey:
 
 1. curriculum draft authoring and canonical seven-step editing;
 2. read-only publication readiness;
 3. exact immutable publication request handoff;
-4. active mentor-pair and published curriculum selection;
-5. exact immutable assignment request handoff;
-6. a mentor assignment-preparation page that emits the prepared request without writing assignment authority.
+4. a publication-request handoff panel that emits the prepared payload without publishing;
+5. active mentor-pair and published curriculum selection;
+6. exact immutable assignment request handoff;
+7. a mentor assignment-preparation page that emits the prepared request without writing assignment authority;
+8. deterministic handoff into Lane C's existing mentee lesson runner using the exact assigned pair and immutable lesson revision ID.
 
-The deterministic contract test `tests/v7/one-to-one-mentor-journey-contract.test.mjs` proves that, when the backend returns the lesson revision just published, the exact track/module/lesson/revision identity is preserved into the assignment handoff. It also proves the current mentor preparation path remains read-only.
+`tests/v7/one-to-one-mentor-journey-contract.test.mjs` proves that, when the backend returns the lesson revision just published, the exact track/module/lesson/revision identity is preserved into the assignment handoff. It also proves the current mentor preparation path remains read-only.
+
+`tests/v7/one-to-one-mentee-handoff-contract.test.mjs` extends the deterministic contract through the existing lesson runner. It proves the assignment handoff opens the exact pinned revision for the mentee, keeps that identity immutable if discovery data later changes, and keeps the same revision review-only for the paired mentor. This is cross-feature static/unit evidence only; Lane B does not modify Lane C's runner implementation.
 
 ## Remaining blockers before actual journey certification
 
@@ -31,7 +35,8 @@ Use the smallest representative journey that exercises the accepted contracts:
 5. As the active mentor, open the assignment-preparation surface and select one active mentee pair.
 6. Select the exact published track/module/lesson revision and call the authoritative assignment boundary.
 7. Confirm the returned assignment ID/status references the exact pair and lesson revision.
-8. Enter the mentee journey through the integrated route/deep-link, verify the assigned lesson opens, resume/completion works, and role/privacy boundaries remain intact.
-9. Repeat the relevant account/congregation switch denial and narrow/mobile viewport checks.
+8. Enter the mentee journey through the integrated route/deep-link and verify the runner identity is the exact assigned pair/revision.
+9. Verify step navigation, private-response resume, Action completion, completed re-entry, and mentor read-only review using the integrated runtime.
+10. Repeat the relevant account/congregation switch denial and narrow/mobile viewport checks.
 
 Evidence must identify exact candidate SHA, environment, actor role, congregation scope, route/action, viewport/device, result, and durable artifact. Keep static, browser, live-backend, and deployed evidence distinct.
