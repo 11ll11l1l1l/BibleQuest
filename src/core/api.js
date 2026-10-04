@@ -1,3 +1,4 @@
+import { createLibrarySupabaseRepository } from '../features/library/supabase-adapter.js';
 import { authStorage } from './storage.js';
 import { assertAdminMutationAllowed } from '../v6/admin/contracts.ts';
 
@@ -894,5 +895,11 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  const library = Object.freeze({
+    async createRepository() {
+      return createLibrarySupabaseRepository(await getClient());
+    }
+  });
+
+  return Object.freeze({ library, auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }
