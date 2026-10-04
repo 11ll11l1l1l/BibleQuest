@@ -1,3 +1,4 @@
+import { createSupabaseDiscipleshipService } from '../app/discipleship-supabase-adapter.js';
 import { createDiscipleshipPairRepository } from '../app/discipleship-pair-repository.js';
 import { createLibrarySupabaseRepository } from '../features/library/supabase-adapter.js';
 import { authStorage } from './storage.js';
@@ -897,6 +898,11 @@ export function createApi() {
   });
 
   const discipleshipPairs = createDiscipleshipPairRepository(getClient);
+  const discipleship = Object.freeze({
+    createService({session,membership}) {
+      return createSupabaseDiscipleshipService({client:getClient,session,membership,pairRepository:discipleshipPairs});
+    }
+  });
 
   const library = Object.freeze({
     async createRepository() {
@@ -904,5 +910,5 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ discipleshipPairs, library, auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+  return Object.freeze({ discipleship, discipleshipPairs, library, auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }

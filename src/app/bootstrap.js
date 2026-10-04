@@ -1,4 +1,3 @@
-import { createDiscipleshipService } from './discipleship.js';
 import { createLibraryService } from '../features/library/service.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
@@ -298,7 +297,7 @@ function boot(root){
   const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
   const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
   const congregation=createCongregationMembershipService({api,session,onContextChange:()=>{library.reset();notifyV7Context()}});
-  const discipleship=createDiscipleshipService({repository:api.discipleshipPairs,session,membership:congregation});
+  const discipleship=api.discipleship.createService({session,membership:congregation});
   let librarySessionKey='';
   const unsubscribeLibrarySession=store.subscribe(state=>{
     const current=state?.session||{};
