@@ -11,11 +11,11 @@ This document defines acceptance evidence and content rules. It does not impleme
 V7 contains two product systems:
 
 1. **Library:** Books, Devotionals, and Past Teachings, with browse/detail, topic or category discovery, source attribution, and a Scripture Reader handoff where appropriate.
-2. **Structured ONE 2 ONE:** mentor/mentee pairing, Track → Module → Lesson, learner progress, the seven-step lesson flow, and the approved deep-link/QR entry and return behavior.
+2. **Structured ONE 2 ONE:** mentor/mentee pairing and relationship state, Track → Module → Lesson, learner progress, the seven-step lesson flow, authorized authoring/assignment, and the approved deep-link/QR entry and return behavior.
 
-V7 reuses the released V6 app, Reader, authentication, tenant context, assignments/deep links, localization, PWA/offline, and security owners. An acceptance claim must identify any V6 contract it relies on and must not imply that a V6 capability was reimplemented.
+V7 reuses the released V6 app, Reader, authentication, tenant context, assignments/deep links, localization, PWA/offline, notifications, communication capabilities, and security owners. An acceptance claim must identify any V6 contract it relies on and must not imply that a V6 capability was reimplemented.
 
-The following do not enter the V7 acceptance denominator: realtime small-group/Conversation Deck work; a central Google Drive media pipeline or full media moderation system; full Ilocano rollout or Bible ingestion; bulk Library content ingestion; Couples expansion; and a whole-app visual redesign. These are transfer items for V8 (Section 7), except existing V6 capabilities that V7 directly reuses.
+The following do not enter the V7 acceptance denominator: Leader Conversation Deck, participant broadcast or realtime small-group sessions; a central Google Drive media ingest/storage pipeline or full media moderation/provider project; full Ilocano rollout or Bible ingestion; bulk content ingestion; Couples expansion; recommendation-engine work beyond Library MVP; and a second whole-app visual redesign. These are transfer items for V8 (Section 7), except existing V6 capabilities that V7 directly reuses.
 
 ## 2. Phase 0 acceptance contract
 
@@ -29,7 +29,7 @@ The integration owner closes each shared-contract row only after reconciling the
 | P0D-04 | Representative, source-valid content is selected for each Library type before feature acceptance; this does not require bulk ingestion. | CONTENT REVIEW | Content owner |
 | P0D-05 | Library discovery supports its accepted category/topic and language metadata; displayed source, attribution, and permitted-use information remain available in detail. | BROWSER / CONTENT REVIEW | Library feature owner |
 | P0D-06 | UI strings and content records are locale-ready, use the existing localization system, and show a defined fallback when a translation is unavailable. This is readiness, not a full Ilocano rollout. | STATIC / BROWSER | Localization and feature owners |
-| P0D-07 | ONE 2 ONE acceptance covers an accepted mentor/mentee relationship, Track → Module → Lesson progression, and Scripture → Understand → Discuss → Reflect → Apply → Pray → Action. | BROWSER / INTEGRATION | Discipleship feature owner |
+| P0D-07 | ONE 2 ONE acceptance covers an accepted mentor/mentee relationship, authorized assignment, Track → Module → Lesson progression, and Scripture → Understand → Discuss → Reflect → Apply → Pray → Action. | BROWSER / INTEGRATION | Discipleship feature owner |
 | P0D-08 | Assignment, completion, private reflection/prayer, and any explicitly shared response have separately stated audiences; pairing alone does not make private text visible to the mentor. | INTEGRATION / DATABASE | P0-C security owner and feature owner |
 | P0D-09 | Pairing, lesson, notification/deep-link, and Reader handoff routes use the keys and entry/return behavior ratified by P0-B. No route ID is invented in this contract. | BROWSER / RESPONSIVE | P0-B route owner and feature owners |
 | P0D-10 | Each read and mutation has an allowed actor, scope, positive case, and denial case consistent with P0-C; client visibility is not authorization. | INTEGRATION / LIVE BACKEND | P0-C security owner and feature owners |
@@ -102,7 +102,7 @@ Evidence records identify candidate SHA, environment, actor/role and scope, rout
 
 P0-D’s acceptance/provenance deliverable is usable when the following are resolved in serialized integration:
 
-1. P0-A’s data taxonomy and provenance fields map to Sections 2–3. Any central Drive, Conversation Deck, or other V8-only entities must be explicitly excluded from the V7 contract.
+1. P0-A’s data taxonomy and provenance fields map to Sections 2–3, and its relationship/progress model includes the in-scope mentor/mentee pairing and state. Any central Drive, Conversation Deck, or other V8-only entities must be explicitly excluded from the V7 contract.
 2. P0-B’s route and journey map includes Library and ONE 2 ONE pairing/lesson flows and maps routes from the current registry. Retired full-app destinations are not V7 acceptance rows.
 3. P0-C’s role, relationship, privacy, and denial criteria match the narrowed V7 feature set. Existing V6 security remains authoritative outside changed V7 surfaces.
 4. The integrated status names the accountable implementation owner for each shared route, data, authorization, and evidence surface.
@@ -113,16 +113,18 @@ Until this reconciliation occurs, this document is a P0-D proposal and Phase 0 r
 
 | Deferred objective | V7 treatment | V8 entry condition |
 |---|---|---|
-| Realtime groups and Conversation Deck | Excluded; no new V7 deck/chat acceptance | V8 scope and ownership approved |
-| Central Drive media pipeline and full media moderation | Excluded; use only an already-supported V6 path if a V7 item needs one | Storage, authorization, lifecycle, and moderation contracts approved |
-| Full Ilocano UI rollout and Ilocano Bible ingestion | Excluded; preserve locale-ready fields and existing localization support | Source rights, translation review, and rollout plan approved |
-| Bulk Library ingestion | Excluded; use reviewed representative samples for V7 acceptance | Rights/provenance audit and bounded import design approved |
-| Couples expansion | Excluded; preserve existing V6 behavior | Separate product scope approved |
-| Whole-app visual/navigation overhaul | Excluded; change only routes/surfaces needed for Library and ONE 2 ONE | Full-product design scope approved |
-| New V7-independent V6 redesigns, games/ministry expansion, or unrelated media work | Preserve released V6; no V7 work implied | Separate V8 objective approved |
+| Leader Conversation Deck, participant broadcast, and realtime small-group session engine | Excluded; use existing V6 capabilities only where already part of an accepted ONE 2 ONE path | V8 scope, data ownership, and route/security contract approved |
+| Central Google Drive media ingest/storage pipeline and full moderation/provider project | Excluded; use only an already-supported V6 path if an in-scope item needs one | Storage, authorization, lifecycle, and moderation contracts approved |
+| Full Ilocano Bible and application UI rollout | Excluded; preserve locale-ready fields and existing localization support | Source rights, translation review, and rollout plan approved |
+| Bulk devotional corpus ingestion and bulk Past Teachings/sermon conversion | Excluded; use reviewed representative samples for V7 acceptance | Rights/provenance audit and bounded import/review design approved |
+| Large/expanded Books catalog and broad hosted-book program | Excluded; Books MVP uses metadata, browse/detail, legitimate external links, and rights-permitted hosted content | Catalog scope and per-title rights/hosting policy approved |
+| Couples expansion and new Couples question bank | Excluded; preserve existing V6 behavior | Separate product scope approved |
+| Advanced/personalized recommendations or deeper discovery beyond the Library MVP | Excluded; implement only the accepted V7 category/topic discovery, filters, and search | Product goal, data source, privacy, and measurable acceptance approved |
+| Second whole-app visual/navigation redesign | Excluded; change only routes/surfaces required for Library and ONE 2 ONE | Full-product design scope approved |
+| Unrelated games, ministry, media, or other V6 feature expansion | Preserve released V6; no V7 work implied | Separate V8 objective approved |
 
 The transfer manifest records exclusions; it does not schedule or authorize V8 work.
 
 ## 8. P0-D exit condition
 
-P0-D is ready for integration-owner review when the acceptance rows, content rules, evidence semantics, localization readiness, and V8 transfer items above are reconciled with the live P0-A/B/C drafts. Phase 0 closes only when the serialized integration owner accepts the combined contracts in `V7_ACTIVE_STATUS.md`. The exact route matrix and backend/security implementation remain owned by their respective lanes.
+P0-D is ready for integration-owner review when the acceptance rows, content rules, evidence semantics, localization readiness, and V8 transfer items above are reconciled with the live P0-A/B/C drafts. Phase 0 closes only when the serialized integration owner accepts the combined contracts in `V7_ACTIVE_STATUS.md`. The pairing/data, exact route map, and backend/security implementation remain owned by their respective lanes.
