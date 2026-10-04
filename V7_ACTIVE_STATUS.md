@@ -18,16 +18,85 @@ The user may issue only:
 - `Continue V7 lane C`
 - `Continue V7 lane D`
 
-That is sufficient instruction regardless of whether V7 is currently in P0, P1, P2, P3, P4 or P5.
+That is sufficient instruction regardless of whether V7 is currently in P0, P1, P2, P3, P4 or P5. The user does **not** need to issue a separate integration, merge, phase-advance or release-preparation command.
 
-The executor must resolve the live phase and same-letter assignment from this file plus `DEVELOPMENT_PLAN_V7.md`. Do **not** ask the user which phase to continue.
+The executor must resolve the live phase and same-letter assignment from this file plus `DEVELOPMENT_PLAN_V7.md`. Do **not** ask the user which phase to continue and do **not** stop merely because the lane has reached an integration boundary.
+
+## Automatic integration protocol
+
+Integration is part of every `Continue V7 lane X` command.
+
+### Normal lane responsibility
+
+Every persistent lane A–D must integrate its **own completed bounded work** before stopping whenever the following are true:
+
+1. the lane implementation/evidence is complete;
+2. its affected checks are green or valid same-SHA evidence already exists;
+3. the change does not require unresolved behavioral reconciliation with another lane;
+4. the target remains `v7/development` and V7 has not entered a frozen release-candidate state.
+
+A lane may not end with only `ready for integration`, `waiting for merge`, `integration needed`, or equivalent status if it can safely perform that integration itself.
+
+Before integrating, fetch the live `v7/development` HEAD. If the integration head moved since the lane started, refresh/rebase the lane onto that live head, resolve conflicts **inside the lane's owned surface**, rerun only the checks affected by the refresh/conflict, and integrate against the refreshed head. Never force-update `v7/development` to bypass concurrent work.
+
+After successful integration, verify the integrated commit/tree is reachable from the current `v7/development` head, then continue into the next eligible same-letter assignment when allowed by the phase gates.
+
+### Lane A — standing integration coordinator
+
+Lane A has an additional persistent responsibility across all V7 phases. Every `Continue V7 lane A` starts by checking whether completed work from any lane is waiting on one of these integration-only conditions:
+
+- shared router/navigation wiring;
+- shared schema/generated-contract reconciliation;
+- cross-lane merge conflict that cannot be resolved entirely inside the originating lane's owned surface;
+- canonical `V7_ACTIVE_STATUS.md` phase-gate reconciliation;
+- phase transition after the exit gate is objectively satisfied;
+- P5 exact-SHA candidate assembly, freeze and promotion preparation.
+
+Lane A must drain those integration responsibilities first, in dependency order, before resuming its own feature/evidence assignment. This is internal work; the user does not need to say `integrate`.
+
+When integrating another lane's completed work, Lane A must preserve that lane's intended behavior, use the live integration head, run the affected combined checks, and avoid unrelated refactors. Mechanical conflicts may be resolved directly. Behavioral conflicts must be reconciled against the accepted V7 contracts rather than choosing one implementation arbitrarily.
+
+### Fallback when a non-A lane encounters an integration-only blocker
+
+Lanes B–D should first integrate their own work as described above. If the only remaining blocker is a shared/cross-lane integration task reserved to Lane A, they must preserve their completed artifact and may perform safe non-overlapping next work where the roadmap permits. They must not undo or duplicate another lane's implementation.
+
+This condition does **not** require a new user command type. The next normal `Continue V7 lane A` automatically picks up that integration duty. If the user continues B/C/D again before A, that lane should keep doing useful eligible work rather than repeatedly restating the same integration wait.
+
+### Optimistic serialization rule
+
+There is no permanent manual merge queue and no user-operated lock. Serialization is achieved by repository state:
+
+1. read the live `v7/development` HEAD immediately before integration;
+2. integrate only onto that head;
+3. if the head changed before the write completes, refresh/rebase and retry safely;
+4. never force a stale lane over the current integration head;
+5. after merge, verify reachability and affected combined checks.
+
+This preserves the rulebook's one-integration-owner-at-a-time principle without creating a separate integration chat or requiring integration commands from the user.
+
+## Continuation loop
+
+For any `Continue V7 lane X` command, execute this loop:
+
+1. fetch live `v7/development` and this status;
+2. resolve the current lane assignment;
+3. for Lane A, first drain pending shared/cross-lane integration duties;
+4. continue or finish the lane's assigned work;
+5. run the smallest affected checks;
+6. integrate the lane's own completed bounded work automatically;
+7. reconcile the phase exit gate if applicable;
+8. if the next same-letter assignment is eligible, continue directly into it;
+9. repeat until the execution window ends, a genuine human/external boundary is reached, or V7 is complete.
+
+Finishing a task, reaching a merge boundary, or completing a phase is not by itself a reason to stop.
 
 If the requested lane's assignment in the current phase is already complete:
 
-1. check whether the next same-letter assignment is eligible;
-2. if eligible, continue directly into that next phase assignment in the same run;
-3. if the entire current phase exit gate is already satisfied but this file has not yet advanced, reconcile the phase transition safely and continue;
-4. if a real shared prerequisite is still open, do bounded non-overlapping work that helps close it or record the exact blocker rather than pretending the next phase is ready.
+1. check whether its completed work is actually integrated; if not, integrate it first;
+2. check whether the next same-letter assignment is eligible;
+3. if eligible, continue directly into that next phase assignment in the same run;
+4. if the entire current phase exit gate is already satisfied but this file has not yet advanced, reconcile the phase transition safely and continue;
+5. if a real shared prerequisite is still open, do bounded non-overlapping work that helps close it or preserve the exact blocker without pretending the next phase is ready.
 
 A lane may cross more than one completed phase in one continuation run. Finishing a phase is not, by itself, a reason to stop and wait for another user instruction.
 
@@ -98,14 +167,16 @@ Do not mark P0 complete merely because four documents or plans exist. Integrate/
 - **P4 — Integrated hardening:** Library UX/a11y, ONE 2 ONE journeys, backend/RLS/privacy and cross-cutting regression. Four independent evidence lanes.
 - **P5 — Exact-SHA release:** four evidence lanes followed by one serialized candidate owner and production promotion.
 
-After P1 contracts are frozen, independent P2 Library and P3 ONE 2 ONE work may overlap where ownership is genuinely disjoint. Integration onto `v7/development` remains serialized.
+After P1 contracts are frozen, independent P2 Library and P3 ONE 2 ONE work may overlap where ownership is genuinely disjoint. Integration onto `v7/development` remains serialized by the automatic protocol above.
 
 ## Rulebook constraints in force
 
 - Exact starting SHA per lane.
 - One concrete outcome and explicit owned/excluded surface per chat.
 - Persistent lane letter across phase transitions; the executor resolves the phase automatically.
-- One owner for shared schema/migrations/generated DB contracts, global router/navigation wiring, service worker/deployment configuration and canonical status edits.
+- Integration is internal to `Continue V7 lane X`; no separate user integration command is required.
+- Each lane integrates its own safe bounded completed work; Lane A owns cross-lane/shared reconciliation and phase advancement.
+- One owner at a time for shared schema/migrations/generated DB contracts, global router/navigation wiring, service worker/deployment configuration and canonical status edits.
 - No broad historical repository audit at task start.
 - No unrelated refactors or V8 scope creep.
 - Targeted affected checks during implementation; accumulated checks at integration/release boundaries.
@@ -121,4 +192,4 @@ The V6 owner-waived physical acceptance rows remain recorded in the original V6 
 
 ## Immediate next action
 
-Complete and reconcile P0-A/P0-B/P0-C/P0-D against the narrowed roadmap. Once the P0 exit gate is satisfied, the same lane chats may continue automatically as P1-A/P1-B/P1-C/P1-D without waiting for a new user phase instruction.
+Complete, automatically integrate and reconcile P0-A/P0-B/P0-C/P0-D against the narrowed roadmap. Once the P0 exit gate is satisfied, the same lane chats continue automatically as P1-A/P1-B/P1-C/P1-D without waiting for a new user phase or integration instruction.
