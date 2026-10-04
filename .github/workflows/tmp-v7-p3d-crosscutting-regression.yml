@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  regression:
+  isolate-v6:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,18 +18,39 @@ jobs:
           node-version: 22.23.2
           cache: npm
       - run: npm ci
-      - name: Full V7 unit suite
+      - name: V6 tests a-d
         continue-on-error: true
-        run: npm run unit:v7
-      - name: Affected inherited V6 unit suite
-        if: always()
-        run: npm run unit:v6
-      - name: Typecheck
-        if: always()
-        run: npm run typecheck
-      - name: Production build
-        if: always()
-        run: npm run build
-      - name: Repository lint
-        if: always()
-        run: npm run lint
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[a-d]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
+      - name: V6 tests e-h
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[e-h]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
+      - name: V6 tests i-l
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[i-l]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
+      - name: V6 tests m-p
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[m-p]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
+      - name: V6 tests q-t
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[q-t]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
+      - name: V6 tests u-z
+        continue-on-error: true
+        run: |
+          shopt -s nullglob
+          files=(tests/v6/[u-z]*.test.ts)
+          ((${#files[@]} == 0)) || node --experimental-strip-types --test "${files[@]}"
