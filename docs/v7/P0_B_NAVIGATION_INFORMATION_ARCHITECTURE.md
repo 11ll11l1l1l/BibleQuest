@@ -34,7 +34,7 @@ P0-B proposes the following new page-route keys, all distinct from the 50 regist
 | `one-to-one-track` | `one-to-one` or an authorized assignment/deep link | Show the selected track and progress; return to ONE 2 ONE. |
 | `one-to-one-module` | Track or authorized deep link | Show the selected module and progress; return to the parent track. |
 | `one-to-one-lesson` | Module or authorized assignment/deep link | Run/resume the assigned lesson; Scripture handoff returns to the same lesson step. |
-| `one-to-one-thread` | Active pair context only | Open the pair's existing V6 communication thread; return to the active pair/lesson context. |
+| `one-to-one-thread` | Active pair context only, after the shared capability gap is resolved | Reserved for pair communication. The P1-A inventory found no compatible V6 pair-private backend, so do not expose a usable thread entry or add persistence until the integration owner resolves the dependency. Return to the active pair/lesson context. |
 
 The route key selects a page, not an authorization scope. Resource IDs are resolved by the existing assignment/pair/Library services and must be validated server-side; guessed IDs and query parameters do not grant access. The current V6 router reduces hashes to a route key and discards query/path suffixes, so P1 must add only the minimum safe resource-context handoff needed by these approved routes while retaining that router. No global shell key is renamed or reordered.
 
@@ -87,7 +87,7 @@ Opening a Scripture reference from any Library item uses the shared Bible destin
 
 ## ONE 2 ONE journey
 
-Entry is **Grow → ONE 2 ONE**. V7 includes mentor/mentee pairing, Track → Module → Lesson progress, the seven-step lesson flow, and approved deep-link/QR entry. Pair-thread communication reuses the existing V6 messaging capability; V7 does not build a new messaging system.
+Entry is **Grow → ONE 2 ONE**. V7 includes mentor/mentee pairing, Track → Module → Lesson progress, the seven-step lesson flow, and approved deep-link/QR entry. Pair-thread communication is an OPEN dependency: the P1-A inventory found no compatible V6 pair-private backend. Do not claim an existing thread is available or build persistence before shared contract resolution.
 
 | Route | Learner view | Mentor view |
 |---|---|---|
@@ -95,7 +95,7 @@ Entry is **Grow → ONE 2 ONE**. V7 includes mentor/mentee pairing, Track → Mo
 | Pairing | Accept, decline, or view an authorized invitation and current pair status | Invite or manage a pairing only where the approved role/action permits |
 | Track / module | Published tracks and module progress | Assigned track context only where the accepted sharing contract permits |
 | Lesson | Current step, saved progress, and explicit sharing controls | Only progress or responses the learner explicitly shares under the approved contract |
-| Pair communication | Existing V6 pair-scoped messaging capability, when available to the active pair | Existing V6 pair-scoped messaging capability, when available to the active pair |
+| Pair communication | OPEN — no compatible V6 pair-private capability was found; no active thread entry until resolved | OPEN — do not represent a working V6 message backend or create new storage without shared contract resolution |
 | Pair closure | End or leave a pairing and see its closed state | Closed-pair state; no ongoing access from the former relationship |
 
 | Step | Learner screen | Completion action |
@@ -110,7 +110,7 @@ Entry is **Grow → ONE 2 ONE**. V7 includes mentor/mentee pairing, Track → Mo
 
 Learners can resume the last saved lesson step. Deep links and QR codes open the intended published track, module, lesson, or authorized pair entry after session state has loaded; Back restores the originating context. Pairing does not itself reveal a learner's private reflection, prayer, notes, or answers. Any sharing is explicit and limited to the approved audience. Pair state, visible progress, message access, and pair termination must follow the P0-A data model and P0-C authorization contract; a route or pairing label grants no authority.
 
-P0-A maps pair relationships and pair-scoped messages using existing V6 communication. P0-C defines active-pair access and privacy rules. P0-B route placement and handoff behavior must match those contracts before P0 freeze.
+P0-A records pair-communication intent and the unresolved V6 capability gap. P0-C defines the required privacy boundary if communication is authorized. The `one-to-one-thread` key is reserved, not evidence of an available backend; do not expose the route until the shared contract is resolved.
 
 ## Existing group features and V8 boundary
 
@@ -132,13 +132,13 @@ The following P0-B criteria are accepted in the serialized freeze; P1 runtime im
 
 - The existing shell keys/order and all 50 current page-route keys are retained; the proposed Library and ONE 2 ONE entry placements are ratified as minimum V7 additions, with no whole-app redesign.
 - Library has the three required content types, browse/detail paths, source attribution, and Reader handoff.
-- Track/module/lesson, seven lesson steps, pairing, deep links/QR, and reuse of V6 pair communication match P0-A/C. Pair access and private-response boundaries remain explicit.
+- Track/module/lesson, seven lesson steps, pairing, and deep links/QR match P0-A/C. Pair communication remains OPEN until a compatible existing capability is verified or the scope is explicitly reconciled.
 - Conversation Deck, realtime group sessions, and new group chat are excluded from V7 and recorded for V8; existing V6 group routes remain intact.
-- Private reflections, prayers, notes, and answers remain private unless explicitly shared; ONE 2 ONE messages are visible only to current pair participants under P0-A/C/D. Existing V6 group messaging remains unchanged and outside V7.
+- Private reflections, prayers, notes, and answers remain private unless explicitly shared. If ONE 2 ONE messaging is later authorized, it is limited to current pair participants under P0-A/C/D. Existing V6 group messaging remains unchanged and outside V7.
 - Route behavior states session/congregation hydration and destination-local loading/error/empty states.
 - Central Drive/media pipeline, bulk ingestion, and full Ilocano rollout are V8 deferrals; V7 content uses existing V6 capabilities.
 - No runtime route, backend, schema, or content-policy change was introduced by this architecture deliverable.
 
 ## Next implementation boundary
 
-P0-B's route and journey contract is accepted with the narrowed V7 objective: Library plus structured ONE 2 ONE. It preserves existing V6 shell/routes and reuses V6 pair messaging; Conversation Deck, new group chat/realtime sessions, central Drive media pipeline, and full Ilocano rollout remain V8. The P0 freeze records agreement across A/B/C/D. P1 implementation and user acceptance remain open.
+P0-B's route and journey contract is accepted with the narrowed V7 objective: Library plus structured ONE 2 ONE. It preserves existing V6 shell/routes. Pair messaging remains OPEN because no compatible V6 pair-private backend was found; the thread route is reserved pending shared resolution. Conversation Deck, new group chat/realtime sessions, central Drive media pipeline, and full Ilocano rollout remain V8. The P0 freeze records agreement across A/B/C/D. P1 implementation and user acceptance remain open.
