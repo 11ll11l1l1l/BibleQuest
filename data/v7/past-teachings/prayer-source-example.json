@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [{ "id": "topic.prayer", "kind": "topic", "labels": { "en": "Prayer" } }],
+  "items": [{
+    "id": "teaching.prayer-abiding", "type": "past_teaching", "revision": "prayer-abiding-r1", "sourceLocale": "en", "publicationState": "pending_review",
+    "source": { "kind": "external", "title": "The Secret of Power in Prayer", "uri": "https://www.spurgeon.org/sermons/the-secret-of-power-in-prayer", "date": "1888-01-08T00:00:00Z", "creator": "Charles H. Spurgeon", "revision": "Metropolitan Tabernacle Pulpit, Volume 34" },
+    "sourceContent": { "title": "Prayer shaped by abiding in Christ", "body": "## The teaching\n\nIn his sermon on John 15:7, Spurgeon connects prayer with continuing dependence on Christ. Prayer grows from that relationship; it is more than a religious task completed at set times.\n\n## The words that shape desire\n\nAbiding includes receiving Christ’s words. His teaching changes what believers seek, helping their requests express his purposes. The promise should therefore be read with its stated conditions, rather than treated as an unrestricted guarantee for every desire.\n\n## A response today\n\nRead John 15:7 in its surrounding passage. Identify one request you are bringing to God, then consider how Jesus’ words challenge or clarify it. Ask for grace to remain close to him and to bear fruit.\n\nThis brief editorial adaptation summarizes selected themes; it is not a transcript or a replacement for the original sermon." },
+    "rights": { "status": "unknown", "holder": "", "basis": "Pending rights verification for the source edition and editorial adaptation.", "attribution": "Editorial adaptation of Charles H. Spurgeon’s The Secret of Power in Prayer (1888).", "allowedUses": [] },
+    "review": { "status": "pending_review" }, "revisionHistory": [], "derivatives": [],
+    "taxonomyLinks": [{ "id": "topic.prayer", "kind": "topic", "order": 0 }], "translations": []
+  }]
+}
