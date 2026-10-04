@@ -241,3 +241,63 @@ test('detail lookup refuses a published record belonging to another item', async
   assert.equal(state.error, 'Library returned a different item than requested.');
   assert.equal((await service.getItem('devotional-1')).selectedItem.id, 'devotional-1');
 });
+
+test('discovery keeps taxonomy across filtered pages and appends without duplicate items', async () => {
+  const requests = [];
+  let rejectMore = false;
+  const service = createLibraryService({ repository: createLibraryRepository({
+    async listPublished(options) {
+      requests.push(options);
+      if (!options.cursor) return { items: [item()], nextCursor: '24',
+        taxonomy: [{ id: 'topic.hope', kind: 'topic', labels: { en: 'Hope' } }] };
+      if (rejectMore) throw new Error('offline');
+      return { items: [item(), item({ id: 'book-2', contentType: 'book' })], nextCursor: null };
+    },
+    getPublishedById: async () => null,
+  }) });
+  await service.list({ query: 'hope', taxonomyId: 'topic.hope', includeTaxonomy: true });
+  assert.equal(service.getState().taxonomy[0].labels.en, 'Hope');
+  rejectMore = true;
+  await service.loadMore();
+  assert.equal(service.getState().status, 'ready');
+  assert.equal(service.getState().items.length, 1);
+  assert.equal(service.getState().nextCursor, '24');
+  assert.equal(service.getState().moreError, 'offline');
+  rejectMore = false;
+  await service.loadMore();
+  assert.equal(service.getState().items.length, 2);
+  assert.equal(service.getState().moreError, null);
+  assert.equal(service.getState().nextCursor, null);
+  assert.equal(requests.at(-1).taxonomyId, 'topic.hope');
+  assert.equal(requests.at(-1).query, 'hope');
+  assert.equal(service.getState().taxonomy.length, 1);
+  const count = requests.length;
+  await service.loadMore();
+  assert.equal(requests.length, count);
+});
+
+test('scope reset discards late pagination and taxonomy data; double Load more opens one request', async () => {
+  let resolveMore;
+  let moreRequests = 0;
+  const service = createLibraryService({ repository: createLibraryRepository({
+    listPublished(options) {
+      if (!options.cursor) return Promise.resolve({ items: [item()], nextCursor: '24',
+        taxonomy: [{ id: 'topic.hope', kind: 'topic', labels: { en: 'Hope' } }] });
+      moreRequests++;
+      return new Promise(resolve => { resolveMore = resolve; });
+    },
+    getPublishedById: async () => null,
+  }) });
+  await service.list({ taxonomyId: 'topic.hope', includeTaxonomy: true });
+  const more = service.loadMore();
+  await service.loadMore();
+  assert.equal(moreRequests, 1);
+  assert.equal(service.getState().loadingMore, true);
+  const cleared = service.reset();
+  resolveMore({ items: [item({ id: 'private-old-item' })], nextCursor: null });
+  await more;
+  assert.equal(service.getState(), cleared);
+  assert.deepEqual(cleared.taxonomy, []);
+  assert.equal(cleared.taxonomyId, '');
+  assert.equal(cleared.loadingMore, false);
+});

@@ -1,3 +1,4 @@
+import './discovery.css';
 export {
   LIBRARY_CONTENT_TYPES,
   LIBRARY_PUBLICATION_STATES,

@@ -1,3 +1,4 @@
+import { normalizeLibraryTaxonomyId } from './discovery.js';
 import { libraryError } from './contracts.js';
 import { createLibraryRepository } from './repository.js';
 
@@ -30,14 +31,16 @@ const ITEM_COLUMNS = [
   'id', 'content_type', 'current_revision_id', 'publication_state', 'updated_at',
 ];
 
-function columnsFor({ includeBody = false } = {}) {
-  const revisionColumns = includeBody ? REVISION_COLUMNS : LIST_REVISION_COLUMNS;
+function columnsFor({ includeBody = false, taxonomyId = '' } = {}) {
+  const baseColumns = includeBody ? REVISION_COLUMNS.join(',') : LIST_REVISION_COLUMNS;
+  const revisionColumns = baseColumns + (taxonomyId
+    ? ',filter_taxonomy_links:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey!inner(taxonomy_id)' : '');
   return `${ITEM_COLUMNS.join(',')},revision:v7_library_revisions!v7_library_items_current_revision_fk!inner(${revisionColumns})`;
 }
 
-function publishedQuery(client, { includeBody = false } = {}) {
+function publishedQuery(client, { includeBody = false, taxonomyId = '' } = {}) {
   return client.from('v7_library_items')
-    .select(columnsFor({ includeBody }))
+    .select(columnsFor({ includeBody, taxonomyId }))
     .eq('publication_state', 'published')
     .eq('revision.publication_state', 'published')
     .eq('revision.review_status', 'approved')
@@ -160,12 +163,14 @@ export function createLibrarySupabaseAdapter(clientOrProvider) {
     async listPublished(options = {}) {
       const limit = validPageSize(options.limit);
       const offset = decodeOffset(options.cursor);
+      const taxonomyId = normalizeLibraryTaxonomyId(options.taxonomyId);
       const db = await client();
-      let request = publishedQuery(db)
+      let request = publishedQuery(db, { taxonomyId })
         .order('updated_at', { ascending: false })
         .order('id', { ascending: true });
 
       if (options.contentType) request = request.eq('content_type', String(options.contentType));
+      if (taxonomyId) request = request.eq('revision.filter_taxonomy_links.taxonomy_id', taxonomyId);
       const pattern = safeSearchPattern(options.query);
       if (pattern) request = request.ilike('revision.title', pattern);
 
@@ -173,9 +178,16 @@ export function createLibrarySupabaseAdapter(clientOrProvider) {
       if (error) throw error;
       const rows = Array.isArray(data) ? data : [];
       const hasMore = rows.length > limit;
+      let taxonomy;
+      if (options.includeTaxonomy) {
+        const result = await db.from('v7_library_taxonomy').select('id,kind,labels').order('id', { ascending: true }).range(0, 199);
+        if (result.error) throw result.error;
+        taxonomy = Array.isArray(result.data) ? result.data : [];
+      }
       return Object.freeze({
         items: Object.freeze(rows.slice(0, limit).map(mapPublishedRow)),
         nextCursor: hasMore ? String(offset + limit) : null,
+        ...(taxonomy ? { taxonomy } : {}),
       });
     },
 
