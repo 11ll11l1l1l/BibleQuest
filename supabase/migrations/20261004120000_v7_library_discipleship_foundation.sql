@@ -42,6 +42,7 @@ create table if not exists public.v7_library_revisions (
   reviewer_id uuid references auth.users(id) on delete set null,
   reviewed_at timestamptz,
   revision_history uuid[] not null default '{}',
+  derivatives uuid[] not null default '{}',
   withdrawal_reason text,
   created_by uuid not null references auth.users(id) on delete restrict,
   created_at timestamptz not null default now(),
@@ -100,6 +101,7 @@ create table if not exists public.v7_tracks (
   summary text not null default '',
   locale text not null,
   audience text not null default '',
+  revision_id uuid not null default gen_random_uuid() unique,
   publication_state text not null default 'draft' check (publication_state in ('draft','published','withdrawn')),
   display_order integer not null default 0 check (display_order >= 0),
   created_by uuid not null references auth.users(id) on delete restrict,
@@ -112,6 +114,7 @@ create table if not exists public.v7_modules (
   track_id uuid not null references public.v7_tracks(id) on delete cascade,
   title text not null check (char_length(title) between 1 and 240),
   summary text not null default '',
+  revision_id uuid not null default gen_random_uuid() unique,
   display_order integer not null check (display_order >= 0),
   publication_state text not null default 'draft' check (publication_state in ('draft','published','withdrawn')),
   created_at timestamptz not null default now(),
@@ -122,6 +125,7 @@ create table if not exists public.v7_lessons (
   id uuid primary key default gen_random_uuid(),
   module_id uuid not null references public.v7_modules(id) on delete cascade,
   title text not null check (char_length(title) between 1 and 240),
+  revision_id uuid not null default gen_random_uuid() unique,
   display_order integer not null check (display_order >= 0),
   publication_state text not null default 'draft' check (publication_state in ('draft','published','withdrawn')),
   created_at timestamptz not null default now(),
@@ -193,14 +197,18 @@ create table if not exists public.v7_pair_assignments (
   status text not null default 'assigned' check (status in ('assigned','started','completed','cancelled')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  unique (id, pair_id, lesson_revision_id)
+  unique (id, pair_id, lesson_revision_id),
+  unique (id, lesson_revision_id)
 );
 
 create table if not exists public.v7_learner_progress (
   id uuid primary key default gen_random_uuid(),
   assignment_id uuid not null references public.v7_pair_assignments(id) on delete cascade,
   learner_id uuid not null references auth.users(id) on delete cascade,
-  current_step smallint not null default 0 check (current_step between 0 and 7),
+  lesson_revision_id uuid not null,
+  current_step_id uuid,
+  foreign key (assignment_id, lesson_revision_id) references public.v7_pair_assignments(id, lesson_revision_id) on delete cascade,
+  foreign key (current_step_id, lesson_revision_id) references public.v7_lesson_steps(id, lesson_revision_id) on delete restrict,
   status text not null default 'not_started' check (status in ('not_started','in_progress','completed')),
   started_at timestamptz,
   completed_at timestamptz,
@@ -396,7 +404,7 @@ create policy "v7 response share participant read" on public.v7_response_shares 
 using (recipient_id=(select auth.uid()) or exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())));
 create policy "v7 response share owner insert" on public.v7_response_shares for insert to authenticated
 with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pair_assignments a on a.id=r.assignment_id join public.v7_mentor_pairs p on p.id=a.pair_id
-  where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and p.state='active'));
+  where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and (share_state='revoked' or p.state='active')));
 create policy "v7 response share owner update" on public.v7_response_shares for update to authenticated
 using (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())))
 with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pair_assignments a on a.id=r.assignment_id join public.v7_mentor_pairs p on p.id=a.pair_id
