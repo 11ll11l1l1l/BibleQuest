@@ -30,7 +30,7 @@ values ('91000000-0000-4000-8000-000000000001','90000000-0000-4000-8000-00000000
 insert into public.v7_lessons(id,module_id,title,display_order,publication_state)
 values ('92000000-0000-4000-8000-000000000001','91000000-0000-4000-8000-000000000001','Lesson one',0,'published');
 insert into public.v7_lesson_revisions(id,lesson_id,revision_number,locale,published_at,created_by)
-values ('93000000-0000-4000-8000-000000000001','92000000-0000-4000-8000-000000000001',1,'en',now(),'11111111-1111-4111-8111-111111111111');
+values ('93000000-0000-4000-8000-000000000001','92000000-0000-4000-8000-000000000001',1,'en',null,'11111111-1111-4111-8111-111111111111');
 insert into public.v7_lesson_steps(id,lesson_revision_id,position,step_type,content)
 values
  ('94000000-0000-4000-8000-000000000001','93000000-0000-4000-8000-000000000001',0,'scripture','{"prompt":"Read"}'),
@@ -40,6 +40,7 @@ values
  ('94000000-0000-4000-8000-000000000005','93000000-0000-4000-8000-000000000001',4,'apply','{}'),
  ('94000000-0000-4000-8000-000000000006','93000000-0000-4000-8000-000000000001',5,'pray','{}'),
  ('94000000-0000-4000-8000-000000000007','93000000-0000-4000-8000-000000000001',6,'action','{}');
+update public.v7_lesson_revisions set published_at=now() where id='93000000-0000-4000-8000-000000000001';
 insert into public.v7_pair_assignments(id,pair_id,lesson_revision_id,assigned_by,status)
 values ('95000000-0000-4000-8000-000000000001','80000000-0000-4000-8000-000000000001','93000000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111111','assigned');
 insert into public.v7_learner_progress(id,assignment_id,lesson_revision_id,learner_id,current_step_id,status,started_at)
