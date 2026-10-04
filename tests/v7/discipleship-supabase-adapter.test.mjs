@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { createDiscipleshipSupabaseRepository, createSupabaseDiscipleshipService } from '../../src/app/discipleship-supabase-adapter.js';
 const context = { userId: 'learner', congregationId: 'church' };
 const pair = { id: 'pair', congregationId: 'church', mentorId: 'mentor', menteeId: 'learner', state: 'active' };
-function fixture() {
+function fixture({ emptyWriteTables = [], writeOverrides = {} } = {}) {
   const writes = [];
+  const emptyWrites = new Set(emptyWriteTables);
   const tables = {
     v7_mentor_pairs: [{ id: 'pair', congregation_id: 'church', mentor_id: 'mentor', mentee_id: 'learner', state: 'active' }],
     v7_pair_assignments: [{ id: 'assignment', pair_id: 'pair', lesson_revision_id: 'pinned', status: 'assigned' }, { id: 'cancelled', pair_id: 'pair', lesson_revision_id: 'old', status: 'cancelled' }],
@@ -33,8 +34,10 @@ function fixture() {
         try {
           queries.push({ table, columns });
           if (mutation) writes.push(mutation);
-          const data = (mutation ? [mutation.value] : tables[table].filter(r => filters.every(f => f(r))))
-            .map(r => Object.fromEntries(columns.replace(/shares:[^(]+\([^)]*\)/g, 'shares').split(',').map(c => [c, r[c]])));
+          const source = mutation
+            ? (emptyWrites.has(table) ? [] : [{ id: `${table}-write`, ...mutation.value, ...(writeOverrides[table] ?? {}) }])
+            : tables[table].filter(r => filters.every(f => f(r)));
+          const data = source.map(r => Object.fromEntries(columns.replace(/shares:[^(]+\([^)]*\)/g, 'shares').split(',').map(c => [c, r[c]])));
           return resolve({ data, error: null });
         } catch (e) { return reject(e); }
       },
@@ -55,11 +58,13 @@ test('progress selects only operational fields and writes only the resolved assi
   const f = fixture();
   const result = await f.repository.loadOperationalProgress('pinned', pair, context);
   assert.equal(Object.hasOwn(result[0], 'response'), false);
-  await f.repository.saveProgress('pinned', { status: 'in_progress', currentStepId: 'step-0', reflection: 'never copied', learnerId: 'other' }, pair, context);
+  const saved = await f.repository.saveProgress('pinned', { status: 'in_progress', currentStepId: 'step-0', reflection: 'never copied', learnerId: 'other' }, pair, context);
   assert.equal(f.writes[0].value.assignment_id, 'assignment');
   assert.equal(f.writes[0].value.learner_id, 'learner');
   assert.equal(Object.hasOwn(f.writes[0].value, 'reflection'), false);
   assert.equal(f.writes[0].options.onConflict, 'assignment_id,learner_id');
+  assert.equal(saved.assignment_id, 'assignment');
+  assert.equal(saved.current_step_id, 'step-0');
 });
 test('ambiguous assignments, mentor writes, cross-tenant curriculum and invalid completion fail closed', async () => {
   const f = fixture();
@@ -74,12 +79,32 @@ test('ambiguous assignments, mentor writes, cross-tenant curriculum and invalid 
 test('private responses create no shares; sharing validates response assignment, step and named mentor', async () => {
   const f = fixture();
   const args = { lessonRevisionId: 'pinned', stepId: 'step-3', responseId: 'response', response: { text: 'private' }, pair, context };
-  await f.repository.savePrivateResponse(args);
+  const saved = await f.repository.savePrivateResponse(args);
   assert.equal(f.writes[0].table, 'v7_lesson_responses');
+  assert.equal(saved.id, 'v7_lesson_responses-write');
+  assert.equal(saved.lesson_step_id, 'step-3');
   await assert.rejects(f.repository.setResponseShare({ ...args, stepId: 'wrong', audienceUserIds: ['mentor'] }), { code: 'BQ_DISCIPLESHIP_SHARE_DENIED' });
   await assert.rejects(f.repository.setResponseShare({ ...args, audienceUserIds: ['other'] }), { code: 'BQ_DISCIPLESHIP_SHARE_DENIED' });
   await f.repository.setResponseShare({ ...args, audienceUserIds: ['mentor'] });
   assert.equal(f.writes[1].value.recipient_id, 'mentor');
+});
+test('progress and private-response writes fail closed without an exact persistence acknowledgement', async () => {
+  const noProgressAck = fixture({ emptyWriteTables: ['v7_learner_progress'] });
+  await assert.rejects(noProgressAck.repository.saveProgress('pinned', {
+    status: 'in_progress', currentStepId: 'step-2', startedAt: '2026-10-04T12:00:00.000Z',
+  }, pair, context), { code: 'BQ_DISCIPLESHIP_PROGRESS_ACK_INVALID' });
+  assert.equal(noProgressAck.writes.length, 1);
+
+  const noResponseAck = fixture({ emptyWriteTables: ['v7_lesson_responses'] });
+  await assert.rejects(noResponseAck.repository.savePrivateResponse({
+    lessonRevisionId: 'pinned', stepId: 'step-5', response: { text: 'private prayer' }, pair, context,
+  }), { code: 'BQ_DISCIPLESHIP_RESPONSE_ACK_INVALID' });
+  assert.equal(noResponseAck.writes.length, 1);
+
+  const wrongResponseAck = fixture({ writeOverrides: { v7_lesson_responses: { learner_id: 'mentor' } } });
+  await assert.rejects(wrongResponseAck.repository.savePrivateResponse({
+    lessonRevisionId: 'pinned', stepId: 'step-6', response: { text: 'private action' }, pair, context,
+  }), { code: 'BQ_DISCIPLESHIP_RESPONSE_ACK_INVALID' });
 });
 test('composed service stops a mutation if context changes during assignment lookup', async () => {
   const f = fixture();
