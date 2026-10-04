@@ -115,7 +115,9 @@ function validateTranslation(translation, item, path) {
   if (locale === item.sourceLocale) reject('translation_locale', `${path}.locale`, 'must differ from sourceLocale');
   if (!REVIEW_STATES.has(translation.reviewStatus)) reject('translation_review', `${path}.reviewStatus`, 'must be draft, reviewed, or rejected');
   const translatedFromRevision = requiredString(translation.translatedFromRevision, `${path}.translatedFromRevision`);
-  if (translatedFromRevision !== item.revision) reject('translation_revision', `${path}.translatedFromRevision`, 'must identify the source content revision');
+  if (translatedFromRevision !== item.revision && !item.revisionHistory.includes(translatedFromRevision)) {
+    reject('translation_revision', `${path}.translatedFromRevision`, 'must identify the current source revision or a declared historical revision');
+  }
   const translatedBy = requiredString(translation.translatedBy, `${path}.translatedBy`);
   const reviewedBy = translation.reviewStatus === 'reviewed'
     ? requiredString(translation.reviewedBy, `${path}.reviewedBy`)
@@ -189,7 +191,9 @@ function validateContentItem(item, taxonomy, position) {
   if (!Array.isArray(item.revisionHistory) || item.revisionHistory.some(revisionId => typeof revisionId !== 'string' || !revisionId.trim())) {
     reject('revision_history', `${path}.revisionHistory`, 'must be an array of non-empty revision IDs');
   }
-  if (item.revisionHistory.includes(revision)) reject('revision_history', `${path}.revisionHistory`, 'must not include the current revision');
+  const revisionHistory = item.revisionHistory.map(revisionId => revisionId.trim());
+  if (revisionHistory.includes(revision)) reject('revision_history', `${path}.revisionHistory`, 'must not include the current revision');
+  if (new Set(revisionHistory).size !== revisionHistory.length) reject('revision_history', `${path}.revisionHistory`, 'must not contain duplicate revision IDs');
   if (item.publicationState === 'withdrawn') {
     if (!isRecord(item.withdrawal)) reject('withdrawal', `${path}.withdrawal`, 'withdrawn content requires a withdrawal record');
     requiredString(item.withdrawal.reason, `${path}.withdrawal.reason`);
@@ -200,14 +204,15 @@ function validateContentItem(item, taxonomy, position) {
     reject('derivatives', `${path}.derivatives`, 'must be an array of stable content IDs');
   }
   if (!Array.isArray(item.translations)) reject('translations', `${path}.translations`, 'must be an array');
-  const seenLocales = new Set();
+  const seenTranslations = new Set();
   const translations = item.translations.map((translation, index) => {
-    const normalized = validateTranslation(translation, { sourceLocale, revision }, `${path}.translations[${index}]`);
-    if (seenLocales.has(normalized.locale)) reject('duplicate_translation', `${path}.translations[${index}].locale`, `duplicates ${normalized.locale}`);
-    if (item.publicationState === 'published' && normalized.reviewStatus !== 'reviewed') {
+    const normalized = validateTranslation(translation, { sourceLocale, revision, revisionHistory }, `${path}.translations[${index}]`);
+    const translationKey = JSON.stringify([normalized.locale, normalized.translatedFromRevision]);
+    if (seenTranslations.has(translationKey)) reject('duplicate_translation', `${path}.translations[${index}].locale`, `duplicates ${normalized.locale} for revision ${normalized.translatedFromRevision}`);
+    if (item.publicationState === 'published' && normalized.translatedFromRevision === revision && normalized.reviewStatus !== 'reviewed') {
       reject('unreviewed_translation_published', `${path}.translations[${index}].reviewStatus`, 'published content may expose only reviewed translations');
     }
-    seenLocales.add(normalized.locale);
+    seenTranslations.add(translationKey);
     return normalized;
   });
   return Object.freeze({ id, type: item.type, revision, sourceLocale, publicationState: item.publicationState,
@@ -215,7 +220,7 @@ function validateContentItem(item, taxonomy, position) {
     sourceContent: Object.freeze({ title: contentTitle, ...(sourceContent.body === undefined ? {} : { body: sourceContent.body }) }),
     rights: Object.freeze({ ...item.rights, allowedUses: Object.freeze([...item.rights.allowedUses]) }),
     review: Object.freeze({ status: item.review.status, ...(reviewer ? { reviewer } : {}), ...(decidedAt ? { decidedAt } : {}) }),
-    revisionHistory: Object.freeze([...item.revisionHistory]), derivatives: Object.freeze([...derivatives]),
+    revisionHistory: Object.freeze(revisionHistory), derivatives: Object.freeze([...derivatives]),
     ...(item.withdrawal ? { withdrawal: Object.freeze({ ...item.withdrawal }) } : {}),
     taxonomyLinks, translations: Object.freeze(translations) });
 }
