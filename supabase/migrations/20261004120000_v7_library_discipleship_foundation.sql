@@ -149,7 +149,7 @@ create table if not exists public.v7_lesson_steps (
   id uuid primary key default gen_random_uuid(),
   lesson_revision_id uuid not null references public.v7_lesson_revisions(id) on delete cascade,
   position smallint not null check (position between 0 and 6),
-  step_type text not null check (step_type in ('scripture','understand','discuss','reflect','apply','pray','action')),
+  step_type text not null check (step_type=case position when 0 then 'scripture' when 1 then 'understand' when 2 then 'discuss' when 3 then 'reflect' when 4 then 'apply' when 5 then 'pray' when 6 then 'action' end),
   content jsonb not null default '{}'::jsonb,
   scripture_refs jsonb not null default '[]'::jsonb check (jsonb_typeof(scripture_refs)='array'),
   library_revision_id uuid references public.v7_library_revisions(id) on delete restrict,
@@ -266,6 +266,38 @@ $$;
 revoke all on function private.v7_pair_has_user(uuid,uuid,boolean) from public, anon;
 grant usage on schema private to authenticated;
 grant execute on function private.v7_pair_has_user(uuid,uuid,boolean) to authenticated;
+
+create or replace function private.v7_response_is_owned(target_response uuid, target_user uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $
+  select exists (select 1 from public.v7_lesson_responses r where r.id=target_response and r.learner_id=target_user);
+$;
+
+create or replace function private.v7_response_shared_with(target_response uuid, target_user uuid)
+returns boolean language sql stable security definer set search_path = ''
+as $
+  select exists (select 1 from public.v7_response_shares s where s.response_id=target_response and s.recipient_id=target_user and s.share_state='shared');
+$;
+
+create or replace function private.v7_response_share_authorized(target_response uuid, target_user uuid, target_recipient uuid, require_active boolean)
+returns boolean language sql stable security definer set search_path = ''
+as $
+  select exists (
+    select 1
+    from public.v7_lesson_responses r
+    join public.v7_pair_assignments a on a.id=r.assignment_id
+    join public.v7_mentor_pairs p on p.id=a.pair_id
+    where r.id=target_response and r.learner_id=target_user and p.mentor_id=target_recipient
+      and (not require_active or p.state='active')
+  );
+$;
+
+revoke all on function private.v7_response_is_owned(uuid,uuid) from public,anon;
+revoke all on function private.v7_response_shared_with(uuid,uuid) from public,anon;
+revoke all on function private.v7_response_share_authorized(uuid,uuid,uuid,boolean) from public,anon;
+grant execute on function private.v7_response_is_owned(uuid,uuid) to authenticated;
+grant execute on function private.v7_response_shared_with(uuid,uuid) to authenticated;
+grant execute on function private.v7_response_share_authorized(uuid,uuid,uuid,boolean) to authenticated;
 
 alter table public.v7_library_items enable row level security;
 alter table public.v7_library_revisions enable row level security;
@@ -393,7 +425,7 @@ with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_p
 create policy "v7 progress learner update" on public.v7_learner_progress for update to authenticated
 using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response learner read" on public.v7_lesson_responses for select to authenticated
-using (learner_id=(select auth.uid()) or exists (select 1 from public.v7_response_shares s where s.response_id=id and s.recipient_id=(select auth.uid()) and s.share_state='shared' and exists (select 1 from public.v7_pair_assignments a where a.id=assignment_id and private.v7_pair_has_user(a.pair_id,(select auth.uid()),true))));
+using (learner_id=(select auth.uid()) or (private.v7_response_shared_with(id,(select auth.uid())) and exists (select 1 from public.v7_pair_assignments a where a.id=assignment_id and private.v7_pair_has_user(a.pair_id,(select auth.uid()),true))));
 create policy "v7 response learner insert" on public.v7_lesson_responses for insert to authenticated
 with check (learner_id=(select auth.uid()) and exists (select 1 from public.v7_pair_assignments a join public.v7_mentor_pairs p on p.id=a.pair_id where a.id=assignment_id and a.lesson_revision_id=public.v7_lesson_responses.lesson_revision_id and p.mentee_id=(select auth.uid()) and p.state='active'));
 create policy "v7 response learner update" on public.v7_lesson_responses for update to authenticated
@@ -401,14 +433,12 @@ using (learner_id=(select auth.uid())) with check (learner_id=(select auth.uid()
 create policy "v7 response owner delete" on public.v7_lesson_responses for delete to authenticated
 using (learner_id=(select auth.uid()));
 create policy "v7 response share participant read" on public.v7_response_shares for select to authenticated
-using (recipient_id=(select auth.uid()) or exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())));
+using (recipient_id=(select auth.uid()) or private.v7_response_is_owned(response_id,(select auth.uid())));
 create policy "v7 response share owner insert" on public.v7_response_shares for insert to authenticated
-with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pair_assignments a on a.id=r.assignment_id join public.v7_mentor_pairs p on p.id=a.pair_id
-  where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and (share_state='revoked' or p.state='active')));
+with check (share_state='shared' and private.v7_response_share_authorized(response_id,(select auth.uid()),recipient_id,true));
 create policy "v7 response share owner update" on public.v7_response_shares for update to authenticated
-using (exists (select 1 from public.v7_lesson_responses r where r.id=response_id and r.learner_id=(select auth.uid())))
-with check (exists (select 1 from public.v7_lesson_responses r join public.v7_pair_assignments a on a.id=r.assignment_id join public.v7_mentor_pairs p on p.id=a.pair_id
-  where r.id=response_id and r.learner_id=(select auth.uid()) and recipient_id=p.mentor_id and p.state='active'));
+using (private.v7_response_share_authorized(response_id,(select auth.uid()),recipient_id,false))
+with check (private.v7_response_share_authorized(response_id,(select auth.uid()),recipient_id,share_state='shared'));
 
 revoke all on public.v7_library_items,public.v7_library_revisions,public.v7_library_translations,public.v7_library_taxonomy,public.v7_library_revision_taxonomy,public.v7_tracks,public.v7_modules,public.v7_lessons,public.v7_lesson_revisions,public.v7_lesson_steps,public.v7_mentor_pairs,public.v7_pair_events,public.v7_pair_assignments,public.v7_learner_progress,public.v7_lesson_responses,public.v7_response_shares from public,anon,authenticated;
 grant select,insert,update on public.v7_library_items to authenticated;
