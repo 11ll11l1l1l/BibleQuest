@@ -25,3 +25,15 @@ V3 generated a large number of root-level documents. They are intentionally left
 ## V3-to-V5 rule
 
 Nothing in V3 automatically becomes a V5 requirement. If V5 needs a V3 behavior or contract, adopt it explicitly in V5 documentation and verify it against the current production architecture rather than treating the historical V3 file as current authority.
+
+## Archived root records
+
+- [KIDS_GAMES_EXTENSION_V3](records/KIDS_GAMES_EXTENSION_V3.md)
+- [LEADERBOARDS_V3](records/LEADERBOARDS_V3.md)
+- [RELEASE_ACCEPTANCE_MATRIX_V3](records/RELEASE_ACCEPTANCE_MATRIX_V3.md)
+- [RELEASE_FIELD_LIVE_ROOM_HARNESS_V3](records/RELEASE_FIELD_LIVE_ROOM_HARNESS_V3.md)
+- [RELEASE_OPERATOR_CHECKLIST_V3](records/RELEASE_OPERATOR_CHECKLIST_V3.md)
+- [TIMELINE_V3](records/TIMELINE_V3.md)
+- [VISUAL_POLISH_PROGRESS_V3](records/VISUAL_POLISH_PROGRESS_V3.md)
+- [VISUAL_REPLACEMENT_CONTRACT_V3](records/VISUAL_REPLACEMENT_CONTRACT_V3.md)
+- [VISUAL_SURFACE_INVENTORY_V3](records/VISUAL_SURFACE_INVENTORY_V3.md)
