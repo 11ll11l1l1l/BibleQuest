@@ -1,3 +1,4 @@
+import { createLibraryService } from '../features/library/service.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
 import { createMyJourneyService } from './my-journey.js';
@@ -285,7 +286,19 @@ function boot(root){
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window,sessionOwner:()=>{const sessionSnapshot=session.getState();return sessionSnapshot?.authenticated&&sessionSnapshot?.user?.id?`account:${sessionSnapshot.user.id}`:'guest'},storage:privateStorage});
-  const congregation=createCongregationMembershipService({api,session});
+  const library=createLibraryService({repository:{
+    async listPublished(options){return (await api.library.createRepository()).listPublished(options)},
+    async getPublishedById(id){return (await api.library.createRepository()).getPublishedById(id)}
+  }});
+  const congregation=createCongregationMembershipService({api,session,onContextChange:()=>library.reset()});
+  let librarySessionKey='';
+  const unsubscribeLibrarySession=store.subscribe(state=>{
+    const current=state?.session||{};
+    const key=JSON.stringify([current.authenticated===true,current.user?.id||'',current.remoteAvailable!==false]);
+    if(key===librarySessionKey)return;
+    librarySessionKey=key;
+    library.reset();
+  });
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
   const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
@@ -463,6 +476,6 @@ function boot(root){
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeLibrarySession();library.reset();unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
