@@ -1,0 +1,54 @@
+name: V7 Lane D owner history check
+
+on:
+  push:
+    branches:
+      - v7/p3-d-owner-history-after-pair-end-20261004
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v7/p3-d-owner-history-after-pair-end-20261004
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+      - name: Apply bounded owner-history fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          service = Path('src/app/discipleship.js')
+          text = service.read_text()
+          old = """  async function loadPrivateResponses(pairId, lessonRevisionId) {\n    return inContext(async context => {\n      const pair = await resolvePair(pairId, context);\n      if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee can read personal lesson responses.');"""
+          new = """  async function loadPrivateResponses(pairId, lessonRevisionId) {\n    return inContext(async context => {\n      // Personal responses remain learner-owned after a pair is suspended or ended.\n      // Only this owner-history read relaxes the active-pair requirement; operational\n      // progress, curriculum, writes and mentor visibility remain active-pair scoped.\n      const pair = await resolvePair(pairId, context, { active: false });\n      if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee can read personal lesson responses.');"""
+          if text.count(old) != 1:
+              raise SystemExit('discipleship service target did not match exactly once')
+          service.write_text(text.replace(old, new, 1))
+
+          adapter = Path('src/app/discipleship-supabase-adapter.js')
+          text = adapter.read_text()
+          old = """    async loadPrivateResponses(revisionId, pair, context) {\n      scope(pair, context, true);"""
+          new = """    async loadPrivateResponses(revisionId, pair, context) {\n      // Owner history remains readable after pair end; write=true still limits this\n      // repository path to the mentee, and RLS independently enforces row ownership.\n      scope(pair, context, true, false);"""
+          if text.count(old) != 1:
+              raise SystemExit('discipleship adapter target did not match exactly once')
+          adapter.write_text(text.replace(old, new, 1))
+          PY
+      - name: Run V7 unit suite
+        run: npm run unit:v7
+      - name: Commit verified source fix
+        run: |
+          if git diff --quiet; then
+            echo 'No source change produced' >&2
+            exit 1
+          fi
+          git config user.name 'BibleQuest V7 Lane D'
+          git config user.email '138889199+11ll11l1l@users.noreply.github.com'
+          git add src/app/discipleship.js src/app/discipleship-supabase-adapter.js
+          git commit -m 'fix(v7): preserve learner-owned response history after pair end'
+          git push origin HEAD:v7/p3-d-owner-history-after-pair-end-20261004
