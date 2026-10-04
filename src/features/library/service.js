@@ -24,6 +24,10 @@ export function createLibraryService({ repository, registry = createLibraryConte
 
   return Object.freeze({
     getState: snapshot,
+    reset() {
+      requestId += 1;
+      return publish(createLibraryViewState());
+    },
     subscribe(listener) {
       if (typeof listener !== 'function') throw new TypeError('Library subscriber must be a function.');
       listeners.add(listener);
@@ -40,6 +44,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
       const operation = ++requestId;
       publish({
         status: 'loading',
+        items: [],
         error: null,
         selectedItem: null,
         query: normalizedQuery,
@@ -79,7 +84,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
       const key = String(id ?? '').trim();
       if (!key) throw libraryError('A Library item id is required.', 'BQ_LIBRARY_ITEM_ID');
       const operation = ++requestId;
-      publish({ status: 'loading', error: null, selectedItem: null });
+      publish({ status: 'loading', items: [], error: null, selectedItem: null, nextCursor: null });
       try {
         const record = await repository.getPublishedById(key);
         if (operation !== requestId) return state;

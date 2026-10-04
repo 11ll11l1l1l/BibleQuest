@@ -164,3 +164,52 @@ test('service keeps repository failure visible as an error state', async () => {
   assert.equal(state.status, 'error');
   assert.equal(state.error, 'temporarily unavailable');
 });
+
+test('reset clears scope data and invalidates pending list and detail responses', async () => {
+  let completeList;
+  let completeDetail;
+  const service = createLibraryService({ repository: createLibraryRepository({
+    listPublished: () => new Promise(resolve => { completeList = resolve; }),
+    getPublishedById: () => new Promise(resolve => { completeDetail = resolve; }),
+  }) });
+  const pendingList = service.list({ query: 'prior scope' });
+  const cleared = service.reset();
+  assert.equal(cleared.status, 'idle');
+  assert.equal(cleared.query, '');
+  assert.deepEqual(cleared.items, []);
+  completeList({ items: [item()], nextCursor: 'old-page' });
+  await pendingList;
+  assert.equal(service.getState(), cleared);
+
+  const pendingDetail = service.getItem('devotional-1');
+  const clearedAgain = service.reset();
+  completeDetail(item());
+  await pendingDetail;
+  assert.equal(service.getState(), clearedAgain);
+  assert.equal(service.getState().selectedItem, null);
+});
+
+test('new requests clear old results immediately and reset permits a fresh scope load', async () => {
+  let rejectOld;
+  const service = createLibraryService({ repository: createLibraryRepository({
+    listPublished: options => options.query === 'old'
+      ? new Promise((resolve, reject) => { rejectOld = reject; })
+      : Promise.resolve({ items: [item()], nextCursor: 'page-2' }),
+    getPublishedById: async () => item(),
+  }) });
+  await service.list();
+  const detail = service.getItem('devotional-1');
+  assert.deepEqual(service.getState().items, []);
+  assert.equal(service.getState().nextCursor, null);
+  await detail;
+
+  const old = service.list({ query: 'old' });
+  assert.equal(service.getState().selectedItem, null);
+  service.reset();
+  await service.list({ query: 'new' });
+  rejectOld(new Error('old account denied'));
+  await old;
+  assert.equal(service.getState().status, 'ready');
+  assert.equal(service.getState().query, 'new');
+  assert.equal(service.getState().error, null);
+});
