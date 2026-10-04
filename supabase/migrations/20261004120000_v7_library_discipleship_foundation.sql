@@ -353,7 +353,8 @@ begin
   if tg_op <> 'DELETE' and exists (select 1 from public.v7_lesson_revisions r where r.id=new.lesson_revision_id and r.published_at is not null) then
     raise exception 'Steps in a published V7 lesson revision are immutable';
   end if;
-  return case when tg_op='DELETE' then old else new end;
+  if tg_op='DELETE' then return old; end if;
+  return new;
 end;
 $bq$;
 
