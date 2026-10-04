@@ -47,6 +47,31 @@ Explicitly deferred to V8:
 
 `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is retained as historical planning input only. It is not an active V7 requirement.
 
+## Phase-independent continuation command
+
+You can start a fresh chat and issue only:
+
+`Continue V7 lane A`
+
+or the same command for lane B, C or D.
+
+The executor must determine the live phase itself from `V7_ACTIVE_STATUS.md` and `DEVELOPMENT_PLAN_V7.md`. The user does not need to say `P0-A`, `P1-A`, `P5-A`, or otherwise track the phase number manually.
+
+Continuation rules:
+
+1. fetch the live `v7/development` head;
+2. read the current phase/eligibility state in `V7_ACTIVE_STATUS.md`;
+3. map the requested persistent lane letter to the current phase using the roadmap table;
+4. continue unfinished same-lane work immediately;
+5. if that assignment is complete and the next same-letter phase assignment is eligible, continue directly into it;
+6. if a phase exit gate is already satisfied, advance rather than stopping for a new instruction;
+7. if another lane still blocks a real shared prerequisite, help close that gate only where ownership is non-overlapping, otherwise leave the exact dependency and preserve completed work;
+8. repeat across eligible phases until the execution window ends, a genuine external/human boundary is reached, or V7 is complete.
+
+Finishing one phase does not terminate a persistent lane. Lane A remains lane A from P0 through P5; only its phase-specific responsibility changes. The same is true for B, C and D. P3-E is an optional supplemental lane and does not alter A–D continuity.
+
+The continuation command never authorizes V8 scope. Once V7 is complete, report that completion instead of beginning V8 automatically.
+
 ## Phase model
 
 - P0: scope/contracts — four parallel lanes.
