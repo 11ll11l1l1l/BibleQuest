@@ -1,6 +1,6 @@
 # V7 P0-B — Navigation and Information Architecture
 
-Status: P0-B proposal for narrowed V7 scope; not integrated. Existing route inventory and minimum Library/ONE 2 ONE entry paths are documented below; serialized P0 ratification remains open.
+Status: P0-B route and journey contract accepted in the serialized P0 freeze; runtime routes remain unimplemented.
 Owner: P0-B UX / information architecture
 Baseline: `v7/development` at `cb484bc839f9874659f501a755d93ae78dbceed6`
 Scope: minimum navigation and journey decisions for Library and structured ONE 2 ONE. Preserve the existing V6 shell and other V6 routes; no unrelated product redesign or runtime change.
@@ -128,7 +128,7 @@ The Leader Conversation Deck, participant broadcast/realtime small-group session
 
 ## P0-B acceptance and reconciliation
 
-P0-B is ready for integration-owner review when the following match the narrowed V7 contracts and current route registry:
+The following P0-B criteria are accepted in the serialized freeze; P1 runtime implementation and evidence remain open:
 
 - The existing shell keys/order and all 50 current page-route keys are retained; the proposed Library and ONE 2 ONE entry placements are ratified as minimum V7 additions, with no whole-app redesign.
 - Library has the three required content types, browse/detail paths, source attribution, and Reader handoff.
@@ -141,4 +141,4 @@ P0-B is ready for integration-owner review when the following match the narrowed
 
 ## Next implementation boundary
 
-P0-B's route and journey proposal now matches the narrowed V7 objective: Library plus structured ONE 2 ONE. It preserves existing V6 shell/routes and reuses V6 pair messaging; Conversation Deck, new group chat/realtime sessions, central Drive media pipeline, and full Ilocano rollout remain V8. P0-A/C/D contracts are available for reconciliation; the integration owner must ratify them before P1. P0-B does not mark feature implementation or user acceptance complete.
+P0-B's route and journey contract is accepted with the narrowed V7 objective: Library plus structured ONE 2 ONE. It preserves existing V6 shell/routes and reuses V6 pair messaging; Conversation Deck, new group chat/realtime sessions, central Drive media pipeline, and full Ilocano rollout remain V8. The P0 freeze records agreement across A/B/C/D. P1 implementation and user acceptance remain open.
