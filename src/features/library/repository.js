@@ -14,6 +14,7 @@ export function createLibraryRepository(adapter) {
       return Object.freeze({
         items: Object.freeze([...result.items]),
         nextCursor: result.nextCursor ?? null,
+        ...(Array.isArray(result.taxonomy) ? { taxonomy: Object.freeze([...result.taxonomy]) } : {}),
       });
     },
 
