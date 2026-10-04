@@ -137,7 +137,7 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
 }
 
 // Route/bootstrap owners can compose this without adding a second session or tenant owner.
-export function createSupabaseDiscipleshipService({ client, session, membership }) {
+export function createSupabaseDiscipleshipService({ client, session, membership, pairRepository = null }) {
   const repository = createDiscipleshipSupabaseRepository(client, {
     assertContext(context) {
       const auth = session.getState();
@@ -148,5 +148,6 @@ export function createSupabaseDiscipleshipService({ client, session, membership 
       }
     },
   });
-  return createDiscipleshipService({ repository, session, membership });
+  const composed = pairRepository ? Object.freeze({ ...repository, listPairs: pairRepository.listPairs, getPair: pairRepository.getPair }) : repository;
+  return createDiscipleshipService({ repository: composed, session, membership });
 }

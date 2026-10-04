@@ -98,3 +98,18 @@ test('composed service stops a mutation if context changes during assignment loo
   await assert.rejects(service.saveProgress('pair', 'pinned', { status: 'in_progress' }), { code: 'BQ_DISCIPLESHIP_CONTEXT_STALE' });
   assert.equal(f.writes.length, 0);
 });
+
+test('shared composition preserves curriculum methods while using the hardened pair reader', async () => {
+  const {client}=fixture();
+  let reads=0;
+  const service=createSupabaseDiscipleshipService({client,
+    session:{getState:()=>({authenticated:true,user:{id:'learner'}})},
+    membership:{getActive:()=>({userId:'learner',congregationId:'church'})},
+    pairRepository:{listPairs:async()=>{reads++;return [pair]},getPair:async()=>pair},
+  });
+  assert.equal((await service.listPairs())[0].id,'pair');
+  assert.equal(reads,1);
+  const curriculum=await service.loadCurriculum('pair');
+  assert.equal(curriculum[0].modules[0].lessons[0].revisionId,'pinned');
+  assert.equal(typeof service.saveProgress,'function');
+});

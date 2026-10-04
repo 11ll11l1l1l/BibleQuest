@@ -2,7 +2,7 @@
 
 Updated: 2026-10-04 JST
 
-Phase: **P1 — shared foundation ACTIVE**. P0 scope/contracts were frozen in the integrated P0 contract change.
+Phase: **P2 — Library MVP ACTIVE**. P1 shared foundation is integrated; disjoint P3 implementation is eligible under the roadmap. P0 scope/contracts remain frozen.
 Development branch: `v7/development`.
 Production baseline: V6 `7997d60e6069aa406ec005c32e33e46fee39bc12` on `main`.
 Canonical roadmap: `DEVELOPMENT_PLAN_V7.md`.
@@ -198,7 +198,12 @@ The V6 owner-waived physical acceptance rows remain recorded in the original V6 
 
 ## Immediate next action
 
-P1 is active. P1-C's discipleship service boundary and P1-D's content foundation are integrated on `v7/development`. Lane A's additive Library/ONE 2 ONE schema, RLS coverage, generated database types/checksum, and generated-type CI comparison are integrated in commit `f35ac3aa761a158c219aa74379b2a0fc08594825`; exact head `2a1e8402aa6fa1590fb8a1d8e8a800d26968e449` passed V5/V4 disposable migration replay, V7 RLS/privilege tests, function lint, and type integrity checks. Lane A's read-only V6 reuse/schema inventory is in `docs/v7/P1_A_V6_REUSE_AND_SCHEMA_INVENTORY.md`. V6 assignments and ministry broadcasts do not satisfy pair-private messaging; keep that contract gap open. The connected Supabase project has no development branch, so no V7 DDL has been applied; validate migrations only on isolated disposable databases. Lanes B–D continue their assigned P1 foundation work. Shared schema/generated contracts remain serialized under Lane A.
+P1 foundations are integrated: append-only schema/RLS and generated contracts (Lane A), Library repository/service and route entry (Lane B/shared integration), discipleship service/Supabase adapter with shared API/session composition (Lane C/shared integration), taxonomy/provenance/localization and content integrity (Lane D). The P1 exit gate is satisfied: feature lanes consume the same stable foundations without competing schema/infrastructure.
+
+Persistent next assignments: A Books MVP; B Devotionals MVP; C Past Teachings MVP; D Library discovery. Disjoint P3 work may overlap as the roadmap permits. Feature/browser/live-data/release acceptance remains open; foundation completion is not production certification.
+
+No V7 DDL has been applied to the connected production project; isolated disposable migration/RLS validation remains the database evidence path. Pair-private messaging remains an unresolved accepted-contract dependency; its reserved thread route stays unexposed. Preserve Lane A's schema/generated-contract ownership and automatic shared integration duty.
+
 ## Lane A — Library lifecycle integration (2026-10-04)
 
 Library service is now composed through the existing API repository factory. Account authentication/identity/remote-availability changes reset its state; congregation selection, membership reload and clear invalidate pending reads and cached results. Page disposal removes the session subscription. This closes Lane B’s Library reset handoff without adding a second tenant owner.
@@ -218,3 +223,9 @@ Grow now launches the lazy ratified `one-to-one` landing page through Lane C's e
 Verification: 43 V7 tests after refresh onto `ec84335d` and 3 affected V6 lazy/bootstrap tests passed; build, typecheck and diff whitespace passed on Node 24.19.0. Adapter queries were exercised with a thenable Supabase test double, including account mismatch, injected/malformed IDs, database errors, response scope denial and late-response suppression. Browser and live backend evidence remain UNVERIFIED; no V7 DDL or real-user mutations occurred.
 
 P1 remains active: Lane C can compose these pair reads with its remaining curriculum/progress/private-response adapter. Global pair/track/module/lesson route wiring follows that completed adapter. Library foundations are integrated; P2-A remains gated by the shared P1 exit.
+
+## P1 exit reconciliation / shared adapter composition (2026-10-04)
+
+Lane C's complete Supabase repository is composed through the existing API client provider and existing session/congregation owners. The hardened pair read adapter supplies list/get; Lane C's assigned-revision curriculum, operational progress, private response and sharing methods remain intact. A combined composition test loads the pinned curriculum revision through that service. Pair/track/module/lesson feature pages and lifecycle UI remain P3 work, not undefined P1 infrastructure.
+
+Combined evidence on integrated `80bf3804`: 53 V7 tests, build and typecheck passed after concurrent Lane C/D merges. Composition changes: the same combined suite passed before one additional focused composition test was added and passed (54 total); affected V6 bootstrap/lazy tests, build and typecheck also passed locally on Node 24.19.0. Browser/live backend/device acceptance remains open. P2-A Books is now the next Lane A assignment.
