@@ -74,7 +74,7 @@ For uploaded media, preserve the Drive file ID, checksum, uploader, scope, safe 
 
 V7 does not rewrite or regenerate the V6 BSB corpus. Preserve its human-narration source, text/audio revision identity, checksums, timings, and existing evidence.
 
-The approved staged discipleship scope for V7 is the reusable Track → Module → Lesson curriculum and individual learner progress. Real mentor/mentee pairing, synchronized pair status, private responses, prayer/action review, and discipleship-chain oversight are deferred to V8. Do not add these capabilities to V7 through route design or a role label.
+The approved V7 discipleship scope includes mentor/mentee pairing, Track → Module → Lesson, individual learner progress, the seven-step lesson flow, and the scoped communication required by the ONE 2 ONE and small-group experiences. Pairing does not itself publish private reflections, prayers, notes, or messages; P0-C must define the audience and denial cases, and P0-A must map the relationships and message lifecycle.
 
 
 ## Route and ownership acceptance matrix
