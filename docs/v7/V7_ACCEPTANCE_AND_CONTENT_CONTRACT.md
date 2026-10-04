@@ -11,11 +11,11 @@ This document defines acceptance evidence and content rules. It does not impleme
 V7 contains two product systems:
 
 1. **Library:** Books, Devotionals, and Past Teachings, with browse/detail, topic or category discovery, source attribution, and a Scripture Reader handoff where appropriate.
-2. **Structured ONE 2 ONE:** mentor/mentee pairing and relationship state, Track → Module → Lesson, learner progress, the seven-step lesson flow, authorized authoring/assignment, and the approved deep-link/QR entry and return behavior.
+2. **Structured ONE 2 ONE:** mentor/mentee pairing and relationship state, Track → Module → Lesson, learner progress, the seven-step lesson flow, authorized authoring/assignment, pair-thread communication using the existing V6 communication capability, and the approved deep-link/QR entry and return behavior.
 
-V7 reuses the released V6 app, Reader, authentication, tenant context, assignments/deep links, localization, PWA/offline, notifications, communication capabilities, and security owners. An acceptance claim must identify any V6 contract it relies on and must not imply that a V6 capability was reimplemented.
+V7 reuses the released V6 app, Reader, authentication, tenant context, assignments/deep links, localization, PWA/offline, notifications, communication capabilities, and security owners. V7 does not create a replacement messaging system. An acceptance claim must identify any V6 contract it relies on and must not imply that a V6 capability was reimplemented.
 
-The following do not enter the V7 acceptance denominator: Leader Conversation Deck, participant broadcast or realtime small-group sessions; a central Google Drive media ingest/storage pipeline or full media moderation/provider project; full Ilocano rollout or Bible ingestion; bulk content ingestion; Couples expansion; recommendation-engine work beyond Library MVP; and a second whole-app visual redesign. These are transfer items for V8 (Section 7), except existing V6 capabilities that V7 directly reuses.
+The following do not enter the V7 acceptance denominator: new Leader Conversation Deck, participant broadcast or realtime small-group sessions/group chat; a central Google Drive media ingest/storage pipeline or full media moderation/provider project; full Ilocano rollout or Bible ingestion; bulk content ingestion; Couples expansion; recommendation-engine work beyond Library MVP; and a second whole-app visual redesign. These are transfer items for V8 (Section 7), except existing V6 capabilities that V7 directly reuses.
 
 ## 2. Phase 0 acceptance contract
 
@@ -29,8 +29,8 @@ The integration owner closes each shared-contract row only after reconciling the
 | P0D-04 | Representative, source-valid content is selected for each Library type before feature acceptance; this does not require bulk ingestion. | CONTENT REVIEW | Content owner |
 | P0D-05 | Library discovery supports its accepted category/topic and language metadata; displayed source, attribution, and permitted-use information remain available in detail. | BROWSER / CONTENT REVIEW | Library feature owner |
 | P0D-06 | UI strings and content records are locale-ready, use the existing localization system, and show a defined fallback when a translation is unavailable. This is readiness, not a full Ilocano rollout. | STATIC / BROWSER | Localization and feature owners |
-| P0D-07 | ONE 2 ONE acceptance covers an accepted mentor/mentee relationship, authorized assignment, Track → Module → Lesson progression, and Scripture → Understand → Discuss → Reflect → Apply → Pray → Action. | BROWSER / INTEGRATION | Discipleship feature owner |
-| P0D-08 | Assignment, completion, private reflection/prayer, and any explicitly shared response have separately stated audiences; pairing alone does not make private text visible to the mentor. | INTEGRATION / DATABASE | P0-C security owner and feature owner |
+| P0D-07 | ONE 2 ONE acceptance covers an accepted mentor/mentee relationship, authorized assignment, Track → Module → Lesson progression, the seven-step lesson flow, and pair-thread communication through the existing V6 capability. | BROWSER / INTEGRATION | Discipleship feature owner |
+| P0D-08 | Assignment, completion, private reflection/prayer, and any explicitly shared response have separately stated audiences. Pair-thread messages are limited to current pair participants; pairing alone does not make private lesson text visible to the mentor. | INTEGRATION / DATABASE | P0-C security owner and feature owner |
 | P0D-09 | Pairing, lesson, notification/deep-link, and Reader handoff routes use the keys and entry/return behavior ratified by P0-B. No route ID is invented in this contract. | BROWSER / RESPONSIVE | P0-B route owner and feature owners |
 | P0D-10 | Each read and mutation has an allowed actor, scope, positive case, and denial case consistent with P0-C; client visibility is not authorization. | INTEGRATION / LIVE BACKEND | P0-C security owner and feature owners |
 | P0D-11 | Representative Library and lesson content preserve Scripture translation/source identity and licensing; Scripture remains served by the existing V6 Reader/content owner. | CONTENT REVIEW / INTEGRATION | Content and Reader owners |
@@ -102,8 +102,8 @@ Evidence records identify candidate SHA, environment, actor/role and scope, rout
 
 P0-D’s acceptance/provenance deliverable is usable when the following are resolved in serialized integration:
 
-1. P0-A’s data taxonomy and provenance fields map to Sections 2–3, and its relationship/progress model includes the in-scope mentor/mentee pairing and state. Any central Drive, Conversation Deck, or other V8-only entities must be explicitly excluded from the V7 contract.
-2. P0-B’s route and journey map includes Library and ONE 2 ONE pairing/lesson flows and maps routes from the current registry. Retired full-app destinations are not V7 acceptance rows.
+1. P0-A’s data taxonomy and provenance fields map to Sections 2–3, and its relationship/progress model includes the in-scope mentor/mentee pairing and pair-thread messages using V6 communication. No new messaging system is implied.
+2. P0-B’s route and journey map includes Library and ONE 2 ONE pairing/lesson/pair-thread flows and maps routes from the current registry. New group chat, Conversation Deck, and realtime group routes are V8 scope.
 3. P0-C’s role, relationship, privacy, and denial criteria match the narrowed V7 feature set. Existing V6 security remains authoritative outside changed V7 surfaces.
 4. The integrated status names the accountable implementation owner for each shared route, data, authorization, and evidence surface.
 
@@ -113,7 +113,7 @@ Until this reconciliation occurs, this document is a P0-D proposal and Phase 0 r
 
 | Deferred objective | V7 treatment | V8 entry condition |
 |---|---|---|
-| Leader Conversation Deck, participant broadcast, and realtime small-group session engine | Excluded; use existing V6 capabilities only where already part of an accepted ONE 2 ONE path | V8 scope, data ownership, and route/security contract approved |
+| Leader Conversation Deck, participant broadcast, and new realtime group chat/session engine | Excluded; pair-thread communication may reuse existing V6 capability | V8 scope, data ownership, and route/security contract approved |
 | Central Google Drive media ingest/storage pipeline and full moderation/provider project | Excluded; use only an already-supported V6 path if an in-scope item needs one | Storage, authorization, lifecycle, and moderation contracts approved |
 | Full Ilocano Bible and application UI rollout | Excluded; preserve locale-ready fields and existing localization support | Source rights, translation review, and rollout plan approved |
 | Bulk devotional corpus ingestion and bulk Past Teachings/sermon conversion | Excluded; use reviewed representative samples for V7 acceptance | Rights/provenance audit and bounded import/review design approved |
