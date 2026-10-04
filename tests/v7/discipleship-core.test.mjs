@@ -10,11 +10,19 @@ function fixture({ userId = 'mentee-1', congregationId = 'cong-1', pairState = '
   const repository = {
     async listPairs(context) { calls.push(['listPairs', context]); return [pair]; },
     async getPair(id, context) { calls.push(['getPair', id, context]); return pair; },
-    async loadCurriculum() { return [{ id: 'track-1' }]; },
+    async loadCurriculum() {
+      return [{
+        id: 'track-1', revisionId: 'track-r1', title: 'Track', position: 0,
+        modules: [{
+          id: 'module-1', revisionId: 'module-r1', title: 'Module', position: 0,
+          lessons: [{ id: 'lesson-1', revisionId: 'lesson-r1', title: 'Lesson', position: 0 }],
+        }],
+      }];
+    },
     async loadLessonRevision(id) {
       return { id: 'lesson-1', revisionId: id, published: true, steps: ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'].map(type => ({ type })) };
     },
-    async loadOperationalProgress() { return [{ pairId: 'pair-1', learnerId: 'mentee-1', status: 'started' }]; },
+    async loadOperationalProgress(revisionId) { return [{ pairId: 'pair-1', learnerId: 'mentee-1', lessonRevisionId: revisionId, currentStepId: 'step-scripture', status: 'started' }]; },
     async saveProgress(revisionId, progress, resolvedPair, context) { calls.push(['saveProgress', revisionId, progress, resolvedPair, context]); return { saved: true }; },
     async savePrivateResponse(args) { calls.push(['savePrivateResponse', args]); return { id: 'response-1' }; },
     async setResponseShare(args) { calls.push(['setResponseShare', args]); return { shared: true }; },
@@ -51,6 +59,8 @@ test('rejects a pair whose participant or congregation does not match the curren
 
 test('uses the accepted lesson sequence and rejects inactive pair access', async () => {
   const f = fixture();
+  const tracks = await f.service.loadCurriculum('pair-1');
+  assert.equal(tracks[0].modules[0].lessons[0].revisionId, 'lesson-r1');
   const lesson = await f.service.loadLesson('pair-1', 'revision-4');
   assert.equal(lesson.revisionId, 'revision-4');
   assert.equal(lesson.steps[0].type, 'scripture');
@@ -65,10 +75,35 @@ test('uses the accepted lesson sequence and rejects inactive pair access', async
   await assert.rejects(mismatched.service.loadLesson('pair-1', 'revision-4'), { code: 'BQ_DISCIPLESHIP_LESSON_RESPONSE' });
 });
 
+test('rejects duplicate curriculum ordering and progress from another published revision', async () => {
+  const invalidCurriculum = createDiscipleshipService({
+    repository: {
+      async getPair() { return { id: 'pair-1', congregationId: 'cong-1', mentorId: 'mentor-1', menteeId: 'mentee-1', state: 'active' }; },
+      async loadCurriculum() { return [
+        { id: 'track-1', revisionId: 'track-r1', title: 'First', position: 0, modules: [] },
+        { id: 'track-2', revisionId: 'track-r2', title: 'Second', position: 0, modules: [] },
+      ]; },
+    },
+    session: { getState: () => ({ authenticated: true, user: { id: 'mentee-1' } }) },
+    membership: { getActive: () => ({ congregationId: 'cong-1', userId: 'mentee-1' }) },
+  });
+  await assert.rejects(invalidCurriculum.loadCurriculum('pair-1'), { code: 'BQ_DISCIPLESHIP_CURRICULUM_RESPONSE' });
+
+  const mismatchedProgress = createDiscipleshipService({
+    repository: {
+      async getPair() { return { id: 'pair-1', congregationId: 'cong-1', mentorId: 'mentor-1', menteeId: 'mentee-1', state: 'active' }; },
+      async loadOperationalProgress() { return { pairId: 'pair-1', learnerId: 'mentee-1', lessonRevisionId: 'old-revision', status: 'started' }; },
+    },
+    session: { getState: () => ({ authenticated: true, user: { id: 'mentor-1' } }) },
+    membership: { getActive: () => ({ congregationId: 'cong-1', userId: 'mentor-1' }) },
+  });
+  await assert.rejects(mismatchedProgress.loadOperationalProgress('pair-1', 'current-revision'), { code: 'BQ_DISCIPLESHIP_PROGRESS_SCOPE' });
+});
+
 test('projects operational progress without exposing private response text', async () => {
   const f = fixture();
   const progress = await f.service.loadOperationalProgress('pair-1', 'revision-4');
-  assert.deepEqual(progress[0], { pairId: 'pair-1', learnerId: 'mentee-1', lessonRevisionId: '', status: 'started', startedAt: null, completedAt: null, updatedAt: null });
+  assert.deepEqual(progress[0], { pairId: 'pair-1', learnerId: 'mentee-1', lessonRevisionId: 'revision-4', currentStepId: 'step-scripture', status: 'started', startedAt: null, completedAt: null, updatedAt: null });
   const leakingRepository = {
     async getPair() { return { id: 'pair-1', congregationId: 'cong-1', mentorId: 'mentor-1', menteeId: 'mentee-1', state: 'active' }; },
     async loadOperationalProgress() { return [{ pairId: 'pair-1', learnerId: 'mentee-1', status: 'started', reflectionText: 'private' }]; },
