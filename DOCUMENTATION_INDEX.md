@@ -1,32 +1,46 @@
 # BibleQuest Documentation Index
 
-Updated: 2026-09-13 JST
+Updated: 2026-10-04 JST
 
-Use this file first when deciding which BibleQuest documentation is current.
+Use this file first when deciding which BibleQuest documentation is current. Repository/CI/deployed-environment evidence overrides stale chat summaries and historical status text.
 
-## Current production
+## Current production — V6
 
-BibleQuest **V4 RC3 remains the active production release** on the authoritative Cloudflare project `mybiblequest`.
+BibleQuest **V6 is the active production release**. Current production/release truth is recorded in `V6_ACTIVE_STATUS.md`; acceptance is tracked in `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`.
 
-Production references:
+Read current V6 documents in this order:
 
-- `V4_ACTIVE_STATUS.md` — frozen V4 release/acceptance record.
-- `BACKUP_MANIFEST.md` — canonical V3/V4 backup branches and exact SHAs.
-- `docs/archive/v4/README.md` — V4 archive map and release evidence summary.
+1. `V6_ACTIVE_STATUS.md` — single authority for current V6 production/release state, exact candidate identity, evidence boundaries, and remaining open/waived items.
+2. `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — authoritative V6 acceptance inventory.
+3. `DEVELOPMENT_PLAN_V6.md` — V6 architecture/program plan and durable contracts.
+4. `docs/v6/` — V6 ADRs, provenance, security, release, field, and certification evidence.
+5. `docs/V6_TO_V7_HANDOFF.md` — concise engineering handoff defining V6 contracts V7 must preserve and the clean V7 starting conventions.
 
-## Current development — V5
+`V6_AGENT_TASK_BOARD.md` is execution history/worker coordination, not current acceptance truth. `docs/V6_STARTING_POINT.md` is the historical Phase-0 starting snapshot.
 
-V5 architecture planning is active on `v5/architecture-upgrade`. Runtime architecture migration has not started yet.
+## Next development — V7 preparation
 
-Read current V5 documents in this order:
+V7 implementation begins from the completed V6 engine and current repository truth; it must not reinterpret historical V6 worker prompts as open requirements.
 
-1. `V5_ACTIVE_STATUS.md` — single authority for current V5 phase, branch, blockers, candidate identity and next work.
-2. `DEVELOPMENT_PLAN_V5.md` — deliberate architecture-upgrade program and phase sequencing.
-3. `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` — V5 release-blocking architecture/feature inventory.
-4. `docs/V5_STARTING_POINT.md` — cleaned V4→V5 handoff and safety baseline.
-5. `docs/v5/adr/README.md` — architecture decision record process and initial ADR queue.
+Read V7 preparation documents in this order:
 
-V5 is explicitly allowed to replace V4 implementation architecture. Historical V3/V4 status files do not constrain V5 architecture unless V5 explicitly inherits a safety/behavior contract.
+1. `docs/V6_TO_V7_HANDOFF.md` — V6 contracts, protected evidence/data boundaries, repository conventions, and documentation debt to carry forward.
+2. `DEVELOPMENT_PLAN_V7.md` — approved V7 product direction and phase planning.
+3. `docs/v7/` — V7-specific durable contracts/ADRs as they are accepted.
+
+V7 feature implementation should establish its own active-status authority, acceptance inventory, and ADRs before new architecture/data contracts are treated as canonical.
+
+## Historical V5 documentation
+
+V5 root documents remain in place because workflows/tests and historical links may reference them. Treat them as frozen historical records, not current production or current development authority.
+
+Start with:
+
+- `V5_ACTIVE_STATUS.md`
+- `DEVELOPMENT_PLAN_V5.md`
+- `V5_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md`
+- `docs/V5_STARTING_POINT.md`
+- `docs/v5/adr/README.md`
 
 ## Historical V4 documentation
 
@@ -40,7 +54,7 @@ V4 root documents remain in their existing paths because workflows/tests and his
 - `V4_PHASE6_FIELD_EVIDENCE.json`
 - `V4_RELEASE_OWNER_WAIVER.md`
 
-Historical V4 text describing an earlier open blocker does not override the final V4 production acceptance record or the current V5 authority.
+Historical V4 text describing an earlier open blocker does not override the final V4 record or current V6 authority.
 
 ## Historical V3 documentation
 
@@ -55,14 +69,14 @@ For V3, start with:
 - `FEATURE_INVENTORY_V3.md`
 - `RELEASE_OPERATOR_CHECKLIST_V3.md`
 
-All V3 documents are historical unless a V5 authority/ADR explicitly adopts a still-valid contract from them.
+All V3 documents are historical unless a current authority/ADR explicitly adopts a still-valid contract from them.
 
 ## Authority rules
 
 1. Repository/CI/deployed-environment evidence overrides stale chat summaries.
-2. `main` remains the production code baseline until a later V5 promotion; `v5/architecture-upgrade` is the current V5 integration line.
-3. `V5_ACTIVE_STATUS.md` is the current development authority; V3/V4 release documents are frozen historical records.
-4. V3/V4 archive branches are backups only and must not receive V5 development.
+2. `V6_ACTIVE_STATUS.md` is the current production/release authority; `V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md` owns V6 acceptance state.
+3. `docs/V6_TO_V7_HANDOFF.md` and `DEVELOPMENT_PLAN_V7.md` define the clean V7 starting boundary and approved direction; they do not silently supersede V6 security, data, migration, provenance, accessibility, offline/PWA, or release contracts.
+4. Historical V3/V4/V5/V6-starting/task-board documents are evidence/history unless a current authority explicitly adopts a still-valid contract from them.
 5. Do not physically move/rename a historical file merely for tidiness if a workflow/test references its path; migrate the dependent contract in the same change first.
-6. Material V5 architecture decisions belong in an ADR and current phase/blocker changes belong in `V5_ACTIVE_STATUS.md`.
-7. A historical test/workflow name containing `v3` or `v4` may still protect current behavior until V5 replaces it with equivalent-or-stronger version-neutral coverage.
+6. Material V7 architecture decisions belong in V7 ADRs; current V7 phase/blocker changes belong in the future V7 active-status authority rather than historical V6 task boards.
+7. A historical test/workflow name containing an older version may still protect current behavior until replaced with equivalent-or-stronger version-neutral coverage.
