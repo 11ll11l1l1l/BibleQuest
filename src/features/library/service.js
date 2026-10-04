@@ -59,8 +59,8 @@ export function createLibraryService({ repository, registry = createLibraryConte
           limit: boundedLimit,
           cursor: cursor ?? null,
         });
-        const items = result.items.map(item => normalizeLibraryItem(item, registry));
         if (operation !== requestId) return state;
+        const items = result.items.map(item => normalizeLibraryItem(item, registry));
         return publish({
           status: items.length ? 'ready' : 'empty',
           items,
@@ -97,10 +97,14 @@ export function createLibraryService({ repository, registry = createLibraryConte
             error: null,
           });
         }
+        const selectedItem = normalizeLibraryItem(record, registry);
+        if (selectedItem.id !== key) {
+          throw libraryError('Library returned a different item than requested.', 'BQ_LIBRARY_ITEM_ID');
+        }
         return publish({
           status: 'ready',
           items: [],
-          selectedItem: normalizeLibraryItem(record, registry),
+          selectedItem,
           nextCursor: null,
           error: null,
         });
