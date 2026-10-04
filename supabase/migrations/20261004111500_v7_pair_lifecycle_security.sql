@@ -9,6 +9,11 @@ language plpgsql
 set search_path = ''
 as $bq$
 begin
+  -- Trusted database maintenance/fixtures can seed historical relationship
+  -- state. Authenticated product writes must always begin as invitations.
+  if current_user <> 'authenticated' then
+    return new;
+  end if;
   if new.state <> 'invited'
      or new.mentor_accepted_at is not null
      or new.mentee_accepted_at is not null
@@ -62,6 +67,11 @@ security definer
 set search_path = ''
 as $bq$
 begin
+  -- Historical/bootstrap rows are not invitations and therefore should not
+  -- manufacture an invitation audit event.
+  if new.state <> 'invited' then
+    return new;
+  end if;
   insert into public.v7_pair_events(pair_id, actor_id, event_type, metadata)
   values (new.id, new.initiated_by, 'invited', pg_catalog.jsonb_build_object('congregation_id', new.congregation_id));
   return new;
