@@ -76,6 +76,36 @@ V7 does not rewrite or regenerate the V6 BSB corpus. Preserve its human-narratio
 
 The approved staged discipleship scope for V7 is the reusable Track → Module → Lesson curriculum and individual learner progress. Real mentor/mentee pairing, synchronized pair status, private responses, prayer/action review, and discipleship-chain oversight are deferred to V8. Do not add these capabilities to V7 through route design or a role label.
 
+
+## Route and ownership acceptance matrix
+
+The following surface inventory accepts the P0-B hierarchy as the P0-D acceptance basis. P1 must bind these product destinations to exact live route IDs and verify that every V6 route has an explicit disposition; route strings are implementation details and must come from the current router.
+
+| Product destination | In-scope surfaces | Minimum acceptance owner |
+|---|---|---|
+| Today | Resume daily/assigned journey; relevant next steps | P0-B owns destination; affected feature owner proves resume and deep-link return |
+| Bible | Shared Reader, selected passage/translation context, return to source item | V6 Reader owner proves preserved reading/licensing/offline contracts |
+| Grow | Personal progress; ONE 2 ONE pairing; Track → Module → Lesson; seven lesson steps; assigned and private communication states | P0-A maps entities; P0-C maps pair/tenant/visibility authority; feature owner proves positive and denial cases |
+| Library | Books, Devotionals, Past Teachings; browse/detail; tags/language; attribution and Reader handoff | P0-A maps revisions/provenance; content owner proves license, review state, localization, and source handoff |
+| Community | Congregation, groups/teams, Leader Conversation Deck, live prompt/Scripture, authorized shared media | P0-A maps group/deck/media relationships; P0-C proves tenant and role boundaries; group/media owners prove their user paths |
+| More | Play, Calendar, Progress details, Notifications, Account, Ministry/Admin | Existing V6 feature owners preserve accepted capability; P0-B defines placement; each privileged route names its Admin scope |
+| Cross-destination | Deep links/QR, notification target, session/tenant hydration, loading/empty/offline/error/unauthorized states | Route owner and originating feature owner prove entry, return context, and state behavior |
+
+P0-D accepts the destination hierarchy for planning. The serialized integration owner ratifies the hierarchy, route dispositions, and any exclusions in the canonical V7 status before P1 changes route behavior.
+
+### Work ownership
+
+| Lane/owner | Accountable outcome | Excluded from that lane |
+|---|---|---|
+| P0-A data architecture | Logical entities, relationships, revisions, ownership, provenance fields, media metadata, and Drive object lifecycle | Route UX, role/RLS policy, runtime migration |
+| P0-B navigation / information architecture | Primary destinations, hierarchy, page journeys, route-entry/return behavior, and user-visible states | Schema, authorization policy, runtime router changes |
+| P0-C security / tenancy | Role capabilities, tenant boundaries, pair/group visibility, server enforcement, moderation authority, and denial criteria | Navigation hierarchy, schema ownership, UI implementation |
+| P0-D acceptance / content | Acceptance rows, content rights/provenance requirements, route coverage criteria, evidence classes/status semantics, and evidence owner per row | Runtime, migrations, permission implementation, production release |
+| P0 integration owner | Reconcile conflicts, ratify exact P0 scope/routes/owners, establish the integration base, and maintain the single V7 status authority | Unreviewed self-merge or unsupported PASS claims |
+| P1+ feature owner | Implement one bounded surface against the frozen contracts and attach exact-SHA evidence | Changing shared contracts without integration review |
+
+Before a P0 row closes, the integrator records one named implementation owner for every shared runtime/auth/data surface. Parallel drafts are proposals until that reconciliation is recorded.
+
 ## Evidence classes and states
 
 Each acceptance row must declare one or more evidence classes before testing:
