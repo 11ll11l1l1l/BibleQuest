@@ -105,12 +105,22 @@ jobs:
           supabase gen types typescript --local > /tmp/database.types.second.ts
           cmp /tmp/database.types.ts /tmp/database.types.second.ts
           test -s /tmp/database.types.ts
+          cmp /tmp/database.types.ts "$GITHUB_WORKSPACE/supabase/database.types.ts"
           echo "Generated database types SHA-256:"
           sha256sum /tmp/database.types.ts
           cp "$GITHUB_WORKSPACE/supabase/database.types.sha256" /tmp/database.types.sha256
           cd /tmp
           sha256sum --check database.types.sha256
           echo "Generated local DB types are deterministic and match the reviewed canonical digest."
+
+      - name: Preserve generated database types for the V7 contract
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bq-v7-database-types
+          path: /tmp/database.types.ts
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Verify source tree remains unchanged
         run: |

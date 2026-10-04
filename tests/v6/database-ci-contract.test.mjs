@@ -23,6 +23,7 @@ test('V6 database CI is local-only, pinned, and uses released V5 baseline plus V
   assert.match(prepare, /V5_BASELINE_CUTOFF = '20260918235959'/);
   assert.match(prepare, /historicalPreV6Migrations/);
   assert.match(prepare, /v6ForwardMigrations/);
+  assert.match(prepare, /\^v\[67\]-/, 'disposable replay copies focused V6 and V7 pgTAP suites');
   assert.match(prepare, /V6 forward migrations must use unique 14-digit versions/);
   assert.match(prepare, /schema\.sql/);
   assert.match(prepare, /v6-ci-release-prerequisites\.sql/);
