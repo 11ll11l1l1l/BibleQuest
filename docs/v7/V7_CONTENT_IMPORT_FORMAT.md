@@ -2,6 +2,8 @@
 
 Version 1 of the import contract is implemented by `src/v7/content/contract.js`. The parser validates a bundle before any future importer writes it. It does not write to the database, publish content, authorize a user, or establish rights by itself.
 
+Version 1 rejects unsupported fields at the bundle, taxonomy, item, source, source-content, review, taxonomy-link, translation, and translated-content boundaries. An `unknown_field` error identifies the exact path; the parser leaves the input untouched. Extend the versioned format explicitly before importing new fields rather than silently dropping them. Rights and withdrawal records retain their additional evidence fields.
+
 ## Bundle shape
 
 A bundle has `schemaVersion: 1`, a controlled `taxonomy` array, and an `items` array. Item types are `book`, `devotional`, and `past_teaching`. Each item has a stable ID, immutable content revision ID, source locale, publication state, source reference, source-language content, rights metadata, ordered taxonomy links, and translations.

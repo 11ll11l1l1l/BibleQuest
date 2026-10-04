@@ -24,6 +24,13 @@ function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+function rejectUnknownFields(record, fields, path) {
+  const allowed = new Set(fields);
+  for (const key of Object.keys(record)) {
+    if (!allowed.has(key)) reject('unknown_field', `${path}.${key}`, 'is not supported by content import schema version 1');
+  }
+}
+
 function requiredString(value, path) {
   if (typeof value !== 'string' || !value.trim()) reject('required', path, 'must be a non-empty string');
   return value.trim();
@@ -78,6 +85,7 @@ export function createV7TaxonomyIndex(entries) {
   for (const [position, entry] of entries.entries()) {
     const path = `taxonomy[${position}]`;
     if (!isRecord(entry)) reject('taxonomy_entry', path, 'must be an object');
+    rejectUnknownFields(entry, ['id', 'kind', 'labels'], path);
     const id = requiredString(entry.id, `${path}.id`);
     if (!ID_PATTERN.test(id)) reject('taxonomy_id', `${path}.id`, 'must be a stable lowercase ID');
     if (!TAXONOMY_KINDS.has(entry.kind)) reject('taxonomy_kind', `${path}.kind`, 'must be category, topic, or tag');
@@ -94,6 +102,7 @@ function validateTaxonomyLinks(links, taxonomy, path) {
   const result = links.map((link, position) => {
     const linkPath = `${path}[${position}]`;
     if (!isRecord(link)) reject('taxonomy_link', linkPath, 'must be an object');
+    rejectUnknownFields(link, ['id', 'kind', 'order'], linkPath);
     const id = requiredString(link.id, `${linkPath}.id`);
     const entry = taxonomy.get(id);
     if (!entry) reject('unknown_taxonomy', `${linkPath}.id`, `does not exist in the controlled taxonomy: ${id}`);
@@ -111,6 +120,7 @@ function validateTaxonomyLinks(links, taxonomy, path) {
 
 function validateTranslation(translation, item, path) {
   if (!isRecord(translation)) reject('translation', path, 'must be an object');
+  rejectUnknownFields(translation, ['locale', 'translatedFromRevision', 'translatedBy', 'reviewStatus', 'reviewedBy', 'reviewedAt', 'content'], path);
   const locale = normalizeV7Locale(translation.locale, `${path}.locale`);
   if (locale === item.sourceLocale) reject('translation_locale', `${path}.locale`, 'must differ from sourceLocale');
   if (!REVIEW_STATES.has(translation.reviewStatus)) reject('translation_review', `${path}.reviewStatus`, 'must be draft, reviewed, or rejected');
@@ -127,6 +137,7 @@ function validateTranslation(translation, item, path) {
     : validateTimestamp(translation.reviewedAt, `${path}.reviewedAt`);
   const content = translation.content;
   if (!isRecord(content)) reject('translation_content', `${path}.content`, 'must be an object');
+  rejectUnknownFields(content, ['title', 'body'], `${path}.content`);
   const title = requiredString(content.title, `${path}.content.title`);
   if (content.body !== undefined && typeof content.body !== 'string') reject('translation_content', `${path}.content.body`, 'must be a string when present');
   return Object.freeze({ locale, reviewStatus: translation.reviewStatus, translatedFromRevision, translatedBy,
@@ -137,6 +148,7 @@ function validateTranslation(translation, item, path) {
 function validateContentItem(item, taxonomy, position) {
   const path = `items[${position}]`;
   if (!isRecord(item)) reject('content_item', path, 'must be an object');
+  rejectUnknownFields(item, ['id', 'type', 'revision', 'sourceLocale', 'publicationState', 'source', 'sourceContent', 'rights', 'review', 'revisionHistory', 'withdrawal', 'derivatives', 'taxonomyLinks', 'translations'], path);
   const id = requiredString(item.id, `${path}.id`);
   if (!ID_PATTERN.test(id)) reject('content_id', `${path}.id`, 'must be a stable lowercase ID');
   if (!CONTENT_TYPES.has(item.type)) reject('content_type', `${path}.type`, 'must be book, devotional, or past_teaching');
@@ -144,6 +156,7 @@ function validateContentItem(item, taxonomy, position) {
   const sourceLocale = normalizeV7Locale(item.sourceLocale, `${path}.sourceLocale`);
   if (!PUBLICATION_STATES.has(item.publicationState)) reject('publication_state', `${path}.publicationState`, 'is unsupported');
   if (!isRecord(item.source)) reject('source', `${path}.source`, 'must be an object');
+  rejectUnknownFields(item.source, ['kind', 'title', 'uri', 'catalogId', 'revision', 'date', 'checksum', 'creator', 'organization'], `${path}.source`);
   if (!SOURCE_KINDS.has(item.source.kind)) reject('source_kind', `${path}.source.kind`, 'is unsupported');
   const sourceRecordTitle = requiredString(item.source.title, `${path}.source.title`);
   const sourceUri = optionalHttpsUrl(item.source.uri, `${path}.source.uri`);
@@ -158,6 +171,7 @@ function validateContentItem(item, taxonomy, position) {
   const organization = optionalString(item.source.organization, `${path}.source.organization`);
   const sourceContent = item.sourceContent;
   if (!isRecord(sourceContent)) reject('source_content', `${path}.sourceContent`, 'must be an object');
+  rejectUnknownFields(sourceContent, ['title', 'body'], `${path}.sourceContent`);
   const contentTitle = requiredString(sourceContent.title, `${path}.sourceContent.title`);
   if (sourceContent.body !== undefined && typeof sourceContent.body !== 'string') reject('source_content', `${path}.sourceContent.body`, 'must be a string when present');
   if (!isRecord(item.rights)) reject('rights', `${path}.rights`, 'must be an object');
@@ -178,6 +192,7 @@ function validateContentItem(item, taxonomy, position) {
   }
   const taxonomyLinks = validateTaxonomyLinks(item.taxonomyLinks, taxonomy, `${path}.taxonomyLinks`);
   if (!isRecord(item.review)) reject('review', `${path}.review`, 'must be an object');
+  rejectUnknownFields(item.review, ['status', 'reviewer', 'decidedAt'], `${path}.review`);
   if (!PUBLICATION_REVIEW_STATES.has(item.review.status)) reject('review_status', `${path}.review.status`, 'is unsupported');
   const reviewer = item.review.status === 'approved'
     ? requiredString(item.review.reviewer, `${path}.review.reviewer`)
@@ -227,6 +242,7 @@ function validateContentItem(item, taxonomy, position) {
 
 export function parseV7ContentBundle(bundle) {
   if (!isRecord(bundle)) reject('bundle', 'bundle', 'must be an object');
+  rejectUnknownFields(bundle, ['schemaVersion', 'taxonomy', 'items'], 'bundle');
   if (bundle.schemaVersion !== 1) reject('schema_version', 'schemaVersion', 'must equal 1');
   const taxonomy = createV7TaxonomyIndex(bundle.taxonomy);
   if (!Array.isArray(bundle.items)) reject('items', 'items', 'must be an array');
