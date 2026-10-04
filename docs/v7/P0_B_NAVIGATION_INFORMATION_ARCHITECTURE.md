@@ -1,6 +1,6 @@
 # V7 P0-B — Navigation and Information Architecture
 
-Status: DRAFT FOR P0 INTEGRATION
+Status: P0-B proposal; not integrated. Route-registry mapping and the discipleship-scope decision remain open.
 Owner: P0-B UX / information architecture
 Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: product-facing route and hierarchy decisions for Library, ONE 2 ONE, and small groups. This is a design contract; it does not change runtime routes or feature behavior.
@@ -17,7 +17,7 @@ This lane owns navigation hierarchy and the journeys below. It does not own sche
 |---|---|---|
 | Today | Resume a daily or assigned journey | Today, with one prominent Continue action and a small set of relevant next steps |
 | Bible | Read Scripture and open a passage in context | Reader at the selected/default passage |
-| Grow | Continue personal formation or a mentor-led plan | Grow overview, including personal progress and ONE 2 ONE when paired |
+| Grow | Continue personal formation and individual discipleship curriculum | Grow overview with personal progress and available curriculum |
 | Library | Find a book, devotional, or past teaching | Library browse with three explicit content types |
 | Community | Participate in congregation and group journeys | Community overview, with active congregation and groups |
 
@@ -55,9 +55,9 @@ Use topic/category tags to help people browse by need, while retaining the three
 
 Opening a Scripture reference from any Library item uses the shared Bible destination with the exact reference and translation context available to that item. Back returns to the item and reading position. Do not create an independent Scripture renderer inside Library.
 
-## ONE 2 ONE discipleship journey
+## Discipleship curriculum journey
 
-Entry is **Grow → ONE 2 ONE**. A user with an active mentor/mentee pairing sees the current track and next lesson. A user without a pairing sees the appropriate pairing invitation or join path; no private lesson content is exposed by a guessed URL.
+Entry is **Grow → Discipleship**. V7's P0-A/P0-D drafts propose a curriculum foundation with individual lesson progress and exclude mentor/mentee pairing, synchronized pair status, private responses, and review workflows. That proposal conflicts with the user's earlier ONE 2 ONE requirement for pairing and the later question about reducing V7 scope. P0-B keeps this as an explicit freeze decision; it does not silently include or defer pairing.
 
 | Step | Learner screen | Completion action |
 |---|---|---|
@@ -69,9 +69,11 @@ Entry is **Grow → ONE 2 ONE**. A user with an active mentor/mentee pairing see
 | 6 | Pray | Use or write a prayer |
 | 7 | Action | Record the next action and finish/resume the lesson |
 
-A lesson can be resumed at its last saved step. Track → module → lesson remains the hierarchy; progress is visible at all three levels. Deep links and QR codes open the intended track/module/lesson after required session and pairing state has loaded.
+A lesson can be resumed at its last saved step. Track → module → lesson remains the hierarchy; the learner sees progress at all three levels. Deep links and QR codes open the intended published track/module/lesson after required session state has loaded.
 
-Learner reflections, prayer text, discussion answers, and notes are private by default. The route model must not imply that a mentor or group can read them. Any future sharing control needs explicit product and data authorization; progress status alone may be shown to a paired mentor where the accepted pairing contract allows it.
+For the curriculum-only proposal, learner reflections, prayer text, discussion answers, and notes remain private to the learner. If V7 includes mentor pairing, the route and visibility rules must be explicitly ratified against P0-A and P0-C before implementation; do not infer mentor access from a route or pairing label.
+
+The seven lesson steps remain a useful reusable curriculum structure regardless of whether paired mentoring is V7 or V8.
 
 ## Small-group journey
 
@@ -95,20 +97,21 @@ Never expose private notes, reflections, lesson answers, or a member's unshared 
 - Library, lessons, and group cards use one Scripture handoff to the shared Reader.
 - A lesson or group session can expose an explicit, shareable action/summary only where the feature contract permits it; private reflection content remains separate.
 - Language selection follows the existing account/app preference. Shelf, lesson step, group prompt, and empty/error states all use the selected language when translations exist.
-- Media attachments in Library or groups follow the approved V7 media/storage contract; this route design does not create a storage path or weaken object-scope checks.
+- Media attachments in Library or groups follow the approved centralized BibleQuest Google Drive model: Drive stores bytes; Supabase stores metadata, authorization, and moderation state. This route design does not create storage paths or weaken object-scope checks.
 
-## P0-B acceptance
+## P0-B acceptance and reconciliation
 
-P0-B is ready for integration when:
+P0-B is not ready to integrate until the following are reconciled with P0-A/C/D and the current route registry:
 
-- the five primary destinations and More hierarchy are explicit, and accepted capabilities remain reachable;
-- Library has the three required content types, browse/detail paths, source attribution, and Reader handoff;
-- ONE 2 ONE has the pairing entry, track/module/lesson hierarchy, all seven agreed lesson steps, resume behavior, and deep-link return behavior;
-- group membership, deck setup, live session, and wrap-up are distinct routes with leader/participant presentation boundaries;
-- private reflection and group-content boundaries are explicit;
-- route behavior states session/congregation hydration and destination-local loading/error/empty states;
-- no runtime route, backend, schema, or content-policy change was introduced by this architecture deliverable.
+- The five primary destinations and More hierarchy are reviewed against the complete V6 route/surface inventory. The inventory must use route keys from the live router/registry and assign each route a product family, canonical entry, session/congregation prerequisite, deep-link behavior, and disposition. The conceptual labels in this draft are not route IDs.
+- Library has the three required content types, browse/detail paths, source attribution, and Reader handoff.
+- The track/module/lesson hierarchy and seven lesson steps are retained. V7 pairing scope remains an explicit product decision; the P0-B route map must match the ratified decision and P0-A/C data/security boundaries.
+- Group membership, deck setup, live session, and wrap-up are distinct destinations with leader/participant presentation boundaries.
+- Private reflection and group-content boundaries are explicit and consistent with P0-A/C.
+- Route behavior states session/congregation hydration and destination-local loading/error/empty states.
+- The approved central Drive media contract is reflected; the older ImageKit-first proposal is not treated as active.
+- No runtime route, backend, schema, or content-policy change was introduced by this architecture deliverable.
 
 ## Next implementation boundary
 
-P1 may map these destination IDs to the existing V6 shell/router and build the shared navigation foundation. P2 Library and P3 Discipleship can then proceed in independent feature lanes. Group session implementation belongs in P4 and must consume the P0-B route and presentation contract. P0-B does not mark feature implementation or user acceptance complete.
+P1 route implementation and P2/P3 feature lanes start only after the integration owner freezes the P0 contracts and resolves the V7 discipleship scope. P0-B does not mark feature implementation or user acceptance complete.
