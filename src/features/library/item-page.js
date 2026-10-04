@@ -1,3 +1,4 @@
+import { renderDevotional } from './devotional.js';
 import { renderBookMetadata } from '../books/presentation.js';
 import { renderPastTeachingArticle } from '../past-teachings/article.js';
 import { localization } from '../../app/localization.js';
@@ -15,7 +16,7 @@ export function createLibraryItemPage({service,id,onBack}) {
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
           const t=key=>escapeHtml(localization.t(key));
-          host.innerHTML=`<h1>${escapeHtml(item.title)}</h1><p>${escapeHtml(item.summary)}</p><p>${t('v7.content.source')}: ${escapeHtml(item.source.title)}</p><p>${t('v7.content.attribution')}: ${escapeHtml(item.rights.attribution)}</p><p>${t('v7.content.license')}: ${escapeHtml(item.rights.basis)}</p><p>${escapeHtml(item.rights.allowedUses.join(' · '))}</p>${item.contentType==='book'?renderBookMetadata(item):''}${renderPastTeachingArticle(item)}`;
+          host.innerHTML=`<h1>${escapeHtml(item.title)}</h1><p>${escapeHtml(item.summary)}</p><p>${t('v7.content.source')}: ${escapeHtml(item.source.title)}</p><p>${t('v7.content.attribution')}: ${escapeHtml(item.rights.attribution)}</p><p>${t('v7.content.license')}: ${escapeHtml(item.rights.basis)}</p><p>${escapeHtml(item.rights.allowedUses.join(' · '))}</p>${item.contentType==='book'?renderBookMetadata(item):''}${renderPastTeachingArticle(item)}${item.contentType==='devotional'?renderDevotional(item,{locale:localization.getLocale(),translate:localization.t}):''}`;
         }else{
           host.textContent=state.status==='error'?state.error:state.status==='not-found'?'This published item is unavailable.':state.status==='idle'?'Library context changed. Return to Library to reload.':'Loading Library item…';
         }

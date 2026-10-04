@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer",
+        "tl": "Panalangin",
+        "ceb": "Pag-ampo"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope",
+        "tl": "Pag-asa",
+        "ceb": "Paglaom"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.spurgeon.january-02-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning and Evening: January AM",
+        "uri": "https://ccel.org/s/spurgeon/morn_eve/ME01AM.html",
+        "catalogId": "devotional.spurgeon.january-02-am",
+        "revision": "CCEL transcription retrieved 2026-10-04",
+        "creator": "Charles Haddon Spurgeon"
+      },
+      "sourceContent": {
+        "title": "Continue in prayer — excerpt",
+        "body": "It is interesting to remark how large a portion of Sacred Writ is occupied with the subject of prayer, either in furnishing examples, enforcing precepts, or pronouncing promises. We scarcely open the Bible before we read, \"Then began men to call upon the name of the Lord;\" and just as we are about to close the volume, the \"Amen\" of an earnest supplication meets our ear."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": [
+          "display"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        }
+      ],
+      "translations": []
+    },
+    {
+      "id": "devotional.spurgeon.january-06-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning and Evening: January AM",
+        "uri": "https://ccel.org/s/spurgeon/morn_eve/ME01AM.html",
+        "catalogId": "devotional.spurgeon.january-06-am",
+        "revision": "CCEL transcription retrieved 2026-10-04",
+        "creator": "Charles Haddon Spurgeon"
+      },
+      "sourceContent": {
+        "title": "Casting your care — excerpt",
+        "body": "It is a happy way of soothing sorrow when we can feel--\"HE careth for me.\" Christian! do not dishonour religion by always wearing a brow of care; come, cast your burden upon your Lord. You are staggering beneath a weight which your Father would not feel. What seems to you a crushing burden, would be to Him but as the small dust of the balance."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": [
+          "display"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        }
+      ],
+      "translations": []
+    }
+  ]
+}
