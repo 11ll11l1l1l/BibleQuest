@@ -390,7 +390,7 @@ with check (private.bible_can_review_content(congregation_id));
 create policy "v7 library revision read" on public.v7_library_revisions for select to authenticated
 using (exists (
   select 1 from public.v7_library_items i
-  where i.id=item_id and ((i.current_revision_id=id and i.publication_state='published'
+  where i.id=item_id and ((i.current_revision_id=public.v7_library_revisions.id and i.publication_state='published'
     and (i.congregation_id is null or private.is_bible_congregation_member(i.congregation_id))) or private.bible_can_review_content(i.congregation_id))
 ));
 create policy "v7 library revision editor insert" on public.v7_library_revisions for insert to authenticated
