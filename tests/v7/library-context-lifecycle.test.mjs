@@ -31,7 +31,7 @@ test('congregation changes invalidate pending Library reads and clearing resets 
 
 test('bootstrap connects Library reset to account lifecycle and disposal', () => {
   const source = readFileSync(new URL('../../src/app/bootstrap.js', import.meta.url), 'utf8');
-  assert.match(source, /onContextChange:\(\)=>library\.reset\(\)/);
+  assert.match(source, /onContextChange:\(\)=>\{library\.reset\(\);notifyV7Context\(\)\}/);
   assert.match(source, /unsubscribeLibrarySession=store\.subscribe/);
   assert.match(source, /JSON\.stringify\(\[current\.authenticated===true,current\.user\?\.id/);
   assert.match(source, /unsubscribeLibrarySession\(\);library\.reset\(\)/);

@@ -1,3 +1,4 @@
+import { createDiscipleshipService } from './discipleship.js';
 import { createLibraryService } from '../features/library/service.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
@@ -120,6 +121,7 @@ const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', 
 const accountPage = args => lazyFeaturePage('account', 'accountPage', args);
 const backupPage = args => lazyFeaturePage('backup', 'backupPage', args);
 const accessibilityPage = args => lazyFeaturePage('accessibility', 'accessibilityPage', args);
+const oneToOnePage = args => lazyFeaturePage('one-to-one', 'oneToOnePage', args);
 const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
 const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
@@ -292,7 +294,11 @@ function boot(root){
     async listPublished(options){return (await api.library.createRepository()).listPublished(options)},
     async getPublishedById(id){return (await api.library.createRepository()).getPublishedById(id)}
   }});
-  const congregation=createCongregationMembershipService({api,session,onContextChange:()=>library.reset()});
+  const v7ContextListeners=new Set();
+  const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
+  const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
+  const congregation=createCongregationMembershipService({api,session,onContextChange:()=>{library.reset();notifyV7Context()}});
+  const discipleship=createDiscipleshipService({repository:api.discipleshipPairs,session,membership:congregation});
   let librarySessionKey='';
   const unsubscribeLibrarySession=store.subscribe(state=>{
     const current=state?.session||{};
@@ -300,6 +306,7 @@ function boot(root){
     if(key===librarySessionKey)return;
     librarySessionKey=key;
     library.reset();
+    notifyV7Context();
   });
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
@@ -364,6 +371,7 @@ function boot(root){
     home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
+    'one-to-one':()=>oneToOnePage({service:discipleship,subscribeContext:subscribeV7Context,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onBack:()=>router.navigate('grow')}),
     library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||''}),
     'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType')})}),
     learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
@@ -395,7 +403,7 @@ function boot(root){
     'content-review':()=>contentReviewPage({api,session,congregation,recall,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     // Lazy Reader adds managed offlinePackages and its gated audio provider when the feature opens.
     reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
+    grow:()=>progressPage({onOneToOne:()=>router.navigate('one-to-one'),progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),

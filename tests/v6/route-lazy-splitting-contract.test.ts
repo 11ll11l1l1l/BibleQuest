@@ -27,7 +27,7 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     .split('\n')
     .filter(line => line.startsWith('const ') && line.includes(" = args => lazyFeaturePage('"));
 
-  assert.equal(lazyProxyLines.length, 46);
+  assert.equal(lazyProxyLines.length, 47);
   for (const route of [
     "const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);",
     "const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);",
