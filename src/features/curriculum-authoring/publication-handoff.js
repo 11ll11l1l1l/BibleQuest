@@ -46,7 +46,7 @@ export function publicationHandoff({preparePublication,onPrepared=()=>{},publish
     if(disposed)throw Object.assign(new Error('Publication handoff is disposed.'),{code:'BQ_AUTHORING_PUBLICATION_DISPOSED'});
     if(busy)throw Object.assign(new Error('Publication action is already in progress.'),{code:'BQ_AUTHORING_PUBLICATION_BUSY'});
   };
-  const common={
+  const api={
     get busy(){return busy;},
     get receipt(){return receipt;},
     render(readiness,options={}){return renderPublicationHandoff(readiness,{...options,busy,canPublish:Boolean(publish),receipt,errorKey});},
@@ -61,9 +61,8 @@ export function publicationHandoff({preparePublication,onPrepared=()=>{},publish
     },
     dispose(){disposed=true;generation+=1;busy=false;receipt=null;},
   };
-  if(!publish)return Object.freeze(common);
-  return Object.freeze({...common,
-    async publish(){
+  if(publish){
+    api.publish=async()=>{
       ensureAvailable();busy=true;receipt=null;errorKey=null;const token=++generation;
       try{
         const request=preparePublication();
@@ -74,6 +73,7 @@ export function publicationHandoff({preparePublication,onPrepared=()=>{},publish
         return confirmed;
       }catch(error){if(!disposed&&token===generation)errorKey='v7.publicationHandoff.error';throw error;}
       finally{if(!disposed&&token===generation)busy=false;}
-    },
-  });
+    };
+  }
+  return Object.freeze(api);
 }
