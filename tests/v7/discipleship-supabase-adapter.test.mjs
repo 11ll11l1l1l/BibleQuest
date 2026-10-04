@@ -34,7 +34,7 @@ function fixture() {
           queries.push({ table, columns });
           if (mutation) writes.push(mutation);
           const data = (mutation ? [mutation.value] : tables[table].filter(r => filters.every(f => f(r))))
-            .map(r => Object.fromEntries(columns.split(',').map(c => [c, r[c]])));
+            .map(r => Object.fromEntries(columns.replace(/shares:[^(]+\([^)]*\)/g, 'shares').split(',').map(c => [c, r[c]])));
           return resolve({ data, error: null });
         } catch (e) { return reject(e); }
       },
@@ -112,4 +112,57 @@ test('shared composition preserves curriculum methods while using the hardened p
   const curriculum=await service.loadCurriculum('pair');
   assert.equal(curriculum[0].modules[0].lessons[0].revisionId,'pinned');
   assert.equal(typeof service.saveProgress,'function');
+});
+
+test('private resume queries only the resolved assignment, revision and learner without any share writes', async () => {
+  const f = fixture();
+  f.tables.v7_lesson_responses[0].response = { text: 'Synthetic reflection' };
+  f.tables.v7_lesson_responses.push(
+    { ...f.tables.v7_lesson_responses[0], id: 'other-owner', learner_id: 'mentor' },
+    { ...f.tables.v7_lesson_responses[0], id: 'other-assignment', assignment_id: 'foreign' },
+    { ...f.tables.v7_lesson_responses[0], id: 'other-revision', lesson_revision_id: 'old' });
+  const service = createSupabaseDiscipleshipService({ client: f.client,
+    session: { getState: () => ({ authenticated: true, user: { id: 'learner' } }) },
+    membership: { getActive: () => context } });
+  const result = await service.loadPrivateResponses('pair', 'pinned');
+  assert.equal(result.length, 1);
+  assert.equal(result[0].id, 'response');
+  assert.equal(result[0].response.text, 'Synthetic reflection');
+  assert.equal(f.writes.length, 0);
+  await assert.rejects(f.repository.loadPrivateResponses('pinned', pair, { ...context, userId: 'mentor' }),
+    { code: 'BQ_DISCIPLESHIP_SCOPE_DENIED' });
+});
+
+test('private resume stops before the response query if scope changes during assignment lookup', async () => {
+  const f = fixture();
+  let active = { ...context };
+  const original = f.client.from;
+  f.client.from = table => {
+    const q = original(table);
+    if (table === 'v7_pair_assignments') {
+      const then = q.then;
+      q.then = (resolve, reject) => then(result => { active = { ...context, congregationId: 'other' }; resolve(result); }, reject);
+    }
+    return q;
+  };
+  const service = createSupabaseDiscipleshipService({ client: f.client,
+    session: { getState: () => ({ authenticated: true, user: { id: 'learner' } }) },
+    membership: { getActive: () => active } });
+  await assert.rejects(service.loadPrivateResponses('pair', 'pinned'), { code: 'BQ_DISCIPLESHIP_CONTEXT_STALE' });
+  assert.equal(f.queries.some(query => query.table === 'v7_lesson_responses'), false);
+});
+
+test('owner resume retains active named sharing and ignores revoked audiences', async () => {
+  const f = fixture();
+  f.tables.v7_lesson_responses[0].response = { text: 'Synthetic shared response' };
+  f.tables.v7_lesson_responses[0].shares = [
+    { recipient_id: 'mentor', share_state: 'shared' }, { recipient_id: 'previous-recipient', share_state: 'revoked' },
+  ];
+  const service = createSupabaseDiscipleshipService({ client: f.client,
+    session: { getState: () => ({ authenticated: true, user: { id: 'learner' } }) }, membership: { getActive: () => context } });
+  const [result] = await service.loadPrivateResponses('pair', 'pinned');
+  assert.equal(result.visibility, 'shared');
+  assert.deepEqual(result.audienceUserIds, ['mentor']);
+  assert.match(f.queries.find(query => query.table === 'v7_lesson_responses').columns, /shares:v7_response_shares/);
+  assert.equal(f.writes.length, 0);
 });
