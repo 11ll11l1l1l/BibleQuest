@@ -1,0 +1,31 @@
+name: V7 Lane D owner history refresh
+
+on:
+  push:
+    branches:
+      - v7/p3-d-owner-history-after-pair-end-20261004
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v7/p3-d-owner-history-after-pair-end-20261004
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+      - name: Merge live V7 integration
+        run: |
+          git config user.name 'BibleQuest V7 Lane D'
+          git config user.email '138889199+11ll11l1l@users.noreply.github.com'
+          git fetch origin v7/development
+          git merge --no-edit origin/v7/development
+      - name: Run V7 unit suite on refreshed branch
+        run: npm run unit:v7
+      - name: Push refreshed verified branch
+        run: git push origin HEAD:v7/p3-d-owner-history-after-pair-end-20261004
