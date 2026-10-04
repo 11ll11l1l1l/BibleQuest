@@ -10,3 +10,5 @@ export {
 export { createLibraryRepository } from './repository.js';
 export { createLibraryService } from './service.js';
 export { createLibraryPage } from './page.js';
+
+export { createLibrarySupabaseAdapter, createLibrarySupabaseRepository } from './supabase-adapter.js';
