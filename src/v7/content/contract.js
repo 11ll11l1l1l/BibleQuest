@@ -66,6 +66,7 @@ function validateLabels(labels, path) {
   const normalized = {};
   for (const [locale, label] of Object.entries(labels)) {
     const language = normalizeV7Locale(locale, `${path}.${locale}`);
+    if (Object.hasOwn(normalized, language)) reject('duplicate_taxonomy_locale', `${path}.${locale}`, `duplicates canonical locale ${language}`);
     normalized[language] = requiredString(label, `${path}.${locale}`);
   }
   return Object.freeze(normalized);
@@ -239,7 +240,7 @@ export function resolveV7Content(item, requestedLocale) {
   if (locale === item.sourceLocale) {
     return Object.freeze({ state: 'source', locale: item.sourceLocale, content: item.sourceContent });
   }
-  const translation = item.translations.find(row => row.locale === locale && row.reviewStatus === 'reviewed');
+  const translation = item.translations.find(row => row.locale === locale && row.reviewStatus === 'reviewed' && row.translatedFromRevision === item.revision);
   if (translation) return Object.freeze({ state: 'translated', locale, content: translation.content });
   return Object.freeze({ state: 'source_fallback', locale: item.sourceLocale, content: item.sourceContent });
 }
