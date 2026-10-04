@@ -1,5 +1,7 @@
 # BibleQuest Documentation Index
 
+Start repository work at [work/README.md](work/README.md). Agent instructions: [AGENTS.md](AGENTS.md).
+
 Updated: 2026-10-04 JST
 
 ## Current production: V6

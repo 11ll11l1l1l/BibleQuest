@@ -1,5 +1,7 @@
 # BibleQuest
 
+Start repository work at [work/README.md](work/README.md). Agent instructions: [AGENTS.md](AGENTS.md).
+
 BibleQuest V6 is live at https://mybiblequest.pages.dev. Production `main` is pinned to certified SHA `7997d60e6069aa406ec005c32e33e46fee39bc12`.
 
 V7 preparation starts on `v7/development`. Read [V7 starting point](docs/V7_STARTING_POINT.md) and [documentation index](DOCUMENTATION_INDEX.md) before changing code.

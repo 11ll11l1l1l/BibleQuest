@@ -1,0 +1,14 @@
+BibleQuest canonical work entry point: work/README.md
+
+1. Read work/RULES.md.
+2. Read V7_ACTIVE_STATUS.md for development or V6_ACTIVE_STATUS.md for production.
+3. Fetch the assigned branch and record HEAD.
+4. Execute the bounded task and run affected existing checks.
+5. Update the current authority with actual evidence.
+
+Task handoff: work/templates/TASK.md
+Release procedure: work/RELEASE.md
+Lessons learned: work/LESSONS_LEARNED.md
+Documentation policy: work/DOCUMENTATION.md
+
+Production main and rollback references remain preserved.
