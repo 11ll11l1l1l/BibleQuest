@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(29);
+select plan(30);
 
 select ok((select relrowsecurity from pg_class where oid='public.v7_library_items'::regclass),'V7 Library items enable RLS');
 select ok((select relrowsecurity from pg_class where oid='public.v7_lesson_responses'::regclass),'V7 private responses enable RLS');
@@ -52,6 +52,8 @@ insert into public.v7_response_shares(id,response_id,recipient_id,share_state)
 values ('98000000-0000-4000-8000-000000000001','97000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111111','shared');
 
 set local role authenticated;
+set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
+select results_eq($select count(*)::bigint from public.v7_library_items where publication_state='draft'$,array[1::bigint],'Scoped content editor can review a draft item');
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
 select results_eq($$select count(*)::bigint from public.v7_library_items$$,array[2::bigint],'Mentee sees global and own-congregation published Library items only');
 select results_eq($$select count(*)::bigint from public.v7_library_items where publication_state='draft'$$,array[0::bigint],'Unpublished Library item stays hidden');
