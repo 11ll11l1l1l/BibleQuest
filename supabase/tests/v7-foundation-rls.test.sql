@@ -75,8 +75,8 @@ select is((select count(*)::integer from public.v7_lesson_responses where respon
 select results_eq('select count(*)::bigint from public.v7_response_shares',array[1::bigint],'Named recipient can read the explicit share record');
 
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222222';
-select results_eq($$select count(*)::bigint from public.v7_library_items$$,array[1::bigint],'Other-congregation member sees global content only');
-select results_eq($$select count(*)::bigint from public.v7_library_revisions$$,array[1::bigint],'Other-congregation member cannot force cross-tenant revision reads');
+select results_eq($select count(*)::bigint from public.v7_library_items$,array[2::bigint],'Other-congregation member sees global and own-congregation content only');
+select results_eq($select count(*)::bigint from public.v7_library_revisions$,array[2::bigint],'Other-congregation member cannot force cross-tenant revision reads');
 select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[0::bigint],'Outsider cannot read the pair');
 select results_eq($$select count(*)::bigint from public.v7_pair_assignments$$,array[0::bigint],'Outsider cannot read pair assignments');
 select results_eq($$select count(*)::bigint from public.v7_learner_progress$$,array[0::bigint],'Outsider cannot read operational progress');
