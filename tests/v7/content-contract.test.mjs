@@ -85,3 +85,23 @@ test('locale tags are canonicalized and malformed tags fail closed', () => {
   input.items[0].sourceLocale = 'not a locale';
   assert.throws(() => parseV7ContentBundle(input), error => error.code === 'locale');
 });
+
+test('taxonomy locale aliases fail instead of silently overwriting a label', () => {
+  const input = structuredClone(fixture);
+  input.taxonomy[0].labels = { 'en-US': 'Original label', 'EN-us': 'Conflicting label' };
+  assert.throws(() => parseV7ContentBundle(input),
+    error => error.code === 'duplicate_taxonomy_locale' && error.path === 'taxonomy[0].labels.EN-us');
+});
+
+test('resolver does not expose reviewed translations from an older source revision', () => {
+  const item = parseV7ContentBundle(fixture).items[0];
+  const changedItem = { ...item, revision: 'fixture-r2', translations: [
+    { locale: 'fil', reviewStatus: 'reviewed', translatedFromRevision: 'fixture-r1', content: { title: 'Old translation' } }
+  ] };
+  const result = resolveV7Content(changedItem, 'tl');
+  assert.equal(result.state, 'source_fallback');
+  assert.equal(result.locale, 'en');
+  assert.equal(result.content, item.sourceContent);
+  changedItem.translations[0].translatedFromRevision = 'fixture-r2';
+  assert.equal(resolveV7Content(changedItem, 'tl').state, 'translated');
+});
