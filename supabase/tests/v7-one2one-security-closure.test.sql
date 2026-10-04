@@ -109,6 +109,7 @@ select is(pg_temp.v7_sqlstate($sql$update public.v7_lesson_responses set respons
 select is(pg_temp.v7_sqlstate($sql$update public.v7_lesson_responses set lesson_step_id='a0000000-0000-4000-8000-000000000005' where id='ac000000-0000-4000-8000-000000000001'$sql$),'P0001','Mentee cannot move an existing response to another prompt');
 select is(pg_temp.v7_sqlstate($sql$insert into public.v7_response_shares(id,response_id,recipient_id,share_state) values ('ad000000-0000-4000-8000-000000000002','ac000000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111113','shared')$sql$),'42501','Mentee cannot share a private response with a non-mentor pair outsider');
 select is(pg_temp.v7_sqlstate($sql$update public.v7_response_shares set share_state='revoked',revoked_at=now() where id='ad000000-0000-4000-8000-000000000001'$sql$),'00000','Response owner can revoke an explicit mentor share');
+select is(pg_temp.v7_sqlstate($sql$update public.v7_response_shares set share_state='shared',revoked_at=null where id='ad000000-0000-4000-8000-000000000001'$sql$),'00000','Response owner can explicitly re-share with the same mentor');
 select is(private.v7_pair_has_user('8c000000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111111',false),false,'Authenticated helper rejects spoofing another user id');
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
