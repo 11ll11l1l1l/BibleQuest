@@ -1,6 +1,6 @@
 import { localization } from '../../app/localization.js';
 
-const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const attr=escapeHtml;
 const busy=state=>state?.status==='loading';
 const selected=(rows,id)=>rows?.find(row=>row.id===id)||null;
@@ -65,7 +65,8 @@ export function assignmentPreparationPage({preparation,subscribeContext=()=>()=>
         const request=preparation.buildRequest();
         const result=validateReceipt(await createAssignment(request),request);
         if(disposed||token!==generation)return;
-        receipt=result;await onCreated(result);
+        receipt=result;
+        try{await onCreated(result);}catch{/* confirmed backend success remains authoritative */}
       }catch{
         if(!disposed&&token===generation)localErrorKey='v7.assignment.error';
       }finally{
