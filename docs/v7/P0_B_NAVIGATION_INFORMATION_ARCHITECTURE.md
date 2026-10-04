@@ -1,6 +1,6 @@
 # V7 P0-B — Navigation and Information Architecture
 
-Status: P0-B proposal; not integrated. Route-registry mapping and the discipleship-scope decision remain open.
+Status: P0-B proposal; not integrated. Current route keys are mapped below; final navigation placement and discipleship scope remain open.
 Owner: P0-B UX / information architecture
 Baseline: `v7/development` at `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Scope: product-facing route and hierarchy decisions for Library, ONE 2 ONE, and small groups. This is a design contract; it does not change runtime routes or feature behavior.
@@ -21,7 +21,7 @@ This lane owns navigation hierarchy and the journeys below. It does not own sche
 | Library | Find a book, devotional, or past teaching | Library browse with three explicit content types |
 | Community | Participate in congregation and group journeys | Community overview, with active congregation and groups |
 
-On narrow screens these are the five primary destinations. On wider screens the same hierarchy can use a persistent rail or header. Secondary destinations remain reachable from a clearly labeled More area: Play, Calendar, Progress details, Notifications, Account, and role-authorized Ministry/Admin. No accepted capability becomes unreachable when a page is regrouped.
+These labels are a proposed V7 hierarchy, not the current shell. At the baseline, `src/ui/shell.js` exposes `home`, `learn`, `play`, `grow`, and `more`. The table below shows a candidate regrouping for review; it is not yet ratified. Secondary destinations remain reachable from a clearly labeled More area, and no accepted capability becomes unreachable when a page is regrouped. The mobile/desktop presentation remains a P1 design decision.
 
 Global route behaviors:
 
@@ -30,6 +30,21 @@ Global route behaviors:
 - Protected Community and Ministry destinations wait for session and congregation context, then show the existing sign-in, select-congregation, or denial state as appropriate. Never infer the first congregation.
 - Keep loading, empty, offline, error, and unauthorized states within the destination; do not silently send the user Home.
 - Stable route IDs and URL syntax are implementation decisions for P1. This document specifies destinations and return behavior, not a new router.
+
+## Current V6 route registry baseline
+
+The route inventory below is read from `src/app/bootstrap.js` and the five shell links from `src/ui/shell.js` on the recorded baseline. These exact route keys are the current IDs; the family grouping is P0-B's proposed disposition for V7, not a claim that routes were changed.
+
+| Current shell key | Current page-route keys tentatively grouped under the destination |
+|---|---|
+| `home` → Today | `home`, `bible-quest`, `mission` |
+| `learn` → Bible / Study | `learn`, `reader`, `study`, `deep-questions`, `story-journey`, `wisdom-situations`, `adaptive-learning`, `bible-world`, `explorer`, `open-review`, `private-notes`, `cloud-notes` |
+| `play` → Play | `play`, `challenges` |
+| `grow` → Grow | `grow`, `my-journey`, `transform`, `personality-profile`, `psychometrics`, `avatar-vault` |
+| `more` → Community / Utilities / Ministry | `more`, `community`, `journey-groups`, `encouragements`, `live-rooms`, `leaderboards`, `recognition`, `assignments`, `couples-family`, `couples-cloud`, `ministry-hub`, `leader-center`, `ministry-announcements`, `workspace`, `team-center`, `content-review`, `notification-center`, `calendar`, `recordings`, `media`, `my-mission`, `help`, `accessibility`, `backup`, `congregation`, `account` |
+| System fallback | `not-found` |
+
+This groups all 50 existing page-route keys. New Library, discipleship, and conversation-deck screens do not yet have route keys in the V6 registry, so this document does not invent any. P1 must add approved keys through the current router and retain existing IDs or explicit redirects. P0-C/D must supply route-specific session, congregation, role, evidence, and denial requirements before any protected route is implemented.
 
 ## Library journey
 
@@ -55,9 +70,9 @@ Use topic/category tags to help people browse by need, while retaining the three
 
 Opening a Scripture reference from any Library item uses the shared Bible destination with the exact reference and translation context available to that item. Back returns to the item and reading position. Do not create an independent Scripture renderer inside Library.
 
-## Discipleship curriculum journey
+## Discipleship curriculum journey (scope pending)
 
-Entry is **Grow → Discipleship**. V7's P0-A/P0-D drafts propose a curriculum foundation with individual lesson progress and exclude mentor/mentee pairing, synchronized pair status, private responses, and review workflows. That proposal conflicts with the user's earlier ONE 2 ONE requirement for pairing and the later question about reducing V7 scope. P0-B keeps this as an explicit freeze decision; it does not silently include or defer pairing.
+Candidate entry is **Grow → Discipleship**. V7's P0-A/P0-D drafts propose a curriculum foundation with individual lesson progress and exclude mentor/mentee pairing, synchronized pair status, private responses, and review workflows. That proposal conflicts with the user's earlier ONE 2 ONE requirement for pairing and the later question about reducing V7 scope. P0-B keeps this as an explicit freeze decision; it does not silently include or defer pairing.
 
 | Step | Learner screen | Completion action |
 |---|---|---|
