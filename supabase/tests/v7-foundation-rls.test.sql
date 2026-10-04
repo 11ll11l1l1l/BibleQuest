@@ -72,7 +72,7 @@ select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[
 select results_eq($$select count(*)::bigint from public.v7_learner_progress$$,array[1::bigint],'Active mentor can see operational progress');
 select results_eq($$select count(*)::bigint from public.v7_lesson_responses$$,array[1::bigint],'Mentor sees only the response explicitly shared with them');
 select is((select count(*)::integer from public.v7_lesson_responses where response->>'text'='private reflection'),0,'Mentor cannot read private reflection text');
-select results_eq($$q$select count(*)::bigint from public.v7_response_shares$q$$,array[1::bigint],'Named recipient can read the explicit share record');
+select results_eq('select count(*)::bigint from public.v7_response_shares',array[1::bigint],'Named recipient can read the explicit share record');
 
 set local "request.jwt.claim.sub"='22222222-2222-4222-8222-222222222222';
 select results_eq($$select count(*)::bigint from public.v7_library_items$$,array[1::bigint],'Other-congregation member sees global content only');
@@ -81,7 +81,7 @@ select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[
 select results_eq($$select count(*)::bigint from public.v7_pair_assignments$$,array[0::bigint],'Outsider cannot read pair assignments');
 select results_eq($$select count(*)::bigint from public.v7_learner_progress$$,array[0::bigint],'Outsider cannot read operational progress');
 select results_eq($$select count(*)::bigint from public.v7_lesson_responses$$,array[0::bigint],'Outsider cannot read private or pair-shared responses');
-select results_eq($$q$select count(*)::bigint from public.v7_response_shares$q$$,array[0::bigint],'Outsider cannot read response share records');
+select results_eq('select count(*)::bigint from public.v7_response_shares',array[0::bigint],'Outsider cannot read response share records');
 
 reset role;
 select * from finish();
