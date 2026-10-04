@@ -1,8 +1,8 @@
 # Task: Define the V7 P0-A data architecture contract
 
-Owner: P0-A lane executor  
-Branch: `v7/p0-a-data-architecture`  
-Starting SHA: `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`  
+Owner: P0-A lane executor
+Branch: `v7/p0-a-data-architecture`
+Starting SHA: `7d972a0ecdc048fc435e5ca44f94f6d7d38692d3`
 Status: COMPLETE — P0-A proposal ready; overall P0 freeze is pending integration
 
 ## Scope
