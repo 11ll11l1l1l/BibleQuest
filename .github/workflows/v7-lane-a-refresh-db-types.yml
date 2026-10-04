@@ -1,0 +1,64 @@
+name: V7 Lane A Refresh DB Types
+
+on:
+  push:
+    branches:
+      - v7/p3-a-pair-lifecycle-20261004
+    paths:
+      - '.github/workflows/v7-lane-a-refresh-db-types.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Checkout Lane A head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+
+      - name: Prepare disposable database
+        run: node scripts/v6-prepare-local-supabase.mjs /tmp/bq-v7-types-db
+
+      - name: Generate canonical database types
+        working-directory: /tmp/bq-v7-types-db
+        run: |
+          set -euo pipefail
+          supabase start
+          supabase db reset
+          supabase gen types typescript --local > "$GITHUB_WORKSPACE/supabase/database.types.ts"
+          cd "$GITHUB_WORKSPACE/supabase"
+          sha256sum database.types.ts > database.types.sha256
+
+      - name: Commit canonical type artifact
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add supabase/database.types.ts supabase/database.types.sha256
+          if git diff --cached --quiet; then
+            echo 'Database types already current.'
+            exit 0
+          fi
+          git commit -m 'chore(v7): refresh generated database types'
+          git push origin HEAD:v7/p3-a-pair-lifecycle-20261004
+
+      - name: Stop disposable database
+        if: always()
+        working-directory: /tmp/bq-v7-types-db
+        run: supabase stop || true
