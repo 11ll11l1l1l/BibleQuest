@@ -4,12 +4,17 @@ import { tl } from '../content/locales/tl.js';
 import { ceb } from '../content/locales/ceb.js';
 import { v5CloseoutLocales } from '../content/locales/v5-closeout.js';
 import { v7ContentEn, V7_CONTENT_KEY_INVENTORY } from '../content/locales/v7-content.js';
+import { v7AssignmentEn, V7_ASSIGNMENT_KEY_INVENTORY } from '../content/locales/v7-assignment.js';
 
 const STORAGE_KEY = 'locale';
 const DEFAULT_LOCALE = 'en';
-const keyInventory = Object.freeze([...new Set([...LOCALE_KEY_INVENTORY, ...V7_CONTENT_KEY_INVENTORY])].sort());
+const keyInventory = Object.freeze([...new Set([
+  ...LOCALE_KEY_INVENTORY,
+  ...V7_CONTENT_KEY_INVENTORY,
+  ...V7_ASSIGNMENT_KEY_INVENTORY,
+])].sort());
 const dictionaries = Object.freeze({
-  en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn }),
+  en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn, ...v7AssignmentEn }),
   tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl }),
   ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb })
 });
