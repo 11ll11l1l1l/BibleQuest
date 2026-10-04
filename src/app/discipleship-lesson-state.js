@@ -139,10 +139,40 @@ function snapshot(pairId, lesson, progress, responses) {
   });
 }
 
+function mutationReceipt(pairId, lessonRevisionId, progress) {
+  return Object.freeze({
+    pairId,
+    lessonRevisionId,
+    status: progress.status,
+    persisted: true,
+    completed: progress.status === 'completed',
+    currentStepId: progress.currentStepId,
+    resumeStepId: progress.currentStepId,
+    startedAt: progress.startedAt,
+    completedAt: progress.completedAt,
+  });
+}
+
 export function createDiscipleshipLessonStateService({ discipleship, clock = () => new Date().toISOString() }) {
   const required = ['loadLesson', 'loadOperationalProgress', 'loadPrivateResponses', 'saveProgress', 'savePrivateResponse'];
   if (!discipleship || required.some(method => typeof discipleship[method] !== 'function') || typeof clock !== 'function') {
     throw new Error('Lesson continuity requires the integrated discipleship service and a clock.');
+  }
+
+  // Serialize same-lesson progress writes in one client instance so a slower older request
+  // cannot overwrite a newer navigation/completion request. Backend/RLS remains authority.
+  const mutationTails = new Map();
+
+  function enqueue(pairId, lessonRevisionId, operation) {
+    const key = `${pairId}\u0000${lessonRevisionId}`;
+    const previous = mutationTails.get(key) ?? Promise.resolve();
+    const run = previous.catch(() => undefined).then(operation);
+    const tail = run.catch(() => undefined);
+    mutationTails.set(key, tail);
+    void tail.finally(() => {
+      if (mutationTails.get(key) === tail) mutationTails.delete(key);
+    });
+    return run;
   }
 
   async function lessonFor(pairId, lessonRevisionId) {
@@ -151,6 +181,12 @@ export function createDiscipleshipLessonStateService({ discipleship, clock = () 
     if (!pair || !revision) fail('BQ_DISCIPLESHIP_STATE_SCOPE_REQUIRED', 'Choose a ONE 2 ONE pair and assigned lesson revision first.');
     const lesson = normalizeLesson(await discipleship.loadLesson(pair, revision), revision);
     return { pairId: pair, revisionId: revision, lesson };
+  }
+
+  async function progressFor(pairId, lessonRevisionId) {
+    const resolved = await lessonFor(pairId, lessonRevisionId);
+    const value = await discipleship.loadOperationalProgress(resolved.pairId, resolved.revisionId);
+    return { resolved, progress: normalizeProgress(value, resolved.lesson) };
   }
 
   async function load(pairId, lessonRevisionId) {
@@ -165,38 +201,47 @@ export function createDiscipleshipLessonStateService({ discipleship, clock = () 
   }
 
   async function saveCurrentStep(pairId, lessonRevisionId, stepId) {
-    const state = await load(pairId, lessonRevisionId);
-    if (state.completed) fail('BQ_DISCIPLESHIP_PROGRESS_COMPLETED', 'This lesson is already complete and cannot be silently reopened.');
-    const resolved = await lessonFor(pairId, lessonRevisionId);
-    const target = id(stepId);
-    if (!resolved.lesson.steps.some(step => step.id === target)) {
-      fail('BQ_DISCIPLESHIP_PROGRESS_STEP_INVALID', 'The requested resume step is outside the assigned lesson revision.');
-    }
-    const startedAt = state.startedAt || requireClockInstant(clock);
-    await discipleship.saveProgress(resolved.pairId, resolved.revisionId, {
-      status: 'in_progress',
-      currentStepId: target,
-      startedAt,
-      completedAt: null,
+    const pair = id(pairId);
+    const revision = id(lessonRevisionId);
+    if (!pair || !revision) fail('BQ_DISCIPLESHIP_STATE_SCOPE_REQUIRED', 'Choose a ONE 2 ONE pair and assigned lesson revision first.');
+    return enqueue(pair, revision, async () => {
+      const { resolved, progress } = await progressFor(pair, revision);
+      if (progress.status === 'completed') fail('BQ_DISCIPLESHIP_PROGRESS_COMPLETED', 'This lesson is already complete and cannot be silently reopened.');
+      const target = id(stepId);
+      if (!resolved.lesson.steps.some(step => step.id === target)) {
+        fail('BQ_DISCIPLESHIP_PROGRESS_STEP_INVALID', 'The requested resume step is outside the assigned lesson revision.');
+      }
+      const next = {
+        status: 'in_progress',
+        currentStepId: target,
+        startedAt: progress.startedAt || requireClockInstant(clock),
+        completedAt: null,
+      };
+      await discipleship.saveProgress(resolved.pairId, resolved.revisionId, next);
+      return mutationReceipt(resolved.pairId, resolved.revisionId, next);
     });
-    return load(resolved.pairId, resolved.revisionId);
   }
 
   async function complete(pairId, lessonRevisionId) {
-    const state = await load(pairId, lessonRevisionId);
-    if (state.completed) return state;
-    const resolved = await lessonFor(pairId, lessonRevisionId);
-    const finalStepId = resolved.lesson.steps.at(-1).id;
-    if (state.status !== 'in_progress' || state.currentStepId !== finalStepId || !state.startedAt) {
-      fail('BQ_DISCIPLESHIP_COMPLETION_NOT_READY', 'Reach the Action step before completing this lesson.');
-    }
-    await discipleship.saveProgress(resolved.pairId, resolved.revisionId, {
-      status: 'completed',
-      currentStepId: finalStepId,
-      startedAt: state.startedAt,
-      completedAt: requireClockInstant(clock),
+    const pair = id(pairId);
+    const revision = id(lessonRevisionId);
+    if (!pair || !revision) fail('BQ_DISCIPLESHIP_STATE_SCOPE_REQUIRED', 'Choose a ONE 2 ONE pair and assigned lesson revision first.');
+    return enqueue(pair, revision, async () => {
+      const { resolved, progress } = await progressFor(pair, revision);
+      const finalStepId = resolved.lesson.steps.at(-1).id;
+      if (progress.status === 'completed') return mutationReceipt(resolved.pairId, resolved.revisionId, progress);
+      if (progress.status !== 'in_progress' || progress.currentStepId !== finalStepId || !progress.startedAt) {
+        fail('BQ_DISCIPLESHIP_COMPLETION_NOT_READY', 'Reach the Action step before completing this lesson.');
+      }
+      const next = {
+        status: 'completed',
+        currentStepId: finalStepId,
+        startedAt: progress.startedAt,
+        completedAt: requireClockInstant(clock),
+      };
+      await discipleship.saveProgress(resolved.pairId, resolved.revisionId, next);
+      return mutationReceipt(resolved.pairId, resolved.revisionId, next);
     });
-    return load(resolved.pairId, resolved.revisionId);
   }
 
   async function savePrivateStepResponse(pairId, lessonRevisionId, stepId, response) {
