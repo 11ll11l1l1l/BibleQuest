@@ -1,7 +1,7 @@
 # P1-A V6 reuse and schema inventory
 
-Status: **inventory complete; additive V7 schema work remains active**  
-Baseline: `v7/development` at `361d7d8ffeea5860b83200a60a3455966b842929`  
+Status: **inventory complete; additive V7 schema work remains active**
+Baseline: `v7/development` at `361d7d8ffeea5860b83200a60a3455966b842929`
 Date: 2026-10-04 JST
 
 This is a bounded P1-A inventory against the accepted P0 contracts, the integrated P1-D content foundation, the V6 migrations, and the connected BibleQuest database. It records what can be reused and where V7 needs an additive schema. It does not claim runtime or RLS implementation.
