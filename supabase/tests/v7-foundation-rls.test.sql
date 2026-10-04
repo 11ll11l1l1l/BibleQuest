@@ -54,10 +54,10 @@ values ('98000000-0000-4000-8000-000000000001','97000000-0000-4000-8000-00000000
 
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
-select results_eq($q$select count(*)::bigint from public.v7_library_items where publication_state='draft'$q$,array[1::bigint],'Scoped content editor can review a draft item');
+select results_eq('select count(*)::bigint from public.v7_library_items where publication_state=''draft''',array[1::bigint],'Scoped content editor can review a draft item');
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
 select results_eq($$select count(*)::bigint from public.v7_library_items$$,array[2::bigint],'Mentee sees global and own-congregation published Library items only');
-select results_eq($$q$select count(*)::bigint from public.v7_library_items where publication_state='draft'$q$$,array[0::bigint],'Unpublished Library item stays hidden');
+select results_eq('select count(*)::bigint from public.v7_library_items where publication_state=''draft''',array[0::bigint],'Unpublished Library item stays hidden');
 select results_eq($$select count(*)::bigint from public.v7_library_revisions$$,array[2::bigint],'Mentee sees only current published revisions within scope');
 select results_eq($$select count(*)::bigint from public.v7_tracks$$,array[1::bigint],'Published global track is visible');
 select results_eq($$select count(*)::bigint from public.v7_lesson_steps$$,array[7::bigint],'Published lesson returns the canonical seven steps');
@@ -65,7 +65,7 @@ select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[
 select results_eq($$select count(*)::bigint from public.v7_pair_assignments$$,array[1::bigint],'Mentee can read pair assignment');
 select results_eq($$select count(*)::bigint from public.v7_learner_progress$$,array[1::bigint],'Mentee can read operational progress');
 select results_eq($$select count(*)::bigint from public.v7_lesson_responses$$,array[2::bigint],'Learner can read own private and shared responses');
-select results_eq($q$select count(*)::bigint from public.v7_response_shares$q$,array[1::bigint],'Learner can read share metadata for an owned response');
+select results_eq('select count(*)::bigint from public.v7_response_shares',array[1::bigint],'Learner can read share metadata for an owned response');
 
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
 select results_eq($$select count(*)::bigint from public.v7_mentor_pairs$$,array[1::bigint],'Mentor can read own pair');
