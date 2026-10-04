@@ -31,6 +31,9 @@ test('publication requires verified rights and an approved review record', () =>
   item.review = { status: 'approved', reviewer: 'Content reviewer', decidedAt: '2026-10-01T12:00:00Z' };
   item.publicationState = 'published';
   assert.equal(parseV7ContentBundle(input).items[0].publicationState, 'published');
+  item.rights.allowedUses = [];
+  assert.throws(() => parseV7ContentBundle(input), error => error.code === 'rights_uses');
+  item.rights.allowedUses = ['display metadata', 'link to source'];
   item.review.status = 'pending_review';
   assert.throws(() => parseV7ContentBundle(input), error => error.code === 'publication_review');
   item.review.status = 'approved';
