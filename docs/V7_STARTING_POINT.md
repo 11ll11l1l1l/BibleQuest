@@ -55,20 +55,45 @@ You can start a fresh chat and issue only:
 
 or the same command for lane B, C or D.
 
+That command includes **implementation, affected verification, integration, phase-gate reconciliation and automatic same-lane continuation**. The user does not need to issue `integrate`, `merge`, `advance phase`, `promote lane`, or equivalent commands.
+
 The executor must determine the live phase itself from `V7_ACTIVE_STATUS.md` and `DEVELOPMENT_PLAN_V7.md`. The user does not need to say `P0-A`, `P1-A`, `P5-A`, or otherwise track the phase number manually.
 
-Continuation rules:
+## Automatic integration behavior
+
+Every lane integrates its own completed bounded work whenever it is safe to do so. `Ready for integration`, `waiting for merge`, or `integration needed` is not a valid stopping state by itself.
+
+Before integration:
+
+1. fetch the current `v7/development` HEAD;
+2. refresh/rebase the lane if the integration head moved;
+3. resolve conflicts inside that lane's owned surface;
+4. rerun only checks affected by the refresh/conflict;
+5. integrate without force-overwriting concurrent work;
+6. verify the integrated result is reachable from the current integration head.
+
+If the integration head changes during the operation, refresh/rebase and retry safely. Never replace a newer integration head with a stale branch simply to unblock progress.
+
+**Lane A is the standing integration coordinator.** On every `Continue V7 lane A`, it first handles ready shared/cross-lane integration, shared router/schema/status reconciliation, phase-gate advancement and P5 release-candidate assembly before returning to its own lane-A assignment.
+
+Lanes B–D integrate their own work. If they encounter a shared/cross-lane conflict that should not be solved inside their owned surface, they preserve the completed artifact and continue any safe eligible work. The next ordinary `Continue V7 lane A` automatically handles that integration responsibility. No special user command is needed.
+
+## Continuation loop
+
+For every `Continue V7 lane X` instruction:
 
 1. fetch the live `v7/development` head;
 2. read the current phase/eligibility state in `V7_ACTIVE_STATUS.md`;
 3. map the requested persistent lane letter to the current phase using the roadmap table;
-4. continue unfinished same-lane work immediately;
-5. if that assignment is complete and the next same-letter phase assignment is eligible, continue directly into it;
-6. if a phase exit gate is already satisfied, advance rather than stopping for a new instruction;
-7. if another lane still blocks a real shared prerequisite, help close that gate only where ownership is non-overlapping, otherwise leave the exact dependency and preserve completed work;
-8. repeat across eligible phases until the execution window ends, a genuine external/human boundary is reached, or V7 is complete.
+4. if X is A, first drain pending shared/cross-lane integration duties;
+5. continue unfinished same-lane work immediately;
+6. run the smallest affected verification;
+7. integrate the lane's own completed bounded work automatically;
+8. reconcile the phase exit gate when applicable;
+9. if that assignment is complete and the next same-letter phase assignment is eligible, continue directly into it;
+10. repeat across eligible phases until the execution window ends, a genuine external/human boundary is reached, or V7 is complete.
 
-Finishing one phase does not terminate a persistent lane. Lane A remains lane A from P0 through P5; only its phase-specific responsibility changes. The same is true for B, C and D. P3-E is an optional supplemental lane and does not alter A–D continuity.
+Finishing one task, reaching an integration boundary, or finishing a phase does not terminate a persistent lane. Lane A remains lane A from P0 through P5; only its phase-specific responsibility changes. The same is true for B, C and D. P3-E is an optional supplemental lane and does not alter A–D continuity.
 
 The continuation command never authorizes V8 scope. Once V7 is complete, report that completion instead of beginning V8 automatically.
 
@@ -81,7 +106,7 @@ The continuation command never authorizes V8 scope. Once V7 is complete, report 
 - P4: integrated hardening — four independent evidence lanes.
 - P5: exact-SHA release certification — four evidence lanes followed by one serialized candidate/release owner.
 
-P2 and P3 may overlap after P1 contracts are frozen when ownership is genuinely independent. All shared writes and integration remain serialized under the rulebook.
+P2 and P3 may overlap after P1 contracts are frozen when ownership is genuinely independent. All shared writes and integration remain serialized by the live-head/retry protocol in `V7_ACTIVE_STATUS.md`.
 
 ## Preserved contracts
 
@@ -95,7 +120,9 @@ P2 and P3 may overlap after P1 contracts are frozen when ownership is genuinely 
 
 Use the pinned Node version and lockfile. Read `V7_ACTIVE_STATUS.md`, the task-relevant part of `DEVELOPMENT_PLAN_V7.md`, and only the rulebook sections relevant to the assigned lane. Inspect the smallest relevant implementation surface and reuse existing checks/evidence.
 
-Before parallel writes, every lane must have one concrete outcome, exact starting SHA, owned files/surface, exclusions, affected checks and handoff destination. Shared schema/migrations/generated data contracts, global router/navigation, service worker/deployment configuration and canonical status edits have one owner or are sequenced explicitly.
+Before parallel writes, every lane must have one concrete outcome, exact starting SHA, owned files/surface, exclusions, affected checks and handoff destination. Shared schema/migrations/generated data contracts, global router/navigation, service worker/deployment configuration and canonical status edits have one owner at a time or are sequenced explicitly.
+
+The one-owner-at-a-time rule does **not** require a manual integration chat. Integration ownership is part of the continuation workflow. Each lane may integrate its own completed bounded work; Lane A coordinates shared/cross-lane integration and phase transitions.
 
 Do not begin a V7 task with another broad V1–V6 audit. Do not reopen completed BSB/security/release work unless the V7 change affects it. Do not implement V8 systems merely because V7 leaves an extension point.
 
