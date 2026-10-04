@@ -86,7 +86,7 @@ set search_path = ''
 as $bq$
 declare
   v_actor uuid := auth.uid();
-  v_action text := pg_catalog.lower(pg_catalog.btrim(pg_catalog.coalesce(p_action, '')));
+  v_action text := pg_catalog.lower(pg_catalog.btrim(coalesce(p_action, '')));
   v_pair public.v7_mentor_pairs%rowtype;
   v_role text;
   v_now timestamptz := pg_catalog.now();
