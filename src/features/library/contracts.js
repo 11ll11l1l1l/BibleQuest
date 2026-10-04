@@ -1,0 +1,114 @@
+export const LIBRARY_ROUTE_KEYS = Object.freeze({
+  browse: 'library',
+  item: 'library-item',
+});
+
+export const LIBRARY_CONTENT_TYPES = Object.freeze({
+  book: 'book',
+  devotional: 'devotional',
+  pastTeaching: 'past-teaching',
+});
+
+export const LIBRARY_PUBLICATION_STATES = Object.freeze({
+  published: 'published',
+});
+
+const BUILT_IN_CONTENT_TYPES = [
+  { id: LIBRARY_CONTENT_TYPES.book, label: 'Books', description: 'Books and structured learning material.' },
+  { id: LIBRARY_CONTENT_TYPES.devotional, label: 'Devotionals', description: 'Short readings for daily reflection.' },
+  { id: LIBRARY_CONTENT_TYPES.pastTeaching, label: 'Past Teachings', description: 'Reviewed articles adapted from teachings.' },
+];
+
+export function libraryError(message, code = 'BQ_LIBRARY_INVALID') {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
+export function createLibraryContentTypeRegistry(additionalTypes = []) {
+  const definitions = new Map();
+  for (const definition of [...BUILT_IN_CONTENT_TYPES, ...additionalTypes]) {
+    const id = String(definition?.id ?? '').trim();
+    const label = String(definition?.label ?? '').trim();
+    if (!/^[a-z][a-z0-9-]*$/.test(id) || !label) {
+      throw libraryError('A Library content type needs a stable id and display label.', 'BQ_LIBRARY_CONTENT_TYPE');
+    }
+    if (definitions.has(id)) {
+      throw libraryError(`Library content type "${id}" is already registered.`, 'BQ_LIBRARY_CONTENT_TYPE');
+    }
+    definitions.set(id, Object.freeze({
+      id,
+      label,
+      description: String(definition.description ?? '').trim(),
+    }));
+  }
+
+  return Object.freeze({
+    list: () => Object.freeze([...definitions.values()]),
+    get: id => definitions.get(String(id ?? '').trim()) ?? null,
+    has: id => definitions.has(String(id ?? '').trim()),
+  });
+}
+
+export function normalizeLibraryItem(record, registry = createLibraryContentTypeRegistry()) {
+  const id = String(record?.id ?? '').trim();
+  const contentType = String(record?.contentType ?? '').trim();
+  const revisionId = String(record?.publishedRevisionId ?? '').trim();
+  const title = String(record?.title ?? '').trim();
+
+  if (!id || !registry.has(contentType)) {
+    throw libraryError('Library returned an item with an invalid id or content type.', 'BQ_LIBRARY_ITEM');
+  }
+  if (record?.publicationState !== LIBRARY_PUBLICATION_STATES.published || !revisionId) {
+    throw libraryError('Library returned an item that is not a published revision.', 'BQ_LIBRARY_PUBLICATION');
+  }
+  if (!title) throw libraryError('Library returned a published item without a title.', 'BQ_LIBRARY_ITEM');
+
+  const summary = String(record.summary ?? '').trim();
+  const locale = String(record.locale ?? '').trim();
+  const readingMinutes = Number(record.readingMinutes);
+  return Object.freeze({
+    id,
+    contentType,
+    publishedRevisionId: revisionId,
+    publicationState: LIBRARY_PUBLICATION_STATES.published,
+    title,
+    summary,
+    locale: locale || null,
+    readingMinutes: Number.isFinite(readingMinutes) && readingMinutes > 0 ? Math.ceil(readingMinutes) : null,
+    updatedAt: String(record.updatedAt ?? '').trim() || null,
+  });
+}
+
+export function createLibraryViewState(patch = {}) {
+  return Object.freeze({
+    status: 'idle',
+    items: Object.freeze([]),
+    selectedItem: null,
+    query: '',
+    contentType: '',
+    nextCursor: null,
+    error: null,
+    ...patch,
+    items: Object.freeze([...(patch.items ?? [])]),
+  });
+}
+
+export function presentLibraryItem(item, registry = createLibraryContentTypeRegistry()) {
+  const definition = registry.get(item?.contentType);
+  if (!item?.id || !definition) {
+    throw libraryError('Cannot present an item with an unregistered content type.', 'BQ_LIBRARY_ITEM');
+  }
+  return Object.freeze({
+    id: item.id,
+    title: item.title,
+    supportingText: item.summary || definition.description,
+    contentTypeLabel: definition.label,
+    locale: item.locale,
+    readingMinutes: item.readingMinutes,
+    destination: Object.freeze({
+      routeKey: LIBRARY_ROUTE_KEYS.item,
+      resourceId: item.id,
+    }),
+  });
+}
