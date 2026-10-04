@@ -1,0 +1,26 @@
+name: Temporary V7 P3-D private response recovery
+
+on:
+  push:
+    branches:
+      - v7/p3-d-private-response-mutation-order-r2-20261004
+
+permissions:
+  contents: read
+
+jobs:
+  focused-v7-p3d:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.2
+      - name: Check lesson state module syntax
+        run: node --check src/app/discipleship-lesson-state.js
+      - name: Run Lane D lesson-state recovery tests
+        run: >-
+          node --test
+          tests/v7/discipleship-lesson-state.test.mjs
+          tests/v7/discipleship-progress-mutation-recovery.test.mjs
+          tests/v7/discipleship-private-response-mutation-recovery.test.mjs
