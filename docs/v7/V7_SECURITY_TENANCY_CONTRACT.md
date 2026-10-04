@@ -87,10 +87,11 @@ The matrix preserves the V6 distinction between congregation Admin and platform 
 
 ### Media and attachments
 
-- Follow the V7 provider-neutral media contract in `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md`: Supabase owns metadata and authorization; external provider stores bytes; provider credentials stay server-side; private delivery uses short-lived authorized access.
-- Attachments inherit the narrowest parent scope. Moving or reusing an attachment in another scope requires a new authorization check and an explicit allowed link; a file URL cannot change ownership.
-- Member-uploaded content is Pending Review by default. Authorized congregation reviewers may **Approve**, **Reject**, **Request Changes**, or **Remove After Publish** within their tenant. The uploader cannot approve their own submission.
-- Removal prevents further authorized delivery and records the decision. Deletion/reconciliation follows the media lifecycle contract; audit history does not expose the bytes or private content.
+- Store uploaded binary files in the central BibleQuest Google Drive account; users do not need to connect personal Drive accounts. Supabase remains authoritative for file metadata, owner, congregation/group/couple scope, permissions, Pending Review/moderation state, and audit history.
+- Every upload and download starts with server-side BibleQuest authorization against the current session and the authoritative Supabase metadata. Drive file IDs or URLs are not access grants. Do not expose Drive credentials or unrestricted persistent links to private files to clients; use a controlled delivery path that preserves the authorization check.
+- Attachments inherit the narrowest parent scope. Moving or reusing an attachment in another scope requires an explicit authorized metadata relationship; a file ID or URL cannot change ownership or scope.
+- Member-uploaded content is **Pending Review** by default. Within the owning congregation, authorized Leader, Pastor, or Admin reviewers may **Approve**, **Reject**, **Request Changes**, or **Remove After Publish**. The uploader cannot approve their own submission. Congregation roles confer no authority over another congregation's queue.
+- Removal prevents further authorized delivery and records the decision. Metadata and Drive object lifecycle must remain consistent; audit history does not expose file bytes, credentials, or private content.
 
 ## 6. Moderation authority and audit
 
@@ -115,7 +116,7 @@ P0-C is complete when the Phase 0 integration can point to this contract and eac
 | SEC-TEN-05 | Mentor access is limited to an active, accepted pair and the explicitly shared progress/items. | Paired/unpaired, ended-pair, unrelated-pair, private-note, and explicit-share positive/negative tests. |
 | SEC-TEN-06 | Lesson completion does not expose private reflection; audience is clear before an item is shared. | API/RLS denial for private answers plus UI assertion for the share audience. |
 | SEC-TEN-07 | Moderation is tenant-bound, role/capability-bound, and author self-approval is denied. | Approve/reject/request-changes/remove allow/deny cases, including foreign tenant and self-review. |
-| SEC-TEN-08 | Media authorization is checked before issuing delivery/upload authority; signed access expires and scope remains attached to metadata. | Unauthorized ID/path guessing denial, expiry test, client-secret scan, and deletion/access consistency test. |
+| SEC-TEN-08 | Media authorization is checked before upload and every download; Google Drive IDs/URLs do not bypass scope checks. | Unauthorized ID/URL guessing denial, client-credential scan, and metadata/Drive-object removal consistency test. |
 | SEC-TEN-09 | Membership, role, pairing, or group removal takes effect on the next protected request; stale in-flight results cannot appear after context switch. | Revocation and account/tenant-switch tests on affected routes and requests. |
 | SEC-TEN-10 | Platform-level exceptional access and moderation are explicit and auditable. | Tests for authorized platform path, denied ordinary path, and audit metadata without private content. |
 
@@ -128,14 +129,14 @@ Reuse existing V6 tenant, role-matrix, content-review, and media tests where the
 - **Later feature owners:** implement the applicable contract rows in their feature/API/RLS work and attach the evidence. The serialized V7 integration owner assigns one accountable implementation owner per shared authorization surface.
 - **Integration owner:** links this contract from V7's canonical status and acceptance tracker, records any accepted changes, and resolves conflicts before feature implementation.
 
-## 9. Phase 0 decisions to ratify
+## 9. Phase 0 handoff
 
-The defaults above make implementation testable. Phase 0 integration should explicitly ratify or amend only these product decisions:
+Carry these already-established product decisions into the V7 integration contract:
 
-1. Mentor/mentee pairs default to same-congregation and mutually accepted.
-2. Personal reflections, prayer, notes, and private messages remain private unless shared item-by-item.
-3. User-submitted congregation media/content is Pending Review; self-approval is prohibited.
-4. Tenant Admin has no cross-congregation moderation powers; platform-wide access remains a separate audited authority.
-5. Cross-congregation group participation or mentorship requires a separately named policy rather than an implicit exception.
+- User/congregation files use the central BibleQuest Google Drive account; Supabase remains the source of truth for metadata, scope, permissions, and moderation.
+- User submissions default to Pending Review. Authorized Leader, Pastor, or Admin reviewers may Approve, Reject, Request Changes, or Remove After Publish within the owning congregation.
+- Personal notes, prayer, and reflection remain private unless an individual item is explicitly shared.
+- Mentor/mentee pairing is an explicit relationship, scoped to the assigned participants; default to same-congregation unless a separately defined program allows otherwise.
+- Congregation Admin and platform Admin/Owner remain distinct authorities.
 
-Any amendment must retain the denial tests and update the affected contract/acceptance rows.
+P0-C hands the security boundaries and acceptance criteria to the serialized integration owner. Any later change to these decisions must update the contract and preserve the relevant denial tests.
