@@ -45,17 +45,26 @@ function itemEvidence(item) {
 }
 
 function localizationEvidence({ supportedLocales, v7KeyCount, missingV7KeysByLocale }) {
-  if (!Array.isArray(supportedLocales) || !Number.isInteger(v7KeyCount) || v7KeyCount < 0) {
-    throw new TypeError('supportedLocales and non-negative integer v7KeyCount are required');
+  if (!Array.isArray(supportedLocales) || !Number.isInteger(v7KeyCount) || v7KeyCount <= 0) {
+    throw new TypeError('supportedLocales and positive integer v7KeyCount are required');
   }
+  if (missingV7KeysByLocale === null || typeof missingV7KeysByLocale !== 'object' || Array.isArray(missingV7KeysByLocale)) {
+    throw new TypeError('missingV7KeysByLocale must explicitly inventory every supported locale');
+  }
+
   const locales = [...new Set(supportedLocales.map(locale => String(locale).trim()).filter(Boolean))].sort();
+  if (!locales.length) throw new TypeError('supportedLocales must contain at least one locale');
+
   const byLocale = {};
   for (const locale of locales) {
-    const missing = [...new Set((missingV7KeysByLocale?.[locale] || []).map(String))].sort();
+    if (!Object.hasOwn(missingV7KeysByLocale, locale) || !Array.isArray(missingV7KeysByLocale[locale])) {
+      throw new TypeError(`missingV7KeysByLocale.${locale} must be an explicit array`);
+    }
+    const missing = [...new Set(missingV7KeysByLocale[locale].map(String))].sort();
     byLocale[locale] = Object.freeze({ ready: missing.length === 0, missingV7Keys: Object.freeze(missing) });
   }
   return Object.freeze({
-    ready: locales.length > 0 && locales.every(locale => byLocale[locale].ready),
+    ready: locales.every(locale => byLocale[locale].ready),
     v7KeyCount,
     supportedLocales: Object.freeze(locales),
     byLocale: Object.freeze(byLocale)
@@ -74,7 +83,7 @@ export function buildV7ContentReleaseEvidence({
   items,
   supportedLocales,
   v7KeyCount,
-  missingV7KeysByLocale = {}
+  missingV7KeysByLocale
 }) {
   if (!Array.isArray(items)) throw new TypeError('items must be an array');
   const representative = assessV7RepresentativeLibraryContent(items);
