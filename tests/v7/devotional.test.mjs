@@ -48,11 +48,15 @@ test('unpublished, wrong-type, rights-limited and malformed readings remain unav
   ]) assert.ok(!renderDevotional(record,{translate}).includes('<article'));
 });
 
-test('structured reading blocks are escaped and unsafe source URLs never become links', () => {
-  const html=renderDevotional(item({source:{kind:'external',title:'Source',uri:'javascript:alert(1)'},
-    sourceContent:{title:'Hope',body:{blocks:[{type:'heading',text:'<img>'},{type:'paragraph',text:'A reading.'}]}}}),{translate});
-  assert.ok(html.includes('<h3>&lt;img&gt;</h3>'));
-  assert.ok(!html.includes('href='));
+test('structured reading blocks are escaped and unsafe source provenance fails closed', () => {
+  const safe=renderDevotional(item({
+    sourceContent:{title:'Hope',body:{blocks:[{type:'heading',text:'<img>'},{type:'paragraph',text:'A reading.'}]}}
+  }),{translate});
+  assert.ok(safe.includes('<h3>&lt;img&gt;</h3>'));
+  assert.ok(!safe.includes('<img>'));
+  const unsafe=renderDevotional(item({source:{kind:'external',title:'Source',uri:'javascript:alert(1)'}}),{translate});
+  assert.ok(!unsafe.includes('<article'));
+  assert.ok(!unsafe.includes('href='));
 });
 
 test('devotional locale keys match and representative source bundle remains pending review with exact provenance', () => {
