@@ -92,12 +92,15 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   const sourceLocale = String(record.sourceLocale ?? record.locale ?? '').trim();
   const sourceTitle = String(source?.title ?? '').trim();
   const sourceKind = String(source?.kind ?? '').trim();
+  const sourceUriProvided = source?.uri !== undefined && source?.uri !== null && source?.uri !== '';
   const sourceUri = typeof source?.uri === 'string' ? source.uri.trim() : '';
-  const sourceCatalogId = String(source?.catalogId ?? '').trim();
+  const sourceCatalogIdProvided = source?.catalogId !== undefined && source?.catalogId !== null && source?.catalogId !== '';
+  const sourceCatalogId = typeof source?.catalogId === 'string' ? source.catalogId.trim() : '';
   const sourceContentTitle = String(sourceContent?.title ?? '').trim();
 
   if (!source || !sourceTitle || !LIBRARY_SOURCE_KINDS.has(sourceKind) || sourceKind === 'fixture'
-      || (!sourceUri && !sourceCatalogId) || (source?.uri !== undefined && !isHttpsUrl(source?.uri))) {
+      || (!sourceUri && !sourceCatalogId) || (sourceUriProvided && !isHttpsUrl(source?.uri))
+      || (sourceCatalogIdProvided && !sourceCatalogId)) {
     throw libraryError('Published Library items require a supported non-fixture HTTPS or catalog source identity.', 'BQ_LIBRARY_PROVENANCE');
   }
   if (!sourceContent || !sourceContentTitle || !sourceLocale) {
