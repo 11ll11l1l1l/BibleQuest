@@ -1,5 +1,7 @@
 # V7 Acceptance, Content Provenance, and Evidence Contract (P0-D)
 
+> Current V7 communication boundary (2026-10-05): [the accepted reconciliation](V7_PAIR_COMMUNICATION_RECONCILIATION.md) supersedes the historical OPEN pair-thread dependency below. V7 supports explicit item-level lesson-response sharing with the active mentor; generic pair-private chat is unavailable and excluded. Conditional thread-security requirements do not authorize messaging infrastructure or create a V7 release blocker. Response-sharing privacy, pair lifecycle and tenant-denial requirements remain mandatory.
+
 Status: **P0-D acceptance/content/provenance contract accepted in the serialized P0 freeze; no product acceptance is claimed.**
 Owner: **P0-D — acceptance, content, provenance, and localization readiness.**
 Scope authority: `V7_ACTIVE_STATUS.md` and `DEVELOPMENT_PLAN_V7.md`.
