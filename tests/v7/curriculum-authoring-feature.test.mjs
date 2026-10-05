@@ -11,15 +11,20 @@ const context = () => ({
 function assertFeatureShape(feature) {
   assert.ok(Object.isFrozen(feature));
   assert.ok(Object.isFrozen(feature.repositories));
+  assert.ok(Object.isFrozen(feature.publication));
   assert.equal(typeof feature.controller.load, 'function');
   assert.equal(typeof feature.controller.dispose, 'function');
   assert.equal(typeof feature.repositories.tracks.listTracks, 'function');
   assert.equal(typeof feature.repositories.hierarchy.listModules, 'function');
   assert.equal(typeof feature.repositories.revisions.listRevisions, 'function');
   assert.equal(typeof feature.repositories.readiness.inspect, 'function');
+  assert.equal(typeof feature.repositories.withdrawal.prepare, 'function');
   assert.equal(typeof feature.preparePublication, 'function');
+  assert.equal(typeof feature.prepareWithdrawal, 'function');
+  assert.equal(typeof feature.publication.publish, 'function');
+  assert.equal(typeof feature.publication.withdraw, 'function');
   assert.equal(typeof feature.publicationHandoff.prepare, 'function');
-  assert.equal('publish' in feature.publicationHandoff, false, 'backend publication authority is not invented by feature composition');
+  assert.equal(typeof feature.publicationHandoff.publish, 'function');
   assert.equal(typeof feature.createPage, 'function');
   assert.match(feature.createPage().html, /data-authoring-publication/);
 }

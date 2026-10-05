@@ -3400,6 +3400,43 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: number
       }
+      bible_v7_create_pair_assignment: {
+        Args: {
+          p_lesson_id: string
+          p_lesson_revision_id: string
+          p_module_id: string
+          p_pair_id: string
+          p_track_id: string
+        }
+        Returns: {
+          assignment_id: string
+          assignment_status: string
+        }[]
+      }
+      bible_v7_publish_curriculum_path: {
+        Args: {
+          p_congregation_id: string
+          p_expected_lesson_revision_id: string
+          p_expected_module_revision_id: string
+          p_expected_track_revision_id: string
+          p_lesson_id: string
+          p_lesson_revision_id: string
+          p_library_revision_ids?: string[]
+          p_module_id: string
+          p_track_id: string
+        }
+        Returns: {
+          congregation_id: string
+          lesson_id: string
+          lesson_publication_state: string
+          lesson_revision_id: string
+          module_id: string
+          module_publication_state: string
+          published_at: string
+          track_id: string
+          track_publication_state: string
+        }[]
+      }
       bible_v7_transition_mentor_pair: {
         Args: { p_action: string; p_pair_id: string }
         Returns: {
@@ -3421,6 +3458,29 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      bible_v7_withdraw_curriculum_lesson: {
+        Args: {
+          p_congregation_id: string
+          p_expected_lesson_revision_id: string
+          p_expected_module_revision_id: string
+          p_expected_track_revision_id: string
+          p_lesson_id: string
+          p_lesson_revision_id: string
+          p_module_id: string
+          p_track_id: string
+        }
+        Returns: {
+          congregation_id: string
+          lesson_id: string
+          lesson_publication_state: string
+          lesson_revision_id: string
+          module_id: string
+          module_publication_state: string
+          published_at: string
+          track_id: string
+          track_publication_state: string
+        }[]
       }
     }
     Enums: {

@@ -237,3 +237,13 @@ Books detail now renders author/source-language metadata and a localized English
 `data/v7/books/representative-catalog.json` supplies two real canonical-source entries with link-only rights evidence. Both remain pending review; no full text is hosted and no review decision is fabricated. The accompanying README records catalog identities, update revisions and linking policy. P2-A end-to-end content/browser acceptance remains OPEN until reviewed records are imported into a V7 test target and the actual user flow is exercised.
 
 Verification: 60 V7 tests, build, typecheck and diff whitespace passed locally on Node 24.19.0. Includes unpublished/unapproved/unknown-rights denial, explicit-action permission, unsafe URL/direct-file denial, escaped metadata, external-tab safety attributes, and catalog parsing/pending-review integrity. Production DDL/promotion remains untouched.
+
+## Lane A — publication/assignment authority integration (2026-10-05)
+
+Starting integration: `3e89d8cf110b233578685673a009d338c816ec97`, refreshed onto `72cb913fdf4d30d950d32515775ec2f6c88c976a`. PR #1208 reconciles #1199/#1200/#1201 plus the integrated #1204 authoring surface. The publication panel now uses the atomic publisher; withdrawal recovery remains available. Assignment creation uses one server-owned race-safe RPC and preserves stable retry identity and audit history. SQL fixture repairs preserve immutable published revisions and explicit test-role access.
+
+Disposable Database CI run `37265685978` passed migration replay, all RLS/privilege tests and function lint, then correctly detected generated-type drift. Its generated artifact `11326043665` supplies the refreshed canonical types and SHA-256 `75b52fc6c1d2a864294312ab90ab392d3ddddfd8f259dc0f9e002836541bf056`; final complete CI remains required on the updated head.
+
+Shared composition now exposes lazy authoring/publication and mentor-assignment workspaces at `#/one-to-one?view=authoring` and `#/one-to-one?view=assignment`, with entry/return controls from ONE 2 ONE. Both use the existing API client, session and selected-congregation owners. Author capability derives from the current owned leader/pastor/admin membership; backend RLS/RPC remains authority. Feature pages retain their context-invalidation/disposal boundaries. No production DDL or real-user mutations occurred.
+
+Local evidence: 261 V7 tests, build, typecheck and whitespace checks pass on Node 24.19.0. Workspace browser/live-backend evidence remains OPEN. Pair/track/module/lesson shared routes, Reader return wiring, representative content review/import, pair-private communication and final release certification remain incomplete; this does not declare P2/P3 acceptance complete.

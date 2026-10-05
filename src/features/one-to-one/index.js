@@ -1,9 +1,10 @@
+import { localization } from '../../app/localization.js';
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
-export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,onBack}) {
+export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,onBack,onAuthoring=()=>{},onAssignments=()=>{}}) {
   return {
     title:'ONE 2 ONE',
-    html:'<section class="bq-panel"><h1>ONE 2 ONE</h1><p>Your mentor and mentee relationships in the selected congregation.</p><p data-pair-status role="status" aria-live="polite"></p><ul data-pair-results></ul><button type="button" data-pair-retry>Reload</button><button type="button" data-pair-account>Account</button><button type="button" data-pair-congregation>Choose congregation</button><button type="button" data-pair-back>Back to Grow</button></section>',
+    html:`<section class="bq-panel"><h1>ONE 2 ONE</h1><p>Your mentor and mentee relationships in the selected congregation.</p><p data-pair-status role="status" aria-live="polite"></p><ul data-pair-results></ul><button type="button" data-pair-retry>Reload</button><button type="button" data-pair-account>Account</button><button type="button" data-pair-congregation>Choose congregation</button><button type="button" data-pair-back>Back to Grow</button><button type="button" data-pair-authoring>${escapeHtml(localization.t('v7.authoring.title'))}</button><button type="button" data-pair-assignments>${escapeHtml(localization.t('v7.assignment.title'))}</button></section>`,
     mount(root) {
       const status=root.querySelector('[data-pair-status]'),results=root.querySelector('[data-pair-results]');
       let operation=0,disposed=false;
@@ -20,7 +21,7 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
           status.textContent=error?.message||'Relationships could not load. Try again.';
         }
       };
-      const bindings=[['retry',()=>void load()],['account',onAccount],['congregation',onCongregation],['back',onBack]].map(([key,fn])=>[root.querySelector(`[data-pair-${key}]`),fn]);
+      const bindings=[['retry',()=>void load()],['account',onAccount],['congregation',onCongregation],['back',onBack],['authoring',onAuthoring],['assignments',onAssignments]].map(([key,fn])=>[root.querySelector(`[data-pair-${key}]`),fn]);
       for(const [button,fn] of bindings)button.addEventListener('click',fn);
       const unsubscribe=subscribeContext(()=>{operation++;results.innerHTML='';status.textContent='Account or congregation changed. Reload relationships.'});
       void load();

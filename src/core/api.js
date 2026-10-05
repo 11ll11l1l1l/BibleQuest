@@ -901,6 +901,10 @@ export function createApi() {
   const discipleship = Object.freeze({
     createService({session,membership}) {
       return createSupabaseDiscipleshipService({client:getClient,session,membership,pairRepository:discipleshipPairs});
+    },
+    async createWorkspace(options) {
+      const { createV7WorkspacePage } = await import('../app/v7-workspace.js');
+      return createV7WorkspacePage({ ...options, client: getClient });
     }
   });
 

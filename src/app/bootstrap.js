@@ -121,6 +121,11 @@ const accountPage = args => lazyFeaturePage('account', 'accountPage', args);
 const backupPage = args => lazyFeaturePage('backup', 'backupPage', args);
 const accessibilityPage = args => lazyFeaturePage('accessibility', 'accessibilityPage', args);
 const oneToOnePage = args => lazyFeaturePage('one-to-one', 'oneToOnePage', args);
+const oneToOneWorkspacePage = ({api,...options}) => createLazyPage({
+  key:'one-to-one-workspace',
+  load:()=>api.discipleship.createWorkspace(options),
+  create:page=>page,
+});
 const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
 const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
@@ -371,7 +376,12 @@ function boot(root){
     home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
-    'one-to-one':()=>oneToOnePage({service:discipleship,subscribeContext:subscribeV7Context,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onBack:()=>router.navigate('grow')}),
+    'one-to-one':()=>{
+      const view=libraryParams().get('view');
+      const navigation={subscribeContext:subscribeV7Context,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')};
+      if(view==='authoring'||view==='assignment')return oneToOneWorkspacePage({api,view,session,membership:congregation,service:discipleship,...navigation,onBack:()=>router.navigate('one-to-one')});
+      return oneToOnePage({service:discipleship,...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment')});
+    },
     library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||''}),
     'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType'),taxonomyId:libraryParams().get('taxonomyId')||''})}),
     learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
