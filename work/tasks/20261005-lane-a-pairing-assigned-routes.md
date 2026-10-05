@@ -14,7 +14,7 @@ Participant invitation, accept/decline/confirmed end controls using the existing
 
 Invitation payloads derive authenticated self and congregation; leader permissions and both active members remain backend-authoritative. Participant/state/timestamp acknowledgements are verified. Controllers suppress overlapping actions and stale results. Assigned hierarchy validates track/module and passes immutable lesson revisions. Reader return restores the validated exact step without a progress write; published reference strings and canonical objects reuse the existing parser. Shared context hydration can reload the protected page without choosing a tenant.
 
-281 V7 tests and 29 affected inherited Reader/router/bootstrap tests pass; build, typecheck, lint, format and whitespace checks pass on Node 24.19.0. Pinned CI remains the toolchain authority. No local Chromium executable; browser/mobile/live-backend acceptance remains OPEN. Generated types and schema are unchanged. Current development authority updated in `V7_ACTIVE_STATUS.md`.
+281 V7 tests and 29 affected inherited Reader/router/bootstrap tests pass; build, typecheck, lint, format and whitespace checks pass on Node 24.19.0. Broader inherited V6 suite: 879/880 pass; its preexisting toolchain-policy check expects `unit` to run only V6 although the unchanged integration package script also runs V7. Reader characterization continues to pass through its preserved parser boundary. Pinned CI remains the toolchain authority. No local Chromium executable; browser/mobile/live-backend acceptance remains OPEN. Generated types and schema are unchanged. Current development authority updated in `V7_ACTIVE_STATUS.md`.
 
 ## Handoff
 

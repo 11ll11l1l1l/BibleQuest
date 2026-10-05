@@ -246,7 +246,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args), 
     return Object.freeze({ book, translation: loaded.translation, chapter: chapterNumber, verses: Object.freeze(verses) });
   }
 
-  const parseReference = parseBibleReference;
+  function parseReference(input) { return parseBibleReference(input); }
 
   async function search(translationId, query, { limit = 30 } = {}) {
     const translation = getTranslation(translationId);
