@@ -1,3 +1,5 @@
+import { PAIR_COMMUNICATION_CAPABILITIES } from './capabilities.js';
+
 export function createPairingController({ service, pairId = '', getActorId, createInvitationId = () => globalThis.crypto.randomUUID() }) {
   let generation = 0, disposed = false, invitationAttempt = null;
   const listeners = new Set();
@@ -23,6 +25,7 @@ export function createPairingController({ service, pairId = '', getActorId, crea
     }
   }
   return Object.freeze({
+    communicationCapabilities: PAIR_COMMUNICATION_CAPABILITIES,
     getState: () => state,
     load: () => run('loading', async () => { const id = state.pair?.id || pairId; return id ? { pair: await service.getPair(id) } : { candidates: await service.listPairCandidates() }; }),
     invite(input) {
