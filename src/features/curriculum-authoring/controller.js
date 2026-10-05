@@ -88,7 +88,7 @@ export function createCurriculumAuthoringController({tracks,hierarchy,revisions,
   async function updateTrack(input){
     const trackId=requireSelection('trackId','Choose a track before editing it.');
     const row=state.tracks.find(item=>item.id===trackId);if(!row)fail('BQ_AUTHORING_SELECTION','Reload the selected track before editing it.');
-    return operation('saving',async()=>({tracks:replace(state.tracks,await tracks.updateDraft(trackId,row.revisionId,input))}));
+    return operation('saving',async()=>({tracks:replace(state.tracks,await tracks.updateDraft(trackId,row.revisionId,input)),readiness:null}));
   }
   async function createModule(input){
     const trackId=requireSelection('trackId','Choose a track before adding a module.');
@@ -97,7 +97,7 @@ export function createCurriculumAuthoringController({tracks,hierarchy,revisions,
   async function updateModule(input){
     const {trackId,moduleId}=selected(state);if(!trackId||!moduleId)fail('BQ_AUTHORING_SELECTION','Choose a module before editing it.');
     const row=state.modules.find(item=>item.id===moduleId);if(!row)fail('BQ_AUTHORING_SELECTION','Reload the selected module before editing it.');
-    return operation('saving',async()=>({modules:replace(state.modules,await hierarchy.updateModuleDraft(trackId,moduleId,row.revisionId,input))}));
+    return operation('saving',async()=>({modules:replace(state.modules,await hierarchy.updateModuleDraft(trackId,moduleId,row.revisionId,input)),readiness:null}));
   }
   async function createLesson(input){
     const {trackId,moduleId}=selected(state);if(!trackId||!moduleId)fail('BQ_AUTHORING_SELECTION','Choose a module before adding a lesson.');
@@ -106,7 +106,7 @@ export function createCurriculumAuthoringController({tracks,hierarchy,revisions,
   async function updateLesson(input){
     const {trackId,moduleId,lessonId}=selected(state);if(!trackId||!moduleId||!lessonId)fail('BQ_AUTHORING_SELECTION','Choose a lesson before editing it.');
     const row=state.lessons.find(item=>item.id===lessonId);if(!row)fail('BQ_AUTHORING_SELECTION','Reload the selected lesson before editing it.');
-    return operation('saving',async()=>({lessons:replace(state.lessons,await hierarchy.updateLessonDraft(trackId,moduleId,lessonId,row.revisionId,input))}));
+    return operation('saving',async()=>({lessons:replace(state.lessons,await hierarchy.updateLessonDraft(trackId,moduleId,lessonId,row.revisionId,input)),readiness:null}));
   }
   async function createRevision(input){
     const {trackId,moduleId,lessonId}=selected(state);if(!trackId||!moduleId||!lessonId)fail('BQ_AUTHORING_SELECTION','Choose a lesson before adding a revision.');
@@ -114,10 +114,18 @@ export function createCurriculumAuthoringController({tracks,hierarchy,revisions,
   }
   async function saveStep(input){
     const {trackId,moduleId,lessonId,revisionId}=selected(state);if(!trackId||!moduleId||!lessonId||!revisionId)fail('BQ_AUTHORING_SELECTION','Choose a lesson revision before saving a step.');
-    return operation('saving',async()=>{
+    return operation('saving',async token=>{
       const row=await revisions.saveDraftStep(trackId,moduleId,lessonId,revisionId,input);
-      const result=await readiness.inspect(trackId,moduleId,lessonId,revisionId);
-      return {steps:replace(state.steps,row),readiness:result};
+      if(!current(token))return {};
+      const savedSteps=replace(state.steps,row);
+      try{
+        const result=await readiness.inspect(trackId,moduleId,lessonId,revisionId);
+        return {steps:savedSteps,readiness:result};
+      }catch(error){
+        // The mutation already succeeded. Preserve its acknowledgement even when
+        // the follow-up readiness read fails, and retire any old publish request.
+        return {steps:savedSteps,readiness:null,status:'error',error:error?.message||'Curriculum authoring failed.'};
+      }
     });
   }
   return Object.freeze({getState:()=>state,load,selectTrack,selectModule,selectLesson,selectRevision,refreshReadiness,
