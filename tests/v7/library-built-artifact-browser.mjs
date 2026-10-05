@@ -11,10 +11,20 @@ try {
   for (const locale of ['en', 'tl', 'ceb']) {
     for (const width of [320, 390, 430]) {
       const context = await browser.newContext({ viewport: { width, height: 900 } });
-      await context.addInitScript(value => localStorage.setItem('biblequest.v3.locale', JSON.stringify(value)), locale);
+      await context.addInitScript(value => {
+        localStorage.setItem('biblequest.v3.locale', JSON.stringify(value));
+        localStorage.setItem('biblequest.v3.accessibility-settings', JSON.stringify({ text: 'xlarge', contrast: 'strong', motion: 'reduce' }));
+      }, locale);
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
+      await page.goto(`${baseUrl}/#/learn`, { waitUntil: 'networkidle' });
+      const launcher = page.locator('[data-open-library]');
+      await launcher.waitFor();
+      await launcher.focus();
+      await page.keyboard.press('Enter');
+      await page.locator('[data-library-page]').waitFor();
+      assert.equal(await page.evaluate(() => location.hash), '#/library');
       await page.goto(`${baseUrl}/#/library?query=prayer&contentType=book`, { waitUntil: 'networkidle' });
       await page.locator('[data-library-page]').waitFor();
       await page.waitForFunction(() => {
@@ -23,6 +33,7 @@ try {
       });
       const heading = await page.locator('[data-library-page] h1').textContent();
       assert.equal(heading, localization.t('v7.library.title', { locale }), `${locale}: translated heading`);
+      assert.deepEqual(await page.evaluate(() => [document.documentElement.dataset.bqText, document.documentElement.dataset.bqContrast, document.documentElement.dataset.bqEffectiveMotion]), ['xlarge', 'strong', 'reduce']);
       assert.equal(await page.locator('label[for="bq-library-query"]').count(), 1);
       assert.equal(await page.locator('label[for="bq-library-type"]').count(), 1);
       const query = page.locator('#bq-library-query');
@@ -31,6 +42,16 @@ try {
       await query.focus();
       await page.keyboard.press('Tab');
       assert.equal(await page.evaluate(() => document.activeElement.id), 'bq-library-type');
+      const focus = await page.evaluate(() => {
+        const style = getComputedStyle(document.activeElement);
+        return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
+      });
+      assert.ok(focus.width >= 3 && focus.style !== 'none', `${locale}/${width}: visible keyboard focus`);
+      const unlabeled = await page.locator('[data-library-page]').evaluate(root => [...root.querySelectorAll('button,input,select')]
+        .filter(el => el.getClientRects().length)
+        .filter(el => !(el.getAttribute('aria-label') || el.labels?.[0]?.textContent?.trim() || el.textContent?.trim()))
+        .map(el => el.outerHTML));
+      assert.deepEqual(unlabeled, [], `${locale}/${width}: accessible control names`);
       for (const type of ['book', 'devotional', 'past_teaching']) {
         await page.locator('#bq-library-type').selectOption(type);
         await query.fill('prayer');
@@ -54,6 +75,27 @@ try {
       await page.keyboard.press('Enter');
       await page.locator('[data-library-page]').waitFor();
       assert.equal(await page.evaluate(() => location.hash.split('?')[0]), '#/library');
+
+      // Warm loaded item module, then exercise genuine browser offline state.
+      // Guest/backend denial remains denial after reconnect; no data is injected.
+      await context.setOffline(true);
+      const failedRoute = '#/library-item?id=33333333-3333-3333-3333-333333333333&query=prayer&contentType=book';
+      await page.evaluate(hash => { location.hash = hash; }, failedRoute);
+      const retry = page.locator('[data-library-item-retry]');
+      await retry.waitFor({ state: 'visible' });
+      assert.equal(await page.locator('[data-library-detail]').textContent(), localization.t('v7.library.offline', { locale }));
+      await retry.focus();
+      await page.keyboard.press('Enter');
+      await retry.waitFor({ state: 'visible' });
+      assert.equal(await page.evaluate(() => location.hash), failedRoute);
+      await context.setOffline(false);
+      await retry.click();
+      await retry.waitFor({ state: 'visible' });
+      assert.equal(await page.locator('[data-library-detail]').textContent(), localization.t('v7.library.item.error', { locale }));
+      await page.locator('[data-library-back]').click();
+      await page.locator('[data-library-page]').waitFor();
+      assert.equal(await page.locator('#bq-library-query').inputValue(), 'prayer');
+      assert.equal(await page.locator('#bq-library-type').inputValue(), 'book');
       assert.deepEqual(errors, [], `${locale}/${width}: browser errors`);
       await context.close();
     }
