@@ -35,7 +35,7 @@ test('only reviewed current-revision translations render; source fallback is lab
   assert.match(translated, /Isang aral/);
   assert.match(translated, /<h2>Panalangin<\/h2>/);
   const fallback = renderPastTeachingArticle(item({ translations: [{ ...translation, translatedFromRevision: 'r0' }] }), { locale: 'tl' });
-  assert.match(fallback, /Showing the source language: en/);
+  assert.match(fallback, /Ipinapakita ang orihinal na wika: en/);
   assert.doesNotMatch(fallback, /Isang aral/);
 });
 test('link-only rights and unsupported/oversized bodies do not expose an article', () => {
@@ -71,4 +71,24 @@ test('shared detail route includes the teaching article and clears it on context
   assert.match(host.innerHTML, /<article/);
   listener({ status: 'idle' });
   assert.doesNotMatch(host.innerHTML, /<article|First paragraph/);
+});
+
+
+test('teaching notices follow the requested UI locale while source content and rights stay authoritative', () => {
+  for (const [locale, original, fallback, restricted] of [
+    ['tl', 'Orihinal na pagtuturo', 'Ipinapakita ang orihinal na wika: en.', 'Hindi pinapayagan'],
+    ['ceb', 'Orihinal nga pagtulon-an', 'Gipakita ang orihinal nga pinulongan: en.', 'Dili gitugotan']
+  ]) {
+    const html = renderPastTeachingArticle(item(), { locale });
+    assert.ok(html.includes(original));
+    assert.ok(html.includes(fallback));
+    assert.match(html, /lang="en"/);
+    assert.match(html, /First paragraph/);
+    const denied = renderPastTeachingArticle(item({ rights: { status: 'verified', allowedUses: ['link'] } }), { locale });
+    assert.ok(denied.includes(restricted));
+    assert.doesNotMatch(denied, /<article|First paragraph/);
+  }
+  const custom = renderPastTeachingArticle(item(), { locale: 'ceb', labels: { original: '<custom>' } });
+  assert.match(custom, /&lt;custom&gt;/);
+  assert.doesNotMatch(custom, /<custom>/);
 });

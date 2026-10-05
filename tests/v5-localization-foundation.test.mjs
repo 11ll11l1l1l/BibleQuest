@@ -13,6 +13,7 @@ globalThis.localStorage = {
 const { en, LOCALE_KEY_INVENTORY } = await import('../src/content/locales/en.js');
 const { tl } = await import('../src/content/locales/tl.js');
 const { ceb } = await import('../src/content/locales/ceb.js');
+const { V7_PAIRING_KEY_INVENTORY } = await import('../src/content/locales/v7-pairing.js');
 const { V7_CONTENT_KEY_INVENTORY } = await import('../src/content/locales/v7-content.js');
 const { V7_ASSIGNMENT_KEY_INVENTORY } = await import('../src/content/locales/v7-assignment.js');
 const { V7_PUBLICATION_HANDOFF_KEY_INVENTORY } = await import('../src/content/locales/v7-publication-handoff.js');
@@ -59,7 +60,7 @@ test('foundation exposes English, Tagalog, and reviewed Cebuano through one inve
   assert.deepEqual(localization.supportedLocales, ['en', 'tl', 'ceb']);
   assert.deepEqual(localization.keyInventory, [...new Set([
     ...LOCALE_KEY_INVENTORY, ...V7_CONTENT_KEY_INVENTORY,
-    ...V7_ASSIGNMENT_KEY_INVENTORY, ...V7_PUBLICATION_HANDOFF_KEY_INVENTORY
+    ...V7_ASSIGNMENT_KEY_INVENTORY, ...V7_PUBLICATION_HANDOFF_KEY_INVENTORY, ...V7_PAIRING_KEY_INVENTORY
   ])].sort());
 });
 

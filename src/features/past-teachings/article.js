@@ -25,9 +25,9 @@ function blocks(body) {
 }
 
 // This renderer never accepts HTML, scripts, embeds or source URLs as article markup.
-export function renderPastTeachingArticle(item, { locale = localization.getLocale(), labels = pastTeachingEn } = {}) {
+export function renderPastTeachingArticle(item, { locale = localization.getLocale(), labels = {} } = {}) {
   if (item?.contentType !== 'past_teaching') return '';
-  const text = key => escape(labels[key] ?? pastTeachingEn[key]);
+  const text = key => escape(labels[key] ?? localization.t('v7.pastTeaching.' + key, { locale }));
   const permitted = item.publicationState === 'published' && item.review?.status === 'approved'
     && item.rights?.status === 'verified'
     && item.rights.allowedUses?.some(use => ['display', 'host', 'hosted_reading'].includes(use));
@@ -37,7 +37,7 @@ export function renderPastTeachingArticle(item, { locale = localization.getLocal
   const articleBlocks = blocks(resolved.content.body);
   if (!articleBlocks?.length) return `<p role="status">${text('unavailable')}</p>`;
   const fallback = resolved.state === 'source_fallback'
-    ? `<p role="status">${escape(localization.t('v7.content.translation.sourceFallback', { values: { language: resolved.locale } }))}</p>` : '';
+    ? `<p role="status">${escape(localization.t('v7.content.translation.sourceFallback', { locale, values: { language: resolved.locale } }))}</p>` : '';
   const uri = safeSourceUrl(item.source?.uri);
   const source = uri ? `<a href="${escape(uri)}" target="_blank" rel="noopener noreferrer">${text('original')}</a>` : '';
   return `${fallback}<article lang="${escape(resolved.locale)}" aria-label="${escape(resolved.content.title)}">
