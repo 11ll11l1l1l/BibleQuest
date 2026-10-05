@@ -163,3 +163,21 @@ test('malformed taxonomy filters fail before opening a client and unfiltered ite
   assert.equal(calls.length, 1);
   assert.doesNotMatch(calls[0].selections[0], /filter_taxonomy_links/);
 });
+
+
+test('empty verified rights cannot reach list or detail state through database rows', async () => {
+  const row = makeRow();
+  row.revision.allowed_uses = [];
+  const service = createLibraryService({ repository: createLibrarySupabaseRepository(makeClient({ rows: [row], detail: row }).client) });
+  const listed = await service.list();
+  assert.equal(listed.status, 'error');
+  assert.deepEqual(listed.items, []);
+  const detail = await service.getItem(row.id);
+  assert.equal(detail.status, 'error');
+  assert.equal(detail.selectedItem, null);
+  const permitted = makeRow();
+  permitted.revision.allowed_uses = ['external_link'];
+  const valid = createLibraryService({ repository: createLibrarySupabaseRepository(makeClient({ rows: [permitted], detail: permitted }).client) });
+  assert.equal((await valid.list()).status, 'ready');
+  assert.deepEqual((await valid.getItem(permitted.id)).selectedItem.rights.allowedUses, ['external_link']);
+});

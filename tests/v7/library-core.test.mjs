@@ -301,3 +301,15 @@ test('scope reset discards late pagination and taxonomy data; double Load more o
   assert.equal(cleared.taxonomyId, '');
   assert.equal(cleared.loadingMore, false);
 });
+
+
+test('verified published rights require an explicit nonempty permitted-use grant at runtime', () => {
+  for (const allowedUses of [[], [''], ['  '], [null]]) {
+    assert.throws(() => normalizeLibraryItem(item({ rights: { ...item().rights, allowedUses } })), { code: 'BQ_LIBRARY_RIGHTS' });
+  }
+  for (const allowedUses of [['display'], ['external_link'], ['display metadata', 'link to source']]) {
+    const normalized = normalizeLibraryItem(item({ rights: { ...item().rights, allowedUses } }));
+    assert.deepEqual(normalized.rights.allowedUses, allowedUses);
+    assert.ok(Object.isFrozen(normalized.rights.allowedUses));
+  }
+});
