@@ -1,6 +1,6 @@
 # BibleQuest V7 Active Status
 
-Updated: 2026-10-05 JST
+Updated: 2026-10-06 JST
 
 Phase: **P4 — Integrated hardening; P5 evidence preparation eligible**. Library and ONE 2 ONE implementation are integrated. Representative reviewed-content acceptance remains OPEN; no final release candidate is frozen. P0 scope/contracts remain frozen.
 Development branch: `v7/development`.
@@ -196,7 +196,17 @@ Repository preparation is complete. The V1–V6 lessons are consolidated in `wor
 
 The V6 owner-waived physical acceptance rows remain recorded in the original V6 acceptance authority; V7 does not rewrite them as PASS.
 
-## Current integration checkpoint — 2026-10-05
+## Current integration checkpoint — 2026-10-06
+
+Lane A's Library read recovery is integrated through [PR #1248](https://github.com/11ll11l1l1l/BibleQuest/pull/1248) at `4773a1e6a54e227528469e385b90ac9d867ab2e4`. Browse/detail/pagination waiting is bounded to ten seconds; reset and superseding reads settle the old operation promptly. Existing localized Retry remains the UI owner. Pagination preserves its displayed items/cursor, and late results cannot restore old-context data.
+
+Exact source `e4b07e670a82d6babc857ac9d0848d24f79ee27f` passed pinned [Build/PWA/Performance run 37357088648](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37357088648): all 339 V7 tests, build identity/performance, Library/ONE 2 ONE browser smoke, inherited parity, PWA and automated accessibility. Its tree equals the integrated merge tree. This is development verification, not final release-candidate certification.
+
+The earlier Library item Retry/offline/accessibility tranche is integrated through #1245; the frozen contract references now point to the accepted communication boundary through #1247. Superseded P0-A draft PRs #1127/#1132 are closed, with historical evidence retained.
+
+Remaining gates: reviewed representative Books/Devotionals must be approved and published; Past Teachings still require rights verification plus editorial approval/publication. The current content evidence reports localization ready and representative content not ready. No final release candidate is frozen or production promotion performed. Preserve content-review decisions as OPEN and continue eligible lane evidence/integration work.
+
+## Historical integration checkpoint — 2026-10-05
 
 Lane A drained the pending context-readiness integration through PR #1238 at `0aae98daa6cf3eefd7106948d39d210af5304b30`. All 330 combined V7 tests and typecheck passed on the merge tree; source head `7609288621d8ae6007d99a59919891947ac31df9` passed pinned Build/PWA/Performance run [37309790177](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37309790177).
 
