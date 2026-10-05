@@ -57,9 +57,9 @@ export function curriculumAuthoringPage({controller,subscribeContext=()=>()=>{},
   if(!controller?.getState||!controller?.subscribe||!controller?.load)throw new TypeError('Curriculum authoring page requires the feature-local controller.');
   const t=(key,values)=>localization.t(key,{values});
   return {title:t('v7.authoring.title'),html:`<main data-curriculum-authoring></main><nav><button type="button" data-authoring-nav="back">${escapeHtml(t('v7.authoring.nav.back'))}</button><button type="button" data-authoring-nav="account">${escapeHtml(t('v7.authoring.nav.account'))}</button><button type="button" data-authoring-nav="congregation">${escapeHtml(t('v7.authoring.nav.congregation'))}</button></nav>`,mount(root){
-    const host=root.querySelector('[data-curriculum-authoring]');let localErrorKey=null,disposed=false;
+    const host=root.querySelector('[data-curriculum-authoring]');let localErrorKey=null,disposed=false,operationGeneration=0;
     const render=state=>{if(!disposed&&host)host.innerHTML=renderCurriculumAuthoring(state,{localErrorKey});};
-    const run=async work=>{localErrorKey=null;render(controller.getState());try{await work();}catch(error){localErrorKey=error?.uiKey||'v7.authoring.error';render(controller.getState());}};
+    const run=async work=>{localErrorKey=null;const token=++operationGeneration;render(controller.getState());try{await work();}catch(error){if(!disposed&&token===operationGeneration){localErrorKey=error?.uiKey||'v7.authoring.error';render(controller.getState());}}};
     const click=event=>{
       const button=event.target?.closest?.('button');if(!button)return;
       const kind=button.getAttribute('data-authoring-select'),id=button.getAttribute('data-id');
@@ -76,8 +76,8 @@ export function curriculumAuthoringPage({controller,subscribeContext=()=>()=>{},
     });};
     root.addEventListener('click',click);root.addEventListener('submit',submit);
     const unsubscribe=controller.subscribe(state=>{localErrorKey=null;render(state);});
-    const unsubscribeContext=subscribeContext(()=>{controller.invalidate();localErrorKey='v7.authoring.contextChanged';render(controller.getState());});
+    const unsubscribeContext=subscribeContext(()=>{operationGeneration+=1;controller.invalidate();localErrorKey='v7.authoring.contextChanged';render(controller.getState());});
     render(controller.getState());void run(()=>controller.load());
-    return()=>{disposed=true;unsubscribe();unsubscribeContext();root.removeEventListener('click',click);root.removeEventListener('submit',submit);controller.dispose();};
+    return()=>{disposed=true;operationGeneration+=1;unsubscribe();unsubscribeContext();root.removeEventListener('click',click);root.removeEventListener('submit',submit);controller.dispose();};
   }};
 }
