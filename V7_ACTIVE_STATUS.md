@@ -196,7 +196,15 @@ Repository preparation is complete. The V1–V6 lessons are consolidated in `wor
 
 The V6 owner-waived physical acceptance rows remain recorded in the original V6 acceptance authority; V7 does not rewrite them as PASS.
 
-## Current integration checkpoint — 2026-10-06
+## Current remaining-acceptance closure — 2026-10-06
+
+Integrated [#1253](https://github.com/11ll11l1l1l/BibleQuest/pull/1253) and [#1252](https://github.com/11ll11l1l1l/BibleQuest/pull/1252) at `be1664930bdaab47dff7f899ea6e6718edd50c87`. Candidate build evidence now includes the exact-source content/provenance/localization report, with representative review decisions recorded separately as OPEN. Real authenticated API testing exposed and closed an invitation `INSERT ... RETURNING` RLS failure missed by seeded-row fixtures; participant-only reads now evaluate the row's participant IDs directly.
+
+Corrected source `aa579e7dba29583f49f59c6c020c32356e57296c` passed pinned [database run 37386422380](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37386422380): 680 current database assertions, nine real authenticated Auth/Data API journey checks and 540 inherited V4-upgrade assertions. Pinned [build/browser/PWA run 37386420130](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37386420130) passed all 339 V7 tests, build identity/performance, browser parity, Library/ONE 2 ONE smoke, PWA and automated accessibility. The certified source tree equals the integrated merge tree. Original sanitized [API evidence](docs/v7/evidence/AUTHENTICATED_API_20261006.json) is preserved in the repository; [scope and handoff](work/tasks/20261006-v7-remaining-acceptance-closure.md) records the evidence limits.
+
+V7 remains P4 with eligible P5 preparation. Representative content review/rights/publication, populated Library and authenticated built-browser journeys, final exact-candidate deployment/device evidence and production promotion remain OPEN. Disposable API evidence does not certify those different evidence classes. No production migration or release promotion was performed.
+
+## Earlier Lane A integration checkpoint — 2026-10-06
 
 Lane A's Library read recovery is integrated through [PR #1248](https://github.com/11ll11l1l1l/BibleQuest/pull/1248) at `4773a1e6a54e227528469e385b90ac9d867ab2e4`. Browse/detail/pagination waiting is bounded to ten seconds; reset and superseding reads settle the old operation promptly. Existing localized Retry remains the UI owner. Pagination preserves its displayed items/cursor, and late results cannot restore old-context data.
 
