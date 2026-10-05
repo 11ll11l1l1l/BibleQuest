@@ -9,7 +9,7 @@ function fixture({ emptyWriteTables = [], writeOverrides = {} } = {}) {
   const tables = {
     v7_mentor_pairs: [{ id: 'pair', congregation_id: 'church', mentor_id: 'mentor', mentee_id: 'learner', state: 'active' }],
     v7_pair_assignments: [{ id: 'assignment', pair_id: 'pair', lesson_revision_id: 'pinned', status: 'assigned' }, { id: 'cancelled', pair_id: 'pair', lesson_revision_id: 'old', status: 'cancelled' }],
-    v7_lesson_revisions: [{ id: 'pinned', lesson_id: 'lesson', published_at: 'today' }, { id: 'newest', lesson_id: 'lesson', published_at: 'today' }],
+    v7_lesson_revisions: [{ id: 'pinned', revision_number: 1, lesson_id: 'lesson', published_at: 'today' }, { id: 'newest', revision_number: 2, lesson_id: 'lesson', published_at: 'today' }],
     v7_lessons: [{ id: 'lesson', module_id: 'module', title: 'Lesson', revision_id: 'logical', display_order: 0, publication_state: 'published' }],
     v7_modules: [{ id: 'module', track_id: 'track', title: 'Module', revision_id: 'module-r', display_order: 0, publication_state: 'published' }],
     v7_tracks: [{ id: 'track', congregation_id: 'church', title: 'Track', revision_id: 'track-r', display_order: 0, publication_state: 'published' }],
@@ -28,6 +28,8 @@ function fixture({ emptyWriteTables = [], writeOverrides = {} } = {}) {
       neq(key, value) { filters.push(r => r[key] !== value); return q; },
       in(key, values) { filters.push(r => values.includes(r[key])); return q; },
       not(key, op, value) { assert.equal(op, 'is'); filters.push(r => r[key] !== value); return q; },
+      is(key, value) { filters.push(r => r[key] === value); return q; },
+      limit() { return q; },
       order() { return q; },
       upsert(value, options) { mutation = { table, value, options }; return q; },
       async then(resolve, reject) {
@@ -190,4 +192,30 @@ test('owner resume retains active named sharing and ignores revoked audiences', 
   assert.deepEqual(result.audienceUserIds, ['mentor']);
   assert.match(f.queries.find(query => query.table === 'v7_lesson_responses').columns, /shares:v7_response_shares/);
   assert.equal(f.writes.length, 0);
+});
+
+test('mentor picker can assign a first lesson without an existing assignment while learner reads remain pinned', async () => {
+  const f = fixture();
+  f.tables.v7_pair_assignments = [];
+  const curriculum = await f.repository.loadAssignableCurriculum(pair, { ...context, userId: 'mentor' });
+  assert.equal(curriculum[0].modules[0].lessons[0].revisionId, 'newest');
+  assert.equal(f.queries.some(q => q.table === 'v7_pair_assignments'), false);
+  assert.deepEqual(await f.repository.loadCurriculum(pair, context), []);
+  assert.equal(f.writes.length, 0);
+});
+test('assignable curriculum denies mentees, inactive pairs and cross-congregation tracks', async () => {
+  const f = fixture();
+  await assert.rejects(f.repository.loadAssignableCurriculum(pair, context), { code: 'BQ_DISCIPLESHIP_MENTOR_REQUIRED' });
+  await assert.rejects(f.repository.loadAssignableCurriculum({ ...pair, state: 'ended' }, { ...context, userId: 'mentor' }), { code: 'BQ_DISCIPLESHIP_SCOPE_DENIED' });
+  f.tables.v7_tracks[0].congregation_id = 'other';
+  assert.deepEqual(await f.repository.loadAssignableCurriculum(pair, { ...context, userId: 'mentor' }), []);
+  assert.equal(f.writes.length, 0);
+});
+test('assignable curriculum skips withdrawn paths and unpublished revisions and allows global tracks', async () => {
+  const f = fixture();
+  f.tables.v7_tracks[0].congregation_id = null;
+  f.tables.v7_lesson_revisions[1].published_at = null;
+  assert.equal((await f.repository.loadAssignableCurriculum(pair, { ...context, userId: 'mentor' }))[0].modules[0].lessons[0].revisionId, 'pinned');
+  f.tables.v7_lessons[0].publication_state = 'withdrawn';
+  assert.deepEqual(await f.repository.loadAssignableCurriculum(pair, { ...context, userId: 'mentor' }), []);
 });

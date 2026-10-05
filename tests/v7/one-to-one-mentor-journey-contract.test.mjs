@@ -18,7 +18,7 @@ test('mentor journey preserves exact lesson revision identity from publication h
   const pair={id:'pair-1',mentorId:'mentor-1',menteeId:'mentee-1',state:'active'};
   const preparation=createAssignmentPreparation({
     getActorId:()=>pair.mentorId,
-    discipleship:{async listPairs(){return [pair];},async loadCurriculum(requestedPairId){assert.equal(requestedPairId,pair.id);return publishedCurriculum;}},
+    discipleship:{async listPairs(){return [pair];},async loadAssignableCurriculum(requestedPairId){assert.equal(requestedPairId,pair.id);return publishedCurriculum;}},
   });
   await preparation.loadPairs();await preparation.selectPair(pair.id);preparation.selectTrack(publish.trackId);preparation.selectModule(publish.moduleId);preparation.selectLesson(publish.lessonId);
   const assignment=preparation.buildRequest();
@@ -30,7 +30,7 @@ test('mentor journey preserves exact lesson revision identity from publication h
 
 test('mentor journey preparation remains read-only while shared backend blockers are unresolved',async()=>{
   const calls=[];const pair={id:'pair-1',mentorId:'mentor-1',menteeId:'mentee-1',state:'active'};
-  const preparation=createAssignmentPreparation({getActorId:()=>pair.mentorId,discipleship:{async listPairs(){calls.push('list');return[pair];},async loadCurriculum(){calls.push('curriculum');return publishedCurriculum;}}});
+  const preparation=createAssignmentPreparation({getActorId:()=>pair.mentorId,discipleship:{async listPairs(){calls.push('list');return[pair];},async loadAssignableCurriculum(){calls.push('curriculum');return publishedCurriculum;}}});
   await preparation.loadPairs();await preparation.selectPair(pair.id);preparation.selectTrack('track-1');preparation.selectModule('module-1');preparation.selectLesson('lesson-1');preparation.buildRequest();
   assert.deepEqual(calls,['list','curriculum']);
   assert.equal(calls.some(call=>/publish|insert|assign|start/i.test(call)),false);

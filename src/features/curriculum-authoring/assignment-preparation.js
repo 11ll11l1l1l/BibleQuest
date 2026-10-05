@@ -25,7 +25,7 @@ function freezeRows(rows) {
 // Read-only assignment/start preparation. The authoritative assignment mutation
 // must remain a race-safe backend boundary (V7 issue #1170).
 export function createAssignmentPreparation({ discipleship, getActorId }) {
-  if (!discipleship?.listPairs || !discipleship?.loadCurriculum) {
+  if (!discipleship?.listPairs || !discipleship?.loadAssignableCurriculum) {
     throw new TypeError('Assignment preparation requires the existing discipleship service.');
   }
   if (typeof getActorId !== 'function') {
@@ -128,7 +128,7 @@ export function createAssignmentPreparation({ discipleship, getActorId }) {
       fail('BQ_ASSIGNMENT_PAIR', 'Only the active mentor can prepare this assignment.');
     }
     return operation('loading', async () => {
-      const curriculum = await discipleship.loadCurriculum(pair.id);
+      const curriculum = await discipleship.loadAssignableCurriculum(pair.id);
       ensureActor(actorId);
       if (!Array.isArray(curriculum)) fail('BQ_ASSIGNMENT_RESPONSE', 'Published curriculum response was invalid.');
       return {

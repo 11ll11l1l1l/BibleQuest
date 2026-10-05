@@ -18,7 +18,7 @@ function fixture(overrides={}){
   const calls=[];
   const discipleship={
     async listPairs(){calls.push(['listPairs']);return [activePair,{id:'pair-2',mentorId:'mentor-2',menteeId:mentor,state:'active'},{id:'pair-3',mentorId:mentor,menteeId:'mentee-3',state:'ended'}];},
-    async loadCurriculum(pairId){calls.push(['loadCurriculum',pairId]);return curriculum;},
+    async loadAssignableCurriculum(pairId){calls.push(['loadAssignableCurriculum',pairId]);return curriculum;},
     ...overrides.discipleship,
   };
   const preparation=createAssignmentPreparation({discipleship,getActorId:()=>actorId});
@@ -44,7 +44,7 @@ test('drills through published curriculum and builds an immutable backend reques
   const request=f.preparation.buildRequest();
   assert.deepEqual(request,{pairId:'pair-1',trackId:'track-1',moduleId:'module-1',lessonId:'lesson-1',lessonRevisionId:'lesson-r1'});
   assert.ok(Object.isFrozen(request));
-  assert.deepEqual(f.calls,[['listPairs'],['loadCurriculum','pair-1']]);
+  assert.deepEqual(f.calls,[['listPairs'],['loadAssignableCurriculum','pair-1']]);
 });
 
 test('rejects hierarchy selections that are outside the loaded parent path',async()=>{
@@ -75,7 +75,7 @@ test('fails closed when actor changes during an async pair load',async()=>{
 });
 
 test('dispose clears state and suppresses late curriculum results',async()=>{
-  const late=deferred();const f=fixture({discipleship:{async loadCurriculum(){return late.promise;}}});
+  const late=deferred();const f=fixture({discipleship:{async loadAssignableCurriculum(){return late.promise;}}});
   await f.preparation.loadPairs();const loading=f.preparation.selectPair('pair-1');f.preparation.dispose();late.resolve(curriculum);await loading;
   assert.equal(f.preparation.getState().status,'disposed');
   assert.equal(f.preparation.getState().curriculum.length,0);

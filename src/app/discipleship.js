@@ -253,6 +253,16 @@ export function createDiscipleshipService({ repository, session, membership }) {
     });
   }
 
+  async function loadAssignableCurriculum(pairId) {
+    return inContext(async context => {
+      const pair = await resolvePair(pairId, context);
+      if (pair.mentorId !== context.userId) fail('BQ_DISCIPLESHIP_MENTOR_REQUIRED', 'Only the active pair mentor can choose new assignments.');
+      const curriculum = await repository.loadAssignableCurriculum(pair, context);
+      assertCurrent(context);
+      return normalizeCurriculum(curriculum, pair);
+    });
+  }
+
   async function loadCurriculum(pairId) {
     return inContext(async context => {
       const pair = await resolvePair(pairId, context);
@@ -367,6 +377,7 @@ export function createDiscipleshipService({ repository, session, membership }) {
 
   return Object.freeze({
     listPairs,
+    loadAssignableCurriculum,
     loadCurriculum,
     loadLesson,
     loadOperationalProgress,

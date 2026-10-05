@@ -12,7 +12,7 @@ const lesson={id:'lesson-1',revisionId,published:true,steps:stepTypes.map((type,
 async function assignmentRequest(){
   const preparation=createAssignmentPreparation({
     getActorId:()=>pair.mentorId,
-    discipleship:{async listPairs(){return[pair];},async loadCurriculum(){return publishedCurriculum;}},
+    discipleship:{async listPairs(){return[pair];},async loadAssignableCurriculum(){return publishedCurriculum;}},
   });
   await preparation.loadPairs();await preparation.selectPair(pair.id);preparation.selectTrack('track-1');preparation.selectModule('module-1');preparation.selectLesson('lesson-1');
   return preparation.buildRequest();
