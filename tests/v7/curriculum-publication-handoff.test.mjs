@@ -74,6 +74,13 @@ test('confirmed backend publication remains success when a post-success callback
   await handoff.publish();assert.match(handoff.render(ready),/Curriculum published successfully/);assert.doesNotMatch(handoff.render(ready),/could not complete/);
 });
 
+test('reset suppresses a late acknowledgement when the selected publication path changes',async()=>{
+  let release;const gate=new Promise(resolve=>{release=resolve;});
+  const handoff=publicationHandoff({preparePublication:()=>request,publish:async()=>{await gate;return receipt();}});
+  const active=handoff.publish();assert.equal(handoff.busy,true);handoff.reset();assert.equal(handoff.busy,false);release();await active;
+  assert.equal(handoff.receipt,null);assert.doesNotMatch(handoff.render(ready),/published successfully/);
+});
+
 test('disposed handoff suppresses late UI success and rejects later actions',async()=>{
   let release;const gate=new Promise(resolve=>{release=resolve;});
   const handoff=publicationHandoff({preparePublication:()=>request,publish:async()=>{await gate;return receipt();}});
