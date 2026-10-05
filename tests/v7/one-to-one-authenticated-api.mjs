@@ -73,6 +73,9 @@ async function actor(label, role, congregationId) {
   assert.ok(session.access_token);
   const verified = await ok('/auth/v1/user', session.access_token);
   assert.equal(verified.id, user.id);
+  const membership = await select('bible_congregation_members', session.access_token, `congregation_id=eq.${congregationId}&user_id=eq.${user.id}`);
+  assert.equal(membership.length, 1);
+  assert.equal(membership[0].role, role);
   return { id: user.id, token: session.access_token };
 }
 
@@ -172,6 +175,12 @@ await update('v7_learner_progress', mentee.token, `id=eq.${savedProgress.id}`, {
   current_step_id: steps[6].id, status: 'completed', completed_at: new Date().toISOString(),
 });
 assert.equal((await select('v7_learner_progress', mentee.token, `id=eq.${savedProgress.id}`))[0].status, 'completed');
+await update('bible_congregation_members', status.SERVICE_ROLE_KEY,
+  `congregation_id=eq.${scopeA}&user_id=eq.${mentor.id}`, { active: false });
+await denied('/rest/v1/rpc/bible_v7_create_pair_assignment', mentor.token, 'POST', assignment);
+await update('bible_congregation_members', status.SERVICE_ROLE_KEY,
+  `congregation_id=eq.${scopeA}&user_id=eq.${mentor.id}`, { active: true });
+checks.push('membership-revocation-invalidates-existing-session-authority');
 await rpc('bible_v7_transition_mentor_pair', mentor.token, { p_pair_id: ids.pair, p_action: 'end' });
 await denied('/rest/v1/rpc/bible_v7_create_pair_assignment', mentor.token, 'POST', assignment);
 assert.equal((await select('v7_lesson_responses', mentee.token, `id=eq.${response.id}`))[0].id, response.id);
