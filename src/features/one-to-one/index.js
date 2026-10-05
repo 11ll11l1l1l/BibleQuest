@@ -14,7 +14,9 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
       const load=async()=>{
         if(disposed)return;
         const request=++operation;
-        results.innerHTML='';status.textContent=text('overviewLoading');
+        results.innerHTML='';
+        if(!isContextReady()){status.textContent=text('overviewChanged');return;}
+        status.textContent=text('overviewLoading');
         try{
           const pairs=await service.listPairs();
           if(disposed||request!==operation)return;
@@ -29,7 +31,7 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
       for(const [button,fn] of bindings)button.addEventListener('click',fn);
       const openPair=event=>{const button=event.target.closest?.('[data-open-pair]');if(button&&!disposed)onPair(button.getAttribute('data-open-pair'))};
       results.addEventListener('click',openPair);
-      const unsubscribe=subscribeContext(()=>{if(disposed)return;operation++;results.innerHTML='';status.textContent=text('overviewChanged');if(isContextReady())void load();});
+      const unsubscribe=subscribeContext(()=>{if(disposed)return;void load();});
       void load();
       return ()=>{disposed=true;operation++;unsubscribe();results.removeEventListener('click',openPair);for(const [button,fn] of bindings)button.removeEventListener('click',fn)};
     }

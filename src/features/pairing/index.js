@@ -24,10 +24,11 @@ export function pairingPage({ service, session, pairId, isContextReady = () => f
   return { title: localization.t('v7.pairing.title'), html: `<main data-pairing></main><nav><button type="button" data-pair-nav="back">${t('back')}</button><button type="button" data-pair-nav="account">${t('account')}</button><button type="button" data-pair-nav="congregation">${t('congregation')}</button></nav>`, mount(root) {
     const host = root.querySelector('[data-pairing]');
     const render = state => { host.innerHTML = renderPairing(state); };
+    const reload = () => { if (isContextReady()) void controller.load(); else controller.invalidate(); };
     const click = event => {
       const button = event.target.closest?.('button'); if (!button || button.disabled) return;
       const action = button.getAttribute('data-pair-action'), nav = button.getAttribute('data-pair-nav');
-      if (action === 'reload') void controller.load();
+      if (action === 'reload') reload();
       if (['accept','decline','end'].includes(action)) void controller.act(action, { confirmed: root.querySelector('[data-pair-end-confirm]')?.checked === true });
       if (action === 'lessons' && controller.getState().pair?.state === 'active') onLessons(controller.getState().pair.id);
       if (nav === 'back') onBack(); if (nav === 'account') onAccount(); if (nav === 'congregation') onCongregation();
@@ -38,7 +39,7 @@ export function pairingPage({ service, session, pairId, isContextReady = () => f
     };
     root.addEventListener('click',click); root.addEventListener('submit',submit);
     const unsubscribe = controller.subscribe(render), contextCleanup = subscribeContext(() => { controller.invalidate(); if (isContextReady()) void controller.load(); });
-    render(controller.getState()); void controller.load();
+    render(controller.getState()); if (isContextReady()) void controller.load();
     return () => { unsubscribe(); contextCleanup(); root.removeEventListener('click',click); root.removeEventListener('submit',submit); controller.dispose(); };
   }};
 }

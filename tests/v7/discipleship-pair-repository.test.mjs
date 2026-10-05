@@ -37,7 +37,7 @@ test('landing clears results and ignores a late response after context change or
   let finish,contextChanged,unsubscribed=false;
   const nodes=new Map();
   const root={querySelector:selector=>{if(!nodes.has(selector))nodes.set(selector,{innerHTML:'',textContent:'',addEventListener(){},removeEventListener(){}});return nodes.get(selector)}};
-  const cleanup=oneToOnePage({service:{listPairs:()=>new Promise(resolve=>{finish=resolve})},subscribeContext:fn=>{contextChanged=fn;return()=>{unsubscribed=true}},onAccount(){},onCongregation(){},onBack(){}}).mount(root);
+  const cleanup=oneToOnePage({service:{listPairs:()=>new Promise(resolve=>{finish=resolve})},isContextReady:()=>true,subscribeContext:fn=>{contextChanged=fn;return()=>{unsubscribed=true}},onAccount(){},onCongregation(){},onBack(){}}).mount(root);
   contextChanged();
   finish([{state:'active'}]);
   await new Promise(resolve=>setTimeout(resolve,0));
