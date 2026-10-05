@@ -3,7 +3,7 @@
 Owner: Lane A
 Branch: `lane-a/invitation-recovery-20261005`
 Starting SHA: `d470ecd7b3d14e4b150ef36bc4bafeac1c08a113`
-Refreshed SHA: `a7a8d94dc556e316b3c38712e7909615c31179df` (concurrent Lane B publication-readiness fix retained)
+Refreshed SHA: `c6bc0aa11f4228ee940d4d1dc6e23da6679c4223` (concurrent Lane B publication-readiness and Lane D Library-notice localization fixes retained)
 Status: COMPLETE — implementation and affected local verification; automatic integration follows.
 
 ## Scope
@@ -14,6 +14,6 @@ Owned surfaces: pairing service/repository/controller/page, focused recovery tes
 
 ## Verification
 
-Eight focused tests: seven fail against an isolated `d470ecd7` baseline; all eight pass after the fix. Combined unit command passes 880 V6 and 291 V7 tests. Build, typecheck, lint, format and diff whitespace pass on Node 24.19.0. New tests cover acknowledgement loss and conflict retries, advanced closed/active state, changed initiator/directed participant/tenant/ID, unreadable or absent records, account/congregation changes, payload column restrictions, stable/changing IDs, overlapping clicks and escaped retained selections.
+Eight focused tests: seven fail against an isolated `d470ecd7` baseline; all eight pass after the fix. Combined unit command passes 880 V6 and 293 V7 tests. Build, typecheck, lint, format and diff whitespace pass on Node 24.19.0. New tests cover acknowledgement loss and conflict retries, advanced closed/active state, changed initiator/directed participant/tenant/ID, unreadable or absent records, account/congregation changes, payload column restrictions, stable/changing IDs, overlapping clicks and escaped retained selections.
 
 Pinned CI follows the exact published tree; real-browser/live-data invitation acceptance remains OPEN. Integrate onto the freshly fetched `v7/development`, verify reachability and keep current status evidence honest.

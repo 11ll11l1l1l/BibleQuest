@@ -1,5 +1,16 @@
 // V7 interface translations; source content and Scripture keep their declared language.
 export const v7UiTl = Object.freeze({
+  "v7.library.item.title": "Nilalaman sa Aklatan",
+  "v7.library.item.back": "Bumalik sa Aklatan",
+  "v7.library.item.loading": "Naglo-load ang nilalaman sa Aklatan…",
+  "v7.library.item.unavailable": "Hindi available ang na-publish na nilalamang ito.",
+  "v7.library.item.contextChanged": "Nagbago ang konteksto ng Aklatan. Bumalik sa Aklatan para i-load muli.",
+  "v7.library.item.required": "Kailangan ng link sa nilalaman sa Aklatan.",
+  "v7.library.item.error": "Hindi ma-load ang nilalamang ito. Bumalik sa Aklatan at subukan muli.",
+  "v7.pastTeaching.original": "Orihinal na pagtuturo",
+  "v7.pastTeaching.adapted": "Artikulong hango sa pagtuturo — tingnan ang orihinal na pagtuturo para sa buong konteksto.",
+  "v7.pastTeaching.unavailable": "Hindi available ang artikulo ng pagtuturo.",
+  "v7.pastTeaching.restricted": "Hindi pinapayagan ng nakatalang mga karapatan sa paggamit ang pagpapakita ng artikulo.",
   "v7.library.title": "Aklatan",
   "v7.library.learn": "Matuto",
   "v7.library.intro": "Tingnan ang mga Aklat, Debosyonal, at Nakaraang Pagtuturo.",
@@ -153,6 +164,17 @@ export const v7UiTl = Object.freeze({
 });
 
 export const v7UiCeb = Object.freeze({
+  "v7.library.item.title": "Sulod sa Librarya",
+  "v7.library.item.back": "Balik sa Librarya",
+  "v7.library.item.loading": "Gikarga ang sulod sa Librarya…",
+  "v7.library.item.unavailable": "Dili magamit kini nga gipatik nga sulod.",
+  "v7.library.item.contextChanged": "Nausab ang konteksto sa Librarya. Balik sa Librarya aron ikarga pag-usab.",
+  "v7.library.item.required": "Gikinahanglan ang link sa sulod sa Librarya.",
+  "v7.library.item.error": "Dili makarga kini nga sulod. Balik sa Librarya ug sulayi pag-usab.",
+  "v7.pastTeaching.original": "Orihinal nga pagtulon-an",
+  "v7.pastTeaching.adapted": "Artikulo nga gipahaom gikan sa pagtulon-an — tan-awa ang orihinal nga pagtulon-an alang sa tibuok konteksto.",
+  "v7.pastTeaching.unavailable": "Dili magamit ang artikulo sa pagtulon-an.",
+  "v7.pastTeaching.restricted": "Dili gitugotan sa natala nga mga katungod sa paggamit ang pagpakita sa artikulo.",
   "v7.library.title": "Librarya",
   "v7.library.learn": "Pagkat-on",
   "v7.library.intro": "Tan-awa ang mga Libro, Debosyonal, ug Nangaging Pagtulon-an.",

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getMissingLocaleKeys, localization, t } from '../../src/app/localization.js';
+import { createLibraryItemPage } from '../../src/features/library/item-page.js';
 import { createLibraryPage } from '../../src/features/library/page.js';
 import { renderAssignmentPreparation } from '../../src/features/curriculum-authoring/assignment-page.js';
 import { renderPublicationHandoff } from '../../src/features/curriculum-authoring/publication-handoff.js';
@@ -76,6 +77,43 @@ test('locale switching reaches rendered Library, assignment, and publication con
       assert.ok(publication.includes(t('v7.publicationHandoff.publish', { locale })));
       assert.ok(publication.includes(t('v7.publicationHandoff.publishing', { locale })));
       assert.doesNotMatch(library.html + assignment + publication, /v7\.(library|assignment|publicationHandoff)\./);
+    }
+  } finally {
+    if (saved) Object.defineProperty(globalThis, 'localStorage', saved);
+    else delete globalThis.localStorage;
+  }
+});
+
+
+test('Library detail controls and recovery states follow the selected locale and hide backend diagnostics', () => {
+  const saved = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  const values = new Map();
+  globalThis.localStorage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
+  try {
+    for (const locale of ['en', 'tl', 'ceb']) {
+      localization.setLocale(locale);
+      let emit, requested, released = false;
+      const host = { textContent: '' };
+      const button = { addEventListener() {}, removeEventListener() {} };
+      const service = { subscribe(fn) { emit = fn; return () => { released = true; }; }, getItem(id) { requested = id; } };
+      const page = createLibraryItemPage({ service, id: 'item-1', onBack() {} });
+      assert.equal(page.title, t('v7.library.item.title', { locale }));
+      assert.ok(page.html.includes(t('v7.library.item.back', { locale })));
+      const dispose = page.mount({ querySelector: selector => selector === '[data-library-detail]' ? host : button });
+      assert.equal(requested, 'item-1');
+      for (const [status, key] of [
+        ['loading', 'loading'], ['not-found', 'unavailable'], ['idle', 'contextChanged'], ['error', 'error']
+      ]) {
+        emit({ status, error: 'private backend diagnostic' });
+        assert.equal(host.textContent, t('v7.library.item.' + key, { locale }));
+        assert.ok(!host.textContent.includes('private backend diagnostic'));
+      }
+      dispose();
+      assert.equal(released, true);
+      const missing = createLibraryItemPage({ service, id: '', onBack() {} });
+      const cleanup = missing.mount({ querySelector: selector => selector === '[data-library-detail]' ? host : button });
+      assert.equal(host.textContent, t('v7.library.item.required', { locale }));
+      cleanup();
     }
   } finally {
     if (saved) Object.defineProperty(globalThis, 'localStorage', saved);
