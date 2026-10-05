@@ -133,3 +133,26 @@ test('context changes invalidate feature state and suppress a late creation ackn
   assert.deepEqual(h.calls.filter(row=>row[0]==='invalidate'),[['invalidate']]);
   cleanup();assert.equal(contextListener,null);
 });
+
+
+test('stale reload and selection clicks cannot strand an in-flight assignment creation',async()=>{
+  const h=harness();let resolveAuthority,reloads=0;
+  h.preparation.loadPairs=async()=>{reloads+=1;};
+  const pending=new Promise(resolve=>{resolveAuthority=resolve;});
+  const page=assignmentPreparationPage({preparation:h.preparation,createAssignment:async value=>{await pending;return {id:'assignment-1',status:'assigned',...value};}});
+  const cleanup=page.mount(h.root);await tick();clickAction(h.handlers,'create');await tick();
+  clickAction(h.handlers,'reload');
+  h.handlers.get('click')({target:{disabled:false,closest(){return this;},getAttribute(name){return name==='data-assignment-select'?'pair':name==='data-id'?'pair-2':null;}}});
+  await tick();assert.equal(reloads,1);assert.equal(h.calls.filter(row=>row[0]==='pair').length,0);
+  resolveAuthority();await tick();await tick();assert.match(h.host.innerHTML,/Assignment created/);
+  assert.doesNotMatch(h.host.innerHTML,/Creating assignment/);cleanup();
+});
+
+test('stale creation clicks cannot dispatch while preparation is loading or failed',async()=>{
+  let state=base(),created=0;
+  const h=harness({getState:()=>state});
+  const page=assignmentPreparationPage({preparation:h.preparation,createAssignment:async value=>{created+=1;return {id:'assignment-1',status:'assigned',...value};}});
+  const cleanup=page.mount(h.root);await tick();
+  for(const status of ['loading','error','idle']){state={...base(),status};clickAction(h.handlers,'create');await tick();}
+  assert.equal(created,0);cleanup();
+});
