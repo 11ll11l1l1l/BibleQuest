@@ -22,8 +22,9 @@ function freezeRows(rows) {
   return Object.freeze([...(Array.isArray(rows) ? rows : [])]);
 }
 
-// Read-only assignment/start preparation. The authoritative assignment mutation
-// must remain a race-safe backend boundary (V7 issue #1170).
+// Assignment selection/request preparation deliberately stays read-only. The
+// authoritative race-safe mutation is injected through the V7 assignment
+// authority at the composition/page boundary rather than duplicated here.
 export function createAssignmentPreparation({ discipleship, getActorId }) {
   if (!discipleship?.listPairs || !discipleship?.loadAssignableCurriculum) {
     throw new TypeError('Assignment preparation requires the existing discipleship service.');
