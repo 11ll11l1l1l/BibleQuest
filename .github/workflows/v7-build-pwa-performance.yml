@@ -129,6 +129,11 @@ jobs:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
         run: node tests/v7/one-to-one-built-artifact-browser.mjs
 
+      - name: V7 Library narrow, locale and keyboard smoke
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v7/library-built-artifact-browser.mjs
+
       - name: Built artifact PWA acceptance
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
@@ -167,6 +172,7 @@ jobs:
               'performance-budgets',
               'built-artifact-browser-parity',
               'v7-one-to-one-built-artifact-smoke',
+              'v7-library-built-artifact-smoke',
               'pwa-built-artifact',
               'built-artifact-accessibility'
             ]
