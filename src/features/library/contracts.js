@@ -14,6 +14,8 @@ export const LIBRARY_PUBLICATION_STATES = Object.freeze({
 });
 
 const LIBRARY_SOURCE_KINDS = new Set(['first_party', 'external', 'licensed', 'fixture']);
+const LIBRARY_TAXONOMY_KINDS = new Set(['category', 'topic', 'tag']);
+const LIBRARY_TAXONOMY_ID_PATTERN = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
 
 const BUILT_IN_CONTENT_TYPES = [
   { id: LIBRARY_CONTENT_TYPES.book, label: 'Books', description: 'Books and structured learning material.' },
@@ -51,6 +53,31 @@ function canonicalLocale(value) {
   } catch {
     return null;
   }
+}
+
+function normalizeTaxonomyLinks(links) {
+  const seenIds = new Set();
+  const seenOrders = new Set();
+  const normalized = links.map(link => {
+    if (!link || typeof link !== 'object' || Array.isArray(link)) {
+      throw libraryError('Published Library taxonomy links must be structured records.', 'BQ_LIBRARY_TAXONOMY');
+    }
+    const id = typeof link.id === 'string' ? link.id.trim() : '';
+    const kind = typeof link.kind === 'string' ? link.kind.trim() : '';
+    const order = link.order;
+    if (!LIBRARY_TAXONOMY_ID_PATTERN.test(id) || !LIBRARY_TAXONOMY_KINDS.has(kind)
+        || !Number.isInteger(order) || order < 0) {
+      throw libraryError('Published Library taxonomy links require a stable id, supported kind, and non-negative order.', 'BQ_LIBRARY_TAXONOMY');
+    }
+    const orderKey = `${kind}:${order}`;
+    if (seenIds.has(id) || seenOrders.has(orderKey)) {
+      throw libraryError('Published Library taxonomy links cannot contain duplicate ids or kind/order positions.', 'BQ_LIBRARY_TAXONOMY');
+    }
+    seenIds.add(id);
+    seenOrders.add(orderKey);
+    return { ...link, id, kind, order };
+  });
+  return normalized.sort((a, b) => a.kind.localeCompare(b.kind) || a.order - b.order || a.id.localeCompare(b.id));
 }
 
 export function createLibraryContentTypeRegistry(additionalTypes = []) {
@@ -128,6 +155,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   if (!Array.isArray(taxonomyLinks) || !Array.isArray(translations)) {
     throw libraryError('Published Library items require taxonomy links and translation records.', 'BQ_LIBRARY_CONTENT_CONTRACT');
   }
+  const normalizedTaxonomyLinks = normalizeTaxonomyLinks(taxonomyLinks);
   const normalizedTranslations = [];
   const seenTranslationLocales = new Set();
   for (const translation of translations) {
@@ -164,7 +192,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
     sourceContent: snapshotData(sourceContent),
     rights: snapshotData(rights),
     review: snapshotData(review),
-    taxonomyLinks: snapshotData(taxonomyLinks),
+    taxonomyLinks: snapshotData(normalizedTaxonomyLinks),
     translations: snapshotData(normalizedTranslations),
     revisionHistory: snapshotData(Array.isArray(record.revisionHistory) ? record.revisionHistory : []),
     derivatives: snapshotData(Array.isArray(record.derivatives) ? record.derivatives : []),
