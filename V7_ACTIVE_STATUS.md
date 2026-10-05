@@ -206,6 +206,8 @@ The earlier Library item Retry/offline/accessibility tranche is integrated throu
 
 Remaining gates: reviewed representative Books/Devotionals must be approved and published; Past Teachings still require rights verification plus editorial approval/publication. The current content evidence reports localization ready and representative content not ready. No final release candidate is frozen or production promotion performed. Preserve content-review decisions as OPEN and continue eligible lane evidence/integration work.
 
+Lane A's [P5 browser/mobile/accessibility preparation](docs/v7/P5_A_BROWSER_MOBILE_ACCESSIBILITY_EVIDENCE_PREP.md) maps the existing signed-out browser checks to their actual coverage and records the remaining populated-content, authenticated-role, accessibility and applicable device/deployment evidence. It reuses the current gate and does not certify a new release SHA or change content decisions.
+
 ## Historical integration checkpoint — 2026-10-05
 
 Lane A drained the pending context-readiness integration through PR #1238 at `0aae98daa6cf3eefd7106948d39d210af5304b30`. All 330 combined V7 tests and typecheck passed on the merge tree; source head `7609288621d8ae6007d99a59919891947ac31df9` passed pinned Build/PWA/Performance run [37309790177](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37309790177).
