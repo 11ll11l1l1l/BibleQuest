@@ -13,6 +13,8 @@ export const LIBRARY_PUBLICATION_STATES = Object.freeze({
   published: 'published',
 });
 
+const LIBRARY_SOURCE_KINDS = new Set(['first_party', 'external', 'licensed', 'fixture']);
+
 const BUILT_IN_CONTENT_TYPES = [
   { id: LIBRARY_CONTENT_TYPES.book, label: 'Books', description: 'Books and structured learning material.' },
   { id: LIBRARY_CONTENT_TYPES.devotional, label: 'Devotionals', description: 'Short readings for daily reflection.' },
@@ -31,6 +33,15 @@ function snapshotData(value) {
     return Object.freeze(Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, snapshotData(entry)])));
   }
   return value;
+}
+
+function isHttpsUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  try {
+    return new URL(value).protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 export function createLibraryContentTypeRegistry(additionalTypes = []) {
@@ -80,10 +91,17 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   const translations = record.translations;
   const sourceLocale = String(record.sourceLocale ?? record.locale ?? '').trim();
   const sourceTitle = String(source?.title ?? '').trim();
+  const sourceKind = String(source?.kind ?? '').trim();
+  const sourceUriProvided = source?.uri !== undefined && source?.uri !== null && source?.uri !== '';
+  const sourceUri = typeof source?.uri === 'string' ? source.uri.trim() : '';
+  const sourceCatalogIdProvided = source?.catalogId !== undefined && source?.catalogId !== null && source?.catalogId !== '';
+  const sourceCatalogId = typeof source?.catalogId === 'string' ? source.catalogId.trim() : '';
   const sourceContentTitle = String(sourceContent?.title ?? '').trim();
 
-  if (!source || !sourceTitle || source.kind === 'fixture' || (!source.uri && !source.catalogId)) {
-    throw libraryError('Published Library items require a non-fixture source identity.', 'BQ_LIBRARY_PROVENANCE');
+  if (!source || !sourceTitle || !LIBRARY_SOURCE_KINDS.has(sourceKind) || sourceKind === 'fixture'
+      || (!sourceUri && !sourceCatalogId) || (sourceUriProvided && !isHttpsUrl(source?.uri))
+      || (sourceCatalogIdProvided && !sourceCatalogId)) {
+    throw libraryError('Published Library items require a supported non-fixture HTTPS or catalog source identity.', 'BQ_LIBRARY_PROVENANCE');
   }
   if (!sourceContent || !sourceContentTitle || !sourceLocale) {
     throw libraryError('Published Library items require source-language content and locale.', 'BQ_LIBRARY_PROVENANCE');
