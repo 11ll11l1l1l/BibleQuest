@@ -61,13 +61,14 @@ export function curriculumAuthoringPage({controller,subscribeContext=()=>()=>{},
     const render=state=>{if(!disposed&&host)host.innerHTML=renderCurriculumAuthoring(state,{localErrorKey});};
     const run=async work=>{localErrorKey=null;const token=++operationGeneration;render(controller.getState());try{await work();}catch(error){if(!disposed&&token===operationGeneration){localErrorKey=error?.uiKey||'v7.authoring.error';render(controller.getState());}}};
     const click=event=>{
-      const button=event.target?.closest?.('button');if(!button)return;
+      const button=event.target?.closest?.('button');if(!button||button.disabled)return;
+      const nav=button.getAttribute('data-authoring-nav');if(nav==='back'){onBack();return;}if(nav==='account'){onAccount();return;}if(nav==='congregation'){onCongregation();return;}
+      if(busy(controller.getState()))return;
       const kind=button.getAttribute('data-authoring-select'),id=button.getAttribute('data-id');
       if(kind&&id){const method={track:'selectTrack',module:'selectModule',lesson:'selectLesson',revision:'selectRevision'}[kind];if(method)void run(()=>controller[method](id));return;}
       const action=button.getAttribute('data-authoring-action');if(action==='reload')void run(()=>controller.load());if(action==='readiness')void run(()=>controller.refreshReadiness());
-      const nav=button.getAttribute('data-authoring-nav');if(nav==='back')onBack();if(nav==='account')onAccount();if(nav==='congregation')onCongregation();
     };
-    const submit=event=>{const form=event.target?.closest?.('form[data-authoring-form]');if(!form)return;event.preventDefault();const kind=form.getAttribute('data-authoring-form');void run(async()=>{
+    const submit=event=>{const form=event.target?.closest?.('form[data-authoring-form]');if(!form)return;event.preventDefault();if(busy(controller.getState()))return;const kind=form.getAttribute('data-authoring-form');void run(async()=>{
       if(kind==='track-create'||kind==='track-update'){const input={title:formValue(form,'title'),summary:formValue(form,'summary'),locale:formValue(form,'locale'),audience:formValue(form,'audience'),position:position(form)};return kind==='track-create'?controller.createTrack(input):controller.updateTrack(input);}
       if(kind==='module-create'||kind==='module-update'){const input={title:formValue(form,'title'),summary:formValue(form,'summary'),position:position(form)};return kind==='module-create'?controller.createModule(input):controller.updateModule(input);}
       if(kind==='lesson-create'||kind==='lesson-update'){const input={title:formValue(form,'title'),position:position(form)};return kind==='lesson-create'?controller.createLesson(input):controller.updateLesson(input);}
