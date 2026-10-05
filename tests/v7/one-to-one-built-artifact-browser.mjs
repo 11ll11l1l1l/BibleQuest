@@ -20,6 +20,15 @@ const deepLinks = [
   `one-to-one-lesson?pairId=${ids.pair}&trackId=${ids.track}&moduleId=${ids.module}&revisionId=${ids.revision}&stepId=${ids.step}`,
 ];
 
+function surfaceFor(route) {
+  if (route === 'one-to-one?view=authoring') return '[data-curriculum-authoring]';
+  if (route === 'one-to-one?view=assignment') return '[data-assignment-preparation]';
+  if (route.startsWith('one-to-one-pair')) return '[data-pairing]';
+  if (route.startsWith('one-to-one-track') || route.startsWith('one-to-one-module')) return '[data-assigned-curriculum]';
+  if (route.startsWith('one-to-one-lesson')) return '[data-lesson-runner]';
+  return 'section:has(> [data-pair-results])';
+}
+
 async function assertBuiltRoute(page, route, label, { checkOverflow = false } = {}) {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error?.message || error)));
@@ -31,6 +40,18 @@ async function assertBuiltRoute(page, route, label, { checkOverflow = false } = 
     const lazyRoute = document.querySelector('[data-lazy-route]');
     return !lazyRoute || lazyRoute.getAttribute('aria-busy') !== 'true';
   });
+
+  // A shell or unrelated fallback can retain the requested hash. Require the
+  // actual lazy feature surface and its mounted content before claiming success.
+  const surface = page.locator(surfaceFor(route));
+  await surface.waitFor({ state: 'visible' });
+  if (await surface.count() !== 1) throw new Error(`${label}: ambiguous feature surface`);
+  const mounted = route === 'one-to-one'
+    ? page.locator('[data-pair-retry]')
+    : route.startsWith('one-to-one-lesson')
+      ? surface.locator('[data-lesson-content] [role="status"]')
+      : surface.locator('h1');
+  await mounted.waitFor({ state: 'visible' });
 
   if (await page.locator('[data-startup-failure]').count()) {
     throw new Error(`${label}: startup failure rendered`);
@@ -77,6 +98,25 @@ try {
     await assertBuiltRoute(page, route, `390px direct #/${route}`, { checkOverflow: true });
     await page.close();
   }
+  // Exercise the user entry controls too: direct hashes alone do not establish
+  // that overview buttons reach the registered workspace pages.
+  const page = await context.newPage();
+  await assertBuiltRoute(page, 'one-to-one', '390px overview launcher');
+  for (const [control, route, back] of [
+    ['[data-pair-authoring]', 'one-to-one?view=authoring', '[data-authoring-nav="back"]'],
+    ['[data-pair-assignments]', 'one-to-one?view=assignment', '[data-assignment-nav="back"]'],
+    ['[data-pair-invite]', 'one-to-one-pair', '[data-pair-nav="back"]'],
+  ]) {
+    await page.locator(control).click();
+    await page.waitForFunction(expected => location.hash === `#/${expected}`, route);
+    await page.locator(surfaceFor(route)).waitFor({ state: 'visible' });
+    await page.locator(back).click();
+    await page.locator(surfaceFor('one-to-one')).waitFor({ state: 'visible' });
+    if (await page.evaluate(() => location.hash) !== '#/one-to-one') {
+      throw new Error(`${route}: back control did not return to ONE 2 ONE`);
+    }
+  }
+  await page.close();
   await context.close();
 } finally {
   await browser.close();
