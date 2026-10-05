@@ -59,7 +59,7 @@ export function assignmentPreparationPage({preparation,subscribeContext=()=>()=>
     const clearResult=()=>{receipt=null;localErrorKey=null;generation+=1;};
     const run=async work=>{clearResult();render(preparation.getState());try{await work();}catch{if(!disposed){localErrorKey='v7.assignment.error';render(preparation.getState());}}};
     const runCreate=async()=>{
-      if(mutationBusy||disposed)return;
+      if(mutationBusy||disposed||preparation.getState().status!=='ready')return;
       localErrorKey=null;receipt=null;mutationBusy=true;const token=++generation;render(preparation.getState());
       try{
         const request=preparation.buildRequest();
@@ -75,6 +75,8 @@ export function assignmentPreparationPage({preparation,subscribeContext=()=>()=>
     };
     const click=event=>{
       const button=event.target?.closest?.('button');if(!button||button.disabled)return;
+      if(button.getAttribute('data-assignment-nav')==='back'){onBack();return;}
+      if(mutationBusy||busy(preparation.getState()))return;
       const kind=button.getAttribute('data-assignment-select'),id=button.getAttribute('data-id');
       if(kind&&id){const method={pair:'selectPair',track:'selectTrack',module:'selectModule',lesson:'selectLesson'}[kind];if(method)void run(()=>preparation[method](id));return;}
       const action=button.getAttribute('data-assignment-action');
