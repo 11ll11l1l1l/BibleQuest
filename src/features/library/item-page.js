@@ -8,25 +8,31 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 export function createLibraryItemPage({service,id,onBack}) {
   return {
     title:localization.t('v7.library.item.title'),
-    html:`<section class="bq-panel"><button type="button" class="bq-secondary-button" data-library-back>${escapeHtml(localization.t('v7.library.item.back'))}</button><div data-library-detail role="status" aria-live="polite"></div></section>`,
+    html:`<section class="bq-panel"><button type="button" class="bq-secondary-button" data-library-back>${escapeHtml(localization.t('v7.library.item.back'))}</button><div data-library-detail role="status" aria-live="polite"></div><button type="button" class="bq-secondary-button" data-library-item-retry hidden>${escapeHtml(localization.t('v7.library.retry'))}</button></section>`,
     mount(root) {
       const host=root.querySelector('[data-library-detail]');
       const back=root.querySelector('[data-library-back]');
+      const retry=root.querySelector('[data-library-item-retry]');
+      let disposed=false;
       const render=state=>{
+        if(disposed)return;
+        retry.hidden=!id||!['error','idle'].includes(state.status);
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
           const t=key=>escapeHtml(localization.t(key));
           host.innerHTML=`<h1>${escapeHtml(item.title)}</h1><p>${escapeHtml(item.summary)}</p><p>${t('v7.content.source')}: ${escapeHtml(item.source.title)}</p><p>${t('v7.content.attribution')}: ${escapeHtml(item.rights.attribution)}</p><p>${t('v7.content.license')}: ${escapeHtml(item.rights.basis)}</p><p>${escapeHtml(item.rights.allowedUses.join(' · '))}</p>${item.contentType==='book'?renderBookMetadata(item):''}${renderPastTeachingArticle(item)}${item.contentType==='devotional'?renderDevotional(item,{locale:localization.getLocale(),translate:localization.t}):''}`;
         }else{
-          const key=state.status==='error'?'v7.library.item.error':state.status==='not-found'?'v7.library.item.unavailable':state.status==='idle'?'v7.library.item.contextChanged':'v7.library.item.loading';
+          const key=state.status==='error'?(globalThis.navigator?.onLine===false?'v7.library.offline':'v7.library.item.error'):state.status==='not-found'?'v7.library.item.unavailable':state.status==='idle'?'v7.library.item.contextChanged':'v7.library.item.loading';
           host.textContent=localization.t(key);
         }
       };
       const goBack=()=>onBack();
+      const reload=()=>{if(!disposed&&id&&!retry.hidden)void service.getItem(id)};
       back.addEventListener('click',goBack);
+      retry.addEventListener('click',reload);
       const unsubscribe=service.subscribe(render);
       if(id)void service.getItem(id);else host.textContent=localization.t('v7.library.item.required');
-      return ()=>{unsubscribe();back.removeEventListener('click',goBack)};
+      return ()=>{disposed=true;unsubscribe();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
     }
   };
 }
