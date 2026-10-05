@@ -1,6 +1,6 @@
 # BibleQuest V7 Active Status
 
-Updated: 2026-10-04 JST
+Updated: 2026-10-05 JST
 
 Phase: **P2 — Library MVP ACTIVE**. P1 shared foundation is integrated; disjoint P3 implementation is eligible under the roadmap. P0 scope/contracts remain frozen.
 Development branch: `v7/development`.
@@ -275,3 +275,11 @@ Pairing/assigned routes integrated through PR #1212 at `87174c2e`; exact head `6
 Pair invitations now retain a stable client-generated UUID for the current member/role choice during a page session. An insert failure performs an existing participant/tenant-scoped read for that exact ID; recovery verifies the initiating participant, requested mentor/mentee direction, congregation, identity and current lifecycle stamps. It can display an invitation that advanced to accepted/closed while its acknowledgement was lost, without accepting it again or reopening it. Failed forms retain member/role selections. Changed choices get a new ID; account/congregation invalidation and disposal clear retry state. No new storage, schema, RPC or audit path.
 
 Evidence: the eight focused regressions produce seven failures on integration baseline `d470ecd7` and all pass with the fix. All 880 V6 and 293 V7 tests pass together; build, typecheck, lint, format and whitespace checks pass locally on Node 24.19.0. Denials cover changed initiator, participant direction, tenant/identity, stale account/congregation, unreadable/uncommitted attempts and malformed lifecycle receipts. Pinned CI and real-browser/live-backend journey evidence remain separate; content and pair-private messaging phase gates remain OPEN.
+
+Invitation recovery integrated through PR #1216 at `6c6b2fa1`. Refreshed exact head `20e4bf08` passed pinned [Build/PWA/Performance run 37290363462](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37290363462), including built-artifact Chromium, PWA and automated accessibility regression checks. Real invitation/backend journey evidence remains OPEN.
+
+## Lane A — overview locale and hydration recovery (2026-10-05)
+
+The ONE 2 ONE overview now uses the shared English/Tagalog/Cebuano dictionaries for introduction, loading/empty/ready/context-change states and navigation controls. Backend diagnostics are replaced by the existing localized recovery message. A shared account/congregation context notification clears the old list and automatically reloads only when those owners report a signed-in account and selected congregation; no tenant is inferred. Request generations prevent old-context results replacing the new list, and teardown prevents further reads/listeners.
+
+Evidence: all 296 V7 tests and five affected inherited bootstrap/router tests pass after retaining concurrent Lane B/D fixes. New page tests cover guarded hydration, late old-congregation results, navigation/cleanup, actual locale switching in all three supported languages, and suppression of backend diagnostics. Combined unit command also passes all 880 V6 tests; build, typecheck, lint, format and whitespace checks pass locally on Node 24.19.0. Browser/live-data acceptance and the existing content/messaging phase gates remain OPEN.
