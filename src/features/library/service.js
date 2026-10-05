@@ -17,6 +17,28 @@ export function createLibraryService({ repository, registry = createLibraryConte
   const emptyDiscovery = () => ({ taxonomy: Object.freeze([]), taxonomyId: '', loadingMore: false, moreError: null });
   let state = createLibraryViewState(emptyDiscovery());
   let requestId = 0;
+  let cancelRead;
+  const invalidateRead = () => {
+    requestId += 1;
+    cancelRead?.();
+    return requestId;
+  };
+  const boundedRead = async read => {
+    let timer;
+    let cancel;
+    const deadline = new Promise((resolve, reject) => {
+      cancel = () => reject(libraryError('Library context changed.', 'BQ_LIBRARY_CONTEXT_CHANGED'));
+      cancelRead = cancel;
+      timer = setTimeout(() => reject(libraryError('Library read timed out. Try again.', 'BQ_LIBRARY_TIMEOUT')), 10000);
+      timer?.unref?.();
+    });
+    try {
+      return await Promise.race([read(), deadline]);
+    } finally {
+      clearTimeout(timer);
+      if (cancelRead === cancel) cancelRead = undefined;
+    }
+  };
   const listeners = new Set();
   const snapshot = () => state;
   const publish = patch => {
@@ -28,7 +50,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
   return Object.freeze({
     getState: snapshot,
     reset() {
-      requestId += 1;
+      invalidateRead();
       return publish(createLibraryViewState(emptyDiscovery()));
     },
     subscribe(listener) {
@@ -49,7 +71,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
           || cursor !== state.nextCursor)) return state;
       const previousItems = append ? state.items : [];
       const boundedLimit = Math.max(1, Math.min(60, Math.floor(Number(limit) || 24)));
-      const operation = ++requestId;
+      const operation = invalidateRead();
       publish(append ? { loadingMore: true, moreError: null } : {
         status: 'loading',
         items: [],
@@ -64,14 +86,14 @@ export function createLibraryService({ repository, registry = createLibraryConte
       });
 
       try {
-        const result = await repository.listPublished({
+        const result = await boundedRead(() => repository.listPublished({
           query: normalizedQuery,
           contentType: typeId || null,
           limit: boundedLimit,
           cursor: cursor ?? null,
           ...(termId ? { taxonomyId: termId } : {}),
           ...(includeTaxonomy ? { includeTaxonomy: true } : {}),
-        });
+        }));
         if (operation !== requestId) return state;
         const incoming = result.items.map(item => normalizeLibraryItem(item, registry));
         const items = append ? [...new Map([...previousItems, ...incoming].map(item => [item.id, item])).values()] : incoming;
@@ -107,10 +129,10 @@ export function createLibraryService({ repository, registry = createLibraryConte
     async getItem(id) {
       const key = String(id ?? '').trim();
       if (!key) throw libraryError('A Library item id is required.', 'BQ_LIBRARY_ITEM_ID');
-      const operation = ++requestId;
+      const operation = invalidateRead();
       publish({ status: 'loading', items: [], error: null, selectedItem: null, nextCursor: null, loadingMore: false, moreError: null });
       try {
-        const record = await repository.getPublishedById(key);
+        const record = await boundedRead(() => repository.getPublishedById(key));
         if (operation !== requestId) return state;
         if (!record) {
           return publish({
