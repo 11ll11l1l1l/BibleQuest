@@ -29,11 +29,12 @@
       "publicationState": "pending_review",
       "source": {
         "kind": "external",
-        "title": "Morning and Evening: January AM",
-        "uri": "https://ccel.org/s/spurgeon/morn_eve/ME01AM.html",
+        "title": "Morning, January 2",
+        "uri": "https://www.ccel.org/ccel/spurgeon/morneve.d0102am.html",
         "catalogId": "devotional.spurgeon.january-02-am",
-        "revision": "CCEL transcription retrieved 2026-10-04",
-        "creator": "Charles Haddon Spurgeon"
+        "revision": "CCEL transcription verified 2026-10-05",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
       },
       "sourceContent": {
         "title": "Continue in prayer — excerpt",
@@ -46,7 +47,9 @@
         "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
         "allowedUses": [
           "display"
-        ]
+        ],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-05T09:45:00Z"
       },
       "review": {
         "status": "pending_review"
@@ -70,11 +73,12 @@
       "publicationState": "pending_review",
       "source": {
         "kind": "external",
-        "title": "Morning and Evening: January AM",
-        "uri": "https://ccel.org/s/spurgeon/morn_eve/ME01AM.html",
+        "title": "Morning, January 6",
+        "uri": "https://ccel.org/ccel/spurgeon/morneve/morneve.d0106am.html",
         "catalogId": "devotional.spurgeon.january-06-am",
-        "revision": "CCEL transcription retrieved 2026-10-04",
-        "creator": "Charles Haddon Spurgeon"
+        "revision": "CCEL transcription verified 2026-10-05",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
       },
       "sourceContent": {
         "title": "Casting your care — excerpt",
@@ -87,7 +91,9 @@
         "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
         "allowedUses": [
           "display"
-        ]
+        ],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-05T09:45:00Z"
       },
       "review": {
         "status": "pending_review"
