@@ -11,7 +11,7 @@ test('workspace derives author capability only from the current owned congregati
   assert.equal(v7AuthoringContext({getState:()=>({authenticated:false})},membership).canAuthor,false);
 });
 test('workspace composes existing authoring and assignment pages without eager reads or mutations',()=>{
-  const options={session,membership,client:()=>{throw new Error('No eager database operation');},service:{listPairs(){throw new Error("No eager reads");},loadCurriculum(){throw new Error("No eager reads");}}};
+  const options={session,membership,client:()=>{throw new Error('No eager database operation');},service:{listPairs(){throw new Error("No eager reads");},loadAssignableCurriculum(){throw new Error("No eager reads");}}};
   assert.match(createV7WorkspacePage({...options,view:'authoring'}).html,/data-authoring-publication/);
   assert.match(createV7WorkspacePage({...options,view:'assignment'}).html,/data-assignment-preparation/);
   assert.throws(()=>createV7WorkspacePage({...options,view:'invalid'}),/Unknown/);

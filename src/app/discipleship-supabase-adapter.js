@@ -75,6 +75,32 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       const found = await rows(client.from('v7_mentor_pairs').select(PAIR_COLUMNS).eq('id', required(id)).eq('congregation_id', required(context.congregationId)));
       return found[0] ?? null;
     },
+    async loadAssignableCurriculum(pair, context) {
+      scope(pair, context);
+      if (pair.mentorId !== context.userId) fail('BQ_DISCIPLESHIP_MENTOR_REQUIRED', 'Only the active pair mentor can choose new assignments.');
+      const client = await db(context);
+      const trackColumns = 'id,congregation_id,title,revision_id,display_order';
+      const scoped = await rows(client.from('v7_tracks').select(trackColumns).eq('publication_state', 'published').eq('congregation_id', context.congregationId).limit(100));
+      const global = await rows(client.from('v7_tracks').select(trackColumns).eq('publication_state', 'published').is('congregation_id', null).limit(100));
+      const tracks = [...scoped, ...global];
+      if (tracks.some(t => t.congregation_id && t.congregation_id !== context.congregationId)) fail('BQ_DISCIPLESHIP_CURRICULUM_SCOPE', 'Assignable curriculum is outside this congregation.');
+      if (!tracks.length) return [];
+      const modules = await rows(client.from('v7_modules').select('id,track_id,title,revision_id,display_order').in('track_id', tracks.map(t => t.id)).eq('publication_state', 'published').limit(1000));
+      if (!modules.length) return [];
+      const lessons = await rows(client.from('v7_lessons').select('id,module_id,title,revision_id,display_order').in('module_id', modules.map(m => m.id)).eq('publication_state', 'published').limit(1000));
+      if (!lessons.length) return [];
+      const revisions = await rows(client.from('v7_lesson_revisions').select('id,lesson_id,revision_number,published_at').in('lesson_id', lessons.map(l => l.id)).not('published_at', 'is', null).order('revision_number', { ascending: false }).limit(1000));
+      const latest = new Map();
+      for (const revision of revisions) {
+        if (!Number.isInteger(revision.revision_number) || revision.revision_number < 1) fail('BQ_DISCIPLESHIP_LESSON_RESPONSE', 'Assignable revision identity is invalid.');
+        const previous = latest.get(revision.lesson_id);
+        if (previous && previous.revision_number === revision.revision_number) fail('BQ_DISCIPLESHIP_LESSON_RESPONSE', 'Assignable revision identity is ambiguous.');
+        if (!previous || previous.revision_number < revision.revision_number) latest.set(revision.lesson_id, revision);
+      }
+      return tracks.map(t => ({ ...node(t), modules: modules.filter(m => m.track_id === t.id).map(m => ({
+        ...node(m), lessons: lessons.filter(l => l.module_id === m.id && latest.has(l.id)).map(l => ({ ...node(l), revisionId: latest.get(l.id).id })),
+      })).filter(m => m.lessons.length) })).filter(t => t.modules.length);
+    },
     async loadCurriculum(pair, context) {
       scope(pair, context);
       const client = await db(context);
