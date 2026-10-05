@@ -41,7 +41,8 @@ test('browse restore and Retry preserve the submitted request rather than draft 
   globalThis.Element = ElementStub;
   try {
     const f = fixture();
-    const ui = createLibraryPage({ service: f.service, navigate() {}, initialQuery: 'hope', initialContentType: 'devotional' });
+    let destination;
+    const ui = createLibraryPage({ service: f.service, navigate: value => { destination = value; }, initialQuery: 'hope', initialContentType: 'devotional' });
     const dispose = ui.mount(f.root);
     assert.deepEqual(f.requests[0], { query: 'hope', contentType: 'devotional', taxonomyId: '', includeTaxonomy: true });
     assert.equal(f.nodes['[name="query"]'].value, 'hope');
@@ -59,11 +60,16 @@ test('browse restore and Retry preserve the submitted request rather than draft 
     f.nodes['[data-library-search]'].listeners.get('submit')({
       target: f.nodes['[data-library-search]'], preventDefault() {},
     });
-    assert.deepEqual(f.requests[2], { query: 'unsent draft', contentType: 'book', taxonomyId: '' });
+    assert.deepEqual(destination, { routeKey: 'library', query: 'unsent draft', contentType: 'book', taxonomyId: '' });
+    assert.equal(f.requests.length, 2, 'the destination mount owns the new read');
     dispose();
     assert.equal(f.isSubscribed(), false);
     assert.equal(f.page.listeners.size, 0);
     assert.equal(f.nodes['[data-library-search]'].listeners.size, 0);
+    const restored = fixture();
+    createLibraryPage({ service: restored.service, navigate() {}, initialQuery: destination.query,
+      initialContentType: destination.contentType, initialTaxonomyId: destination.taxonomyId }).mount(restored.root);
+    assert.deepEqual(restored.requests[0], { query: 'unsent draft', contentType: 'book', taxonomyId: '', includeTaxonomy: true });
   } finally { globalThis.Element = priorElement; }
 });
 
@@ -103,11 +109,16 @@ test('taxonomy controls preserve filters for item return and Clear resets discov
     assert.equal(term.value, 'topic.hope');
     assert.match(term.innerHTML, /&lt;Hope&gt;/);
     assert.match(term.innerHTML, /optgroup label="Topic"/);
+    f.nodes['[data-library-search]'].listeners.get('submit')({
+      target: f.nodes['[data-library-search]'], preventDefault() {},
+    });
+    assert.deepEqual(destination, { routeKey: 'library', query: '', contentType: '', taxonomyId: 'topic.hope' });
     f.page.listeners.get('click')({ target: new ElementStub({ 'data-library-item': 'item-1' }) });
     assert.equal(destination.returnTo.taxonomyId, 'topic.hope');
     f.nodes['[name="query"]'].value = 'draft';
     f.page.listeners.get('click')({ target: new ElementStub({ 'data-library-clear': '' }) });
-    assert.deepEqual(f.requests.at(-1), { query: '', contentType: '', taxonomyId: '' });
+    assert.deepEqual(destination, { routeKey: 'library', query: '', contentType: '', taxonomyId: '' });
+    assert.equal(f.requests.length, 1, 'Clear navigates to the unfiltered route without an extra read');
   } finally { globalThis.Element = priorElement; }
 });
 

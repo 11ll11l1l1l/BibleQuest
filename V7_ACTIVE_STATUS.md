@@ -208,6 +208,8 @@ Remaining gates: reviewed representative Books/Devotionals must be approved and 
 
 Lane A's [P5 browser/mobile/accessibility preparation](docs/v7/P5_A_BROWSER_MOBILE_ACCESSIBILITY_EVIDENCE_PREP.md) maps the existing signed-out browser checks to their actual coverage and records the remaining populated-content, authenticated-role, accessibility and applicable device/deployment evidence. It reuses the current gate and does not certify a new release SHA or change content decisions.
 
+Further Lane A [Library locale/filter hardening](work/tasks/20261006-lane-a-library-locale-filter-restoration.md) makes Search/Clear use the existing browse route owner, so the real language selector's reload preserves submitted filters and does not restore cleared filters or unsent drafts. The existing Chromium gate now covers those interactions; populated/live-content and final candidate acceptance remain OPEN.
+
 ## Historical integration checkpoint — 2026-10-05
 
 Lane A drained the pending context-readiness integration through PR #1238 at `0aae98daa6cf3eefd7106948d39d210af5304b30`. All 330 combined V7 tests and typecheck passed on the merge tree; source head `7609288621d8ae6007d99a59919891947ac31df9` passed pinned Build/PWA/Performance run [37309790177](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37309790177).

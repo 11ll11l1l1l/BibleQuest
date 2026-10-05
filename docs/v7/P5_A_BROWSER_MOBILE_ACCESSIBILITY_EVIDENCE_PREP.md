@@ -35,3 +35,5 @@ These rows remain OPEN. They describe completion of existing requirements, not n
 4. Keep OPEN, FAIL and UNVERIFIED distinct from PASS. Report a concrete defect to its existing owner; any resulting source change creates a new candidate and requires affected recertification. No promotion follows from this preparation packet alone.
 
 Preparation verification: existing harness/workflow scopes inspected, successful run identity/timestamp verified, local links and whitespace checked. No runtime, workflow, content decision, production or rollback change.
+
+Subsequent Lane A hardening: [Library locale/filter restoration](../../work/tasks/20261006-lane-a-library-locale-filter-restoration.md) adds real language-control reloads and Clear/reload checks to the existing Library harness. The table above describes the named earlier run; the expanded checks require their own successful exact-source run before claiming candidate coverage. Populated-content locale/fallback acceptance remains OPEN.
