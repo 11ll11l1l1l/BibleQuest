@@ -42,20 +42,23 @@ test('release evidence is deterministic metadata and excludes content bodies', (
     }]
   };
   const other = type => ({ ...item, id: `${type}.ready`, type, translations: [] });
-
-  const report = buildV7ContentReleaseEvidence({
+  const input = [item, other('book'), other('past_teaching')];
+  const options = {
     candidateSha: 'A'.repeat(40),
-    items: [item, other('book'), other('past_teaching')],
     supportedLocales: ['tl', 'en'],
     v7KeyCount: 2,
     missingV7KeysByLocale: { en: [], tl: [] }
-  });
+  };
+
+  const report = buildV7ContentReleaseEvidence({ ...options, items: input });
+  const reordered = buildV7ContentReleaseEvidence({ ...options, items: [...input].reverse() });
 
   assert.equal(report.candidateSha, 'a'.repeat(40));
   assert.equal(report.ready, true);
   assert.equal(report.localization.ready, true);
   assert.deepEqual(report.localization.supportedLocales, ['en', 'tl']);
   assert.equal(report.items[1].translations[0].locale, 'tl');
+  assert.deepEqual(reordered.items, report.items);
   const serialized = JSON.stringify(report);
   assert.ok(!serialized.includes('SECRET SOURCE BODY'));
   assert.ok(!serialized.includes('SECRET TRANSLATION BODY'));
@@ -90,11 +93,22 @@ test('current representative content produces truthful OPEN evidence while V7 UI
   assert.equal(pilgrim.review.status, 'pending_review');
 });
 
-test('release evidence requires an explicit full candidate SHA and valid localization inputs', () => {
+test('release evidence fails closed on incomplete candidate or localization inputs', () => {
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'abc', items: [], supportedLocales: ['en'], v7KeyCount: 0
+    candidateSha: 'abc', items: [], supportedLocales: ['en'], v7KeyCount: 1, missingV7KeysByLocale: { en: [] }
   }), /40-character/);
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'c'.repeat(40), items: [], supportedLocales: 'en', v7KeyCount: 0
+    candidateSha: 'c'.repeat(40), items: [], supportedLocales: 'en', v7KeyCount: 1, missingV7KeysByLocale: { en: [] }
   }), /supportedLocales/);
+  assert.throws(() => buildV7ContentReleaseEvidence({
+    candidateSha: 'c'.repeat(40), items: [], supportedLocales: ['en'], v7KeyCount: 0, missingV7KeysByLocale: { en: [] }
+  }), /positive integer/);
+  assert.throws(() => buildV7ContentReleaseEvidence({
+    candidateSha: 'c'.repeat(40), items: [], supportedLocales: ['en', 'tl'], v7KeyCount: 1,
+    missingV7KeysByLocale: { en: [] }
+  }), /missingV7KeysByLocale\.tl/);
+  assert.throws(() => buildV7ContentReleaseEvidence({
+    candidateSha: 'c'.repeat(40), items: [], supportedLocales: ['en'], v7KeyCount: 1,
+    missingV7KeysByLocale: { en: 'none' }
+  }), /missingV7KeysByLocale\.en/);
 });
