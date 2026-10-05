@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLessonRunner } from '../../src/features/lesson-runner/controller.js';
-function fixture({ userId = 'learner', progress = [], failSave = false } = {}) {
+function fixture({resumeStepId = null, userId = 'learner', progress = [], failSave = false } = {}) {
   const auth = { authenticated: true, user: { id: userId } }, active = { congregationId: 'church', userId };
   const writes = [];
   const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'].map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
@@ -10,7 +10,7 @@ function fixture({ userId = 'learner', progress = [], failSave = false } = {}) {
     async loadLesson() { return lesson; }, async loadOperationalProgress() { return progress; },
     async saveProgress(pair, revision, data) { if (failSave) throw new Error('Offline'); writes.push({ pair, revision, data }); },
   };
-  const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active }, pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
+  const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active }, pairId: 'pair', revisionId: 'revision', resumeStepId, now: () => '2026-10-04T10:00:00Z' });
   return { runner, service, writes, auth, active, lesson };
 }
 test('resumes the saved immutable revision and preserves its start timestamp', async () => {
@@ -64,4 +64,11 @@ test('concurrent clicks cannot create overlapping progress writes', async () => 
 test('sign-out between load and navigation clears all lesson content without writing', async () => {
   const f = fixture(); await f.runner.load(); f.auth.authenticated = false;
   await f.runner.move(1); assert.equal(f.runner.getState().lesson, null); assert.equal(f.writes.length, 0);
+});
+
+test('Reader return restores the exact pinned step without rewriting saved progress', async () => {
+  const f=fixture({resumeStepId:'step-4',progress:[{status:'in_progress',currentStepId:'step-2'}]});
+  await f.runner.load();assert.equal(f.runner.getState().stepIndex,4);assert.equal(f.runner.getState().progress.currentStepId,'step-2');assert.equal(f.writes.length,0);
+  const invalid=fixture({resumeStepId:'another-revision-step'});await invalid.runner.load();assert.equal(invalid.runner.getState().status,'error');assert.equal(invalid.writes.length,0);
+  const corrupt=fixture({resumeStepId:'step-4',progress:[{status:'in_progress',currentStepId:'unknown'}]});await corrupt.runner.load();assert.equal(corrupt.runner.getState().status,'error');
 });

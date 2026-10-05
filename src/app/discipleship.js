@@ -22,6 +22,9 @@ function normalizePair(row, context) {
     mentorId: identifier(row?.mentorId ?? row?.mentor_id),
     menteeId: identifier(row?.menteeId ?? row?.mentee_id),
     state: identifier(row?.state ?? row?.status).toLowerCase(),
+    mentorAcceptedAt: row?.mentorAcceptedAt ?? row?.mentor_accepted_at ?? null,
+    menteeAcceptedAt: row?.menteeAcceptedAt ?? row?.mentee_accepted_at ?? null,
+    endedAt: row?.endedAt ?? row?.ended_at ?? null,
   });
   if (!pair.id || pair.congregationId !== context.congregationId
     || !pair.mentorId || !pair.menteeId || pair.mentorId === pair.menteeId
@@ -240,6 +243,56 @@ export function createDiscipleshipService({ repository, session, membership }) {
     return pair;
   }
 
+  async function getPair(pairId) {
+    return inContext(context => resolvePair(pairId, context, { active: false }));
+  }
+
+  async function listPairCandidates() {
+    return inContext(async context => {
+      if (!['leader','pastor','admin'].includes(membership.getActive()?.role)) fail('BQ_DISCIPLESHIP_INVITE_DENIED', 'An authorized congregation leader must create the invitation.');
+      const rows = await repository.listPairCandidates(context);
+      assertCurrent(context);
+      const seen = new Set();
+      return Object.freeze(rows.map(row => {
+        const userId = identifier(row.user_id);
+        if (!userId || userId === context.userId || row.congregation_id !== context.congregationId || row.active !== true || seen.has(userId)) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Member directory returned an invalid invitation candidate.');
+        seen.add(userId);
+        return Object.freeze({ userId, displayName: String(row.display_name || '') });
+      }));
+    });
+  }
+
+  async function invitePair({ otherUserId, role } = {}) {
+    return inContext(async context => {
+      if (!['leader','pastor','admin'].includes(membership.getActive()?.role)) fail('BQ_DISCIPLESHIP_INVITE_DENIED', 'An authorized congregation leader must create the invitation.');
+      const other = identifier(otherUserId);
+      if (!other || other === context.userId || !['mentor','mentee'].includes(role)) fail('BQ_DISCIPLESHIP_INVITE_INVALID', 'Choose another member and your role in this pair.');
+      const input = role === 'mentor' ? { mentorId: context.userId, menteeId: other } : { mentorId: other, menteeId: context.userId };
+      const pair = normalizePair(await repository.invitePair(input, context), context);
+      assertCurrent(context);
+      if (pair.mentorId !== input.mentorId || pair.menteeId !== input.menteeId || pair.state !== 'invited'
+          || pair.mentorAcceptedAt || pair.menteeAcceptedAt || pair.endedAt) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Invitation acknowledgement did not match the requested pair.');
+      return pair;
+    });
+  }
+
+  async function transitionPair(pairId, action, { confirmed = false } = {}) {
+    return inContext(async context => {
+      if (!['accept','decline','end'].includes(action) || (action === 'end' && !confirmed)) fail('BQ_DISCIPLESHIP_PAIR_ACTION', 'Choose a supported action and confirm ending the relationship.');
+      const before = await resolvePair(pairId, context, { active: false });
+      const allowed = action === 'accept' ? ['invited','active'] : action === 'decline' ? ['invited','declined'] : ['active','suspended','ended'];
+      if (!allowed.includes(before.state)) fail('BQ_DISCIPLESHIP_PAIR_ACTION', 'This relationship no longer allows the selected action.');
+      const pair = normalizePair(await repository.transitionPair(before.id, action, context), context);
+      assertCurrent(context);
+      const acceptedAt = context.userId === pair.mentorId ? pair.mentorAcceptedAt : pair.menteeAcceptedAt;
+      const validState = action === 'accept' ? ['invited','active'].includes(pair.state) && typeof acceptedAt === 'string' && Number.isFinite(Date.parse(acceptedAt))
+        : pair.state === (action === 'decline' ? 'declined' : 'ended') && typeof pair.endedAt === 'string' && Number.isFinite(Date.parse(pair.endedAt));
+      if (pair.id !== before.id || pair.mentorId !== before.mentorId || pair.menteeId !== before.menteeId || !validState
+          || (pair.state === 'active' && [pair.mentorAcceptedAt, pair.menteeAcceptedAt].some(value => typeof value !== 'string' || !Number.isFinite(Date.parse(value))))) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Lifecycle acknowledgement did not match the requested pair action.');
+      return pair;
+    });
+  }
+
   async function listPairs() {
     return inContext(async context => {
       const rows = await repository.listPairs(context);
@@ -377,6 +430,10 @@ export function createDiscipleshipService({ repository, session, membership }) {
 
   return Object.freeze({
     listPairs,
+    getPair,
+    invitePair,
+    listPairCandidates,
+    transitionPair,
     loadAssignableCurriculum,
     loadCurriculum,
     loadLesson,
