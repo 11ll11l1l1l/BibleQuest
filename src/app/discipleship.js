@@ -262,16 +262,38 @@ export function createDiscipleshipService({ repository, session, membership }) {
     });
   }
 
-  async function invitePair({ otherUserId, role } = {}) {
+  async function invitePair({ otherUserId, role, invitationId } = {}) {
     return inContext(async context => {
       if (!['leader','pastor','admin'].includes(membership.getActive()?.role)) fail('BQ_DISCIPLESHIP_INVITE_DENIED', 'An authorized congregation leader must create the invitation.');
       const other = identifier(otherUserId);
       if (!other || other === context.userId || !['mentor','mentee'].includes(role)) fail('BQ_DISCIPLESHIP_INVITE_INVALID', 'Choose another member and your role in this pair.');
       const input = role === 'mentor' ? { mentorId: context.userId, menteeId: other } : { mentorId: other, menteeId: context.userId };
-      const pair = normalizePair(await repository.invitePair(input, context), context);
+      const retryId = identifier(invitationId);
+      if (retryId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(retryId)) fail('BQ_DISCIPLESHIP_INVITE_INVALID', 'A valid invitation retry ID is required.');
+      let raw, recovered = false;
+      try {
+        raw = await repository.invitePair({ ...input, ...(retryId ? { invitationId: retryId } : {}) }, context);
+      } catch (error) {
+        assertCurrent(context);
+        if (!retryId) throw error;
+        // An ambiguous transport failure may follow a committed insert. Recover
+        // only this request's primary key through participant/tenant-scoped RLS.
+        try { raw = await repository.getPair(retryId, context); }
+        catch { assertCurrent(context); throw error; }
+        assertCurrent(context);
+        if (!raw) throw error;
+        if (raw.initiated_by !== context.userId) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Invitation recovery did not match its initiating participant.');
+        recovered = true;
+      }
+      const pair = normalizePair(raw, context);
       assertCurrent(context);
-      if (pair.mentorId !== input.mentorId || pair.menteeId !== input.menteeId || pair.state !== 'invited'
-          || pair.mentorAcceptedAt || pair.menteeAcceptedAt || pair.endedAt) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Invitation acknowledgement did not match the requested pair.');
+      if ((retryId && pair.id !== retryId) || pair.mentorId !== input.mentorId || pair.menteeId !== input.menteeId
+          || (!recovered && (pair.state !== 'invited' || pair.mentorAcceptedAt || pair.menteeAcceptedAt || pair.endedAt))) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Invitation acknowledgement did not match the requested pair.');
+      // A recovered invitation may have advanced while the response was lost.
+      // Display current authority, without repeating acceptance or reopening it.
+      const validStamp = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+      if (recovered && ((['active','suspended'].includes(pair.state) && ![pair.mentorAcceptedAt,pair.menteeAcceptedAt].every(validStamp))
+          || (['declined','ended'].includes(pair.state) && !validStamp(pair.endedAt)))) fail('BQ_DISCIPLESHIP_PAIR_RESPONSE', 'Recovered invitation lifecycle data was incomplete.');
       return pair;
     });
   }

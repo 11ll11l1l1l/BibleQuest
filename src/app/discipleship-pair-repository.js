@@ -1,5 +1,5 @@
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const COLUMNS='id,congregation_id,mentor_id,mentee_id,state,mentor_accepted_at,mentee_accepted_at,ended_at';
+const COLUMNS='id,congregation_id,mentor_id,mentee_id,state,initiated_by,mentor_accepted_at,mentee_accepted_at,ended_at';
 
 // Pair reads/invitations remain RLS-scoped; lifecycle updates use the existing RPC.
 export function createDiscipleshipPairRepository(getClient) {
@@ -28,8 +28,9 @@ export function createDiscipleshipPairRepository(getClient) {
     async invitePair(input,context) {
       if(!UUID.test(input?.mentorId)||!UUID.test(input?.menteeId)||input.mentorId===input.menteeId
           ||![input.mentorId,input.menteeId].includes(context?.userId))throw new Error('A valid participant-owned invitation is required.');
+      if(input.invitationId && !UUID.test(input.invitationId))throw new Error('A valid invitation retry ID is required.');
       const client=await scopedClient(context);
-      const {data,error}=await client.from('v7_mentor_pairs').insert({congregation_id:context.congregationId,
+      const {data,error}=await client.from('v7_mentor_pairs').insert({...(input.invitationId ? {id:input.invitationId} : {}),congregation_id:context.congregationId,
         mentor_id:input.mentorId,mentee_id:input.menteeId,initiated_by:context.userId,state:'invited'}).select(COLUMNS).single();
       if(error)throw error;
       return data;
