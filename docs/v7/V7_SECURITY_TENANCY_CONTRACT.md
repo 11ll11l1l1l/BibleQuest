@@ -1,5 +1,7 @@
 # BibleQuest V7 Security and Tenancy Contract (P0-C)
 
+> Current V7 communication boundary (2026-10-05): [the accepted reconciliation](V7_PAIR_COMMUNICATION_RECONCILIATION.md) supersedes the historical OPEN pair-thread dependency below. V7 supports explicit item-level lesson-response sharing with the active mentor; generic pair-private chat is unavailable and excluded. Conditional thread-security requirements do not authorize messaging infrastructure or create a V7 release blocker. Response-sharing privacy, pair lifecycle and tenant-denial requirements remain mandatory.
+
 Status: **P0-C security/privacy/tenancy contract accepted in the serialized P0 freeze**
 Owner: **Lane C — Security, privacy and tenancy**
 Baseline: current V7 scope in `DEVELOPMENT_PLAN_V7.md`

@@ -1,5 +1,7 @@
 # V7 data architecture contract
 
+> Current V7 communication boundary (2026-10-05): [the accepted reconciliation](V7_PAIR_COMMUNICATION_RECONCILIATION.md) supersedes the historical OPEN pair-thread dependency below. V7 supports explicit item-level lesson-response sharing with the active mentor; generic pair-private chat is unavailable and excluded. Conditional thread-security requirements do not authorize messaging infrastructure or create a V7 release blocker. Response-sharing privacy, pair lifecycle and tenant-denial requirements remain mandatory.
+
 Status: P0-A contract accepted in the serialized P0 freeze; pair messaging implementation dependency OPEN after P1 inventory
 Reviewed against `v7/development` at `00ecb3c3a46606a342b0c259d7ce97579dd9317d`; original Lane A task began at `cb484bc839f9874659f501a755d93ae78dbceed6`
 Scope: logical entities, ownership, and relationships for Library content and structured ONE 2 ONE discipleship. This is a logical contract, not a migration or claim that physical tables already exist.
