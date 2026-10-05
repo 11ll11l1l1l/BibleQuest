@@ -26,7 +26,7 @@ function surfaceFor(route) {
   if (route.startsWith('one-to-one-pair')) return '[data-pairing]';
   if (route.startsWith('one-to-one-track') || route.startsWith('one-to-one-module')) return '[data-assigned-curriculum]';
   if (route.startsWith('one-to-one-lesson')) return '[data-lesson-runner]';
-  return 'section:has([data-pair-results])';
+  return 'section:has(> [data-pair-results])';
 }
 
 async function assertBuiltRoute(page, route, label, { checkOverflow = false } = {}) {
