@@ -4,13 +4,14 @@ import { getMissingLocaleKeys, localization, t } from '../../src/app/localizatio
 import { createLibraryPage } from '../../src/features/library/page.js';
 import { renderAssignmentPreparation } from '../../src/features/curriculum-authoring/assignment-page.js';
 import { renderPublicationHandoff } from '../../src/features/curriculum-authoring/publication-handoff.js';
+import { v7PairingLocales } from '../../src/content/locales/v7-pairing.js';
 import { v7UiTl, v7UiCeb } from '../../src/content/locales/v7-ui-translations.js';
 
 const placeholders = message => [...message.matchAll(/\{([a-z0-9_.-]+)\}/gi)].map(match => match[1]).sort();
 
 test('V7 UI translations cover the complete registered inventory and preserve interpolation contracts', () => {
   const keys = localization.keyInventory.filter(key => key.startsWith('v7.'));
-  for (const [locale, dictionary] of Object.entries({ tl: v7UiTl, ceb: v7UiCeb })) {
+  for (const [locale, dictionary] of Object.entries({ tl: {...v7UiTl,...v7PairingLocales.tl}, ceb: {...v7UiCeb,...v7PairingLocales.ceb} })) {
     assert.deepEqual(Object.keys(dictionary).sort(), keys, `${locale} must cover exactly the registered V7 keys`);
     assert.equal(getMissingLocaleKeys(locale).filter(key => key.startsWith('v7.')).length, 0);
     for (const key of keys) {

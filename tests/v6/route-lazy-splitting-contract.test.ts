@@ -27,8 +27,10 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     .split('\n')
     .filter(line => line.startsWith('const ') && line.includes(" = args => lazyFeaturePage('"));
 
-  assert.equal(lazyProxyLines.length, 47);
+  assert.equal(lazyProxyLines.length, 49);
   for (const route of [
+    "const pairingPage = args => lazyFeaturePage('pairing', 'pairingPage', args);",
+    "const assignedCurriculumPage = args => lazyFeaturePage('discipleship-curriculum', 'assignedCurriculumPage', args);",
     "const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);",
     "const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);",
     "const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', args);",
@@ -37,6 +39,7 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     "const ministryAnnouncementsPage = args => lazyFeaturePage('ministry-announcements', 'ministryAnnouncementsPage', args);",
   ]) assert.ok(lazyProxyLines.includes(route), `V5.1 parity route must remain lazy: ${route}`);
   assert.match(source, /const readerPage = args => createLazyPage\(\{[\s\S]*?import\('\.\/reader-v6-page\.js'\)/);
+  assert.match(source, /const lessonRoutePage = args => createLazyPage\(\{[\s\S]*?import\('\.\.\/features\/lesson-runner\/route-page\.js'\)/);
   assert.match(readerBoot, /import\('\.\.\/v6\/reader\/browser-packages\.ts'\)/);
   assert.match(readerBoot, /import\('\.\.\/v6\/reader\/audio-provider\.ts'\)/);
   assert.equal(source.includes("import { createWisdomSituationsService } from './wisdom-situations.js';"), false);

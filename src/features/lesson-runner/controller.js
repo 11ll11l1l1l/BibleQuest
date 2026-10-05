@@ -6,7 +6,7 @@ function responseText(value) {
   if (value && typeof value === 'object' && typeof value.text === 'string') return value.text;
   return '';
 }
-export function createLessonRunner({ service, session, membership, pairId, revisionId, now = () => new Date().toISOString() }) {
+export function createLessonRunner({ service, session, membership, pairId, revisionId, resumeStepId = null, now = () => new Date().toISOString() }) {
   if (!service || !session?.getState || !membership?.getActive || !pairId || !revisionId) throw new TypeError('Lesson runner requires the scoped discipleship service and lesson identity.');
   let generation = 0, disposed = false, loadedContext = null;
   const dirtyResponseSteps = new Set(), responseEditVersions = new Map();
@@ -91,7 +91,9 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       if (!Array.isArray(rows) || rows.length > 1) fail('BQ_LESSON_PROGRESS_INVALID', 'This lesson has ambiguous progress.');
       const progress = rows[0] ?? null;
       if (progress && !['not_started', 'in_progress', 'completed'].includes(progress.status)) fail('BQ_LESSON_PROGRESS_INVALID', 'This lesson has an invalid progress state.');
-      const stepIndex = progress?.currentStepId ? lesson.steps.findIndex(step => step.id === progress.currentStepId) : 0;
+      if (progress?.currentStepId && !lesson.steps.some(step => step.id === progress.currentStepId)) fail('BQ_LESSON_PROGRESS_INVALID', 'Saved progress does not belong to this lesson revision.');
+      const requestedStep = resumeStepId || progress?.currentStepId;
+      const stepIndex = requestedStep ? lesson.steps.findIndex(step => step.id === requestedStep) : 0;
       if (stepIndex < 0) fail('BQ_LESSON_PROGRESS_INVALID', 'Saved progress does not belong to this lesson revision.');
       loadedContext = key;
       const writable = pair.menteeId === session.getState().user.id;

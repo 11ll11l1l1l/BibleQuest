@@ -14,7 +14,7 @@ function responseEditor(state, step, t) {
     <textarea id="lesson-response-${escape(step.id)}" data-lesson-response="${escape(step.id)}" rows="5">${escape(value)}</textarea>
     <p class="bq-help">${t('responseHint')}</p>`;
 }
-export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeContext }) {
+export function createLessonRunnerPage({ runner, onBack, onScripture, isContextReady = () => false, subscribeContext }) {
   if (typeof subscribeContext !== 'function') throw new TypeError('Lesson page requires account/congregation invalidation wiring.');
   const t = key => escape(localization.t(key, { dictionaries: COPY }));
   return {
@@ -47,7 +47,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeC
         if (target.hasAttribute('data-lesson-scripture')) {
           const state = runner.getState(), step = state.lesson?.steps[state.stepIndex];
           const ref = step?.scriptureRefs?.[Number(target.getAttribute('data-lesson-scripture'))];
-          if (ref && onScripture) onScripture(ref, { routeKey: 'one-to-one-lesson', ...runner.getIdentity(), stepId: step.id });
+          if (ref && onScripture) try { onScripture(ref, { routeKey: 'one-to-one-lesson', ...runner.getIdentity(), stepId: step.id }); } catch { const status = host.querySelector('[role="status"]'); if (status) status.textContent = localization.t('unavailable', { dictionaries: COPY }); }
           return;
         }
         const action = target.hasAttribute('data-lesson-complete') ? runner.complete()
@@ -62,7 +62,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, subscribeC
       page.addEventListener('click', click);
       page.addEventListener('input', input);
       const unsubscribe = runner.subscribe(render);
-      const unsubscribeContext = subscribeContext(() => runner.invalidate());
+      const unsubscribeContext = subscribeContext(() => { runner.invalidate(); if (isContextReady()) void runner.load(); });
       render(runner.getState()); void runner.load();
       return () => { disposed = true; unsubscribe(); unsubscribeContext(); page.removeEventListener('click', click); page.removeEventListener('input', input); runner.dispose(); };
     },

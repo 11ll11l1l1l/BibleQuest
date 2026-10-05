@@ -246,6 +246,6 @@ export function createSupabaseDiscipleshipService({ client, session, membership,
       }
     },
   });
-  const composed = pairRepository ? Object.freeze({ ...repository, listPairs: pairRepository.listPairs, getPair: pairRepository.getPair }) : repository;
+  const composed = pairRepository ? Object.freeze({ ...repository, listPairs: pairRepository.listPairs, getPair: pairRepository.getPair, listPairCandidates: pairRepository.listPairCandidates, invitePair: pairRepository.invitePair, transitionPair: pairRepository.transitionPair }) : repository;
   return createDiscipleshipService({ repository: composed, session, membership });
 }

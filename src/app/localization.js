@@ -1,3 +1,4 @@
+import { v7PairingLocales, V7_PAIRING_KEY_INVENTORY } from '../content/locales/v7-pairing.js';
 import { storage } from '../core/storage.js';
 import { en, LOCALE_KEY_INVENTORY } from '../content/locales/en.js';
 import { tl } from '../content/locales/tl.js';
@@ -14,13 +15,14 @@ const DEFAULT_LOCALE = 'en';
 const keyInventory = Object.freeze([...new Set([
   ...LOCALE_KEY_INVENTORY,
   ...V7_CONTENT_KEY_INVENTORY,
+  ...V7_PAIRING_KEY_INVENTORY,
   ...V7_ASSIGNMENT_KEY_INVENTORY,
   ...V7_PUBLICATION_HANDOFF_KEY_INVENTORY,
 ])].sort());
 const dictionaries = Object.freeze({
-  en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn, ...v7AssignmentEn, ...v7PublicationHandoffEn }),
-  tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl, ...v7UiTl }),
-  ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb, ...v7UiCeb })
+  en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn, ...v7AssignmentEn, ...v7PublicationHandoffEn, ...v7PairingLocales.en }),
+  tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl, ...v7UiTl, ...v7PairingLocales.tl }),
+  ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb, ...v7UiCeb, ...v7PairingLocales.ceb })
 });
 const supportedLocales = Object.freeze(Object.keys(dictionaries));
 
