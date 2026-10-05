@@ -23,6 +23,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
     mount(root) {
       const page = root.querySelector('[data-lesson-runner]'), host = page.querySelector('[data-lesson-content]');
       let disposed = false;
+      const loadWhenReady = () => { if (!disposed && isContextReady()) void runner.load(); };
       const render = state => {
         if (disposed) return;
         if (!state.lesson) {
@@ -43,7 +44,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
         const target = event.target.closest?.('button');
         if (!target || target.disabled || disposed) return;
         if (target.hasAttribute('data-lesson-back')) { onBack(); return; }
-        if (target.hasAttribute('data-lesson-reload')) { void runner.load(); return; }
+        if (target.hasAttribute('data-lesson-reload')) { loadWhenReady(); return; }
         if (target.hasAttribute('data-lesson-scripture')) {
           const state = runner.getState(), step = state.lesson?.steps[state.stepIndex];
           const ref = step?.scriptureRefs?.[Number(target.getAttribute('data-lesson-scripture'))];
@@ -62,8 +63,8 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
       page.addEventListener('click', click);
       page.addEventListener('input', input);
       const unsubscribe = runner.subscribe(render);
-      const unsubscribeContext = subscribeContext(() => { runner.invalidate(); if (isContextReady()) void runner.load(); });
-      render(runner.getState()); void runner.load();
+      const unsubscribeContext = subscribeContext(() => { if (disposed) return; runner.invalidate(); loadWhenReady(); });
+      render(runner.getState()); loadWhenReady();
       return () => { disposed = true; unsubscribe(); unsubscribeContext(); page.removeEventListener('click', click); page.removeEventListener('input', input); runner.dispose(); };
     },
   };
