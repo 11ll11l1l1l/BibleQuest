@@ -90,7 +90,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   }
   if (rights?.status !== 'verified' || !String(rights.holder ?? '').trim()
       || !String(rights.basis ?? '').trim() || typeof rights.attribution !== 'string'
-      || !Array.isArray(rights.allowedUses)
+      || !Array.isArray(rights.allowedUses) || !rights.allowedUses.length
       || rights.allowedUses.some(use => typeof use !== 'string' || !use.trim())) {
     throw libraryError('Published Library items require verified rights and an attribution basis.', 'BQ_LIBRARY_RIGHTS');
   }
