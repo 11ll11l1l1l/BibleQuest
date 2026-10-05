@@ -97,3 +97,20 @@ test('invalidate and dispose cancel pending work and clear authoring state',asyn
   const loading=f.controller.load();f.controller.invalidate();late.resolve([track]);await loading;assert.equal(f.controller.getState().tracks.length,0);
   f.controller.dispose();assert.equal(f.controller.getState().status,'disposed');assert.equal(f.controller.getState().tracks.length,0);const before=updates;f.controller.invalidate();assert.equal(updates,before);
 });
+
+
+test('successful step save survives a failed readiness refresh without a stale publication request',async()=>{
+  let failReadiness=false;
+  const f=fixture({readiness:{async inspect(){if(failReadiness)throw new Error('readiness unavailable');return ready;}}});
+  await selectRevisionPath(f.controller);failReadiness=true;
+  await f.controller.saveStep({position:1,content:{text:'Saved'}});
+  const state=f.controller.getState();assert.equal(state.status,'error');assert.equal(state.steps.length,2);
+  assert.equal(state.steps[1].position,1);assert.equal(state.readiness,null);assert.equal(state.selected.revisionId,revision.id);
+});
+
+test('editing hierarchy retires the optimistic publication request until readiness is rechecked',async()=>{
+  const f=fixture();await selectRevisionPath(f.controller);
+  await f.controller.updateTrack({title:'New track'});assert.equal(f.controller.getState().readiness,null);
+  await f.controller.refreshReadiness();await f.controller.updateModule({title:'New module'});assert.equal(f.controller.getState().readiness,null);
+  await f.controller.refreshReadiness();await f.controller.updateLesson({title:'New lesson'});assert.equal(f.controller.getState().readiness,null);
+});
