@@ -41,6 +41,17 @@ test('missing translations still use the approved English fallback and are inven
   assert.equal(t('v7.library.title', { locale: 'unsupported-locale' }), 'Library');
 });
 
+test('blank translations use the same fallback as the missing-key inventory', () => {
+  const key = 'v7.library.count';
+  for (const blank of ['', ' ', '\t\n', null, undefined]) {
+    const dictionaries = { en: { [key]: '{count} Library items shown' }, tl: { [key]: blank } };
+    assert.ok(getMissingLocaleKeys('tl', dictionaries).includes(key));
+    assert.equal(t(key, { locale: 'tl', dictionaries, values: { count: 3 } }), '3 Library items shown');
+  }
+  assert.equal(t(key, { locale: 'tl', dictionaries: { en: { [key]: ' \n' }, tl: { [key]: '\t' } } }), key);
+  assert.equal(t(key, { locale: 'tl', dictionaries: { en: {}, tl: { [key]: '  {count} mga item  ' } }, values: { count: 3 } }), '  3 mga item  ');
+});
+
 
 test('locale switching reaches rendered Library, assignment, and publication controls through the existing owner', () => {
   const saved = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
