@@ -12,7 +12,9 @@ try {
     for (const width of [320, 390, 430]) {
       const context = await browser.newContext({ viewport: { width, height: 900 } });
       await context.addInitScript(value => {
-        localStorage.setItem('biblequest.v3.locale', JSON.stringify(value));
+        if (localStorage.getItem('biblequest.v3.locale') === null) {
+          localStorage.setItem('biblequest.v3.locale', JSON.stringify(value));
+        }
         localStorage.setItem('biblequest.v3.accessibility-settings', JSON.stringify({ text: 'xlarge', contrast: 'strong', motion: 'reduce' }));
       }, locale);
       const page = await context.newPage();
@@ -65,6 +67,36 @@ try {
       assert.ok(await page.locator('[data-library-status]').textContent());
       const widest = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
       assert.ok(widest <= width + 1, `${locale}/${width}: Library overflow ${widest}`);
+
+      // The real shell language control reloads the app. Submitted discovery
+      // must survive that reload, while an unsent search draft must not replace it.
+      await query.fill('abiding');
+      await page.locator('#bq-library-type').selectOption('devotional');
+      await query.press('Enter');
+      await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
+      await query.fill('unsent draft');
+      for (const nextLocale of ['en', 'tl', 'ceb', locale]) {
+        if (await page.locator('[data-locale-select]').inputValue() !== nextLocale) {
+          await Promise.all([
+            page.waitForEvent('load'),
+            page.locator('[data-locale-select]').selectOption(nextLocale),
+          ]);
+        } else {
+          await page.reload({ waitUntil: 'networkidle' });
+        }
+        await page.locator('[data-library-page]').waitFor();
+        await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
+        assert.equal(await page.locator('[data-library-page] h1').textContent(), localization.t('v7.library.title', { locale: nextLocale }));
+        assert.equal(await query.inputValue(), 'abiding', `${nextLocale}/${width}: submitted search survives locale reload`);
+        assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
+        assert.equal(await page.locator('[data-library-status]').textContent(), localization.t('v7.library.error', { locale: nextLocale }));
+        assert.equal(await page.locator('[data-library-retry]').textContent(), localization.t('v7.library.retry', { locale: nextLocale }));
+      }
+      await page.locator('[data-library-clear]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-library-page]').waitFor();
+      assert.equal(await query.inputValue(), '', `${locale}/${width}: Clear survives reload`);
+      assert.equal(await page.locator('#bq-library-type').inputValue(), '');
 
       await page.goto(`${baseUrl}/#/library-item`, { waitUntil: 'networkidle' });
       await page.locator('[data-library-detail]').waitFor();

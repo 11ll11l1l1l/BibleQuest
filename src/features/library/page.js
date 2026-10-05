@@ -120,7 +120,7 @@ export function createLibraryPage({
       const submit = () => {
         lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: termInput.value };
         restoredTerm = termInput.value;
-        void service.list({ ...lastRequest });
+        navigate({ routeKey: LIBRARY_ROUTE_KEYS.browse, ...lastRequest });
       };
       const onSubmit = event => {
         if (event.target !== form) return;
