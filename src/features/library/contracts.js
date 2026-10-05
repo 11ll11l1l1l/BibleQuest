@@ -44,6 +44,15 @@ function isHttpsUrl(value) {
   }
 }
 
+function canonicalLocale(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  try {
+    return Intl.getCanonicalLocales(value.trim())[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export function createLibraryContentTypeRegistry(additionalTypes = []) {
   const definitions = new Map();
   for (const definition of [...BUILT_IN_CONTENT_TYPES, ...additionalTypes]) {
@@ -89,7 +98,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   const review = record.review;
   const taxonomyLinks = record.taxonomyLinks;
   const translations = record.translations;
-  const sourceLocale = String(record.sourceLocale ?? record.locale ?? '').trim();
+  const sourceLocale = canonicalLocale(record.sourceLocale ?? record.locale);
   const sourceTitle = String(source?.title ?? '').trim();
   const sourceKind = String(source?.kind ?? '').trim();
   const sourceUriProvided = source?.uri !== undefined && source?.uri !== null && source?.uri !== '';
@@ -104,7 +113,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
     throw libraryError('Published Library items require a supported non-fixture HTTPS or catalog source identity.', 'BQ_LIBRARY_PROVENANCE');
   }
   if (!sourceContent || !sourceContentTitle || !sourceLocale) {
-    throw libraryError('Published Library items require source-language content and locale.', 'BQ_LIBRARY_PROVENANCE');
+    throw libraryError('Published Library items require source-language content with a valid BCP 47 locale.', 'BQ_LIBRARY_LOCALE');
   }
   if (rights?.status !== 'verified' || !String(rights.holder ?? '').trim()
       || !String(rights.basis ?? '').trim() || typeof rights.attribution !== 'string'
@@ -119,17 +128,26 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
   if (!Array.isArray(taxonomyLinks) || !Array.isArray(translations)) {
     throw libraryError('Published Library items require taxonomy links and translation records.', 'BQ_LIBRARY_CONTENT_CONTRACT');
   }
+  const normalizedTranslations = [];
+  const seenTranslationLocales = new Set();
   for (const translation of translations) {
+    const translationLocale = canonicalLocale(translation?.locale);
     if (translation?.reviewStatus !== 'reviewed' || translation.translatedFromRevision !== revisionId
-        || !String(translation.locale ?? '').trim() || !String(translation.translatedBy ?? '').trim()
+        || !translationLocale || translationLocale === sourceLocale || seenTranslationLocales.has(translationLocale)
+        || !String(translation.translatedBy ?? '').trim()
         || !String(translation.reviewedBy ?? '').trim() || !Number.isFinite(Date.parse(translation.reviewedAt))
         || !String(translation.content?.title ?? '').trim()) {
-      throw libraryError('Published Library items can expose only reviewed translations for the current revision.', 'BQ_LIBRARY_TRANSLATION');
+      throw libraryError('Published Library items can expose only unique reviewed translations for the current revision and a valid non-source locale.', 'BQ_LIBRARY_TRANSLATION');
     }
+    seenTranslationLocales.add(translationLocale);
+    normalizedTranslations.push({ ...translation, locale: translationLocale });
   }
 
   const summary = String(record.summary ?? '').trim();
-  const requestedLocale = String(record.locale ?? sourceLocale).trim();
+  const requestedLocale = canonicalLocale(record.locale ?? sourceLocale);
+  if (!requestedLocale) {
+    throw libraryError('Library returned an invalid requested locale.', 'BQ_LIBRARY_LOCALE');
+  }
   const readingMinutes = Number(record.readingMinutes);
   return Object.freeze({
     id,
@@ -138,7 +156,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
     publicationState: LIBRARY_PUBLICATION_STATES.published,
     title,
     summary,
-    locale: requestedLocale || sourceLocale,
+    locale: requestedLocale,
     sourceLocale,
     readingMinutes: Number.isFinite(readingMinutes) && readingMinutes > 0 ? Math.ceil(readingMinutes) : null,
     updatedAt: String(record.updatedAt ?? '').trim() || null,
@@ -147,7 +165,7 @@ export function normalizeLibraryItem(record, registry = createLibraryContentType
     rights: snapshotData(rights),
     review: snapshotData(review),
     taxonomyLinks: snapshotData(taxonomyLinks),
-    translations: snapshotData(translations),
+    translations: snapshotData(normalizedTranslations),
     revisionHistory: snapshotData(Array.isArray(record.revisionHistory) ? record.revisionHistory : []),
     derivatives: snapshotData(Array.isArray(record.derivatives) ? record.derivatives : []),
   });
