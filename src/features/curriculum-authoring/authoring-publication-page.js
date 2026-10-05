@@ -47,7 +47,7 @@ export function curriculumAuthoringPublicationPage({
       let disposed = false;
       let identity = requestKey(controller.getState().readiness);
       const renderPublication = state => {
-        if (!disposed) host.innerHTML = publicationHandoff.render(state?.readiness ?? null);
+        if (!disposed) host.innerHTML = publicationHandoff.render(state?.status === 'ready' ? state.readiness : null);
       };
       const sync = state => {
         const nextIdentity = requestKey(state?.readiness);
@@ -59,7 +59,7 @@ export function curriculumAuthoringPublicationPage({
       };
       const runPublication = async method => {
         const action = publicationHandoff?.[method];
-        if (typeof action !== 'function' || disposed) return;
+        if (typeof action !== 'function' || disposed || controller.getState().status !== 'ready') return;
         let pending;
         try {
           pending = action.call(publicationHandoff);
