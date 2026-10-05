@@ -59,7 +59,11 @@ export function publicationHandoff({preparePublication,onPrepared=()=>{},publish
       }catch(error){if(!disposed&&token===generation)errorKey='v7.publicationHandoff.error';throw error;}
       finally{if(!disposed&&token===generation)busy=false;}
     },
-    dispose(){disposed=true;generation+=1;busy=false;receipt=null;},
+    reset(){
+      if(disposed)return;
+      generation+=1;busy=false;receipt=null;errorKey=null;
+    },
+    dispose(){disposed=true;generation+=1;busy=false;receipt=null;errorKey=null;},
   };
   if(publish){
     api.publish=async()=>{
