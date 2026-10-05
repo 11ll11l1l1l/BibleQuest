@@ -138,3 +138,19 @@ test('fails closed when the composed publication host or handoff contract is mis
   const root = { ...f.root, querySelector(selector) { return selector === '[data-authoring-publication]' ? null : f.root.querySelector(selector); } };
   assert.throws(() => page.mount(root), /publication host/);
 });
+
+
+test('publication waits for authoring saves, loads and readiness checks to finish', async () => {
+  const f = fixture({ canPublish: true });
+  const page = curriculumAuthoringPublicationPage({ controller: f.controller, publicationHandoff: f.handoff });
+  const cleanup = page.mount(f.root); await tick();
+  for (const status of ['saving', 'loading', 'checking', 'error', 'idle']) {
+    f.setState({ ...state('one'), status });
+    assert.match(f.publicationHost.innerHTML, /not-ready/);
+    f.emitClick('publish'); await tick();
+    assert.equal(f.handoffCalls.filter(value => value === 'publish').length, 0);
+  }
+  f.setState(state('one')); f.emitClick('publish'); await tick();
+  assert.equal(f.handoffCalls.filter(value => value === 'publish').length, 1);
+  cleanup();
+});
