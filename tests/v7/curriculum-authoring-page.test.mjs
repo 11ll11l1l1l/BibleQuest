@@ -103,3 +103,23 @@ test('context change remains authoritative when an older authoring operation rej
   assert.doesNotMatch(host.innerHTML,/could not complete this action/);
   cleanup();
 });
+
+test('busy authoring rejects stale mutation events but keeps navigation available',async()=>{
+  let state=base(),listener,loads=0,selections=0,readiness=0,creates=0,backs=0;
+  const controller={
+    getState:()=>state,subscribe(fn){listener=fn;return()=>{listener=null;};},async load(){loads+=1;},
+    async selectTrack(){selections+=1;},async refreshReadiness(){readiness+=1;},async createTrack(){creates+=1;},
+    invalidate(){},dispose(){},
+  };
+  const host={innerHTML:''};const handlers=new Map();
+  const root={querySelector(selector){return selector==='[data-curriculum-authoring]'?host:null;},addEventListener(name,fn){handlers.set(name,fn);},removeEventListener(name){handlers.delete(name);}};
+  const page=curriculumAuthoringPage({controller,onBack:()=>{backs+=1;}});const cleanup=page.mount(root);await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(loads,1);state={...base(),status:'saving'};listener?.(state);
+  const click=(attrs,disabled=false)=>handlers.get('click')({target:{disabled,closest(){return this;},getAttribute(name){return attrs[name]??null;}}});
+  click({'data-authoring-action':'reload'});click({'data-authoring-action':'readiness'});click({'data-authoring-select':'track','data-id':'track-2'});
+  let prevented=0;const form={getAttribute:()=> 'track-create',elements:{namedItem:()=>({value:''})},closest(){return this;}};
+  handlers.get('submit')({target:form,preventDefault(){prevented+=1;}});click({'data-authoring-nav':'back'});
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(loads,1);assert.equal(readiness,0);assert.equal(selections,0);assert.equal(creates,0);assert.equal(prevented,1);assert.equal(backs,1);
+  cleanup();
+});
