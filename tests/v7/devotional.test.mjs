@@ -55,13 +55,24 @@ test('structured reading blocks are escaped and unsafe source URLs never become 
   assert.ok(!html.includes('href='));
 });
 
-test('devotional locale keys match and representative source bundle remains pending review', () => {
+test('devotional locale keys match and representative source bundle remains pending review with exact provenance', () => {
   for (const dictionary of Object.values(devotionalMessages)) assert.deepEqual(Object.keys(dictionary),Object.keys(devotionalMessages.en));
   const bundle=JSON.parse(readFileSync(new URL('../../content/v7/devotionals/spurgeon-samples.json',import.meta.url),'utf8'));
   const parsed=parseV7ContentBundle(bundle);
   assert.equal(parsed.items.length,2);
   assert.ok(parsed.items.every(row=>row.publicationState==='pending_review' && row.review.status==='pending_review'));
   assert.ok(parsed.items.every(row=>row.source.kind==='external' && row.rights.status==='verified'));
+  const byId=new Map(parsed.items.map(row=>[row.id,row]));
+  assert.equal(byId.get('devotional.spurgeon.january-02-am').source.uri,'https://www.ccel.org/ccel/spurgeon/morneve.d0102am.html');
+  assert.equal(byId.get('devotional.spurgeon.january-06-am').source.uri,'https://ccel.org/ccel/spurgeon/morneve/morneve.d0106am.html');
+  for (const row of parsed.items) {
+    assert.equal(row.source.catalogId,row.id);
+    assert.equal(row.source.organization,'Christian Classics Ethereal Library');
+    assert.equal(row.source.revision,'CCEL transcription verified 2026-10-05');
+    assert.equal(row.rights.evidenceUri,'https://ccel.org/s/spurgeon/morn_eve/morn_eve.html');
+    assert.equal(row.rights.verifiedAt,'2026-10-05T09:45:00Z');
+    assert.ok(Number.isFinite(Date.parse(row.rights.verifiedAt)));
+  }
 });
 
 test('shared detail route renders devotional body and clears it when context resets', async () => {
