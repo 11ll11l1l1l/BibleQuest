@@ -17,6 +17,11 @@ function assertFeatureShape(feature) {
   assert.equal(typeof feature.repositories.hierarchy.listModules, 'function');
   assert.equal(typeof feature.repositories.revisions.listRevisions, 'function');
   assert.equal(typeof feature.repositories.readiness.inspect, 'function');
+  assert.equal(typeof feature.preparePublication, 'function');
+  assert.equal(typeof feature.publicationHandoff.prepare, 'function');
+  assert.equal('publish' in feature.publicationHandoff, false, 'backend publication authority is not invented by feature composition');
+  assert.equal(typeof feature.createPage, 'function');
+  assert.match(feature.createPage().html, /data-authoring-publication/);
 }
 
 test('composes the complete curriculum-authoring boundary without owning shared lifecycle', () => {
