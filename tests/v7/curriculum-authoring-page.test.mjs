@@ -85,3 +85,21 @@ test('seven step editors restore saved content and references without changing s
   assert.match(html,/John/);assert.match(html,/value="library-1"/);assert.match(html,/Call a friend/);
   assert.doesNotMatch(html,/<select name="position">/);
 });
+
+test('context change remains authoritative when an older authoring operation rejects late',async()=>{
+  let state=base(),listener,contextListener,rejectLoad;
+  const pending=new Promise((resolve,reject)=>{rejectLoad=reject;});
+  const controller={
+    getState:()=>state,subscribe(fn){listener=fn;return()=>{listener=null;};},
+    async load(){return pending;},invalidate(){state=base();listener?.(state);},dispose(){},
+  };
+  const host={innerHTML:''};const handlers=new Map();
+  const root={querySelector(selector){return selector==='[data-curriculum-authoring]'?host:null;},addEventListener(name,fn){handlers.set(name,fn);},removeEventListener(name){handlers.delete(name);}};
+  const page=curriculumAuthoringPage({controller,subscribeContext(fn){contextListener=fn;return()=>{contextListener=null;};}});
+  const cleanup=page.mount(root);await new Promise(resolve=>setImmediate(resolve));contextListener();
+  assert.match(host.innerHTML,/Account or congregation changed/);
+  rejectLoad(new Error('stale authoring failure'));await new Promise(resolve=>setImmediate(resolve));
+  assert.match(host.innerHTML,/Account or congregation changed/);
+  assert.doesNotMatch(host.innerHTML,/could not complete this action/);
+  cleanup();
+});
