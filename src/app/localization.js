@@ -62,7 +62,8 @@ export function t(key, options = {}) {
   const locale = normalizeLocale(options.locale ?? getLocale());
   const localeDictionary = options.dictionaries?.[locale] || dictionaries[locale] || {};
   const englishDictionary = options.dictionaries?.en || dictionaries.en;
-  const message = localeDictionary[normalizedKey] || englishDictionary[normalizedKey] || normalizedKey;
+  const message = [localeDictionary[normalizedKey], englishDictionary[normalizedKey]]
+    .find(value => String(value ?? '').trim()) ?? normalizedKey;
   return interpolate(message, options.values);
 }
 
