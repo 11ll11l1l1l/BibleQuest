@@ -54,13 +54,13 @@ export function assignmentPreparationPage({preparation,subscribeContext=()=>()=>
   if(typeof onPrepared!=='function'||typeof onCreated!=='function')throw new TypeError('Assignment callbacks must be functions.');
   const t=(key,values)=>localization.t(key,{values});
   return {title:t('v7.assignment.title'),html:`<main data-assignment-preparation></main><nav><button type="button" data-assignment-nav="back">${escapeHtml(t('v7.assignment.back'))}</button></nav>`,mount(root){
-    const host=root.querySelector('[data-assignment-preparation]');let disposed=false,localErrorKey=null,mutationBusy=false,receipt=null,generation=0;
+    const host=root.querySelector('[data-assignment-preparation]');let disposed=false,localErrorKey=null,mutationBusy=false,receipt=null,generation=0,interactionGeneration=0;
     const render=state=>{if(!disposed&&host)host.innerHTML=renderAssignmentPreparation(state,{localErrorKey,canCreate:Boolean(createAssignment),mutationBusy,receipt});};
     const clearResult=()=>{receipt=null;localErrorKey=null;generation+=1;};
-    const run=async work=>{clearResult();render(preparation.getState());try{await work();}catch{if(!disposed){localErrorKey='v7.assignment.error';render(preparation.getState());}}};
+    const run=async work=>{clearResult();const interactionToken=++interactionGeneration;render(preparation.getState());try{await work();}catch{if(!disposed&&interactionToken===interactionGeneration){localErrorKey='v7.assignment.error';render(preparation.getState());}}};
     const runCreate=async()=>{
       if(mutationBusy||disposed||preparation.getState().status!=='ready')return;
-      localErrorKey=null;receipt=null;mutationBusy=true;const token=++generation;render(preparation.getState());
+      interactionGeneration+=1;localErrorKey=null;receipt=null;mutationBusy=true;const token=++generation;render(preparation.getState());
       try{
         const request=preparation.buildRequest();
         const result=validateReceipt(await createAssignment(request),request);
@@ -87,8 +87,8 @@ export function assignmentPreparationPage({preparation,subscribeContext=()=>()=>
     };
     root.addEventListener('click',click);
     const unsubscribe=preparation.subscribe(state=>{if(!mutationBusy){localErrorKey=null;receipt=null;generation+=1;}render(state);});
-    const unsubscribeContext=subscribeContext(()=>{generation+=1;mutationBusy=false;receipt=null;preparation.invalidate();localErrorKey='v7.assignment.contextChanged';render(preparation.getState());});
+    const unsubscribeContext=subscribeContext(()=>{interactionGeneration+=1;generation+=1;mutationBusy=false;receipt=null;preparation.invalidate();localErrorKey='v7.assignment.contextChanged';render(preparation.getState());});
     render(preparation.getState());void run(()=>preparation.loadPairs());
-    return()=>{disposed=true;generation+=1;unsubscribe();unsubscribeContext();root.removeEventListener('click',click);preparation.dispose();};
+    return()=>{disposed=true;interactionGeneration+=1;generation+=1;unsubscribe();unsubscribeContext();root.removeEventListener('click',click);preparation.dispose();};
   }};
 }
