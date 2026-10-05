@@ -156,3 +156,28 @@ test('stale creation clicks cannot dispatch while preparation is loading or fail
   for(const status of ['loading','error','idle']){state={...base(),status};clickAction(h.handlers,'create');await tick();}
   assert.equal(created,0);cleanup();
 });
+
+test('context change remains authoritative when an older preparation callback rejects late',async()=>{
+  const h=harness();let contextListener,rejectPrepared;
+  const pending=new Promise((resolve,reject)=>{rejectPrepared=reject;});
+  const page=assignmentPreparationPage({preparation:h.preparation,
+    onPrepared:async()=>pending,
+    subscribeContext(fn){contextListener=fn;return()=>{contextListener=null;};}});
+  const cleanup=page.mount(h.root);await tick();clickAction(h.handlers,'prepare');await tick();contextListener();
+  assert.match(h.host.innerHTML,/Account or congregation changed/);
+  rejectPrepared(new Error('stale preparation failure'));await tick();await tick();
+  assert.match(h.host.innerHTML,/Account or congregation changed/);
+  assert.doesNotMatch(h.host.innerHTML,/could not complete this action/);
+  cleanup();
+});
+
+test('a newer preparation action suppresses an older callback failure',async()=>{
+  const h=harness();let rejectFirst,calls=0;
+  const first=new Promise((resolve,reject)=>{rejectFirst=reject;});
+  const page=assignmentPreparationPage({preparation:h.preparation,onPrepared:async()=>{calls+=1;if(calls===1)return first;}});
+  const cleanup=page.mount(h.root);await tick();clickAction(h.handlers,'prepare');await tick();clickAction(h.handlers,'prepare');await tick();
+  assert.equal(calls,2);
+  rejectFirst(new Error('superseded preparation failure'));await tick();await tick();
+  assert.doesNotMatch(h.host.innerHTML,/could not complete this action/);
+  cleanup();
+});
