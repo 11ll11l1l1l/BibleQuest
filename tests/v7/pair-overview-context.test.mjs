@@ -10,12 +10,14 @@ function fixture(service,{ready=()=>false}={}){
   const cleanup=page.mount({querySelector:node});
   return {page,node,opened,notify:()=>context(),cleanup,get unsubscribed(){return unsubscribed;}};
 }
-test('overview automatically reloads only after the shared account and congregation are ready',async()=>{
+test('overview waits for shared account and congregation readiness before backend reads',async()=>{
   let ready=false,reads=0;const f=fixture({listPairs:async()=>{reads++;if(!ready)throw new Error('Session not hydrated');return [{id:'pair',state:'invited'}];}},{ready:()=>ready});
-  await flush();assert.equal(f.node('[data-pair-results]').innerHTML,'');f.notify();await flush();assert.equal(reads,1);
-  ready=true;f.notify();await flush();assert.equal(reads,2);assert.match(f.node('[data-pair-results]').innerHTML,/data-open-pair="pair"/);
+  await flush();assert.equal(reads,0);assert.equal(f.node('[data-pair-results]').innerHTML,'');assert.equal(f.node('[data-pair-status]').textContent,localization.t('v7.pairing.overviewChanged'));
+  f.node('[data-pair-retry]').handlers.get('click')();await flush();assert.equal(reads,0);
+  f.notify();await flush();assert.equal(reads,0);
+  ready=true;f.notify();await flush();assert.equal(reads,1);assert.match(f.node('[data-pair-results]').innerHTML,/data-open-pair="pair"/);
   f.node('[data-pair-results]').handlers.get('click')({target:{closest:()=>({getAttribute:()=> 'pair'})}});assert.deepEqual(f.opened,['pair']);
-  f.cleanup();f.notify();await flush();assert.equal(reads,2);assert.equal(f.unsubscribed,true);assert.equal(f.node('[data-pair-results]').handlers.size,0);
+  f.cleanup();f.notify();await flush();assert.equal(reads,1);assert.equal(f.unsubscribed,true);assert.equal(f.node('[data-pair-results]').handlers.size,0);
 });
 test('late overview results from an old congregation cannot replace the new context',async()=>{
   let oldResolve,newResolve,reads=0;const f=fixture({listPairs:()=>new Promise(resolve=>{if(++reads===1)oldResolve=resolve;else newResolve=resolve;})},{ready:()=>true});
@@ -28,11 +30,11 @@ test('overview labels and states follow English, Tagalog and Cebuano and do not 
   try{
     for(const locale of ['en','tl','ceb']){
       localization.setLocale(locale);assert.equal(localization.getLocale(),locale);
-      const f=fixture({listPairs:async()=>[]});await flush();
+      const f=fixture({listPairs:async()=>[]},{ready:()=>true});await flush();
       assert.ok(f.page.html.includes(localization.t('v7.pairing.overviewIntro')));assert.ok(f.page.html.includes(localization.t('v7.pairing.backGrow')));
       if(locale!=='en')assert.doesNotMatch(f.page.html,/Your mentor and mentee relationships|Choose congregation|Back to Grow/);
       assert.equal(f.node('[data-pair-status]').textContent,localization.t('v7.pairing.overviewEmpty'));f.cleanup();
-      const denied=fixture({listPairs:async()=>{throw new Error('SQL_INTERNAL_PRIVATE_DETAILS');}});await flush();
+      const denied=fixture({listPairs:async()=>{throw new Error('SQL_INTERNAL_PRIVATE_DETAILS');}},{ready:()=>true});await flush();
       assert.equal(denied.node('[data-pair-status]').textContent,localization.t('v7.pairing.error'));assert.doesNotMatch(denied.node('[data-pair-status]').textContent,/SQL_INTERNAL/);denied.cleanup();
     }
   }finally{if(previous)Object.defineProperty(globalThis,'localStorage',previous);else delete globalThis.localStorage;}

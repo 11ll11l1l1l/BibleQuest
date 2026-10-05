@@ -2,7 +2,7 @@
 
 Updated: 2026-10-05 JST
 
-Phase: **P2 — Library MVP ACTIVE**. P1 shared foundation is integrated; disjoint P3 implementation is eligible under the roadmap. P0 scope/contracts remain frozen.
+Phase: **P4 — Integrated hardening; P5 evidence preparation eligible**. Library and ONE 2 ONE implementation are integrated. Representative reviewed-content acceptance remains OPEN; no final release candidate is frozen. P0 scope/contracts remain frozen.
 Development branch: `v7/development`.
 Production baseline: V6 `7997d60e6069aa406ec005c32e33e46fee39bc12` on `main`.
 Canonical roadmap: `DEVELOPMENT_PLAN_V7.md`.
@@ -196,7 +196,17 @@ Repository preparation is complete. The V1–V6 lessons are consolidated in `wor
 
 The V6 owner-waived physical acceptance rows remain recorded in the original V6 acceptance authority; V7 does not rewrite them as PASS.
 
-## Immediate next action
+## Current integration checkpoint — 2026-10-05
+
+Lane A drained the pending context-readiness integration through PR #1238 at `0aae98daa6cf3eefd7106948d39d210af5304b30`. All 330 combined V7 tests and typecheck passed on the merge tree; source head `7609288621d8ae6007d99a59919891947ac31df9` passed pinned Build/PWA/Performance run [37309790177](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37309790177).
+
+Lane A now adds Library-specific built-artifact browser evidence to the existing gate: three mobile widths and all three supported locales, search/filter restoration, keyboard controls, missing-item denial and return navigation. See [task/evidence scope](work/tasks/20261005-lane-a-library-browser-gate.md). This does not certify published content or authenticated journeys.
+
+Current accepted communication capability is lesson-response sharing; generic pair-private chat remains excluded/unavailable under the integrated PR #1230 capability contract. Representative Books/Devotionals still need editorial approval, and Past Teachings still need rights resolution plus review; see [content readiness](docs/v7/P4_D_REPRESENTATIVE_CONTENT_READINESS.md). Final quiescent exact-SHA release certification/promotion remains OPEN.
+
+The dated entries below preserve historical checkpoints; earlier statements about missing runtime, routes, communication reconciliation or database deployment are not a current status assertion.
+
+## Historical foundation next action (2026-10-04)
 
 P1 foundations are integrated: append-only schema/RLS and generated contracts (Lane A), Library repository/service and route entry (Lane B/shared integration), discipleship service/Supabase adapter with shared API/session composition (Lane C/shared integration), taxonomy/provenance/localization and content integrity (Lane D). The P1 exit gate is satisfied: feature lanes consume the same stable foundations without competing schema/infrastructure.
 

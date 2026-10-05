@@ -34,10 +34,11 @@ test('service rejects unexpected cross-congregation rows and repository preserve
   await assert.rejects(setup({error:new Error('unavailable')}).repository.listPairs(context),/unavailable/);
 });
 test('landing clears results and ignores a late response after context change or disposal',async()=>{
-  let finish,contextChanged,unsubscribed=false;
+  let finish,contextChanged,unsubscribed=false,ready=true;
   const nodes=new Map();
   const root={querySelector:selector=>{if(!nodes.has(selector))nodes.set(selector,{innerHTML:'',textContent:'',addEventListener(){},removeEventListener(){}});return nodes.get(selector)}};
-  const cleanup=oneToOnePage({service:{listPairs:()=>new Promise(resolve=>{finish=resolve})},subscribeContext:fn=>{contextChanged=fn;return()=>{unsubscribed=true}},onAccount(){},onCongregation(){},onBack(){}}).mount(root);
+  const cleanup=oneToOnePage({service:{listPairs:()=>new Promise(resolve=>{finish=resolve})},isContextReady:()=>ready,subscribeContext:fn=>{contextChanged=fn;return()=>{unsubscribed=true}},onAccount(){},onCongregation(){},onBack(){}}).mount(root);
+  ready=false;
   contextChanged();
   finish([{state:'active'}]);
   await new Promise(resolve=>setTimeout(resolve,0));
