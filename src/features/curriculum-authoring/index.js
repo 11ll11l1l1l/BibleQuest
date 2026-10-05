@@ -25,8 +25,13 @@ function stepEditor(state,t){
   if(!state.selected?.revisionId)return '';
   const byPosition=new Map((state.steps||[]).map(row=>[row.position,row]));
   const list=STEPS.map((type,index)=>{const row=byPosition.get(index);return `<li><strong>${escapeHtml(t(`v7.authoring.step.${type}`))}</strong> — ${escapeHtml(t(row?'v7.authoring.steps.saved':'v7.authoring.steps.notSaved'))}</li>`;}).join('');
-  return `<section><h2>${escapeHtml(t('v7.authoring.steps.title'))}</h2><ol>${list}</ol><form data-authoring-form="step-save"><label>${escapeHtml(t('v7.authoring.steps.step'))} <select name="position">${STEPS.map((type,index)=>`<option value="${index}">${index+1}. ${escapeHtml(t(`v7.authoring.step.${type}`))}</option>`).join('')}</select></label><label>${escapeHtml(t('v7.authoring.steps.content'))} <textarea name="content" required>{}</textarea></label><label>${escapeHtml(t('v7.authoring.steps.scriptureRefs'))} <textarea name="scriptureRefs">[]</textarea></label><label>${escapeHtml(t('v7.authoring.steps.libraryRevision'))} <input name="libraryRevisionId"></label><button type="submit" class="bq-primary-button">${escapeHtml(t('v7.authoring.steps.save'))}</button></form></section>`;
+  const forms=STEPS.map((type,index)=>{
+    const row=byPosition.get(index);
+    return `<details data-authoring-step="${index}"><summary>${index+1}. ${escapeHtml(t(`v7.authoring.step.${type}`))}</summary><form data-authoring-form="step-save"><input type="hidden" name="position" value="${index}"><label>${escapeHtml(t('v7.authoring.steps.content'))} <textarea name="content" required>${escapeHtml(JSON.stringify(row?.content??{},null,2))}</textarea></label><label>${escapeHtml(t('v7.authoring.steps.scriptureRefs'))} <textarea name="scriptureRefs">${escapeHtml(JSON.stringify(row?.scriptureRefs??[],null,2))}</textarea></label><label>${escapeHtml(t('v7.authoring.steps.libraryRevision'))} <input name="libraryRevisionId" value="${attr(row?.libraryRevisionId??'')}"></label><button type="submit" class="bq-primary-button">${escapeHtml(t('v7.authoring.steps.save'))}</button></form></details>`;
+  }).join('');
+  return `<section><h2>${escapeHtml(t('v7.authoring.steps.title'))}</h2><ol>${list}</ol>${forms}</section>`;
 }
+
 function readinessView(readiness,t){
   if(!readiness)return `<p>${escapeHtml(t('v7.authoring.readiness.selectRevision'))}</p>`;
   const count=escapeHtml(t('v7.authoring.readiness.steps',{count:number(readiness.stepCount)}));

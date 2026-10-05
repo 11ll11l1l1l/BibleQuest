@@ -71,3 +71,17 @@ test('navigation callbacks remain feature-local and do not invent a route owner'
   for(const nav of ['back','account','congregation'])handlers.get('click')({target:{closest(){return this;},getAttribute(name){return name==='data-authoring-nav'?nav:null;}}});
   assert.deepEqual(calls,['back','account','congregation']);cleanup();void listener;
 });
+
+
+test('seven step editors restore saved content and references without changing step identity',()=>{
+  const state=base();state.selected.revisionId='revision-1';
+  state.steps=[{position:0,stepType:'scripture',content:{text:'Read </textarea><script>bad</script>'},scriptureRefs:[{book:'John',chapter:3,verse:16}],libraryRevisionId:'library-1'},
+    {position:6,stepType:'action',content:{text:'Call a friend'},scriptureRefs:[],libraryRevisionId:null}];
+  const html=renderCurriculumAuthoring(state);
+  assert.equal((html.match(/data-authoring-form="step-save"/g)||[]).length,7);
+  assert.match(html,/&lt;\/textarea&gt;&lt;script&gt;/);
+  assert.doesNotMatch(html,/<script>bad/);
+  for(let position=0;position<7;position++)assert.match(html,new RegExp(`name="position" value="${position}"`));
+  assert.match(html,/John/);assert.match(html,/value="library-1"/);assert.match(html,/Call a friend/);
+  assert.doesNotMatch(html,/<select name="position">/);
+});
