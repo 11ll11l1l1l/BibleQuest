@@ -7,6 +7,8 @@ import { v7ContentEn, V7_CONTENT_KEY_INVENTORY } from '../content/locales/v7-con
 import { v7AssignmentEn, V7_ASSIGNMENT_KEY_INVENTORY } from '../content/locales/v7-assignment.js';
 import { v7PublicationHandoffEn, V7_PUBLICATION_HANDOFF_KEY_INVENTORY } from '../content/locales/v7-publication-handoff.js';
 
+import { v7UiTl, v7UiCeb } from '../content/locales/v7-ui-translations.js';
+
 const STORAGE_KEY = 'locale';
 const DEFAULT_LOCALE = 'en';
 const keyInventory = Object.freeze([...new Set([
@@ -17,8 +19,8 @@ const keyInventory = Object.freeze([...new Set([
 ])].sort());
 const dictionaries = Object.freeze({
   en: Object.freeze({ ...en, ...v5CloseoutLocales.en, ...v7ContentEn, ...v7AssignmentEn, ...v7PublicationHandoffEn }),
-  tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl }),
-  ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb })
+  tl: Object.freeze({ ...tl, ...v5CloseoutLocales.tl, ...v7UiTl }),
+  ceb: Object.freeze({ ...ceb, ...v5CloseoutLocales.ceb, ...v7UiCeb })
 });
 const supportedLocales = Object.freeze(Object.keys(dictionaries));
 
