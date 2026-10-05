@@ -12,7 +12,9 @@ test('Phase-1 CI exposes lint, format, typecheck, unit, and build commands', () 
   assert.equal(packageJson.scripts.lint, 'node scripts/v6-lint.mjs');
   assert.equal(packageJson.scripts['format:check'], 'node scripts/v6-format-check.mjs');
   assert.match(packageJson.scripts.typecheck, /tsc/);
-  assert.equal(packageJson.scripts.unit, 'npm run unit:v6');
+  assert.equal(packageJson.scripts['unit:v6'], 'node --experimental-strip-types --test tests/v6/*.test.ts');
+  assert.equal(packageJson.scripts['unit:v7'], 'node --test tests/v7/*.test.mjs');
+  assert.equal(packageJson.scripts.unit, 'npm run unit:v6 && npm run unit:v7');
   assert.equal(packageJson.scripts['build:v6'], 'vite build');
 
   for (const command of [
