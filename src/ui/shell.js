@@ -32,6 +32,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
             <option value="en"${optionSelected('en')}>${escapeHtml(text('locale.english'))}</option>
             <option value="tl"${optionSelected('tl')}>${escapeHtml(text('locale.tagalog'))}</option>
             <option value="ceb"${optionSelected('ceb')}>${escapeHtml(text('locale.cebuano'))}</option>
+            <option value="ilo"${optionSelected('ilo')}>Ilocano</option>
           </select>
           <button type="button" class="bq-session-chip" data-session-open aria-label="${escapeHtml(text('shell.accountOpenLabel'))}">
             <span data-session-dot aria-hidden="true"></span>
