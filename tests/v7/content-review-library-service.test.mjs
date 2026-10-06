@@ -77,7 +77,14 @@ function fixture() {
             evaluatedAt: '2026-10-07T00:00:00Z',
             evidenceRefs: ['evidence:source']
           }],
-          evidence_refs: ['evidence:source'],
+          second_pass: {
+            result: 'pass',
+            revision: 'revision-1',
+            evaluator: 'policy-adversarial',
+            evaluatedAt: '2026-10-07T00:00:00Z',
+            evidenceRefs: ['evidence:second-pass']
+          },
+          evidence_refs: ['evidence:source','evidence:second-pass'],
           note: '',
           decided_at: '2026-10-07T00:00:00Z',
           created_at: '2026-10-07T00:00:00Z'
@@ -116,6 +123,7 @@ test('Lane B loads the global Library audit queue separately from Recall moderat
   assert.equal(devotional.taxonomy[0].id, 'emotion.hope');
   assert.equal(devotional.latestDecision.reviewerType, 'automated_policy');
   assert.equal(devotional.latestDecision.decision, 'auto_approved');
+  assert.equal(devotional.latestDecision.secondPass.evaluator, 'policy-adversarial');
 });
 
 test('Lane B human override persists truthful reviewer identity and exact revision', async () => {
