@@ -12,6 +12,7 @@ function currentRepresentativeItems() {
   const bundles = [
     readBundle('../../data/v7/books/representative-catalog.json'),
     readBundle('../../content/v7/devotionals/spurgeon-samples.json'),
+    readBundle('../../content/v7/devotionals/spurgeon-expansion-01.json'),
     readBundle('../../data/v7/past-teachings/prayer-source-example.json')
   ];
   return bundles.flatMap(bundle => parseV7ContentBundle(bundle).items);
@@ -85,15 +86,15 @@ test('otherwise-ready devotional remains blocked when Ilocano coverage is missin
   assert.deepEqual(report.types.devotional.blockerCodes, ['translations_incomplete']);
 });
 
-test('current representative Library content reports the exact unresolved acceptance boundary', () => {
+test('current expanded Library content reports the exact unresolved acceptance boundary', () => {
   const report = assessV7RepresentativeLibraryContent(currentRepresentativeItems());
 
   assert.equal(report.ready, false);
 
-  assert.equal(report.types.book.candidateCount, 2);
+  assert.equal(report.types.book.candidateCount, 8);
   assert.deepEqual(report.types.book.blockerCodes, ['review_unapproved', 'not_published']);
 
-  assert.equal(report.types.devotional.candidateCount, 2);
+  assert.equal(report.types.devotional.candidateCount, 6);
   assert.deepEqual(report.types.devotional.blockerCodes, ['review_unapproved', 'not_published']);
 
   assert.equal(report.types.past_teaching.candidateCount, 1);
