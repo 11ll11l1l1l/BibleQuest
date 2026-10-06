@@ -92,7 +92,7 @@ select is((select publication_state from public.v7_lessons where id='e1200000-00
 
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
-select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003','{}'::uuid[])$sql$),'42501','Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFININER RPC');
+select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003','{}'::uuid[])$sql$),'42501','Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFINER RPC');
 
 reset role;
 select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000003'),'draft','Ordinary-member congregation B RPC denial leaves the track unchanged');
