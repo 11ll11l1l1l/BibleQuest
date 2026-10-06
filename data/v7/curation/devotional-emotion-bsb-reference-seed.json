@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_a2_devotional_emotion_bsb_reference_seed",
+  "status": "research_seed_needs_editorial_validation",
+  "generatedDate": "2026-10-07",
+  "bibleVersion": "BSB",
+  "rightsEvidence": {
+    "status": "public_domain",
+    "effectiveDate": "2023-04-30",
+    "sourceUrl": "https://berean.bible/terms.htm",
+    "statement": "The Berean Bible terms state that the Berean Bible and Majority Bible texts are dedicated to the public domain and that all uses are freely permitted."
+  },
+  "contentBoundary": {
+    "storesVerseText": false,
+    "referenceOnly": true,
+    "candidateReferencesAreUnreviewed": true,
+    "contextAndRelevanceReviewRequired": true,
+    "doesNotAuthorizeEditorialPublication": true,
+    "doesNotSatisfyReviewedReferenceGate": true
+  },
+  "summary": {
+    "canonicalEmotionCount": 30,
+    "candidateReferenceCount": 150,
+    "candidateReferencesPerEmotion": 5,
+    "reviewedEmotionCount": 0,
+    "emotionsMeetingReviewedReferenceTarget": 0
+  },
+  "emotions": [
+    {"id":"anxiety_worry","candidateReferences":["Philippians 4:6-7","Matthew 6:25-34","1 Peter 5:7","Psalm 55:22","Isaiah 41:10"]},
+    {"id":"fear","candidateReferences":["Isaiah 41:10","Psalm 56:3-4","2 Timothy 1:7","Psalm 23:4","John 14:27"]},
+    {"id":"sadness","candidateReferences":["Psalm 34:18","Psalm 42:11","John 16:20","2 Corinthians 1:3-4","Revelation 21:4"]},
+    {"id":"grief_loss","candidateReferences":["Psalm 34:18","Matthew 5:4","John 11:25-26","1 Thessalonians 4:13-14","Revelation 21:4"]},
+    {"id":"loneliness","candidateReferences":["Psalm 68:6","Deuteronomy 31:8","Matthew 28:20","John 14:18","Hebrews 13:5"]},
+    {"id":"anger","candidateReferences":["James 1:19-20","Ephesians 4:26-27","Proverbs 15:1","Proverbs 16:32","Colossians 3:8"]},
+    {"id":"hurt_betrayal","candidateReferences":["Psalm 55:12-14","Psalm 147:3","Matthew 5:44","Romans 12:19-21","1 Peter 2:23"]},
+    {"id":"rejection","candidateReferences":["Psalm 27:10","Isaiah 49:15-16","John 6:37","Romans 8:31-39","1 Peter 2:4-5"]},
+    {"id":"guilt","candidateReferences":["Psalm 32:5","Psalm 51:1-2","Romans 8:1","1 John 1:9","Hebrews 10:22"]},
+    {"id":"shame","candidateReferences":["Isaiah 54:4","Psalm 34:5","Romans 10:11","Hebrews 12:2","1 Peter 2:6"]},
+    {"id":"insecurity_unworthiness","candidateReferences":["Psalm 139:13-14","Isaiah 43:1","Ephesians 2:10","1 Peter 2:9","1 John 3:1"]},
+    {"id":"doubt","candidateReferences":["Mark 9:24","James 1:5-6","John 20:27-29","Jude 1:22","Hebrews 11:1"]},
+    {"id":"confusion_uncertainty","candidateReferences":["Proverbs 3:5-6","James 1:5","Psalm 119:105","Isaiah 30:21","1 Corinthians 14:33"]},
+    {"id":"discouragement","candidateReferences":["Joshua 1:9","Psalm 42:11","Galatians 6:9","2 Corinthians 4:8-9","Hebrews 12:3"]},
+    {"id":"hopelessness","candidateReferences":["Romans 15:13","Lamentations 3:21-24","Psalm 130:5","Romans 5:3-5","1 Peter 1:3"]},
+    {"id":"overwhelm","candidateReferences":["Psalm 61:2","Matthew 11:28-30","Psalm 46:1-3","2 Corinthians 12:9","Isaiah 43:2"]},
+    {"id":"stress","candidateReferences":["Matthew 11:28-30","Philippians 4:6-7","Psalm 46:10","John 14:27","Isaiah 26:3"]},
+    {"id":"tiredness_weariness","candidateReferences":["Isaiah 40:29-31","Matthew 11:28-30","Galatians 6:9","Psalm 23:2-3","Hebrews 12:1-3"]},
+    {"id":"spiritual_dryness_distance","candidateReferences":["Psalm 42:1-2","Psalm 63:1","James 4:8","John 15:4-5","Isaiah 55:1-3"]},
+    {"id":"temptation","candidateReferences":["1 Corinthians 10:13","James 1:12-15","Matthew 26:41","Hebrews 4:15-16","Psalm 119:11"]},
+    {"id":"impatience_waiting","candidateReferences":["Psalm 27:14","Psalm 37:7","Isaiah 40:31","Romans 8:25","James 5:7-8"]},
+    {"id":"jealousy_envy","candidateReferences":["Proverbs 14:30","James 3:14-16","Galatians 5:26","1 Corinthians 13:4","Psalm 73:2-3"]},
+    {"id":"frustration","candidateReferences":["Proverbs 3:5-6","Psalm 37:5","Romans 8:28","James 1:2-4","Philippians 2:14"]},
+    {"id":"numbness_emptiness","candidateReferences":["Psalm 51:10-12","Ezekiel 36:26","John 7:37-38","Ephesians 3:16-19","Psalm 143:6"]},
+    {"id":"joy","candidateReferences":["Psalm 16:11","Philippians 4:4","John 15:11","Nehemiah 8:10","1 Peter 1:8"]},
+    {"id":"gratitude","candidateReferences":["1 Thessalonians 5:18","Psalm 100:4","Colossians 3:15-17","Psalm 107:1","Philippians 4:6"]},
+    {"id":"peace_contentment","candidateReferences":["Philippians 4:11-13","John 14:27","Isaiah 26:3","Colossians 3:15","1 Timothy 6:6"]},
+    {"id":"hope","candidateReferences":["Romans 15:13","Hebrews 6:19","Psalm 42:11","Jeremiah 29:11","1 Peter 1:3"]},
+    {"id":"excitement","candidateReferences":["Psalm 118:24","Romans 12:11","Psalm 100:1-2","Philippians 4:4","Luke 10:20"]},
+    {"id":"love_connection","candidateReferences":["John 13:34-35","1 Corinthians 13:4-7","Romans 12:10","Hebrews 10:24-25","1 John 4:7-12"]}
+  ]
+}

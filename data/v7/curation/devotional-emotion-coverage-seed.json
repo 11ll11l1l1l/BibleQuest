@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_a2_devotional_emotion_coverage_seed",
+  "status": "seed_incomplete_not_release_ready",
+  "generatedDate": "2026-10-07",
+  "sourceCatalogRef": "data/v7/content-sources/devotional-source-catalog.json",
+  "launchTarget": {
+    "candidateCountPerEmotion": 10,
+    "distinctWorkCountPerEmotion": 3,
+    "distinctAuthorCountPerEmotion": 2,
+    "directBsbReferenceCountPerEmotion": 5
+  },
+  "mappingBoundary": {
+    "candidateMappingsAreResearchOnly": true,
+    "titleLevelMappingsRequireBodyValidation": true,
+    "rightsClearanceStillRequired": true,
+    "editorialReviewStillRequired": true,
+    "translationReviewStillRequiredForLocalizedPublication": true,
+    "bsbReferenceReviewStillRequired": true
+  },
+  "summary": {
+    "canonicalEmotionCount": 30,
+    "zeroCandidateEmotionCount": 0,
+    "emotionsMeetingCandidateTarget": 0,
+    "emotionsMeetingWorkTarget": 16,
+    "emotionsMeetingAuthorTarget": 30,
+    "emotionsMeetingBsbReferenceTarget": 0
+  },
+  "emotions": [
+    {
+      "id": "anxiety_worry",
+      "label": "Anxiety / worry",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.04-for-supplies",
+        "entry.murray.waiting-on-god.ccel.08-strong-and-of-good-courage",
+        "entry.murray.waiting-on-god.ccel.11-patiently",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.miller.making-most-life.pg19193.07-heart-peace-before-ministry",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads"
+      ]
+    },
+    {
+      "id": "fear",
+      "label": "Fear",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.05-fearing-to-believe",
+        "entry.murray.waiting-on-god.ccel.08-strong-and-of-good-courage",
+        "entry.murray.waiting-on-god.ccel.10-in-humble-fear-and-hope",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness",
+        "entry.murray.waiting-on-god.ccel.21-the-almighty-one",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads"
+      ]
+    },
+    {
+      "id": "sadness",
+      "label": "Sadness",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.10-the-interpretation-of-sorrow",
+        "entry.miller.making-most-life.pg19193.22-gods-winter-plants",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness",
+        "entry.murray.waiting-on-god.ccel.14-the-way-to-the-new-song",
+        "entry.murray.waiting-on-god.ccel.24-to-know-his-goodness"
+      ]
+    },
+    {
+      "id": "grief_loss",
+      "label": "Grief / loss",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.10-the-interpretation-of-sorrow",
+        "entry.miller.making-most-life.pg19193.06-the-blessing-of-a-burden",
+        "entry.miller.making-most-life.pg19193.22-gods-winter-plants",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness"
+      ]
+    },
+    {
+      "id": "loneliness",
+      "label": "Loneliness",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.16-the-only-one",
+        "entry.murray.waiting-on-god.ccel.18-to-reveal-himself",
+        "entry.murray.waiting-on-god.ccel.06-for-all-saints",
+        "entry.havergal.kept-masters-use.pg31647.13-christ-for-us",
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only"
+      ]
+    },
+    {
+      "id": "anger",
+      "label": "Anger",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.11-other-people",
+        "entry.miller.making-most-life.pg19193.18-the-shadows-we-cast",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.09-our-wills-kept-for-jesus",
+        "entry.murray.waiting-on-god.ccel.12-keeping-his-ways"
+      ]
+    },
+    {
+      "id": "hurt_betrayal",
+      "label": "Hurt / betrayal",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.11-other-people",
+        "entry.miller.making-most-life.pg19193.10-the-interpretation-of-sorrow",
+        "entry.miller.making-most-life.pg19193.18-the-shadows-we-cast",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus",
+        "entry.murray.waiting-on-god.ccel.25-quietly"
+      ]
+    },
+    {
+      "id": "rejection",
+      "label": "Rejection",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only",
+        "entry.miller.making-most-life.pg19193.16-the-only-one",
+        "entry.murray.waiting-on-god.ccel.18-to-reveal-himself",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing",
+        "entry.havergal.kept-masters-use.pg31647.13-christ-for-us"
+      ]
+    },
+    {
+      "id": "guilt",
+      "label": "Guilt",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.01-awakening",
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only",
+        "entry.spurgeon.around-wicket-gate.pg60669.08-a-real-hindrance-to-faith",
+        "entry.spurgeon.around-wicket-gate.pg60669.10-without-faith-no-salvation",
+        "entry.murray.waiting-on-god.ccel.27-for-redemption",
+        "entry.havergal.kept-masters-use.pg31647.13-christ-for-us"
+      ]
+    },
+    {
+      "id": "shame",
+      "label": "Shame",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.05-fearing-to-believe",
+        "entry.spurgeon.around-wicket-gate.pg60669.06-difficulty-in-the-way-of-believing",
+        "entry.murray.waiting-on-god.ccel.10-in-humble-fear-and-hope",
+        "entry.murray.waiting-on-god.ccel.27-for-redemption",
+        "entry.havergal.kept-masters-use.pg31647.13-christ-for-us"
+      ]
+    },
+    {
+      "id": "insecurity_unworthiness",
+      "label": "Insecurity / unworthiness",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.05-fearing-to-believe",
+        "entry.spurgeon.around-wicket-gate.pg60669.04-faith-very-simple",
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only",
+        "entry.murray.waiting-on-god.ccel.10-in-humble-fear-and-hope",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing",
+        "entry.havergal.kept-masters-use.pg31647.13-christ-for-us"
+      ]
+    },
+    {
+      "id": "doubt",
+      "label": "Doubt",
+      "candidateRefs": [
+        "entry.spurgeon.around-wicket-gate.pg60669.04-faith-very-simple",
+        "entry.spurgeon.around-wicket-gate.pg60669.06-difficulty-in-the-way-of-believing",
+        "entry.spurgeon.around-wicket-gate.pg60669.07-a-helpful-survey-of-christs-work",
+        "entry.spurgeon.around-wicket-gate.pg60669.09-on-raising-questions",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing"
+      ]
+    },
+    {
+      "id": "confusion_uncertainty",
+      "label": "Confusion / uncertainty",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.05-for-instruction",
+        "entry.murray.waiting-on-god.ccel.13-for-more-than-we-know",
+        "entry.murray.waiting-on-god.ccel.15-for-his-counsel",
+        "entry.murray.waiting-on-god.ccel.16-and-his-light-in-the-heart",
+        "entry.spurgeon.around-wicket-gate.pg60669.09-on-raising-questions"
+      ]
+    },
+    {
+      "id": "discouragement",
+      "label": "Discouragement",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.08-strong-and-of-good-courage",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing",
+        "entry.murray.waiting-on-god.ccel.23-for-unlooked-for-things",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads"
+      ]
+    },
+    {
+      "id": "hopelessness",
+      "label": "Hopelessness",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.10-in-humble-fear-and-hope",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing",
+        "entry.murray.waiting-on-god.ccel.27-for-redemption",
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only",
+        "entry.miller.making-most-life.pg19193.22-gods-winter-plants"
+      ]
+    },
+    {
+      "id": "overwhelm",
+      "label": "Overwhelm",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.06-the-blessing-of-a-burden",
+        "entry.miller.making-most-life.pg19193.07-heart-peace-before-ministry",
+        "entry.miller.making-most-life.pg19193.15-helping-and-over-helping",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads",
+        "entry.murray.waiting-on-god.ccel.04-for-supplies",
+        "entry.murray.waiting-on-god.ccel.25-quietly"
+      ]
+    },
+    {
+      "id": "stress",
+      "label": "Stress",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.07-heart-peace-before-ministry",
+        "entry.miller.making-most-life.pg19193.15-helping-and-over-helping",
+        "entry.murray.waiting-on-god.ccel.04-for-supplies",
+        "entry.murray.waiting-on-god.ccel.11-patiently",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.havergal.kept-masters-use.pg31647.02-our-moments-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "tiredness_weariness",
+      "label": "Tiredness / weariness",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.06-the-blessing-of-a-burden",
+        "entry.miller.making-most-life.pg19193.15-helping-and-over-helping",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads",
+        "entry.murray.waiting-on-god.ccel.04-for-supplies",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.murray.waiting-on-god.ccel.30-continually"
+      ]
+    },
+    {
+      "id": "spiritual_dryness_distance",
+      "label": "Spiritual dryness / distance",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.16-and-his-light-in-the-heart",
+        "entry.murray.waiting-on-god.ccel.17-in-times-of-darkness",
+        "entry.murray.waiting-on-god.ccel.18-to-reveal-himself",
+        "entry.murray.waiting-on-god.ccel.30-continually",
+        "entry.murray.waiting-on-god.ccel.31-only",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "temptation",
+      "label": "Temptation",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.08-moral-curvatures",
+        "entry.miller.making-most-life.pg19193.18-the-shadows-we-cast",
+        "entry.miller.making-most-life.pg19193.23-unfinished-life-building",
+        "entry.havergal.kept-masters-use.pg31647.09-our-wills-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus",
+        "entry.spurgeon.around-wicket-gate.pg60669.08-a-real-hindrance-to-faith"
+      ]
+    },
+    {
+      "id": "impatience_waiting",
+      "label": "Impatience / waiting",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.11-patiently",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.murray.waiting-on-god.ccel.26-in-holy-expectancy",
+        "entry.murray.waiting-on-god.ccel.30-continually",
+        "entry.miller.making-most-life.pg19193.13-without-axe-or-hammer",
+        "entry.miller.making-most-life.pg19193.22-gods-winter-plants"
+      ]
+    },
+    {
+      "id": "jealousy_envy",
+      "label": "Jealousy / envy",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.11-other-people",
+        "entry.miller.making-most-life.pg19193.18-the-shadows-we-cast",
+        "entry.miller.making-most-life.pg19193.20-the-sin-of-ingratitude",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.11-our-love-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.09-our-wills-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "frustration",
+      "label": "Frustration",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.15-for-his-counsel",
+        "entry.murray.waiting-on-god.ccel.11-patiently",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.miller.making-most-life.pg19193.06-the-blessing-of-a-burden",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads"
+      ]
+    },
+    {
+      "id": "numbness_emptiness",
+      "label": "Numbness / emptiness",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.16-and-his-light-in-the-heart",
+        "entry.murray.waiting-on-god.ccel.18-to-reveal-himself",
+        "entry.murray.waiting-on-god.ccel.31-only",
+        "entry.spurgeon.around-wicket-gate.pg60669.01-awakening",
+        "entry.spurgeon.around-wicket-gate.pg60669.02-jesus-only",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "joy",
+      "label": "Joy",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.14-the-way-to-the-new-song",
+        "entry.murray.waiting-on-god.ccel.24-to-know-his-goodness",
+        "entry.murray.waiting-on-god.ccel.26-in-holy-expectancy",
+        "entry.miller.making-most-life.pg19193.09-transfigured-lives",
+        "entry.havergal.kept-masters-use.pg31647.11-our-love-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "gratitude",
+      "label": "Gratitude",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.20-the-sin-of-ingratitude",
+        "entry.miller.making-most-life.pg19193.03-christs-interest-in-our-common-life",
+        "entry.murray.waiting-on-god.ccel.24-to-know-his-goodness",
+        "entry.havergal.kept-masters-use.pg31647.01-our-lives-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.11-our-love-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "peace_contentment",
+      "label": "Peace / contentment",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.07-heart-peace-before-ministry",
+        "entry.miller.making-most-life.pg19193.03-christs-interest-in-our-common-life",
+        "entry.miller.making-most-life.pg19193.21-some-secrets-of-happy-home-life",
+        "entry.murray.waiting-on-god.ccel.25-quietly",
+        "entry.murray.waiting-on-god.ccel.31-only",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus"
+      ]
+    },
+    {
+      "id": "hope",
+      "label": "Hope",
+      "candidateRefs": [
+        "entry.murray.waiting-on-god.ccel.10-in-humble-fear-and-hope",
+        "entry.murray.waiting-on-god.ccel.22-its-certainty-of-blessing",
+        "entry.murray.waiting-on-god.ccel.23-for-unlooked-for-things",
+        "entry.murray.waiting-on-god.ccel.26-in-holy-expectancy",
+        "entry.murray.waiting-on-god.ccel.28-for-the-coming-of-his-son",
+        "entry.miller.making-most-life.pg19193.24-iron-shoes-for-rough-roads"
+      ]
+    },
+    {
+      "id": "excitement",
+      "label": "Excitement",
+      "candidateRefs": [
+        "entry.miller.making-most-life.pg19193.19-the-meaning-of-opportunities",
+        "entry.miller.making-most-life.pg19193.17-swiftness-in-duty",
+        "entry.miller.making-most-life.pg19193.14-doing-things-for-christ",
+        "entry.murray.waiting-on-god.ccel.14-the-way-to-the-new-song",
+        "entry.murray.waiting-on-god.ccel.26-in-holy-expectancy"
+      ]
+    },
+    {
+      "id": "love_connection",
+      "label": "Love / connection",
+      "candidateRefs": [
+        "entry.havergal.kept-masters-use.pg31647.11-our-love-kept-for-jesus",
+        "entry.havergal.kept-masters-use.pg31647.10-our-hearts-kept-for-jesus",
+        "entry.miller.making-most-life.pg19193.11-other-people",
+        "entry.miller.making-most-life.pg19193.21-some-secrets-of-happy-home-life",
+        "entry.miller.making-most-life.pg19193.15-helping-and-over-helping",
+        "entry.murray.waiting-on-god.ccel.06-for-all-saints"
+      ]
+    }
+  ]
+}
