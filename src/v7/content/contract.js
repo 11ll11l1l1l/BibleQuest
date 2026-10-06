@@ -1,5 +1,5 @@
 const CONTENT_TYPES = new Set(['book', 'devotional', 'past_teaching']);
-const TAXONOMY_KINDS = new Set(['category', 'topic', 'tag']);
+const TAXONOMY_KINDS = new Set(['category', 'topic', 'tag', 'emotion', 'need', 'life_situation']);
 const PUBLICATION_STATES = new Set(['draft', 'pending_review', 'published', 'withdrawn']);
 const RIGHTS_STATES = new Set(['verified', 'unknown']);
 const SOURCE_KINDS = new Set(['first_party', 'external', 'licensed', 'fixture']);
@@ -88,7 +88,10 @@ export function createV7TaxonomyIndex(entries) {
     rejectUnknownFields(entry, ['id', 'kind', 'labels'], path);
     const id = requiredString(entry.id, `${path}.id`);
     if (!ID_PATTERN.test(id)) reject('taxonomy_id', `${path}.id`, 'must be a stable lowercase ID');
-    if (!TAXONOMY_KINDS.has(entry.kind)) reject('taxonomy_kind', `${path}.kind`, 'must be category, topic, or tag');
+    if (!TAXONOMY_KINDS.has(entry.kind)) reject('taxonomy_kind', `${path}.kind`, 'must be category, topic, tag, emotion, need, or life_situation');
+    if (['emotion', 'need', 'life_situation'].includes(entry.kind) && !id.startsWith(`${entry.kind}.`)) {
+      reject('taxonomy_id', `${path}.id`, `must use the ${entry.kind}.<canonical_id> namespace`);
+    }
     if (index.has(id)) reject('duplicate_taxonomy', `${path}.id`, `duplicates ${id}`);
     index.set(id, Object.freeze({ id, kind: entry.kind, labels: validateLabels(entry.labels, `${path}.labels`) }));
   }
