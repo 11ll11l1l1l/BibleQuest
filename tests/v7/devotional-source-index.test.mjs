@@ -72,7 +72,8 @@ test('A2 raw research targets remain distinct from validated release targets', (
   assert.deepEqual(index.curationRefs, [
     'data/v7/curation/devotional-emotion-coverage-seed.json',
     'data/v7/curation/devotional-emotion-candidate-expansion-02.json',
-    'data/v7/curation/devotional-emotion-bsb-reference-seed.json'
+    'data/v7/curation/devotional-emotion-bsb-reference-seed.json',
+    'data/v7/curation/devotional-curation-review-decisions.json'
   ]);
   assert.equal(index.releaseBoundary.sourcePoolDepthTargetReached, true);
   assert.equal(index.releaseBoundary.emotionCandidateSeedPresent, true);
@@ -80,6 +81,7 @@ test('A2 raw research targets remain distinct from validated release targets', (
   assert.equal(index.releaseBoundary.emotionRawWorkTargetReached, true);
   assert.equal(index.releaseBoundary.emotionRawAuthorTargetReached, true);
   assert.equal(index.releaseBoundary.bsbCandidateReferenceSeedPresent, true);
+  assert.equal(index.releaseBoundary.curationContextReviewLedgerPresent, true);
   assert.equal(index.releaseBoundary.emotionValidationTargetReached, false);
   assert.equal(index.releaseBoundary.bsbReferenceTargetReached, false);
   assert.equal(index.releaseBoundary.globalHostingClearanceComplete, false);
