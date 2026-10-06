@@ -125,7 +125,8 @@
       "repositoryEvidenceRefs": [
         "data/v7/past-teachings/prayer-source-example.json",
         "data/v7/curation/representative-library-curation.json",
-        "docs/v7/evidence/content/A2_PAST_TEACHING_SOURCE_RESEARCH_20261006.md"
+        "docs/v7/evidence/content/A2_PAST_TEACHING_SOURCE_RESEARCH_20261006.md",
+        "docs/v7/evidence/content/A2_PAST_TEACHING_RIGHTS_HANDOFF_20261007.md"
       ],
       "requiredChecks": [
         "source_identity",
@@ -141,7 +142,7 @@
         "rights_clearance_pending",
         "editorial_review_pending"
       ],
-      "reviewNote": "Source identity is corroborated by A2 research, but the canonical rights state remains unknown. Establish an acceptable rights basis first, then review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability and publication suitability before any publication decision."
+      "reviewNote": "Source identity and first-edition bibliography are corroborated by A2 research, but the canonical rights state remains unknown. Record the exact source artifact and an acceptable rights basis for the intended adaptation first, then review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability and publication suitability before any publication decision."
     }
   ]
 }
