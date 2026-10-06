@@ -3,11 +3,15 @@ import assert from 'node:assert/strict';
 import { createLibraryPage } from '../../src/features/library/page.js';
 
 class ElementStub {
-  constructor(attributes = {}) { this.attributes = attributes; this.listeners = new Map(); this.value = ''; }
+  constructor(attributes = {}) {
+    this.attributes = attributes; this.listeners = new Map(); this.value = '';
+    this.focused = false; this.focusOptions = null;
+  }
   setAttribute(key, value) { this.attributes[key] = value; }
   hasAttribute(key) { return Object.hasOwn(this.attributes, key); }
   getAttribute(key) { return this.attributes[key]; }
   closest() { return this; }
+  focus(options) { this.focused = true; this.focusOptions = options; }
   addEventListener(name, fn) { this.listeners.set(name, fn); }
   removeEventListener(name, fn) { if (this.listeners.get(name) === fn) this.listeners.delete(name); }
 }
@@ -43,17 +47,25 @@ test('browse restore and Retry preserve the submitted request rather than draft 
     const f = fixture();
     let destination;
     const ui = createLibraryPage({ service: f.service, navigate: value => { destination = value; }, initialQuery: 'hope', initialContentType: 'devotional' });
+    assert.match(ui.html, /data-library-status role="status" aria-live="polite" tabindex="-1"/);
     const dispose = ui.mount(f.root);
     assert.deepEqual(f.requests[0], { query: 'hope', contentType: 'devotional', taxonomyId: '', includeTaxonomy: true });
     assert.equal(f.nodes['[name="query"]'].value, 'hope');
     assert.equal(f.nodes['[data-library-results]'].attributes['aria-busy'], 'true');
     f.service.emit({ status: 'error', error: 'Unavailable' });
+    const status = f.nodes['[data-library-status]'];
+    assert.equal(status.attributes.role, 'alert');
+    assert.equal(status.attributes['aria-live'], 'assertive');
     const retry = f.nodes['[data-library-retry]'];
     retry.setAttribute('data-library-retry', '');
     assert.equal(retry.hidden, false);
     f.nodes['[name="query"]'].value = 'unsent draft';
     f.page.listeners.get('click')({ target: retry });
     assert.deepEqual(f.requests[1], { query: 'hope', contentType: 'devotional', taxonomyId: '', includeTaxonomy: true });
+    assert.equal(status.focused, true);
+    assert.deepEqual(status.focusOptions, { preventScroll: true });
+    assert.equal(status.attributes.role, 'status');
+    assert.equal(status.attributes['aria-live'], 'polite');
     assert.equal(retry.hidden, true);
 
     f.nodes['[name="contentType"]'].value = 'book';
@@ -133,6 +145,13 @@ test('Load more preserves visible results and is disabled while loading; context
     f.service.emit({ status: 'ready', nextCursor: '24', items: [
       { id: 'item-1', contentType: 'book', title: 'Fixture book', summary: '', locale: 'en' },
     ], taxonomyId: 'topic.hope', taxonomy: [{ id: 'topic.hope', kind: 'topic', labels: { en: 'Hope' } }] });
+    const status = f.nodes['[data-library-status]'];
+    f.service.emit({ moreError: 'Unavailable' });
+    assert.equal(status.attributes.role, 'alert');
+    assert.equal(status.attributes['aria-live'], 'assertive');
+    f.service.emit({ moreError: null });
+    assert.equal(status.attributes.role, 'status');
+    assert.equal(status.attributes['aria-live'], 'polite');
     const more = f.nodes['[data-library-more]'];
     more.setAttribute('data-library-more', '');
     assert.equal(more.hidden, false);
