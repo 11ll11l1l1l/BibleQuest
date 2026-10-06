@@ -150,13 +150,17 @@
     {
       "id": "v7-curriculum",
       "testFiles": [
-        "supabase/tests/v7-curriculum-stale-tenant-rls.test.sql"
+        "supabase/tests/v7-curriculum-stale-tenant-rls.test.sql",
+        "supabase/tests/v7-curriculum-publication-tenant-context-switch.test.sql"
       ],
       "denialMarkers": [
         "Member A cannot force a congregation B track through a client filter",
         "Switched member cannot force stale congregation A track through a client filter",
         "Leader A cannot update congregation B draft track",
-        "Switched leader cannot update stale congregation A draft track"
+        "Switched leader cannot update stale congregation A draft track",
+        "Switched former A leader cannot publish stale congregation A curriculum through SECURITY DEFINER RPC",
+        "Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFINER RPC",
+        "Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFINER RPC"
       ]
     },
     {
