@@ -17,8 +17,8 @@ export function createLibraryItemPage({service,id,onBack}) {
       const render=state=>{
         if(disposed)return;
         const urgent=state.status==='error'||state.status==='not-found';
-        host.setAttribute('role',urgent?'alert':'status');
-        host.setAttribute('aria-live',urgent?'assertive':'polite');
+        host.setAttribute?.('role',urgent?'alert':'status');
+        host.setAttribute?.('aria-live',urgent?'assertive':'polite');
         retry.hidden=!id||!['error','idle'].includes(state.status);
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
@@ -32,7 +32,7 @@ export function createLibraryItemPage({service,id,onBack}) {
       const goBack=()=>onBack();
       const reload=()=>{
         if(!disposed&&id&&!retry.hidden){
-          host.focus({preventScroll:true});
+          host.focus?.({preventScroll:true});
           void service.getItem(id);
         }
       };
