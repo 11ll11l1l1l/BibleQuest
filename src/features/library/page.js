@@ -1,6 +1,6 @@
 import { localization } from '../../app/localization.js';
 import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
-import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId } from './discovery.js';
+import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscoveryTerms } from './discovery.js';
 import { consumeLibraryReturnFocus } from './navigation-focus.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -36,6 +36,7 @@ export function createLibraryPage({
       <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
       <h1>${escapeHtml(t('v7.library.title'))}</h1>
       <p>${escapeHtml(t('v7.library.intro'))}</p>
+      <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
       <form data-library-search>
         <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
         <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
@@ -62,6 +63,7 @@ export function createLibraryPage({
       const queryInput = page.querySelector('[name="query"]');
       const typeInput = page.querySelector('[name="contentType"]');
       const termInput = page.querySelector('[name="taxonomyId"]');
+      const discovery = page.querySelector('[data-library-discovery]');
       const retry = page.querySelector('[data-library-retry]');
       const more = page.querySelector('[data-library-more]');
       queryInput.value = String(initialQuery ?? '').trim().slice(0, 120);
@@ -76,6 +78,12 @@ export function createLibraryPage({
       let started = false;
       let moreFocusPending = false;
       let returnFocusId = consumeLibraryReturnFocus();
+      const syncDiscoverySelection = selected => {
+        if (typeof discovery?.querySelectorAll !== 'function') return;
+        for (const button of discovery.querySelectorAll('[data-library-discovery-term]')) {
+          button.setAttribute('aria-pressed', String(button.getAttribute('data-library-discovery-term') === selected));
+        }
+      };
       const updateTerms = current => {
         const locale = localization.getLocale();
         if (lastTaxonomy === current.taxonomy && lastLocale === locale) return;
@@ -95,6 +103,14 @@ export function createLibraryPage({
           termInput.innerHTML += `<option value="${escapeHtml(selected)}">${escapeHtml(selected)}</option>`;
         }
         termInput.value = selected;
+        if (discovery) {
+          const shortcuts = resolveLibraryDiscoveryTerms(terms);
+          discovery.hidden = shortcuts.length === 0;
+          discovery.innerHTML = shortcuts.map(option => {
+            const label = libraryTaxonomyLabel(option.term, locale);
+            return `<button type="button" class="bq-library-discovery__chip" data-library-discovery-term="${escapeHtml(option.id)}" data-library-discovery-intent="${escapeHtml(option.intent)}" aria-pressed="${String(option.id === selected)}" lang="${escapeHtml(label.locale || locale)}">${escapeHtml(label.label)}</button>`;
+          }).join('');
+        }
         lastTaxonomy = current.taxonomy;
         lastLocale = locale;
       };
@@ -114,6 +130,7 @@ export function createLibraryPage({
           lastRequest = { query: '', contentType: '', taxonomyId: '', includeTaxonomy: true };
         }
         updateTerms(current);
+        syncDiscoverySelection(termInput.value);
         const messages = {
           idle: t('v7.library.intro'), loading: t('v7.library.loading'),
           empty: t('v7.library.empty'), error: globalThis.navigator?.onLine === false
@@ -150,7 +167,7 @@ export function createLibraryPage({
       };
       const onClick = event => {
         const target = event.target instanceof Element
-          ? event.target.closest('[data-library-item], [data-library-retry], [data-library-clear], [data-library-more]') : null;
+          ? event.target.closest('[data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term]') : null;
         if (!target) return;
         if (target.hasAttribute('data-library-retry')) {
           if (!retry.hidden) {
@@ -168,6 +185,13 @@ export function createLibraryPage({
         }
         if (target.hasAttribute('data-library-clear')) {
           queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
+          submit();
+          return;
+        }
+        if (target.hasAttribute('data-library-discovery-term')) {
+          termInput.value = target.getAttribute('data-library-discovery-term') || '';
+          restoredTerm = termInput.value;
+          syncDiscoverySelection(termInput.value);
           submit();
           return;
         }
