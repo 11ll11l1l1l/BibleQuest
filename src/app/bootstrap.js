@@ -1,4 +1,4 @@
-import { discipleshipRoute, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
+import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
 import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
@@ -527,7 +527,10 @@ function boot(root){
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
-    if(session.isAuthenticated())router.navigate(router.current());
+    // ONE 2 ONE deep links retain their bounded resource query across page/language reloads.
+    const discipleshipTarget=discipleshipHydrationTarget(location.hash);
+    if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
+    else if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
