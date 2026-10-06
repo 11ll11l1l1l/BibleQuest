@@ -111,7 +111,7 @@ function libraryCard(item){
 
 export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
   return {title:'Content Review',html:'<section data-content-review-view></section>',mount(root){
-    const view=root.querySelector('[data-content-review-view]');let disposed=false,busy=false,tab='books',filter='pending',search='',message='';
+    const view=root.querySelector('[data-content-review-view]');let disposed=false,busy=false,tab=typeof review?.libraryReviewItems==='function'?'books':'quarantine',filter='pending',search='',message='';
     const libraryTabs=new Set(['books','devotionals','teachings']);
     const intro=()=>`<section class="bq-panel"><p class="bq-eyebrow">LIBRARY AUDIT · RECALL MODERATION</p><h1>Content Review</h1><p>Audit V7 Books, Devotionals and Past Teachings independently from congregation-scoped Recall moderation. Automated approval evidence remains visible and human overrides are preserved as revision-bound history.</p><button type="button" class="bq-secondary-button" data-content-review-back>Back to More</button></section>`;
     const recallMatches=(item,parts)=>{const state=decisionValue(item);if(filter!=='all'&&state!==filter)return false;const needle=search.trim().toLocaleLowerCase();return !needle||parts.join(' ').toLocaleLowerCase().includes(needle)};
