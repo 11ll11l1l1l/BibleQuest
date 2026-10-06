@@ -148,6 +148,18 @@
       ]
     },
     {
+      "id": "v7-curriculum",
+      "testFiles": [
+        "supabase/tests/v7-curriculum-stale-tenant-rls.test.sql"
+      ],
+      "denialMarkers": [
+        "Member A cannot force a congregation B track through a client filter",
+        "Switched member cannot force stale congregation A track through a client filter",
+        "Leader A cannot update congregation B draft track",
+        "Switched leader cannot update stale congregation A draft track"
+      ]
+    },
+    {
       "id": "polls",
       "testFiles": [
         "supabase/tests/v6-poll-tenant-integrity.test.sql"
