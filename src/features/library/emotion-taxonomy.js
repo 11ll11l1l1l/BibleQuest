@@ -70,7 +70,7 @@ export const LIBRARY_NEEDS = Object.freeze([
   entry('need', 'hope', { en: 'Hope', tl: 'Pag-asa', ceb: 'Paglaom', ilo: 'Namnama' }, ['hope', 'something to hope for'], ['Romans 15:13', 'Hebrews 6:19'], ['encouragement', 'trust', 'renewal']),
   entry('need', 'comfort', { en: 'Comfort', tl: 'Kaaliwan', ceb: 'Kahupayan', ilo: 'Liwliwa' }, ['consolation', 'comforted'], ['2 Corinthians 1:3-4', 'Psalm 23:4'], ['peace', 'healing', 'connection']),
   entry('need', 'courage', { en: 'Courage', tl: 'Lakas ng loob', ceb: 'Kaisog', ilo: 'Tured' }, ['bravery', 'boldness'], ['Joshua 1:9', '2 Timothy 1:7'], ['strength', 'trust', 'encouragement']),
-  entry('need', 'strength', { en: 'Strength', tl: 'Lakas', ceb: 'Kusog', ilo: 'Pigsa' }, ['energy', 'endurance'], ['Isaiah 40:31', 'Philippians 4:13'], ['rest', 'perseverance', 'courage']),
+  entry('need', 'strength', { en: 'Strength', tl: 'Lakas', ceb: 'Kusog', ilo: 'Pigsa' }, ['energy', 'fortitude'], ['Isaiah 40:31', 'Philippians 4:13'], ['rest', 'perseverance', 'courage']),
   entry('need', 'wisdom', { en: 'Wisdom', tl: 'Karunungan', ceb: 'Kaalam', ilo: 'Sirib' }, ['discernment', 'understanding'], ['James 1:5', 'Proverbs 2:6'], ['guidance', 'trust', 'patience']),
   entry('need', 'guidance', { en: 'Guidance', tl: 'Patnubay', ceb: 'Paggiya', ilo: 'Pannakaiturong' }, ['direction', 'next step', 'clarity'], ['Proverbs 3:5-6', 'Psalm 32:8'], ['wisdom', 'trust', 'patience']),
   entry('need', 'forgiveness', { en: 'Forgiveness', tl: 'Kapatawaran', ceb: 'Pagpasaylo', ilo: 'Pammakawan' }, ['forgiven', 'mercy'], ['1 John 1:9', 'Ephesians 1:7'], ['grace_identity', 'healing', 'renewal']),
