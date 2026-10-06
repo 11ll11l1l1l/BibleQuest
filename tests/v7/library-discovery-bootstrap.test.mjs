@@ -11,5 +11,5 @@ test('bootstrap connects A1 emotion discovery to the tenant-safe Library service
     /library:\(\)=>libraryPage\(\{service:library,navigate:navigateLibrary,discoverySearch:request=>library\.list\(request\),/,
   );
   assert.match(page, /discoverySearch\(withDiscovery\(request\)\)/);
-  assert.match(page, /\.\.\.toLibraryDiscoveryRequest\(discoveryQuery,localization\.getLocale\(\)\)/);
+  assert.match(page, /\.\.\.toLibraryDiscoveryRequest\(discoveryQuery,\s*localization\.getLocale\(\)\)/);
 });
