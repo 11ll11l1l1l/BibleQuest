@@ -13,18 +13,16 @@ const hardening = readFileSync(
 
 test('pair authorization proves current congregation membership instead of trusting stale pair participation', () => {
   assert.match(hardening, /create or replace function private\.v7_pair_has_user/);
-  assert.match(hardening, /from public\.bible_congregation_members me[\s\S]*me\.congregation_id = p\.congregation_id[\s\S]*me\.user_id = target_user[\s\S]*me\.active/);
+  assert.match(hardening, /private\.is_bible_congregation_member\(p\.congregation_id\)/);
   assert.match(hardening, /not require_active[\s\S]*p\.state = 'active'[\s\S]*mentor_membership\.user_id = p\.mentor_id[\s\S]*mentor_membership\.active[\s\S]*mentee_membership\.user_id = p\.mentee_id[\s\S]*mentee_membership\.active/);
 });
 
 test('pair row read keeps INSERT RETURNING compatible while rejecting inactive congregation members', () => {
   const pairPolicy = hardening.match(/create policy "v7 pair participant read"[\s\S]*?\n\);/i)?.[0] ?? '';
   assert.match(pairPolicy, /\(select auth\.uid\(\)\) in \(mentor_id, mentee_id\)/);
-  assert.match(pairPolicy, /from public\.bible_congregation_members membership/);
-  assert.match(pairPolicy, /membership\.congregation_id = public\.v7_mentor_pairs\.congregation_id/);
-  assert.match(pairPolicy, /membership\.user_id = \(select auth\.uid\(\)\)/);
-  assert.match(pairPolicy, /membership\.active/);
+  assert.match(pairPolicy, /private\.is_bible_congregation_member\(public\.v7_mentor_pairs\.congregation_id\)/);
   assert.doesNotMatch(pairPolicy, /v7_pair_has_user/);
+  assert.doesNotMatch(pairPolicy, /from public\.v7_mentor_pairs/);
 });
 
 test('mentor assignment updates and learner progress writes fail closed when pair tenant context is stale', () => {
