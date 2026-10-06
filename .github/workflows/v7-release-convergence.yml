@@ -36,7 +36,7 @@ permissions:
 
 concurrency:
   group: v7-release-convergence-${{ github.event.pull_request.number || inputs.candidate_sha || github.sha }}
-  cancel-in-progress: false
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
