@@ -48,6 +48,21 @@ test('A2 second source tranche remains link-only, candidate-only and rights fail
   }
 });
 
+test('A2 Macduff day pointers retain stable ids but expose source-resolved devotional headings', () => {
+  const tranche = catalogs.find(catalog => catalog.scope === 'v7_a2_devotional_source_pool_tranche_02');
+  const macduffSources = tranche.sources.filter(source => source.author === 'John R. Macduff');
+  assert.equal(macduffSources.length, 2);
+
+  for (const source of macduffSources) {
+    assert.match(source.entryLabelEvidenceUrl, /^https:\/\/www\.gutenberg\.org\//);
+    for (const entry of source.entries) {
+      assert.match(entry.id, /^\d{2}-day$/);
+      assert.doesNotMatch(entry.label, /^Day \d+$/);
+      assert.ok(entry.label.length >= 8, `${source.id}/${entry.id} needs a substantive source heading`);
+    }
+  }
+});
+
 test('A2 research seeds can exist without falsely satisfying reviewed release gates', () => {
   assert.deepEqual(index.curationRefs, [
     'data/v7/curation/devotional-emotion-coverage-seed.json',
