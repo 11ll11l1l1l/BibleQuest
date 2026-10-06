@@ -22,13 +22,7 @@ as $$
     where p.id = target_pair
       and target_user = (select auth.uid())
       and target_user in (p.mentor_id, p.mentee_id)
-      and exists (
-        select 1
-        from public.bible_congregation_members me
-        where me.congregation_id = p.congregation_id
-          and me.user_id = target_user
-          and me.active
-      )
+      and private.is_bible_congregation_member(p.congregation_id)
       and (
         not require_active
         or (
@@ -57,20 +51,14 @@ grant execute on function private.v7_pair_has_user(uuid,uuid,boolean) to authent
 
 -- Pair invitations are created with INSERT ... RETURNING. Do not route this
 -- SELECT policy through v7_pair_has_user(): the STABLE helper cannot reread the
--- row inserted by the same statement. The membership lookup is against an
--- already-existing row and is safe here.
+-- row inserted by the same statement. The canonical congregation helper does
+-- not reread v7_mentor_pairs, so it remains safe for RETURNING.
 drop policy if exists "v7 pair participant read" on public.v7_mentor_pairs;
 create policy "v7 pair participant read"
 on public.v7_mentor_pairs for select to authenticated
 using (
   (select auth.uid()) in (mentor_id, mentee_id)
-  and exists (
-    select 1
-    from public.bible_congregation_members membership
-    where membership.congregation_id = public.v7_mentor_pairs.congregation_id
-      and membership.user_id = (select auth.uid())
-      and membership.active
-  )
+  and private.is_bible_congregation_member(public.v7_mentor_pairs.congregation_id)
 );
 
 -- Active assignment changes require the mentor and both pair participants to
