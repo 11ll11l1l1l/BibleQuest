@@ -16,7 +16,16 @@ function canonicalRepresentativeItems() {
   return bundles.flatMap(bundle => parseV7ContentBundle(bundle).items);
 }
 
+function assertUniqueControlledValues(values, allowed, label, minLength = 1) {
+  assert.ok(Array.isArray(values) && values.length >= minLength, `${label} must contain at least ${minLength} value(s)`);
+  assert.equal(new Set(values).size, values.length, `${label} must not contain duplicates`);
+  for (const value of values) {
+    assert.ok(allowed.has(value), `${label} contains uncontrolled value ${value}`);
+  }
+}
+
 const curation = readJson('../../data/v7/curation/representative-library-curation.json');
+const vocabularies = readJson('../../data/v7/curation/representative-library-curation-vocabularies.json');
 
 const THEOLOGICAL_TIERS = new Set([
   'alliance_core',
@@ -28,6 +37,51 @@ const DIFFICULTIES = new Set(['accessible', 'intermediate', 'advanced']);
 const FIT_LEVELS = new Set(['strong', 'moderate', 'limited']);
 const EDITORIAL_PRIORITIES = new Set(['highest', 'high', 'medium', 'low']);
 const SCRIPTURE_RELATIONSHIPS = new Set(['source_explicit', 'editorial_context']);
+
+const EXPECTED_VOCABULARIES = {
+  topics: [
+    'abiding',
+    'daily_faith',
+    'discipleship',
+    'faith',
+    'hope',
+    'perseverance',
+    'prayer',
+    'spiritual_growth',
+    'trust',
+    'worry'
+  ],
+  collections: [
+    'christian_classics',
+    'daily_devotionals',
+    'discipleship_classics',
+    'hope_and_anxiety',
+    'past_teachings',
+    'prayer_and_presence'
+  ],
+  lifePathways: [
+    'abiding_in_christ',
+    'building_prayer_habits',
+    'facing_worry',
+    'faith_in_daily_life',
+    'growing_in_faith',
+    'learning_trust',
+    'persevering_through_trials'
+  ],
+  audiences: ['adult', 'mature_youth', 'mentor_mentee', 'new_believer', 'youth'],
+  oneToOneSteps: ['action', 'apply', 'discuss', 'pray', 'reflect', 'scripture', 'understand'],
+  readingTimeKinds: ['adaptation_estimate', 'excerpt_estimate', 'long_form_external'],
+  readingPlanCadences: [
+    'chapter_or_section_sequence',
+    'daily',
+    'short_section_sequence',
+    'single_session_or_prayer_series'
+  ]
+};
+
+const CONTROLLED = Object.fromEntries(
+  Object.entries(EXPECTED_VOCABULARIES).map(([key, values]) => [key, new Set(values)])
+);
 
 test('A2 curation covers exactly the current representative Library items', () => {
   const canonical = canonicalRepresentativeItems();
@@ -57,21 +111,41 @@ test('A2 curation snapshots canonical rights, review and publication states with
   }
 });
 
-test('A2 curation contains usable enrichment for discovery and discipleship planning', () => {
+test('A2 curation vocabulary file is frozen to the bounded representative scope', () => {
+  assert.equal(vocabularies.schemaVersion, 1);
+  assert.equal(vocabularies.scope, 'v7_representative_library_curation');
+
+  for (const [key, expected] of Object.entries(EXPECTED_VOCABULARIES)) {
+    assert.deepEqual(vocabularies[key], expected, `${key} vocabulary drifted`);
+    assert.equal(new Set(vocabularies[key]).size, vocabularies[key].length, `${key} vocabulary contains duplicates`);
+  }
+});
+
+test('A2 curation contains controlled enrichment for discovery and discipleship planning', () => {
   for (const item of curation.items) {
     assert.ok(item.neutralSummary.length >= 80, `${item.itemId} needs a substantive neutral summary`);
     assert.ok(THEOLOGICAL_TIERS.has(item.theologicalFit.tier), `${item.itemId} theological tier is uncontrolled`);
     assert.ok(item.theologicalFit.rationale.length >= 40, `${item.itemId} theological rationale is too thin`);
-    assert.ok(Array.isArray(item.topics) && item.topics.length >= 2, `${item.itemId} needs topics`);
-    assert.ok(Array.isArray(item.collections) && item.collections.length >= 1, `${item.itemId} needs a collection`);
-    assert.ok(Array.isArray(item.lifePathways) && item.lifePathways.length >= 1, `${item.itemId} needs a life pathway`);
-    assert.ok(Array.isArray(item.audiences) && item.audiences.length >= 1, `${item.itemId} needs an audience`);
+
+    assertUniqueControlledValues(item.topics, CONTROLLED.topics, `${item.itemId} topics`, 2);
+    assertUniqueControlledValues(item.collections, CONTROLLED.collections, `${item.itemId} collections`);
+    assertUniqueControlledValues(item.lifePathways, CONTROLLED.lifePathways, `${item.itemId} life pathways`);
+    assertUniqueControlledValues(item.audiences, CONTROLLED.audiences, `${item.itemId} audiences`);
+
     assert.ok(DIFFICULTIES.has(item.difficulty), `${item.itemId} difficulty is uncontrolled`);
-    assert.ok(item.readingTime && typeof item.readingTime.kind === 'string', `${item.itemId} needs reading-time metadata`);
+    assert.ok(item.readingTime && CONTROLLED.readingTimeKinds.has(item.readingTime.kind), `${item.itemId} reading-time kind is uncontrolled`);
+    if (item.readingTime.kind === 'long_form_external') {
+      assert.equal(item.readingTime.minutes, null, `${item.itemId} external long-form time must remain unknown`);
+    } else {
+      assert.ok(Number.isInteger(item.readingTime.minutes), `${item.itemId} reading-time estimate must be an integer`);
+      assert.ok(item.readingTime.minutes >= 1 && item.readingTime.minutes <= 30, `${item.itemId} reading-time estimate is out of bounds`);
+    }
+
     assert.ok(FIT_LEVELS.has(item.oneToOneFit.level), `${item.itemId} ONE 2 ONE fit is uncontrolled`);
-    assert.ok(Array.isArray(item.oneToOneFit.stepFits) && item.oneToOneFit.stepFits.length >= 1, `${item.itemId} needs ONE 2 ONE step fits`);
+    assertUniqueControlledValues(item.oneToOneFit.stepFits, CONTROLLED.oneToOneSteps, `${item.itemId} ONE 2 ONE step fits`);
     assert.ok(FIT_LEVELS.has(item.groupDiscussionFit.level), `${item.itemId} discussion fit is uncontrolled`);
     assert.ok(FIT_LEVELS.has(item.readingPlanFit.level), `${item.itemId} reading-plan fit is uncontrolled`);
+    assert.ok(CONTROLLED.readingPlanCadences.has(item.readingPlanFit.suggestedCadence), `${item.itemId} reading-plan cadence is uncontrolled`);
     assert.ok(EDITORIAL_PRIORITIES.has(item.editorialPriority), `${item.itemId} editorial priority is uncontrolled`);
     assert.ok(item.sourceNotes.length >= 40, `${item.itemId} needs source/provenance notes`);
   }
