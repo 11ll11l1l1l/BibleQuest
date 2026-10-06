@@ -5,7 +5,10 @@ import { localization } from '../../src/app/localization.js';
 
 function fixture(id = 'original-item') {
   const nodes = Object.fromEntries(['[data-library-detail]', '[data-library-back]', '[data-library-item-retry]'].map(key => [key, {
-    hidden: true, textContent: '', innerHTML: '', handlers: new Map(),
+    hidden: true, textContent: '', innerHTML: '', handlers: new Map(), attributes: {}, focused: false, focusOptions: null,
+    setAttribute(name, value) { this.attributes[name] = value; },
+    getAttribute(name) { return this.attributes[name]; },
+    focus(options) { this.focused = true; this.focusOptions = options; },
     addEventListener(name, fn) { this.handlers.set(name, fn); },
     removeEventListener(name, fn) { if (this.handlers.get(name) === fn) this.handlers.delete(name); },
   }]));
@@ -15,26 +18,37 @@ function fixture(id = 'original-item') {
     subscribe(fn) { listener = fn; return () => { listener = null; }; },
     getItem(key) { requests.push(key); listener?.({ status: 'loading' }); return Promise.resolve(); },
   };
-  const dispose = createLibraryItemPage({ service, id, onBack() {} }).mount({ querySelector: key => nodes[key] });
-  return { nodes, requests, dispose, emit: state => listener?.(state), retry: () => nodes['[data-library-item-retry]'].handlers.get('click')?.() };
+  const ui = createLibraryItemPage({ service, id, onBack() {} });
+  const dispose = ui.mount({ querySelector: key => nodes[key] });
+  return { ui, nodes, requests, dispose, emit: state => listener?.(state), retry: () => nodes['[data-library-item-retry]'].handlers.get('click')?.() };
 }
 
 test('item failure and context reset offer same-item Retry; loading and unavailable states do not', () => {
   const f = fixture();
+  const host = f.nodes['[data-library-detail]'];
   const retry = f.nodes['[data-library-item-retry]'];
+  assert.match(f.ui.html, /data-library-detail role="status" aria-live="polite" tabindex="-1"/);
   assert.deepEqual(f.requests, ['original-item']);
   assert.equal(retry.hidden, true);
   f.emit({ status: 'error', error: 'private backend diagnostics' });
   assert.equal(retry.hidden, false);
-  assert.equal(f.nodes['[data-library-detail]'].textContent, localization.t('v7.library.item.error'));
+  assert.equal(host.textContent, localization.t('v7.library.item.error'));
+  assert.equal(host.getAttribute('role'), 'alert');
+  assert.equal(host.getAttribute('aria-live'), 'assertive');
   f.retry(); f.retry();
   assert.deepEqual(f.requests, ['original-item', 'original-item']);
+  assert.equal(host.focused, true);
+  assert.deepEqual(host.focusOptions, { preventScroll: true });
+  assert.equal(host.getAttribute('role'), 'status');
+  assert.equal(host.getAttribute('aria-live'), 'polite');
   f.emit({ status: 'idle' });
   assert.equal(retry.hidden, false);
   f.retry();
   assert.equal(f.requests.length, 3);
   f.emit({ status: 'not-found' });
   assert.equal(retry.hidden, true);
+  assert.equal(host.getAttribute('role'), 'alert');
+  assert.equal(host.getAttribute('aria-live'), 'assertive');
   f.retry();
   assert.equal(f.requests.length, 3);
   f.dispose();
@@ -60,6 +74,8 @@ test('offline item failures use the localized connection recovery message', () =
     const f = fixture();
     f.emit({ status: 'error' });
     assert.equal(f.nodes['[data-library-detail]'].textContent, localization.t('v7.library.offline'));
+    assert.equal(f.nodes['[data-library-detail]'].getAttribute('role'), 'alert');
+    assert.equal(f.nodes['[data-library-detail]'].getAttribute('aria-live'), 'assertive');
     assert.equal(f.nodes['[data-library-item-retry]'].hidden, false);
     f.dispose();
   } finally {

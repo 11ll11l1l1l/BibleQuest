@@ -8,7 +8,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 export function createLibraryItemPage({service,id,onBack}) {
   return {
     title:localization.t('v7.library.item.title'),
-    html:`<section class="bq-panel"><button type="button" class="bq-secondary-button" data-library-back>${escapeHtml(localization.t('v7.library.item.back'))}</button><div data-library-detail role="status" aria-live="polite"></div><button type="button" class="bq-secondary-button" data-library-item-retry hidden>${escapeHtml(localization.t('v7.library.retry'))}</button></section>`,
+    html:`<section class="bq-panel"><button type="button" class="bq-secondary-button" data-library-back>${escapeHtml(localization.t('v7.library.item.back'))}</button><div data-library-detail role="status" aria-live="polite" tabindex="-1"></div><button type="button" class="bq-secondary-button" data-library-item-retry hidden>${escapeHtml(localization.t('v7.library.retry'))}</button></section>`,
     mount(root) {
       const host=root.querySelector('[data-library-detail]');
       const back=root.querySelector('[data-library-back]');
@@ -16,6 +16,9 @@ export function createLibraryItemPage({service,id,onBack}) {
       let disposed=false;
       const render=state=>{
         if(disposed)return;
+        const urgent=state.status==='error'||state.status==='not-found';
+        host.setAttribute?.('role',urgent?'alert':'status');
+        host.setAttribute?.('aria-live',urgent?'assertive':'polite');
         retry.hidden=!id||!['error','idle'].includes(state.status);
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
@@ -27,7 +30,12 @@ export function createLibraryItemPage({service,id,onBack}) {
         }
       };
       const goBack=()=>onBack();
-      const reload=()=>{if(!disposed&&id&&!retry.hidden)void service.getItem(id)};
+      const reload=()=>{
+        if(!disposed&&id&&!retry.hidden){
+          host.focus?.({preventScroll:true});
+          void service.getItem(id);
+        }
+      };
       back.addEventListener('click',goBack);
       retry.addEventListener('click',reload);
       const unsubscribe=service.subscribe(render);
