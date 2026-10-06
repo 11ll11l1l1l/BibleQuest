@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_a2_devotional_source_pool_index",
+  "status": "research_pool_target_range_reached_not_release_ready",
+  "generatedDate": "2026-10-07",
+  "catalogRefs": [
+    "data/v7/content-sources/devotional-source-catalog.json",
+    "data/v7/content-sources/devotional-source-catalog-02.json"
+  ],
+  "aggregate": {
+    "sourceCount": 7,
+    "entryPointerCount": 173,
+    "distinctAuthorCount": 5,
+    "targetEntryPointerRange": {
+      "minimum": 150,
+      "maximum": 300
+    },
+    "withinTargetEntryPointerRange": true
+  },
+  "releaseBoundary": {
+    "sourcePoolDepthTargetReached": true,
+    "emotionValidationTargetReached": false,
+    "bsbReferenceTargetReached": false,
+    "globalHostingClearanceComplete": false,
+    "editorialReviewComplete": false,
+    "translationReviewComplete": false,
+    "publicationAuthorized": false
+  }
+}
