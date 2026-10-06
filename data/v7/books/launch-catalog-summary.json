@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_lane_a_launch_books",
+  "generatedDate": "2026-10-07",
+  "status": "ready_for_automated_policy_review",
+  "launchCount": 8,
+  "policy": {
+    "mode": "external_link_only",
+    "hostedTextAllowed": false,
+    "hostedImagesAllowed": false,
+    "directDownloadAllowed": false,
+    "sourceNavigationRequiresApprovedPublication": true,
+    "rightsEvidenceRequired": true
+  },
+  "sourceFiles": [
+    "data/v7/books/representative-catalog.json",
+    "data/v7/books/library-expansion-candidates.json"
+  ],
+  "items": [
+    {
+      "contentId": "books.pilgrims-progress",
+      "title": "The Pilgrim’s Progress",
+      "creator": "John Bunyan",
+      "sourceUri": "https://www.gutenberg.org/ebooks/131",
+      "catalogId": "gutenberg:131",
+      "revision": "books.pilgrims-progress.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "John Bunyan; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.practice-presence",
+      "title": "The Practice of the Presence of God",
+      "creator": "Brother Lawrence",
+      "sourceUri": "https://www.gutenberg.org/ebooks/5657",
+      "catalogId": "gutenberg:5657",
+      "revision": "books.practice-presence.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "Brother Lawrence; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.imitation-of-christ",
+      "title": "The Imitation of Christ",
+      "creator": "Thomas à Kempis",
+      "sourceUri": "https://www.gutenberg.org/ebooks/1653",
+      "catalogId": "gutenberg:1653",
+      "revision": "books.imitation-of-christ.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "Thomas à Kempis; William Benham translation; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.holy-war",
+      "title": "The Holy War",
+      "creator": "John Bunyan",
+      "sourceUri": "https://www.gutenberg.org/ebooks/395",
+      "catalogId": "gutenberg:395",
+      "revision": "books.holy-war.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "John Bunyan; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.orthodoxy",
+      "title": "Orthodoxy",
+      "creator": "G. K. Chesterton",
+      "sourceUri": "https://www.gutenberg.org/ebooks/130",
+      "catalogId": "gutenberg:130",
+      "revision": "books.orthodoxy.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "G. K. Chesterton; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.confessions-augustine",
+      "title": "Confessions of St. Augustine",
+      "creator": "Augustine of Hippo",
+      "sourceUri": "https://www.gutenberg.org/ebooks/77585",
+      "catalogId": "gutenberg:77585",
+      "revision": "books.confessions-augustine.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "Augustine of Hippo; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.life-teresa",
+      "title": "The Life of St. Teresa of Jesus",
+      "creator": "Teresa of Ávila",
+      "sourceUri": "https://www.gutenberg.org/ebooks/8120",
+      "catalogId": "gutenberg:8120",
+      "revision": "books.life-teresa.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "Teresa of Ávila; David Lewis translation; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    },
+    {
+      "contentId": "books.everlasting-man",
+      "title": "The Everlasting Man",
+      "creator": "G. K. Chesterton",
+      "sourceUri": "https://www.gutenberg.org/ebooks/65688",
+      "catalogId": "gutenberg:65688",
+      "revision": "books.everlasting-man.r1",
+      "publicationState": "pending_review",
+      "reviewState": "pending_review",
+      "rightsStatus": "verified",
+      "allowedUses": [
+        "external_link"
+      ],
+      "attribution": "G. K. Chesterton; edition catalog provided by Project Gutenberg.",
+      "policyDecision": "external_link_only",
+      "laneBAutomatedApprovalRequired": true
+    }
+  ],
+  "releaseBoundary": {
+    "allEightPresent": true,
+    "allRightsVerified": true,
+    "allExternalLinkOnly": true,
+    "allUnhosted": true,
+    "noHumanReviewRequiredForLaneA": true
+  }
+}
