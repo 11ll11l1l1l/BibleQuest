@@ -287,10 +287,10 @@
     {
       "itemId": "teaching.prayer-abiding",
       "contentType": "past_teaching",
-      "neutralSummary": "An editorial adaptation of a Spurgeon sermon theme connecting John 15:7 with abiding in Christ, receiving Jesus' words, and allowing that relationship to shape prayer.",
+      "neutralSummary": "A first-party BibleQuest teaching on John 15:7 connecting prayer with abiding in Christ, receiving Jesus' words, and allowing that relationship to shape desire and faithful action.",
       "theologicalFit": {
         "tier": "review_required",
-        "rationale": "The source sermon is historical Christian preaching, but BibleQuest's derivative adaptation still requires faithful-meaning, Scripture-reference, attribution, and rights review before publication."
+        "rationale": "The article is original first-party BibleQuest content with verified project rights. It still requires normal theological and editorial review before publication."
       },
       "topics": [
         "prayer",
@@ -327,7 +327,7 @@
       "readingTime": {
         "kind": "adaptation_estimate",
         "minutes": 3,
-        "basis": "Short repository-hosted editorial adaptation; rounded estimate."
+        "basis": "Short repository-hosted first-party teaching article; rounded estimate."
       },
       "oneToOneFit": {
         "level": "strong",
@@ -339,19 +339,19 @@
           "apply",
           "pray"
         ],
-        "note": "The existing adaptation already moves from Scripture context to reflection and prayer, making it a strong discussion companion after approval."
+        "note": "The teaching moves from Scripture context to reflection and prayer, making it a strong discussion companion after editorial approval."
       },
       "groupDiscussionFit": {
         "level": "strong",
-        "note": "Suitable for discussion after rights and editorial review; this classification does not authorize publication."
+        "note": "Suitable for discussion after editorial review; this classification does not authorize publication."
       },
       "readingPlanFit": {
         "level": "moderate",
         "suggestedCadence": "single_session_or_prayer_series"
       },
       "editorialPriority": "highest",
-      "sourceNotes": "Rights remain unknown in the canonical record. Do not publish or reuse the adaptation until the source edition and derivative-use basis are verified and the editorial review is approved.",
-      "rightsStatusSnapshot": "unknown",
+      "sourceNotes": "Original first-party BibleQuest teaching. No external sermon prose is reproduced or adapted; rights are verified for display, translation, modification, and distribution.",
+      "rightsStatusSnapshot": "verified",
       "reviewStatusSnapshot": "pending_review",
       "publicationStateSnapshot": "pending_review"
     }
