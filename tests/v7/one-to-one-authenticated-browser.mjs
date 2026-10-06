@@ -399,6 +399,9 @@ try {
     await heading.waitFor({ state: 'visible' });
     assert.equal((await heading.textContent())?.trim(), label);
   }
+  await menteePage.evaluate(() => localStorage.setItem('biblequest.v3.locale', JSON.stringify('en')));
+  await menteePage.reload({ waitUntil: 'networkidle' });
+  await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
   checks.push('supported-locales-en-tl-ceb-on-mobile-width');
 
   stage = 'mentee-complete-seven-step-journey';
