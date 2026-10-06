@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_representative_library_review_decisions",
+  "status": "awaiting_authorized_decisions",
+  "boundary": {
+    "doesNotApproveByPresence": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "authorizedReviewerRequired": true
+  },
+  "decisions": []
+}
