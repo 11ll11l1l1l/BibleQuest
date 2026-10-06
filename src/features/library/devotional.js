@@ -26,6 +26,13 @@ export const devotionalMessages = Object.freeze({
     'v7.devotional.source': 'Basaha ang orihinal nga tinubdan',
     'v7.devotional.topics': 'Mga hilisgutan',
   }),
+  ilo: Object.freeze({
+    'v7.devotional.reading': 'Debosional a basa',
+    'v7.devotional.unavailable': 'Saan a magun-od daytoy a debosional a basa.',
+    'v7.devotional.sourceFallback': 'Maipakita ti nagtaudan a pagsasao: {language}. Awan ti nasukimat a patarus.',
+    'v7.devotional.source': 'Basaen ti orihinal a pagtaudan',
+    'v7.devotional.topics': 'Dagiti topiko',
+  }),
 });
 
 function canonicalLocale(value) {

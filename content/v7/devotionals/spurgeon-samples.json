@@ -7,7 +7,8 @@
       "labels": {
         "en": "Prayer",
         "tl": "Panalangin",
-        "ceb": "Pag-ampo"
+        "ceb": "Pag-ampo",
+        "ilo": "Kararag"
       }
     },
     {
@@ -16,7 +17,8 @@
       "labels": {
         "en": "Hope",
         "tl": "Pag-asa",
-        "ceb": "Paglaom"
+        "ceb": "Paglaom",
+        "ilo": "Namnama"
       }
     }
   ],
@@ -63,7 +65,44 @@
           "order": 0
         }
       ],
-      "translations": []
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Magpatuloy sa pananalangin — sipi",
+            "body": "Kapansin-pansin kung gaano kalaking bahagi ng Banal na Kasulatan ang nakalaan sa paksa ng panalangin—sa pagbibigay ng mga halimbawa, pagpapatibay ng mga tuntunin, o pagpapahayag ng mga pangako. Halos hindi pa natin nabubuksan ang Biblia ay mababasa na natin, “Nang magkagayo’y nagsimulang tumawag ang mga tao sa pangalan ng Panginoon;” at sa sandaling malapit na nating isara ang aklat, maririnig naman natin ang “Amen” ng isang taimtim na pagsusumamo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Padayon sa pag-ampo — kinutlo",
+            "body": "Makapainteres nga matikdan kung unsa kadako nga bahin sa Balaang Kasulatan ang gipahinungod sa pag-ampo—pinaagi sa paghatag og mga pananglitan, pagpamatuod sa mga sugo, o pagpahayag sa mga saad. Hapit pa gani nato maablihi ang Biblia, mabasa na nato, “Unya nagsugod ang mga tawo sa pagtawag sa ngalan sa Ginoo;” ug sa hapit na nato sirad-an ang basahon, madungog usab nato ang “Amen” sa usa ka kinasingkasing nga pangamuyo."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Agtultuloy iti panagkararag — paset",
+            "body": "Makainteres a paliiwen no kasano kadakkel ti paset ti Nasantuan a Surat a maipanggep iti panagkararag—iti panangted kadagiti pagwadan, panangipapigsa kadagiti bilin, wenno panangipakaammo kadagiti kari. Kasla appena laeng a lukatantayo ti Biblia ket mabasa tayon, “Idi kasta, nangrugi dagiti tattao nga umawag iti nagan ti Apo;” ket no asidegtayon nga iserra ti libro, mangngegtayo met ti “Amen” ti maysa a napasnek a panagpakaasi."
+          }
+        }
+      ]
     },
     {
       "id": "devotional.spurgeon.january-06-am",
@@ -107,7 +146,44 @@
           "order": 0
         }
       ],
-      "translations": []
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Ipaubaya ang iyong alalahanin — sipi",
+            "body": "Isang mapalad na paraan ng pagpapagaan ng dalamhati ang madama nating—“SIYA ay nagmamalasakit sa akin.” Kristiyano! Huwag mong ilagay sa kahihiyan ang pananampalataya sa pamamagitan ng palaging pagdadala ng mukhang punô ng pag-aalala; halika, ipagkatiwala mo sa iyong Panginoon ang iyong pasanin. Pasuray-suray ka sa ilalim ng bigat na hindi man lamang mararamdaman ng iyong Ama. Ang para sa iyo ay tila nakadudurog na pasanin ay sa Kaniya’y tulad lamang ng munting alabok sa timbangan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Itugyan ang imong kabalaka — kinutlo",
+            "body": "Usa ka malipayon nga paagi sa paghupay sa kasubo ang pagbati nga—“SIYA nag-atiman kanako.” Kristohanon! Ayaw pagdaot sa dungog sa pagtuo pinaagi sa kanunay nga pagdala og nawong nga puno sa kabalaka; duol, itugyan ang imong palas-anon ngadto sa imong Ginoo. Nagkalisod ka ilalom sa usa ka kabug-at nga dili gani mabug-atan ang imong Amahan. Ang daw makadugmok nga palas-anon alang kanimo, alang Kaniya sama ra sa gamayng abog sa timbangan."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:19:00Z",
+          "content": {
+            "title": "Itaklinmo ti pagdanagam — paset",
+            "body": "Maysa a naragsak a wagas ti panangpabang-ar iti ladingit no mariknatayo—“ISUNA aluadannak.” Cristiano! Saanmo a pababaen ti dayaw ti relihion babaen ti kanayon a panangipakita iti rupa a napno iti panagdanag; umasidegka, itaklinmo iti Apom ti dagsenmo. Agsagsagaba ka iti sidong ti maysa a dagsen a saan man laeng a marikna ti Amam. Ti kasla mangdadael a dagsen para kenka, para Kenkuana ket kas laeng iti bassit a tapok iti pagtimbangan."
+          }
+        }
+      ]
     }
   ]
 }

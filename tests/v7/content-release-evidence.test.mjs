@@ -82,10 +82,20 @@ test('release evidence is deterministic metadata and includes bound A2 decision 
     sourceContent: { title: 'Title', body: 'SECRET SOURCE BODY' },
     rights: { status: 'verified', holder: 'Holder', basis: 'Basis', attribution: '', allowedUses: ['display'] },
     review: { status: 'approved', reviewer: 'reviewer-1', decidedAt: '2026-10-05T00:00:00Z' },
-    translations: [{
-      locale: 'tl', translatedFromRevision: 'r1', reviewStatus: 'reviewed', translatedBy: 'translator-1',
-      reviewedBy: 'reviewer-2', reviewedAt: '2026-10-05T00:00:00Z', content: { title: 'Pamagat', body: 'SECRET TRANSLATION BODY' }
-    }]
+    translations: [
+      {
+        locale: 'tl', translatedFromRevision: 'r1', reviewStatus: 'reviewed', translatedBy: 'translator-1',
+        reviewedBy: 'reviewer-2', reviewedAt: '2026-10-05T00:00:00Z', content: { title: 'Pamagat', body: 'SECRET TRANSLATION BODY' }
+      },
+      {
+        locale: 'ceb', translatedFromRevision: 'r1', reviewStatus: 'reviewed', translatedBy: 'translator-1',
+        reviewedBy: 'reviewer-2', reviewedAt: '2026-10-05T00:00:00Z', content: { title: 'Titulo', body: 'SECRET CEBUANO BODY' }
+      },
+      {
+        locale: 'ilo', translatedFromRevision: 'r1', reviewStatus: 'reviewed', translatedBy: 'translator-1',
+        reviewedBy: 'reviewer-2', reviewedAt: '2026-10-05T00:00:00Z', content: { title: 'Titulo', body: 'SECRET ILOCANO BODY' }
+      }
+    ]
   };
   const other = type => ({ ...item, id: `${type}.ready`, type, translations: [] });
   const input = [item, other('book'), other('past_teaching')];
@@ -107,13 +117,16 @@ test('release evidence is deterministic metadata and includes bound A2 decision 
   assert.equal(report.reviewDecisions.decisionCount, 3);
   assert.deepEqual(report.reviewDecisions.approvedItemIds, ['book.ready', 'devotional.ready', 'past_teaching.ready']);
   assert.deepEqual(report.localization.supportedLocales, ['en', 'tl']);
-  assert.equal(report.items[1].translations[0].locale, 'tl');
+  const devotional = report.items.find(reportItem => reportItem.id === 'devotional.ready');
+  assert.deepEqual(devotional.translations.map(entry => entry.locale), ['ceb', 'ilo', 'tl']);
   assert.deepEqual(reordered.items, report.items);
   assert.deepEqual(reordered.reviewDecisions, report.reviewDecisions);
   const serialized = JSON.stringify(report);
   assert.ok(!serialized.includes('SECRET SOURCE BODY'));
   assert.ok(!serialized.includes('SECRET TRANSLATION BODY'));
-  assert.ok(!Object.hasOwn(report.items[1], 'sourceContent'));
+  assert.ok(!serialized.includes('SECRET CEBUANO BODY'));
+  assert.ok(!serialized.includes('SECRET ILOCANO BODY'));
+  assert.ok(!Object.hasOwn(devotional, 'sourceContent'));
 });
 
 test('current representative content produces truthful OPEN evidence with A2 decisions explicitly awaiting review', () => {

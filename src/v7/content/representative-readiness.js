@@ -1,8 +1,11 @@
+import { assessV7DevotionalTranslationCoverage } from './devotional-translation-policy.js';
+
 const REQUIRED_LIBRARY_TYPES = Object.freeze(['book', 'devotional', 'past_teaching']);
 
 const BLOCKER_ORDER = Object.freeze([
   'fixture_source',
   'rights_unverified',
+  'translations_incomplete',
   'review_unapproved',
   'not_published'
 ]);
@@ -11,6 +14,9 @@ function itemBlockers(item) {
   const blockers = [];
   if (item?.source?.kind === 'fixture') blockers.push('fixture_source');
   if (item?.rights?.status !== 'verified') blockers.push('rights_unverified');
+  if (item?.type === 'devotional' && !assessV7DevotionalTranslationCoverage(item).ready) {
+    blockers.push('translations_incomplete');
+  }
   if (item?.review?.status !== 'approved') blockers.push('review_unapproved');
   if (item?.publicationState !== 'published') blockers.push('not_published');
   return Object.freeze(blockers.sort((a, b) => BLOCKER_ORDER.indexOf(a) - BLOCKER_ORDER.indexOf(b)));
@@ -31,7 +37,8 @@ function freezeCandidate(item) {
  * Input items are expected to have already passed parseV7ContentBundle(). The
  * assessment deliberately does not approve or publish content; it only reports
  * whether at least one non-fixture, rights-verified, review-approved, published
- * item exists for each required Library type.
+ * item exists for each required Library type. Devotionals additionally require
+ * complete reviewed current-revision Tagalog, Cebuano, and Ilocano translations.
  */
 export function assessV7RepresentativeLibraryContent(items) {
   if (!Array.isArray(items)) throw new TypeError('items must be an array');

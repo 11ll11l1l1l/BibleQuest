@@ -17,8 +17,20 @@ function currentRepresentativeItems() {
   return bundles.flatMap(bundle => parseV7ContentBundle(bundle).items);
 }
 
-test('representative content gate requires one fully release-ready item per Library type', () => {
-  const ready = type => ({
+function reviewedTranslation(locale) {
+  return {
+    locale,
+    translatedFromRevision: 'r1',
+    translatedBy: 'translator',
+    reviewStatus: 'reviewed',
+    reviewedBy: 'translation-qa',
+    reviewedAt: '2026-10-06T10:19:00Z',
+    content: { title: `Title ${locale}`, body: `Body ${locale}` }
+  };
+}
+
+function ready(type) {
+  return {
     id: `${type}.ready`,
     type,
     revision: 'r1',
@@ -26,9 +38,14 @@ test('representative content gate requires one fully release-ready item per Libr
     publicationState: 'published',
     source: { kind: 'external' },
     rights: { status: 'verified' },
-    review: { status: 'approved' }
-  });
+    review: { status: 'approved' },
+    translations: type === 'devotional'
+      ? [reviewedTranslation('tl'), reviewedTranslation('ceb'), reviewedTranslation('ilo')]
+      : []
+  };
+}
 
+test('representative content gate requires one fully release-ready item per Library type', () => {
   const report = assessV7RepresentativeLibraryContent([
     ready('book'),
     ready('devotional'),
@@ -58,6 +75,14 @@ test('fixture, rights, review and publication state remain explicit blockers', (
   ]);
   assert.deepEqual(report.types.devotional.blockerCodes, ['missing_representative_content']);
   assert.deepEqual(report.types.past_teaching.blockerCodes, ['missing_representative_content']);
+});
+
+test('otherwise-ready devotional remains blocked when a required translation is incomplete', () => {
+  const devotional = ready('devotional');
+  devotional.translations = devotional.translations.filter(row => row.locale !== 'ilo');
+  const report = assessV7RepresentativeLibraryContent([devotional]);
+  assert.equal(report.types.devotional.ready, false);
+  assert.deepEqual(report.types.devotional.blockerCodes, ['translations_incomplete']);
 });
 
 test('current representative Library content reports the exact unresolved acceptance boundary', () => {
