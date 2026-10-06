@@ -62,10 +62,14 @@ test('A2 enrichment stays revision-bound and complete enough for editorial revie
 });
 
 test('A2 Scripture anchors use bounded reference-shaped labels instead of embedded verse text', () => {
-  const referenceShape = /^(?:[1-3] )?[A-Za-z]+(?: [A-Za-z]+)* \d+:\d+(?:-\d+)?$/;
+  const chapterVerseShape = /^(?:[1-3] )?[A-Za-z]+(?: [A-Za-z]+)* \d+:\d+(?:-\d+)?$/;
+  const singleChapterShape = /^(?:Obadiah|Philemon|2 John|3 John|Jude) \d+(?:-\d+)?$/;
   for (const item of curation.items) {
     for (const anchor of item.scriptureAnchors) {
-      assert.match(anchor, referenceShape, `${item.contentId} has a malformed Scripture anchor`);
+      assert.ok(
+        chapterVerseShape.test(anchor) || singleChapterShape.test(anchor),
+        `${item.contentId} has a malformed Scripture anchor`
+      );
       assert.ok(anchor.length < 48, `${item.contentId} anchor should be a reference, not copied verse text`);
     }
   }
