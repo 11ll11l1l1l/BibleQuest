@@ -1,5 +1,6 @@
 import { normalizeLibraryTaxonomyId } from './discovery.js';
 import { libraryError } from './contracts.js';
+import { normalizeLibraryDiscoveryRequest, toLibraryDiscoveryTaxonomyFilters } from './discovery-query-contract.js';
 import { createLibraryRepository } from './repository.js';
 
 const TRANSLATION_COLUMNS = [
@@ -31,16 +32,28 @@ const ITEM_COLUMNS = [
   'id', 'content_type', 'current_revision_id', 'publication_state', 'updated_at',
 ];
 
-function columnsFor({ includeBody = false, taxonomyId = '' } = {}) {
+const DISCOVERY_FILTER_ALIASES = Object.freeze({
+  emotions: 'filter_emotion_links',
+  needs: 'filter_need_links',
+  topics: 'filter_topic_links',
+  lifeSituations: 'filter_life_situation_links',
+});
+
+function columnsFor({ includeBody = false, taxonomyId = '', discoveryFilters = {} } = {}) {
   const baseColumns = includeBody ? REVISION_COLUMNS.join(',') : LIST_REVISION_COLUMNS;
-  const revisionColumns = baseColumns + (taxonomyId
-    ? ',filter_taxonomy_links:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey!inner(taxonomy_id)' : '');
+  const taxonomyFilter = taxonomyId
+    ? ',filter_taxonomy_links:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey!inner(taxonomy_id)' : '';
+  const discoveryColumns = Object.entries(DISCOVERY_FILTER_ALIASES)
+    .filter(([key]) => discoveryFilters[key]?.length)
+    .map(([, alias]) => `,${alias}:v7_library_revision_taxonomy!v7_library_revision_taxonomy_revision_id_fkey!inner(taxonomy_id)`)
+    .join('');
+  const revisionColumns = baseColumns + taxonomyFilter + discoveryColumns;
   return `${ITEM_COLUMNS.join(',')},revision:v7_library_revisions!v7_library_items_current_revision_fk!inner(${revisionColumns})`;
 }
 
-function publishedQuery(client, { includeBody = false, taxonomyId = '' } = {}) {
+function publishedQuery(client, { includeBody = false, taxonomyId = '', discoveryFilters = {} } = {}) {
   return client.from('v7_library_items')
-    .select(columnsFor({ includeBody, taxonomyId }))
+    .select(columnsFor({ includeBody, taxonomyId, discoveryFilters }))
     .eq('publication_state', 'published')
     .eq('revision.publication_state', 'published')
     .eq('revision.review_status', 'approved')
@@ -164,13 +177,18 @@ export function createLibrarySupabaseAdapter(clientOrProvider) {
       const limit = validPageSize(options.limit);
       const offset = decodeOffset(options.cursor);
       const taxonomyId = normalizeLibraryTaxonomyId(options.taxonomyId);
+      const discoveryRequest = normalizeLibraryDiscoveryRequest(options);
+      const discoveryFilters = toLibraryDiscoveryTaxonomyFilters(discoveryRequest);
       const db = await client();
-      let request = publishedQuery(db, { taxonomyId })
+      let request = publishedQuery(db, { taxonomyId, discoveryFilters })
         .order('updated_at', { ascending: false })
         .order('id', { ascending: true });
 
       if (options.contentType) request = request.eq('content_type', String(options.contentType));
       if (taxonomyId) request = request.eq('revision.filter_taxonomy_links.taxonomy_id', taxonomyId);
+      for (const [key, alias] of Object.entries(DISCOVERY_FILTER_ALIASES)) {
+        if (discoveryFilters[key]?.length) request = request.in(`revision.${alias}.taxonomy_id`, discoveryFilters[key]);
+      }
       const pattern = safeSearchPattern(options.query);
       if (pattern) request = request.ilike('revision.title', pattern);
 

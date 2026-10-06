@@ -68,6 +68,7 @@ function makeClient({ rows = [], detail = null, error = null, taxonomy = [] } = 
         eq(column, value) { call.filters.push(['eq', column, value]); return this; },
         neq(column, value) { call.filters.push(['neq', column, value]); return this; },
         ilike(column, value) { call.filters.push(['ilike', column, value]); return this; },
+        in(column, values) { call.filters.push(['in', column, [...values]]); return this; },
         order(column, options) { call.orders.push([column, options]); return this; },
         range(start, end) { call.ranges.push([start, end]); return this; },
         maybeSingle: async () => ({ data: detail, error }),
@@ -162,4 +163,37 @@ test('malformed taxonomy filters fail before opening a client and unfiltered ite
   await adapter.listPublished();
   assert.equal(calls.length, 1);
   assert.doesNotMatch(calls[0].selections[0], /filter_taxonomy_links/);
+});
+
+
+test('discovery filters use OR within dimensions and independent inner joins across dimensions', async () => {
+  const { client, calls } = makeClient({ rows: [makeRow()] });
+  await createLibrarySupabaseAdapter(client).listPublished({
+    emotions: ['worried', 'afraid'],
+    needs: ['peace'],
+    topics: ['prayer', 'daily_faith'],
+    lifeSituations: ['work_stress'],
+    locale: 'ilo-PH',
+  });
+
+  const selection = calls[0].selections[0];
+  assert.match(selection, /filter_emotion_links:.*!inner\(taxonomy_id\)/);
+  assert.match(selection, /filter_need_links:.*!inner\(taxonomy_id\)/);
+  assert.match(selection, /filter_topic_links:.*!inner\(taxonomy_id\)/);
+  assert.match(selection, /filter_life_situation_links:.*!inner\(taxonomy_id\)/);
+
+  assert.ok(calls[0].filters.some(([kind, column, values]) =>
+    kind === 'in' && column === 'revision.filter_emotion_links.taxonomy_id'
+      && JSON.stringify(values) === JSON.stringify(['emotion.afraid', 'emotion.anxious'])));
+  assert.ok(calls[0].filters.some(([kind, column, values]) =>
+    kind === 'in' && column === 'revision.filter_need_links.taxonomy_id'
+      && JSON.stringify(values) === JSON.stringify(['need.peace'])));
+  assert.ok(calls[0].filters.some(([kind, column, values]) =>
+    kind === 'in' && column === 'revision.filter_topic_links.taxonomy_id'
+      && JSON.stringify(values) === JSON.stringify(['topic.daily_faith', 'topic.prayer'])));
+  assert.ok(calls[0].filters.some(([kind, column, values]) =>
+    kind === 'in' && column === 'revision.filter_life_situation_links.taxonomy_id'
+      && JSON.stringify(values) === JSON.stringify(['life_situation.work_stress'])));
+  assert.equal(calls[0].filters.some(([, column]) => /locale/.test(column)), false,
+    'requested locale must not hide source-locale items that rely on deterministic translation fallback');
 });
