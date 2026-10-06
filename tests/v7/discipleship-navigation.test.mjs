@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { discipleshipRoute,lessonReaderRoute,lessonReaderContext } from '../../src/app/discipleship-navigation.js';
+import { discipleshipRoute,discipleshipHydrationTarget,lessonReaderRoute,lessonReaderContext } from '../../src/app/discipleship-navigation.js';
 import { assignedPath,assignedCurriculumPage } from '../../src/features/discipleship-curriculum/index.js';
 const context={pairId:'pair&one',trackId:'track',moduleId:'module',revisionId:'pinned',stepId:'scripture'};
 const tracks=[{id:'track',title:'Track',modules:[{id:'module',title:'Module',lessons:[{id:'lesson',revisionId:'pinned',title:'<unsafe>'}]}]}];
@@ -10,6 +10,14 @@ test('assigned route hierarchy selects only the requested assigned track and mod
   assert.equal(assignedPath(tracks,{view:'module',trackId:'track',moduleId:'module'}).rows[0].revisionId,'pinned');
   assert.throws(()=>assignedPath(tracks,{view:'module',trackId:'track',moduleId:'other'}));
   assert.throws(()=>assignedPath(tracks,{view:'track',trackId:'unassigned'}));
+});
+test('authenticated hydration preserves bounded ONE 2 ONE query context only',()=>{
+  const lesson='#/one-to-one-lesson?pairId=pair%26one&trackId=track&moduleId=module&revisionId=pinned&stepId=scripture';
+  const restored=discipleshipHydrationTarget(lesson);
+  assert.equal(restored,'one-to-one-lesson?pairId=pair%26one&trackId=track&moduleId=module&revisionId=pinned&stepId=scripture');
+  assert.equal(discipleshipHydrationTarget('#/one-to-one?view=authoring'),'one-to-one?view=authoring');
+  assert.equal(discipleshipHydrationTarget('#/library-item?id=outside'),'');
+  assert.equal(discipleshipHydrationTarget('#/one-to-one-lesson'),'');
 });
 test('Scripture navigation and reload preserve lesson identity with an allowlisted return route',()=>{
   const route=lessonReaderRoute({book:'JHN',chapter:15,verseStart:7},context);
