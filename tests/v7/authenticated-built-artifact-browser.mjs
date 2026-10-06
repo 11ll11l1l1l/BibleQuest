@@ -181,10 +181,10 @@ await insert('v7_lesson_revisions', {
   lesson_id: ids.lesson,
   revision_number: 1,
   locale: 'en',
-  published_at: now,
   created_by: mentor.id,
 });
 await insert('v7_lesson_steps', steps);
+await update('v7_lesson_revisions', `id=eq.${ids.revision}`, { published_at: now });
 await insert('v7_pair_assignments', {
   pair_id: ids.pair,
   lesson_revision_id: ids.revision,
