@@ -52,3 +52,15 @@ The preserved exact-source artifact is `v7-build-pwa-performance-d5f0eef81a1eacf
 That successful run is development evidence for the exact source SHA only. The merge commit includes a newer concurrent development parent, so run 37472368459 must not be represented as exact-SHA release certification for `424da45c2e780ffb187a06dccdfdc24130604452` or for a later candidate. If either is selected as the release candidate, the normal candidate exact-SHA rule still applies.
 
 The **Changed-surface accessibility** row therefore remains OPEN, but its unresolved portion is narrower: named assistive-tool/browser observation of announcement quality, measured text/control contrast, and populated-content behavior at required text scaling are still required. The published Library, populated locale/taxonomy/pagination/Reader, authenticated ONE 2 ONE, physical-device/installed-PWA, deployed identity and final candidate rows likewise remain OPEN until their stated dependencies exist and are observed.
+
+## Lane A4 measured contrast closure
+
+[Run 37535378963](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37535378963) completed successfully for exact source `0d92e403e8ae4ad6b803b10f0e562a719fdcdaa7`. The run passed lint/format/typecheck, V7 unit and contract tests, exact build identity/performance, Chromium parity, ONE 2 ONE smoke, the Library 320/390/430 px × en/tl/ceb smoke, PWA acceptance, automated accessibility, certification and evidence upload.
+
+That Library browser matrix now measures rendered foreground/background luminance while xlarge text and strong contrast are active. It requires at least 4.5:1 for the Library heading, introductory/status text, search label, search input text, primary action text and secondary action text. The same tranche fixes the inherited light-theme strong-contrast selectors that previously produced approximately 2.78:1 panel text contrast on the V6 black surface.
+
+The preserved exact-source artifact is `v7-build-pwa-performance-0d92e403e8ae4ad6b803b10f0e562a719fdcdaa7`, artifact ID `11446387127`, digest `sha256:d731c62378dfefdb9cbd2aeaa623ecf795634892ff99bf39dabf4d83d0ce7c4b`, expiring 2026-10-20T21:41:33Z. Preserve it before expiry if this development evidence is required after the workflow retention window.
+
+PR #1295 merged the A4 tranche as development merge `674da38149ad824092c90ac3d552aa9db059654c`. Because the exact-source run certifies the PR source SHA rather than the later merge commit, it remains development evidence and must not be represented as final exact-SHA release certification for the merge or any later candidate.
+
+The **Changed-surface accessibility** row is now narrower again: deterministic rendered Library text/control-text contrast is covered by exact-source browser evidence. Named assistive-tool/browser observation of announcement quality and populated-content behavior at required text scaling remain OPEN. Published/populated Library journeys, authenticated ONE 2 ONE, physical-device/installed-PWA, deployed identity and final exact-candidate certification remain governed by their existing dependencies.
