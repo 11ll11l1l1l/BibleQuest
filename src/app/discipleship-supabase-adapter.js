@@ -125,15 +125,17 @@ export function createDiscipleshipSupabaseRepository(clientOrProvider, { assertC
       return rows(client.from('v7_learner_progress').select(PROGRESS_COLUMNS).eq('assignment_id', selected.id).eq('learner_id', pair.menteeId).eq('lesson_revision_id', revisionId));
     },
     async loadPrivateResponses(revisionId, pair, context) {
-      // Owner history remains readable after pair end; write=true still limits this
-      // repository path to the mentee, and RLS independently enforces row ownership.
-      scope(pair, context, true, false);
+      // The mentee keeps owner-history access after pair end. An active mentor may
+      // read only rows exposed by response-share RLS; the browser never broadens it.
+      const owner = context.userId === pair.menteeId;
+      if (owner) scope(pair, context, true, false);
+      else scope(pair, context, false, true);
       const client = await db(context);
       const selected = await assignment(client, pair, revisionId);
       assertContext(context);
       const result = await rows(client.from('v7_lesson_responses')
         .select('id,assignment_id,learner_id,lesson_revision_id,lesson_step_id,response,updated_at,shares:v7_response_shares!v7_response_shares_response_id_fkey(recipient_id,share_state)')
-        .eq('assignment_id', selected.id).eq('learner_id', context.userId)
+        .eq('assignment_id', selected.id).eq('learner_id', pair.menteeId)
         .eq('lesson_revision_id', required(revisionId)).order('lesson_step_id'));
       assertContext(context);
       return result.map(row => ({ ...row, pairId: pair.id, congregationId: pair.congregationId,
