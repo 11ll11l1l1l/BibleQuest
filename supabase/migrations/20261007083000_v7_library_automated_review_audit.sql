@@ -70,6 +70,7 @@ create table if not exists public.v7_library_review_decisions (
   policy_version text,
   reviewer_id uuid references auth.users(id) on delete set null,
   criteria jsonb not null default '[]'::jsonb check (jsonb_typeof(criteria) = 'array'),
+  second_pass jsonb not null default '{}'::jsonb check (jsonb_typeof(second_pass) = 'object'),
   evidence_refs jsonb not null default '[]'::jsonb check (jsonb_typeof(evidence_refs) = 'array'),
   note text check (note is null or char_length(note) <= 4000),
   decided_at timestamptz not null,
@@ -184,6 +185,9 @@ begin
         and d.policy_version = new.review_policy_version
         and d.decided_at = new.reviewed_at
         and jsonb_array_length(d.criteria) > 0
+        and d.second_pass ->> 'result' = 'pass'
+        and d.second_pass ->> 'revision' = new.id::text
+        and nullif(btrim(d.second_pass ->> 'evaluator'),'') is not null
         and jsonb_array_length(d.evidence_refs) > 0
     ) then
       raise exception 'Automated V7 Library publication requires an exact auditable auto-approved decision';
@@ -231,6 +235,212 @@ with check (
       and private.bible_can_review_content(i.congregation_id)
   )
 );
+
+
+
+create or replace function public.bible_v7_apply_automated_library_review(
+  p_item_id uuid,
+  p_revision_id uuid,
+  p_decision text,
+  p_policy_id text,
+  p_policy_version text,
+  p_criteria jsonb,
+  p_second_pass jsonb,
+  p_evidence_refs jsonb,
+  p_decided_at timestamptz,
+  p_note text default null
+)
+returns public.v7_library_review_decisions
+language plpgsql
+security definer
+set search_path = ''
+as $bq$
+declare
+  target_item public.v7_library_items%rowtype;
+  target_revision public.v7_library_revisions%rowtype;
+  required_ids text[] := array[
+    'source_identity',
+    'provenance',
+    'permitted_use_rights',
+    'source_fidelity',
+    'scripture_reference_validity',
+    'scripture_context',
+    'theological_fidelity',
+    'editorial_coherence',
+    'audience_suitability',
+    'duplicate_fragment_detection',
+    'emotion_need_relevance',
+    'catalog_diversity',
+    'revision_integrity',
+    'metadata_integrity',
+    'adversarial_qa'
+  ];
+  required_count integer;
+  matched_count integer;
+  inserted public.v7_library_review_decisions%rowtype;
+begin
+  if p_decision not in ('auto_approved','needs_repair','rejected') then
+    raise exception 'Unsupported automated Library decision';
+  end if;
+  if nullif(btrim(p_policy_id),'') is null or nullif(btrim(p_policy_version),'') is null then
+    raise exception 'Automated Library review requires policy identity and version';
+  end if;
+  if p_decided_at is null then
+    raise exception 'Automated Library review requires a decision timestamp';
+  end if;
+  if jsonb_typeof(p_criteria) is distinct from 'array'
+     or jsonb_typeof(p_second_pass) is distinct from 'object'
+     or jsonb_typeof(p_evidence_refs) is distinct from 'array' then
+    raise exception 'Automated Library review evidence has an invalid shape';
+  end if;
+
+  select * into target_item
+  from public.v7_library_items i
+  where i.id = p_item_id
+  for update;
+  if target_item.id is null then raise exception 'V7 Library item is unavailable'; end if;
+
+  select * into target_revision
+  from public.v7_library_revisions r
+  where r.id = p_revision_id and r.item_id = p_item_id
+  for update;
+  if target_revision.id is null then raise exception 'V7 Library revision is unavailable'; end if;
+
+  if target_item.current_revision_id is not null and target_item.current_revision_id is distinct from p_revision_id then
+    raise exception 'Automated review must target the current V7 Library revision';
+  end if;
+
+  if target_item.content_type = 'devotional' then
+    required_ids := required_ids || array[
+      'translation_completeness',
+      'translation_semantic_fidelity',
+      'translation_naturalness'
+    ];
+  end if;
+  required_count := cardinality(required_ids);
+
+  if p_decision = 'auto_approved' then
+    if target_revision.rights_status <> 'verified'
+       or target_revision.source_kind = 'fixture'
+       or jsonb_array_length(target_revision.allowed_uses) = 0 then
+      raise exception 'Auto-publication requires verified rights, permitted use and a non-fixture source';
+    end if;
+    if jsonb_array_length(p_criteria) <> required_count then
+      raise exception 'Auto-publication requires every policy criterion exactly once';
+    end if;
+
+    select count(distinct criterion ->> 'id') into matched_count
+    from jsonb_array_elements(p_criteria) criterion
+    where criterion ->> 'id' = any(required_ids);
+    if matched_count <> required_count then
+      raise exception 'Auto-publication criteria do not match the required policy inventory';
+    end if;
+
+    if exists (
+      select 1
+      from jsonb_array_elements(p_criteria) criterion
+      where criterion ->> 'result' is distinct from 'pass'
+        or nullif(btrim(criterion ->> 'evaluator'),'') is null
+        or nullif(btrim(criterion ->> 'evaluatedAt'),'') is null
+        or jsonb_typeof(criterion -> 'evidenceRefs') is distinct from 'array'
+        or jsonb_array_length(criterion -> 'evidenceRefs') = 0
+    ) then
+      raise exception 'Auto-publication requires passing timestamped evidence for every criterion';
+    end if;
+
+    perform (criterion ->> 'evaluatedAt')::timestamptz
+    from jsonb_array_elements(p_criteria) criterion;
+
+    if p_second_pass ->> 'result' is distinct from 'pass'
+       or p_second_pass ->> 'revision' is distinct from p_revision_id::text
+       or nullif(btrim(p_second_pass ->> 'evaluator'),'') is null
+       or nullif(btrim(p_second_pass ->> 'evaluatedAt'),'') is null
+       or jsonb_typeof(p_second_pass -> 'evidenceRefs') is distinct from 'array'
+       or jsonb_array_length(p_second_pass -> 'evidenceRefs') = 0 then
+      raise exception 'Auto-publication requires a passing exact-revision second pass with evidence';
+    end if;
+
+    perform (p_second_pass ->> 'evaluatedAt')::timestamptz;
+
+    if exists (
+      select 1
+      from jsonb_array_elements(p_criteria) criterion
+      where criterion ->> 'evaluator' = p_second_pass ->> 'evaluator'
+    ) then
+      raise exception 'Auto-publication second pass must be independent from primary evaluators';
+    end if;
+
+    if jsonb_array_length(p_evidence_refs) = 0 then
+      raise exception 'Auto-publication requires decision evidence';
+    end if;
+  end if;
+
+  insert into public.v7_library_review_decisions (
+    item_id,
+    revision_id,
+    content_type,
+    reviewer_type,
+    decision,
+    policy_id,
+    policy_version,
+    reviewer_id,
+    criteria,
+    second_pass,
+    evidence_refs,
+    note,
+    decided_at
+  ) values (
+    p_item_id,
+    p_revision_id,
+    target_item.content_type,
+    'automated_policy',
+    p_decision,
+    p_policy_id,
+    p_policy_version,
+    null,
+    p_criteria,
+    p_second_pass,
+    p_evidence_refs,
+    p_note,
+    p_decided_at
+  )
+  returning * into inserted;
+
+  if p_decision = 'auto_approved' then
+    update public.v7_library_revisions
+    set review_status = 'approved',
+        reviewer_type = 'automated_policy',
+        reviewer_id = null,
+        review_policy_id = p_policy_id,
+        review_policy_version = p_policy_version,
+        review_evidence = jsonb_build_object(
+          'decisionId', inserted.id,
+          'criteria', p_criteria,
+          'secondPass', p_second_pass,
+          'evidenceRefs', p_evidence_refs
+        ),
+        reviewed_at = p_decided_at,
+        publication_state = 'published'
+    where id = p_revision_id and item_id = p_item_id;
+
+    update public.v7_library_items
+    set current_revision_id = p_revision_id,
+        publication_state = 'published',
+        updated_at = p_decided_at
+    where id = p_item_id;
+  end if;
+
+  return inserted;
+end;
+$bq$;
+
+revoke all on function public.bible_v7_apply_automated_library_review(uuid,uuid,text,text,text,jsonb,jsonb,jsonb,timestamptz,text)
+  from public,anon,authenticated;
+grant execute on function public.bible_v7_apply_automated_library_review(uuid,uuid,text,text,text,jsonb,jsonb,jsonb,timestamptz,text)
+  to service_role;
+
+comment on function public.bible_v7_apply_automated_library_review(uuid,uuid,text,text,text,jsonb,jsonb,jsonb,timestamptz,text) is
+  'Service-role Lane B transition: persist automated review evidence and publish only exact-revision all-pass V7 Library content.';
 
 comment on table public.v7_library_review_decisions is
   'Immutable global/tenant V7 Library audit history. Automated rows are system-authored; browser reviewers may insert only truthful human overrides.';
