@@ -225,42 +225,61 @@ try {
   });
   checks.push('mentee-overview-open-and-ui-acceptance');
 
-  stage = 'curriculum-fixture';
-  const ids = Object.fromEntries(['track', 'trackRevision', 'module', 'moduleRevision', 'lesson', 'lessonVersion', 'revision'].map(name => [name, randomUUID()]));
+  stage = 'mentor-ui-authoring';
+  await mentorPage.goto(`${baseUrl}/#/one-to-one?view=authoring`, { waitUntil: 'networkidle' });
+  const trackForm = mentorPage.locator('[data-authoring-form="track-create"]');
+  await trackForm.waitFor({ state: 'visible' });
+  await trackForm.locator('input[name="title"]').fill(`Browser certification track ${marker.slice(0, 8)}`);
+  await trackForm.locator('textarea[name="summary"]').fill('Lane C authenticated browser curriculum');
+  await trackForm.locator('input[name="locale"]').fill('en');
+  await trackForm.locator('input[name="audience"]').fill('ONE 2 ONE');
+  await trackForm.locator('input[name="position"]').fill('0');
+  await trackForm.locator('button[type="submit"]').click();
+  await mentorPage.locator('[data-authoring-select="track"][aria-current="true"]').waitFor({ state: 'visible' });
+
+  const moduleForm = mentorPage.locator('[data-authoring-form="module-create"]');
+  await moduleForm.locator('input[name="title"]').fill('Browser certification module');
+  await moduleForm.locator('textarea[name="summary"]').fill('Authenticated module');
+  await moduleForm.locator('input[name="position"]').fill('0');
+  await moduleForm.locator('button[type="submit"]').click();
+  await mentorPage.locator('[data-authoring-select="module"][aria-current="true"]').waitFor({ state: 'visible' });
+
+  const lessonForm = mentorPage.locator('[data-authoring-form="lesson-create"]');
+  await lessonForm.locator('input[name="title"]').fill('Browser certification lesson');
+  await lessonForm.locator('input[name="position"]').fill('0');
+  await lessonForm.locator('button[type="submit"]').click();
+  await mentorPage.locator('[data-authoring-select="lesson"][aria-current="true"]').waitFor({ state: 'visible' });
+
+  const revisionForm = mentorPage.locator('[data-authoring-form="revision-create"]');
+  await revisionForm.locator('input[name="locale"]').fill('en');
+  await revisionForm.locator('textarea[name="summary"]').fill('Synthetic browser acceptance lesson');
+  await revisionForm.locator('button[type="submit"]').click();
+  await mentorPage.locator('[data-authoring-select="revision"][aria-current="true"]').waitFor({ state: 'visible' });
+
   const stepTypes = ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'];
-  const steps = stepTypes.map((type, position) => ({
-    id: randomUUID(),
-    lesson_revision_id: ids.revision,
-    position,
-    step_type: type,
-    content: { text: `Browser certification ${type}` },
-    scripture_refs: type === 'scripture' ? ['John 3:16'] : [],
-  }));
-  await insert('v7_tracks', mentor.token, {
-    id: ids.track, congregation_id: scopeA, title: 'Browser certification track', locale: 'en', revision_id: ids.trackRevision, display_order: 0, created_by: mentor.id,
-  });
-  await insert('v7_modules', mentor.token, {
-    id: ids.module, track_id: ids.track, title: 'Browser certification module', revision_id: ids.moduleRevision, display_order: 0,
-  });
-  await insert('v7_lessons', mentor.token, {
-    id: ids.lesson, module_id: ids.module, title: 'Browser certification lesson', revision_id: ids.lessonVersion, display_order: 0,
-  });
-  await insert('v7_lesson_revisions', mentor.token, {
-    id: ids.revision, lesson_id: ids.lesson, revision_number: 1, locale: 'en', summary: 'Synthetic browser acceptance lesson', created_by: mentor.id,
-  });
-  await insert('v7_lesson_steps', mentor.token, steps);
-  await rpc('bible_v7_publish_curriculum_path', mentor.token, {
-    p_congregation_id: scopeA,
-    p_track_id: ids.track,
-    p_module_id: ids.module,
-    p_lesson_id: ids.lesson,
-    p_lesson_revision_id: ids.revision,
-    p_expected_track_revision_id: ids.trackRevision,
-    p_expected_module_revision_id: ids.moduleRevision,
-    p_expected_lesson_revision_id: ids.lessonVersion,
-    p_library_revision_ids: [],
-  });
-  checks.push('published-curriculum-fixture-through-authenticated-authority');
+  for (let position = 0; position < stepTypes.length; position += 1) {
+    const form = mentorPage.locator(`details[data-authoring-step="${position}"] form[data-authoring-form="step-save"]`);
+    await form.waitFor({ state: 'attached' });
+    await form.locator('textarea[name="content"]').fill(JSON.stringify({ text: `Browser certification ${stepTypes[position]}` }));
+    await form.locator('textarea[name="scriptureRefs"]').fill(position === 0 ? JSON.stringify(['John 3:16']) : '[]');
+    await form.locator('button[type="submit"]').click();
+    await mentorPage.waitForFunction(expected => [...document.querySelectorAll('ol li')].filter(node => /Saved|Na-save|Natipigan/.test(node.textContent || '')).length >= expected, position + 1);
+  }
+
+  const ids = {
+    track: await mentorPage.locator('[data-authoring-select="track"][aria-current="true"]').getAttribute('data-id'),
+    module: await mentorPage.locator('[data-authoring-select="module"][aria-current="true"]').getAttribute('data-id'),
+    lesson: await mentorPage.locator('[data-authoring-select="lesson"][aria-current="true"]').getAttribute('data-id'),
+    revision: await mentorPage.locator('[data-authoring-select="revision"][aria-current="true"]').getAttribute('data-id'),
+  };
+  for (const [name, id] of Object.entries(ids)) assert.match(id || '', /^[0-9a-f-]{36}$/i, name);
+  const publish = mentorPage.locator('[data-publication-handoff-action="publish"]');
+  await publish.waitFor({ state: 'visible' });
+  await publish.click();
+  await mentorPage.locator('[data-publication-published]').waitFor({ state: 'visible' });
+  const steps = await select('v7_lesson_steps', mentor.token, `lesson_revision_id=eq.${ids.revision}&order=position.asc`);
+  assert.deepEqual(steps.map(row => row.step_type), stepTypes);
+  checks.push('mentor-ui-track-module-lesson-seven-step-authoring-and-publication');
 
   stage = 'mentor-assignment-options';
   await mentorPage.goto(`${baseUrl}/#/one-to-one?view=assignment`, { waitUntil: 'networkidle' });
