@@ -49,6 +49,9 @@ test('Lane B persists automated decisions without inventing a human reviewer', (
   assert.equal(normalized.policyVersion, '1.0.0');
   assert.equal('reviewerId' in normalized, false);
   assert.ok(normalized.evidenceRefs.includes('evidence:adversarial'));
+  assert.equal(normalized.secondPass.result, 'pass');
+  assert.equal(normalized.secondPass.revision, 'r1');
+  assert.equal(normalized.secondPass.evaluator, 'independent-policy-run');
   assert.ok(normalized.criteria.length > 10);
 });
 
@@ -95,4 +98,19 @@ test('review decision remains exact-revision bound', () => {
   assert.equal(decision.itemId, 'book.test');
   assert.equal(decision.revision, 'r1');
   assert.equal(decision.decidedAt, NOW);
+});
+
+
+test('auto-approved persistence rejects stale or non-independent second-pass evidence', () => {
+  const decision = normalizeV7AutomatedPolicyDecision(automated());
+
+  assert.throws(() => validateV7LibraryReviewDecision({
+    ...decision,
+    secondPass: { ...decision.secondPass, revision: 'r0' }
+  }), /secondPass revision parity/);
+
+  assert.throws(() => validateV7LibraryReviewDecision({
+    ...decision,
+    secondPass: { ...decision.secondPass, evaluator: decision.criteria[0].evaluator }
+  }), /independent secondPass evaluator/);
 });
