@@ -36,4 +36,17 @@ These rows remain OPEN. They describe completion of existing requirements, not n
 
 Preparation verification: existing harness/workflow scopes inspected, successful run identity/timestamp verified, local links and whitespace checked. No runtime, workflow, content decision, production or rollback change.
 
-Subsequent Lane A hardening: [Library locale/filter restoration](../../work/tasks/20261006-lane-a-library-locale-filter-restoration.md) adds real language-control reloads and Clear/reload checks to the existing Library harness. The table above describes the named earlier run; the expanded checks require their own successful exact-source run before claiming candidate coverage. Populated-content locale/fallback acceptance remains OPEN.
+## Subsequent Lane A hardening
+
+The historical table above remains tied to its named earlier run. Later Lane A work has narrowed several deterministic browser/accessibility gaps without changing the acceptance denominator:
+
+- [Library locale/filter restoration](../../work/tasks/20261006-lane-a-library-locale-filter-restoration.md) exercises the real shell language control across en/tl/ceb, verifies submitted discovery survives reload, and verifies Clear survives reload. This does not establish populated-item translation/fallback quality.
+- [Library navigation focus continuity](../../work/tasks/20261006-lane-a4-library-navigation-focus.md) gives item entry a persistent detail-status focus anchor and prevents final-page pagination from leaving focus on a hidden **Load more** control.
+- [Library detail return focus](../../work/tasks/20261006-lane-a4-library-return-focus.md) restores focus to the originating Library card after the in-app Back path when that card is rendered, with persistent-status fallback when it is unavailable.
+- [Library built-browser focus evidence](../../work/tasks/20261006-lane-a4-library-built-focus-evidence.md) extends the real signed-out Chromium matrix to assert browse/item error `alert` semantics, browse and item Retry focus, missing-ID and item-ID detail focus, preserved filters, and Back fallback focus. Missing-ID entry is also covered by a unit regression that verifies no item read occurs.
+
+[Run 37472368459](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37472368459) completed successfully for exact source `d5f0eef81a1eacfa94a89a0bd3deccae5af8cda8`: lint/format/typecheck, V7 unit and contract tests, exact build identity/performance, Chromium parity, ONE 2 ONE smoke, the expanded Library 320/390/430 px × en/tl/ceb smoke, PWA acceptance, automated accessibility, certification and evidence upload all passed. PR #1276 merged those A4 changes as development merge `424da45c2e780ffb187a06dccdfdc24130604452`.
+
+That successful run is development evidence for the exact source SHA only. The merge commit includes a newer concurrent development parent, so run 37472368459 must not be represented as exact-SHA release certification for `424da45c2e780ffb187a06dccdfdc24130604452` or for a later candidate. If either is selected as the release candidate, the normal candidate exact-SHA rule still applies.
+
+The **Changed-surface accessibility** row therefore remains OPEN, but its unresolved portion is narrower: named assistive-tool/browser observation of announcement quality, measured text/control contrast, and populated-content behavior at required text scaling are still required. The published Library, populated locale/taxonomy/pagination/Reader, authenticated ONE 2 ONE, physical-device/installed-PWA, deployed identity and final candidate rows likewise remain OPEN until their stated dependencies exist and are observed.
