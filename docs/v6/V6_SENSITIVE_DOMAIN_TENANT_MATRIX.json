@@ -136,6 +136,18 @@
       ]
     },
     {
+      "id": "v7-library",
+      "testFiles": [
+        "supabase/tests/v7-library-stale-tenant-rls.test.sql"
+      ],
+      "denialMarkers": [
+        "Member A cannot force a congregation B Library item through a client filter",
+        "Switched member cannot force stale congregation A Library item through a client filter",
+        "Leader A cannot update congregation B draft",
+        "Switched leader cannot update stale congregation A draft"
+      ]
+    },
+    {
       "id": "polls",
       "testFiles": [
         "supabase/tests/v6-poll-tenant-integrity.test.sql"
