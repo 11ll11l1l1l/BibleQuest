@@ -125,7 +125,7 @@
     "allRightsClear": true,
     "allFirstParty": true,
     "noUnknownRights": true,
-    "noExternalAdaptation": false,
+    "noExternalAdaptation": true,
     "boundedLaunchCount": 5
   }
 }
