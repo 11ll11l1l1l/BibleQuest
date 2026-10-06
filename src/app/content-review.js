@@ -126,7 +126,9 @@ function normalizeLibraryQueue(payload){
 }
 
 export function createContentReviewService({api,session,congregation,recall,clock=()=>new Date()}={}){
-  if(!api?.platformAccess||!api?.listPlatformCongregations||!api?.loadQueue||!api?.saveDecision||!api?.markReportsReviewed||!api?.loadLibraryQueue||!api?.saveLibraryHumanDecision||!session?.getState||!congregation?.load||!recall?.loadManifest||!recall?.loadQuarantine)throw new Error('Content Review requires shared API, Session, Congregation Membership, Library review and Recall owners.');
+  if(!api?.platformAccess||!api?.listPlatformCongregations||!api?.loadQueue||!api?.saveDecision||!api?.markReportsReviewed||!session?.getState||!congregation?.load||!recall?.loadManifest||!recall?.loadQuarantine)throw new Error('Content Review requires shared API, Session, Congregation Membership and Recall owners.');
+  const loadLibraryQueue=typeof api.loadLibraryQueue==='function'?()=>api.loadLibraryQueue():async()=>({items:[],revisions:[],translations:[],taxonomyLinks:[],taxonomy:[],decisions:[]});
+  const saveLibraryHumanDecision=typeof api.saveLibraryHumanDecision==='function'?row=>api.saveLibraryHumanDecision(row):null;
 
   const emptyState=(status='idle',error='')=>({status,scopes:Object.freeze([]),congregationId:'',congregationName:'',platformRole:'',books:Object.freeze([]),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze([]),members:new Map(),decisions:new Map(),libraryItems:Object.freeze([]),busy:false,error,warning:''});
   let state=emptyState(),contextUserId='',refreshRequest=0,operationRequest=0,stateGeneration=0;
@@ -204,8 +206,8 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       }else if(accessError&&!membershipScopes.length){throw reviewError(accessError,'BQ_CONTENT_REVIEW_ACCESS_UNAVAILABLE')}
       const byId=new Map();for(const row of [...membershipScopes,...platformScopes])if(!byId.has(row.id)||row.source==='platform')byId.set(row.id,row);
       const scopes=freezeArray([...byId.values()]);
-      if(!scopes.length)return reset('unauthorized','',userId);
-      const libraryItems=normalizeLibraryQueue(await api.loadLibraryQueue());
+      if(!scopes.length&&!siteRole)return reset('unauthorized','',userId);
+      const libraryItems=normalizeLibraryQueue(await loadLibraryQueue());
       if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const requested=clean(preferredCongregationId);
       if(requested&&!byId.has(requested))throw reviewError('Your account cannot review that congregation.','BQ_CONTENT_REVIEW_SCOPE_DENIED');
@@ -274,6 +276,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
 
   async function decideLibrary({revisionId,decision,rationale=''}={}){
     const userId=currentUserId();
+    if(!saveLibraryHumanDecision)throw reviewError('Library audit writes are unavailable in this runtime.','BQ_LIBRARY_REVIEW_UNAVAILABLE');
     if(!userId)throw reviewError('Sign in before reviewing Library content.','BQ_LIBRARY_REVIEW_AUTH_REQUIRED');
     if(state.status!=='ready'||contextUserId!==userId)throw reviewError('Open Content Review before reviewing Library content.','BQ_LIBRARY_REVIEW_NOT_READY');
     const choice=clean(decision);
@@ -286,7 +289,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     const decidedAt=stamp.toISOString(),generation=stateGeneration,request=++operationRequest;
     state={...state,busy:true,error:''};
     try{
-      const saved=await api.saveLibraryHumanDecision({
+      const saved=await saveLibraryHumanDecision({
         item_id:target.itemId,revision_id:target.revisionId,content_type:target.contentType,reviewer_type:'human',decision:choice,
         policy_id:null,policy_version:null,reviewer_id:userId,criteria:[],evidence_refs:[],note:note||null,decided_at:decidedAt
       });
