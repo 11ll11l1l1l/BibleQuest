@@ -24,6 +24,33 @@ function refs(value, label, { required = false } = {}) {
   return Object.freeze(rows);
 }
 
+function automatedSecondPass(value, revision, normalizedCriteria, outcome) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new TypeError('automated decisions require secondPass');
+  const result = clean(value.result);
+  if (!CRITERION_RESULTS.has(result)) throw new TypeError('secondPass.result is invalid');
+  const evaluator = clean(value.evaluator);
+  if (!evaluator) throw new TypeError('secondPass.evaluator is required');
+  const evaluatedAt = timestamp(value.evaluatedAt, 'secondPass.evaluatedAt');
+  const evaluatedRevision = clean(value.revision);
+  if (!evaluatedRevision) throw new TypeError('secondPass.revision is required');
+  const evidenceRefs = refs(value.evidenceRefs, 'secondPass.evidenceRefs', { required: result !== 'unknown' });
+  const note = clean(value.note);
+  if (outcome === 'auto_approved') {
+    if (result !== 'pass') throw new TypeError('auto-approved decisions require a passing secondPass');
+    if (evaluatedRevision !== revision) throw new TypeError('auto-approved decisions require secondPass revision parity');
+    if (normalizedCriteria.some(row => row.result !== 'pass')) throw new TypeError('auto-approved decisions require every criterion to pass');
+    if (normalizedCriteria.some(row => row.evaluator === evaluator)) throw new TypeError('auto-approved decisions require an independent secondPass evaluator');
+  }
+  return Object.freeze({
+    result,
+    evaluator,
+    evaluatedAt,
+    revision: evaluatedRevision,
+    evidenceRefs,
+    ...(note ? { note } : {})
+  });
+}
+
 function criteria(value, reviewerType) {
   if (value == null && reviewerType === 'human') return Object.freeze([]);
   if (!Array.isArray(value)) throw new TypeError('criteria must be an array');
@@ -82,6 +109,7 @@ export function validateV7LibraryReviewDecision(decision) {
     if (!policyId) throw new TypeError('automated decision policyId is required');
     if (!policyVersion) throw new TypeError('automated decision policyVersion is required');
     if (clean(decision.reviewerId)) throw new TypeError('automated decisions must not impersonate a human reviewer');
+    const normalizedSecondPass = automatedSecondPass(decision.secondPass, revision, normalizedCriteria, outcome);
 
     return Object.freeze({
       schemaVersion: 1,
@@ -95,10 +123,12 @@ export function validateV7LibraryReviewDecision(decision) {
       decidedAt,
       evidenceRefs,
       criteria: normalizedCriteria,
+      secondPass: normalizedSecondPass,
       ...(note ? { note } : {})
     });
   }
 
+  if (decision.secondPass !== undefined && decision.secondPass !== null) throw new TypeError('human decisions must not claim an automated secondPass');
   if (!HUMAN_OUTCOMES.has(outcome)) throw new TypeError('human decision outcome is invalid');
   const reviewerId = clean(decision.reviewerId);
   if (!reviewerId) throw new TypeError('human decision reviewerId is required');
@@ -168,6 +198,7 @@ export function normalizeV7AutomatedPolicyDecision(policyDecision) {
     decidedAt: policyDecision.decidedAt,
     evidenceRefs,
     criteria: policyDecision.criteria,
+    secondPass: policyDecision.secondPass,
     note: [
       ...(policyDecision.rejectionReasons || []).map(code => `reject:${code}`),
       ...(policyDecision.repairReasons || []).map(code => `repair:${code}`)
