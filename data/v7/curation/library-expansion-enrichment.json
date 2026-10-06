@@ -8,7 +8,6 @@
       "contentId": "books.imitation-of-christ",
       "revision": "books.imitation-of-christ.r1",
       "neutralSummary": "A medieval devotional emphasizing humility, inward formation, self-denial, prayer, and imitation of Jesus.",
-      "theologicalFit": "compatible_with_context",
       "reviewFlags": [
         "catholic-tradition-context",
         "ascetic-language",
@@ -45,13 +44,14 @@
         "days": 14,
         "mode": "selected-passages"
       },
-      "editorialPriority": "medium"
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "books.holy-war",
       "revision": "books.holy-war.r1",
       "neutralSummary": "An allegory of the struggle for Mansoul as a picture of temptation, allegiance, fall, rescue, and spiritual vigilance.",
-      "theologicalFit": "core_fit",
       "reviewFlags": [
         "historical-language",
         "allegory-may-require-facilitation"
@@ -86,13 +86,14 @@
         "days": 14,
         "mode": "selected-passages"
       },
-      "editorialPriority": "medium"
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "books.orthodoxy",
       "revision": "books.orthodoxy.r1",
       "neutralSummary": "An autobiographical and argumentative defense of historic Christian belief using paradox, imagination, and cultural critique.",
-      "theologicalFit": "compatible_with_context",
       "reviewFlags": [
         "apologetics-not-catechism",
         "historical-cultural-context",
@@ -129,13 +130,14 @@
         "days": 10,
         "mode": "selected-chapters"
       },
-      "editorialPriority": "medium"
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "books.confessions-augustine",
       "revision": "books.confessions-augustine.r1",
       "neutralSummary": "Augustine's prayerful account of desire, sin, conversion, memory, and the search for God, combining autobiography and theology.",
-      "theologicalFit": "core_fit_with_context",
       "reviewFlags": [
         "patristic-context",
         "advanced-sections"
@@ -172,13 +174,14 @@
         "days": 14,
         "mode": "selected-books"
       },
-      "editorialPriority": "high"
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "books.life-teresa",
       "revision": "books.life-teresa.r1",
       "neutralSummary": "Teresa of Ávila's account of life, prayer, struggle, vocation, and mystical experience with reflection on growth in prayer.",
-      "theologicalFit": "tradition_specific_context",
       "reviewFlags": [
         "catholic-tradition-context",
         "mystical-experience-discernment",
@@ -215,13 +218,14 @@
         "days": 10,
         "mode": "selected-passages"
       },
-      "editorialPriority": "low"
+      "editorialPriority": "low",
+      "theologicalTier": "review_required",
+      "theologicalFitRationale": "Tradition-specific mystical-experience material remains a review-required historical source; listed review flags must be resolved by authorized editorial review."
     },
     {
       "contentId": "books.everlasting-man",
       "revision": "books.everlasting-man.r1",
       "neutralSummary": "A Christian apologetic contrasting humanity, myth, philosophy, and Jesus to argue for the distinctiveness of the Christian account of history.",
-      "theologicalFit": "compatible_with_context",
       "reviewFlags": [
         "catholic-tradition-context",
         "historical-cultural-context",
@@ -258,13 +262,14 @@
         "days": 10,
         "mode": "selected-chapters"
       },
-      "editorialPriority": "medium"
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "devotional.spurgeon.january-01-am",
       "revision": "r1",
       "neutralSummary": "Uses Israel entering the promised land to reflect on promised rest and future hope.",
-      "theologicalFit": "core_fit",
       "reviewFlags": [
         "historical-language"
       ],
@@ -299,13 +304,14 @@
         "days": 1,
         "mode": "single-day-devotional"
       },
-      "editorialPriority": "high"
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "devotional.spurgeon.january-04-am",
       "revision": "r1",
       "neutralSummary": "Encourages growth in grace, especially a stronger, steadier, simpler faith in God's promises.",
-      "theologicalFit": "core_fit",
       "reviewFlags": [
         "historical-language"
       ],
@@ -340,13 +346,14 @@
         "days": 1,
         "mode": "single-day-devotional"
       },
-      "editorialPriority": "high"
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "devotional.spurgeon.january-05-am",
       "revision": "r1",
       "neutralSummary": "Moves from gratitude for created light to the greater value of gospel light that reveals eternal realities.",
-      "theologicalFit": "core_fit",
       "reviewFlags": [
         "historical-language"
       ],
@@ -381,13 +388,14 @@
         "days": 1,
         "mode": "single-day-devotional"
       },
-      "editorialPriority": "medium"
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     },
     {
       "contentId": "devotional.spurgeon.january-07-am",
       "revision": "r1",
       "neutralSummary": "Describes Christian life as centered on Christ, with love for Jesus shaping purpose, character, and witness.",
-      "theologicalFit": "core_fit",
       "reviewFlags": [
         "historical-language"
       ],
@@ -422,8 +430,23 @@
         "days": 1,
         "mode": "single-day-devotional"
       },
-      "editorialPriority": "high"
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
     }
   ],
-  "scope": "v7_library_expansion_candidates"
+  "scope": "v7_library_expansion_candidates",
+  "theologicalTierVocabulary": [
+    "alliance_core",
+    "compatible_evangelical",
+    "historical_secondary",
+    "review_required"
+  ],
+  "boundary": {
+    "advisoryOnly": true,
+    "doesNotApproveContent": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "doesNotSatisfyRepresentativeDecisionLedger": true
+  }
 }
