@@ -65,13 +65,16 @@ test('coverage fails closed for missing, stale, draft or bodyless translations',
   assert.deepEqual(bodyless.targets.ilo.blockers, ['missing_body']);
 });
 
-test('representative Spurgeon bundle is translation-complete while editorial publication remains separate', () => {
-  const bundle = JSON.parse(readFileSync(new URL('../../content/v7/devotionals/spurgeon-samples.json', import.meta.url), 'utf8'));
-  const parsed = parseV7ContentBundle(bundle);
-  const report = assessV7DevotionalCatalogTranslationCoverage(parsed.items);
-  assert.equal(report.devotionalCount, 2);
+test('expanded Spurgeon catalog is translation-complete while editorial publication remains separate', () => {
+  const paths = [
+    '../../content/v7/devotionals/spurgeon-samples.json',
+    '../../content/v7/devotionals/spurgeon-expansion-01.json'
+  ];
+  const items = paths.flatMap(path => parseV7ContentBundle(JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))).items);
+  const report = assessV7DevotionalCatalogTranslationCoverage(items);
+  assert.equal(report.devotionalCount, 6);
   assert.equal(report.ready, true);
-  assert.ok(parsed.items.every(item => item.publicationState === 'pending_review'));
+  assert.ok(items.every(item => item.publicationState === 'pending_review'));
   for (const item of report.items) {
     assert.equal(item.ready, true);
     assert.deepEqual(Object.keys(item.targets), ['tl', 'ceb', 'ilo']);
