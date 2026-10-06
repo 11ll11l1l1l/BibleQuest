@@ -238,8 +238,7 @@ async function login(page, actorRecord) {
   await page.locator('[data-account-login] input[name="email"]').fill(actorRecord.email);
   await page.locator('[data-account-login] input[name="password"]').fill(actorRecord.password);
   await page.locator('[data-account-login] button[type="submit"]').click();
-  await page.waitForFunction(() => !document.querySelector('[data-account-login]'));
-  await openRoute(page, 'account', '[data-account-signout]');
+  await page.locator('[data-account-signout]').waitFor({ state: 'visible', timeout: 30000 });
   assert.ok((await page.locator('.bq-account-signed-hero').textContent()).includes(actorRecord.email));
   await activateCongregation(page, actorRecord.congregationId);
 }
