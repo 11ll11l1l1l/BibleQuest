@@ -18,6 +18,7 @@ on:
       - 'scripts/v6-deployment-verify.mjs'
       - 'scripts/v6-live-smoke.mjs'
       - 'scripts/v7-content-release-evidence.mjs'
+      - 'scripts/v7-release-content-factory-evidence.mjs'
       - '.github/workflows/v7-*.yml'
       - 'package.json'
       - 'package-lock.json'
@@ -256,7 +257,7 @@ jobs:
           await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
           console.log(JSON.stringify(report, null, 2));
           NODE
-          sha256sum             artifacts/v7/build-report.json             artifacts/v7/content-report.json             artifacts/v7/release-responsive-accessibility.json             artifacts/v7/authenticated-api-journey.json             artifacts/v7/authenticated-built-browser-journey.json             artifacts/v7/release-convergence.json             dist-v6/bq-artifact-integrity.json             > artifacts/v7/release-evidence.sha256
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
 
       - name: Verify production deployed identity and full artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
