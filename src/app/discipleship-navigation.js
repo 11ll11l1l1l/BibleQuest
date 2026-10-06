@@ -1,5 +1,16 @@
 import { parseBibleReference } from '../core/bible.js';
 const ROUTES = new Set(['one-to-one-pair','one-to-one-track','one-to-one-module','one-to-one-lesson']);
+const HYDRATION_ROUTES = new Set(['one-to-one', ...ROUTES]);
+
+export function discipleshipHydrationTarget(hash) {
+  const raw = String(hash ?? '').replace(/^#\/?/, '');
+  const split = raw.indexOf('?');
+  if (split <= 0) return '';
+  const routeKey = raw.slice(0, split).split('/')[0].trim();
+  if (!HYDRATION_ROUTES.has(routeKey)) return '';
+  const params = new URLSearchParams(raw.slice(split + 1));
+  return params.size ? `${routeKey}?${params}` : '';
+}
 const FIELDS = ['pairId','trackId','moduleId','revisionId','stepId'];
 export function discipleshipRoute({routeKey,...context}) {
   if(!ROUTES.has(routeKey))throw new TypeError('Unsupported discipleship route.');
