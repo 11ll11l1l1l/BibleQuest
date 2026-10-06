@@ -73,6 +73,7 @@ export function createLibraryPage({
       let lastTaxonomy;
       let lastLocale;
       let started = false;
+      let moreFocusPending = false;
       const updateTerms = current => {
         const locale = localization.getLocale();
         if (lastTaxonomy === current.taxonomy && lastLocale === locale) return;
@@ -119,6 +120,10 @@ export function createLibraryPage({
         retry.hidden = current.status !== 'error';
         more.hidden = current.status !== 'ready' || !current.nextCursor || typeof service.loadMore !== 'function';
         more.disabled = Boolean(current.loadingMore);
+        if (moreFocusPending && !current.loadingMore) {
+          moreFocusPending = false;
+          if (more.hidden) status.focus?.({ preventScroll: true });
+        }
       };
       const submit = () => {
         lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: termInput.value };
@@ -142,7 +147,10 @@ export function createLibraryPage({
           return;
         }
         if (target.hasAttribute('data-library-more')) {
-          if (!more.hidden && !more.disabled) void service.loadMore();
+          if (!more.hidden && !more.disabled) {
+            moreFocusPending = true;
+            void service.loadMore();
+          }
           return;
         }
         if (target.hasAttribute('data-library-clear')) {
