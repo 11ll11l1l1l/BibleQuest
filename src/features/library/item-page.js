@@ -2,6 +2,7 @@ import { renderDevotional } from './devotional.js';
 import { renderBookMetadata } from '../books/presentation.js';
 import { renderPastTeachingArticle } from '../past-teachings/article.js';
 import { localization } from '../../app/localization.js';
+import { stageLibraryReturnFocus } from './navigation-focus.js';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 // Shared metadata surface. Type-specific content/hosting remains with P2 lanes.
@@ -29,7 +30,10 @@ export function createLibraryItemPage({service,id,onBack}) {
           host.textContent=localization.t(key);
         }
       };
-      const goBack=()=>onBack();
+      const goBack=()=>{
+        if(id)stageLibraryReturnFocus(id);
+        onBack();
+      };
       const reload=()=>{
         if(!disposed&&id&&!retry.hidden){
           host.focus?.({preventScroll:true});
