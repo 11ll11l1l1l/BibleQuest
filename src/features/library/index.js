@@ -31,6 +31,14 @@ export {
   renderLibraryDiscoveryEmptyState,
   renderLibraryEmotionDiscovery,
 } from './emotion-discovery-panel.js';
+export {
+  LIBRARY_DISCOVERY_DIMENSIONS,
+  LIBRARY_DISCOVERY_QUERY_SEMANTICS,
+  createLibraryDiscoveryTaxonomyLinks,
+  normalizeLibraryDiscoveryRequest,
+  summarizeLibraryDiscoveryCoverage,
+  toLibraryDiscoveryTaxonomyFilters,
+} from './discovery-query-contract.js';
 export { createLibraryRepository } from './repository.js';
 export { createLibraryService } from './service.js';
 export { createLibraryPage } from './page.js';
