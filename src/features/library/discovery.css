@@ -22,6 +22,49 @@
   border-color: var(--green);
   box-shadow: inset 0 0 0 1px var(--green);
 }
+.bq-library [data-library-emotion-discovery-host] > .bq-library-discovery {
+  display: grid;
+  gap: 16px;
+}
+.bq-library-discovery__section {
+  min-width: 0;
+}
+.bq-library-discovery__title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+.bq-library-discovery__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bq-library-discovery__empty {
+  display: grid;
+  gap: 12px;
+  margin-block: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.bq-library-discovery__empty p,
+.bq-library-discovery__empty ul {
+  margin: 0;
+}
+.bq-library-discovery__empty ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.bq-library-discovery__suggestion {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: inherit;
+  cursor: pointer;
+}
 .bq-library input,
 .bq-library select {
   width: 100%;

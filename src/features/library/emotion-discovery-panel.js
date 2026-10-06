@@ -48,7 +48,7 @@ export function renderLibraryDiscoveryEmptyState(query = {}, locale = 'en') {
   const suggestions = state.suggestions.length
     ? `<div class="bq-library-discovery__empty-suggestions"><strong>${escapeHtml(libraryDiscoveryShellLabel('suggestions', locale))}</strong><ul>${state.suggestions.map(item => {
       const { label, locale: labelLocale } = libraryDiscoveryLabel(item, locale);
-      return `<li><button type="button" class="bq-library-discovery__suggestion" data-library-discovery-kind="${item.kind}" data-library-discovery-id="${escapeHtml(item.id)}" lang="${escapeHtml(labelLocale)}">${escapeHtml(label)}</button></li>`;
+      return `<li><button type="button" class="bq-library-discovery__suggestion" data-library-discovery-suggestion data-library-discovery-kind="${item.kind}" data-library-discovery-id="${escapeHtml(item.id)}" lang="${escapeHtml(labelLocale)}">${escapeHtml(label)}</button></li>`;
     }).join('')}</ul></div>` : '';
   const scripture = state.scriptures.length
     ? `<div class="bq-library-discovery__scripture"><strong>${escapeHtml(libraryDiscoveryShellLabel('scripture', locale))}</strong><ul>${state.scriptures.map(reference => `<li>${escapeHtml(reference)}</li>`).join('')}</ul></div>` : '';

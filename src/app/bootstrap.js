@@ -1,5 +1,6 @@
 import { discipleshipRoute, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
+import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
 import { createMyJourneyService } from './my-journey.js';
@@ -358,6 +359,7 @@ function boot(root){
   const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)};
   const openFreeReader=()=>navigateGeneral('reader');
   const libraryParams=()=>new URLSearchParams(location.hash.split('?').slice(1).join('?'));
+  const libraryDiscoveryQuery=()=>parseLibraryDiscoveryQuery(libraryParams());
   const v7ContextReady=()=>{const auth=session.getState(),active=congregation.getActive();return Boolean(auth?.authenticated&&auth.user?.id&&active?.congregationId&&(!active.userId||active.userId===auth.user.id));};
   const assignedPage=view=>{
     const context=Object.fromEntries(['pairId','trackId','moduleId'].map(key=>[key,libraryParams().get(key)||'']));
@@ -371,6 +373,7 @@ function boot(root){
     if(context.query)params.set('query',context.query);
     if(context.contentType)params.set('contentType',context.contentType);
     if(context.taxonomyId)params.set('taxonomyId',context.taxonomyId);
+    if(context.discoveryQuery)serializeLibraryDiscoveryQuery(context.discoveryQuery,params);
     router.navigate(`${target.routeKey}?${params}`);
   };
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
@@ -393,14 +396,14 @@ function boot(root){
       return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair')});
     },
     'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
-    library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||''}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
     'one-to-one-track':()=>assignedPage('track'),
     'one-to-one-module':()=>assignedPage('module'),
     'one-to-one-lesson':()=>{
       const context=Object.fromEntries(['pairId','trackId','moduleId','revisionId','stepId'].map(key=>[key,libraryParams().get(key)||'']));
       return lessonRoutePage({service:discipleship,session,membership:congregation,...context,isContextReady:v7ContextReady,subscribeContext:subscribeV7Context,onBack:()=>router.navigate(discipleshipRoute({routeKey:context.moduleId?'one-to-one-module':'one-to-one-track',...context})),onScripture:(ref,identity)=>router.navigate(lessonReaderRoute(ref,{...context,...identity}))});
     },
-    'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType'),taxonomyId:libraryParams().get('taxonomyId')||''})}),
+    'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType'),taxonomyId:libraryParams().get('taxonomyId')||'',discoveryQuery:libraryDiscoveryQuery()})}),
     learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
