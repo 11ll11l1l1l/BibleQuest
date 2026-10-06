@@ -1,6 +1,7 @@
 import { localization } from '../../app/localization.js';
 import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
 import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId } from './discovery.js';
+import { consumeLibraryReturnFocus } from './navigation-focus.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -74,6 +75,7 @@ export function createLibraryPage({
       let lastLocale;
       let started = false;
       let moreFocusPending = false;
+      let returnFocusId = consumeLibraryReturnFocus();
       const updateTerms = current => {
         const locale = localization.getLocale();
         if (lastTaxonomy === current.taxonomy && lastLocale === locale) return;
@@ -95,6 +97,15 @@ export function createLibraryPage({
         termInput.value = selected;
         lastTaxonomy = current.taxonomy;
         lastLocale = locale;
+      };
+      const restoreReturnFocus = current => {
+        if (!started || !returnFocusId || current.loadingMore || !['ready', 'empty', 'error'].includes(current.status)) return;
+        const itemId = returnFocusId;
+        returnFocusId = '';
+        const candidates = typeof results.querySelectorAll === 'function'
+          ? Array.from(results.querySelectorAll('[data-library-item]')) : [];
+        const origin = candidates.find(candidate => candidate.getAttribute?.('data-library-item') === itemId);
+        (origin || status).focus?.({ preventScroll: true });
       };
       const render = current => {
         if (disposed) return;
@@ -124,8 +135,10 @@ export function createLibraryPage({
           moreFocusPending = false;
           if (more.hidden) status.focus?.({ preventScroll: true });
         }
+        restoreReturnFocus(current);
       };
       const submit = () => {
+        returnFocusId = '';
         lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: termInput.value };
         restoredTerm = termInput.value;
         navigate({ routeKey: LIBRARY_ROUTE_KEYS.browse, ...lastRequest });
