@@ -97,7 +97,7 @@ test('review decision remains exact-revision bound', () => {
   const decision = normalizeV7AutomatedPolicyDecision(automated());
   assert.equal(decision.itemId, 'book.test');
   assert.equal(decision.revision, 'r1');
-  assert.equal(decision.decidedAt, NOW);
+  assert.equal(decision.decidedAt, new Date(NOW).toISOString());
 });
 
 
