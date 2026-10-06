@@ -80,6 +80,34 @@ function validateChecks(value, packetItem, path) {
   return Object.freeze(requiredIds.map(id => byId.get(id)));
 }
 
+function validateCanonicalDecisionParity(canonicalItem, decision, path) {
+  const reviewStatus = canonicalItem.review.status;
+  const hasFinalReview = reviewStatus === 'approved' || reviewStatus === 'rejected';
+
+  if (!hasFinalReview) {
+    if (decision) {
+      reject('canonical_review_mismatch', path, `decision ${decision.outcome} requires the canonical review state to be updated atomically`);
+    }
+    return;
+  }
+
+  if (!decision) {
+    reject('missing_decision', path, `canonical review status ${reviewStatus} requires a matching authorized decision record`);
+  }
+  if (decision.outcome !== reviewStatus) {
+    reject('canonical_review_mismatch', path, `canonical review status ${reviewStatus} does not match decision outcome ${decision.outcome}`);
+  }
+
+  const reviewer = requiredString(canonicalItem.review.reviewer, `${path}.review.reviewer`);
+  const decidedAt = requiredTimestamp(canonicalItem.review.decidedAt, `${path}.review.decidedAt`);
+  if (reviewer !== decision.reviewer) {
+    reject('canonical_reviewer_mismatch', `${path}.review.reviewer`, 'must match the authorized decision record reviewer');
+  }
+  if (decidedAt !== decision.decidedAt) {
+    reject('canonical_decision_time_mismatch', `${path}.review.decidedAt`, 'must match the authorized decision record timestamp');
+  }
+}
+
 export function validateRepresentativeReviewDecision(decision, canonicalItem, packetItem, path = 'decision') {
   if (!isRecord(decision)) reject('decision', path, 'must be an object');
   rejectUnknownFields(decision, [
@@ -176,6 +204,13 @@ export function validateRepresentativeReviewDecisionLedger(ledger, canonicalItem
     seen.add(key);
     return normalized;
   });
+
+  const decisionById = new Map(decisions.map(decision => [decision.itemId, decision]));
+  for (const packetItem of reviewPacket.items) {
+    const canonicalItem = canonicalById.get(packetItem.itemId);
+    if (!canonicalItem) reject('review_target', `canonical.${packetItem.itemId}`, 'is missing from the representative content inventory');
+    validateCanonicalDecisionParity(canonicalItem, decisionById.get(packetItem.itemId), `canonical.${packetItem.itemId}`);
+  }
 
   const expectedStatus = decisions.length === 0
     ? 'awaiting_authorized_decisions'
