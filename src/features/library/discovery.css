@@ -3,6 +3,25 @@
   gap: 10px;
   margin-block: 20px;
 }
+.bq-library-discovery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 16px;
+}
+.bq-library-discovery__chip {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: inherit;
+  cursor: pointer;
+}
+.bq-library-discovery__chip[aria-pressed="true"] {
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+}
 .bq-library input,
 .bq-library select {
   width: 100%;
