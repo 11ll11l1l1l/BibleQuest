@@ -26,6 +26,11 @@ export {
   toLibraryDiscoveryRequest,
   toggleLibraryDiscoverySelection,
 } from './emotion-taxonomy.js';
+export {
+  filterLibraryDiscoveryItems,
+  renderLibraryDiscoveryEmptyState,
+  renderLibraryEmotionDiscovery,
+} from './emotion-discovery-panel.js';
 export { createLibraryRepository } from './repository.js';
 export { createLibraryService } from './service.js';
 export { createLibraryPage } from './page.js';
