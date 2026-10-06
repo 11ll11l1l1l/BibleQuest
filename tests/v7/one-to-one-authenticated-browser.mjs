@@ -16,6 +16,7 @@ const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
 const scopeA = '10000000-0000-4000-8000-000000000001';
 const marker = randomUUID();
 const checks = [];
+let stage = 'bootstrap';
 
 async function request(path, token, method = 'GET', body, prefer = 'return=representation') {
   const response = await fetch(new URL(path, endpoint), {
@@ -77,7 +78,10 @@ async function installDisposableBackend(context) {
 function captureErrors(page, label) {
   const errors = [];
   page.on('pageerror', error => errors.push(`${label}: ${error?.message || error}`));
-  return () => assert.deepEqual(errors, [], errors.join(' | '));
+  return {
+    errors,
+    assertNone() { assert.deepEqual(errors, [], errors.join(' | ')); },
+  };
 }
 
 async function signIn(page, actorInfo) {
@@ -116,10 +120,22 @@ async function waitForBackend(check, timeoutMs = 10000) {
   throw new Error('Timed out waiting for disposable backend state.');
 }
 
+async function pageSummary(page) {
+  if (page.isClosed()) return { closed: true };
+  return {
+    closed: false,
+    url: page.url(),
+    title: await page.title().catch(() => ''),
+    text: (await page.locator('body').innerText().catch(() => '')).slice(0, 12000),
+  };
+}
+
+stage = 'synthetic-actors';
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
 checks.push('synthetic-two-user-password-auth-fixture');
 
+stage = 'browser-launch';
 const browser = await chromium.launch({ headless: true });
 const mentorContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
 const menteeContext = await browser.newContext({ viewport: { width: 390, height: 900 } });
@@ -127,42 +143,62 @@ await installDisposableBackend(mentorContext);
 await installDisposableBackend(menteeContext);
 const mentorPage = await mentorContext.newPage();
 const menteePage = await menteeContext.newPage();
-const assertMentorErrors = captureErrors(mentorPage, 'mentor');
-const assertMenteeErrors = captureErrors(menteePage, 'mentee');
+const mentorErrors = captureErrors(mentorPage, 'mentor');
+const menteeErrors = captureErrors(menteePage, 'mentee');
 
 try {
+  stage = 'mentor-sign-in';
   await signIn(mentorPage, mentor);
+
+  stage = 'mentor-congregation';
   await chooseCongregation(mentorPage);
+
+  stage = 'mentor-invite';
   await mentorPage.goto(`${baseUrl}/#/one-to-one-pair`, { waitUntil: 'networkidle' });
   const invite = mentorPage.locator('[data-pair-invite]');
   await invite.waitFor({ state: 'visible' });
   await invite.locator('select[name="otherUserId"]').selectOption(mentee.id);
   await invite.locator('select[name="role"]').selectOption('mentor');
   await invite.locator('button[type="submit"]').click();
-  await mentorPage.locator('[data-pair-action="accept"]').waitFor({ state: 'visible' });
 
+  stage = 'mentor-resolve-invite';
   const pair = await waitForBackend(async () => {
     const rows = await select('v7_mentor_pairs', status.SERVICE_ROLE_KEY,
       `mentor_id=eq.${mentor.id}&mentee_id=eq.${mentee.id}&order=created_at.desc`);
     return rows.find(row => row.state === 'invited') || null;
   });
   assert.ok(pair.id);
-  await mentorPage.locator('[data-pair-action="accept"]').click();
+
+  stage = 'mentor-open-pair';
+  await mentorPage.goto(`${baseUrl}/#/one-to-one-pair?id=${pair.id}`, { waitUntil: 'networkidle' });
+  const mentorAccept = mentorPage.locator('[data-pair-action="accept"]');
+  await mentorAccept.waitFor({ state: 'visible' });
+
+  stage = 'mentor-accept';
+  await mentorAccept.click();
   await waitForBackend(async () => {
     const rows = await select('v7_mentor_pairs', status.SERVICE_ROLE_KEY, `id=eq.${pair.id}`);
     return rows[0]?.mentor_accepted_at ? rows[0] : null;
   });
   checks.push('mentor-ui-invitation-and-acceptance');
 
+  stage = 'mentee-sign-in';
   await signIn(menteePage, mentee);
+
+  stage = 'mentee-congregation';
   await chooseCongregation(menteePage);
+
+  stage = 'mentee-overview';
   await menteePage.goto(`${baseUrl}/#/one-to-one`, { waitUntil: 'networkidle' });
   const overviewPair = menteePage.locator(`[data-open-pair="${pair.id}"]`);
   await overviewPair.waitFor({ state: 'visible' });
   await overviewPair.click();
   await menteePage.waitForFunction(id => location.hash === `#/one-to-one-pair?id=${encodeURIComponent(id)}`, pair.id);
-  await menteePage.locator('[data-pair-action="accept"]').waitFor({ state: 'visible' });
-  await menteePage.locator('[data-pair-action="accept"]').click();
+
+  stage = 'mentee-accept';
+  const menteeAccept = menteePage.locator('[data-pair-action="accept"]');
+  await menteeAccept.waitFor({ state: 'visible' });
+  await menteeAccept.click();
   await menteePage.locator('[data-pair-action="lessons"]').waitFor({ state: 'visible' });
   await waitForBackend(async () => {
     const rows = await select('v7_mentor_pairs', status.SERVICE_ROLE_KEY, `id=eq.${pair.id}`);
@@ -170,6 +206,7 @@ try {
   });
   checks.push('mentee-overview-open-and-ui-acceptance');
 
+  stage = 'curriculum-fixture';
   const ids = Object.fromEntries(['track', 'trackRevision', 'module', 'moduleRevision', 'lesson', 'lessonVersion', 'revision'].map(name => [name, randomUUID()]));
   const stepTypes = ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'];
   const steps = stepTypes.map((type, position) => ({
@@ -206,12 +243,15 @@ try {
   });
   checks.push('published-curriculum-fixture-through-authenticated-authority');
 
+  stage = 'mentor-assignment-options';
   await mentorPage.goto(`${baseUrl}/#/one-to-one?view=assignment`, { waitUntil: 'networkidle' });
   for (const [kind, id] of [['pair', pair.id], ['track', ids.track], ['module', ids.module], ['lesson', ids.lesson]]) {
     const option = mentorPage.locator(`[data-assignment-select="${kind}"][data-id="${id}"]`);
     await option.waitFor({ state: 'visible' });
     await option.click();
   }
+
+  stage = 'mentor-create-assignment';
   const create = mentorPage.locator('[data-assignment-action="create"]');
   await create.waitFor({ state: 'visible' });
   await create.click();
@@ -223,6 +263,7 @@ try {
   assert.equal(assignment.status, 'assigned');
   checks.push('mentor-ui-authoritative-assignment-creation');
 
+  stage = 'mentee-open-assigned-curriculum';
   await menteePage.goto(`${baseUrl}/#/one-to-one-pair?id=${pair.id}`, { waitUntil: 'networkidle' });
   await menteePage.locator('[data-pair-action="lessons"]').click();
   await menteePage.locator('[data-assigned-curriculum]').waitFor({ state: 'visible' });
@@ -231,6 +272,8 @@ try {
     await option.waitFor({ state: 'visible' });
     await option.click();
   }
+
+  stage = 'mentee-lesson-progress';
   await menteePage.locator('[data-lesson-runner]').waitFor({ state: 'visible' });
   await menteePage.locator('[data-lesson-heading]').waitFor({ state: 'visible' });
   assert.equal((await menteePage.locator('[data-lesson-heading]').textContent())?.trim(), 'scripture');
@@ -252,16 +295,19 @@ try {
   assert.equal(progress.current_step_id, steps[2].id);
   checks.push('mentee-ui-assigned-lesson-resume-and-private-response-persistence');
 
+  stage = 'mentor-read-only-preview';
   await mentorPage.goto(`${baseUrl}/#/one-to-one-lesson?pairId=${pair.id}&trackId=${ids.track}&moduleId=${ids.module}&revisionId=${ids.revision}`, { waitUntil: 'networkidle' });
   await mentorPage.locator('[data-lesson-heading]').waitFor({ state: 'visible' });
   await mentorPage.locator('text=Mentor preview').waitFor({ state: 'visible' });
   assert.equal(await mentorPage.locator('[data-lesson-response]').count(), 0);
   checks.push('mentor-ui-lesson-read-only-boundary');
 
-  assertMentorErrors();
-  assertMenteeErrors();
+  stage = 'browser-error-boundary';
+  mentorErrors.assertNone();
+  menteeErrors.assertNone();
   checks.push('no-browser-page-errors');
 
+  stage = 'write-pass-evidence';
   await mkdir('artifacts/v7', { recursive: true });
   await writeFile('artifacts/v7/authenticated-browser-journey.json', `${JSON.stringify({
     schemaVersion: 1,
@@ -276,6 +322,28 @@ try {
     exclusions: ['production-backend', 'physical-device', 'representative-content-review'],
   }, null, 2)}\n`);
   console.log(`PASS V7 authenticated built-browser ONE 2 ONE journey (${checks.length} checks; synthetic disposable data only)`);
+} catch (error) {
+  await mkdir('artifacts/v7', { recursive: true });
+  await Promise.allSettled([
+    mentorPage.screenshot({ path: 'artifacts/v7/authenticated-browser-mentor-failure.png', fullPage: true }),
+    menteePage.screenshot({ path: 'artifacts/v7/authenticated-browser-mentee-failure.png', fullPage: true }),
+  ]);
+  const failure = {
+    schemaVersion: 1,
+    candidateSha,
+    result: 'FAIL',
+    stage,
+    observedAt: new Date().toISOString(),
+    error: error?.stack || error?.message || String(error),
+    checks,
+    browserErrors: { mentor: mentorErrors.errors, mentee: menteeErrors.errors },
+    mentor: await pageSummary(mentorPage),
+    mentee: await pageSummary(menteePage),
+  };
+  await writeFile('artifacts/v7/authenticated-browser-failure.json', `${JSON.stringify(failure, null, 2)}\n`);
+  console.error(`FAIL V7 authenticated built-browser ONE 2 ONE journey at stage=${stage}`);
+  console.error(failure.error);
+  throw error;
 } finally {
   await mentorContext.close();
   await menteeContext.close();
