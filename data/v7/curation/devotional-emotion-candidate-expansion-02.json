@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_a2_devotional_emotion_candidate_expansion_02",
+  "status": "research_candidates_needing_body_validation",
+  "generatedDate": "2026-10-07",
+  "mappingBasis": "source_resolved_heading_candidate",
+  "reviewStatus": "candidate",
+  "boundary": {
+    "sourceEntryIdentityResolved": true,
+    "sourceHeadingResolved": true,
+    "bodyValidationRequired": true,
+    "contextValidationRequired": true,
+    "doesNotCountAsEditorialApproval": true,
+    "doesNotAuthorizePublication": true
+  },
+  "summary": {
+    "canonicalEmotionCount": 30,
+    "candidateLinksAdded": 150,
+    "candidateLinksPerEmotionAdded": 5
+  },
+  "emotions": [
+    {"id":"anxiety_worry","candidateRefs":["entry.macduff.faithful-promiser.pg27344.02-day","entry.macduff.faithful-promiser.pg27344.19-day","entry.macduff.words-of-jesus.pg28547.02-day","entry.macduff.words-of-jesus.pg28547.18-day","entry.murray.working-for-god.ccel.29-praying-and-working"]},
+    {"id":"fear","candidateRefs":["entry.macduff.faithful-promiser.pg27344.14-day","entry.macduff.faithful-promiser.pg27344.19-day","entry.macduff.words-of-jesus.pg28547.12-day","entry.macduff.words-of-jesus.pg28547.18-day","entry.murray.working-for-god.ccel.25-according-to-the-working-of-his-power"]},
+    {"id":"sadness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.04-day","entry.macduff.faithful-promiser.pg27344.18-day","entry.macduff.faithful-promiser.pg27344.22-day","entry.macduff.words-of-jesus.pg28547.08-day","entry.macduff.words-of-jesus.pg28547.22-day"]},
+    {"id":"grief_loss","candidateRefs":["entry.macduff.faithful-promiser.pg27344.10-day","entry.macduff.faithful-promiser.pg27344.22-day","entry.macduff.words-of-jesus.pg28547.11-day","entry.macduff.words-of-jesus.pg28547.22-day","entry.macduff.words-of-jesus.pg28547.26-day"]},
+    {"id":"loneliness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.12-day","entry.macduff.faithful-promiser.pg27344.26-day","entry.macduff.words-of-jesus.pg28547.10-day","entry.macduff.words-of-jesus.pg28547.11-day","entry.macduff.words-of-jesus.pg28547.25-day"]},
+    {"id":"anger","candidateRefs":["entry.macduff.faithful-promiser.pg27344.05-day","entry.macduff.faithful-promiser.pg27344.07-day","entry.macduff.faithful-promiser.pg27344.16-day","entry.macduff.words-of-jesus.pg28547.19-day","entry.murray.working-for-god.ccel.11-faith-working-by-love"]},
+    {"id":"hurt_betrayal","candidateRefs":["entry.macduff.faithful-promiser.pg27344.04-day","entry.macduff.faithful-promiser.pg27344.15-day","entry.macduff.words-of-jesus.pg28547.06-day","entry.macduff.words-of-jesus.pg28547.11-day","entry.macduff.words-of-jesus.pg28547.19-day"]},
+    {"id":"rejection","candidateRefs":["entry.macduff.faithful-promiser.pg27344.12-day","entry.macduff.faithful-promiser.pg27344.27-day","entry.macduff.words-of-jesus.pg28547.10-day","entry.macduff.words-of-jesus.pg28547.11-day","entry.macduff.words-of-jesus.pg28547.13-day"]},
+    {"id":"guilt","candidateRefs":["entry.macduff.faithful-promiser.pg27344.01-day","entry.macduff.faithful-promiser.pg27344.06-day","entry.macduff.words-of-jesus.pg28547.09-day","entry.macduff.words-of-jesus.pg28547.17-day","entry.murray.working-for-god.ccel.09-created-in-christ-jesus-for-good-works"]},
+    {"id":"shame","candidateRefs":["entry.macduff.faithful-promiser.pg27344.01-day","entry.macduff.faithful-promiser.pg27344.06-day","entry.macduff.words-of-jesus.pg28547.09-day","entry.macduff.words-of-jesus.pg28547.16-day","entry.macduff.words-of-jesus.pg28547.24-day"]},
+    {"id":"insecurity_unworthiness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.03-day","entry.macduff.faithful-promiser.pg27344.17-day","entry.macduff.words-of-jesus.pg28547.13-day","entry.macduff.words-of-jesus.pg28547.16-day","entry.murray.working-for-god.ccel.05-to-each-one-according-to-his-ability"]},
+    {"id":"doubt","candidateRefs":["entry.macduff.faithful-promiser.pg27344.03-day","entry.macduff.faithful-promiser.pg27344.13-day","entry.macduff.words-of-jesus.pg28547.02-day","entry.macduff.words-of-jesus.pg28547.04-day","entry.macduff.words-of-jesus.pg28547.24-day"]},
+    {"id":"confusion_uncertainty","candidateRefs":["entry.macduff.faithful-promiser.pg27344.13-day","entry.macduff.faithful-promiser.pg27344.24-day","entry.macduff.words-of-jesus.pg28547.04-day","entry.macduff.words-of-jesus.pg28547.07-day","entry.murray.working-for-god.ccel.19-prepared-unto-every-good-work"]},
+    {"id":"discouragement","candidateRefs":["entry.macduff.faithful-promiser.pg27344.08-day","entry.macduff.faithful-promiser.pg27344.18-day","entry.macduff.words-of-jesus.pg28547.02-day","entry.macduff.words-of-jesus.pg28547.18-day","entry.murray.working-for-god.ccel.14-abounding-grace-for-abounding-work"]},
+    {"id":"hopelessness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.18-day","entry.macduff.faithful-promiser.pg27344.29-day","entry.macduff.words-of-jesus.pg28547.14-day","entry.macduff.words-of-jesus.pg28547.22-day","entry.macduff.words-of-jesus.pg28547.30-day"]},
+    {"id":"overwhelm","candidateRefs":["entry.macduff.faithful-promiser.pg27344.02-day","entry.macduff.faithful-promiser.pg27344.03-day","entry.macduff.words-of-jesus.pg28547.01-day","entry.macduff.words-of-jesus.pg28547.06-day","entry.murray.working-for-god.ccel.14-abounding-grace-for-abounding-work"]},
+    {"id":"stress","candidateRefs":["entry.macduff.faithful-promiser.pg27344.02-day","entry.macduff.faithful-promiser.pg27344.19-day","entry.macduff.words-of-jesus.pg28547.02-day","entry.macduff.words-of-jesus.pg28547.18-day","entry.macduff.words-of-jesus.pg28547.19-day"]},
+    {"id":"tiredness_weariness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.08-day","entry.macduff.faithful-promiser.pg27344.17-day","entry.macduff.words-of-jesus.pg28547.01-day","entry.macduff.words-of-jesus.pg28547.06-day","entry.murray.working-for-god.ccel.14-abounding-grace-for-abounding-work"]},
+    {"id":"spiritual_dryness_distance","candidateRefs":["entry.macduff.faithful-promiser.pg27344.06-day","entry.macduff.faithful-promiser.pg27344.08-day","entry.macduff.words-of-jesus.pg28547.08-day","entry.macduff.words-of-jesus.pg28547.14-day","entry.murray.working-for-god.ccel.07-the-father-abiding-in-me-doeth-the-work"]},
+    {"id":"temptation","candidateRefs":["entry.macduff.faithful-promiser.pg27344.05-day","entry.macduff.faithful-promiser.pg27344.07-day","entry.macduff.words-of-jesus.pg28547.12-day","entry.macduff.words-of-jesus.pg28547.20-day","entry.murray.working-for-god.ccel.10-work-for-it-is-god-which-worketh-in-you"]},
+    {"id":"impatience_waiting","candidateRefs":["entry.macduff.faithful-promiser.pg27344.09-day","entry.macduff.faithful-promiser.pg27344.21-day","entry.macduff.words-of-jesus.pg28547.27-day","entry.macduff.words-of-jesus.pg28547.31-day","entry.murray.working-for-god.ccel.01-waiting-and-working"]},
+    {"id":"jealousy_envy","candidateRefs":["entry.macduff.faithful-promiser.pg27344.05-day","entry.macduff.faithful-promiser.pg27344.07-day","entry.macduff.words-of-jesus.pg28547.10-day","entry.macduff.words-of-jesus.pg28547.16-day","entry.murray.working-for-god.ccel.11-faith-working-by-love"]},
+    {"id":"frustration","candidateRefs":["entry.macduff.faithful-promiser.pg27344.13-day","entry.macduff.faithful-promiser.pg27344.17-day","entry.macduff.words-of-jesus.pg28547.04-day","entry.macduff.words-of-jesus.pg28547.07-day","entry.murray.working-for-god.ccel.01-waiting-and-working"]},
+    {"id":"numbness_emptiness","candidateRefs":["entry.macduff.faithful-promiser.pg27344.06-day","entry.macduff.faithful-promiser.pg27344.08-day","entry.macduff.words-of-jesus.pg28547.14-day","entry.macduff.words-of-jesus.pg28547.21-day","entry.murray.working-for-god.ccel.06-life-and-work"]},
+    {"id":"joy","candidateRefs":["entry.macduff.faithful-promiser.pg27344.23-day","entry.macduff.faithful-promiser.pg27344.28-day","entry.macduff.words-of-jesus.pg28547.15-day","entry.macduff.words-of-jesus.pg28547.22-day","entry.murray.working-for-god.ccel.27-a-doer-that-worketh-shall-be-blessed-in-doing"]},
+    {"id":"gratitude","candidateRefs":["entry.macduff.faithful-promiser.pg27344.03-day","entry.macduff.faithful-promiser.pg27344.15-day","entry.macduff.words-of-jesus.pg28547.05-day","entry.macduff.words-of-jesus.pg28547.06-day","entry.murray.working-for-god.ccel.31-that-god-may-be-glorified"]},
+    {"id":"peace_contentment","candidateRefs":["entry.macduff.faithful-promiser.pg27344.03-day","entry.macduff.faithful-promiser.pg27344.19-day","entry.macduff.words-of-jesus.pg28547.01-day","entry.macduff.words-of-jesus.pg28547.18-day","entry.macduff.words-of-jesus.pg28547.19-day"]},
+    {"id":"hope","candidateRefs":["entry.macduff.faithful-promiser.pg27344.11-day","entry.macduff.faithful-promiser.pg27344.23-day","entry.macduff.words-of-jesus.pg28547.24-day","entry.macduff.words-of-jesus.pg28547.30-day","entry.macduff.words-of-jesus.pg28547.31-day"]},
+    {"id":"excitement","candidateRefs":["entry.macduff.faithful-promiser.pg27344.23-day","entry.macduff.faithful-promiser.pg27344.30-day","entry.macduff.words-of-jesus.pg28547.15-day","entry.macduff.words-of-jesus.pg28547.30-day","entry.murray.working-for-god.ccel.21-zealous-of-good-works"]},
+    {"id":"love_connection","candidateRefs":["entry.macduff.faithful-promiser.pg27344.12-day","entry.macduff.faithful-promiser.pg27344.26-day","entry.macduff.faithful-promiser.pg27344.27-day","entry.macduff.words-of-jesus.pg28547.10-day","entry.murray.working-for-god.ccel.24-as-his-fellow-workers"]}
+  ]
+}
