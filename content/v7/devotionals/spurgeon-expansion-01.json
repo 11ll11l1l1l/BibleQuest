@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest",
+        "tl": "Kapahingahan",
+        "ceb": "Pahulay",
+        "ilo": "Panaginana"
+      }
+    },
+    {
+      "id": "topic.spiritual-growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth",
+        "tl": "Espirituwal na paglago",
+        "ceb": "Espirituwal nga pagtubo",
+        "ilo": "Naespirituan a panagtubo"
+      }
+    },
+    {
+      "id": "topic.light",
+      "kind": "topic",
+      "labels": {
+        "en": "Light",
+        "tl": "Liwanag",
+        "ceb": "Kahayag",
+        "ilo": "Raniag"
+      }
+    },
+    {
+      "id": "topic.life-in-christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Life in Christ",
+        "tl": "Buhay kay Cristo",
+        "ceb": "Kinabuhi diha kang Cristo",
+        "ilo": "Biag ken Cristo"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.spurgeon.january-01-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning, January 1",
+        "uri": "https://www.ccel.org/ccel/spurgeon/morneve.d0101am.html",
+        "catalogId": "devotional.spurgeon.january-01-am",
+        "revision": "CCEL transcription verified 2026-10-06",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
+      },
+      "sourceContent": {
+        "title": "The promised rest — excerpt",
+        "body": "Israel’s weary wanderings were all over, and the promised rest was attained. No more moving tents, fiery serpents, fierce Amalekites, and howling wildernesses: they came to the land which flowed with milk and honey, and they ate the old corn of the land. Perhaps this year, beloved Christian reader, this may be thy case or mine."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": ["display"],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-06T10:30:00Z"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        { "id": "topic.rest", "kind": "topic", "order": 0 }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang ipinangakong kapahingahan — sipi",
+            "body": "Natapos na ang nakapapagod na paglalakbay ng Israel, at nakamtan na ang ipinangakong kapahingahan. Wala nang paglilipat-lipat ng mga tolda, maaapoy na ahas, mababangis na Amalekita, at umaatungal na ilang: dumating sila sa lupaing dinadaluyan ng gatas at pulot, at kinain nila ang dating ani ng lupain. Marahil sa taong ito, minamahal na Kristiyanong mambabasa, ito rin ang maaaring maging kalagayan mo o kalagayan ko."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang gisaad nga pahulay — kinutlo",
+            "body": "Natapos na ang kapoy nga pagpanaw sa Israel, ug nakab-ot na ang gisaad nga pahulay. Wala nay pagbalhin-balhin og mga tolda, nagdilaab nga mga bitin, mabangis nga mga Amalekanhon, ug nag-uwang nga kamingawan: nakaabot sila sa yuta nga nagaagay sa gatas ug dugos, ug mikaon sila sa daang abot sa yuta. Tingali niining tuiga, minahal nga Kristohanong magbabasa, mahimo kining mao usab ang imong kahimtang o ang akoa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ti naikari a panaginana — paset",
+            "body": "Nagpatinggan ti makabannog a panagpagpagna ti Israel, ket nagun-oddan ti naikari a panaginana. Awanen ti agakar-akar a tolda, dagiti gumilgil-ayab nga uleg, dagiti nadawel nga Amalekita, ken ti aguni-uni a let-ang: dimtengda iti daga nga agayus ti gatas ken diro, ket nanganda iti daan nga apit ti daga. Nalabit iti daytoy a tawen, ay-ayaten a Cristiano nga agbasa, daytoy met ti mapasamak kenka wenno kaniak."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.spurgeon.january-04-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning, January 4",
+        "uri": "https://ccel.org/ccel/spurgeon/morneve/morneve.d0104am.html",
+        "catalogId": "devotional.spurgeon.january-04-am",
+        "revision": "CCEL transcription verified 2026-10-06",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
+      },
+      "sourceContent": {
+        "title": "Grow in grace — excerpt",
+        "body": "“Grow in grace”—not in one grace only, but in all grace. Grow in that root-grace, faith. Believe the promises more firmly than you have done. Let faith increase in fulness, constancy, simplicity."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": ["display"],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-06T10:30:00Z"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        { "id": "topic.spiritual-growth", "kind": "topic", "order": 0 }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Lumago sa biyaya — sipi",
+            "body": "“Lumago sa biyaya”—hindi lamang sa isang biyaya, kundi sa lahat ng biyaya. Lumago sa ugat na biyayang iyon, ang pananampalataya. Paniwalaan ang mga pangako nang higit na matatag kaysa dati. Hayaan ang pananampalataya na lumago sa kapuspusan, katatagan, at kasimplihan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Tubo diha sa grasya — kinutlo",
+            "body": "“Tubo diha sa grasya”—dili lamang sa usa ka grasya, kondili sa tanang grasya. Tubo diha nianang gamut nga grasya, ang pagtuo. Tuo-a ang mga saad nga mas lig-on kay sa imong gibuhat kaniadto. Tugoti nga motubo ang pagtuo sa kahingpitan, pagkamakanunayon, ug kayano."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Agtubo iti parabur — paset",
+            "body": "“Agtubo iti parabur”—saan laeng nga iti maysa a parabur, no di ket iti amin a parabur. Agtubo iti dayta a ramut a parabur, ti pammati. Patien dagiti karkari a natibtibker ngem idi. Bay-am a dumakkel ti pammati iti kinaan-anay, kinatibker, ken kinasimple."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.spurgeon.january-05-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning, January 5",
+        "uri": "https://ccel.org/ccel/spurgeon/morneve/morneve.d0105am.html",
+        "catalogId": "devotional.spurgeon.january-05-am",
+        "revision": "CCEL transcription verified 2026-10-06",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
+      },
+      "sourceContent": {
+        "title": "The goodness of light — excerpt",
+        "body": "Light might well be good since it sprang from that fiat of goodness, “Let there be light.” We who enjoy it should be more grateful for it than we are, and see more of God in it and by it. Light physical is said by Solomon to be sweet, but gospel light is infinitely more precious, for it reveals eternal things, and ministers to our immortal natures."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": ["display"],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-06T10:30:00Z"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        { "id": "topic.light", "kind": "topic", "order": 0 }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang kabutihan ng liwanag — sipi",
+            "body": "Marapat ngang maging mabuti ang liwanag sapagkat nagmula ito sa utos ng kabutihan, “Magkaroon ng liwanag.” Tayong mga nagtatamasa nito ay nararapat na higit na magpasalamat kaysa sa ginagawa natin ngayon, at higit na makita ang Diyos dito at sa pamamagitan nito. Sinabi ni Solomon na matamis ang pisikal na liwanag, ngunit ang liwanag ng ebanghelyo ay walang hanggang higit na mahalaga, sapagkat inihahayag nito ang mga bagay na walang hanggan at naglilingkod sa ating walang-kamatayang kalikasan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang pagkamaayo sa kahayag — kinutlo",
+            "body": "Ang kahayag angay gayod nga maayo kay mitungha kini gikan niadtong mando sa kaayo, “Mahimo ang kahayag.” Kita nga nagtagamtam niini kinahanglan mas mapasalamaton pa kaysa karon, ug mas makakita sa Dios diha niini ug pinaagi niini. Giingon ni Solomon nga matam-is ang pisikal nga kahayag, apan ang kahayag sa ebanghelyo walay kinutoban nga mas bililhon, kay kini nagpadayag sa mga butang nga walay kataposan ug nag-alagad sa atong dili-mamatay nga kinaiya."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ti kinaimbag ti raniag — paset",
+            "body": "Uston a naimbag ti raniag ta nagtaud dayta iti bilin ti kinaimbag, “Adda koma ti raniag.” Datayo a maragsakan iti dayta ket rumbeng a dakdakkel ti panagyamantayo ngem iti agdama, ken ad-adda a makitatayo ti Dios iti dayta ken babaen iti dayta. Kuna ni Solomon a nasam-it ti pisikal a raniag, ngem ti raniag ti evangelio ket awan patinggana ti kinapategna, ta ipalgakna dagiti banag nga agnanayon ken agserbi iti saan a matay a kababalintayo."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.spurgeon.january-07-am",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Morning, January 7",
+        "uri": "https://www.ccel.org/ccel/spurgeon/morneve.d0107am.html",
+        "catalogId": "devotional.spurgeon.january-07-am",
+        "revision": "CCEL transcription verified 2026-10-06",
+        "creator": "Charles Haddon Spurgeon",
+        "organization": "Christian Classics Ethereal Library"
+      },
+      "sourceContent": {
+        "title": "To live is Christ — excerpt",
+        "body": "From the moment of the new and celestial birth the man begins to live to Christ. Jesus is to believers the one pearl of great price, for whom we are willing to part with all that we have. He has so completely won our love, that it beats alone for him; to his glory we would live, and in defence of his gospel we would die; he is the pattern of our life, and the model after which we would sculpture our character."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Public domain; Charles Haddon Spurgeon",
+        "basis": "CCEL source index explicitly states Public Domain -- Copy Freely: https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "attribution": "Charles Haddon Spurgeon, Morning and Evening. CCEL transcription; excerpt, whitespace normalized.",
+        "allowedUses": ["display"],
+        "evidenceUri": "https://ccel.org/s/spurgeon/morn_eve/morn_eve.html",
+        "verifiedAt": "2026-10-06T10:30:00Z"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        { "id": "topic.life-in-christ", "kind": "topic", "order": 0 }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang mabuhay ay si Cristo — sipi",
+            "body": "Mula sa sandali ng bago at makalangit na kapanganakan, nagsisimulang mabuhay ang tao para kay Cristo. Para sa mga mananampalataya, si Jesus ang nag-iisang perlas na napakahalaga, na alang-alang sa Kaniya ay handa tayong iwan ang lahat ng mayroon tayo. Lubos Niyang nabihag ang ating pag-ibig kaya para sa Kaniya lamang ito tumitibok; para sa Kaniyang kaluwalhatian nais nating mabuhay, at sa pagtatanggol ng Kaniyang ebanghelyo handa tayong mamatay; Siya ang huwaran ng ating buhay at ang modelo na ayon dito nais nating hubugin ang ating pagkatao."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ang pagkinabuhi mao si Cristo — kinutlo",
+            "body": "Gikan sa higayon sa bag-o ug langitnong pagkahimugso, ang tawo magsugod sa pagkinabuhi alang kang Cristo. Alang sa mga magtutuo, si Jesus mao ang usa ka perlas nga bililhon kaayo, nga alang Kaniya andam kita mobiya sa tanan nga ato. Hingpit Niyang nabihag ang atong gugma nga alang Kaniya lamang kini nagpitik; alang sa Iyang himaya buot kitang mabuhi, ug sa pagpanalipod sa Iyang ebanghelyo andam kitang mamatay; Siya ang sumbanan sa atong kinabuhi ug ang hulmahan nga atong sundon sa pagporma sa atong kinaiya."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol — BibleQuest V7",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA — Rulebook v1.0",
+          "reviewedAt": "2026-10-06T10:30:00Z",
+          "content": {
+            "title": "Ti panagbiag ket ni Cristo — paset",
+            "body": "Manipud iti kanito ti baro ken nailangitan a pannakayanak, mangrugi ti tao nga agbiag para ken Cristo. Para kadagiti mamati, ni Jesus ti maymaysa a perlas a napateg unay, nga gapu Kenkuana nakasaganatayo a mangibati iti amin nga adda kadatayo. Naballigianna a naan-anay ti ayattayo iti kasta a para laeng Kenkuana ti panagpitikna; para iti dayagna kayattayo nga agbiag, ken iti panangsalaknib iti evangeliona nakasaganatayo a matay; Isuna ti pagwadan ti biagtayo ken ti modelo a surotentayo iti panangbukel iti kababalintayo."
+          }
+        }
+      ]
+    }
+  ]
+}
