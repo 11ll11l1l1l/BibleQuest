@@ -396,16 +396,28 @@ try {
 
   const localeExpectations = { en: 'Apply', tl: 'Isabuhay', ceb: 'Ikinabuhi' };
   for (const [locale, label] of Object.entries(localeExpectations)) {
-    await menteePage.evaluate(value => localStorage.setItem('biblequest.v3.locale', JSON.stringify(value)), locale);
-    await menteePage.reload({ waitUntil: 'networkidle' });
+    const selector = menteePage.locator('[data-locale-select]');
+    await selector.waitFor({ state: 'visible' });
+    if ((await selector.inputValue()) !== locale) {
+      await Promise.all([
+        menteePage.waitForEvent('load'),
+        selector.selectOption(locale),
+      ]);
+      await menteePage.waitForLoadState('networkidle');
+    }
     const heading = menteePage.locator('[data-lesson-heading][data-step-type="apply"]');
     await heading.waitFor({ state: 'visible' });
     assert.equal((await heading.textContent())?.trim(), label);
+    assert.match(menteePage.url(), /pairId=.*revisionId=/);
   }
-  await menteePage.evaluate(() => localStorage.setItem('biblequest.v3.locale', JSON.stringify('en')));
-  await menteePage.reload({ waitUntil: 'networkidle' });
+  const localeSelector = menteePage.locator('[data-locale-select]');
+  await Promise.all([
+    menteePage.waitForEvent('load'),
+    localeSelector.selectOption('en'),
+  ]);
+  await menteePage.waitForLoadState('networkidle');
   await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
-  checks.push('supported-locales-en-tl-ceb-on-mobile-width');
+  checks.push('supported-locales-en-tl-ceb-with-deep-link-preservation-on-mobile-width');
 
   stage = 'mentee-complete-seven-step-journey';
   for (const [type, next] of [['apply', true], ['pray', true], ['action', false]]) {
