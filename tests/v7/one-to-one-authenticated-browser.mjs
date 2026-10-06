@@ -258,8 +258,11 @@ try {
 
   const stepTypes = ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'];
   for (let position = 0; position < stepTypes.length; position += 1) {
-    const form = mentorPage.locator(`details[data-authoring-step="${position}"] form[data-authoring-form="step-save"]`);
-    await form.waitFor({ state: 'attached' });
+    const detail = mentorPage.locator(`details[data-authoring-step="${position}"]`);
+    await detail.waitFor({ state: 'visible' });
+    if (!(await detail.evaluate(node => node.open))) await detail.locator('summary').click();
+    const form = detail.locator('form[data-authoring-form="step-save"]');
+    await form.waitFor({ state: 'visible' });
     await form.locator('textarea[name="content"]').fill(JSON.stringify({ text: `Browser certification ${stepTypes[position]}` }));
     await form.locator('textarea[name="scriptureRefs"]').fill(position === 0 ? JSON.stringify(['John 3:16']) : '[]');
     await form.locator('button[type="submit"]').click();
