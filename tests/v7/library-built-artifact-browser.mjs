@@ -102,6 +102,7 @@ try {
       await page.locator('[data-library-detail]').waitFor();
       assert.ok((await page.locator('[data-library-detail]').textContent()).trim());
       assert.equal(await page.locator('[data-library-detail] a[target="_blank"]').count(), 0);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: detail entry focus`);
       const back = page.locator('[data-library-back]');
       await back.focus();
       await page.keyboard.press('Enter');
