@@ -1,3 +1,5 @@
+> **2026-10-07 RELEASE RESET:** Remaining V7 work is now governed by `V7_ACTIVE_STATUS.md`, `docs/v7/V7_RELEASE_RESET_20261007.md`, and issues #1300–#1303. The phase-specific A–D map below is retained as historical development context only. The old A1/A2/A3/A4 structure is retired. The reset explicitly brings the 150–300 devotional build plus TL/CEB/ILO translations into V7 and replaces human/manual release gates with fail-closed automated policy/evidence where technically possible.
+
 # BibleQuest V7 Development Plan
 
 Updated: 2026-10-04 JST
