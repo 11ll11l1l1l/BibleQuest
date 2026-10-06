@@ -48,8 +48,14 @@ test('A2 second source tranche remains link-only, candidate-only and rights fail
   }
 });
 
-test('A2 source-depth completion does not imply content or release completion', () => {
+test('A2 research seeds can exist without falsely satisfying reviewed release gates', () => {
+  assert.deepEqual(index.curationRefs, [
+    'data/v7/curation/devotional-emotion-coverage-seed.json',
+    'data/v7/curation/devotional-emotion-bsb-reference-seed.json'
+  ]);
   assert.equal(index.releaseBoundary.sourcePoolDepthTargetReached, true);
+  assert.equal(index.releaseBoundary.emotionCandidateSeedPresent, true);
+  assert.equal(index.releaseBoundary.bsbCandidateReferenceSeedPresent, true);
   assert.equal(index.releaseBoundary.emotionValidationTargetReached, false);
   assert.equal(index.releaseBoundary.bsbReferenceTargetReached, false);
   assert.equal(index.releaseBoundary.globalHostingClearanceComplete, false);
