@@ -47,6 +47,36 @@ function makeDecision(itemId, outcome = 'approved') {
   };
 }
 
+function canonicalWithDecision(decision) {
+  return canonical.map(item => item.id === decision.itemId
+    ? {
+        ...item,
+        review: {
+          status: decision.outcome,
+          reviewer: decision.reviewer,
+          decidedAt: decision.decidedAt
+        }
+      }
+    : item);
+}
+
+function canonicalWithDecisions(decisions) {
+  const byId = new Map(decisions.map(decision => [decision.itemId, decision]));
+  return canonical.map(item => {
+    const decision = byId.get(item.id);
+    return decision
+      ? {
+          ...item,
+          review: {
+            status: decision.outcome,
+            reviewer: decision.reviewer,
+            decidedAt: decision.decidedAt
+          }
+        }
+      : item;
+  });
+}
+
 function assertDecisionError(fn, code) {
   assert.throws(fn, error => error instanceof V7RepresentativeReviewDecisionError && error.code === code);
 }
@@ -119,13 +149,64 @@ test('A2 decision contract rejects incomplete checklists, stale revisions and dr
   assertDecisionError(() => validateRepresentativeReviewDecision(missingEvidence, item, packetItem), 'evidence_refs');
 });
 
-test('A2 decision ledger derives partial/complete status and rejects duplicate decisions', () => {
+test('A2 ledger requires decision and canonical review state to change atomically', () => {
+  const decision = makeDecision('books.pilgrims-progress');
+  const decisionOnly = {
+    ...ledger,
+    status: 'partial_authorized_decisions',
+    decisions: [decision]
+  };
+  assertDecisionError(
+    () => validateRepresentativeReviewDecisionLedger(decisionOnly, canonical, packet),
+    'canonical_review_mismatch'
+  );
+
+  const canonicalOnly = canonicalWithDecision(decision);
+  assertDecisionError(
+    () => validateRepresentativeReviewDecisionLedger(ledger, canonicalOnly, packet),
+    'missing_decision'
+  );
+});
+
+test('A2 ledger accepts matching canonical approval and rejection records', () => {
+  const approval = makeDecision('books.pilgrims-progress');
+  const approvalLedger = {
+    ...ledger,
+    status: 'partial_authorized_decisions',
+    decisions: [approval]
+  };
+  const approvedCanonical = canonicalWithDecision(approval);
+  assert.equal(
+    validateRepresentativeReviewDecisionLedger(approvalLedger, approvedCanonical, packet).status,
+    'partial_authorized_decisions'
+  );
+
+  const rejection = makeDecision('teaching.prayer-abiding', 'rejected');
+  const rejectionLedger = {
+    ...ledger,
+    status: 'partial_authorized_decisions',
+    decisions: [rejection]
+  };
+  const rejectedCanonical = canonicalWithDecision(rejection);
+  assert.equal(
+    validateRepresentativeReviewDecisionLedger(rejectionLedger, rejectedCanonical, packet).status,
+    'partial_authorized_decisions'
+  );
+});
+
+test('A2 ledger rejects reviewer drift and duplicate decisions', () => {
+  const decision = makeDecision('devotional.spurgeon.january-02-am');
+  const matchingCanonical = canonicalWithDecision(decision);
+  matchingCanonical.find(item => item.id === decision.itemId).review.reviewer = 'different-reviewer';
   const partial = {
     ...ledger,
     status: 'partial_authorized_decisions',
-    decisions: [makeDecision('books.pilgrims-progress')]
+    decisions: [decision]
   };
-  assert.equal(validateRepresentativeReviewDecisionLedger(partial, canonical, packet).status, 'partial_authorized_decisions');
+  assertDecisionError(
+    () => validateRepresentativeReviewDecisionLedger(partial, matchingCanonical, packet),
+    'canonical_reviewer_mismatch'
+  );
 
   const duplicate = {
     ...ledger,
@@ -133,4 +214,21 @@ test('A2 decision ledger derives partial/complete status and rejects duplicate d
     decisions: [makeDecision('books.pilgrims-progress'), makeDecision('books.pilgrims-progress')]
   };
   assertDecisionError(() => validateRepresentativeReviewDecisionLedger(duplicate, canonical, packet), 'duplicate_decision');
+});
+
+test('A2 ledger derives complete status only when every representative item has a matching final decision', () => {
+  const decisions = canonical.map(item => item.rights.status === 'verified'
+    ? makeDecision(item.id)
+    : makeDecision(item.id, 'rejected'));
+  const complete = {
+    ...ledger,
+    status: 'complete_authorized_decisions',
+    decisions
+  };
+  const decidedCanonical = canonicalWithDecisions(decisions);
+
+  assert.equal(
+    validateRepresentativeReviewDecisionLedger(complete, decidedCanonical, packet).status,
+    'complete_authorized_decisions'
+  );
 });
