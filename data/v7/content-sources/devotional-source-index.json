@@ -9,6 +9,7 @@
   ],
   "curationRefs": [
     "data/v7/curation/devotional-emotion-coverage-seed.json",
+    "data/v7/curation/devotional-emotion-candidate-expansion-02.json",
     "data/v7/curation/devotional-emotion-bsb-reference-seed.json"
   ],
   "aggregate": {
@@ -19,11 +20,19 @@
       "minimum": 150,
       "maximum": 300
     },
-    "withinTargetEntryPointerRange": true
+    "withinTargetEntryPointerRange": true,
+    "canonicalEmotionCount": 30,
+    "emotionsMeetingRawCandidateCountTarget": 30,
+    "emotionsMeetingRawWorkTarget": 30,
+    "emotionsMeetingRawAuthorTarget": 30,
+    "candidateBsbReferenceCount": 150
   },
   "releaseBoundary": {
     "sourcePoolDepthTargetReached": true,
     "emotionCandidateSeedPresent": true,
+    "emotionRawCandidateCountTargetReached": true,
+    "emotionRawWorkTargetReached": true,
+    "emotionRawAuthorTargetReached": true,
     "bsbCandidateReferenceSeedPresent": true,
     "emotionValidationTargetReached": false,
     "bsbReferenceTargetReached": false,
