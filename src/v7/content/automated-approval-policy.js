@@ -11,27 +11,27 @@ const RESULT_VALUES = new Set(['pass', 'fail', 'unknown']);
 const CONTENT_TYPES = new Set(['book', 'devotional', 'past_teaching']);
 
 const COMMON_CRITERIA = Object.freeze([
-  Object.freeze({ id: 'source_identity', hard: true }),
-  Object.freeze({ id: 'provenance', hard: true }),
-  Object.freeze({ id: 'permitted_use_rights', hard: true }),
-  Object.freeze({ id: 'source_fidelity', hard: true }),
-  Object.freeze({ id: 'scripture_reference_validity', hard: true }),
-  Object.freeze({ id: 'scripture_context', hard: true }),
-  Object.freeze({ id: 'theological_fidelity', hard: true }),
-  Object.freeze({ id: 'editorial_coherence', hard: false }),
-  Object.freeze({ id: 'audience_suitability', hard: false }),
-  Object.freeze({ id: 'duplicate_fragment_detection', hard: false }),
-  Object.freeze({ id: 'emotion_need_relevance', hard: false }),
-  Object.freeze({ id: 'catalog_diversity', hard: false }),
-  Object.freeze({ id: 'revision_integrity', hard: true }),
-  Object.freeze({ id: 'metadata_integrity', hard: true }),
-  Object.freeze({ id: 'adversarial_qa', hard: true })
+  Object.freeze({ id: 'source_identity', hard: true, terminal: false }),
+  Object.freeze({ id: 'provenance', hard: true, terminal: false }),
+  Object.freeze({ id: 'permitted_use_rights', hard: true, terminal: true }),
+  Object.freeze({ id: 'source_fidelity', hard: true, terminal: false }),
+  Object.freeze({ id: 'scripture_reference_validity', hard: true, terminal: false }),
+  Object.freeze({ id: 'scripture_context', hard: true, terminal: false }),
+  Object.freeze({ id: 'theological_fidelity', hard: true, terminal: false }),
+  Object.freeze({ id: 'editorial_coherence', hard: false, terminal: false }),
+  Object.freeze({ id: 'audience_suitability', hard: false, terminal: false }),
+  Object.freeze({ id: 'duplicate_fragment_detection', hard: false, terminal: false }),
+  Object.freeze({ id: 'emotion_need_relevance', hard: false, terminal: false }),
+  Object.freeze({ id: 'catalog_diversity', hard: false, terminal: false }),
+  Object.freeze({ id: 'revision_integrity', hard: true, terminal: false }),
+  Object.freeze({ id: 'metadata_integrity', hard: true, terminal: false }),
+  Object.freeze({ id: 'adversarial_qa', hard: true, terminal: false })
 ]);
 
 const DEVOTIONAL_TRANSLATION_CRITERIA = Object.freeze([
-  Object.freeze({ id: 'translation_completeness', hard: true }),
-  Object.freeze({ id: 'translation_semantic_fidelity', hard: true }),
-  Object.freeze({ id: 'translation_naturalness', hard: false })
+  Object.freeze({ id: 'translation_completeness', hard: true, terminal: false }),
+  Object.freeze({ id: 'translation_semantic_fidelity', hard: true, terminal: false }),
+  Object.freeze({ id: 'translation_naturalness', hard: false, terminal: false })
 ]);
 
 function clean(value) {
@@ -69,6 +69,7 @@ function normalizeEvaluation(row, criterion) {
       id: criterion.id,
       result: 'unknown',
       hard: criterion.hard,
+      terminal: criterion.terminal === true,
       evidenceRefs: Object.freeze([]),
       evaluator: '',
       evaluatedAt: null,
@@ -88,6 +89,7 @@ function normalizeEvaluation(row, criterion) {
     id: criterion.id,
     result,
     hard: criterion.hard,
+    terminal: criterion.terminal === true,
     evidenceRefs: refs,
     evaluator,
     evaluatedAt: new Date(row.evaluatedAt).toISOString(),
@@ -158,8 +160,8 @@ export function evaluateV7LibraryApproval({
   }
 
   const normalized = freezeArray(criteria.map(criterion => normalizeEvaluation(evaluationById.get(criterion.id), criterion)));
-  const hardFailures = normalized.filter(row => row.hard && row.result === 'fail').map(row => row.id);
-  const repairFailures = normalized.filter(row => !row.hard && row.result === 'fail').map(row => row.id);
+  const terminalFailures = normalized.filter(row => row.terminal && row.result === 'fail').map(row => row.id);
+  const repairFailures = normalized.filter(row => !row.terminal && row.result === 'fail').map(row => row.id);
   const unknownCriteria = normalized.filter(row => row.result === 'unknown').map(row => row.id);
   const hardBoundary = rightsHardFailure(item);
   const normalizedSecondPass = normalizeSecondPass(secondPass, revision);
@@ -172,7 +174,7 @@ export function evaluateV7LibraryApproval({
 
   const rejectionReasons = [
     ...(hardBoundary ? [hardBoundary] : []),
-    ...hardFailures,
+    ...terminalFailures,
     ...(secondPassHardFailure ? [secondPassHardFailure] : []),
     ...(staleSecondPass ? ['second_pass_revision_mismatch'] : [])
   ];
