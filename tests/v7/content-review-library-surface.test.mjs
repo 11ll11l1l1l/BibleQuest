@@ -13,7 +13,7 @@ test('Lane B Content Review exposes three distinct V7 Library audit tabs',()=>{
 });
 
 test('Lane B audit cards expose source, rights, translations, Scripture and automated evidence',()=>{
-  for(const marker of ['<b>Source</b>','<b>Rights</b>','EN / TL / CEB / ILO content','Scripture / references','Automated criteria and evidence','Decision evidence']){
+  for(const marker of ['<b>Source</b>','<b>Rights</b>','EN / TL / CEB / ILO content','Scripture / references','Automated criteria and evidence','Decision evidence','Independent second pass']){
     assert.ok(page.includes(marker),`missing review evidence surface: ${marker}`);
   }
 });
