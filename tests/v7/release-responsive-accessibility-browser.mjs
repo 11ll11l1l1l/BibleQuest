@@ -78,18 +78,21 @@ try {
 
     const presentation = await page.evaluate(() => {
       const rootStyle = getComputedStyle(document.documentElement);
-      const pageElement = document.querySelector('[data-accessibility-page]');
-      const style = getComputedStyle(pageElement);
-      let backgroundElement = pageElement;
-      let background = getComputedStyle(backgroundElement).backgroundColor;
-      const transparent = value => /rgba\([^)]*,\s*0(?:\.0+)?\)/.test(value) || value === 'transparent';
-      while (transparent(background) && backgroundElement.parentElement) {
+      const textElement = document.querySelector('[data-accessibility-page] h1');
+      if (!textElement) throw new Error('Accessibility heading was not rendered.');
+      const textStyle = getComputedStyle(textElement);
+      let backgroundElement = textElement.parentElement;
+      let background = backgroundElement ? getComputedStyle(backgroundElement).backgroundColor : '';
+      while (
+        backgroundElement?.parentElement
+        && (background === 'transparent' || background === 'rgba(0, 0, 0, 0)')
+      ) {
         backgroundElement = backgroundElement.parentElement;
         background = getComputedStyle(backgroundElement).backgroundColor;
       }
       return {
         rootFontSize: parseFloat(rootStyle.fontSize),
-        color: style.color,
+        color: textStyle.color,
         background,
       };
     });
@@ -98,9 +101,10 @@ try {
     const foreground = parseRgb(presentation.color);
     const background = parseRgb(presentation.background);
     assert.ok(foreground && background && foreground.alpha >= 0.99 && background.alpha >= 0.99,
-      `${viewport.width}px: strong-contrast colors were not opaque RGB values`);
+      `${viewport.width}px: accessibility heading did not resolve to opaque RGB colors`);
     const ratio = contrastRatio(foreground.rgb, background.rgb);
-    assert.ok(ratio >= 4.5, `${viewport.width}px: strong-contrast primary text ratio ${ratio.toFixed(2)} is below 4.5:1`);
+    assert.ok(ratio >= 4.5,
+      `${viewport.width}px: accessibility heading contrast ${ratio.toFixed(2)} is below 4.5:1`);
 
     await page.locator('#bq-view').focus();
     await page.keyboard.press('Tab');
