@@ -71,6 +71,7 @@ function normalizeEvaluation(row, criterion) {
       hard: criterion.hard,
       evidenceRefs: Object.freeze([]),
       evaluator: '',
+      evaluatedAt: null,
       note: 'No evaluation was supplied.'
     });
   }
@@ -78,6 +79,7 @@ function normalizeEvaluation(row, criterion) {
   if (!RESULT_VALUES.has(result)) throw new TypeError(`evaluation ${criterion.id}.result must be pass, fail, or unknown`);
   const evaluator = clean(row.evaluator);
   if (!evaluator) throw new TypeError(`evaluation ${criterion.id}.evaluator is required`);
+  if (!validTimestamp(row.evaluatedAt)) throw new TypeError(`evaluation ${criterion.id}.evaluatedAt must be a valid timestamp`);
   const refs = result === 'unknown'
     ? Object.freeze(Array.isArray(row.evidenceRefs) ? row.evidenceRefs.map(clean).filter(Boolean) : [])
     : evidenceRefs(row.evidenceRefs, criterion.id);
@@ -88,6 +90,7 @@ function normalizeEvaluation(row, criterion) {
     hard: criterion.hard,
     evidenceRefs: refs,
     evaluator,
+    evaluatedAt: new Date(row.evaluatedAt).toISOString(),
     ...(note ? { note } : {})
   });
 }
@@ -100,6 +103,7 @@ function normalizeSecondPass(secondPass, revision) {
   if (!RESULT_VALUES.has(result)) throw new TypeError('secondPass.result must be pass, fail, or unknown');
   const evaluator = clean(secondPass.evaluator);
   if (!evaluator) throw new TypeError('secondPass.evaluator is required');
+  if (!validTimestamp(secondPass.evaluatedAt)) throw new TypeError('secondPass.evaluatedAt must be a valid timestamp');
   const evaluatedRevision = clean(secondPass.revision);
   const refs = result === 'unknown'
     ? Object.freeze(Array.isArray(secondPass.evidenceRefs) ? secondPass.evidenceRefs.map(clean).filter(Boolean) : [])
@@ -110,6 +114,7 @@ function normalizeSecondPass(secondPass, revision) {
     result,
     evaluator,
     revision: evaluatedRevision,
+    evaluatedAt: new Date(secondPass.evaluatedAt).toISOString(),
     evidenceRefs: refs,
     ...(note ? { note } : {})
   });
@@ -200,8 +205,8 @@ export function evaluateV7LibraryApproval({
     secondPass: normalizedSecondPass,
     rejectionReasons: Object.freeze(rejectionReasons),
     repairReasons: Object.freeze(repairReasons),
-    auditable: normalized.every(row => row.result === 'unknown' || row.evidenceRefs.length > 0)
-      && (normalizedSecondPass.result === 'unknown' || normalizedSecondPass.evidenceRefs.length > 0)
+    auditable: normalized.every(row => row.result === 'unknown' || (row.evidenceRefs.length > 0 && validTimestamp(row.evaluatedAt)))
+      && (normalizedSecondPass.result === 'unknown' || (normalizedSecondPass.evidenceRefs.length > 0 && validTimestamp(normalizedSecondPass.evaluatedAt)))
   });
 }
 
@@ -218,8 +223,9 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.auditable === true
     && Array.isArray(decision.criteria)
     && decision.criteria.length === criteriaFor(item?.type).length
-    && decision.criteria.every(row => row.result === 'pass')
-    && decision.secondPass?.ready === true;
+    && decision.criteria.every(row => row.result === 'pass' && validTimestamp(row.evaluatedAt))
+    && decision.secondPass?.ready === true
+    && validTimestamp(decision.secondPass?.evaluatedAt);
 }
 
 export function requiredV7LibraryApprovalCriteria(contentType) {
