@@ -31,6 +31,8 @@ test('automated publication requires an exact auditable matching decision', () =
   assert.match(sql, /d\.policy_version = new\.review_policy_version/);
   assert.match(sql, /d\.decided_at = new\.reviewed_at/);
   assert.match(sql, /jsonb_array_length\(d\.criteria\) > 0/);
+  assert.match(sql, /d\.second_pass ->> 'result' = 'pass'/);
+  assert.match(sql, /d\.second_pass ->> 'revision' = new\.id::text/);
   assert.match(sql, /jsonb_array_length\(d\.evidence_refs\) > 0/);
 });
 
@@ -38,4 +40,17 @@ test('review history is immutable and reviewer access remains RLS-scoped', () =>
   assert.match(sql, /enable row level security/);
   assert.match(sql, /private\.bible_can_review_content\(i\.congregation_id\)/);
   assert.match(sql, /V7 Library review decisions are immutable audit history/);
+});
+
+
+test('Lane B provides a service-role-only atomic automated review and publication transition',()=>{
+  assert.match(sql,/create or replace function public\.bible_v7_apply_automated_library_review/);
+  assert.match(sql,/p_decision not in \('auto_approved','needs_repair','rejected'\)/);
+  assert.match(sql,/translation_semantic_fidelity/);
+  assert.match(sql,/Auto-publication requires every policy criterion exactly once/);
+  assert.match(sql,/Auto-publication second pass must be independent from primary evaluators/);
+  assert.match(sql,/set review_status = 'approved'/);
+  assert.match(sql,/publication_state = 'published'/);
+  assert.match(sql,/grant execute on function public\.bible_v7_apply_automated_library_review[\s\S]*to service_role/);
+  assert.match(sql,/revoke all on function public\.bible_v7_apply_automated_library_review[\s\S]*from public,anon,authenticated/);
 });
