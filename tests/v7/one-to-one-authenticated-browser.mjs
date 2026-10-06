@@ -15,6 +15,7 @@ assert.equal(new URL(baseUrl).hostname.endsWith('.localhost'), true);
 const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
 const scopeA = '10000000-0000-4000-8000-000000000001';
 const marker = randomUUID();
+const scopeB = randomUUID();
 const checks = [];
 let stage = 'bootstrap';
 
@@ -95,15 +96,23 @@ async function signIn(page, actorInfo) {
   await page.locator('[data-startup-failure]').waitFor({ state: 'detached' }).catch(() => {});
 }
 
-async function chooseCongregation(page) {
+async function chooseCongregation(page, congregationId = scopeA) {
   await page.goto(`${baseUrl}/#/congregation`, { waitUntil: 'networkidle' });
-  const current = page.locator(`[data-congregation-row="${scopeA}"][data-congregation-current="true"]`);
+  const current = page.locator(`[data-congregation-row="${congregationId}"][data-congregation-current="true"]`);
   if (!(await current.count())) {
-    const choose = page.locator(`[data-congregation-switch="${scopeA}"]`);
+    const choose = page.locator(`[data-congregation-switch="${congregationId}"]`);
     await choose.waitFor({ state: 'visible' });
     await choose.click();
   }
   await current.waitFor({ state: 'visible' });
+}
+
+async function signOut(page) {
+  await page.goto(`${baseUrl}/#/account`, { waitUntil: 'networkidle' });
+  const button = page.locator('[data-account-signout]');
+  await button.waitFor({ state: 'visible' });
+  await button.click();
+  await page.locator('[data-account-login]').waitFor({ state: 'visible' });
 }
 
 async function waitForBackend(check, timeoutMs = 10000) {
@@ -133,7 +142,17 @@ async function pageSummary(page) {
 stage = 'synthetic-actors';
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
-checks.push('synthetic-two-user-password-auth-fixture');
+const foreign = await actor('foreign', 'member');
+await insert('bible_congregations', status.SERVICE_ROLE_KEY, {
+  id: scopeB, owner_id: mentor.id, name: `Lane C alternate ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo',
+});
+await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
+  congregation_id: scopeB, user_id: mentor.id, role: 'leader', display_name: 'V7 Browser mentor alternate', active: true,
+});
+await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
+  congregation_id: scopeB, user_id: mentee.id, role: 'member', display_name: 'V7 Browser mentee alternate', active: true,
+});
+checks.push('synthetic-three-user-two-congregation-password-auth-fixture');
 
 stage = 'browser-launch';
 const browser = await chromium.launch({ headless: true });
