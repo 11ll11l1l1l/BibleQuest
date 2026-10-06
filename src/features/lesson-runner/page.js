@@ -99,7 +99,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
         if (!target || target.disabled || disposed) return;
         if (target.hasAttribute('data-lesson-back')) { onBack(); return; }
         if (target.hasAttribute('data-lesson-reload')) { loadWhenReady(); return; }
-        const shareStep = target.getAttribute('data-lesson-share');
+        const shareStep = target.hasAttribute('data-lesson-share') ? target.getAttribute('data-lesson-share') : null;
         if (shareStep) {
           const confirmation = page.querySelector('[data-lesson-share-confirm]');
           if (!confirmation?.checked) {
@@ -112,7 +112,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
             .catch(error => { const status = host.querySelector('[role="status"]'); if (status) status.textContent = error?.message || String(error); });
           return;
         }
-        const unshareStep = target.getAttribute('data-lesson-unshare');
+        const unshareStep = target.hasAttribute('data-lesson-unshare') ? target.getAttribute('data-lesson-unshare') : null;
         if (unshareStep) {
           const action = runner.revokeResponseShare?.(unshareStep);
           if (action) void Promise.resolve(action).then(() => { if (!disposed) host.querySelector('[data-lesson-heading]')?.focus(); })
