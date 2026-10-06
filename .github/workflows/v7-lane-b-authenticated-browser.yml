@@ -130,12 +130,12 @@ jobs:
           BQ_PREVIEW_URL: http://bq.localhost:4173
         run: node tests/v7/one-to-one-authenticated-browser.mjs
 
-      - name: Preserve authenticated browser evidence
+      - name: Preserve authenticated browser evidence and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bq-v7-authenticated-browser-${{ env.BQ_EXACT_SHA }}
-          path: artifacts/v7/authenticated-browser-journey.json
+          path: artifacts/v7/**
           if-no-files-found: ignore
           retention-days: 14
 
