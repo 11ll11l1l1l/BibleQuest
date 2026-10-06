@@ -35,5 +35,12 @@ test('A2 expansion enrichment remains advisory and cannot grant publication', ()
   assert.equal(enrichment.advisoryOnly, true);
   assert.equal(enrichment.publicationApprovalGranted, false);
   assert.equal(enrichment.scope, 'v7_library_expansion_candidates');
+  assert.equal(enrichment.boundary.doesNotSatisfyRepresentativeDecisionLedger, true);
   assert.equal(new Set(enrichment.items.map(item => item.contentId)).size, enrichment.items.length);
+  const allowedTiers = new Set(['alliance_core', 'compatible_evangelical', 'historical_secondary', 'review_required']);
+  for (const item of enrichment.items) {
+    assert.ok(allowedTiers.has(item.theologicalTier), `${item.contentId} has unsupported theological tier`);
+    assert.equal(Object.hasOwn(item, 'theologicalFit'), false);
+    assert.ok(item.theologicalFitRationale.trim().length > 40);
+  }
 });
