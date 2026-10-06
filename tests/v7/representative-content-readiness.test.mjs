@@ -98,7 +98,6 @@ test('current representative Library content reports the exact unresolved accept
 
   assert.equal(report.types.past_teaching.candidateCount, 1);
   assert.deepEqual(report.types.past_teaching.blockerCodes, [
-    'rights_unverified',
     'review_unapproved',
     'not_published'
   ]);
