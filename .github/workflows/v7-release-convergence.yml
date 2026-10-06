@@ -257,6 +257,64 @@ jobs:
           node scripts/v6-deployment-verify.mjs             https://mybiblequest.pages.dev             "${BQ_EXACT_SHA}"             "${artifact_sha}"             "${integrity_sha}"             > artifacts/v7/production-deployment-verification.json
           BQ_LIVE_SMOKE_OUTPUT=artifacts/v7/production-live-smoke.json             node scripts/v6-live-smoke.mjs https://mybiblequest.pages.dev "${BQ_EXACT_SHA}"
 
+      - name: Seal production release certification
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const candidateSha = process.env.BQ_EXACT_SHA.toLowerCase();
+          const [convergence, deployment, liveSmoke] = await Promise.all([
+            readFile('artifacts/v7/release-convergence.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/production-deployment-verification.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/production-live-smoke.json', 'utf8').then(JSON.parse),
+          ]);
+
+          if (convergence.result !== 'PASS' || !convergence.releaseReady) {
+            throw new Error('Production certification requires a passing integrated V7 convergence report.');
+          }
+          for (const [name, evidence] of Object.entries({ convergence, deployment, liveSmoke })) {
+            if (String(evidence.candidateSha || evidence.sourceSha || '').toLowerCase() !== candidateSha) {
+              throw new Error(`${name} production evidence SHA mismatch.`);
+            }
+          }
+          if (deployment.artifactSha256 !== convergence.artifactSha256) {
+            throw new Error('Production deployment digest does not match the certified build artifact.');
+          }
+
+          const certification = {
+            schemaVersion: 1,
+            result: 'PASS',
+            candidateSha,
+            artifactSha256: deployment.artifactSha256,
+            integritySha256: deployment.integritySha256,
+            deploymentOrigin: deployment.deploymentOrigin,
+            verifiedFileCount: deployment.fileCount,
+            verifiedBytes: deployment.totalBytes,
+            checks: [
+              'strict-integrated-v7-convergence',
+              'exact-sha-production-identity',
+              'full-production-artifact-digest',
+              'production-pwa-live-smoke',
+            ],
+            certifiedAt: new Date().toISOString(),
+          };
+          await writeFile(
+            'artifacts/v7/production-release-certification.json',
+            `${JSON.stringify(certification, null, 2)}\n`,
+            'utf8',
+          );
+          console.log(JSON.stringify(certification, null, 2));
+          NODE
+          sha256sum \
+            artifacts/v7/release-convergence.json \
+            artifacts/v7/production-deployment-verification.json \
+            artifacts/v7/production-live-smoke.json \
+            artifacts/v7/production-release-certification.json \
+            > artifacts/v7/production-release-evidence.sha256
+
       - name: Preview diagnostics
         if: always()
         run: cat /tmp/bq-v7-convergence-preview.log || true
@@ -278,6 +336,8 @@ jobs:
             artifacts/v7/release-evidence.sha256
             artifacts/v7/production-deployment-verification.json
             artifacts/v7/production-live-smoke.json
+            artifacts/v7/production-release-certification.json
+            artifacts/v7/production-release-evidence.sha256
             dist-v6/bq-artifact-integrity.json
             dist-v6/bq-build.json
 
