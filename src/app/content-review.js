@@ -65,10 +65,17 @@ function normalizeLibraryDecision(row,revisionId){
     evidenceRefs:Object.freeze(Array.isArray(item.evidenceRefs)?item.evidenceRefs.map(clean).filter(Boolean):Array.isArray(item.evidence_refs)?item.evidence_refs.map(clean).filter(Boolean):[]),
     note:clean(item.note)
   })):Object.freeze([]);
+  const rawSecondPass=row?.second_pass&&typeof row.second_pass==='object'&&!Array.isArray(row.second_pass)?row.second_pass:null;
+  const secondPass=rawSecondPass&&Object.keys(rawSecondPass).length?Object.freeze({
+    result:clean(rawSecondPass.result),revision:clean(rawSecondPass.revision),evaluator:clean(rawSecondPass.evaluator),
+    evaluatedAt:rawSecondPass.evaluatedAt||rawSecondPass.evaluated_at||null,
+    evidenceRefs:Object.freeze(Array.isArray(rawSecondPass.evidenceRefs)?rawSecondPass.evidenceRefs.map(clean).filter(Boolean):Array.isArray(rawSecondPass.evidence_refs)?rawSecondPass.evidence_refs.map(clean).filter(Boolean):[]),
+    note:clean(rawSecondPass.note)
+  }):null;
   return Object.freeze({
     id:String(row?.id??''),itemId:clean(row?.item_id),revisionId:String(revisionId),contentType:clean(row?.content_type),reviewerType,decision,
     policyId:clean(row?.policy_id),policyVersion:clean(row?.policy_version),reviewerId:clean(row?.reviewer_id),
-    criteria:Object.freeze(criteria),evidenceRefs:Object.freeze(Array.isArray(row?.evidence_refs)?row.evidence_refs.map(clean).filter(Boolean):[]),
+    criteria:Object.freeze(criteria),secondPass,evidenceRefs:Object.freeze(Array.isArray(row?.evidence_refs)?row.evidence_refs.map(clean).filter(Boolean):[]),
     note:clean(row?.note),decidedAt:row?.decided_at||null,createdAt:row?.created_at||null
   });
 }
