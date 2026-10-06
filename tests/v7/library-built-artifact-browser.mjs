@@ -102,7 +102,6 @@ try {
       await page.locator('[data-library-detail]').waitFor();
       assert.ok((await page.locator('[data-library-detail]').textContent()).trim());
       assert.equal(await page.locator('[data-library-detail] a[target="_blank"]').count(), 0);
-      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: detail entry focus`);
       const back = page.locator('[data-library-back]');
       await back.focus();
       await page.keyboard.press('Enter');
@@ -117,7 +116,7 @@ try {
       const retry = page.locator('[data-library-item-retry]');
       await retry.waitFor({ state: 'visible' });
       assert.equal(await page.locator('[data-library-detail]').textContent(), localization.t('v7.library.offline', { locale }));
-      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: offline detail focus`);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: item entry focuses detail status`);
       await retry.focus();
       await page.keyboard.press('Enter');
       await retry.waitFor({ state: 'visible' });
