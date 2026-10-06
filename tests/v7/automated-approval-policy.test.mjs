@@ -56,7 +56,7 @@ test('Lane B policy auto-approves only a complete evidence-backed independent pa
   assert.equal(decision.reviewerType, 'automated_policy');
   assert.equal(decision.policyId, 'biblequest.v7.library-release');
   assert.equal(decision.policyVersion, '1.0.0');
-  assert.equal(decision.criteria.every(row => row.result === 'pass' && row.evaluatedAt === EVALUATED_AT), true);
+  assert.equal(decision.criteria.every(row => row.result === 'pass' && row.evaluatedAt === new Date(EVALUATED_AT).toISOString()), true);
   assert.equal(decision.secondPass.ready, true);
   assert.equal(decision.auditable, true);
   assert.equal(canAutoPublishV7LibraryDecision(decision, target), true);
