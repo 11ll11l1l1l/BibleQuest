@@ -61,7 +61,7 @@ function normalizeLibraryDecision(row,revisionId){
   if(!['automated_policy','human'].includes(reviewerType))return null;
   if(!['auto_approved','needs_repair','approved','request_changes','rejected'].includes(decision))return null;
   const criteria=Array.isArray(row?.criteria)?row.criteria.filter(item=>item&&typeof item==='object').map(item=>Object.freeze({
-    id:clean(item.id),result:clean(item.result),hard:item.hard===true,evaluator:clean(item.evaluator),evaluatedAt:item.evaluatedAt||item.evaluated_at||null,
+    id:clean(item.id),result:clean(item.result),hard:item.hard===true,terminal:item.terminal===true,evaluator:clean(item.evaluator),evaluatedAt:item.evaluatedAt||item.evaluated_at||null,
     evidenceRefs:Object.freeze(Array.isArray(item.evidenceRefs)?item.evidenceRefs.map(clean).filter(Boolean):Array.isArray(item.evidence_refs)?item.evidence_refs.map(clean).filter(Boolean):[]),
     note:clean(item.note)
   })):Object.freeze([]);
