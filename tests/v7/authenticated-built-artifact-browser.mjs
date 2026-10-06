@@ -60,7 +60,7 @@ async function actor(label, role) {
     display_name: `V7 browser ${label}`,
     active: true,
   });
-  return { id: user.id, email, password };
+  return { id: user.id, email, password, congregationId: scope };
 }
 
 const mentor = await actor('mentor', 'leader');
@@ -221,6 +221,18 @@ async function openRoute(page, route, selector) {
   if (await page.locator('[data-startup-failure]').count()) throw new Error(`${route}: startup failure`);
 }
 
+async function activateCongregation(page, congregationId) {
+  await openRoute(page, 'congregation', '[data-congregation-view]');
+  const row = page.locator(`[data-congregation-row="${congregationId}"]`);
+  await row.waitFor({ state: 'visible' });
+  const switchButton = row.locator('[data-congregation-switch]');
+  if (await switchButton.count()) {
+    await switchButton.click();
+    await row.locator('[data-congregation-active]').waitFor({ state: 'visible' });
+  }
+  assert.equal(await row.getAttribute('data-congregation-current'), 'true');
+}
+
 async function login(page, actorRecord) {
   await openRoute(page, 'account', '[data-account-login]');
   await page.locator('[data-account-login] input[name="email"]').fill(actorRecord.email);
@@ -229,6 +241,7 @@ async function login(page, actorRecord) {
   await page.waitForFunction(() => !document.querySelector('[data-account-login]'));
   await openRoute(page, 'account', '[data-account-signout]');
   assert.ok((await page.locator('.bq-account-signed-hero').textContent()).includes(actorRecord.email));
+  await activateCongregation(page, actorRecord.congregationId);
 }
 
 async function signOut(page) {
