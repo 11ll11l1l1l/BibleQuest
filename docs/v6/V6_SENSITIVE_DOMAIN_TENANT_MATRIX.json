@@ -18,12 +18,8 @@
     },
     {
       "id": "congregation-member-management",
-      "testFiles": [
-        "supabase/tests/v6-congregation-member-management.test.sql"
-      ],
-      "denialMarkers": [
-        "tenant-only Admin A cannot manage congregation B membership"
-      ]
+      "testFiles": ["supabase/tests/v6-congregation-member-management.test.sql"],
+      "denialMarkers": ["tenant-only Admin A cannot manage congregation B membership"]
     },
     {
       "id": "assignment-progress-responses",
@@ -47,111 +43,29 @@
         "producer category fixtures create no cross-congregation notifications"
       ]
     },
-    {
-      "id": "avatar-vault",
-      "testFiles": [
-        "supabase/tests/v6-avatar-vault-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A cannot update a congregation B avatar"
-      ]
-    },
-    {
-      "id": "calendar-and-ministry",
-      "testFiles": [
-        "supabase/tests/v6-calendar-ministry-tenant-writes.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot create a congregation B event",
-        "Leader A cannot publish ministry content in congregation B"
-      ]
-    },
-    {
-      "id": "challenges",
-      "testFiles": [
-        "supabase/tests/v6-challenge-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot create a challenge inside congregation B"
-      ]
-    },
-    {
-      "id": "community-groups-teams-presence",
-      "testFiles": [
-        "supabase/tests/v6-community-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A presence-count RPC fails closed for foreign congregation",
-        "Leader A cannot directly create a team in congregation B"
-      ]
-    },
-    {
-      "id": "content-review-and-reports",
-      "testFiles": [
-        "supabase/tests/v6-content-decision-tenant-rls.test.sql",
-        "supabase/tests/v6-content-report-authority.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot create a congregation B content decision",
-        "Member A cannot submit a report in congregation B"
-      ]
-    },
-    {
-      "id": "encouragements",
-      "testFiles": [
-        "supabase/tests/v6-encouragement-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A cannot send an encouragement into congregation B"
-      ]
-    },
-    {
-      "id": "live-rooms",
-      "testFiles": [
-        "supabase/tests/v6-live-room-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot join a congregation B Live Room"
-      ]
-    },
-    {
-      "id": "media-and-notifications",
-      "testFiles": [
-        "supabase/tests/v6-media-notification-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot curate media inside congregation B",
-        "media producer creates no cross-congregation notification rows"
-      ]
-    },
+    {"id":"avatar-vault","testFiles":["supabase/tests/v6-avatar-vault-tenant-rls.test.sql"],"denialMarkers":["Member A cannot update a congregation B avatar"]},
+    {"id":"calendar-and-ministry","testFiles":["supabase/tests/v6-calendar-ministry-tenant-writes.test.sql"],"denialMarkers":["Leader A cannot create a congregation B event","Leader A cannot publish ministry content in congregation B"]},
+    {"id":"challenges","testFiles":["supabase/tests/v6-challenge-tenant-rls.test.sql"],"denialMarkers":["Leader A cannot create a challenge inside congregation B"]},
+    {"id":"community-groups-teams-presence","testFiles":["supabase/tests/v6-community-tenant-rls.test.sql"],"denialMarkers":["Member A presence-count RPC fails closed for foreign congregation","Leader A cannot directly create a team in congregation B"]},
+    {"id":"content-review-and-reports","testFiles":["supabase/tests/v6-content-decision-tenant-rls.test.sql","supabase/tests/v6-content-report-authority.test.sql"],"denialMarkers":["Leader A cannot create a congregation B content decision","Member A cannot submit a report in congregation B"]},
+    {"id":"encouragements","testFiles":["supabase/tests/v6-encouragement-tenant-rls.test.sql"],"denialMarkers":["Member A cannot send an encouragement into congregation B"]},
+    {"id":"live-rooms","testFiles":["supabase/tests/v6-live-room-tenant-rls.test.sql"],"denialMarkers":["Leader A cannot join a congregation B Live Room"]},
+    {"id":"media-and-notifications","testFiles":["supabase/tests/v6-media-notification-tenant-rls.test.sql"],"denialMarkers":["Leader A cannot curate media inside congregation B","media producer creates no cross-congregation notification rows"]},
     {
       "id": "one-to-one-discipleship",
-      "testFiles": [
-        "supabase/tests/v7-one2one-stale-tenant-hardening.test.sql"
-      ],
-      "denialMarkers": [
-        "Switched mentor cannot read stale old-tenant pair",
-        "Switched learner cannot read stale old-tenant assignment",
-        "Switched learner cannot edit old-tenant response"
-      ]
+      "testFiles": ["supabase/tests/v7-one2one-stale-tenant-hardening.test.sql"],
+      "denialMarkers": ["Switched mentor cannot read stale old-tenant pair","Switched learner cannot read stale old-tenant assignment","Switched learner cannot edit old-tenant response"]
     },
     {
       "id": "v7-library",
-      "testFiles": [
-        "supabase/tests/v7-library-stale-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A cannot force a congregation B Library item through a client filter",
-        "Switched member cannot force stale congregation A Library item through a client filter",
-        "Leader A cannot update congregation B draft",
-        "Switched leader cannot update stale congregation A draft"
-      ]
+      "testFiles": ["supabase/tests/v7-library-stale-tenant-rls.test.sql"],
+      "denialMarkers": ["Member A cannot force a congregation B Library item through a client filter","Switched member cannot force stale congregation A Library item through a client filter","Leader A cannot update congregation B draft","Switched leader cannot update stale congregation A draft"]
     },
     {
       "id": "v7-curriculum",
       "testFiles": [
         "supabase/tests/v7-curriculum-stale-tenant-rls.test.sql",
-        "supabase/tests/v7-curriculum-publication-context-switch.test.sql"
+        "supabase/tests/v7-curriculum-publication-tenant-context-switch.test.sql"
       ],
       "denialMarkers": [
         "Member A cannot force a congregation B track through a client filter",
@@ -163,43 +77,9 @@
         "Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFINER RPC"
       ]
     },
-    {
-      "id": "polls",
-      "testFiles": [
-        "supabase/tests/v6-poll-tenant-integrity.test.sql"
-      ],
-      "denialMarkers": [
-        "Member B cannot vote in congregation A poll"
-      ]
-    },
-    {
-      "id": "recognition",
-      "testFiles": [
-        "supabase/tests/v6-recognition-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Leader A cannot award a recognition in congregation B"
-      ]
-    },
-    {
-      "id": "scores-and-badges",
-      "testFiles": [
-        "supabase/tests/v6-score-badge-tenant-rls.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A cannot force-read congregation B score events",
-        "Member A cannot force-read congregation B earned badges"
-      ]
-    },
-    {
-      "id": "security-definer-tenant-helper",
-      "testFiles": [
-        "supabase/tests/v6-security-definer-callers.test.sql"
-      ],
-      "denialMarkers": [
-        "Member A SECURITY DEFINER execution denies foreign congregation",
-        "Member B SECURITY DEFINER execution denies foreign congregation"
-      ]
-    }
+    {"id":"polls","testFiles":["supabase/tests/v6-poll-tenant-integrity.test.sql"],"denialMarkers":["Member B cannot vote in congregation A poll"]},
+    {"id":"recognition","testFiles":["supabase/tests/v6-recognition-tenant-rls.test.sql"],"denialMarkers":["Leader A cannot award a recognition in congregation B"]},
+    {"id":"scores-and-badges","testFiles":["supabase/tests/v6-score-badge-tenant-rls.test.sql"],"denialMarkers":["Member A cannot force-read congregation B score events","Member A cannot force-read congregation B earned badges"]},
+    {"id":"security-definer-tenant-helper","testFiles":["supabase/tests/v6-security-definer-callers.test.sql"],"denialMarkers":["Member A SECURITY DEFINER execution denies foreign congregation","Member B SECURITY DEFINER execution denies foreign congregation"]}
   ]
 }
