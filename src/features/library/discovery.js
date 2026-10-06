@@ -1,6 +1,25 @@
 import { createV7TaxonomyIndex, normalizeV7Locale } from '../../v7/content/contract.js';
 import { libraryError } from './contracts.js';
 
+const LIBRARY_DISCOVERY_CONCEPTS = Object.freeze([
+  Object.freeze({ intent: 'emotion', aliases: Object.freeze(['worry']) }),
+  Object.freeze({ intent: 'emotion', aliases: Object.freeze(['hope']) }),
+  Object.freeze({ intent: 'emotion', aliases: Object.freeze(['trust']) }),
+  Object.freeze({ intent: 'emotion', aliases: Object.freeze(['perseverance']) }),
+  Object.freeze({ intent: 'need', aliases: Object.freeze(['prayer']) }),
+  Object.freeze({ intent: 'need', aliases: Object.freeze(['faith', 'daily_faith']) }),
+  Object.freeze({ intent: 'need', aliases: Object.freeze(['spiritual_growth', 'discipleship']) }),
+  Object.freeze({ intent: 'need', aliases: Object.freeze(['abiding']) }),
+]);
+
+function discoverySlug(id) {
+  return String(id ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/^(?:category|topic|tag)[._-]/, '')
+    .replace(/[.-]+/g, '_');
+}
+
 export function normalizeLibraryTaxonomyId(value) {
   const id = String(value ?? '').trim();
   if (id && !/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/.test(id)) {
@@ -24,4 +43,21 @@ export function libraryTaxonomyLabel(term, requestedLocale = 'en') {
     locale: actualLocale ?? null,
     fallback: actualLocale !== locale,
   });
+}
+
+export function resolveLibraryDiscoveryTerms(entries) {
+  const terms = normalizeLibraryTaxonomy(entries ?? []);
+  const eligible = terms.filter(term => term.kind === 'topic' || term.kind === 'tag');
+  const claimed = new Set();
+  const options = [];
+
+  for (const concept of LIBRARY_DISCOVERY_CONCEPTS) {
+    const term = eligible.find(candidate => !claimed.has(candidate.id)
+      && concept.aliases.includes(discoverySlug(candidate.id)));
+    if (!term) continue;
+    claimed.add(term.id);
+    options.push(Object.freeze({ id: term.id, intent: concept.intent, term }));
+  }
+
+  return Object.freeze(options);
 }
