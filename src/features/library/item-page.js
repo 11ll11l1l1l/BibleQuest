@@ -43,8 +43,8 @@ export function createLibraryItemPage({service,id,onBack}) {
       back.addEventListener('click',goBack);
       retry.addEventListener('click',reload);
       const unsubscribe=service.subscribe(render);
+      host.focus?.({preventScroll:true});
       if(id){
-        host.focus?.({preventScroll:true});
         void service.getItem(id);
       }else host.textContent=localization.t('v7.library.item.required');
       return ()=>{disposed=true;unsubscribe();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
