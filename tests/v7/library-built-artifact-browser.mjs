@@ -92,6 +92,16 @@ try {
         assert.equal(await page.locator('[data-library-status]').textContent(), localization.t('v7.library.error', { locale: nextLocale }));
         assert.equal(await page.locator('[data-library-retry]').textContent(), localization.t('v7.library.retry', { locale: nextLocale }));
       }
+      const browseStatus = page.locator('[data-library-status]');
+      assert.equal(await browseStatus.getAttribute('role'), 'alert', `${locale}/${width}: browse error uses alert role`);
+      assert.equal(await browseStatus.getAttribute('aria-live'), 'assertive', `${locale}/${width}: browse error is assertive`);
+      const browseRetry = page.locator('[data-library-retry]');
+      await browseRetry.focus();
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-status')), true, `${locale}/${width}: browse Retry returns focus to status`);
+      assert.equal(await query.inputValue(), 'abiding', `${locale}/${width}: browse Retry preserves query`);
+      assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional', `${locale}/${width}: browse Retry preserves type`);
       await page.locator('[data-library-clear]').click();
       await page.reload({ waitUntil: 'networkidle' });
       await page.locator('[data-library-page]').waitFor();
@@ -102,6 +112,7 @@ try {
       await page.locator('[data-library-detail]').waitFor();
       assert.ok((await page.locator('[data-library-detail]').textContent()).trim());
       assert.equal(await page.locator('[data-library-detail] a[target="_blank"]').count(), 0);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: missing-id detail entry focuses status`);
       const back = page.locator('[data-library-back]');
       await back.focus();
       await page.keyboard.press('Enter');
@@ -115,19 +126,32 @@ try {
       await page.evaluate(hash => { location.hash = hash; }, failedRoute);
       const retry = page.locator('[data-library-item-retry]');
       await retry.waitFor({ state: 'visible' });
-      assert.equal(await page.locator('[data-library-detail]').textContent(), localization.t('v7.library.offline', { locale }));
+      const detail = page.locator('[data-library-detail]');
+      assert.equal(await detail.textContent(), localization.t('v7.library.offline', { locale }));
+      assert.equal(await detail.getAttribute('role'), 'alert', `${locale}/${width}: item offline error uses alert role`);
+      assert.equal(await detail.getAttribute('aria-live'), 'assertive', `${locale}/${width}: item offline error is assertive`);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: item entry focuses detail status`);
       await retry.focus();
       await page.keyboard.press('Enter');
       await retry.waitFor({ state: 'visible' });
       assert.equal(await page.evaluate(() => location.hash), failedRoute);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: Retry returns focus to detail status`);
       await context.setOffline(false);
       await retry.click();
       await retry.waitFor({ state: 'visible' });
-      assert.equal(await page.locator('[data-library-detail]').textContent(), localization.t('v7.library.item.error', { locale }));
+      assert.equal(await detail.textContent(), localization.t('v7.library.item.error', { locale }));
+      assert.equal(await detail.getAttribute('role'), 'alert', `${locale}/${width}: item backend error uses alert role`);
+      assert.equal(await detail.getAttribute('aria-live'), 'assertive', `${locale}/${width}: item backend error is assertive`);
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: reconnect Retry focus`);
       await page.locator('[data-library-back]').click();
       await page.locator('[data-library-page]').waitFor();
+      await page.waitForFunction(() => {
+        const state = document.querySelector('[data-library-status]')?.getAttribute('data-library-state');
+        return ['ready', 'empty', 'error'].includes(state);
+      });
       assert.equal(await page.locator('#bq-library-query').inputValue(), 'prayer');
       assert.equal(await page.locator('#bq-library-type').inputValue(), 'book');
+      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-status')), true, `${locale}/${width}: missing return card falls back to Library status focus`);
       assert.deepEqual(errors, [], `${locale}/${width}: browser errors`);
       await context.close();
     }

@@ -62,6 +62,31 @@ test('Library detail route focuses the persistent status region before starting 
   dispose();
 });
 
+test('Library detail route without an item id focuses its required-state status without reading', () => {
+  const host = new ElementStub();
+  const back = new ElementStub();
+  const retry = new ElementStub();
+  retry.hidden = true;
+  const nodes = {
+    '[data-library-detail]': host,
+    '[data-library-back]': back,
+    '[data-library-item-retry]': retry,
+  };
+  const requests = [];
+  const service = {
+    subscribe() { return () => {}; },
+    getItem(id) { requests.push(id); return Promise.resolve(); },
+  };
+  const dispose = createLibraryItemPage({ service, id: '', onBack() {} })
+    .mount({ querySelector: selector => nodes[selector] });
+
+  assert.deepEqual(requests, []);
+  assert.equal(host.focused, true);
+  assert.deepEqual(host.focusOptions, { preventScroll: true });
+  assert.ok(host.textContent);
+  dispose();
+});
+
 test('Library detail Back stages its item as a one-shot browse focus target', () => {
   clearLibraryReturnFocus();
   const host = new ElementStub();
