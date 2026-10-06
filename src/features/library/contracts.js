@@ -14,7 +14,7 @@ export const LIBRARY_PUBLICATION_STATES = Object.freeze({
 });
 
 const LIBRARY_SOURCE_KINDS = new Set(['first_party', 'external', 'licensed', 'fixture']);
-const LIBRARY_TAXONOMY_KINDS = new Set(['category', 'topic', 'tag']);
+const LIBRARY_TAXONOMY_KINDS = new Set(['category', 'topic', 'tag', 'emotion', 'need', 'life_situation']);
 const LIBRARY_TAXONOMY_ID_PATTERN = /^[a-z0-9]+(?:[._-][a-z0-9]+)*$/;
 
 const BUILT_IN_CONTENT_TYPES = [
