@@ -276,6 +276,24 @@ a.bq-secondary-button {
   box-shadow: none;
 }
 
+/* The inherited accessibility layer predates the V6 black palette and its
+   strong-contrast selectors carry light-theme dark text literals. Rebind
+   those stronger selectors here so contrast mode remains dark-theme safe. */
+html[data-bq-contrast="strong"] {
+  --muted: var(--bq-text-secondary);
+  --line: var(--bq-border-strong);
+}
+
+html[data-bq-contrast="strong"] body {
+  color: var(--bq-text);
+}
+
+html[data-bq-contrast="strong"] .bq-panel p,
+html[data-bq-contrast="strong"] .bq-brand small,
+html[data-bq-contrast="strong"] .bq-nav a {
+  color: var(--bq-text-secondary);
+}
+
 /* Grow/progress used several legacy light-theme literals. Neutralize them here,
    after every inherited stylesheet, so the page remains readable on V6 black. */
 .bq-progress-chip,

@@ -5,6 +5,67 @@ import { localization } from '../../src/app/localization.js';
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173';
 const browser = await chromium.launch({ headless: true });
 
+async function assertTextContrast(locator, label, minimum = 4.5) {
+  const sample = await locator.evaluate(element => {
+    const parseColor = value => {
+      const text = String(value).trim();
+      const rgb = text.match(/rgba?\(([^)]+)\)/i);
+      if (rgb) {
+        const parts = rgb[1].trim().split(/[\s,\/]+/).filter(Boolean).map(Number);
+        return { r: parts[0], g: parts[1], b: parts[2], a: Number.isFinite(parts[3]) ? parts[3] : 1 };
+      }
+      const srgb = text.match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\)$/i);
+      if (srgb) {
+        return {
+          r: Number(srgb[1]) * 255,
+          g: Number(srgb[2]) * 255,
+          b: Number(srgb[3]) * 255,
+          a: Number.isFinite(Number(srgb[4])) ? Number(srgb[4]) : 1,
+        };
+      }
+      throw new Error(`Unsupported computed color: ${value}`);
+    };
+    const relativeLuminance = color => {
+      const channel = value => {
+        const normalized = value / 255;
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b);
+    };
+    const contrastRatio = (foreground, background) => {
+      const fg = relativeLuminance(foreground);
+      const bg = relativeLuminance(background);
+      return (Math.max(fg, bg) + 0.05) / (Math.min(fg, bg) + 0.05);
+    };
+    const foregroundText = getComputedStyle(element).color;
+    const foreground = parseColor(foregroundText);
+    let backgroundNode = element;
+    let backgroundText = '';
+    let background;
+    while (backgroundNode) {
+      backgroundText = getComputedStyle(backgroundNode).backgroundColor;
+      const candidate = parseColor(backgroundText);
+      if (candidate.a >= 0.999) {
+        background = candidate;
+        break;
+      }
+      backgroundNode = backgroundNode.parentElement;
+    }
+    if (!background) throw new Error('No opaque background found for contrast measurement.');
+    return {
+      ratio: contrastRatio(foreground, background),
+      foreground: foregroundText,
+      background: backgroundText,
+      text: element.textContent?.trim() || element.getAttribute('value') || element.tagName,
+    };
+  });
+  assert.ok(
+    sample.ratio >= minimum,
+    `${label}: expected >= ${minimum}:1, got ${sample.ratio.toFixed(2)}:1 (${sample.foreground} on ${sample.background})`
+  );
+  return sample;
+}
+
 // Real signed-out built routes: no injected service, fabricated publication or
 // authenticated-content claim. Reviewed live content remains separate evidence.
 try {
@@ -49,6 +110,18 @@ try {
         return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
       });
       assert.ok(focus.width >= 3 && focus.style !== 'none', `${locale}/${width}: visible keyboard focus`);
+      assert.deepEqual(
+        await page.evaluate(() => [document.documentElement.dataset.bqText, document.documentElement.dataset.bqContrast]),
+        ['xlarge', 'strong'],
+        `${locale}/${width}: contrast evidence runs with requested accessibility preferences`
+      );
+      await assertTextContrast(page.locator('[data-library-page] h1'), `${locale}/${width}: Library heading contrast`);
+      await assertTextContrast(page.locator('[data-library-page] > p').nth(1), `${locale}/${width}: Library intro contrast`);
+      await assertTextContrast(page.locator('label[for="bq-library-query"]'), `${locale}/${width}: search label contrast`);
+      await assertTextContrast(page.locator('#bq-library-query'), `${locale}/${width}: search control text contrast`);
+      await assertTextContrast(page.locator('[data-library-page] .bq-primary-button'), `${locale}/${width}: primary control text contrast`);
+      await assertTextContrast(page.locator('[data-library-clear]'), `${locale}/${width}: secondary control text contrast`);
+      await assertTextContrast(page.locator('[data-library-status]'), `${locale}/${width}: Library status contrast`);
       const unlabeled = await page.locator('[data-library-page]').evaluate(root => [...root.querySelectorAll('button,input,select')]
         .filter(el => el.getClientRects().length)
         .filter(el => !(el.getAttribute('aria-label') || el.labels?.[0]?.textContent?.trim() || el.textContent?.trim()))
