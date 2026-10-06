@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.anxiety_worry",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anxiety / worry"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.trust",
+      "kind": "topic",
+      "labels": {
+        "en": "Trust"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.fear",
+      "kind": "emotion",
+      "labels": {
+        "en": "Fear"
+      }
+    },
+    {
+      "id": "need.courage",
+      "kind": "need",
+      "labels": {
+        "en": "Courage"
+      }
+    },
+    {
+      "id": "emotion.sadness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Sadness"
+      }
+    },
+    {
+      "id": "need.comfort",
+      "kind": "need",
+      "labels": {
+        "en": "Comfort"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.grief_loss",
+      "kind": "emotion",
+      "labels": {
+        "en": "Grief / loss"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.loss",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Loss"
+      }
+    },
+    {
+      "id": "emotion.loneliness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Loneliness"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.isolation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Isolation"
+      }
+    },
+    {
+      "id": "emotion.anger",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anger"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.relationships",
+      "kind": "topic",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "life_situation.conflict",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Conflict"
+      }
+    },
+    {
+      "id": "emotion.hurt_betrayal",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hurt / betrayal"
+      }
+    },
+    {
+      "id": "need.healing",
+      "kind": "need",
+      "labels": {
+        "en": "Healing"
+      }
+    },
+    {
+      "id": "emotion.rejection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Rejection"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "emotion.guilt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Guilt"
+      }
+    },
+    {
+      "id": "need.forgiveness",
+      "kind": "need",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "topic.repentance",
+      "kind": "topic",
+      "labels": {
+        "en": "Repentance"
+      }
+    },
+    {
+      "id": "life_situation.failure",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Failure"
+      }
+    },
+    {
+      "id": "emotion.shame",
+      "kind": "emotion",
+      "labels": {
+        "en": "Shame"
+      }
+    },
+    {
+      "id": "need.grace",
+      "kind": "need",
+      "labels": {
+        "en": "Grace"
+      }
+    },
+    {
+      "id": "topic.grace",
+      "kind": "topic",
+      "labels": {
+        "en": "Grace"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.anxiety_worry.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return to what is true",
+        "catalogId": "biblequest.v7.original.anxiety_worry.02",
+        "revision": "r1",
+        "checksum": "sha256:bc23ca332bc8cef82b89af976501e6b8bc6f0bc65d2ef67fec4f8fa2c8c88871",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return to what is true",
+        "body": "Anxiety multiplies possibilities until each one feels certain. Matthew 6:34 brings attention back to today. Separate what is happening from what you are imagining, do the work that belongs to this day, and let tomorrow arrive before you carry it."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anxiety_worry",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Bumalik sa kung ano ang totoo",
+            "body": "Pinararami ng pagkabalisa ang mga posibilidad hanggang parang tiyak ang bawat isa. Ibinabalik ng Mateo 6:34 ang pansin sa araw na ito. Ihiwalay ang tunay na nangyayari sa iyong iniisip, gawin ang gawaing para sa araw na ito, at hayaang dumating muna ang bukas bago mo ito pasanin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Balik sa tinuod",
+            "body": "Gipadaghan sa kabalaka ang mga posibilidad hangtod murag sigurado ang matag usa. Ang Mateo 6:34 nagbalik sa atong pagtagad sa karong adlawa. Ilahi ang tinuod nga nahitabo gikan sa imong gihunahuna, buhata ang buluhaton alang niining adlawa, ug tugoti nga moabot una ang ugma sa dili pa nimo kini pas-anon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agsubli iti pudno",
+            "body": "Ti pakaseknan padakkelenna dagiti posibilidad agingga a kasla sigurado ti tunggal maysa. Ti Mateo 6:34 ibalikna ti panunot iti ita nga aldaw. Ilasin ti pudno a mapasamak manipud iti panagpanunotmo, aramidem ti trabaho para ita nga aldaw, ken palubosam a dumteng pay ti inton bigat sakbay nga awitem dayta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.fear.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Remember who is with you",
+        "catalogId": "biblequest.v7.original.fear.02",
+        "revision": "r1",
+        "checksum": "sha256:695bad572e1695b256d9ac2205146786dcc5586db774f5796fc3eda66afcfb27",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember who is with you",
+        "body": "Fear grows when the threat fills the whole frame. Psalm 56:3 gives a simple response: when fear comes, turn trust toward God. You may still feel afraid, but you can choose the next action from trust rather than panic."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.fear",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.courage",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Alalahanin kung sino ang kasama mo",
+            "body": "Lumalaki ang takot kapag ang banta ang pumupuno sa buong larawan. Nagbibigay ang Awit 56:3 ng simpleng tugon: kapag dumarating ang takot, ibaling ang tiwala sa Diyos. Maaari ka pa ring matakot, ngunit maaari mong piliin ang susunod na hakbang mula sa pagtitiwala sa halip na pagkataranta."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hinumdomi kinsa ang uban nimo",
+            "body": "Motubo ang kahadlok kon ang hulga maoy mopuno sa tibuok hulagway. Ang Salmo 56:3 naghatag ug yano nga tubag: kon moabot ang kahadlok, ibaling ang pagsalig ngadto sa Dios. Mahimo ka gihapong mahadlok, apan mahimo nimong pilion ang sunod nga lihok gikan sa pagsalig imbis sa kalisang."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Laglagipem ti kaduam",
+            "body": "Dumakkel ti buteng no ti peggad ti mangpunno iti amin a panagkita. Ti Salmo 56:3 mangted iti simple a sungbat: no dumteng ti buteng, iturong ti panagtalek iti Dios. Mabalin a mabutengka pay, ngem mabalinmo a pilien ti sumaruno nga aramid manipud iti panagtalek imbes a pannakariribuk."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.sadness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let sorrow become prayer",
+        "catalogId": "biblequest.v7.original.sadness.02",
+        "revision": "r1",
+        "checksum": "sha256:06c549d0a99db216b365f110e2db371f282fb95268f5c4c974c085fb1b52a4d4",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let sorrow become prayer",
+        "body": "Sadness becomes heavier when you believe you must hide it. Psalm 13 shows lament spoken directly to God. Put honest words around what hurts, ask what you need, and leave room for trust to exist beside sorrow instead of waiting for sadness to disappear first."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.sadness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.comfort",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Gawing panalangin ang lungkot",
+            "body": "Bumibigat ang lungkot kapag iniisip mong kailangan mo itong itago. Ipinapakita ng Awit 13 ang panaghoy na direktang sinasabi sa Diyos. Bigyan ng tapat na salita ang masakit, hingin ang kailangan mo, at hayaang magkasama ang pagtitiwala at lungkot sa halip na hintaying mawala muna ang lungkot."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Himoang pag-ampo ang kasubo",
+            "body": "Mas mobug-at ang kasubo kon motuo ka nga kinahanglan nimo kining tagoan. Gipakita sa Salmo 13 ang pagbangutan nga diretso gisulti sa Dios. Isulti sa matinud-anon nga mga pulong ang kasakit, pangayoa ang imong gikinahanglan, ug tugoti nga mag-uban ang pagsalig ug kasubo imbis maghulat nga mawala una ang kasubo."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pagbalinem a kararag ti ladingit",
+            "body": "Bumabannog ti ladingit no panunotem a masapul nga ilemmeng. Ti Salmo 13 ipakitana ti panagladingit a direkta a naisao iti Dios. Ibagam a sipupudno ti sakit, dawatem ti kasapulam, ken palubosam a ti panagtalek ket adda iti abay ti ladingit imbes nga aguray a mapukaw pay dayta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.grief_loss.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Remember with hope",
+        "catalogId": "biblequest.v7.original.grief_loss.02",
+        "revision": "r1",
+        "checksum": "sha256:279cbc58a2a68d859a5b8b5fc456292ee9aa961e79ae336abfc742b99cd15118",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember with hope",
+        "body": "Grief keeps love attached to someone or something you can no longer hold in the same way. First Thessalonians 4:13-14 makes room for sorrow while refusing hopelessness. Remember what mattered, speak the loss honestly, and let Christian hope stand beside the tears."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.grief_loss",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.loss",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Alalahanin nang may pag-asa",
+            "body": "Pinananatili ng pagdadalamhati ang pag-ibig na nakaugnay sa isang tao o bagay na hindi mo na mahahawakan tulad ng dati. Binibigyan ng 1 Tesalonica 4:13-14 ng puwang ang lungkot habang tinatanggihan ang kawalan ng pag-asa. Alalahanin ang mahalaga, sabihin nang tapat ang pagkawala, at hayaang tumabi sa luha ang pag-asang Cristiano."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hinumdomi uban ang paglaom",
+            "body": "Gipabilin sa kasubo ang gugma nga nakadugtong sa usa ka tawo o butang nga dili na nimo mahawiran sama kaniadto. Ang 1 Tesalonica 4:13-14 naghatag ug luna sa kasubo samtang nagdumili sa kawalay paglaom. Hinumdomi ang importante, isulti sa tinuod ang pagkawala, ug tugoti ang Kristohanong paglaom nga motindog uban sa mga luha."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Laglagipen agraman ti namnama",
+            "body": "Ti panagladingit pagtalinaedenna ti ayat iti maysa a tao wenno banag a saanmon a maiggaman kas idi. Ti 1 Tesalonica 4:13-14 mangted iti lugar ti ladingit kabayatan a salungasingenna ti kinaawan ti namnama. Laglagipem ti napateg, ibagam a sipupudno ti pannakapukaw, ken palubosam ti Cristiano a namnama a tumakder iti abay dagiti lulua."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.loneliness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Send the first message",
+        "catalogId": "biblequest.v7.original.loneliness.02",
+        "revision": "r1",
+        "checksum": "sha256:de28958b6135a3883c1c2302283f66cefbf7f83d294e4e6e737f896c336c74c9",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Send the first message",
+        "body": "Loneliness often waits for someone else to notice first. Hebrews 10:24-25 reminds believers not to withdraw from shared life. Choose one safe person and take one small initiative: send the message, ask to meet, or say clearly that you would value company."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.loneliness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.isolation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ipadala ang unang mensahe",
+            "body": "Madalas naghihintay ang kalungkutan na may ibang makapansin muna. Ipinapaalala ng Hebreo 10:24-25 sa mga mananampalataya na huwag lumayo sa sama-samang buhay. Pumili ng isang ligtas na tao at gumawa ng maliit na unang hakbang: magpadala ng mensahe, magyayang magkita, o sabihin nang malinaw na gusto mo ng kasama."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ipadala ang unang mensahe",
+            "body": "Kasagaran, ang kamingaw maghulat nga adunay lain nga makabantay una. Gipahinumdom sa Hebreo 10:24-25 ang mga magtutuo nga dili mopalayo sa kinabuhi sa komunidad. Pagpili ug usa ka kasaligan nga tawo ug paghimo ug gamay nga unang lakang: ipadala ang mensahe, hangyoa nga magkita, o isulti nga gusto nimo ug kauban."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ipatulod ti umuna a mensahe",
+            "body": "Masansan nga urayen ti panagmaymaysa nga adda sabali a makapaliiw nga umuna. Ti Hebreo 10:24-25 palagipanna dagiti mamati a saan nga umadayo iti panagkakadua. Pilien ti maysa a mapagtalkan a tao ken aramidem ti bassit nga umuna nga addang: ipatulod ti mensahe, dawatem a magkita, wenno ibagam a nalawag a kayatmo ti adda kadua."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.anger.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Lower the temperature",
+        "catalogId": "biblequest.v7.original.anger.02",
+        "revision": "r1",
+        "checksum": "sha256:10581364d080cb9c01bcad76e91e6352cb3ff72ce440522016ca6fe13a18f18a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Lower the temperature",
+        "body": "Anger can make speed feel necessary. Proverbs 15:1 shows that the tone of a response can either lower or raise conflict. Before replying, slow your breathing, reduce the volume, and decide what truth needs to be said without adding words whose only purpose is to wound."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anger",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ibaba ang init",
+            "body": "Maaaring ipadama ng galit na kailangang mabilis kang kumilos. Ipinapakita ng Kawikaan 15:1 na kayang ibaba o itaas ng tono ng tugon ang alitan. Bago sumagot, bagalan ang paghinga, hinaan ang boses, at piliin ang katotohanang kailangang sabihin nang hindi nagdaragdag ng mga salitang ang tanging layunin ay manakit."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pabugnawa ang kahimtang",
+            "body": "Ang kasuko makapabati nga kinahanglan paspas ang lihok. Gipakita sa Proverbio 15:1 nga ang tono sa tubag mahimong mopakunhod o mopataas sa panagbangi. Sa dili pa motubag, hinayi ang pagginhawa, paubsi ang tingog, ug pilia ang kamatuoran nga kinahanglan isulti nga dili magdugang ug mga pulong nga tuyo lang mao ang pagpasakit."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pabassitem ti pudot",
+            "body": "Ti pungtot mabalinna a pagriknaen a kasla masapul ti napardas a tignay. Ti Proverbio 15:1 ipakitana a ti tono ti sungbat mabalinna a pabassiten wenno padakkelen ti riribuk. Sakbay a sumungbat, pabayagem ti panaganges, pabassitem ti timek, ken pilien ti kinapudno a masapul nga ibaga a saan nga inayon dagiti sasao a mangsugat laeng."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hurt_betrayal.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Tell the truth without becoming cruel",
+        "catalogId": "biblequest.v7.original.hurt_betrayal.02",
+        "revision": "r1",
+        "checksum": "sha256:9867bc44186a16907ef9882af14a5f65976aef4f2c2452f643d5b683d9b8994c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Tell the truth without becoming cruel",
+        "body": "Betrayal can make cruelty feel like honesty. Ephesians 4:15 calls for truth spoken in love. Name what happened, set the boundary that protects what is healthy, and refuse to use truth as a weapon. Clear speech and a guarded heart can exist together."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hurt_betrayal",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.healing",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Sabihin ang totoo nang hindi nagiging malupit",
+            "body": "Maaaring gawing parang katapatan ng pagtataksil ang kalupitan. Tinatawag tayo ng Efeso 4:15 na magsalita ng katotohanan sa pag-ibig. Pangalanan ang nangyari, itakda ang hangganang nagpoprotekta sa mabuti, at huwag gamitin ang katotohanan bilang sandata. Maaaring magsama ang malinaw na pagsasalita at maingat na puso."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Isulti ang tinuod nga dili mahimong mapintas",
+            "body": "Ang pagbudhi mahimong mopahimo nga ang kapintas murag pagkamatinud-anon. Ang Efeso 4:15 nagtawag kanato sa pagsulti sa kamatuoran uban sa gugma. Isulti ang nahitabo, ibutang ang utlanan nga nagapanalipod sa himsog, ug ayaw gamita ang kamatuoran isip armas. Mahimong mag-uban ang klaro nga pagsulti ug bantayang kasingkasing."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ibagam ti pudno a saan nga agbalin a nadawel",
+            "body": "Ti panangliput mabalinna a pagparang a ti kinaranggas ket kinapudno. Ti Efeso 4:15 awisennatayo a mangisao iti kinapudno agraman ti ayat. Ibagam ti napasamak, ikabil ti beddeng a mangsalaknib iti naimbag, ken saanmo nga aramaten ti kinapudno a kas armas. Mabalin nga agkadua ti nalawag a panagsao ken naannad a puso."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.rejection.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Approval is not your foundation",
+        "catalogId": "biblequest.v7.original.rejection.02",
+        "revision": "r1",
+        "checksum": "sha256:efcf311e29e0996c391bcdc05cd0695a38ab23dd9680f2d79db4df45432c6ff1",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Approval is not your foundation",
+        "body": "Rejection hurts because belonging matters, but one person's approval is too small a foundation for your identity. Romans 8:38-39 describes a love that cannot be separated from believers. Let disappointment be real without letting it rewrite who you are."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.rejection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hindi pagsang-ayon ng tao ang iyong pundasyon",
+            "body": "Masakit ang pagtanggi dahil mahalaga ang pagkabilang, ngunit napakaliit na pundasyon ng pagkakakilanlan ang pagsang-ayon ng isang tao. Inilalarawan ng Roma 8:38-39 ang pag-ibig na hindi maihihiwalay sa mga mananampalataya. Hayaang maging totoo ang pagkadismaya nang hindi hinahayaang baguhin nito kung sino ka."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Dili pag-uyon sa tawo ang imong pundasyon",
+            "body": "Masakit ang pagsalikway kay importante ang pag-apil, apan gamay ra kaayo nga pundasyon sa pagkatawo ang pag-uyon sa usa ka tawo. Gihulagway sa Roma 8:38-39 ang gugma nga dili mabulag gikan sa mga magtutuo. Tugoti nga tinuod ang kasakit nga dili tugotan kini sa pagsulat pag-usab kon kinsa ka."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Saan a pammalubos ti tao ti pundasionmo",
+            "body": "Nasakit ti pannakaitukiad ta napateg ti pannakabilang, ngem nakababassit a pundasion ti pananganamong ti maysa a tao para iti kinataom. Ti Roma 8:38-39 iladawanna ti ayat a saan a maisina kadagiti mamati. Palubosam a pudno ti pannakaupay ngem saanmo a palubosan a baliwanna no siasinoka."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.guilt.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Repair what you can",
+        "catalogId": "biblequest.v7.original.guilt.02",
+        "revision": "r1",
+        "checksum": "sha256:503d94cece1d4937d8daebce37da81f68da87784a8c95ac449d71f7a26144c49",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Repair what you can",
+        "body": "Guilt is healthiest when it moves toward repentance and repair. Luke 19:8 shows Zacchaeus connecting changed direction with concrete restitution. Confess clearly, correct what can be corrected, apologize without excuses, and accept that grace does not remove responsibility; it makes a new response possible."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.guilt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.forgiveness",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.repentance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ayusin ang kaya mong ayusin",
+            "body": "Pinakamabuti ang pagkakasala kapag humahantong ito sa pagsisisi at pag-aayos. Ipinapakita ng Lucas 19:8 si Zaqueo na inuugnay ang pagbabagong direksyon sa konkretong pagsasauli. Umamin nang malinaw, ituwid ang kaya, humingi ng tawad nang walang dahilan, at tanggapin na hindi inaalis ng biyaya ang pananagutan; ginagawang posible nito ang bagong tugon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ayuhon ang imong mahimo",
+            "body": "Mahimong himsog ang pagbati sa sala kon modala kini sa paghinulsol ug pag-ayo. Gipakita sa Lucas 19:8 si Zaqueo nga nagdugtong sa bag-ong direksyon sa konkretong pagbayad balik. Isugid sa klaro, tul-ira ang mahimo, pangayo ug pasaylo nga walay pasangil, ug dawata nga dili kuhaon sa grasya ang responsibilidad; naghimo kini ug bag-ong tubag nga posible."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Urnosem ti mabalinmo nga urnosen",
+            "body": "Ti rikna ti basol ket ad-adda a nasayaat no iturongna iti panagbabawi ken panangurnos. Ti Lucas 19:8 ipakitana ni Zaqueo a mangikabit iti baro a turong iti nalawag a panagsubli iti naala. Agipudnoka a nalawag, urnosem ti mabalin, agpakawan a saan nga agpambar, ken awatem a saan nga ikkaten ti parabur ti pagrebbengan; pagbalinenna a mabalin ti baro a sungbat."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.shame.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Approach grace instead of hiding",
+        "catalogId": "biblequest.v7.original.shame.02",
+        "revision": "r1",
+        "checksum": "sha256:59af2c5afec8f87f2585311115c569059da5b4565f6c1e0caf6a73a105ae3616",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Approach grace instead of hiding",
+        "body": "Shame wants distance: from God, from people, and from the truth about yourself. Hebrews 4:16 invites believers to approach the throne of grace with confidence. Bring the whole story into the light, ask for mercy, and let grace meet the real you rather than a hidden version."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.shame",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.grace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.grace",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Lumapit sa biyaya sa halip na magtago",
+            "body": "Gusto ng hiya ang paglayo: sa Diyos, sa mga tao, at sa katotohanan tungkol sa sarili. Inaanyayahan ng Hebreo 4:16 ang mga mananampalataya na lumapit nang may pagtitiwala sa trono ng biyaya. Dalhin sa liwanag ang buong kuwento, humingi ng awa, at hayaang salubungin ng biyaya ang tunay na ikaw sa halip na ang nakatagong bersyon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Duol sa grasya imbis magtago",
+            "body": "Gusto sa kaulaw ang pagpalayo: gikan sa Dios, sa mga tawo, ug sa kamatuoran bahin sa imong kaugalingon. Gidapit sa Hebreo 4:16 ang mga magtutuo sa pagduol nga may pagsalig sa trono sa grasya. Dad-a sa kahayag ang tibuok istorya, pangayo ug kalooy, ug tugoti ang grasya nga mosugat sa tinuod nga ikaw imbis sa tinagong bersyon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Umasideg iti parabur imbes nga aglemmeng",
+            "body": "Ti bain kayatna ti panagadayu: iti Dios, kadagiti tattao, ken iti kinapudno maipapan iti bagim. Ti Hebreo 4:16 awisenna dagiti mamati nga umasideg a sitatalged iti trono ti parabur. Iyegmo iti lawag ti amin a pakasaritaan, agdawat iti asi, ken palubosam ti parabur a sumabat iti pudno a sik-a imbes iti nailemmeng a bagi."
+          }
+        }
+      ]
+    }
+  ]
+}
