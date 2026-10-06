@@ -30,7 +30,7 @@ permissions:
 
 concurrency:
   group: v7-lane-c-one-to-one-${{ github.event.pull_request.number || inputs.candidate_sha || github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
