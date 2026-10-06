@@ -10,7 +10,8 @@
   "curationRefs": [
     "data/v7/curation/devotional-emotion-coverage-seed.json",
     "data/v7/curation/devotional-emotion-candidate-expansion-02.json",
-    "data/v7/curation/devotional-emotion-bsb-reference-seed.json"
+    "data/v7/curation/devotional-emotion-bsb-reference-seed.json",
+    "data/v7/curation/devotional-curation-review-decisions.json"
   ],
   "aggregate": {
     "sourceCount": 7,
@@ -39,6 +40,7 @@
     "globalHostingClearanceComplete": false,
     "editorialReviewComplete": false,
     "translationReviewComplete": false,
-    "publicationAuthorized": false
+    "publicationAuthorized": false,
+    "curationContextReviewLedgerPresent": true
   }
 }
