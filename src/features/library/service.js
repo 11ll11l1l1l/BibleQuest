@@ -6,15 +6,17 @@ import {
 } from './contracts.js';
 
 import { normalizeLibraryTaxonomy, normalizeLibraryTaxonomyId } from './discovery.js';
+import { normalizeLibraryDiscoveryRequest } from './discovery-query-contract.js';
 
 const cleanQuery = value => String(value ?? '').trim().slice(0, 120);
+const sameDiscoveryRequest = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 
 export function createLibraryService({ repository, registry = createLibraryContentTypeRegistry() } = {}) {
   if (typeof repository?.listPublished !== 'function' || typeof repository?.getPublishedById !== 'function') {
     throw libraryError('Library service requires a Library repository.', 'BQ_LIBRARY_REPOSITORY');
   }
 
-  const emptyDiscovery = () => ({ taxonomy: Object.freeze([]), taxonomyId: '', loadingMore: false, moreError: null });
+  const emptyDiscovery = () => ({ taxonomy: Object.freeze([]), taxonomyId: '', discoveryQuery: normalizeLibraryDiscoveryRequest(), loadingMore: false, moreError: null });
   let state = createLibraryViewState(emptyDiscovery());
   let requestId = 0;
   let cancelRead;
@@ -59,15 +61,17 @@ export function createLibraryService({ repository, registry = createLibraryConte
       return () => listeners.delete(listener);
     },
 
-    async list({ query = '', contentType = '', taxonomyId = '', includeTaxonomy = false, limit = 24, cursor = null, append = false } = {}) {
+    async list({ query = '', contentType = '', taxonomyId = '', emotions = [], needs = [], topics = [], lifeSituations = [], locale = 'en', includeTaxonomy = false, limit = 24, cursor = null, append = false } = {}) {
       const normalizedQuery = cleanQuery(query);
       const typeId = String(contentType ?? '').trim();
       if (typeId && !registry.has(typeId)) {
         throw libraryError('Choose a supported Library content type.', 'BQ_LIBRARY_CONTENT_TYPE');
       }
       const termId = normalizeLibraryTaxonomyId(taxonomyId);
+      const discoveryQuery = normalizeLibraryDiscoveryRequest({ emotions, needs, topics, lifeSituations, locale });
       if (append && (state.loadingMore || state.status !== 'ready' || !state.nextCursor
           || normalizedQuery !== state.query || typeId !== state.contentType || termId !== state.taxonomyId
+          || !sameDiscoveryRequest(discoveryQuery, state.discoveryQuery)
           || cursor !== state.nextCursor)) return state;
       const previousItems = append ? state.items : [];
       const boundedLimit = Math.max(1, Math.min(60, Math.floor(Number(limit) || 24)));
@@ -80,6 +84,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
         query: normalizedQuery,
         contentType: typeId,
         taxonomyId: termId,
+        discoveryQuery,
         loadingMore: false,
         moreError: null,
         nextCursor: null,
@@ -92,6 +97,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
           limit: boundedLimit,
           cursor: cursor ?? null,
           ...(termId ? { taxonomyId: termId } : {}),
+          ...discoveryQuery,
           ...(includeTaxonomy ? { includeTaxonomy: true } : {}),
         }));
         if (operation !== requestId) return state;
@@ -123,7 +129,7 @@ export function createLibraryService({ repository, registry = createLibraryConte
 
     async loadMore() {
       return this.list({ query: state.query, contentType: state.contentType, taxonomyId: state.taxonomyId,
-        cursor: state.nextCursor, append: true });
+        ...state.discoveryQuery, cursor: state.nextCursor, append: true });
     },
 
     async getItem(id) {
