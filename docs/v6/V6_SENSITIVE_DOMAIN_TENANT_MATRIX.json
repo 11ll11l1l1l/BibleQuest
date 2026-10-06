@@ -127,12 +127,15 @@
     {
       "id": "one-to-one-discipleship",
       "testFiles": [
-        "supabase/tests/v7-one2one-stale-tenant-hardening.test.sql"
+        "supabase/tests/v7-one2one-stale-tenant-hardening.test.sql",
+        "supabase/tests/v7-pair-lifecycle-tenant-context-switch.test.sql"
       ],
       "denialMarkers": [
         "Switched mentor cannot read stale old-tenant pair",
         "Switched learner cannot read stale old-tenant assignment",
-        "Switched learner cannot edit old-tenant response"
+        "Switched learner cannot edit old-tenant response",
+        "Switched mentor cannot accept stale congregation A pair through SECURITY DEFINER RPC",
+        "Switched mentor cannot end stale congregation A pair through SECURITY DEFINER RPC"
       ]
     },
     {
