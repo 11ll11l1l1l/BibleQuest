@@ -7,6 +7,10 @@
     "data/v7/content-sources/devotional-source-catalog.json",
     "data/v7/content-sources/devotional-source-catalog-02.json"
   ],
+  "curationRefs": [
+    "data/v7/curation/devotional-emotion-coverage-seed.json",
+    "data/v7/curation/devotional-emotion-bsb-reference-seed.json"
+  ],
   "aggregate": {
     "sourceCount": 7,
     "entryPointerCount": 173,
@@ -19,6 +23,8 @@
   },
   "releaseBoundary": {
     "sourcePoolDepthTargetReached": true,
+    "emotionCandidateSeedPresent": true,
+    "bsbCandidateReferenceSeedPresent": true,
     "emotionValidationTargetReached": false,
     "bsbReferenceTargetReached": false,
     "globalHostingClearanceComplete": false,
