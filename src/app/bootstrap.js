@@ -396,7 +396,7 @@ function boot(root){
       return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair')});
     },
     'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
-    library:()=>libraryPage({service:library,navigate:navigateLibrary,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
     'one-to-one-track':()=>assignedPage('track'),
     'one-to-one-module':()=>assignedPage('module'),
     'one-to-one-lesson':()=>{
