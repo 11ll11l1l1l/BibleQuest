@@ -78,6 +78,7 @@ function criteria(value, reviewerType) {
       ...(evaluator ? { evaluator } : {}),
       ...(evaluatedAt ? { evaluatedAt } : {}),
       ...(typeof row.hard === 'boolean' ? { hard: row.hard } : {}),
+      ...(typeof row.terminal === 'boolean' ? { terminal: row.terminal } : {}),
       ...(note ? { note } : {})
     });
   }));
