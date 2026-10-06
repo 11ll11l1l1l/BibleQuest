@@ -64,9 +64,10 @@ select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_cur
 select is((select t.publication_state || '/' || m.publication_state || '/' || l.publication_state from public.v7_tracks t join public.v7_modules m on m.track_id=t.id join public.v7_lessons l on l.module_id=m.id where t.id='e1000000-0000-4000-8000-000000000001'),'published/published/published','Authorized congregation A publication commits the complete hierarchy');
 select ok((select published_at is not null from public.v7_lesson_revisions where id='e1300000-0000-4000-8000-000000000001'),'Authorized congregation A publication stamps the immutable lesson revision');
 select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003','{}'::uuid[])$sql$),'42501','Congregation A leader cannot publish congregation B curriculum through SECURITY DEFINER RPC');
-select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000003'),'draft','Foreign-congregation RPC denial leaves congregation B curriculum unchanged');
 
 reset role;
+select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000003'),'draft','Foreign-congregation RPC denial leaves congregation B curriculum unchanged');
+
 update public.bible_congregation_members set active=false where congregation_id='10000000-0000-4000-8000-000000000001' and user_id='11111111-1111-4111-8111-111111111111';
 insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
 values('20000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111111','member','A3 Switched RPC Member',true)
@@ -77,14 +78,25 @@ select is((select role from public.bible_congregation_members where congregation
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
 select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('10000000-0000-4000-8000-000000000001','e1000000-0000-4000-8000-000000000002','e1100000-0000-4000-8000-000000000002','e1200000-0000-4000-8000-000000000002','e1300000-0000-4000-8000-000000000002','e1010000-0000-4000-8000-000000000002','e1110000-0000-4000-8000-000000000002','e1210000-0000-4000-8000-000000000002','{}'::uuid[])$sql$),'42501','Switched former A leader cannot publish stale congregation A curriculum through SECURITY DEFINER RPC');
-select is((select t.publication_state || '/' || m.publication_state || '/' || l.publication_state from public.v7_tracks t join public.v7_modules m on m.track_id=t.id join public.v7_lessons l on l.module_id=m.id where t.id='e1000000-0000-4000-8000-000000000002'),'draft/draft/draft','Stale congregation A publish denial leaves the hierarchy unchanged');
-select ok((select published_at is null from public.v7_lesson_revisions where id='e1300000-0000-4000-8000-000000000002'),'Stale congregation A publish denial does not stamp the lesson revision');
-select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_withdraw_curriculum_lesson('10000000-0000-4000-8000-000000000001','e1000000-0000-4000-8000-000000000001','e1100000-0000-4000-8000-000000000001','e1200000-0000-4000-8000-000000000001','e1300000-0000-4000-8000-000000000001','e1010000-0000-4000-8000-000000000001','e1110000-0000-4000-8000-000000000001','e1210000-0000-4000-8000-000000000001')$sql$),'42501','Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFINER RPC');
-select is((select publication_state from public.v7_lessons where id='e1200000-0000-4000-8000-000000000001'),'published','Stale congregation A withdrawal denial preserves published lesson visibility');
-select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003','{}'::uuid[])$sql$),'42501','Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFINER RPC');
-select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000003'),'draft','Ordinary-member congregation B RPC denial leaves the track unchanged');
 
 reset role;
+select is((select t.publication_state || '/' || m.publication_state || '/' || l.publication_state from public.v7_tracks t join public.v7_modules m on m.track_id=t.id join public.v7_lessons l on l.module_id=m.id where t.id='e1000000-0000-4000-8000-000000000002'),'draft/draft/draft','Stale congregation A publish denial leaves the hierarchy unchanged');
+select ok((select published_at is null from public.v7_lesson_revisions where id='e1300000-0000-4000-8000-000000000002'),'Stale congregation A publish denial does not stamp the lesson revision');
+
+set local role authenticated;
+set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
+select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_withdraw_curriculum_lesson('10000000-0000-4000-8000-000000000001','e1000000-0000-4000-8000-000000000001','e1100000-0000-4000-8000-000000000001','e1200000-0000-4000-8000-000000000001','e1300000-0000-4000-8000-000000000001','e1010000-0000-4000-8000-000000000001','e1110000-0000-4000-8000-000000000001','e1210000-0000-4000-8000-000000000001')$sql$),'42501','Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFINER RPC');
+
+reset role;
+select is((select publication_state from public.v7_lessons where id='e1200000-0000-4000-8000-000000000001'),'published','Stale congregation A withdrawal denial preserves published lesson visibility');
+
+set local role authenticated;
+set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
+select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003','{}'::uuid[])$sql$),'42501','Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFININER RPC');
+
+reset role;
+select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000003'),'draft','Ordinary-member congregation B RPC denial leaves the track unchanged');
+
 update public.bible_congregation_members set role='leader',active=true where congregation_id='20000000-0000-4000-8000-000000000002' and user_id='11111111-1111-4111-8111-111111111111';
 select is((select role from public.bible_congregation_members where congregation_id='20000000-0000-4000-8000-000000000002' and user_id='11111111-1111-4111-8111-111111111111' and active),'leader','Same actor is promoted to current congregation B leader without changing JWT identity');
 
@@ -96,9 +108,10 @@ select ok((select published_at is not null from public.v7_lesson_revisions where
 select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_withdraw_curriculum_lesson('20000000-0000-4000-8000-000000000002','e1000000-0000-4000-8000-000000000003','e1100000-0000-4000-8000-000000000003','e1200000-0000-4000-8000-000000000003','e1300000-0000-4000-8000-000000000003','e1010000-0000-4000-8000-000000000003','e1110000-0000-4000-8000-000000000003','e1210000-0000-4000-8000-000000000003')$sql$),'00000','Current congregation B leader can withdraw congregation B curriculum through SECURITY DEFINER RPC');
 select is((select publication_state from public.v7_lessons where id='e1200000-0000-4000-8000-000000000003'),'withdrawn','Current congregation B withdrawal changes only the authorized B lesson');
 select is(pg_temp.v7_rpc_sqlstate($sql$select * from public.bible_v7_publish_curriculum_path('10000000-0000-4000-8000-000000000001','e1000000-0000-4000-8000-000000000002','e1100000-0000-4000-8000-000000000002','e1200000-0000-4000-8000-000000000002','e1300000-0000-4000-8000-000000000002','e1010000-0000-4000-8000-000000000002','e1110000-0000-4000-8000-000000000002','e1210000-0000-4000-8000-000000000002','{}'::uuid[])$sql$),'42501','Current congregation B leader still cannot publish stale congregation A curriculum');
+
+reset role;
 select is((select publication_state from public.v7_tracks where id='e1000000-0000-4000-8000-000000000002'),'draft','Current congregation B authority never revives stale congregation A publication rights');
 select is((select role from public.bible_app_access where user_id='11111111-1111-4111-8111-111111111111'),'member','Site-wide platform role remains ordinary member throughout the context-switch proof');
 
-reset role;
 select * from finish();
 rollback;
