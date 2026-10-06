@@ -1,0 +1,1201 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.impatience_waiting",
+      "kind": "emotion",
+      "labels": {
+        "en": "Impatience / waiting"
+      }
+    },
+    {
+      "id": "need.patience",
+      "kind": "need",
+      "labels": {
+        "en": "Patience"
+      }
+    },
+    {
+      "id": "topic.waiting",
+      "kind": "topic",
+      "labels": {
+        "en": "Waiting"
+      }
+    },
+    {
+      "id": "life_situation.waiting",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Waiting"
+      }
+    },
+    {
+      "id": "emotion.jealousy_envy",
+      "kind": "emotion",
+      "labels": {
+        "en": "Jealousy / envy"
+      }
+    },
+    {
+      "id": "need.contentment",
+      "kind": "need",
+      "labels": {
+        "en": "Contentment"
+      }
+    },
+    {
+      "id": "topic.contentment",
+      "kind": "topic",
+      "labels": {
+        "en": "Contentment"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.frustration",
+      "kind": "emotion",
+      "labels": {
+        "en": "Frustration"
+      }
+    },
+    {
+      "id": "need.wisdom",
+      "kind": "need",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.disappointment",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Disappointment"
+      }
+    },
+    {
+      "id": "emotion.numbness_emptiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Numbness / emptiness"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.joy",
+      "kind": "emotion",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "need.gratitude",
+      "kind": "need",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "topic.joy",
+      "kind": "topic",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "life_situation.celebration",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Celebration"
+      }
+    },
+    {
+      "id": "emotion.gratitude",
+      "kind": "emotion",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "topic.gratitude",
+      "kind": "topic",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "life_situation.daily_life",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Daily life"
+      }
+    },
+    {
+      "id": "emotion.peace_contentment",
+      "kind": "emotion",
+      "labels": {
+        "en": "Peace / contentment"
+      }
+    },
+    {
+      "id": "emotion.hope",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.excitement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Excitement"
+      }
+    },
+    {
+      "id": "emotion.love_connection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Love / connection"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "topic.love",
+      "kind": "topic",
+      "labels": {
+        "en": "Love"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.impatience_waiting.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let waiting deepen trust",
+        "catalogId": "biblequest.v7.original.impatience_waiting.02",
+        "revision": "r1",
+        "checksum": "sha256:69c109fbe9c3a1f95a5c23a344bff090eede3082f23bc7930c40f52edb68e368",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let waiting deepen trust",
+        "body": "Waiting exposes how much you want control over timing. Isaiah 40:31 connects waiting on the Lord with renewed strength. Use the delay to prepare, pray, and become ready for what you are asking to receive. Patience is not doing nothing; it is refusing to force the wrong door."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.impatience_waiting",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.patience",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.waiting",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.waiting",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hayaang palalimin ng paghihintay ang tiwala",
+            "body": "Ipinapakita ng paghihintay kung gaano mo gustong kontrolin ang oras. Inuugnay ng Isaias 40:31 ang paghihintay sa Panginoon sa panibagong lakas. Gamitin ang pagkaantala para maghanda, manalangin, at maging handa sa hinihiling mong tanggapin. Ang pasensya ay hindi kawalan ng ginagawa; ito ay pagtangging pilitin ang maling pinto."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Tugoti ang paghulat nga mopadlawom sa pagsalig",
+            "body": "Gipakita sa paghulat kung unsa kadako ang imong gusto nga kontrolon ang panahon. Gidugtong sa Isaias 40:31 ang paghulat sa Ginoo sa bag-ong kusog. Gamita ang paglangan sa pagpangandam, pag-ampo, ug pag-andam sa imong kaugalingon sa imong gipangayo. Ang pagpailub dili walay gibuhat; pagdumili kini sa pagpugos sa sayop nga pultahan."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Palubosam ti panaguray a mangpauneg iti panagtalek",
+            "body": "Ti panaguray ipakitana no kasano ti panangkayatmo a tengngelan ti panawen. Ti Isaias 40:31 pagkaykaysaenna ti panaguray iti Apo ken ti nabaro a pigsa. Aramaten ti panagbayag para iti panagsagana, kararag, ken pannakaisagana iti dawdawatem. Ti anus ket saan a kinaawan ti aramid; isu ti panangliklik a piliten ti madi a ruangan."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.jealousy_envy.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Celebrate without comparison",
+        "catalogId": "biblequest.v7.original.jealousy_envy.02",
+        "revision": "r1",
+        "checksum": "sha256:60b9d5c6a53db834b158b7e46cac7e46fb532ce3f1194b881043579d1df81545",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Celebrate without comparison",
+        "body": "Jealousy makes another person's blessing feel like your loss. Romans 12:15 calls believers to rejoice with those who rejoice. Practice celebration without measuring yourself against them. Their good does not reduce God's ability to lead and provide for you in your own season."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.jealousy_envy",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.contentment",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.contentment",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Magdiwang nang walang paghahambing",
+            "body": "Ginagawang parang pagkawala mo ng inggit ang pagpapala ng ibang tao. Tinatawag ng Roma 12:15 ang mga mananampalataya na makigalak sa mga nagagalak. Magsanay na magdiwang nang hindi sinusukat ang sarili laban sa kanila. Hindi binabawasan ng mabuti sa kanila ang kakayahan ng Diyos na gabayan at maglaan para sa iyo sa sarili mong panahon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Saulog nga walay pagtandi",
+            "body": "Ang kasina naghimo sa panalangin sa laing tawo nga murag imong kapildihan. Ang Roma 12:15 nagtawag sa mga magtutuo nga magmalipay uban sa mga nagmalipay. Pagpraktis sa pagsaulog nga dili itandi ang imong kaugalingon kanila. Ang ilang kaayohan dili makapakunhod sa abilidad sa Dios sa paggiya ug pagtagana alang kanimo sa imong kaugalingong panahon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agrambak a saan nga agidilig",
+            "body": "Ti apal pagbalinenna ti bendision ti sabali a kasla pannakapukawmo. Ti Roma 12:15 ayabanna dagiti mamati nga makipagrag-o kadagiti agragragsak. Agpraktiska iti panagrambak a saan nga idilig ti bagim kadakuada. Ti kinaimbagda saan a pabassitenna ti pannakabalin ti Dios a mangiturong ken mangipaay kenka iti bukodmo a panawen."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.frustration.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Try another faithful way",
+        "catalogId": "biblequest.v7.original.frustration.02",
+        "revision": "r1",
+        "checksum": "sha256:acdc2238f68e608c31bc899c103a77f6605d99611263386634b3539a09552946",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Try another faithful way",
+        "body": "Frustration can make you repeat the same method more forcefully. Proverbs 16:9 leaves room for planning while recognizing that God directs steps. Keep the goal if it is still good, but reconsider the route. Flexibility can be faithfulness when the original method is no longer wise."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.frustration",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.wisdom",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.disappointment",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Subukan ang ibang tapat na paraan",
+            "body": "Maaaring itulak ka ng pagkadismaya na ulitin nang mas malakas ang parehong paraan. Nagbibigay ang Kawikaan 16:9 ng puwang sa pagpaplano habang kinikilalang itinutuwid ng Diyos ang mga hakbang. Panatilihin ang layunin kung mabuti pa rin ito, ngunit suriin muli ang daan. Maaaring maging katapatan ang pagiging flexible kapag hindi na matalino ang dating paraan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Sulayi ang laing matinud-anong paagi",
+            "body": "Ang kapakyasan ug kasapot makapaduso nimo sa pagsubli sa parehas nga pamaagi nga mas kusog. Ang Proverbio 16:9 naghatag ug luna sa pagplano samtang giila nga ang Dios naggiya sa mga lakang. Padayon sa tumong kon maayo gihapon kini, apan usba ang agianan kon kinahanglan. Ang pagka-flexible mahimong pagkamatinud-anon kon dili na maalamon ang daang pamaagi."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Padasem ti sabali a napudno a wagas",
+            "body": "Ti pannakaupay mabalinna a itulaknaka nga uliten ti isu met laeng a wagas a napigpigsa. Ti Proverbio 16:9 mangted iti lugar ti panagplano kabayatan a bigbigenna a ti Dios ti mangiturong iti addang. Pagtalinaedem ti panggep no naimbag pay, ngem kitaem manen ti dalan. Ti pannakabalin nga agbaliw mabalin a kinamatalek no saanen a nasirib ti daan a wagas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.numbness_emptiness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Stay connected to simple practices",
+        "catalogId": "biblequest.v7.original.numbness_emptiness.02",
+        "revision": "r1",
+        "checksum": "sha256:e9d60ac019125605ad0c682268e79f829e4d3ffe68e5a27f14e95e3f05199a94",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Stay connected to simple practices",
+        "body": "Numbness can remove motivation before it removes responsibility. Psalm 143:8 asks to hear of God's steadfast love in the morning and to know the way forward. Keep a few simple anchors: wake, eat, move, pray, answer one message, and complete one meaningful task. Small rhythms protect connection while feeling is quiet."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.numbness_emptiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Kumapit sa simpleng gawain",
+            "body": "Maaaring alisin ng pamamanhid ang motibasyon bago nito alisin ang pananagutan. Hinihiling ng Awit 143:8 na marinig sa umaga ang matatag na pag-ibig ng Diyos at malaman ang daang tatahakin. Panatilihin ang ilang simpleng sandigan: bumangon, kumain, gumalaw, manalangin, sumagot sa isang mensahe, at tapusin ang isang makabuluhang gawain. Pinoprotektahan ng maliliit na ritmo ang koneksyon habang tahimik ang damdamin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Padayon sa yano nga mga batasan",
+            "body": "Ang pagkamanhid mahimong kuhaon ang motibasyon sa dili pa ang responsibilidad. Ang Salmo 143:8 nangayo nga madungog sa buntag ang makanunayong gugma sa Dios ug mahibaloan ang dalan nga sundon. Padayona ang pipila ka yano nga saligan: bangon, kaon, lihok, pag-ampo, tubag sa usa ka mensahe, ug humanon ang usa ka makahulugang buluhaton. Ang gagmay nga ritmo nagapanalipod sa koneksyon samtang hilom ang pagbati."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agtalinaed kadagiti simple nga aramid",
+            "body": "Ti pannakamanhid mabalinna nga ikkaten ti tarigagay sakbay ti pagrebbengan. Ti Salmo 143:8 dawatenna a mangngeg iti bigat ti natibker nga ayat ti Dios ken ammoen ti dalan a papanan. Pagtalinaedem dagiti simple a pagtaengan: bumangon, mangan, agtignay, agkararag, sungbatam ti maysa a mensahe, ken leppasem ti maysa a napateg nga aramid. Dagiti bassit a ritmo salaknibanda ti pannakikadua bayat a naulimek ti rikna."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.joy.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Share the good",
+        "catalogId": "biblequest.v7.original.joy.02",
+        "revision": "r1",
+        "checksum": "sha256:10e67249db185096f8b73bca2fd9cdf8ce081cfc64cf16deac2672b0338de2d0",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share the good",
+        "body": "Joy grows when it is received and shared rather than hurried past. Psalm 100 invites God's people into thanksgiving and glad worship. Tell someone what you are grateful for. Celebrate without embarrassment. Let good news become a reason to remember the Giver, not merely the gift."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.joy",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.gratitude",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ibahagi ang mabuti",
+            "body": "Lumalaki ang kagalakan kapag tinatanggap at ibinabahagi ito sa halip na minamadaling lampasan. Inaanyayahan ng Awit 100 ang bayan ng Diyos sa pasasalamat at masayang pagsamba. Sabihin sa isang tao kung ano ang ipinagpapasalamat mo. Magdiwang nang walang hiya. Hayaang maging dahilan ang magandang balita para alalahanin ang Nagbigay, hindi lamang ang kaloob."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ipaambit ang maayo",
+            "body": "Motubo ang kalipay kon dawaton ug ipaambit kini imbis dali-dalion lang ug labyan. Gidapit sa Salmo 100 ang katawhan sa Dios ngadto sa pagpasalamat ug malipayong pagsimba. Sultihi ang usa ka tawo kon unsay imong gipasalamatan. Saulog nga walay kaulaw. Tugoti ang maayong balita nga mahimong hinungdan sa paghinumdom sa Naghatag, dili lamang sa gasa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ibingay ti naimbag",
+            "body": "Dumakkel ti rag-o no maawat ken maibingay imbes a mapardas laeng a malampasan. Ti Salmo 100 awisenna ti ili ti Dios iti panagyaman ken naragsak a panagdayaw. Ibagam iti maysa a tao ti pagyamyamanam. Agrambak a saan a mabain. Palubosam ti naimbag a damag a mangipalagip iti Mangited, saan laeng nga iti sagut."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.gratitude.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Trace the gift to the Giver",
+        "catalogId": "biblequest.v7.original.gratitude.02",
+        "revision": "r1",
+        "checksum": "sha256:16cf026ea71afbb0056e0a058338542b7c95687992a7bc7c0e04c7763be50813",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Trace the gift to the Giver",
+        "body": "Gratitude becomes worship when you trace good things beyond circumstance to God. James 1:17 describes every good and perfect gift as coming from above. Notice one provision today and follow it backward: who helped, what was given, and how can you thank both the person and God?"
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.gratitude",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.gratitude",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.gratitude",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.daily_life",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Sundan ang kaloob pabalik sa Nagbigay",
+            "body": "Nagiging pagsamba ang pasasalamat kapag sinusundan mo ang mabubuting bagay lampas sa pangyayari patungo sa Diyos. Inilalarawan ng Santiago 1:17 ang bawat mabuti at ganap na kaloob bilang nagmumula sa itaas. Pansinin ang isang paglalaan ngayon at sundan ito pabalik: sino ang tumulong, ano ang ibinigay, at paano mo mapapasalamatan ang tao at ang Diyos?"
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Sunda ang gasa balik sa Naghatag",
+            "body": "Mahimong pagsimba ang pagpasalamat kon imong subayon ang maayong mga butang lapas sa kahimtang ngadto sa Dios. Gihulagway sa Santiago 1:17 ang matag maayo ug hingpit nga gasa nga gikan sa itaas. Bantayi ang usa ka pagtagana karon ug subaya kini pabalik: kinsa ang mitabang, unsay gihatag, ug unsaon nimo pagpasalamat sa tawo ug sa Dios?"
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Surotem ti sagut a sumubli iti Mangited",
+            "body": "Agbalin a panagdayaw ti panagyaman no surotem dagiti naimbag a banag a lumabes iti kasasaad ken agturong iti Dios. Ti Santiago 1:17 iladawanna ti tunggal naimbag ken naan-anay a sagut a nagtaud iti ngato. Paliiwen ti maysa a pannakaited ita ken surotem ti nagtaudanna: siasino ti nangtulong, ania ti naited, ken kasano a pagyamanam ti tao ken ti Dios?"
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.peace_contentment.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Practice enough",
+        "catalogId": "biblequest.v7.original.peace_contentment.02",
+        "revision": "r1",
+        "checksum": "sha256:5a8595911cad8d70b4170ea9ec8cc15aabd03d2ccc431877b511506a1b9892c7",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice enough",
+        "body": "Contentment grows through practice, not through finally owning enough. First Timothy 6:6-8 connects godliness with contentment and names basic provision. Pause before the next purchase, comparison, or upgrade. Ask whether what you already have is sufficient for the purpose in front of you."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.peace_contentment",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.contentment",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.contentment",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.daily_life",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Magsanay ng pagiging sapat",
+            "body": "Lumalaki ang kasiyahan sa pamamagitan ng pagsasanay, hindi sa wakas na pagkakaroon ng sapat na gamit. Inuugnay ng 1 Timoteo 6:6-8 ang maka-Diyos na pamumuhay sa kasiyahan at simpleng pangangailangan. Huminto bago ang susunod na bili, paghahambing, o upgrade. Itanong kung sapat na ba ang mayroon ka para sa layuning nasa harap mo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pagpraktis sa pagkaigo",
+            "body": "Motubo ang pagkakontento pinaagi sa praktis, dili pinaagi sa kataposang pagbaton ug igo nga mga butang. Gidugtong sa 1 Timoteo 6:6-8 ang pagkadiosnon sa pagkakontento ug yano nga panginahanglan. Hunong sa dili pa ang sunod nga palit, pagtandi, o upgrade. Pangutan-a kon igo na ba ang anaa nimo alang sa katuyoan sa imong atubangan."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agpraktis iti kinaanay",
+            "body": "Dumakkel ti pannakapnek babaen iti praktis, saan nga iti pannakaaddaan iti makaanay a bambanag. Ti 1 Timoteo 6:6-8 pagkaykaysaenna ti kinadios ken pannakapnek ken nagananna dagiti kangrunaan a kasapulan. Agsardeng sakbay ti sumaruno a gatang, panagidilig, wenno upgrade. Saludsodem no makaanay ti adda kenka para iti panggep iti sangoanam."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hope.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Hope has a horizon",
+        "catalogId": "biblequest.v7.original.hope.02",
+        "revision": "r1",
+        "checksum": "sha256:d89cc79c30d8798fe64cc513409375de96b85fe6e36fcfa39eb25b6f8a626be8",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Hope has a horizon",
+        "body": "Hope looks farther than the present condition. Revelation 21:4 points toward a future where death, mourning, crying, and pain are no more. That promise does not make present suffering small; it gives suffering a horizon. Let future restoration shape how you endure and love today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hope",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "May abot-tanaw ang pag-asa",
+            "body": "Mas malayo ang tinitingnan ng pag-asa kaysa sa kasalukuyang kalagayan. Itinuturo ng Pahayag 21:4 ang hinaharap na wala nang kamatayan, pagdadalamhati, pag-iyak, at sakit. Hindi nito pinapaliit ang paghihirap ngayon; binibigyan nito ng abot-tanaw ang paghihirap. Hayaang hubugin ng darating na pagpapanumbalik kung paano ka magtitiis at magmahal ngayon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Adunay kapunawpunawan ang paglaom",
+            "body": "Mas layo ang tan-aw sa paglaom kaysa sa kasamtangang kahimtang. Ang Pinadayag 21:4 nagtudlo sa umaabot nga wala nay kamatayon, kasubo, paghilak, ug kasakit. Dili niini gamayon ang pag-antos karon; gihatagan niini ug kapunawpunawan ang pag-antos. Tugoti ang umaabot nga pagpahiuli nga maghulma sa imong paglahutay ug paghigugma karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Adda pagtungpalan ti namnama",
+            "body": "Ad-adayo ti kita ti namnama ngem iti agdama a kasasaad. Ti Apocalipsis 21:4 iturongna iti masakbayan nga awanen ti patay, ladingit, panagsangit, ken sakit. Saan a pabassiten daytoy ti panagsagaba ita; ikanna iti pagtungpalan ti panagsagaba. Palubosam ti masakbayan a pannakaisubli a mangbukel iti panagibtur ken panagayatmo ita."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.excitement.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Steward the energy",
+        "catalogId": "biblequest.v7.original.excitement.02",
+        "revision": "r1",
+        "checksum": "sha256:dfc7d015f155b5a3ff19c8bb20e0f395698dfc20285e5a638603c31ce49e0238",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Steward the energy",
+        "body": "Excitement gives energy, but energy needs direction. Colossians 3:23 calls for wholehearted work done for the Lord. Before saying yes to everything, decide where this energy can serve the best purpose. Enthusiasm becomes fruitful when it is paired with focus, preparation, and follow-through."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.excitement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.wisdom",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pangasiwaan ang enerhiya",
+            "body": "Nagbibigay ng lakas ang pananabik, ngunit kailangan ng direksyon ang lakas. Tinatawag ng Colosas 3:23 ang buong-pusong gawain para sa Panginoon. Bago magsabi ng oo sa lahat, piliin kung saan pinakamabuting magagamit ang enerhiyang ito. Nagiging mabunga ang sigla kapag may kasamang pokus, paghahanda, at pagtapos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Dumalaa ang kusog",
+            "body": "Naghatag ug kusog ang kahinam, apan kinahanglan ug direksyon ang kusog. Ang Colosas 3:23 nagtawag sa tibuok-kasingkasing nga buluhaton alang sa Ginoo. Sa dili pa moingon ug oo sa tanan, pilia kung asa labing maayo gamiton ang kusog. Mahimong mabungahon ang kahinam kon adunay pokus, pagpangandam, ug paghuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Imanehar ti pigsa",
+            "body": "Mangted iti pigsa ti rag-o, ngem masapul ti direksyon ti pigsa. Ti Colosas 3:23 ayabannatayo iti naimpusoan a trabaho para iti Apo. Sakbay a kunaen ti wen iti amin, pilien no sadino a kasayaatan nga aramaten daytoy a pigsa. Agbalin a nabunga ti rag-o no adda pokus, panagsagana, ken panangleppas."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.love_connection.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room to listen",
+        "catalogId": "biblequest.v7.original.love_connection.02",
+        "revision": "r1",
+        "checksum": "sha256:224c5a2ab6b103e8b36f61720f2e2e9f7bb900c509ad3d7d5c693e2c6d87c25e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room to listen",
+        "body": "Love is often expressed less by having the right words and more by giving careful attention. James 1:19 says to be quick to listen and slow to speak. Put the phone down, ask one honest question, and stay long enough to hear the answer without planning your reply."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.love_connection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.love",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Magbigay ng puwang para makinig",
+            "body": "Madalas naipapakita ang pag-ibig hindi sa pagkakaroon ng tamang salita kundi sa maingat na pakikinig. Sinasabi ng Santiago 1:19 na maging mabilis sa pakikinig at mabagal sa pagsasalita. Ibaba ang telepono, magtanong ng isang tapat na tanong, at manatili nang sapat para marinig ang sagot nang hindi pinaplano agad ang isasagot mo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pagpaminaw",
+            "body": "Kasagaran gipakita ang gugma dili pinaagi sa hustong mga pulong kondili pinaagi sa maampingong pagtagad. Ang Santiago 1:19 nag-ingon nga magdali sa pagpaminaw ug maghinay sa pagsulti. Ibutang ang telepono, pangutana ug usa ka matinud-anong pangutana, ug pabilin hangtod madungog ang tubag nga dili pa nagplano sa imong tubag."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Mangted iti lugar ti panagdengngeg",
+            "body": "Masansan a maipakita ti ayat saan laeng babaen kadagiti umno a sasao no di ket babaen iti naannad a panagdengngeg. Ti Santiago 1:19 kunana a napardas iti panagdengngeg ken nabaybayag iti panagsao. Ikabilmo ti telepono, agsaludsod iti maysa a napudno a saludsod, ken agtalinaedka agingga a mangngegmo ti sungbat a saan pay a planuen ti isungbatmo."
+          }
+        }
+      ]
+    }
+  ]
+}
