@@ -6,6 +6,8 @@ import {
   requiredV7LibraryApprovalCriteria
 } from '../../src/v7/content/automated-approval-policy.js';
 
+const EVALUATED_AT = '2026-10-07T00:00:00Z';
+
 function item(type = 'book', patch = {}) {
   return {
     id: `${type}.fixture`,
@@ -25,6 +27,7 @@ function passingEvaluations(type = 'book', evaluator = 'policy-primary') {
     id: criterion.id,
     result: 'pass',
     evaluator,
+    evaluatedAt: EVALUATED_AT,
     evidenceRefs: [`evidence:${criterion.id}`]
   }));
 }
@@ -34,6 +37,7 @@ function secondPass(patch = {}) {
     result: 'pass',
     revision: 'r1',
     evaluator: 'policy-adversarial',
+    evaluatedAt: EVALUATED_AT,
     evidenceRefs: ['evidence:second-pass'],
     ...patch
   };
@@ -45,14 +49,14 @@ test('Lane B policy auto-approves only a complete evidence-backed independent pa
     item: target,
     evaluations: passingEvaluations('book'),
     secondPass: secondPass(),
-    decidedAt: '2026-10-07T00:00:00Z'
+    decidedAt: EVALUATED_AT
   });
 
   assert.equal(decision.outcome, 'auto_approved');
   assert.equal(decision.reviewerType, 'automated_policy');
   assert.equal(decision.policyId, 'biblequest.v7.library-release');
   assert.equal(decision.policyVersion, '1.0.0');
-  assert.equal(decision.criteria.every(row => row.result === 'pass'), true);
+  assert.equal(decision.criteria.every(row => row.result === 'pass' && row.evaluatedAt === EVALUATED_AT), true);
   assert.equal(decision.secondPass.ready, true);
   assert.equal(decision.auditable, true);
   assert.equal(canAutoPublishV7LibraryDecision(decision, target), true);
@@ -150,4 +154,14 @@ test('second pass must bind the exact revision and be independent of primary eva
   });
   assert.equal(sameEvaluator.outcome, 'needs_repair');
   assert.ok(sameEvaluator.repairReasons.includes('independent_second_pass_incomplete'));
+});
+
+test('evaluation timestamps are mandatory audit evidence', () => {
+  const target = item('book');
+  const evaluations = passingEvaluations('book');
+  delete evaluations[0].evaluatedAt;
+  assert.throws(
+    () => evaluateV7LibraryApproval({ item: target, evaluations, secondPass: secondPass() }),
+    /evaluatedAt must be a valid timestamp/
+  );
 });
