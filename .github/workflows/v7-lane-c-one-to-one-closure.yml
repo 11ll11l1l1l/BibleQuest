@@ -1,0 +1,167 @@
+name: V7 Lane C ONE 2 ONE Closure
+
+on:
+  pull_request:
+    branches:
+      - v7/development
+    paths:
+      - 'src/app/**'
+      - 'src/core/api.js'
+      - 'src/features/one-to-one/**'
+      - 'src/features/pairing/**'
+      - 'src/features/discipleship-curriculum/**'
+      - 'src/features/lesson-runner/**'
+      - 'src/features/curriculum-authoring/**'
+      - 'supabase/**'
+      - 'tests/v7/one-to-one-authenticated-browser.mjs'
+      - 'tests/v7/discipleship-*.test.mjs'
+      - 'tests/v7/lesson-runner-*.test.mjs'
+      - 'tests/v7/one-to-one-*.test.mjs'
+      - '.github/workflows/v7-lane-c-one-to-one-closure.yml'
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character V7 candidate commit SHA to certify
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v7-lane-c-one-to-one-${{ github.event.pull_request.number || inputs.candidate_sha || github.ref }}
+  cancel-in-progress: false
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha || github.sha }}
+  SUPABASE_TELEMETRY_DISABLED: '1'
+
+jobs:
+  authenticated-browser:
+    name: Authenticated ONE 2 ONE built-browser journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Validate selected candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+          fetch-depth: 0
+
+      - name: Verify exact clean candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Validate Lane C runtime and privacy contracts
+        run: |
+          node --check tests/v7/one-to-one-authenticated-browser.mjs
+          node --test \
+            tests/v7/discipleship-core.test.mjs \
+            tests/v7/discipleship-supabase-adapter.test.mjs \
+            tests/v7/discipleship-share-ack.test.mjs \
+            tests/v7/discipleship-share-revocation.test.mjs \
+            tests/v7/lesson-runner-response-page.test.mjs \
+            tests/v7/lesson-runner-responses.test.mjs \
+            tests/v7/one-to-one-mentee-handoff-contract.test.mjs \
+            tests/v7/one-to-one-stale-tenant-hardening.test.mjs
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+
+      - name: Prepare disposable current database
+        run: node scripts/v6-prepare-local-supabase.mjs /tmp/bq-v7-auth-browser-db
+
+      - name: Start and reset disposable Supabase
+        working-directory: /tmp/bq-v7-auth-browser-db
+        run: |
+          set -euo pipefail
+          supabase start
+          supabase db reset
+
+      - name: Capture disposable backend coordinates
+        shell: bash
+        env:
+          BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-auth-browser-status.json
+        run: |
+          set -euo pipefail
+          umask 077
+          (cd /tmp/bq-v7-auth-browser-db && supabase status -o json) > "$BQ_LOCAL_STATUS_FILE"
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const status = JSON.parse(await readFile(process.env.BQ_LOCAL_STATUS_FILE, 'utf8'));
+          const endpoint = new URL(status.API_URL);
+          if (endpoint.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]'].includes(endpoint.hostname)) {
+            throw new Error('Authenticated browser certification requires disposable loopback Supabase.');
+          }
+          if (!status.ANON_KEY || !status.SERVICE_ROLE_KEY) throw new Error('Disposable Supabase credentials are missing.');
+          NODE
+
+      - name: Build exact candidate artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: npm run build
+
+      - name: Install pinned browser harness outside application lockfile
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start exact built artifact preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/bq-v7-auth-browser-preview.log 2>&1 &
+          echo $! > /tmp/bq-v7-auth-browser-preview.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v7-auth-browser-preview.log
+          exit 1
+
+      - name: Run authenticated built-browser ONE 2 ONE journey
+        env:
+          BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-auth-browser-status.json
+          BQ_PREVIEW_URL: http://bq.localhost:4173
+        run: node tests/v7/one-to-one-authenticated-browser.mjs
+
+      - name: Preserve authenticated browser evidence and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bq-v7-authenticated-browser-${{ env.BQ_EXACT_SHA }}
+          path: artifacts/v7/**
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Preview diagnostics
+        if: failure()
+        run: cat /tmp/bq-v7-auth-browser-preview.log || true
+
+      - name: Stop disposable services
+        if: always()
+        run: |
+          if test -f /tmp/bq-v7-auth-browser-preview.pid; then kill "$(cat /tmp/bq-v7-auth-browser-preview.pid)" || true; fi
+          (cd /tmp/bq-v7-auth-browser-db && supabase stop) || true
+          rm -f /tmp/bq-v7-auth-browser-status.json
