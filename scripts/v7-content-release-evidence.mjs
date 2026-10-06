@@ -19,6 +19,14 @@ const items = bundlePaths.flatMap(relativePath => {
   const bundle = JSON.parse(readFileSync(new URL(relativePath, import.meta.url), 'utf8'));
   return parseV7ContentBundle(bundle).items;
 });
+const reviewPacket = JSON.parse(readFileSync(new URL(
+  '../data/v7/curation/representative-library-review-packet.json',
+  import.meta.url
+), 'utf8'));
+const reviewDecisionLedger = JSON.parse(readFileSync(new URL(
+  '../data/v7/curation/representative-library-review-decisions.json',
+  import.meta.url
+), 'utf8'));
 const v7Keys = localization.keyInventory.filter(key => key.startsWith('v7.'));
 const missingV7KeysByLocale = Object.fromEntries(localization.supportedLocales.map(locale => [
   locale,
@@ -28,6 +36,8 @@ const missingV7KeysByLocale = Object.fromEntries(localization.supportedLocales.m
 const report = buildV7ContentReleaseEvidence({
   candidateSha,
   items,
+  reviewPacket,
+  reviewDecisionLedger,
   supportedLocales: localization.supportedLocales,
   v7KeyCount: v7Keys.length,
   missingV7KeysByLocale
