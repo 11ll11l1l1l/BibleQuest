@@ -29,6 +29,11 @@ test('A2 aggregate devotional source index truthfully reports the research pool'
   assert.ok(index.aggregate.entryPointerCount >= index.aggregate.targetEntryPointerRange.minimum);
   assert.ok(index.aggregate.entryPointerCount <= index.aggregate.targetEntryPointerRange.maximum);
   assert.equal(index.aggregate.withinTargetEntryPointerRange, true);
+  assert.equal(index.aggregate.canonicalEmotionCount, 30);
+  assert.equal(index.aggregate.emotionsMeetingRawCandidateCountTarget, 30);
+  assert.equal(index.aggregate.emotionsMeetingRawWorkTarget, 30);
+  assert.equal(index.aggregate.emotionsMeetingRawAuthorTarget, 30);
+  assert.equal(index.aggregate.candidateBsbReferenceCount, 150);
 });
 
 test('A2 second source tranche remains link-only, candidate-only and rights fail-closed', () => {
@@ -63,13 +68,17 @@ test('A2 Macduff day pointers retain stable ids but expose source-resolved devot
   }
 });
 
-test('A2 research seeds can exist without falsely satisfying reviewed release gates', () => {
+test('A2 raw research targets remain distinct from validated release targets', () => {
   assert.deepEqual(index.curationRefs, [
     'data/v7/curation/devotional-emotion-coverage-seed.json',
+    'data/v7/curation/devotional-emotion-candidate-expansion-02.json',
     'data/v7/curation/devotional-emotion-bsb-reference-seed.json'
   ]);
   assert.equal(index.releaseBoundary.sourcePoolDepthTargetReached, true);
   assert.equal(index.releaseBoundary.emotionCandidateSeedPresent, true);
+  assert.equal(index.releaseBoundary.emotionRawCandidateCountTargetReached, true);
+  assert.equal(index.releaseBoundary.emotionRawWorkTargetReached, true);
+  assert.equal(index.releaseBoundary.emotionRawAuthorTargetReached, true);
   assert.equal(index.releaseBoundary.bsbCandidateReferenceSeedPresent, true);
   assert.equal(index.releaseBoundary.emotionValidationTargetReached, false);
   assert.equal(index.releaseBoundary.bsbReferenceTargetReached, false);
