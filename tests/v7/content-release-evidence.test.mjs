@@ -13,6 +13,7 @@ function currentItems() {
   return [
     '../../data/v7/books/representative-catalog.json',
     '../../content/v7/devotionals/spurgeon-samples.json',
+    '../../content/v7/devotionals/spurgeon-expansion-01.json',
     '../../data/v7/past-teachings/prayer-source-example.json'
   ].flatMap(path => parseV7ContentBundle(readBundle(path)).items);
 }
@@ -30,24 +31,34 @@ function uiEvidence() {
 }
 
 test('release evidence is deterministic metadata and excludes content bodies', () => {
+  const translation = (locale, title, body) => ({
+    locale,
+    translatedFromRevision: 'r1',
+    reviewStatus: 'reviewed',
+    translatedBy: 'translator-1',
+    reviewedBy: 'reviewer-2',
+    reviewedAt: '2026-10-05T00:00:00Z',
+    content: { title, body }
+  });
   const item = {
     id: 'devotional.ready', type: 'devotional', revision: 'r1', sourceLocale: 'en', publicationState: 'published',
     source: { kind: 'external', title: 'Source', uri: 'https://example.test/source', creator: 'Author' },
     sourceContent: { title: 'Title', body: 'SECRET SOURCE BODY' },
     rights: { status: 'verified', holder: 'Holder', basis: 'Basis', attribution: '', allowedUses: ['display'] },
     review: { status: 'approved', reviewer: 'reviewer-1', decidedAt: '2026-10-05T00:00:00Z' },
-    translations: [{
-      locale: 'tl', translatedFromRevision: 'r1', reviewStatus: 'reviewed', translatedBy: 'translator-1',
-      reviewedBy: 'reviewer-2', reviewedAt: '2026-10-05T00:00:00Z', content: { title: 'Pamagat', body: 'SECRET TRANSLATION BODY' }
-    }]
+    translations: [
+      translation('tl', 'Pamagat', 'SECRET TRANSLATION BODY'),
+      translation('ceb', 'Titulo', 'SECRET CEBUANO BODY'),
+      translation('ilo', 'Titulo', 'SECRET ILOCANO BODY')
+    ]
   };
   const other = type => ({ ...item, id: `${type}.ready`, type, translations: [] });
   const input = [item, other('book'), other('past_teaching')];
   const options = {
     candidateSha: 'A'.repeat(40),
-    supportedLocales: ['tl', 'en'],
+    supportedLocales: ['ilo', 'tl', 'en', 'ceb'],
     v7KeyCount: 2,
-    missingV7KeysByLocale: { en: [], tl: [] }
+    missingV7KeysByLocale: { en: [], tl: [], ceb: [], ilo: [] }
   };
 
   const report = buildV7ContentReleaseEvidence({ ...options, items: input });
@@ -56,13 +67,16 @@ test('release evidence is deterministic metadata and excludes content bodies', (
   assert.equal(report.candidateSha, 'a'.repeat(40));
   assert.equal(report.ready, true);
   assert.equal(report.localization.ready, true);
-  assert.deepEqual(report.localization.supportedLocales, ['en', 'tl']);
-  assert.equal(report.items[1].translations[0].locale, 'tl');
+  assert.deepEqual(report.localization.supportedLocales, ['ceb', 'en', 'ilo', 'tl']);
+  const devotional = report.items.find(reportItem => reportItem.id === 'devotional.ready');
+  assert.deepEqual(devotional.translations.map(entry => entry.locale), ['ceb', 'ilo', 'tl']);
   assert.deepEqual(reordered.items, report.items);
   const serialized = JSON.stringify(report);
   assert.ok(!serialized.includes('SECRET SOURCE BODY'));
   assert.ok(!serialized.includes('SECRET TRANSLATION BODY'));
-  assert.ok(!Object.hasOwn(report.items[1], 'sourceContent'));
+  assert.ok(!serialized.includes('SECRET CEBUANO BODY'));
+  assert.ok(!serialized.includes('SECRET ILOCANO BODY'));
+  assert.ok(!Object.hasOwn(devotional, 'sourceContent'));
 });
 
 test('current representative content produces truthful OPEN evidence while V7 UI localization is complete', () => {
@@ -74,7 +88,7 @@ test('current representative content produces truthful OPEN evidence while V7 UI
 
   assert.equal(report.ready, false);
   assert.equal(report.localization.ready, true);
-  assert.deepEqual(report.localization.supportedLocales, ['ceb', 'en', 'tl']);
+  assert.deepEqual(report.localization.supportedLocales, ['ceb', 'en', 'ilo', 'tl']);
   assert.ok(report.localization.v7KeyCount > 0);
   for (const locale of report.localization.supportedLocales) {
     assert.deepEqual(report.localization.byLocale[locale].missingV7Keys, []);
