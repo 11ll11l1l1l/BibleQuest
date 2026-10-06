@@ -16,8 +16,8 @@ function canonicalRepresentativeItems() {
   return bundles.flatMap(bundle => parseV7ContentBundle(bundle).items);
 }
 
-function assertUniqueControlledValues(values, allowed, label) {
-  assert.ok(Array.isArray(values) && values.length >= 1, `${label} must be a non-empty array`);
+function assertUniqueControlledValues(values, allowed, label, minLength = 1) {
+  assert.ok(Array.isArray(values) && values.length >= minLength, `${label} must contain at least ${minLength} value(s)`);
   assert.equal(new Set(values).size, values.length, `${label} must not contain duplicates`);
   for (const value of values) {
     assert.ok(allowed.has(value), `${label} contains uncontrolled value ${value}`);
@@ -127,7 +127,7 @@ test('A2 curation contains controlled enrichment for discovery and discipleship 
     assert.ok(THEOLOGICAL_TIERS.has(item.theologicalFit.tier), `${item.itemId} theological tier is uncontrolled`);
     assert.ok(item.theologicalFit.rationale.length >= 40, `${item.itemId} theological rationale is too thin`);
 
-    assertUniqueControlledValues(item.topics, CONTROLLED.topics, `${item.itemId} topics`);
+    assertUniqueControlledValues(item.topics, CONTROLLED.topics, `${item.itemId} topics`, 2);
     assertUniqueControlledValues(item.collections, CONTROLLED.collections, `${item.itemId} collections`);
     assertUniqueControlledValues(item.lifePathways, CONTROLLED.lifePathways, `${item.itemId} life pathways`);
     assertUniqueControlledValues(item.audiences, CONTROLLED.audiences, `${item.itemId} audiences`);
