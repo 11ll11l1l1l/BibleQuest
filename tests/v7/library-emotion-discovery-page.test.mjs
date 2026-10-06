@@ -24,7 +24,8 @@ function fixture() {
   const selectors = [
     '[data-library-status]', '[data-library-results]', '[data-library-search]',
     '[name="query"]', '[name="contentType"]', '[name="taxonomyId"]',
-    '[data-library-discovery]', '[data-library-retry]', '[data-library-more]',
+    '[data-library-discovery]', '[data-library-emotion-discovery-host]', '[data-library-discovery-empty-host]',
+    '[data-library-retry]', '[data-library-more]',
   ];
   const nodes = Object.fromEntries(selectors.map(selector => [selector, new ElementStub()]));
   const page = new ElementStub();
@@ -92,6 +93,81 @@ test('emotion and need shortcuts expose canonical taxonomy and route through tax
       taxonomyId: 'topic.worry',
     });
     assert.equal(f.requests.length, 1, 'route destination owns the filtered read');
+  } finally {
+    globalThis.Element = priorElement;
+  }
+});
+
+
+test('full emotion discovery stays gated until a persistent executor is injected, then hands A3 the exact query shape', () => {
+  const priorElement = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const disabled = fixture();
+    createLibraryPage({
+      service: disabled.service,
+      navigate() {},
+      initialDiscoveryQuery: { emotions: ['worried'], needs: ['peace'] },
+    }).mount(disabled.root);
+    assert.equal(disabled.nodes['[data-library-emotion-discovery-host]'].hidden, true);
+    assert.deepEqual(disabled.requests[0], {
+      query: '', contentType: '', taxonomyId: '', includeTaxonomy: true,
+    });
+
+    const f = fixture();
+    const discoveryRequests = [];
+    let destination;
+    const discoverySearch = options => {
+      discoveryRequests.push(options);
+      return f.service.list(options);
+    };
+    createLibraryPage({
+      service: f.service,
+      navigate: value => { destination = value; },
+      discoverySearch,
+      initialDiscoveryQuery: { emotions: ['worried'], needs: ['peace'] },
+    }).mount(f.root);
+
+    const host = f.nodes['[data-library-emotion-discovery-host]'];
+    assert.equal(host.hidden, false);
+    assert.match(host.innerHTML, /data-library-discovery-id="anxious" aria-pressed="true"/);
+    assert.match(host.innerHTML, /data-library-discovery-id="peace" aria-pressed="true"/);
+    assert.deepEqual(discoveryRequests[0], {
+      query: '',
+      contentType: '',
+      taxonomyId: '',
+      includeTaxonomy: true,
+      emotions: ['anxious'],
+      needs: ['peace'],
+      topics: [],
+      lifeSituations: [],
+      locale: 'en',
+    });
+
+    f.service.emit({ status: 'empty', items: [] });
+    const empty = f.nodes['[data-library-discovery-empty-host]'];
+    assert.equal(empty.hidden, false);
+    assert.match(empty.innerHTML, /No published devotionals match all of these selections yet\./);
+    assert.match(empty.innerHTML, /data-library-discovery-suggestion/);
+
+    const chip = new ElementStub({
+      'data-library-discovery-kind': 'need',
+      'data-library-discovery-id': 'hope',
+    });
+    f.page.listeners.get('click')({ target: chip });
+    assert.deepEqual(destination, {
+      routeKey: 'library',
+      query: '',
+      contentType: '',
+      taxonomyId: '',
+      discoveryQuery: {
+        emotions: ['anxious'],
+        needs: ['hope', 'peace'],
+        topics: [],
+        lifeSituations: [],
+      },
+    });
+    assert.equal(discoveryRequests.length, 1, 'the destination mount owns the updated persistent read');
   } finally {
     globalThis.Element = priorElement;
   }
