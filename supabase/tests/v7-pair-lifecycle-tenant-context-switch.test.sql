@@ -40,6 +40,18 @@ values (
 on conflict (congregation_id,user_id)
 do update set role='member', display_name='A3 Pair Mentee', active=true;
 
+-- Reuse the synthetic former-member identity only inside this rolled-back test
+-- as a distinct current A participant. Distinct counterparts preserve the
+-- production invariant that a mentor/mentee tuple has at most one open pair.
+insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
+values (
+  '10000000-0000-4000-8000-000000000001',
+  '11111111-1111-4111-8111-111111111114',
+  'member','A3 Pair Invitation Mentee',true
+)
+on conflict (congregation_id,user_id)
+do update set role='member', display_name='A3 Pair Invitation Mentee', active=true;
+
 -- Control invitation: proves the current A participant can use the lifecycle
 -- RPC before the context switch.
 insert into public.v7_mentor_pairs(id,congregation_id,mentor_id,mentee_id,initiated_by,state)
@@ -47,7 +59,7 @@ values (
   'b4000000-0000-4000-8000-000000000001',
   '10000000-0000-4000-8000-000000000001',
   '11111111-1111-4111-8111-111111111113',
-  '11111111-1111-4111-8111-111111111112',
+  '11111111-1111-4111-8111-111111111111',
   '11111111-1111-4111-8111-111111111113',
   'invited'
 );
@@ -58,7 +70,7 @@ values (
   'b4000000-0000-4000-8000-000000000002',
   '10000000-0000-4000-8000-000000000001',
   '11111111-1111-4111-8111-111111111113',
-  '11111111-1111-4111-8111-111111111112',
+  '11111111-1111-4111-8111-111111111114',
   '11111111-1111-4111-8111-111111111113',
   'invited'
 );
