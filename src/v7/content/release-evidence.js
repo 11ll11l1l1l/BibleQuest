@@ -126,6 +126,7 @@ export function buildV7ContentReleaseEvidence({
   missingV7KeysByLocale
 }) {
   if (!Array.isArray(items)) throw new TypeError('items must be an array');
+  const normalizedCandidateSha = candidateSha(sha);
   const representative = assessV7RepresentativeLibraryContent(items);
   const reviewDecisions = reviewDecisionEvidence({ items, reviewPacket, reviewDecisionLedger });
   const localization = localizationEvidence({ supportedLocales, v7KeyCount, missingV7KeysByLocale });
@@ -133,7 +134,7 @@ export function buildV7ContentReleaseEvidence({
 
   return Object.freeze({
     schemaVersion: 1,
-    candidateSha: candidateSha(sha),
+    candidateSha: normalizedCandidateSha,
     ready: representative.ready && localization.ready,
     representative,
     reviewDecisions,
