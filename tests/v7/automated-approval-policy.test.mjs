@@ -89,10 +89,27 @@ test('missing semantic evidence fails closed into the machine repair queue', () 
   assert.equal(canAutoPublishV7LibraryDecision(decision, target), false);
 });
 
-test('hard-critical criterion failure rejects regardless of all other passing scores', () => {
+test('hard-critical but repairable failure blocks publication and enters machine repair', () => {
   const target = item('book');
   const evaluations = passingEvaluations('book').map(row => row.id === 'theological_fidelity'
-    ? { ...row, result: 'fail', note: 'Contradicts the source/context under review.' }
+    ? { ...row, result: 'fail', note: 'Regenerate or repair the conflicting treatment.' }
+    : row);
+  const decision = evaluateV7LibraryApproval({
+    item: target,
+    evaluations,
+    secondPass: secondPass()
+  });
+
+  assert.equal(decision.outcome, 'needs_repair');
+  assert.ok(decision.repairReasons.includes('theological_fidelity'));
+  assert.equal(decision.criteria.find(row => row.id === 'theological_fidelity').hard, true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, target), false);
+});
+
+test('terminal permitted-use failure is rejected rather than sent through content regeneration', () => {
+  const target = item('book');
+  const evaluations = passingEvaluations('book').map(row => row.id === 'permitted_use_rights'
+    ? { ...row, result: 'fail', note: 'The intended hosted use is not permitted.' }
     : row);
   const decision = evaluateV7LibraryApproval({
     item: target,
@@ -101,7 +118,7 @@ test('hard-critical criterion failure rejects regardless of all other passing sc
   });
 
   assert.equal(decision.outcome, 'rejected');
-  assert.ok(decision.rejectionReasons.includes('theological_fidelity'));
+  assert.ok(decision.rejectionReasons.includes('permitted_use_rights'));
 });
 
 test('repairable criterion failure does not masquerade as approval or terminal rejection', () => {
@@ -134,7 +151,8 @@ test('devotionals require complete multilingual translation quality gates', () =
       : row),
     secondPass: secondPass()
   });
-  assert.equal(decision.outcome, 'rejected');
+  assert.equal(decision.outcome, 'needs_repair');
+  assert.ok(decision.repairReasons.includes('translation_semantic_fidelity'));
 });
 
 test('second pass must bind the exact revision and be independent of primary evaluation', () => {
