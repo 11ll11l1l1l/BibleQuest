@@ -47,7 +47,7 @@ export function createLibraryPage({
           <button type="button" class="bq-secondary-button" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
         </div>
       </form>
-      <p data-library-status role="status" aria-live="polite">${escapeHtml(t('v7.library.loading'))}</p>
+      <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
       <button type="button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
       <ul data-library-results aria-label="${escapeHtml(t('v7.library.items'))}"></ul>
       <button type="button" class="bq-secondary-button" data-library-more hidden>${escapeHtml(t('v7.library.more'))}</button>
@@ -108,9 +108,12 @@ export function createLibraryPage({
             ? t('v7.library.offline') : t('v7.library.error'),
           ready: t('v7.library.count', { count: current.items.length }),
         };
+        const urgent = current.status === 'error' || Boolean(current.moreError);
         status.textContent = current.loadingMore ? t('v7.library.loadingMore')
           : current.moreError ? t('v7.library.moreError') : messages[current.status] || t('v7.library.unavailable');
         results.innerHTML = current.status === 'ready' ? current.items.map(itemCard).join('') : '';
+        status.setAttribute('role', urgent ? 'alert' : 'status');
+        status.setAttribute('aria-live', urgent ? 'assertive' : 'polite');
         status.setAttribute('data-library-state', current.status);
         results.setAttribute('aria-busy', String(current.status === 'loading' || Boolean(current.loadingMore)));
         retry.hidden = current.status !== 'error';
@@ -132,7 +135,10 @@ export function createLibraryPage({
           ? event.target.closest('[data-library-item], [data-library-retry], [data-library-clear], [data-library-more]') : null;
         if (!target) return;
         if (target.hasAttribute('data-library-retry')) {
-          if (!retry.hidden) void service.list({ ...lastRequest });
+          if (!retry.hidden) {
+            status.focus({ preventScroll: true });
+            void service.list({ ...lastRequest });
+          }
           return;
         }
         if (target.hasAttribute('data-library-more')) {
