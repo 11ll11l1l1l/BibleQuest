@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(25);
 
 create function pg_temp.v7_rpc_sqlstate(statement text)
 returns text language plpgsql security invoker as $bq$
@@ -200,7 +200,7 @@ select is(pg_temp.v7_rpc_sqlstate($sql$
     'e1200000-0000-4000-8000-000000000001','e1300000-0000-4000-8000-000000000001',
     'e1010000-0000-4000-8000-000000000001','e1110000-0000-4000-8000-000000000001',
     'e1210000-0000-4000-8000-000000000001')
-$sql$),'42501','Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFINER RPC');
+$sql$),'42501','Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFININER RPC');
 select is(
   (select publication_state from public.v7_lessons where id='e1200000-0000-4000-8000-000000000001'),
   'published',
