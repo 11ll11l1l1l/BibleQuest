@@ -16,8 +16,20 @@ test('book presentation escapes author metadata and marks external navigation',(
   assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
   assert.match(html,/rel="noopener noreferrer"/);assert.match(html,/target="_blank"/);
 });
-test('representative book catalog retains real source identities and link-only pending review',()=>{
+test('expanded book catalog retains real source identities and link-only pending review',()=>{
   const bundle=parseV7ContentBundle(JSON.parse(readFileSync(new URL('../../data/v7/books/representative-catalog.json',import.meta.url))));
-  assert.equal(bundle.items.length,2);
-  for(const item of bundle.items){assert.equal(item.publicationState,'pending_review');assert.equal(item.review.status,'pending_review');assert.equal(item.source.kind,'external');assert.deepEqual(item.rights.allowedUses,['external_link']);assert.equal(item.sourceContent.body,undefined)}
+  assert.equal(bundle.items.length,8);
+  assert.deepEqual(new Set(bundle.items.map(item=>item.source.catalogId)),new Set([
+    'gutenberg:131','gutenberg:5657','gutenberg:1653','gutenberg:395',
+    'gutenberg:130','gutenberg:77585','gutenberg:8120','gutenberg:65688'
+  ]));
+  for(const item of bundle.items){
+    assert.equal(item.publicationState,'pending_review');
+    assert.equal(item.review.status,'pending_review');
+    assert.equal(item.source.kind,'external');
+    assert.equal(item.source.organization,'Project Gutenberg');
+    assert.match(item.source.uri,/^https:\/\/www\.gutenberg\.org\/ebooks\/\d+$/);
+    assert.deepEqual(item.rights.allowedUses,['external_link']);
+    assert.equal(item.sourceContent.body,undefined);
+  }
 });
