@@ -1,3 +1,5 @@
+> **2026-10-07 OWNER OVERRIDE:** For remaining V7 release work, `docs/v7/V7_RELEASE_RESET_20261007.md` supersedes conflicting statements in this historical acceptance contract. In particular, bulk devotional completion (minimum 150, target 300) is now V7 scope; TL/CEB/ILO devotional translations are required; automated policy approval is a valid publication path when fully evidenced; and human/physical audit is not a release prerequisite. Existing provenance, rights, tenancy and no-fabrication safeguards remain in force.
+
 # V7 Acceptance, Content Provenance, and Evidence Contract (P0-D)
 
 > Current V7 communication boundary (2026-10-05): [the accepted reconciliation](V7_PAIR_COMMUNICATION_RECONCILIATION.md) supersedes the historical OPEN pair-thread dependency below. V7 supports explicit item-level lesson-response sharing with the active mentor; generic pair-private chat is unavailable and excluded. Conditional thread-security requirements do not authorize messaging infrastructure or create a V7 release blocker. Response-sharing privacy, pair lifecycle and tenant-denial requirements remain mandatory.
