@@ -294,6 +294,29 @@ html[data-bq-contrast="strong"] .bq-nav a {
   color: var(--bq-text-secondary);
 }
 
+
+/* Accessibility visual-polish has higher-specificity light-theme strong-mode
+   surfaces. Rebind those exact selectors after it so strong contrast cannot
+   become light text on a white card under the V6 black theme. */
+html[data-bq-contrast="strong"] .bq-accessibility-page,
+html[data-bq-contrast="strong"] .bq-accessibility-controls {
+  border-color: var(--bq-border-strong);
+  background: var(--bq-surface);
+  color: var(--bq-text);
+}
+
+html[data-bq-contrast="strong"] .bq-accessibility-page h1,
+html[data-bq-contrast="strong"] .bq-accessibility-controls h2,
+html[data-bq-contrast="strong"] .bq-accessibility-controls label {
+  color: var(--bq-text);
+}
+
+html[data-bq-contrast="strong"] .bq-accessibility-controls select {
+  border-color: var(--bq-border-strong);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+}
+
 /* Grow/progress used several legacy light-theme literals. Neutralize them here,
    after every inherited stylesheet, so the page remains readable on V6 black. */
 .bq-progress-chip,
