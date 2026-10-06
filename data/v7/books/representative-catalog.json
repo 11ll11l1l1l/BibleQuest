@@ -7,7 +7,8 @@
       "labels": {
         "en": "Christian classics",
         "tl": "Mga klasikong Kristiyano",
-        "ceb": "Kristohanong mga klasiko"
+        "ceb": "Kristohanong mga klasiko",
+        "ilo": "Dagiti klasiko a Kristiano"
       }
     }
   ],
@@ -28,31 +29,19 @@
         "revision": "catalog-2021-09-23",
         "date": "2021-09-23"
       },
-      "sourceContent": {
-        "title": "The Pilgrim’s Progress"
-      },
+      "sourceContent": { "title": "The Pilgrim’s Progress" },
       "rights": {
         "status": "verified",
         "holder": "Project Gutenberg — linking policy",
         "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
         "attribution": "John Bunyan; edition catalog provided by Project Gutenberg.",
-        "allowedUses": [
-          "external_link"
-        ],
+        "allowedUses": ["external_link"],
         "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
         "verifiedAt": "2026-10-04"
       },
-      "review": {
-        "status": "pending_review"
-      },
+      "review": { "status": "pending_review" },
       "revisionHistory": [],
-      "taxonomyLinks": [
-        {
-          "kind": "category",
-          "id": "books.classics",
-          "order": 0
-        }
-      ],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
       "translations": []
     },
     {
@@ -71,31 +60,205 @@
         "revision": "catalog-2025-02-22",
         "date": "2025-02-22"
       },
-      "sourceContent": {
-        "title": "The Practice of the Presence of God"
-      },
+      "sourceContent": { "title": "The Practice of the Presence of God" },
       "rights": {
         "status": "verified",
         "holder": "Project Gutenberg — linking policy",
         "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
         "attribution": "Brother Lawrence; edition catalog provided by Project Gutenberg.",
-        "allowedUses": [
-          "external_link"
-        ],
+        "allowedUses": ["external_link"],
         "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
         "verifiedAt": "2026-10-04"
       },
-      "review": {
-        "status": "pending_review"
-      },
+      "review": { "status": "pending_review" },
       "revisionHistory": [],
-      "taxonomyLinks": [
-        {
-          "kind": "category",
-          "id": "books.classics",
-          "order": 0
-        }
-      ],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.imitation-of-christ",
+      "type": "book",
+      "revision": "books.imitation-of-christ.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "The Imitation of Christ",
+        "uri": "https://www.gutenberg.org/ebooks/1653",
+        "catalogId": "gutenberg:1653",
+        "creator": "Thomas à Kempis",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2023-05-05",
+        "date": "2023-05-05"
+      },
+      "sourceContent": { "title": "The Imitation of Christ" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "Thomas à Kempis; William Benham translation; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.holy-war",
+      "type": "book",
+      "revision": "books.holy-war.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "The Holy War",
+        "uri": "https://www.gutenberg.org/ebooks/395",
+        "catalogId": "gutenberg:395",
+        "creator": "John Bunyan",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2017-05-29",
+        "date": "2017-05-29"
+      },
+      "sourceContent": { "title": "The Holy War" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "John Bunyan; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.orthodoxy",
+      "type": "book",
+      "revision": "books.orthodoxy.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Orthodoxy",
+        "uri": "https://www.gutenberg.org/ebooks/130",
+        "catalogId": "gutenberg:130",
+        "creator": "G. K. Chesterton",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2024-10-29",
+        "date": "2024-10-29"
+      },
+      "sourceContent": { "title": "Orthodoxy" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "G. K. Chesterton; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.confessions-augustine",
+      "type": "book",
+      "revision": "books.confessions-augustine.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "Confessions of St. Augustine",
+        "uri": "https://www.gutenberg.org/ebooks/77585",
+        "catalogId": "gutenberg:77585",
+        "creator": "Augustine of Hippo",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2025-12-31",
+        "date": "2025-12-31"
+      },
+      "sourceContent": { "title": "Confessions of St. Augustine" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "Augustine of Hippo; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.life-teresa",
+      "type": "book",
+      "revision": "books.life-teresa.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "The Life of St. Teresa of Jesus",
+        "uri": "https://www.gutenberg.org/ebooks/8120",
+        "catalogId": "gutenberg:8120",
+        "creator": "Teresa of Ávila",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2014-03-27",
+        "date": "2014-03-27"
+      },
+      "sourceContent": { "title": "The Life of St. Teresa of Jesus" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "Teresa of Ávila; David Lewis translation; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "books.everlasting-man",
+      "type": "book",
+      "revision": "books.everlasting-man.r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "external",
+        "title": "The Everlasting Man",
+        "uri": "https://www.gutenberg.org/ebooks/65688",
+        "catalogId": "gutenberg:65688",
+        "creator": "G. K. Chesterton",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2026-08-27",
+        "date": "2026-08-27"
+      },
+      "sourceContent": { "title": "The Everlasting Man" },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "G. K. Chesterton; edition catalog provided by Project Gutenberg.",
+        "allowedUses": ["external_link"],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-06"
+      },
+      "review": { "status": "pending_review" },
+      "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "books.classics", "order": 0 }],
       "translations": []
     }
   ]
