@@ -125,6 +125,17 @@
       ]
     },
     {
+      "id": "one-to-one-discipleship",
+      "testFiles": [
+        "supabase/tests/v7-one2one-stale-tenant-hardening.test.sql"
+      ],
+      "denialMarkers": [
+        "Switched mentor cannot read stale old-tenant pair",
+        "Switched learner cannot read stale old-tenant assignment",
+        "Switched learner cannot edit old-tenant response"
+      ]
+    },
+    {
       "id": "polls",
       "testFiles": [
         "supabase/tests/v6-poll-tenant-integrity.test.sql"
