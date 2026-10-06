@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(26);
 
 create function pg_temp.v7_library_sqlstate(statement text)
 returns text language plpgsql security invoker as $bq$
@@ -17,6 +17,20 @@ select ok((select relrowsecurity from pg_class where oid='public.v7_library_revi
 select ok((select relrowsecurity from pg_class where oid='public.v7_library_translations'::regclass),'V7 Library translations keep RLS enabled');
 select ok((select relrowsecurity from pg_class where oid='public.v7_library_taxonomy'::regclass),'V7 Library taxonomy keeps RLS enabled');
 select ok((select relrowsecurity from pg_class where oid='public.v7_library_revision_taxonomy'::regclass),'V7 Library revision taxonomy keeps RLS enabled');
+
+-- Keep the fixture identities deterministic for this transaction: both users
+-- begin only in congregation A, and Leader A is not a site-wide admin/owner.
+insert into public.bible_app_access(user_id,role,active)
+values('11111111-1111-4111-8111-111111111111','member',true)
+on conflict(user_id) do update set role='member',active=true;
+update public.bible_congregation_members set active=false
+where user_id in ('11111111-1111-4111-8111-111111111111','11111111-1111-4111-8111-111111111112');
+update public.bible_congregation_members set role='leader',active=true
+where congregation_id='10000000-0000-4000-8000-000000000001'
+  and user_id='11111111-1111-4111-8111-111111111111';
+update public.bible_congregation_members set role='member',active=true
+where congregation_id='10000000-0000-4000-8000-000000000001'
+  and user_id='11111111-1111-4111-8111-111111111112';
 
 insert into public.v7_library_items(id,content_type,congregation_id,publication_state,current_revision_id,created_by) values
  ('b7000000-0000-4000-8000-000000000001','book',null,'published','b7100000-0000-4000-8000-000000000001','11111111-1111-4111-8111-111111111111'),
@@ -54,20 +68,25 @@ select results_eq($$select count(*)::bigint from public.v7_library_translations$
 select results_eq($$select count(*)::bigint from public.v7_library_taxonomy$$,array[2::bigint],'Member A sees only global and congregation A taxonomy before switch');
 select results_eq($$select count(*)::bigint from public.v7_library_revision_taxonomy$$,array[2::bigint],'Member A sees only global and congregation A revision taxonomy before switch');
 
+-- Simulate the same authenticated account moving from congregation A to B.
 reset role;
 update public.bible_congregation_members
 set active=false
 where congregation_id='10000000-0000-4000-8000-000000000001'
   and user_id='11111111-1111-4111-8111-111111111112';
+insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
+values('20000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111112','member','Switched Member',true)
+on conflict(congregation_id,user_id) do update set role='member',display_name='Switched Member',active=true;
 
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111112';
-select results_eq($$select count(*)::bigint from public.v7_library_items where publication_state='published'$$,array[1::bigint],'Switched member loses stale congregation A Library rows but keeps global published content');
+select results_eq($$select count(*)::bigint from public.v7_library_items where publication_state='published'$$,array[2::bigint],'Switched member loses stale congregation A Library rows and sees global plus congregation B content');
 select results_eq($$select count(*)::bigint from public.v7_library_items where congregation_id='10000000-0000-4000-8000-000000000001'$$,array[0::bigint],'Switched member cannot force stale congregation A Library item through a client filter');
-select results_eq($$select count(*)::bigint from public.v7_library_revisions$$,array[1::bigint],'Switched member loses stale congregation A Library revision');
-select results_eq($$select count(*)::bigint from public.v7_library_translations$$,array[1::bigint],'Switched member loses stale congregation A Library translation');
-select results_eq($$select count(*)::bigint from public.v7_library_taxonomy$$,array[1::bigint],'Switched member loses stale congregation A taxonomy');
-select results_eq($$select count(*)::bigint from public.v7_library_revision_taxonomy$$,array[1::bigint],'Switched member loses stale congregation A revision taxonomy');
+select results_eq($$select count(*)::bigint from public.v7_library_items where congregation_id='20000000-0000-4000-8000-000000000002' and publication_state='published'$$,array[1::bigint],'Switched member immediately sees congregation B published Library content');
+select results_eq($$select count(*)::bigint from public.v7_library_revisions$$,array[2::bigint],'Switched member sees only global and congregation B Library revisions');
+select results_eq($$select count(*)::bigint from public.v7_library_translations$$,array[2::bigint],'Switched member sees only global and congregation B Library translations');
+select results_eq($$select count(*)::bigint from public.v7_library_taxonomy$$,array[2::bigint],'Switched member sees only global and congregation B taxonomy');
+select results_eq($$select count(*)::bigint from public.v7_library_revision_taxonomy$$,array[2::bigint],'Switched member sees only global and congregation B revision taxonomy');
 
 reset role;
 set local role authenticated;
@@ -76,14 +95,21 @@ select results_eq($$select count(*)::bigint from public.v7_library_items where i
 select results_eq($$with changed as (update public.v7_library_items set publication_state='pending_review' where id='b7000000-0000-4000-8000-000000000004' returning id) select count(*)::bigint from changed$$,array[1::bigint],'Leader A can update congregation A draft before membership revocation');
 select results_eq($$with changed as (update public.v7_library_items set publication_state='pending_review' where id='b7000000-0000-4000-8000-000000000005' returning id) select count(*)::bigint from changed$$,array[0::bigint],'Leader A cannot update congregation B draft');
 
+-- Move the former A leader to congregation B as an ordinary member. The JWT is
+-- unchanged; authorization must follow current memberships/roles, not stale UI.
 reset role;
 update public.bible_congregation_members
 set active=false
 where congregation_id='10000000-0000-4000-8000-000000000001'
   and user_id='11111111-1111-4111-8111-111111111111';
+insert into public.bible_congregation_members(congregation_id,user_id,role,display_name,active)
+values('20000000-0000-4000-8000-000000000002','11111111-1111-4111-8111-111111111111','member','Switched Former Leader',true)
+on conflict(congregation_id,user_id) do update set role='member',display_name='Switched Former Leader',active=true;
 
 set local role authenticated;
 set local "request.jwt.claim.sub"='11111111-1111-4111-8111-111111111111';
+select results_eq($$select count(*)::bigint from public.v7_library_items where id='b7000000-0000-4000-8000-000000000003'$$,array[1::bigint],'Switched former leader can read congregation B published content as a member');
+select results_eq($$select count(*)::bigint from public.v7_library_items where id='b7000000-0000-4000-8000-000000000005'$$,array[0::bigint],'Switched former leader cannot review congregation B draft after role downgrade');
 select results_eq($$select count(*)::bigint from public.v7_library_items where id='b7000000-0000-4000-8000-000000000004'$$,array[0::bigint],'Switched leader cannot read stale congregation A draft');
 select results_eq($$with changed as (update public.v7_library_items set publication_state='draft' where id='b7000000-0000-4000-8000-000000000004' returning id) select count(*)::bigint from changed$$,array[0::bigint],'Switched leader cannot update stale congregation A draft');
 select isnt(pg_temp.v7_library_sqlstate($sql$insert into public.v7_library_items(id,content_type,congregation_id,publication_state,created_by) values ('b7000000-0000-4000-8000-000000000006','devotional','10000000-0000-4000-8000-000000000001','draft','11111111-1111-4111-8111-111111111111')$sql$),'00000','Switched leader cannot create new congregation A Library content');
