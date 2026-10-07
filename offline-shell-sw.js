@@ -46,7 +46,7 @@ async function warmOne(cache,raw){
     const request=new Request(url.href,{method:'GET',credentials:'same-origin',cache:'reload'});
     const response=await fetch(request);
     let imports=[];
-    if(response?.ok&&/\.m?js$/i.test(url.pathname)){
+    if(response?.ok&&/\.(?:[cm]?js|tsx?)$/i.test(url.pathname)){
       try{imports=staticImportUrls(await response.clone().text(),url.href)}catch{}
     }
     await put(cache,request,response);
