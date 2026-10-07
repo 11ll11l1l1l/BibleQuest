@@ -1,0 +1,1028 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.insecurity_unworthiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Insecurity / unworthiness"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.doubt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Doubt"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "topic.faith",
+      "kind": "topic",
+      "labels": {
+        "en": "Faith"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.confusion_uncertainty",
+      "kind": "emotion",
+      "labels": {
+        "en": "Confusion / uncertainty"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    },
+    {
+      "id": "emotion.discouragement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Discouragement"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.hopelessness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hopelessness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "emotion.overwhelm",
+      "kind": "emotion",
+      "labels": {
+        "en": "Overwhelm"
+      }
+    },
+    {
+      "id": "need.help",
+      "kind": "need",
+      "labels": {
+        "en": "Help"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.burnout",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Burnout"
+      }
+    },
+    {
+      "id": "emotion.stress",
+      "kind": "emotion",
+      "labels": {
+        "en": "Stress"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "emotion.tiredness_weariness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Tiredness / weariness"
+      }
+    },
+    {
+      "id": "need.strength",
+      "kind": "need",
+      "labels": {
+        "en": "Strength"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.insecurity_unworthiness.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.insecurity_unworthiness.05",
+        "revision": "r1",
+        "checksum": "sha256:add0abd67fd2b87e7e6c441ee684778cd5fc90d416e612e586584862ef46862e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Luke 12:6-7 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.insecurity_unworthiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Luke 12:6-7 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Luke 12:6-7 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Luke 12:6-7 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.doubt.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.doubt.05",
+        "revision": "r1",
+        "checksum": "sha256:11ed6de1b32adbe2a06250ccc7b245d04029269dc6a8722e7e60a40b0414745f",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Acts 17:11 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.doubt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.faith",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Acts 17:11 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Acts 17:11 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Acts 17:11 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.confusion_uncertainty.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.confusion_uncertainty.05",
+        "revision": "r1",
+        "checksum": "sha256:e542d72fc8a72db2b7b63c8c7add3ff972acc7febc40a60f99b8ea64843ab5b9",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Psalm 119:105 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.confusion_uncertainty",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Psalm 119:105 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Psalm 119:105 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Psalm 119:105 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.discouragement.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.discouragement.05",
+        "revision": "r1",
+        "checksum": "sha256:6c9d9549946f4e38458c6aeb55eb2ae5327ac7131d19a283ed4d99f0c4db5ab3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. 2 Corinthians 4:16 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.discouragement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang 2 Corinthians 4:16 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang 2 Corinthians 4:16 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti 2 Corinthians 4:16 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hopelessness.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.hopelessness.05",
+        "revision": "r1",
+        "checksum": "sha256:5ba4e2818f76a887306da1e7c1398cfc67f86b7e49b543d08da0cf0e7451e90e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Romans 8:24-25 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hopelessness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Romans 8:24-25 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Romans 8:24-25 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Romans 8:24-25 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.overwhelm.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.overwhelm.05",
+        "revision": "r1",
+        "checksum": "sha256:f636549c078ae1eeb2a42722facabcb98413233c9faea907211ea3ab56f3c5ad",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Exodus 18:17-23 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.overwhelm",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.help",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Exodus 18:17-23 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Exodus 18:17-23 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Exodus 18:17-23 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.stress.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.stress.05",
+        "revision": "r1",
+        "checksum": "sha256:9b55b131aa2f972e20c68524f24b8abc99d5b6557cffbc5fbc99335fb079d55d",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Psalm 46:10 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.stress",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Psalm 46:10 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Psalm 46:10 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Psalm 46:10 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.tiredness_weariness.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Return the next hour to God",
+        "catalogId": "biblequest.v7.original.tiredness_weariness.05",
+        "revision": "r1",
+        "checksum": "sha256:c6cfab8fdf80b4a01b6ad3279adc54d7f1878d18664a40090dd0916298cc9ad8",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Return the next hour to God",
+        "body": "When the day feels unsettled, you do not need to solve everything at once. Isaiah 40:29 offers a place to begin again. Give God the next hour, identify one responsibility that belongs to you, and release what is outside your control."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.tiredness_weariness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.strength",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Ibalik sa Diyos ang susunod na oras",
+            "body": "Kapag magulo ang pakiramdam ng araw, hindi mo kailangang lutasin ang lahat nang sabay-sabay. Ang Isaiah 40:29 ay nagbibigay ng lugar upang magsimulang muli. Ibigay sa Diyos ang susunod na oras, tukuyin ang isang pananagutang sa iyo, at bitawan ang wala sa iyong kontrol."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Itugyan sa Dios ang sunod nga oras",
+            "body": "Kung dili malinawon ang dagan sa adlaw, dili kinahanglan sulbaron ang tanan dayon. Ang Isaiah 40:29 naghatag ug dapit aron magsugod pag-usab. Itugyan sa Dios ang sunod nga oras, ilhon ang usa ka responsibilidad nga imo, ug buhii ang wala sa imong kontrol."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Italek iti Dios ti sumaruno nga oras",
+            "body": "No saan a natalna ti panaglabas ti aldaw, saan a masapul a risotem amin iti naminsan. Ti Isaiah 40:29 mangted iti lugar tapno mangrugi manen. Italekmo iti Dios ti sumaruno nga oras, ilasin ti maysa a responsabilidad a kukuam, ken baybay-an ti saanmo a kontrolado."
+          }
+        }
+      ]
+    }
+  ]
+}
