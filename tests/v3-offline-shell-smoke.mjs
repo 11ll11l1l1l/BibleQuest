@@ -101,6 +101,6 @@ try{
   assert(metrics.heading==='BibleQuest','Offline reload must render the home shell.');
   assert(metrics.controller,'Offline reload must remain controlled by the #98 worker.');
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Offline mobile reload overflowed horizontally: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
-  assert(errors.length===0,`Offline shell browser errors: ${errors.join(' | ')}`);
+  assert(errors.length===0,`Offline shell browser errors: ${errors.join(' | ')}; failed=${JSON.stringify(failed)}`);
   console.log('BibleQuest v3 offline shell mobile browser regression passed.');
 }finally{await context.setOffline(false).catch(()=>{});await browser.close()}
