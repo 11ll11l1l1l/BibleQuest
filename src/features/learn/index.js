@@ -12,7 +12,7 @@ const LEARN_COPY=Object.freeze({
   en:Object.freeze({
     'learn.library':'Library','learn.library.detail':'Books · Devotionals · Past Teachings',
     'learn.title':'Learn','learn.eyebrow':'LEARN',
-    'learn.description':'Read Scripture directly, follow a guided study, examine a deep question, walk through a Bible story, practice difficult Scripture-informed judgment, explore the biblical story map, review weak areas with spaced retrieval, or keep notes locally or with your signed-in account.',
+    'learn.description':'Read the Bible, find a devotional or book, or start a guided study.',
     'learn.reader':'Bible Reader','learn.reader.detail':'English BSB + Tagalog ULB · search · verse tools',
     'learn.studyGroup':'STUDY & REFLECT','learn.study':'Guided Study','learn.study.detail':'Passage · context · observation · reflection · application',
     'learn.deep':'Deep Questions','learn.deep.detail':'Question · Scripture · open reflection · private note',
@@ -29,7 +29,7 @@ const LEARN_COPY=Object.freeze({
   tl:Object.freeze({
     'learn.library':'Aklatan','learn.library.detail':'Mga Aklat · Debosyonal · Mga Nakaraang Pagtuturo',
     'learn.title':'Matuto','learn.eyebrow':'MATUTO',
-    'learn.description':'Direktang magbasa ng Kasulatan, sumunod sa gabay na pag-aaral, suriin ang malalim na tanong, lakaran ang isang kuwento sa Biblia, magsanay sa mahihirap na pasyang ginagabayan ng Kasulatan, tuklasin ang mapa ng kuwento ng Biblia, balikan ang mahihinang bahagi, o magtago ng mga tala sa device o account.',
+    'learn.description':'Magbasa ng Biblia, humanap ng debosyonal o aklat, o magsimula ng gabay na pag-aaral.',
     'learn.reader':'Mambabasa ng Biblia','learn.reader.detail':'English BSB + Tagalog ULB · paghahanap · mga tool sa talata',
     'learn.studyGroup':'PAG-AARAL AT PAGNINILAY','learn.study':'Gabay na Pag-aaral','learn.study.detail':'Talata · konteksto · obserbasyon · pagninilay · pagsasabuhay',
     'learn.deep':'Malalalim na Tanong','learn.deep.detail':'Tanong · Kasulatan · bukas na pagninilay · pribadong tala',
@@ -46,7 +46,7 @@ const LEARN_COPY=Object.freeze({
   ceb:Object.freeze({
     'learn.library':'Library','learn.library.detail':'Mga Libro · Debosyonal · Mga Nangaging Pagtudlo',
     'learn.title':'Pagtuon','learn.eyebrow':'PAGTUON',
-    'learn.description':'Basaha direkta ang Kasulatan, sunda ang giya nga pagtuon, susiha ang lawom nga pangutana, agi sa usa ka sugilanon sa Bibliya, praktisa ang lisod nga paghukom nga gigiyahan sa Kasulatan, susiha ang mapa sa biblikal nga sugilanon, balika ang huyang nga bahin, o tipigi ang mga nota sa device o account.',
+    'learn.description':'Basaha ang Bibliya, pangitaa ang debosyonal o libro, o sugdi ang gigiyahang pagtuon.',
     'learn.reader':'Magbabasa sa Bibliya','learn.reader.detail':'English BSB + Tagalog ULB · pagpangita · mga himan sa bersikulo',
     'learn.studyGroup':'PAGTUON UG PAMALANDONG','learn.study':'Gigiyahang Pagtuon','learn.study.detail':'Teksto · konteksto · obserbasyon · pagpamalandong · pagpadapat',
     'learn.deep':'Lawom nga mga Pangutana','learn.deep.detail':'Pangutana · Kasulatan · bukas nga pagpamalandong · pribadong nota',
@@ -74,9 +74,8 @@ export function learnPage({ onLibrary, onReader, onStudy, onDeepQuestions, onSto
   return {
     title:t('learn.title'),
     html:`<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(t('learn.eyebrow'))}</p><h1>${escapeHtml(t('learn.title'))}</h1><p>${escapeHtml(t('learn.description'))}</p></section>` +
-      `<section class="bq-panel bq-learn-primary" data-learn-primary><button type="button" class="bq-learn-primary-button" data-open-reader><span class="bq-learn-primary-icon" aria-hidden="true">${iconSvg('bible',{size:28})}</span><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.reader'))}</b><span>${escapeHtml(t('learn.reader.detail'))}</span></span></button></section>` +
+      `<section class="bq-panel bq-learn-primary" data-learn-primary><div class="bq-learn-primary-grid"><button type="button" class="bq-learn-primary-button" data-open-reader><span class="bq-learn-primary-icon" aria-hidden="true">${iconSvg('bible',{size:28})}</span><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.reader'))}</b><span>${escapeHtml(t('learn.reader.detail'))}</span></span></button><button type="button" class="bq-learn-primary-button bq-learn-primary-button--library" data-open-library><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.library'))}</b><span>${escapeHtml(t('learn.library.detail'))}</span></span></button></div></section>` +
       `<div class="bq-learn-group"><p class="bq-eyebrow">${escapeHtml(t('learn.studyGroup'))}</p><div class="bq-learning-grid">` +
-        card('data-open-library','learn.library','learn.library.detail') +
         card('data-open-study','learn.study','learn.study.detail') +
         card('data-open-deep-questions','learn.deep','learn.deep.detail') +
         card('data-open-story-journey','learn.story','learn.story.detail') +
