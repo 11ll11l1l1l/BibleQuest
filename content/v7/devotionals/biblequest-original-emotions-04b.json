@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.insecurity_unworthiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Insecurity / unworthiness"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.doubt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Doubt"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "topic.faith",
+      "kind": "topic",
+      "labels": {
+        "en": "Faith"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.confusion_uncertainty",
+      "kind": "emotion",
+      "labels": {
+        "en": "Confusion / uncertainty"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    },
+    {
+      "id": "emotion.discouragement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Discouragement"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.hopelessness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hopelessness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "emotion.overwhelm",
+      "kind": "emotion",
+      "labels": {
+        "en": "Overwhelm"
+      }
+    },
+    {
+      "id": "need.help",
+      "kind": "need",
+      "labels": {
+        "en": "Help"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.burnout",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Burnout"
+      }
+    },
+    {
+      "id": "emotion.stress",
+      "kind": "emotion",
+      "labels": {
+        "en": "Stress"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "emotion.tiredness_weariness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Tiredness / weariness"
+      }
+    },
+    {
+      "id": "need.strength",
+      "kind": "need",
+      "labels": {
+        "en": "Strength"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.insecurity_unworthiness.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.insecurity_unworthiness.04",
+        "revision": "r1",
+        "checksum": "sha256:7ee79341d0bc987cade15bfd3913e002a13069039b22943a71ecf8cc9c20bcd0",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Luke 12:6-7 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.insecurity_unworthiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Luke 12:6-7 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Luke 12:6-7 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Luke 12:6-7 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.doubt.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.doubt.04",
+        "revision": "r1",
+        "checksum": "sha256:1c6c9c0ba048b10f9af04ee8d669bc97c4fa37911f535ad145b6911eb6dafaf3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Acts 17:11 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.doubt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.faith",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Acts 17:11 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Acts 17:11 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Acts 17:11 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.confusion_uncertainty.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.confusion_uncertainty.04",
+        "revision": "r1",
+        "checksum": "sha256:5dd0057ab523399b71825be5d7ed0aa5e69213ce0b1e479dd95bba5f0cd25f66",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Psalm 119:105 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.confusion_uncertainty",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Psalm 119:105 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Psalm 119:105 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Psalm 119:105 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.discouragement.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.discouragement.04",
+        "revision": "r1",
+        "checksum": "sha256:29b10f6ba11082e5ac3cc34079166dfc8fe67f14aca5cfbcb183952e58c53324",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. 2 Corinthians 4:16 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.discouragement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang 2 Corinthians 4:16 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang 2 Corinthians 4:16 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti 2 Corinthians 4:16 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hopelessness.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.hopelessness.04",
+        "revision": "r1",
+        "checksum": "sha256:ec32349f19924fd13607fefa435f37a00e631c3c8b076d56bf0d110c1c3cd204",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Romans 8:24-25 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hopelessness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Romans 8:24-25 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Romans 8:24-25 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Romans 8:24-25 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.overwhelm.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.overwhelm.04",
+        "revision": "r1",
+        "checksum": "sha256:4a855203fedf7c178538e7b4fb1a033cea242e30be7fcd774a34542a3438e05e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Exodus 18:17-23 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.overwhelm",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.help",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Exodus 18:17-23 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Exodus 18:17-23 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Exodus 18:17-23 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.stress.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.stress.04",
+        "revision": "r1",
+        "checksum": "sha256:5b48d32e33d403a45e2f348f7773b5274bb4929fbf3a61a21c2bf67f6ff075f8",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Psalm 46:10 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.stress",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Psalm 46:10 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Psalm 46:10 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Psalm 46:10 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.tiredness_weariness.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.tiredness_weariness.04",
+        "revision": "r1",
+        "checksum": "sha256:e61001eb0188b95eafdc260bb3f9c6b454b428afcaf74343805ca267d1e581a9",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Isaiah 40:29 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.tiredness_weariness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.strength",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Isaiah 40:29 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Isaiah 40:29 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Isaiah 40:29 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.04",
+        "revision": "r1",
+        "checksum": "sha256:04e73eb0dcc93c9ee8a87f5aecf4d1ddde904bd243fc7fe941e0eb663452486a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. John 15:4 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.spiritual_growth",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang John 15:4 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang John 15:4 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti John 15:4 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.04",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make room for prayer and wisdom",
+        "catalogId": "biblequest.v7.original.temptation.04",
+        "revision": "r1",
+        "checksum": "sha256:66c8be82568003dc0f7c0dcc6c6ce9431bc831d3e9aabd51ee4f064efb00589a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make room for prayer and wisdom",
+        "body": "Pressure narrows attention and can make every decision feel immediate. Matthew 26:41 creates space to pray before acting. Ask what this passage reveals about God's character, what it corrects in your first impulse, and what wise step remains."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Maglaan ng puwang para sa panalangin at karunungan",
+            "body": "Pinakikitid ng presyon ang pansin at maaaring iparamdam na kailangang agad ang bawat desisyon. Ang Matthew 26:41 ay lumilikha ng puwang upang manalangin bago kumilos. Itanong kung ano ang ipinapakita ng talata tungkol sa katangian ng Diyos, ano ang itinutuwid nito sa una mong udyok, at anong matalinong hakbang ang natitira."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Hatagi ug luna ang pag-ampo ug kaalam",
+            "body": "Ang pressure makapagamay sa atong pagtan-aw ug makapabati nga kinahanglan dayon ang matag desisyon. Ang Matthew 26:41 naghatag ug luna sa pag-ampo sa dili pa molihok. Pangutan-a unsay gipadayag sa teksto mahitungod sa kinaiya sa Dios, unsay gitul-id niini sa imong unang tinguha, ug unsang maalamong lakang ang angay buhaton."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:15:00Z",
+          "content": {
+            "title": "Mangted iti lugar para iti kararag ken sirib",
+            "body": "Ti presion mabalinna a paliten ti panagkitatayo ken pagbalinen a naganat ti tunggal desision. Ti Matthew 26:41 mangted iti lugar tapno agkararag sakbay nga agtignay. Saludsodem no ania ti ipakitana maipanggep iti kababalin ti Dios, ania ti ilintegna iti umuna a kayatmo nga aramiden, ken ania ti masirib nga addang a sumaruno."
+          }
+        }
+      ]
+    }
+  ]
+}
