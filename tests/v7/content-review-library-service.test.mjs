@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createContentReviewService } from '../../src/app/content-review.js';
 
-function fixture() {
+function fixture({ libraryCongregationId = 'congregation-1', platformRole = null } = {}) {
   let saved = null;
   const api = {
-    async platformAccess() { return null; },
+    async platformAccess() { return platformRole ? { role: platformRole, active: true } : null; },
     async listPlatformCongregations() { return []; },
     async loadQueue() { return { decisions: [], reports: [], members: [] }; },
     async saveDecision() { throw new Error('not used'); },
@@ -15,7 +15,7 @@ function fixture() {
         items: [{
           id: 'item-1',
           content_type: 'devotional',
-          congregation_id: 'congregation-1',
+          congregation_id: libraryCongregationId,
           publication_state: 'published',
           current_revision_id: 'revision-1',
           updated_at: '2026-10-07T00:00:00Z'
@@ -153,4 +153,17 @@ test('Lane B rejects human audit actions for revisions outside the authorized lo
     review.decideLibrary({ revisionId: 'revision-other', decision: 'approved' }),
     error => error?.code === 'BQ_LIBRARY_REVIEW_ITEM_INVALID'
   );
+});
+
+
+test('Lane B hides global Library audit actions from congregation-only reviewers', async () => {
+  const { review } = fixture({ libraryCongregationId: null });
+  await review.refresh();
+  assert.equal(review.libraryReviewItems().length, 0);
+});
+
+test('Lane B exposes global Library audit actions to protected platform reviewers', async () => {
+  const { review } = fixture({ libraryCongregationId: null, platformRole: 'admin' });
+  await review.refresh();
+  assert.equal(review.libraryReviewItems().length, 1);
 });
