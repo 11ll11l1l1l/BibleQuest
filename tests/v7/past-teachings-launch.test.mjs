@@ -18,8 +18,9 @@ test('Lane A Past Teaching launch set is bounded and rights-clear', () => {
   assert.ok(items.every(item => item.type === 'past_teaching'));
   assert.ok(items.every(item => item.source.kind === 'first_party'));
   assert.ok(items.every(item => item.rights.status === 'verified'));
-  assert.ok(items.every(item => item.publicationState === 'pending_review'));
-  assert.ok(items.every(item => item.review.status === 'pending_review'));
+  assert.equal(items.filter(item => item.publicationState === 'published' && item.review.status === 'approved').length, 1);
+  assert.equal(items.filter(item => item.publicationState === 'pending_review' && item.review.status === 'pending_review').length, 4);
+  assert.equal(items.find(item => item.publicationState === 'published')?.review.reviewer, 'biblequest.v7.representative-policy-v1');
   assert.ok(items.every(item => !Object.hasOwn(item.source, 'uri')));
 });
 
