@@ -57,7 +57,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
   const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})};
   const congregation={load:async()=>[{congregationId:userId==='u1'?'c1':'c2',role:'leader',roleLabel:'Leader',congregation:{id:userId==='u1'?'c1':'c2',name:'Church'}}],getActive:()=>({congregationId:userId==='u1'?'c1':'c2'}),can:()=>true,assert:()=>{}};
   const api={
-    list:async ids=>ids[0]==='c1'?{teams:[{id:'t1',congregation_id:'c1',created_by:'u1',team_type:'game_team',name:'U1 Team',active:true,created_at:now}],members:[{team_id:'t1',user_id:'u1',joined_at:now}],directory:[{congregation_id:'c1',user_id:'u1',display_name:'U1',role:'leader',active:true,joined_at:now}]}:{teams:[{id:'bad',congregation_id:'c9',created_by:'u9',team_type:'game_team',name:'Foreign',active:true,created_at:now}],members:[],directory:[]},
+    list:async id=>id==='c1'?{teams:[{id:'t1',congregation_id:'c1',created_by:'u1',team_type:'game_team',name:'U1 Team',active:true,created_at:now}],members:[{team_id:'t1',user_id:'u1',joined_at:now}],directory:[{congregation_id:'c1',user_id:'u1',display_name:'U1',role:'leader',active:true,joined_at:now}]}:{teams:[{id:'bad',congregation_id:'c9',created_by:'u9',team_type:'game_team',name:'Foreign',active:true,created_at:now}],members:[],directory:[]},
     create:async()=>({}),add:async()=>({}),remove:async()=>({}),rename:async()=>({}),archive:async()=>({})
   };
   const service=createTeamCenterService({api,session,congregation});
