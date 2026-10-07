@@ -1,0 +1,655 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_lane_a_release_content_batch_02",
+  "generatedDate": "2026-10-07",
+  "status": "ready_for_automated_policy_review",
+  "sourceKind": "first_party_original",
+  "contentFiles": [
+    "content/v7/devotionals/biblequest-original-emotions-02a.json",
+    "content/v7/devotionals/biblequest-original-emotions-02b.json",
+    "content/v7/devotionals/biblequest-original-emotions-02c.json"
+  ],
+  "counts": {
+    "devotionals": 30,
+    "canonicalEmotionsCovered": 30,
+    "requiredTranslationsPerDevotional": 3,
+    "reviewedTranslations": 90,
+    "verifiedRights": 30,
+    "pendingPublicationReview": 30
+  },
+  "requiredLocales": [
+    "en",
+    "tl",
+    "ceb",
+    "ilo"
+  ],
+  "bibleVersion": "BSB",
+  "scriptureCitationMode": "reference_only_no_verse_text",
+  "qaDimensions": [
+    "semanticFidelity",
+    "theologicalDrift",
+    "scriptureDrift",
+    "omissionsAdditions",
+    "grammarNaturalness",
+    "staleRevision"
+  ],
+  "qaPolicy": {
+    "allDimensionsMustPass": true,
+    "translationMustMatchSourceRevision": true,
+    "humanReviewRequired": false
+  },
+  "sourceWork": {
+    "workId": "work.biblequest.v7.original-emotion-devotionals",
+    "title": "BibleQuest V7 Original Emotion Devotionals",
+    "author": "BibleQuest V7 Content Factory",
+    "rightsMode": "first_party_original"
+  },
+  "releaseBoundary": {
+    "laneAContentCompleteForBatch": true,
+    "laneBAutomatedApprovalRequired": true,
+    "publicationStateBeforeLaneB": "pending_review",
+    "noHumanReviewRequiredForLaneA": true
+  },
+  "items": [
+    {
+      "contentId": "devotional.biblequest.anxiety_worry.02",
+      "entryId": "devotional.biblequest.anxiety_worry.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:bc23ca332bc8cef82b89af976501e6b8bc6f0bc65d2ef67fec4f8fa2c8c88871",
+      "bsbReferences": [
+        "Matthew 6:34"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.fear.02",
+      "entryId": "devotional.biblequest.fear.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:695bad572e1695b256d9ac2205146786dcc5586db774f5796fc3eda66afcfb27",
+      "bsbReferences": [
+        "Psalm 56:3"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.sadness.02",
+      "entryId": "devotional.biblequest.sadness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:06c549d0a99db216b365f110e2db371f282fb95268f5c4c974c085fb1b52a4d4",
+      "bsbReferences": [
+        "Psalm 13:1-2"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.grief_loss.02",
+      "entryId": "devotional.biblequest.grief_loss.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:279cbc58a2a68d859a5b8b5fc456292ee9aa961e79ae336abfc742b99cd15118",
+      "bsbReferences": [
+        "1 Thessalonians 4:13-14"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.loneliness.02",
+      "entryId": "devotional.biblequest.loneliness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:de28958b6135a3883c1c2302283f66cefbf7f83d294e4e6e737f896c336c74c9",
+      "bsbReferences": [
+        "Hebrews 10:24-25"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.anger.02",
+      "entryId": "devotional.biblequest.anger.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:10581364d080cb9c01bcad76e91e6352cb3ff72ce440522016ca6fe13a18f18a",
+      "bsbReferences": [
+        "Proverbs 15:1"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.hurt_betrayal.02",
+      "entryId": "devotional.biblequest.hurt_betrayal.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:9867bc44186a16907ef9882af14a5f65976aef4f2c2452f643d5b683d9b8994c",
+      "bsbReferences": [
+        "Ephesians 4:15"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.rejection.02",
+      "entryId": "devotional.biblequest.rejection.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:efcf311e29e0996c391bcdc05cd0695a38ab23dd9680f2d79db4df45432c6ff1",
+      "bsbReferences": [
+        "Romans 8:38-39"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.guilt.02",
+      "entryId": "devotional.biblequest.guilt.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:503d94cece1d4937d8daebce37da81f68da87784a8c95ac449d71f7a26144c49",
+      "bsbReferences": [
+        "Luke 19:8"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.shame.02",
+      "entryId": "devotional.biblequest.shame.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:59af2c5afec8f87f2585311115c569059da5b4565f6c1e0caf6a73a105ae3616",
+      "bsbReferences": [
+        "Hebrews 4:16"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.insecurity_unworthiness.02",
+      "entryId": "devotional.biblequest.insecurity_unworthiness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:be16d4ad339aca1d1a6b5c288c78b1802aff4be87a4cec24eb6b731b96900c77",
+      "bsbReferences": [
+        "Psalm 139:14"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.doubt.02",
+      "entryId": "devotional.biblequest.doubt.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:c889de3c0ff1acab908fba6268d6868f1b24a3a2f5e2fd2ebdc4a974ccbb4081",
+      "bsbReferences": [
+        "John 20:27"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.confusion_uncertainty.02",
+      "entryId": "devotional.biblequest.confusion_uncertainty.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:8f0dff509f6177ec29d7075b79e0d78c8cd95c4c98dc3065a4a00fa66ea94696",
+      "bsbReferences": [
+        "Proverbs 3:5-6"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.discouragement.02",
+      "entryId": "devotional.biblequest.discouragement.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:9afffffa9d5051701cc83a004064bf3d78a552ad359b393b4caeeb19a57556ef",
+      "bsbReferences": [
+        "Psalm 126:5-6"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.hopelessness.02",
+      "entryId": "devotional.biblequest.hopelessness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:58054a17cce227cc9b5812b09cf80cd31587fe26dd6d3bcbac56a76d9aacde7b",
+      "bsbReferences": [
+        "Lamentations 3:21-23"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.overwhelm.02",
+      "entryId": "devotional.biblequest.overwhelm.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:8843d83bb35065ebd6f4c60ec52f4936aef022745017996dbecdd9a631383c0c",
+      "bsbReferences": [
+        "Matthew 6:34"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.stress.02",
+      "entryId": "devotional.biblequest.stress.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:0a73847af42e855d7144e0125d33d1dd78b88f41e59eeebcea848bd69426c36e",
+      "bsbReferences": [
+        "1 Peter 5:7"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.tiredness_weariness.02",
+      "entryId": "devotional.biblequest.tiredness_weariness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:5cc0df14a0e36181f170914584f1a7404056b61c0870cc5543e47e6653f5973c",
+      "bsbReferences": [
+        "Psalm 127:2"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.spiritual_dryness_distance.02",
+      "entryId": "devotional.biblequest.spiritual_dryness_distance.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:2a5b01355e804dd8283ff1863d69c8244737629bfa5d286e033fd1caeaa481b1",
+      "bsbReferences": [
+        "Psalm 63:1"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.temptation.02",
+      "entryId": "devotional.biblequest.temptation.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:9b8b5485793f9db3f4ef9bc881eaf612b7f3e7660b2d6209e1b7a696cd038d8c",
+      "bsbReferences": [
+        "2 Timothy 2:22"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.impatience_waiting.02",
+      "entryId": "devotional.biblequest.impatience_waiting.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:69c109fbe9c3a1f95a5c23a344bff090eede3082f23bc7930c40f52edb68e368",
+      "bsbReferences": [
+        "Isaiah 40:31"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.jealousy_envy.02",
+      "entryId": "devotional.biblequest.jealousy_envy.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:60b9d5c6a53db834b158b7e46cac7e46fb532ce3f1194b881043579d1df81545",
+      "bsbReferences": [
+        "Romans 12:15"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.frustration.02",
+      "entryId": "devotional.biblequest.frustration.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:acdc2238f68e608c31bc899c103a77f6605d99611263386634b3539a09552946",
+      "bsbReferences": [
+        "Proverbs 16:9"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.numbness_emptiness.02",
+      "entryId": "devotional.biblequest.numbness_emptiness.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:e9d60ac019125605ad0c682268e79f829e4d3ffe68e5a27f14e95e3f05199a94",
+      "bsbReferences": [
+        "Psalm 143:8"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.joy.02",
+      "entryId": "devotional.biblequest.joy.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:10e67249db185096f8b73bca2fd9cdf8ce081cfc64cf16deac2672b0338de2d0",
+      "bsbReferences": [
+        "Psalm 100:1-5"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.gratitude.02",
+      "entryId": "devotional.biblequest.gratitude.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:16cf026ea71afbb0056e0a058338542b7c95687992a7bc7c0e04c7763be50813",
+      "bsbReferences": [
+        "James 1:17"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.peace_contentment.02",
+      "entryId": "devotional.biblequest.peace_contentment.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:5a8595911cad8d70b4170ea9ec8cc15aabd03d2ccc431877b511506a1b9892c7",
+      "bsbReferences": [
+        "1 Timothy 6:6-8"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.hope.02",
+      "entryId": "devotional.biblequest.hope.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:d89cc79c30d8798fe64cc513409375de96b85fe6e36fcfa39eb25b6f8a626be8",
+      "bsbReferences": [
+        "Revelation 21:4"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.excitement.02",
+      "entryId": "devotional.biblequest.excitement.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:dfc7d015f155b5a3ff19c8bb20e0f395698dfc20285e5a638603c31ce49e0238",
+      "bsbReferences": [
+        "Colossians 3:23"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.love_connection.02",
+      "entryId": "devotional.biblequest.love_connection.02",
+      "workId": "work.biblequest.v7.original-emotion-devotionals",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:224c5a2ab6b103e8b36f61720f2e2e9f7bb900c509ad3d7d5c693e2c6d87c25e",
+      "bsbReferences": [
+        "James 1:19"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    }
+  ]
+}
