@@ -51,8 +51,9 @@ function taxonomyKey(row) {
 }
 
 export async function buildV7PublicLibraryCatalog({ candidateSha = '' } = {}) {
+  const exactSha = /^[0-9a-f]{40}$/i.test(String(candidateSha || '').trim()) ? String(candidateSha).trim().toLowerCase() : '';
   const entries = await collectReleaseApprovalEntries();
-  const ledger = buildReleaseAutomatedApprovalLedger({ candidateSha, entries });
+  const ledger = buildReleaseAutomatedApprovalLedger({ candidateSha: exactSha, entries });
   const approved = new Map(ledger.decisions
     .filter(row => row.outcome === 'auto_approved')
     .map(row => [row.itemId, row]));
@@ -85,7 +86,7 @@ export async function buildV7PublicLibraryCatalog({ candidateSha = '' } = {}) {
 
   return {
     schemaVersion: 1,
-    candidateSha: candidateSha || null,
+    candidateSha: exactSha || null,
     generatedAt: new Date().toISOString(),
     counts: {
       items: items.length,
