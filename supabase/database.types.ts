@@ -3525,6 +3525,38 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      bible_v7_apply_human_library_review: {
+        Args: {
+          p_decided_at: string
+          p_decision: string
+          p_item_id: string
+          p_note?: string
+          p_revision_id: string
+        }
+        Returns: {
+          content_type: string
+          created_at: string
+          criteria: Json
+          decided_at: string
+          decision: string
+          evidence_refs: Json
+          id: number
+          item_id: string
+          note: string | null
+          policy_id: string | null
+          policy_version: string | null
+          reviewer_id: string | null
+          reviewer_type: string
+          revision_id: string
+          second_pass: Json
+        }
+        SetofOptions: {
+          from: "*"
+          to: "v7_library_review_decisions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       bible_v7_create_pair_assignment: {
         Args: {
           p_lesson_id: string
