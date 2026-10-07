@@ -85,7 +85,7 @@ controllerChangeHandler?.();
 assert(reloadCalls===1,'Disposed offline-shell owner must not trigger an additional update reload.');
 
 const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
-assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v3`;"),'Offline shell cache generation must rotate after the deployable module-graph warmup fix.');
+assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v4`;"),'Offline shell cache generation must rotate after the production cache-first asset fix.');
 for(const token of[
   "const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME)",
   "const upgrading=staleNames.length>0",
@@ -96,7 +96,9 @@ for(const token of[
   assert(workerSource.includes(token),'Offline shell worker missing installed-client upgrade refresh contract: '+token);
 }
 assert((workerSource.match(/url\.hash=''/g)||[]).length>=2,'Offline shell worker must normalize warmed URLs before cache lookup/write.');
-assert(workerSource.includes("ignoreSearch:request.mode==='navigate',ignoreVary:true"),'Offline shell fetch fallback must ignore response Vary headers for warmed shell resources.');
+assert(workerSource.includes("const matchCached=()=>cache.match(url.href,{ignoreSearch:request.mode==='navigate',ignoreVary:true})"),'Offline shell fetch fallback must match warmed resources by normalized URL and ignore response Vary headers.');
+assert(workerSource.includes("if(url.pathname.includes('/_v6/'))"),'Immutable deployable build assets must be checked in Cache Storage before attempting the network.');
+assert(workerSource.includes("if(immutable)return immutable"),'Cached immutable build assets must short-circuit network access during offline reload.');
 assert(workerSource.includes("ignoreSearch:true,ignoreVary:true"),'Offline navigation root fallback must ignore response Vary headers.');
 assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offline recursive warm must traverse JavaScript and TypeScript module URLs.');
 assert(workerSource.includes("(?:import|export)(?!\\s*\\()\\s*"),'Offline recursive warm must recognize minified static import/export syntax.');
