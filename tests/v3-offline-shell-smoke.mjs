@@ -40,7 +40,8 @@ async function waitForControlledWarmShell(page){
       const found=expected.filter(expectedUrl=>sourceMode?urls.some(url=>url.includes(expectedUrl)):urls.includes(expectedUrl));
       const builtAssets=urls.filter(url=>url.includes('/_v6/')).length;
       const deepEnough=sourceMode?found.length===sourceSentinels.length:(found.length===expected.length&&builtAssets>0&&urls.length>=Math.max(expected.length,10));
-      readiness={ready:controlled&&Boolean(name)&&deepEnough,controlled,name,count:urls.length,probe:urls.some(url=>url.includes('bq-net-probe')),packs:urls.some(url=>url.includes('/data/packs/')),found,builtAssets,sourceMode};
+      const missing=expected.filter(expectedUrl=>sourceMode?!urls.some(url=>url.includes(expectedUrl)):!urls.includes(expectedUrl));
+      readiness={ready:controlled&&Boolean(name)&&deepEnough,controlled,name,count:urls.length,probe:urls.some(url=>url.includes('bq-net-probe')),packs:urls.some(url=>url.includes('/data/packs/')),found,missing,expectedCount:expected.length,expected,builtAssets,sourceMode,cached:urls};
       if(readiness.ready)break;
       await sleep(150);
     }
