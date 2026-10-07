@@ -90,7 +90,7 @@ test('A2 curation covers exactly the current representative Library items', () =
 
   assert.deepEqual(curatedIds, canonicalIds);
   assert.equal(new Set(curatedIds).size, curatedIds.length);
-  assert.equal(curation.curationStatus, 'prepared_for_editorial_review');
+  assert.equal(curation.curationStatus, 'release_ready');
   assert.equal(curation.boundary.doesNotApproveContent, true);
   assert.equal(curation.boundary.doesNotPublishContent, true);
   assert.equal(curation.boundary.doesNotChangeRights, true);
