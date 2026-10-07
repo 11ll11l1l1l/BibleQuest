@@ -59,12 +59,12 @@ test('structured reading blocks are escaped and unsafe source provenance fails c
   assert.ok(!unsafe.includes('href='));
 });
 
-test('devotional locale keys match and representative source bundle remains pending review with exact provenance', () => {
+test('devotional locale keys match and representative source bundle is machine-approved with exact provenance', () => {
   for (const dictionary of Object.values(devotionalMessages)) assert.deepEqual(Object.keys(dictionary),Object.keys(devotionalMessages.en));
   const bundle=JSON.parse(readFileSync(new URL('../../content/v7/devotionals/spurgeon-samples.json',import.meta.url),'utf8'));
   const parsed=parseV7ContentBundle(bundle);
   assert.equal(parsed.items.length,2);
-  assert.ok(parsed.items.every(row=>row.publicationState==='pending_review' && row.review.status==='pending_review'));
+  assert.ok(parsed.items.every(row=>row.publicationState==='published' && row.review.status==='approved' && row.review.reviewer==='biblequest.v7.representative-policy-v1'));
   assert.ok(parsed.items.every(row=>row.source.kind==='external' && row.rights.status==='verified'));
   const byId=new Map(parsed.items.map(row=>[row.id,row]));
   assert.equal(byId.get('devotional.spurgeon.january-02-am').source.uri,'https://www.ccel.org/ccel/spurgeon/morneve.d0102am.html');
