@@ -2780,6 +2780,82 @@ export type Database = {
           },
         ]
       }
+      v7_library_review_decisions: {
+        Row: {
+          content_type: string
+          created_at: string
+          criteria: Json
+          decided_at: string
+          decision: string
+          evidence_refs: Json
+          id: number
+          item_id: string
+          note: string | null
+          policy_id: string | null
+          policy_version: string | null
+          reviewer_id: string | null
+          reviewer_type: string
+          revision_id: string
+          second_pass: Json
+        }
+        Insert: {
+          content_type: string
+          created_at?: string
+          criteria?: Json
+          decided_at: string
+          decision: string
+          evidence_refs?: Json
+          id?: never
+          item_id: string
+          note?: string | null
+          policy_id?: string | null
+          policy_version?: string | null
+          reviewer_id?: string | null
+          reviewer_type: string
+          revision_id: string
+          second_pass?: Json
+        }
+        Update: {
+          content_type?: string
+          created_at?: string
+          criteria?: Json
+          decided_at?: string
+          decision?: string
+          evidence_refs?: Json
+          id?: never
+          item_id?: string
+          note?: string | null
+          policy_id?: string | null
+          policy_version?: string | null
+          reviewer_id?: string | null
+          reviewer_type?: string
+          revision_id?: string
+          second_pass?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "v7_library_review_decisions_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "v7_library_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "v7_library_review_decisions_revision_id_fkey"
+            columns: ["revision_id"]
+            isOneToOne: false
+            referencedRelation: "v7_library_revisions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "v7_library_review_decisions_revision_id_item_id_fkey"
+            columns: ["revision_id", "item_id"]
+            isOneToOne: false
+            referencedRelation: "v7_library_revisions"
+            referencedColumns: ["id", "item_id"]
+          },
+        ]
+      }
       v7_library_revision_taxonomy: {
         Row: {
           display_order: number
@@ -2827,9 +2903,13 @@ export type Database = {
           originating_organization: string | null
           publication_state: string
           reading_minutes: number | null
+          review_evidence: Json
+          review_policy_id: string | null
+          review_policy_version: string | null
           review_status: string
           reviewed_at: string | null
           reviewer_id: string | null
+          reviewer_type: string | null
           revision_history: string[]
           revision_number: number
           rights_basis: string | null
@@ -2860,9 +2940,13 @@ export type Database = {
           originating_organization?: string | null
           publication_state?: string
           reading_minutes?: number | null
+          review_evidence?: Json
+          review_policy_id?: string | null
+          review_policy_version?: string | null
           review_status?: string
           reviewed_at?: string | null
           reviewer_id?: string | null
+          reviewer_type?: string | null
           revision_history?: string[]
           revision_number: number
           rights_basis?: string | null
@@ -2893,9 +2977,13 @@ export type Database = {
           originating_organization?: string | null
           publication_state?: string
           reading_minutes?: number | null
+          review_evidence?: Json
+          review_policy_id?: string | null
+          review_policy_version?: string | null
           review_status?: string
           reviewed_at?: string | null
           reviewer_id?: string | null
+          reviewer_type?: string | null
           revision_history?: string[]
           revision_number?: number
           rights_basis?: string | null
@@ -3399,6 +3487,75 @@ export type Database = {
       bible_revoke_auth_sessions: {
         Args: { target_user_id: string }
         Returns: number
+      }
+      bible_v7_apply_automated_library_review: {
+        Args: {
+          p_criteria: Json
+          p_decided_at: string
+          p_decision: string
+          p_evidence_refs: Json
+          p_item_id: string
+          p_note?: string
+          p_policy_id: string
+          p_policy_version: string
+          p_revision_id: string
+          p_second_pass: Json
+        }
+        Returns: {
+          content_type: string
+          created_at: string
+          criteria: Json
+          decided_at: string
+          decision: string
+          evidence_refs: Json
+          id: number
+          item_id: string
+          note: string | null
+          policy_id: string | null
+          policy_version: string | null
+          reviewer_id: string | null
+          reviewer_type: string
+          revision_id: string
+          second_pass: Json
+        }
+        SetofOptions: {
+          from: "*"
+          to: "v7_library_review_decisions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      bible_v7_apply_human_library_review: {
+        Args: {
+          p_decided_at: string
+          p_decision: string
+          p_item_id: string
+          p_note?: string
+          p_revision_id: string
+        }
+        Returns: {
+          content_type: string
+          created_at: string
+          criteria: Json
+          decided_at: string
+          decision: string
+          evidence_refs: Json
+          id: number
+          item_id: string
+          note: string | null
+          policy_id: string | null
+          policy_version: string | null
+          reviewer_id: string | null
+          reviewer_type: string
+          revision_id: string
+          second_pass: Json
+        }
+        SetofOptions: {
+          from: "*"
+          to: "v7_library_review_decisions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       bible_v7_create_pair_assignment: {
         Args: {

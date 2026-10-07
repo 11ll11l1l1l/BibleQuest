@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(12);
+select plan(16);
 
 -- This is a production-readiness contract, not an RLS behavior fixture. Any new
 -- public V7 table must be reviewed here so accidental Data API exposure cannot
@@ -14,8 +14,8 @@ select is(
       and c.relkind = 'r'
       and left(c.relname, 3) = 'v7_'
   ),
-  16,
-  'Reviewed V7 public table inventory remains exactly 16 tables'
+  17,
+  'Reviewed V7 public table inventory remains exactly 17 tables'
 );
 
 select ok(
@@ -117,9 +117,42 @@ select ok(
     join pg_catalog.pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and left(p.proname, 9) = 'bible_v7_'
+      and p.proname <> 'bible_v7_apply_automated_library_review'
       and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
   ),
-  'Every public BibleQuest V7 RPC is intentionally executable by authenticated clients'
+  'Every public client-facing BibleQuest V7 RPC is intentionally executable by authenticated clients'
+);
+
+select ok(
+  not has_function_privilege(
+    'authenticated',
+    'public.bible_v7_apply_automated_library_review(uuid,uuid,text,text,text,jsonb,jsonb,jsonb,timestamptz,text)',
+    'EXECUTE'
+  ),
+  'Authenticated clients cannot execute the automated Library publication authority'
+);
+
+select ok(
+  has_function_privilege(
+    'service_role',
+    'public.bible_v7_apply_automated_library_review(uuid,uuid,text,text,text,jsonb,jsonb,jsonb,timestamptz,text)',
+    'EXECUTE'
+  ),
+  'Only the trusted service path can execute automated Library publication'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.v7_library_review_decisions', 'INSERT'),
+  'Authenticated clients cannot bypass the atomic Library human-review authority with direct audit inserts'
+);
+
+select ok(
+  has_function_privilege(
+    'authenticated',
+    'public.bible_v7_apply_human_library_review(uuid,uuid,text,timestamptz,text)',
+    'EXECUTE'
+  ),
+  'Authorized authenticated reviewers can call the atomic Library human-review authority'
 );
 
 select ok(

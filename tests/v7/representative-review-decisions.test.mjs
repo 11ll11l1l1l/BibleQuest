@@ -232,3 +232,16 @@ test('A2 ledger derives complete status only when every representative item has 
     'complete_authorized_decisions'
   );
 });
+
+test('Lane B no longer treats the legacy authorizedReviewerRequired flag as the sole publication path', () => {
+  const machinePolicyCompatible = {
+    ...ledger,
+    boundary: {
+      ...ledger.boundary,
+      authorizedReviewerRequired: false
+    }
+  };
+  const normalized = validateRepresentativeReviewDecisionLedger(machinePolicyCompatible, canonical, packet);
+  assert.equal(normalized.boundary.authorizedReviewerRequired, false);
+  assert.equal(normalized.status, 'awaiting_authorized_decisions');
+});
