@@ -1,9 +1,11 @@
+> **2026-10-08 UI/UX SCOPE OVERRIDE:** V7 now includes the release-blocking whole-app UI/UX requirements in `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`. Any earlier statement below that defers a whole-app visual redesign to V8 is superseded. The override changes presentation/navigation/design-system scope only; it does not re-enable unrelated V8 feature systems.
+
 > **2026-10-07 RELEASE RESET:** Remaining V7 work is now governed by `V7_ACTIVE_STATUS.md`, `docs/v7/V7_RELEASE_RESET_20261007.md`, and issues #1300–#1303. The phase-specific A–D map below is retained as historical development context only. The old A1/A2/A3/A4 structure is retired. The reset explicitly brings the 150–300 devotional build plus TL/CEB/ILO translations into V7 and replaces human/manual release gates with fail-closed automated policy/evidence where technically possible.
 
 # BibleQuest V7 Development Plan
 
-Updated: 2026-10-04 JST
-Status: **ACTIVE — NARROWED SCOPE**
+Updated: 2026-10-08 JST
+Status: **ACTIVE — RELEASE RESET + UI/UX SCOPE OVERRIDE**
 Active authority for progress: `V7_ACTIVE_STATUS.md`
 Operational authority: `work/RULEBOOK.md`
 Development branch: `v7/development`
@@ -11,14 +13,15 @@ Production baseline: V6 `7997d60e6069aa406ec005c32e33e46fee39bc12`
 
 ## 1. V7 line in the sand
 
-**BibleQuest V7 = Library + structured ONE 2 ONE discipleship.**
+**BibleQuest V7 = Library + structured ONE 2 ONE discipleship + a coherent whole-app UI/UX overhaul.**
 
-V7 is intentionally smaller than the previous full-product-overhaul proposal. It builds two coherent product systems on the released V6 engine:
+V7 is intentionally smaller than the previous full-product-overhaul proposal. It builds three coherent release outcomes on the released V6 engine:
 
-1. a reusable Library for Books, Devotionals and Past Teachings; and
-2. a structured ONE 2 ONE discipleship journey for mentors and mentees.
+1. a reusable Library for Books, Devotionals and Past Teachings;
+2. a structured ONE 2 ONE discipleship journey for mentors and mentees; and
+3. a coherent, intuitive, accessible visual/navigation system across the app, including image-led content presentation.
 
-V7 must reuse the V6 app kernel, authentication, tenant context, Reader/content engine, assignments/deep-link capabilities, PWA/offline foundation, localization system, notification infrastructure and design/component system. V7 does not rebuild those systems unless an actual V7 requirement exposes a bounded reusable gap.
+V7 must reuse the V6 app kernel, authentication, tenant context, Reader/content engine, assignments/deep-link capabilities, PWA/offline foundation, localization system and notification infrastructure. The existing design/component system may be normalized or replaced where required by the V7 UI/UX release contract. Other systems are not rebuilt unless an actual V7 requirement exposes a bounded reusable gap.
 
 The purpose of the narrowed scope is to deliver a complete, releasable discipleship product instead of combining unrelated realtime, media-storage, localization-rollout and content-expansion projects in one release.
 
@@ -52,6 +55,7 @@ The purpose of the narrowed scope is to deliver a complete, releasable disciples
 - Minimum content/media references required inside Library or lessons using existing V6 capabilities.
 - Accessibility, responsive behavior, localization readiness, PWA/offline compatibility and performance for the changed surfaces.
 - Ilocano-compatible contracts only; no full Ilocano Bible or UI rollout in V7.
+- Whole-app UI/UX release overhaul per `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`, including design tokens, primary navigation, typography, contrast, original iconography, image-led Library content, reader surfaces and designed system states.
 
 ## 3. Explicit V7 non-goals — moved to V8
 
@@ -68,7 +72,6 @@ The following are not V7 release requirements and must not expand a V7 lane unle
 - Large/expanded Books catalog or broad hosted-book program.
 - Couples expansion and new Couples question bank.
 - Advanced/personalized recommendation engine and deeper content discovery beyond the V7 Library MVP.
-- A second whole-app visual redesign unrelated to Library/ONE 2 ONE.
 
 These are recorded once in `DEVELOPMENT_PLAN_V8.md`. `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is retained as historical planning input only and is **not an active V7 requirement**.
 
@@ -153,7 +156,7 @@ Owns:
 - lesson-runner sequence and progressive disclosure;
 - mobile-first route/surface map.
 
-Must not redesign unrelated V6 product families.
+The older restriction against redesigning unrelated V6 product families is superseded by the 2026-10-08 UI/UX scope override for visual/navigation consistency only; unrelated V8 feature expansion remains prohibited.
 
 ### P0-C — Security, privacy and tenancy
 
@@ -400,8 +403,9 @@ V7 is complete when:
 - ONE 2 ONE pairing, authoring, lesson execution and progress work end-to-end with correct privacy/tenancy;
 - QR/deep-link and bounded V6 integrations work where included;
 - changed surfaces meet the required responsive/accessibility/i18n/PWA/performance expectations;
+- the exact candidate satisfies `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`, including clear navigation, readable typography/contrast, coherent original icons, image-led content cards, robust system states and 320/390/430-width checks;
 - V7 has not weakened inherited V6 auth/RLS/privacy or broken affected released flows;
 - all required acceptance evidence is attached to one exact release candidate;
 - V8 features have not leaked into V7 merely because a future extension point exists.
 
-V7 is a focused discipleship release: **Library + ONE 2 ONE, finished and releasable.**
+V7 release outcome: **Library + ONE 2 ONE + coherent whole-app UI/UX, finished and releasable.**
