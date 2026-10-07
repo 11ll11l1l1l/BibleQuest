@@ -40,7 +40,7 @@ function staticImportUrls(source,baseUrl){
 
 async function warmOne(cache,raw){
   let url;
-  try{url=new URL(raw,self.registration.scope)}catch{return[]}
+  try{url=new URL(raw,self.registration.scope);url.hash=''}catch{return[]}
   if(!sameOriginInScope(url)||isNetworkProbe(url))return[];
   try{
     const request=new Request(url.href,{method:'GET',credentials:'same-origin',cache:'reload'});
@@ -59,7 +59,7 @@ async function warmShell(urls){
   const pending=[],seen=new Set();
   const enqueue=raw=>{
     let url;
-    try{url=new URL(raw,self.registration.scope)}catch{return}
+    try{url=new URL(raw,self.registration.scope);url.hash=''}catch{return}
     if(!sameOriginInScope(url)||isNetworkProbe(url)||seen.has(url.href))return;
     seen.add(url.href);
     pending.push(url.href);
