@@ -19,9 +19,11 @@ async function mountedLibraryReview() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(slashBase(BASE), { waitUntil: 'networkidle' });
   await page.evaluate(async moduleUrl => {
-    document.body.innerHTML = '<main id="review-test-root"></main>';
+    document.getElementById('review-test-root')?.remove();
+    const root = document.createElement('main');
+    root.id = 'review-test-root';
+    document.body.append(root);
     const { contentReviewPage } = await import(moduleUrl);
-    const root = document.getElementById('review-test-root');
 
     const baseItem = {
       congregationId: '',
