@@ -1,5 +1,5 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
-const CACHE_NAME=`${CACHE_PREFIX}v3`;
+const CACHE_NAME=`${CACHE_PREFIX}v4`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
@@ -184,11 +184,16 @@ self.addEventListener('fetch',event=>{
   if(!isShellRequest(request,url))return;
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE_NAME);
+    const matchCached=()=>cache.match(url.href,{ignoreSearch:request.mode==='navigate',ignoreVary:true});
+    if(url.pathname.includes('/_v6/')){
+      const immutable=await matchCached();
+      if(immutable)return immutable;
+    }
     try{
       const response=await fetch(request);
       return await put(cache,request,response);
     }catch(error){
-      const cached=await cache.match(request,{ignoreSearch:request.mode==='navigate',ignoreVary:true});
+      const cached=await matchCached();
       if(cached)return cached;
       if(request.mode==='navigate'){
         const fallback=await cache.match(new URL('./',self.registration.scope).href,{ignoreSearch:true,ignoreVary:true});
