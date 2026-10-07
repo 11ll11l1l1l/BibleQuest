@@ -82,12 +82,26 @@ function translationReady(item) {
       && clean(row.content?.body));
 }
 
+function scriptureMentionedInBody(reference, body) {
+  const parsed = parseBibleReference(reference);
+  if (!parsed) return false;
+  const names = [parsed.book.name];
+  if (parsed.book.name === 'Psalms') names.push('Psalm');
+  const ordinal = parsed.book.name.match(/^([123]) (.+)$/);
+  if (ordinal) {
+    const words = { 1: 'First', 2: 'Second', 3: 'Third' };
+    names.push(`${words[ordinal[1]]} ${ordinal[2]}`);
+  }
+  const haystack = normalizedText(body);
+  return names.some(name => haystack.includes(normalizedText(`${name} ${parsed.chapter}`)));
+}
+
 function referencesReady(entry) {
   const refs = entry.record.bsbReferences;
   return Array.isArray(refs)
     && refs.length > 0
     && refs.every(ref => parseBibleReference(ref))
-    && refs.every(ref => clean(entry.item.sourceContent.body).includes(ref));
+    && refs.every(ref => scriptureMentionedInBody(ref, entry.item.sourceContent.body));
 }
 
 function taxonomyKinds(item) {
