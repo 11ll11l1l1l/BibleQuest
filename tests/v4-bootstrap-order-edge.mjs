@@ -26,8 +26,30 @@ assert.ok(declaredAt.size > 20, 'Expected bootstrap.js to declare a substantial 
 // Returns true if `dep` appears in `text` as a genuine identifier reference:
 // not immediately preceded by `.` (property access) and not immediately
 // followed by `:` (object-literal key position, e.g. `session:Object.freeze(...)`).
+function stripQuotedLiterals(text) {
+  let quote = '', escaped = false, output = '';
+  for (const char of text) {
+    if (quote) {
+      output += ' ';
+      if (escaped) { escaped = false; continue; }
+      if (char === '\\') { escaped = true; continue; }
+      if (char === quote) quote = '';
+      continue;
+    }
+    if (char === "'" || char === '"' || char === '`') { quote = char; output += ' '; continue; }
+    output += char;
+  }
+  return output;
+}
+
+function arrowParameterNames(text) {
+  const arrow = text.indexOf('=>');
+  if (arrow < 0) return new Set();
+  const prefix = stripQuotedLiterals(text.slice(0, arrow));
+  return new Set(prefix.match(/[A-Za-z_$][\w$]*/g) || []);
+}
+
 function referencesIdentifier(text, dep) {
-  const tokenRe = new RegExp(`(^|[^\\w$.])${dep}($|[^\\w$:])`);
   let index = 0;
   while (index < text.length) {
     const idx = text.indexOf(dep, index);
@@ -52,9 +74,11 @@ lines.forEach((line, index) => {
   const thisLine = index + 1;
   const rhs = line.slice(line.indexOf('=') + 1);
   if (!/create[A-Za-z]*\(/.test(rhs)) return; // only check constructor-style declarations
+  const searchableRhs = stripQuotedLiterals(rhs);
+  const arrowParameters = arrowParameterNames(rhs);
   for (const [dep, depLine] of declaredAt) {
-    if (dep === name) continue;
-    if (depLine >= thisLine && referencesIdentifier(rhs, dep)) {
+    if (dep === name || arrowParameters.has(dep)) continue;
+    if (depLine >= thisLine && referencesIdentifier(searchableRhs, dep)) {
       failures.push(`Line ${thisLine}: '${name}' references '${dep}', but '${dep}' is not declared until line ${depLine}. This is the exact temporal-dead-zone crash class that has broken app startup twice before.`);
     }
   }
