@@ -1,8 +1,15 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173/';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const browser = await chromium.launch({ headless: true });
+const buildDir = resolve(process.env.BQ_BUILD_DIR || 'dist-v6');
+const manifest = JSON.parse(readFileSync(resolve(buildDir, 'vite-manifest.json'), 'utf8'));
+const contentReviewChunk = manifest['src/features/content-review/index.js']?.file;
+assert(contentReviewChunk, 'Built artifact manifest is missing the Content Review feature chunk');
+const contentReviewModuleUrl = new URL(contentReviewChunk, slashBase(BASE)).href;
 
 function slashBase(value) {
   return String(value).endsWith('/') ? String(value) : `${value}/`;
@@ -11,10 +18,12 @@ function slashBase(value) {
 async function mountedLibraryReview() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(slashBase(BASE), { waitUntil: 'networkidle' });
-  await page.evaluate(async () => {
-    document.body.innerHTML = '<main id="review-test-root"></main>';
-    const { contentReviewPage } = await import('./src/features/content-review/index.js');
-    const root = document.getElementById('review-test-root');
+  await page.evaluate(async moduleUrl => {
+    document.getElementById('review-test-root')?.remove();
+    const root = document.createElement('main');
+    root.id = 'review-test-root';
+    document.body.append(root);
+    const { contentReviewPage } = await import(moduleUrl);
 
     const baseItem = {
       congregationId: '',
@@ -160,9 +169,18 @@ async function mountedLibraryReview() {
     const definition = contentReviewPage({ review, onBack: () => {}, onAccount: () => {}, onCongregation: () => {} });
     root.innerHTML = definition.html;
     window.__libraryReviewCleanup = definition.mount(root);
-  });
+  }, contentReviewModuleUrl);
 
-  await page.locator('[data-library-review-item="revision-book"]').waitFor();
+  try {
+    await page.locator('[data-library-review-item="revision-book"]').waitFor({ timeout: 10000 });
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => ({
+      html: document.body.innerHTML.slice(0, 12000),
+      text: document.body.innerText.slice(0, 6000),
+      reviewCalls: window.__libraryReviewCalls || null,
+    }));
+    throw new Error(`Library Content Review did not render the first audit card: ${error?.message || error}\n${JSON.stringify(diagnostic, null, 2)}`);
+  }
   return page;
 }
 

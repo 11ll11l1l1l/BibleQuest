@@ -1,0 +1,431 @@
+name: V7 Release Convergence
+
+on:
+  pull_request:
+    branches:
+      - v7/development
+    paths:
+      - 'src/**'
+      - 'content/v7/**'
+      - 'data/v7/**'
+      - 'packages/db/**'
+      - 'supabase/**'
+      - 'tests/v7/**'
+      - 'tests/v6/**'
+      - 'tests/v3-accessibility-smoke.mjs'
+      - 'scripts/v6-prepare-local-supabase.mjs'
+      - 'scripts/v6-build-evidence.mjs'
+      - 'scripts/v6-deployment-verify.mjs'
+      - 'scripts/v6-live-smoke.mjs'
+      - 'scripts/v7-content-release-evidence.mjs'
+      - 'scripts/v7-release-content-factory-evidence.mjs'
+      - 'scripts/v7-release-automated-approval-evidence.mjs'
+      - '.github/workflows/v7-*.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character integrated V7 candidate SHA to certify
+        required: true
+        type: string
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v7-release-convergence-${{ github.event.pull_request.number || inputs.candidate_sha || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
+  BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' }}
+  BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-convergence-status.json
+  BQ_PREVIEW_URL: http://127.0.0.1:4173
+  SUPABASE_TELEMETRY_DISABLED: '1'
+
+jobs:
+  converge:
+    name: Exact-SHA integrated V7 certification
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Validate exact candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+
+      - name: Checkout exact candidate
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+          fetch-depth: 0
+
+      - name: Prove clean exact checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+          test -z "$(git status --porcelain)"
+
+      - name: Use pinned Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Static and contract gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run lint
+          npm run format:check
+          npm run typecheck
+          npm run unit:v7
+
+      - name: Build Lane A and Lane B content evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/v7
+          node scripts/v7-content-release-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/content-report.json
+          node scripts/v7-release-content-factory-evidence.mjs > artifacts/v7/release-content-factory.json
+          node scripts/v7-release-automated-approval-decisions.mjs "${BQ_EXACT_SHA}" > artifacts/v7/release-automated-approval-decisions.json
+          BQ_V7_APPROVAL_LEDGER=artifacts/v7/release-automated-approval-decisions.json \
+            node scripts/v7-release-automated-approval-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/lane-b-automated-approval.json
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const [report, factory, approval] = await Promise.all([
+            readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
+          ]);
+          const candidateSha = process.env.BQ_EXACT_SHA;
+          const strict = process.env.BQ_STRICT_RELEASE === 'true';
+          if (report.candidateSha !== candidateSha) throw new Error('V7 content evidence candidate mismatch.');
+          if (factory.candidateSha && factory.candidateSha !== candidateSha) throw new Error('Lane A factory evidence candidate mismatch.');
+          if (approval.candidateSha !== candidateSha) throw new Error('Lane B automated-approval evidence candidate mismatch.');
+          if (!report.localization?.ready) throw new Error('V7 localization inventory is incomplete.');
+          if (strict && (!report.ready || !factory.readyForAutomatedPolicyReview || !approval.readyForRelease)) {
+            throw new Error('Strict V7 release convergence requires representative content, >=150 factory items, and exact-revision Lane B automated approvals.');
+          }
+          console.log(`V7 representative content: ${report.ready ? 'PASS' : 'OPEN'}; Lane A factory: ${factory.status}; Lane B approvals: ${approval.status}`);
+          NODE
+
+      - name: Build exact candidate
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: npm run build
+
+      - name: Verify build identity, integrity, and performance budgets
+        shell: bash
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: |
+          set -euo pipefail
+          node scripts/v6-build-evidence.mjs | tee artifacts/v7/build-report.json
+
+      - name: Install pinned browser harness
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start exact built preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/bq-v7-convergence-preview.log 2>&1 &
+          echo $! > /tmp/bq-v7-convergence-preview.pid
+          for attempt in $(seq 1 60); do
+            if curl --noproxy '*' --fail --silent --show-error "${BQ_PREVIEW_URL}/" >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/bq-v7-convergence-preview.log
+          exit 1
+
+      - name: Built artifact regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/built-artifact-browser.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/one-to-one-built-artifact-browser.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/library-built-artifact-browser.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/content-review-library-browser.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/pwa-built-artifact-browser.mjs
+          BQ_BASE_URL=http://127.0.0.1:4173/ node tests/v3-accessibility-smoke.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/release-responsive-accessibility-browser.mjs
+
+      - name: Install pinned Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.117.0
+
+      - name: Prepare disposable current database
+        run: node scripts/v6-prepare-local-supabase.mjs /tmp/bq-v7-convergence-db
+
+      - name: Start and reset disposable Supabase stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd /tmp/bq-v7-convergence-db
+          supabase start
+          supabase db reset
+          umask 077
+          supabase status -o json > "${BQ_LOCAL_STATUS_FILE}"
+          test -s "${BQ_LOCAL_STATUS_FILE}"
+
+      - name: Lane C authenticated API journey
+        run: node tests/v7/one-to-one-authenticated-api.mjs
+
+      - name: Authenticated populated built-browser journey
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.2:4173
+        run: node tests/v7/authenticated-built-artifact-browser.mjs
+
+      - name: Seal integrated release convergence evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+          const candidateSha = process.env.BQ_EXACT_SHA;
+          const strict = process.env.BQ_STRICT_RELEASE === 'true';
+          const [integrity, content, factory, approval, responsive, apiJourney, browserJourney] = await Promise.all([
+            readFile('dist-v6/bq-artifact-integrity.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/release-responsive-accessibility.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/authenticated-api-journey.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/authenticated-built-browser-journey.json', 'utf8').then(JSON.parse),
+          ]);
+
+          for (const [name, evidence] of Object.entries({ content, factory, approval, responsive, apiJourney, browserJourney })) {
+            if (String(evidence.candidateSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
+              throw new Error(`${name} evidence candidate SHA mismatch.`);
+            }
+          }
+          if (String(integrity.sourceSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
+            throw new Error('Build integrity source SHA mismatch.');
+          }
+          if (responsive.result !== 'PASS' || apiJourney.result !== 'PASS' || browserJourney.result !== 'PASS') {
+            throw new Error('One or more V7 integrated automated journeys failed.');
+          }
+
+          const releaseReady = Boolean(content.ready)
+            && factory.readyForAutomatedPolicyReview === true
+            && approval.readyForRelease === true
+            && responsive.result === 'PASS'
+            && apiJourney.result === 'PASS'
+            && browserJourney.result === 'PASS';
+
+          if (strict && !releaseReady) {
+            throw new Error('Strict V7 release convergence is not release-ready.');
+          }
+
+          const report = {
+            schemaVersion: 1,
+            candidateSha,
+            result: releaseReady ? 'PASS' : 'OPEN',
+            strictRelease: strict,
+            releaseReady,
+            artifactSha256: integrity.artifactSha256,
+            artifactFileCount: integrity.fileCount,
+            contentReady: Boolean(content.ready),
+            laneAFactoryReady: factory.readyForAutomatedPolicyReview === true,
+            laneBAutomatedApprovalReady: approval.readyForRelease === true,
+            laneBAutoApprovedItems: approval.counts?.autoApproved || 0,
+            laneBMissingApprovalDecisions: approval.counts?.missingDecisions || 0,
+            laneACatalogDeficit: approval.counts?.catalogDeficit || 0,
+            laneBApprovedDevotionalDeficit: approval.counts?.approvedDevotionalDeficit || 0,
+            laneADevotionals: factory.counts?.devotionals || 0,
+            laneAExpansionGoal: factory.target?.expansionGoal || 300,
+            localizationReady: Boolean(content.localization?.ready),
+            authenticatedApiChecks: apiJourney.checks?.length || 0,
+            authenticatedBrowserChecks: browserJourney.checks?.length || 0,
+            responsiveAccessibilityChecks: responsive.checks?.length || 0,
+            inputs: {
+              laneAAndBRepresentative: 'artifacts/v7/content-report.json',
+              laneAReleaseFactory: 'artifacts/v7/release-content-factory.json',
+              laneBAutomatedApproval: 'artifacts/v7/lane-b-automated-approval.json',
+              laneBAutomatedApprovalLedger: 'artifacts/v7/release-automated-approval-decisions.json',
+              laneCBackend: 'artifacts/v7/authenticated-api-journey.json',
+              laneCAndDPopulatedBrowser: 'artifacts/v7/authenticated-built-browser-journey.json',
+              laneDResponsiveAccessibility: 'artifacts/v7/release-responsive-accessibility.json',
+              buildIntegrity: 'dist-v6/bq-artifact-integrity.json',
+            },
+            observedAt: new Date().toISOString(),
+          };
+          await mkdir('artifacts/v7', { recursive: true });
+          await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+          console.log(JSON.stringify(report, null, 2));
+          NODE
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
+
+      - name: Verify production deployed identity and full artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const expected = process.env.BQ_EXACT_SHA.toLowerCase();
+          const url = 'https://mybiblequest.pages.dev/bq-build.json';
+          let last = '<unreadable>';
+          for (let attempt = 1; attempt <= 60; attempt += 1) {
+            try {
+              const response = await fetch(`${url}?candidate=${expected}&attempt=${attempt}`, {
+                cache: 'no-store',
+                signal: AbortSignal.timeout(15000),
+              });
+              if (response.ok) {
+                const build = await response.json();
+                last = String(build?.sha || '<missing>').toLowerCase();
+                if (last === expected) {
+                  console.log(`Production now serves exact candidate ${expected}.`);
+                  process.exit(0);
+                }
+              } else {
+                last = `HTTP ${response.status}`;
+              }
+            } catch (error) {
+              last = error?.message || String(error);
+            }
+            if (attempt < 60) await new Promise(resolve => setTimeout(resolve, 10000));
+          }
+          throw new Error(`Production did not promote exact candidate ${expected}; last observed: ${last}`);
+          NODE
+          artifact_sha="$(node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('dist-v6/bq-artifact-integrity.json','utf8'));process.stdout.write(x.artifactSha256)")"
+          integrity_sha="$(sha256sum dist-v6/bq-artifact-integrity.json | awk '{print $1}')"
+          node scripts/v6-deployment-verify.mjs \
+            https://mybiblequest.pages.dev \
+            "${BQ_EXACT_SHA}" \
+            "${artifact_sha}" \
+            "${integrity_sha}" \
+            > artifacts/v7/production-deployment-verification.json
+          BQ_LIVE_SMOKE_OUTPUT=artifacts/v7/production-live-smoke.json \
+            node scripts/v6-live-smoke.mjs https://mybiblequest.pages.dev "${BQ_EXACT_SHA}"
+
+      - name: Seal production release certification
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const candidateSha = process.env.BQ_EXACT_SHA.toLowerCase();
+          const [convergence, deployment, liveSmoke] = await Promise.all([
+            readFile('artifacts/v7/release-convergence.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/production-deployment-verification.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/production-live-smoke.json', 'utf8').then(JSON.parse),
+          ]);
+
+          if (convergence.result !== 'PASS' || !convergence.releaseReady) {
+            throw new Error('Production certification requires a passing integrated V7 convergence report.');
+          }
+          for (const [name, evidence] of Object.entries({ convergence, deployment, liveSmoke })) {
+            if (String(evidence.candidateSha || evidence.sourceSha || '').toLowerCase() !== candidateSha) {
+              throw new Error(`${name} production evidence SHA mismatch.`);
+            }
+          }
+          if (deployment.artifactSha256 !== convergence.artifactSha256) {
+            throw new Error('Production deployment digest does not match the certified build artifact.');
+          }
+
+          const certification = {
+            schemaVersion: 1,
+            result: 'PASS',
+            candidateSha,
+            artifactSha256: deployment.artifactSha256,
+            integritySha256: deployment.integritySha256,
+            deploymentOrigin: deployment.deploymentOrigin,
+            verifiedFileCount: deployment.fileCount,
+            verifiedBytes: deployment.totalBytes,
+            checks: [
+              'strict-integrated-v7-convergence',
+              'exact-sha-production-identity',
+              'full-production-artifact-digest',
+              'production-pwa-live-smoke',
+            ],
+            certifiedAt: new Date().toISOString(),
+          };
+          await writeFile(
+            'artifacts/v7/production-release-certification.json',
+            `${JSON.stringify(certification, null, 2)}\n`,
+            'utf8',
+          );
+          console.log(JSON.stringify(certification, null, 2));
+          NODE
+          sha256sum \
+            artifacts/v7/release-convergence.json \
+            artifacts/v7/production-deployment-verification.json \
+            artifacts/v7/production-live-smoke.json \
+            artifacts/v7/production-release-certification.json \
+            > artifacts/v7/production-release-evidence.sha256
+
+      - name: Preview diagnostics
+        if: always()
+        run: cat /tmp/bq-v7-convergence-preview.log || true
+
+      - name: Upload exact-SHA convergence evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v7-release-convergence-${{ env.BQ_EXACT_SHA }}
+          if-no-files-found: warn
+          retention-days: 30
+          path: |
+            artifacts/v7/build-report.json
+            artifacts/v7/content-report.json
+            artifacts/v7/release-content-factory.json
+            artifacts/v7/release-automated-approval-decisions.json
+            artifacts/v7/lane-b-automated-approval.json
+            artifacts/v7/release-responsive-accessibility.json
+            artifacts/v7/authenticated-api-journey.json
+            artifacts/v7/authenticated-built-browser-journey.json
+            artifacts/v7/release-convergence.json
+            artifacts/v7/release-evidence.sha256
+            artifacts/v7/production-deployment-verification.json
+            artifacts/v7/production-live-smoke.json
+            artifacts/v7/production-release-certification.json
+            artifacts/v7/production-release-evidence.sha256
+            dist-v6/bq-artifact-integrity.json
+            dist-v6/bq-build.json
+
+      - name: Verify tracked source tree remains unchanged
+        if: always()
+        shell: bash
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+
+      - name: Stop exact built preview
+        if: always()
+        shell: bash
+        run: |
+          if test -f /tmp/bq-v7-convergence-preview.pid; then
+            kill "$(cat /tmp/bq-v7-convergence-preview.pid)" 2>/dev/null || true
+          fi
+          rm -f "${BQ_LOCAL_STATUS_FILE}"
+
+      - name: Stop disposable Supabase stack
+        if: always()
+        shell: bash
+        run: |
+          if test -d /tmp/bq-v7-convergence-db; then
+            cd /tmp/bq-v7-convergence-db
+            supabase stop || true
+          fi

@@ -6,7 +6,7 @@ import { stageLibraryReturnFocus } from './navigation-focus.js';
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 // Shared metadata surface. Type-specific content/hosting remains with P2 lanes.
-export function createLibraryItemPage({service,id,onBack}) {
+export function createLibraryItemPage({service,id,onBack,isContextReady=()=>true,subscribeContext=()=>()=>{}}) {
   return {
     title:localization.t('v7.library.item.title'),
     html:`<section class="bq-panel"><button type="button" class="bq-secondary-button" data-library-back>${escapeHtml(localization.t('v7.library.item.back'))}</button><div data-library-detail role="status" aria-live="polite" tabindex="-1"></div><button type="button" class="bq-secondary-button" data-library-item-retry hidden>${escapeHtml(localization.t('v7.library.retry'))}</button></section>`,
@@ -20,7 +20,7 @@ export function createLibraryItemPage({service,id,onBack}) {
         const urgent=state.status==='error'||state.status==='not-found';
         host.setAttribute?.('role',urgent?'alert':'status');
         host.setAttribute?.('aria-live',urgent?'assertive':'polite');
-        retry.hidden=!id||!['error','idle'].includes(state.status);
+        retry.hidden=!id||!isContextReady()||!['error','idle'].includes(state.status);
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
           const t=key=>escapeHtml(localization.t(key));
@@ -35,19 +35,25 @@ export function createLibraryItemPage({service,id,onBack}) {
         onBack();
       };
       const reload=()=>{
-        if(!disposed&&id&&!retry.hidden){
-          host.focus?.({preventScroll:true});
-          void service.getItem(id);
-        }
+        if(disposed||!id||retry.hidden)return;
+        host.focus?.({preventScroll:true});
+        if(!isContextReady()){service.reset?.();return;}
+        void service.getItem(id);
       };
       back.addEventListener('click',goBack);
       retry.addEventListener('click',reload);
       const unsubscribe=service.subscribe(render);
+      const unsubscribeContext=subscribeContext(()=>{
+        if(disposed||!id)return;
+        if(!isContextReady()){service.reset?.();return;}
+        void service.getItem(id);
+      });
       host.focus?.({preventScroll:true});
       if(id){
-        void service.getItem(id);
+        if(isContextReady())void service.getItem(id);
+        else service.reset?.();
       }else host.textContent=localization.t('v7.library.item.required');
-      return ()=>{disposed=true;unsubscribe();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
+      return ()=>{disposed=true;unsubscribe();unsubscribeContext?.();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
     }
   };
 }

@@ -11,6 +11,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 
 export function createLibraryPage({
   service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch,
+  isContextReady = () => true, subscribeContext = () => () => {},
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
 } = {}) {
   if (typeof service?.list !== 'function' || typeof service?.getState !== 'function' || typeof service?.subscribe !== 'function') {
@@ -96,6 +97,11 @@ export function createLibraryPage({
         lastDiscoveryRenderKey = key;
       };
       let disposed = false;
+      const executeWhenReady = request => {
+        if (isContextReady()) return executeList(request);
+        service.reset?.();
+        return Promise.resolve(service.getState());
+      };
       let lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: restoredTerm, includeTaxonomy: true };
       let lastTaxonomy;
       let lastLocale;
@@ -207,7 +213,7 @@ export function createLibraryPage({
         if (target.hasAttribute('data-library-retry')) {
           if (!retry.hidden) {
             status.focus({ preventScroll: true });
-            void executeList({ ...lastRequest });
+            void executeWhenReady({ ...lastRequest });
           }
           return;
         }
@@ -216,7 +222,7 @@ export function createLibraryPage({
             moreFocusPending = true;
             if (discoveryEnabled) {
               const current = service.getState();
-              void discoverySearch(withDiscovery({ ...lastRequest, cursor: current.nextCursor, append: true }));
+              void executeWhenReady({ ...lastRequest, cursor: current.nextCursor, append: true });
             } else void service.loadMore();
           }
           return;
@@ -258,14 +264,23 @@ export function createLibraryPage({
       form.addEventListener('submit', onSubmit);
       page.addEventListener('click', onClick);
       const unsubscribe = service.subscribe(render);
+      const unsubscribeContext = subscribeContext(() => {
+        if (disposed) return;
+        if (!isContextReady()) {
+          service.reset?.();
+          return;
+        }
+        void executeList({ ...lastRequest });
+      });
       render(service.getState());
       started = true;
-      void executeList({ ...lastRequest });
+      void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
         form.removeEventListener('submit', onSubmit);
         page.removeEventListener('click', onClick);
         unsubscribe();
+        unsubscribeContext?.();
       };
     },
   });
