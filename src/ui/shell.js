@@ -29,9 +29,9 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
         <div class="bq-top-actions">
           <span class="bq-progress-chip" data-progress-chip aria-label="${escapeHtml(text('shell.progressLabel'))}"><b data-progress-xp>0 XP</b><small data-progress-streak>${escapeHtml(text('shell.streak.other', { count: 0 }))}</small></span>
           <select class="bq-session-chip bq-locale-select" data-locale-select aria-label="${escapeHtml(text('locale.label'))}">
-            <option value="en"${optionSelected('en')}>${escapeHtml(text('locale.english'))}</option>
-            <option value="tl"${optionSelected('tl')}>${escapeHtml(text('locale.tagalog'))}</option>
-            <option value="ceb"${optionSelected('ceb')}>${escapeHtml(text('locale.cebuano'))}</option>
+            <option value="en"${optionSelected('en')} aria-label="${escapeHtml(text('locale.english'))}">EN</option>
+            <option value="tl"${optionSelected('tl')} aria-label="${escapeHtml(text('locale.tagalog'))}">TL</option>
+            <option value="ceb"${optionSelected('ceb')} aria-label="${escapeHtml(text('locale.cebuano'))}">CEB</option>
           </select>
           <button type="button" class="bq-session-chip" data-session-open aria-label="${escapeHtml(text('shell.accountOpenLabel'))}">
             <span data-session-dot aria-hidden="true"></span>
