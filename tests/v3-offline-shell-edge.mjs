@@ -85,7 +85,7 @@ controllerChangeHandler?.();
 assert(reloadCalls===1,'Disposed offline-shell owner must not trigger an additional update reload.');
 
 const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
-assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v3`;"),'Offline shell cache generation must rotate after the deployable module-graph warmup fix.');
+assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v4`;"),'Offline shell cache generation must rotate after the production Vite shell-cache completeness fix.');
 for(const token of[
   "const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME)",
   "const upgrading=staleNames.length>0",
@@ -102,7 +102,8 @@ assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offl
 assert(workerSource.includes("(?:import|export)(?!\\s*\\()\\s*"),'Offline recursive warm must recognize minified static import/export syntax.');
 assert(workerSource.includes("async function manifestGraphUrls(seedUrls)"),'Offline shell worker must derive deterministic deployable dependencies from the Vite manifest.');
 assert(workerSource.includes("vite-manifest.json"),'Offline shell worker must read the deployable Vite manifest.');
-assert(workerSource.includes("record?.isEntry")&&workerSource.includes("record.imports"),'Offline shell Vite-manifest warm must traverse entry/static import records.');
+assert(workerSource.includes("record?.isEntry")&&workerSource.includes("record.imports")&&workerSource.includes("record.dynamicImports"),'Offline shell Vite-manifest warm must traverse entry/static/dynamic import records.');
+assert(workerSource.includes("MANIFEST_SHELL_EXTENSIONS")&&workerSource.includes("manifestUrls")&&workerSource.includes("cache.match(raw,{ignoreVary:true})"),'Offline shell warmup must cache and verify every manifest-listed JS/CSS shell asset before acknowledging readiness.');
 for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
   assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
 }
