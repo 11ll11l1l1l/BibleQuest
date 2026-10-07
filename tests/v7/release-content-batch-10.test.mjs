@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+import { parseV7ContentBundle } from '../../src/v7/content/contract.js';
+import { assessV7DevotionalCatalogTranslationCoverage } from '../../src/v7/content/devotional-translation-policy.js';
+const files=['../../content/v7/devotionals/biblequest-original-emotions-10a.json','../../content/v7/devotionals/biblequest-original-emotions-10b.json','../../content/v7/devotionals/biblequest-original-emotions-10c.json'];
+const items=files.flatMap(path=>parseV7ContentBundle(JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'))).items);
+const summary=JSON.parse(readFileSync(new URL('../../data/v7/curation/release-content-batch-10-summary.json',import.meta.url),'utf8'));
+test('Lane A batch 10 adds 30 automated-review-ready devotionals',()=>{assert.equal(items.length,30);assert.equal(new Set(items.map(x=>x.id)).size,30);assert.ok(items.every(x=>x.id.endsWith('.10')));assert.ok(items.every(x=>x.source.kind==='first_party'));assert.ok(items.every(x=>x.rights.status==='verified'));assert.ok(items.every(x=>x.publicationState==='pending_review'));const report=assessV7DevotionalCatalogTranslationCoverage(items);assert.equal(report.ready,true);assert.equal(report.devotionalCount,30);});
+test('Lane A batch 10 checksum, BSB and translation QA manifests are exact',()=>{assert.equal(summary.status,'ready_for_automated_policy_review');assert.equal(summary.counts.devotionals,30);assert.equal(summary.counts.reviewedTranslations,90);const map=new Map(items.map(x=>[x.id,x]));for(const row of summary.items){const item=map.get(row.contentId);assert.ok(item,row.contentId);const digest=createHash('sha256').update(`${item.sourceContent.title}\n${item.sourceContent.body}`,'utf8').digest('hex');assert.equal(item.source.checksum,`sha256:${digest}`,item.id);assert.equal(row.sourceChecksum,item.source.checksum,item.id);assert.ok(row.bsbReferences.length>0,item.id);assert.deepEqual(item.translations.map(t=>t.locale).sort(),['ceb','fil','ilo']);assert.ok(item.translations.every(t=>t.reviewStatus==='reviewed'));assert.ok(Object.values(row.qaPass).every(Boolean),item.id);}});
