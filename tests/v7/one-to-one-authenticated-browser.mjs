@@ -455,9 +455,13 @@ try {
   stage = 'congregation-switch-denial';
   await chooseCongregation(menteePage, scopeB);
   await menteePage.goto(lessonLink, { waitUntil: 'networkidle' });
-  await menteePage.locator('[data-lesson-runner] [role="status"]').waitFor({ state: 'visible' });
+  const congregationDenial = menteePage.locator('[data-lesson-runner] [role="status"]');
+  await congregationDenial.waitFor({ state: 'visible' });
+  await menteePage.waitForFunction(() => /unavailable|congregation|pair/i.test(
+    document.querySelector('[data-lesson-runner] [role="status"]')?.textContent || ''
+  ), null, { timeout: 30000 });
   assert.equal(await menteePage.locator('[data-lesson-heading]').count(), 0);
-  assert.match(await menteePage.locator('[data-lesson-runner] [role="status"]').innerText(), /unavailable|congregation|pair/i);
+  assert.match(await congregationDenial.innerText(), /unavailable|congregation|pair/i);
   await chooseCongregation(menteePage, scopeA);
   await menteePage.goto(`${lessonLink}&stepId=${encodeURIComponent(steps[6].id)}`, { waitUntil: 'networkidle' });
   await menteePage.locator('[data-lesson-heading][data-step-type="action"]').waitFor({ state: 'visible' });
@@ -468,7 +472,11 @@ try {
   await signIn(menteePage, foreign);
   await chooseCongregation(menteePage, scopeA);
   await menteePage.goto(lessonLink, { waitUntil: 'networkidle' });
-  await menteePage.locator('[data-lesson-runner] [role="status"]').waitFor({ state: 'visible' });
+  const accountDenial = menteePage.locator('[data-lesson-runner] [role="status"]');
+  await accountDenial.waitFor({ state: 'visible' });
+  await menteePage.waitForFunction(() => /unavailable|congregation|pair/i.test(
+    document.querySelector('[data-lesson-runner] [role="status"]')?.textContent || ''
+  ), null, { timeout: 30000 });
   assert.equal(await menteePage.locator('[data-lesson-heading]').count(), 0);
   assert.deepEqual(await select('v7_mentor_pairs', foreign.token, `id=eq.${pair.id}`), []);
   checks.push('account-switch-and-cross-participant-denial');
