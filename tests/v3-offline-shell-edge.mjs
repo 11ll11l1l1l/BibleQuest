@@ -85,7 +85,7 @@ controllerChangeHandler?.();
 assert(reloadCalls===1,'Disposed offline-shell owner must not trigger an additional update reload.');
 
 const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
-assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v4`;"),'Offline shell cache generation must rotate after the production cache-first asset fix.');
+assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v5`;"),'Offline shell cache generation must rotate after the imported-chunk interception fix.');
 for(const token of[
   "const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME)",
   "const upgrading=staleNames.length>0",
@@ -97,7 +97,9 @@ for(const token of[
 }
 assert((workerSource.match(/url\.hash=''/g)||[]).length>=2,'Offline shell worker must normalize warmed URLs before cache lookup/write.');
 assert(workerSource.includes("const matchCached=()=>cache.match(url.href,{ignoreSearch:request.mode==='navigate',ignoreVary:true})"),'Offline shell fetch fallback must match warmed resources by normalized URL and ignore response Vary headers.');
-assert(workerSource.includes("if(url.pathname.includes('/_v6/'))"),'Immutable deployable build assets must be checked in Cache Storage before attempting the network.');
+assert(workerSource.includes("const isBuildAsset=url=>sameOriginInScope(url)&&url.pathname.includes('/_v6/')"),'All same-origin hashed Vite chunks must be classified as offline shell assets independent of request destination metadata.');
+assert(workerSource.includes("||isBuildAsset(url)"),'Offline shell request classification must include hashed Vite chunks even when browser destination metadata is empty.');
+assert(workerSource.includes("if(isBuildAsset(url))"),'Immutable deployable build assets must be checked in Cache Storage before attempting the network.');
 assert(workerSource.includes("if(immutable)return immutable"),'Cached immutable build assets must short-circuit network access during offline reload.');
 assert(workerSource.includes("ignoreSearch:true,ignoreVary:true"),'Offline navigation root fallback must ignore response Vary headers.');
 assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offline recursive warm must traverse JavaScript and TypeScript module URLs.');
