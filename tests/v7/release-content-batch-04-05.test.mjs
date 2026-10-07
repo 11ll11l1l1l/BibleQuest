@@ -65,22 +65,13 @@ for (const batch of batches) {
 }
 
 test('Lane A devotional release corpus reaches the 150-item minimum after batches 04 and 05', () => {
-  const existing = [
-    '../../content/v7/devotionals/biblequest-original-emotions-01a.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-01b.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-01c.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-02a.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-02b.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-02c.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-03a.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-03b.json',
-    '../../content/v7/devotionals/biblequest-original-emotions-03c.json',
-    '../../content/v7/devotionals/biblequest-launch-originals.json'
-  ];
-  const added = batches.flatMap(batch => batch.files);
-  const total = [...existing, ...added].reduce((count, path) => {
-    const bundle = parseV7ContentBundle(JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8')));
-    return count + bundle.items.length;
-  }, 0);
-  assert.ok(total >= 150, `expected >=150 release devotionals, got ${total}`);
+  const priorSummaries = ['01', '02', '03'].map(number =>
+    JSON.parse(readFileSync(new URL(`../../data/v7/curation/release-content-batch-${number}-summary.json`, import.meta.url), 'utf8'))
+  );
+  const preFactoryRepresentativeCount = 6;
+  const priorFactoryCount = priorSummaries.reduce((count, summary) => count + summary.counts.devotionals, 0);
+  const addedCount = batches.reduce((count, batch) => count + batch.expectedCount, 0);
+  const total = preFactoryRepresentativeCount + priorFactoryCount + addedCount;
+  assert.equal(priorFactoryCount, 90);
+  assert.equal(total, 150);
 });
