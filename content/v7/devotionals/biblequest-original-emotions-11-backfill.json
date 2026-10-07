@@ -1,0 +1,750 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "emotion.guilt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Guilt"
+      }
+    },
+    {
+      "id": "need.forgiveness",
+      "kind": "need",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "topic.repentance",
+      "kind": "topic",
+      "labels": {
+        "en": "Repentance"
+      }
+    },
+    {
+      "id": "life_situation.failure",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Failure"
+      }
+    },
+    {
+      "id": "emotion.shame",
+      "kind": "emotion",
+      "labels": {
+        "en": "Shame"
+      }
+    },
+    {
+      "id": "need.grace",
+      "kind": "need",
+      "labels": {
+        "en": "Grace"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "topic.joy",
+      "kind": "topic",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "life_situation.celebration",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Celebration"
+      }
+    },
+    {
+      "id": "emotion.excitement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Excitement"
+      }
+    },
+    {
+      "id": "need.wisdom",
+      "kind": "need",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "emotion.love_connection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Love / connection"
+      }
+    },
+    {
+      "id": "topic.love",
+      "kind": "topic",
+      "labels": {
+        "en": "Love"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.guilt.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.guilt.11",
+        "revision": "r1",
+        "checksum": "sha256:ab83ee4e2d77f5aa7704f0fa0e32f19090c2107d07301c0930997131d0782179",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Let prayer interrupt the spiral",
+        "body": "Read Psalm 32:5 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.guilt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.forgiveness",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.repentance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Psalm 32:5 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Psalm 32:5 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Psalm 32:5 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.shame.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.shame.11",
+        "revision": "r1",
+        "checksum": "sha256:aefc8a36562ac60ad63392d5f1fac45e1eb66a94137dee91bb5b274669d93a17",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Make one choice that agrees with hope",
+        "body": "Read Isaiah 54:4 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.shame",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.grace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Isaiah 54:4 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Isaiah 54:4 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Isaiah 54:4 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.11",
+        "revision": "r1",
+        "checksum": "sha256:cb2d80ee0b4a00901d7e95eae1f02f5795b10fb1927150fc19181226f62ecf5b",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Let prayer interrupt the spiral",
+        "body": "Read John 15:4 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.spiritual_growth",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang John 15:4 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang John 15:4 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti John 15:4 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.temptation.11",
+        "revision": "r1",
+        "checksum": "sha256:24f5bec80468832f9f0a40fa1a436fdd7e5ea03c4df58be666f914e4b632ef6a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Make one choice that agrees with hope",
+        "body": "Read Matthew 26:41 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Matthew 26:41 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Matthew 26:41 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Matthew 26:41 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.excitement.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.excitement.11",
+        "revision": "r1",
+        "checksum": "sha256:96a043a6e4a1513e3dc08678fc7a76fac41a538a20bc1aac381b5851209c5a7e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Let prayer interrupt the spiral",
+        "body": "Read Luke 10:20 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.excitement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.wisdom",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Luke 10:20 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Luke 10:20 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Luke 10:20 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.love_connection.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.love_connection.11",
+        "revision": "r1",
+        "checksum": "sha256:984a07f54e0cf797d663d1df0c3974038773cbc79a43668bd147b2ab4310a29a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Make one choice that agrees with hope",
+        "body": "Read 1 Corinthians 13:4-5 and name one faithful action you can take before the day ends. Keep the action small enough to do, specific enough to recognize when it is finished, and consistent with the passage rather than your mood. Pray for willingness, take the step, then record one sentence about what you learned through obedience."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.love_connection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.love",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Sumunod: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang 1 Corinthians 13:4-5 at tukuyin ang isang tapat na hakbang na magagawa mo bago matapos ang araw. Gawing sapat na maliit ang hakbang para maisagawa, sapat na tiyak para malaman mong tapos na ito, at nakaayon sa talata sa halip na sa iyong damdamin. Manalangin para sa kahandaang sumunod, gawin ang hakbang, at pagkatapos ay sumulat ng isang pangungusap tungkol sa natutuhan mo sa pagsunod."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Tuman: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang 1 Corinthians 13:4-5 ug ilhon ang usa ka matinud-anong lakang nga mahimo nimo sa dili pa matapos ang adlaw. Himoa kini nga gamay aron mahimo dayon, klaro aron mahibaloan nimo kung nahuman na, ug uyon sa teksto imbes sa imong pagbati. Pag-ampo alang sa pagkaandam sa pagtuman, buhata ang lakang, ug dayon pagsulat og usa ka sentence bahin sa imong nakat-onan pinaagi sa pagtuman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:15:00Z",
+          "content": {
+            "title": "Agtulnog: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti 1 Corinthians 13:4-5 ket ilasin ti maysa a napudno nga addang a maaramidmo sakbay a malpas ti aldaw. Aramidem a bassit tapno maaramid, nalawag tapno ammom no nalpasen, ken maitunos iti teksto imbes a sumurot laeng iti riknam. Agkararagka para iti kinatulnog, aramidem ti addang, ket kalpasanna isuratmo ti maysa a pangungusap maipapan iti nasursurom babaen ti panagtulnog."
+          }
+        }
+      ]
+    }
+  ]
+}
