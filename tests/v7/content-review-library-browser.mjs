@@ -1,8 +1,15 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173/';
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const browser = await chromium.launch({ headless: true });
+const buildDir = resolve(process.env.BQ_BUILD_DIR || 'dist-v6');
+const manifest = JSON.parse(readFileSync(resolve(buildDir, 'vite-manifest.json'), 'utf8'));
+const contentReviewChunk = manifest['src/features/content-review/index.js']?.file;
+assert(contentReviewChunk, 'Built artifact manifest is missing the Content Review feature chunk');
+const contentReviewModuleUrl = new URL(contentReviewChunk, slashBase(BASE)).href;
 
 function slashBase(value) {
   return String(value).endsWith('/') ? String(value) : `${value}/`;
@@ -11,9 +18,9 @@ function slashBase(value) {
 async function mountedLibraryReview() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(slashBase(BASE), { waitUntil: 'networkidle' });
-  await page.evaluate(async () => {
+  await page.evaluate(async moduleUrl => {
     document.body.innerHTML = '<main id="review-test-root"></main>';
-    const { contentReviewPage } = await import('./src/features/content-review/index.js');
+    const { contentReviewPage } = await import(moduleUrl);
     const root = document.getElementById('review-test-root');
 
     const baseItem = {
@@ -160,7 +167,7 @@ async function mountedLibraryReview() {
     const definition = contentReviewPage({ review, onBack: () => {}, onAccount: () => {}, onCongregation: () => {} });
     root.innerHTML = definition.html;
     window.__libraryReviewCleanup = definition.mount(root);
-  });
+  }, contentReviewModuleUrl);
 
   await page.locator('[data-library-review-item="revision-book"]').waitFor();
   return page;
