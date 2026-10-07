@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "agentId": "visual-agent-4",
+  "theme": "spiritual_struggle_waiting",
+  "initialFamily": "emotion",
+  "initialQueue": [
+    "spiritual_dryness_distance",
+    "temptation",
+    "impatience_waiting",
+    "jealousy_envy",
+    "frustration",
+    "numbness_emptiness"
+  ],
+  "afterInitialQueue": [
+    "devotional_cover",
+    "teaching_art",
+    "book_thematic_art",
+    "hero"
+  ],
+  "selectionRule": "After initialQueue is covered, sort eligible uncovered content IDs lexicographically and take indices where index % 5 equals agentNumber-1.",
+  "status": "active",
+  "note": "State is inferred from existing per-asset records; do not mutate this queue file during scheduled runs."
+}
