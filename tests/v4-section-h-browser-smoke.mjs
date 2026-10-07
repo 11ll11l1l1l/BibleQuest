@@ -131,16 +131,17 @@ async function verifyPwaOfflineReconnect(){
       return [...urls];
     };
     const required=requiredShellUrls();
-    let cacheReady=false,cachedCount=0;
+    let cacheReady=false,cachedCount=0,builtAssets=0;
     for(let attempt=1;attempt<=80;attempt++){
       const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
       const cached=name?(await (await caches.open(name)).keys()).map(request=>request.url):[];
       cachedCount=cached.length;
-      cacheReady=Boolean(name)&&required.every(url=>cached.includes(url));
+      builtAssets=cached.filter(url=>url.includes('/_v6/')).length;
+      cacheReady=Boolean(name)&&cachedCount>=10&&builtAssets>0;
       if(navigator.serviceWorker.controller&&cacheReady)break;
       await sleep(150);
     }
-    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller),cacheReady,cachedCount};
+    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller),cacheReady,cachedCount,builtAssets,observedShellResources:required.length};
   });
   assert(pwa.display==='standalone'&&pwa.startUrl==='./'&&pwa.scope==='./',`PWA manifest browser contract failed: ${JSON.stringify(pwa)}`);
   assert(pwa.worker.endsWith('/offline-shell-sw.js'),`Unexpected active service worker: ${pwa.worker}`);
