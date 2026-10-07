@@ -140,3 +140,85 @@
   .bq-home-congregation,.bq-home-assignments,.bq-home-assignment-row{border-color:var(--ink-700)!important;box-shadow:none!important}
   .bq-home-assignment-status{border-color:currentColor!important}
 }
+
+
+/* V7 phone usability: preserve the weekly workflow but remove dashboard-card overload. */
+@media(max-width:640px){
+  .bq-home-week-heading {
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .bq-home-week-heading > div > p:not(.bq-eyebrow) {
+    display: none;
+  }
+  .bq-home-weekly-journey {
+    padding: 12px;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-list {
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .bq-home-weekly-journey [data-weekly-journey-step] {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) auto;
+    align-items: center;
+    gap: 6px;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-row {
+    min-height: 54px;
+    grid-template-columns: auto minmax(0,1fr);
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-status {
+    grid-column: 1;
+    min-height: 32px;
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-copy {
+    grid-column: 2;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-copy b {
+    font-size: 12px;
+    white-space: normal;
+  }
+  .bq-home-weekly-journey .bq-home-assignment-copy small,
+  .bq-home-weekly-journey .bq-home-assignment-open {
+    display: none;
+  }
+  .bq-home-weekly-journey [data-weekly-journey-toggle] {
+    min-width: 76px;
+    min-height: 44px;
+    padding: 7px 8px;
+    font-size: 10px;
+  }
+  .bq-home-weekly-journey .bq-progress-note {
+    padding: 12px;
+    margin-top: 8px;
+  }
+  .bq-home-weekly-journey .bq-progress-note p {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  [data-home-progress] {
+    padding: 14px;
+  }
+  [data-home-progress] .bq-progress-stats {
+    margin-top: 8px;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+  }
+  [data-home-progress] .bq-progress-stats > div {
+    padding: 9px 5px;
+    text-align: center;
+  }
+  [data-home-progress] .bq-progress-stats b {
+    font-size: 17px;
+  }
+  [data-home-progress] .bq-progress-stats span {
+    font-size: 8px;
+    letter-spacing: .02em;
+  }
+}
