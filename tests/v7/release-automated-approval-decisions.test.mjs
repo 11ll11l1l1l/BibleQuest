@@ -17,7 +17,15 @@ test('current Lane A factory corpus produces complete exact-revision automated a
     decidedAt: EVALUATED_AT,
   });
   assert.equal(ledger.candidateSha, CANDIDATE);
-  assert.equal(ledger.status, 'complete');
+  const unexpected = ledger.decisions
+    .filter(row => row.outcome !== 'auto_approved')
+    .map(row => ({
+      itemId: row.itemId,
+      outcome: row.outcome,
+      failedCriteria: row.criteria.filter(criterion => criterion.result !== 'pass').map(criterion => criterion.id),
+      secondPass: row.secondPass.result,
+    }));
+  assert.equal(ledger.status, 'complete', JSON.stringify(unexpected, null, 2));
   assert.equal(ledger.counts.releaseItems, entries.length);
   assert.equal(ledger.counts.autoApproved, entries.length);
   assert.equal(ledger.counts.needsRepair, 0);
@@ -46,7 +54,7 @@ test('release approval materialization fails closed when committed rights eviden
     decidedAt: EVALUATED_AT,
   });
   assert.equal(ledger.status, 'needs_repair');
-  assert.equal(ledger.counts.autoApproved, entries.length - 1);
+  assert.equal(ledger.counts.autoApproved, entries.length - 1, JSON.stringify(ledger.decisions.filter(row => row.outcome !== 'auto_approved').map(row => ({ itemId: row.itemId, outcome: row.outcome, failed: row.criteria.filter(criterion => criterion.result !== 'pass').map(criterion => criterion.id) })), null, 2));
   assert.equal(ledger.counts.rejected, 1);
   assert.ok(ledger.decisions.find(row => row.itemId === first.item.id)?.outcome === 'rejected');
 });
