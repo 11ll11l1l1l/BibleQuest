@@ -4,7 +4,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const browser=await chromium.launch({headless:true});
 const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
 const page=await context.newPage();
-const errors=[];page.on('pageerror',error=>errors.push(error.message));
+const errors=[],failed=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('requestfailed',request=>failed.push({url:request.url(),failure:request.failure()?.errorText||''}));
 const warmSentinels=[
   '/src/app/bootstrap.js',
   '/src/app/offline-shell.js',
@@ -63,7 +63,18 @@ try{
   assert(!readiness.packs,'#98 shell cache must not contain Bible packs reserved for #99.');
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded',timeout:15000});
-  await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000});
+  try{await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000})}catch(error){
+    const diagnostic=await page.evaluate(async()=>({
+      href:location.href,
+      readyState:document.readyState,
+      appHtml:document.querySelector('#app')?.innerHTML?.slice(0,1200)||'',
+      bodyText:document.body?.innerText?.slice(0,1200)||'',
+      controller:navigator.serviceWorker.controller?.scriptURL||'',
+      cacheNames:await caches.keys(),
+      resources:performance.getEntriesByType('resource').map(entry=>entry.name)
+    })).catch(()=>({evaluateFailed:true}));
+    throw new Error(`Offline shell mount timeout: ${JSON.stringify({diagnostic,errors,failed})}; original=${error.message}`);
+  }
   await page.locator('[data-session-label]',{hasText:'Guest'}).waitFor({timeout:15000});
   const metrics=await page.evaluate(()=>({shells:document.querySelectorAll('[data-bq-shell="v3"]').length,heading:document.querySelector('h1')?.textContent?.trim(),innerWidth,scrollWidth:document.documentElement.scrollWidth,controller:Boolean(navigator.serviceWorker.controller)}));
   assert(metrics.shells===1,'Offline reload must mount exactly one v3 shell.');
