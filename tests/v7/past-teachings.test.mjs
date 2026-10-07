@@ -50,17 +50,19 @@ test('database structured paragraphs render without allowing raw HTML', () => {
   assert.match(html, /<h2>Section<\/h2>/);
   assert.match(html, /&lt;b&gt;Text/);
 });
-test('source-backed adaptation remains pending with no fabricated rights or publication approval', async () => {
+test('rights-clear first-party Past Teaching sample replaces unresolved external adaptation', async () => {
   const bundle = parseV7ContentBundle(JSON.parse(await readFile(new URL('../../data/v7/past-teachings/prayer-source-example.json', import.meta.url), 'utf8')));
   const teaching = bundle.items[0];
   assert.equal(teaching.type, 'past_teaching');
-  assert.equal(teaching.source.kind, 'external');
+  assert.equal(teaching.source.kind, 'first_party');
   assert.equal(teaching.publicationState, 'pending_review');
   assert.equal(teaching.review.status, 'pending_review');
-  assert.equal(teaching.rights.status, 'unknown');
+  assert.equal(teaching.rights.status, 'verified');
+  assert.ok(teaching.rights.allowedUses.includes('display'));
   assert.match(teaching.sourceContent.body, /John 15:7/);
-  assert.match(teaching.source.uri, /spurgeon\.org/);
+  assert.equal(Object.hasOwn(teaching.source, 'uri'), false);
 });
+
 test('shared detail route includes the teaching article and clears it on context invalidation', () => {
   let listener;
   const host = { innerHTML: '', set textContent(value) { this.innerHTML = value; } };

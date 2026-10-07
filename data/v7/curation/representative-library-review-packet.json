@@ -118,15 +118,14 @@
     {
       "itemId": "teaching.prayer-abiding",
       "contentType": "past_teaching",
-      "revisionSnapshot": "prayer-abiding-r1",
-      "rightsStatusSnapshot": "unknown",
+      "revisionSnapshot": "prayer-abiding-r2",
+      "rightsStatusSnapshot": "verified",
       "reviewStatusSnapshot": "pending_review",
       "publicationStateSnapshot": "pending_review",
       "repositoryEvidenceRefs": [
         "data/v7/past-teachings/prayer-source-example.json",
-        "data/v7/curation/representative-library-curation.json",
-        "docs/v7/evidence/content/A2_PAST_TEACHING_SOURCE_RESEARCH_20261006.md",
-        "docs/v7/evidence/content/A2_PAST_TEACHING_RIGHTS_HANDOFF_20261007.md"
+        "data/v7/past-teachings/launch-set-summary.json",
+        "data/v7/curation/representative-library-curation.json"
       ],
       "requiredChecks": [
         "source_identity",
@@ -139,10 +138,9 @@
         "publication_suitability"
       ],
       "openBlockers": [
-        "rights_clearance_pending",
         "editorial_review_pending"
       ],
-      "reviewNote": "Source identity and first-edition bibliography are corroborated by A2 research, but the canonical rights state remains unknown. Record the exact source artifact and an acceptable rights basis for the intended adaptation first, then review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability and publication suitability before any publication decision."
+      "reviewNote": "Canonical source identity and first-party rights are complete. Review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability, and publication suitability before the automated publication decision."
     }
   ]
 }

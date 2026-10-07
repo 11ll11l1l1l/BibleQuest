@@ -153,7 +153,7 @@ test('current representative content produces truthful OPEN evidence with A2 dec
   assert.deepEqual(report.representative.types.book.blockerCodes, ['review_unapproved', 'not_published']);
   assert.deepEqual(report.representative.types.devotional.blockerCodes, ['review_unapproved', 'not_published']);
   assert.deepEqual(report.representative.types.past_teaching.blockerCodes, [
-    'rights_unverified', 'review_unapproved', 'not_published'
+    'review_unapproved', 'not_published'
   ]);
 
   const pilgrim = report.items.find(item => item.id === 'books.pilgrims-progress');
