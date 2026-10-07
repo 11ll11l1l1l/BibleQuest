@@ -59,8 +59,8 @@ test('A2 review packet covers exactly the representative Library content', () =>
 
   assert.deepEqual(packetIds, canonicalIds);
   assert.equal(new Set(packetIds).size, packetIds.length);
-  assert.equal(packet.status, 'prepared_for_authorized_review');
-  assert.equal(packet.boundary.contentReviewStillRequired, true);
+  assert.equal(packet.status, 'automated_review_complete');
+  assert.equal(packet.boundary.contentReviewStillRequired, false);
   assert.equal(packet.boundary.unknownRightsBlockPublication, true);
   assert.equal(packet.boundary.doesNotApproveContent, true);
   assert.equal(packet.boundary.doesNotPublishContent, true);
