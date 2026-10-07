@@ -18,6 +18,28 @@ export const LIBRARY_DISCOVERY_DIMENSIONS = Object.freeze({
   lifeSituations: Object.freeze({ kind: 'life_situation', prefix: 'life_situation.' }),
 });
 
+// The first-party V7 corpus predates the compact route IDs used by the UI.
+// Keep route/query IDs stable while resolving them to the persisted release taxonomy.
+const PERSISTED_DISCOVERY_IDS = Object.freeze({
+  emotions: Object.freeze({
+    anxious: ['anxiety_worry'], afraid: ['fear'], sad: ['sadness'], grieving: ['grief_loss'],
+    lonely: ['loneliness'], angry: ['anger'], hurt: ['hurt_betrayal'], rejected: ['rejection'],
+    guilty: ['guilt'], ashamed: ['shame'], insecure: ['insecurity_unworthiness'], doubtful: ['doubt'],
+    confused: ['confusion_uncertainty'], discouraged: ['discouragement'], hopeless: ['hopelessness'],
+    overwhelmed: ['overwhelm'], stressed: ['stress'], tired: ['tiredness_weariness'],
+    spiritually_dry: ['spiritual_dryness_distance'], tempted: ['temptation'],
+    impatient: ['impatience_waiting'], jealous: ['jealousy_envy'], frustrated: ['frustration'],
+    numb: ['numbness_emptiness'], joyful: ['joy'], grateful: ['gratitude'],
+    peaceful: ['peace_contentment'], hopeful: ['hope'], excited: ['excitement'],
+    connected: ['love_connection'],
+  }),
+  needs: Object.freeze({
+    grace_identity: ['grace_identity', 'grace', 'identity'],
+    connection: ['connection', 'belonging'],
+    celebration: ['celebration', 'thanksgiving'],
+  }),
+});
+
 const canonicalCatalog = Object.freeze({
   emotion: new Set(LIBRARY_EMOTIONS.map(item => item.id)),
   need: new Set(LIBRARY_NEEDS.map(item => item.id)),
@@ -45,7 +67,10 @@ export function toLibraryDiscoveryTaxonomyFilters(input = {}) {
   const request = normalizeLibraryDiscoveryRequest(input);
   const filters = {};
   for (const [key, config] of Object.entries(LIBRARY_DISCOVERY_DIMENSIONS)) {
-    filters[key] = Object.freeze(request[key].map(id => `${config.prefix}${id}`));
+    filters[key] = Object.freeze(request[key].flatMap(id => {
+      const persisted = PERSISTED_DISCOVERY_IDS[key]?.[id] || [id];
+      return persisted.map(value => `${config.prefix}${value}`);
+    }));
   }
   return freezeRecord(filters);
 }
