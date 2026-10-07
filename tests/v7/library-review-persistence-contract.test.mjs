@@ -22,6 +22,7 @@ test('browser reviewers cannot impersonate the automated policy', () => {
   assert.match(sql, /reviewer_id = \(select auth\.uid\(\)\)/);
   assert.doesNotMatch(sql, /grant update.*v7_library_review_decisions/i);
   assert.doesNotMatch(sql, /grant delete.*v7_library_review_decisions/i);
+  assert.doesNotMatch(sql, /grant select,insert on public\.v7_library_review_decisions to authenticated/i);
 });
 
 test('automated publication requires an exact auditable matching decision', () => {
@@ -53,4 +54,16 @@ test('Lane B provides a service-role-only atomic automated review and publicatio
   assert.match(sql,/publication_state = 'published'/);
   assert.match(sql,/grant execute on function public\.bible_v7_apply_automated_library_review[\s\S]*to service_role/);
   assert.match(sql,/revoke all on function public\.bible_v7_apply_automated_library_review[\s\S]*from public,anon,authenticated/);
+});
+
+
+test('Lane B applies each post-release human override atomically to the exact current revision',()=>{
+  assert.match(sql,/create or replace function public\.bible_v7_apply_human_library_review/);
+  assert.match(sql,/Human Library review must target the current revision/);
+  assert.match(sql,/private\.bible_can_review_content\(target_item\.congregation_id\)/);
+  assert.match(sql,/p_decision = 'approved'[\s\S]*publication_state = 'published'/);
+  assert.match(sql,/p_decision = 'request_changes'[\s\S]*publication_state = 'pending_review'/);
+  assert.match(sql,/review_status = 'rejected'[\s\S]*publication_state = 'withdrawn'/);
+  assert.match(sql,/reviewer_type = 'human'[\s\S]*reviewer_id = actor_id/);
+  assert.match(sql,/grant execute on function public\.bible_v7_apply_human_library_review[\s\S]*to authenticated/);
 });
