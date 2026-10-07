@@ -302,7 +302,12 @@ try {
 
   stage = 'mentor-populated-library';
   await openRoute(page, 'library', '[data-library-page]');
-  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
+  await page.waitForFunction(() => ['ready', 'empty', 'error'].includes(document.querySelector('[data-library-status]')?.dataset.libraryState || ''));
+  const libraryState = await page.locator('[data-library-status]').evaluate(node => ({
+    state: node.dataset.libraryState || '',
+    text: node.textContent || '',
+  }));
+  assert.equal(libraryState.state, 'ready', `Populated Library did not become ready: ${libraryState.state} — ${libraryState.text}`);
   const libraryCard = page.locator(`[data-library-item="${libraryItemId}"]`);
   await libraryCard.waitFor({ state: 'visible' });
   assert.ok((await libraryCard.textContent()).includes('V7 CI Populated Library Book'));
