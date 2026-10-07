@@ -144,10 +144,10 @@ self.addEventListener('fetch',event=>{
       const response=await fetch(request);
       return await put(cache,request,response);
     }catch(error){
-      const cached=await cache.match(request,{ignoreSearch:request.mode==='navigate'});
+      const cached=await cache.match(request,{ignoreSearch:request.mode==='navigate',ignoreVary:true});
       if(cached)return cached;
       if(request.mode==='navigate'){
-        const fallback=await cache.match(new URL('./',self.registration.scope).href,{ignoreSearch:true});
+        const fallback=await cache.match(new URL('./',self.registration.scope).href,{ignoreSearch:true,ignoreVary:true});
         if(fallback)return fallback;
       }
       throw error;
