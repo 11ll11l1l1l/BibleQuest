@@ -22,7 +22,7 @@ async function put(cache,request,response){
 
 function staticImportUrls(source,baseUrl){
   const urls=new Set(),patterns=[
-    /\b(?:import|export)\s+(?:[^'"]*?\s+from\s+)?['"]([^'"]+)['"]/g,
+    /\b(?:import|export)(?!\s*\()\s*(?:[^'"]*?\bfrom\s*)?['"]([^'"]+)['"]/g,
     /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g
   ];
   for(const pattern of patterns){
