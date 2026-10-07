@@ -280,10 +280,43 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          node --input-type=module <<'NODE'
+          const expected = process.env.BQ_EXACT_SHA.toLowerCase();
+          const url = 'https://mybiblequest.pages.dev/bq-build.json';
+          let last = '<unreadable>';
+          for (let attempt = 1; attempt <= 60; attempt += 1) {
+            try {
+              const response = await fetch(`${url}?candidate=${expected}&attempt=${attempt}`, {
+                cache: 'no-store',
+                signal: AbortSignal.timeout(15000),
+              });
+              if (response.ok) {
+                const build = await response.json();
+                last = String(build?.sha || '<missing>').toLowerCase();
+                if (last === expected) {
+                  console.log(`Production now serves exact candidate ${expected}.`);
+                  process.exit(0);
+                }
+              } else {
+                last = `HTTP ${response.status}`;
+              }
+            } catch (error) {
+              last = error?.message || String(error);
+            }
+            if (attempt < 60) await new Promise(resolve => setTimeout(resolve, 10000));
+          }
+          throw new Error(`Production did not promote exact candidate ${expected}; last observed: ${last}`);
+          NODE
           artifact_sha="$(node -e "const fs=require('fs');const x=JSON.parse(fs.readFileSync('dist-v6/bq-artifact-integrity.json','utf8'));process.stdout.write(x.artifactSha256)")"
           integrity_sha="$(sha256sum dist-v6/bq-artifact-integrity.json | awk '{print $1}')"
-          node scripts/v6-deployment-verify.mjs             https://mybiblequest.pages.dev             "${BQ_EXACT_SHA}"             "${artifact_sha}"             "${integrity_sha}"             > artifacts/v7/production-deployment-verification.json
-          BQ_LIVE_SMOKE_OUTPUT=artifacts/v7/production-live-smoke.json             node scripts/v6-live-smoke.mjs https://mybiblequest.pages.dev "${BQ_EXACT_SHA}"
+          node scripts/v6-deployment-verify.mjs \
+            https://mybiblequest.pages.dev \
+            "${BQ_EXACT_SHA}" \
+            "${artifact_sha}" \
+            "${integrity_sha}" \
+            > artifacts/v7/production-deployment-verification.json
+          BQ_LIVE_SMOKE_OUTPUT=artifacts/v7/production-live-smoke.json \
+            node scripts/v6-live-smoke.mjs https://mybiblequest.pages.dev "${BQ_EXACT_SHA}"
 
       - name: Seal production release certification
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
