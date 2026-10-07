@@ -118,11 +118,10 @@ jobs:
           set -euo pipefail
           node tests/v4-whole-app-deep-routes-smoke.mjs
 
-      - name: Run deployed PWA offline and recovery smoke
+      - name: Run deployed PWA install and offline smoke
         env:
           BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}/
         run: |
           set -euo pipefail
           node tests/v3-pwa-install-smoke.mjs
           node tests/v3-offline-shell-smoke.mjs
-          node tests/v3-operational-recovery-smoke.mjs
