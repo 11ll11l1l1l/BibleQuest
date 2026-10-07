@@ -24,8 +24,14 @@ test('all V7 launch books remain fail-closed external-link-only records', () => 
     assert.equal(book.rights.status, 'verified');
     assert.deepEqual(book.rights.allowedUses, ['external_link']);
     assert.equal(book.sourceContent.body, undefined);
-    assert.equal(book.publicationState, 'pending_review');
-    assert.equal(book.review.status, 'pending_review');
+    if (representative.some(item => item.id === book.id)) {
+      assert.equal(book.publicationState, 'published');
+      assert.equal(book.review.status, 'approved');
+      assert.equal(book.review.reviewer, 'biblequest.v7.representative-policy-v1');
+    } else {
+      assert.equal(book.publicationState, 'pending_review');
+      assert.equal(book.review.status, 'pending_review');
+    }
     assert.match(book.source.uri, /^https:\/\/www\.gutenberg\.org\/ebooks\/\d+$/);
   }
 });
