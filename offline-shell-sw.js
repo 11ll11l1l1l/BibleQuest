@@ -1,12 +1,13 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
-const CACHE_NAME=`${CACHE_PREFIX}v4`;
+const CACHE_NAME=`${CACHE_PREFIX}v5`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
 
 const sameOriginInScope=url=>url.origin===self.location.origin&&url.href.startsWith(self.registration.scope);
 const isNetworkProbe=url=>url.searchParams.has('bq-net-probe');
-const isShellRequest=(request,url)=>sameOriginInScope(url)&&!isNetworkProbe(url)&&(request.mode==='navigate'||SHELL_DESTINATIONS.has(request.destination));
+const isBuildAsset=url=>sameOriginInScope(url)&&url.pathname.includes('/_v6/');
+const isShellRequest=(request,url)=>sameOriginInScope(url)&&!isNetworkProbe(url)&&(request.mode==='navigate'||SHELL_DESTINATIONS.has(request.destination)||isBuildAsset(url));
 
 function safeNotificationUrl(raw){
   try{
@@ -185,7 +186,7 @@ self.addEventListener('fetch',event=>{
   event.respondWith((async()=>{
     const cache=await caches.open(CACHE_NAME);
     const matchCached=()=>cache.match(url.href,{ignoreSearch:request.mode==='navigate',ignoreVary:true});
-    if(url.pathname.includes('/_v6/')){
+    if(isBuildAsset(url)){
       const immutable=await matchCached();
       if(immutable)return immutable;
     }
