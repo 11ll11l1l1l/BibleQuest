@@ -58,14 +58,16 @@ jobs:
         env:
           BQ_BUILD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          kill "$(cat /tmp/biblequest-v4-whole-app-http.pid)" || true
+          # Keep the source-mode Vite server on 4173 for the earlier harnesses.
+          # Use a dedicated port for dist-v6 so a surviving Vite child process can
+          # never satisfy the readiness probe for the deployable-artifact check.
           npm run build
-          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v4-whole-app-preview.log 2>&1 &
+          npm run preview -- --host 127.0.0.1 --port 4174 > /tmp/biblequest-v4-whole-app-preview.log 2>&1 &
           echo $! > /tmp/biblequest-v4-whole-app-preview.pid
           for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
-              node tests/v3-offline-shell-smoke.mjs
-              exit 0
+            if curl -fsS http://127.0.0.1:4174/ >/dev/null; then
+              BQ_BASE_URL=http://127.0.0.1:4174/ node tests/v3-offline-shell-smoke.mjs
+              exit $?
             fi
             sleep 1
           done
