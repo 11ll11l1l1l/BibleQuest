@@ -1,0 +1,750 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "emotion.guilt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Guilt"
+      }
+    },
+    {
+      "id": "need.forgiveness",
+      "kind": "need",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "topic.repentance",
+      "kind": "topic",
+      "labels": {
+        "en": "Repentance"
+      }
+    },
+    {
+      "id": "life_situation.failure",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Failure"
+      }
+    },
+    {
+      "id": "emotion.shame",
+      "kind": "emotion",
+      "labels": {
+        "en": "Shame"
+      }
+    },
+    {
+      "id": "need.grace",
+      "kind": "need",
+      "labels": {
+        "en": "Grace"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "topic.joy",
+      "kind": "topic",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "life_situation.celebration",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Celebration"
+      }
+    },
+    {
+      "id": "emotion.excitement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Excitement"
+      }
+    },
+    {
+      "id": "need.wisdom",
+      "kind": "need",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "emotion.love_connection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Love / connection"
+      }
+    },
+    {
+      "id": "topic.love",
+      "kind": "topic",
+      "labels": {
+        "en": "Love"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.guilt.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Bring the wrong into the light",
+        "catalogId": "biblequest.v7.original.guilt.11",
+        "revision": "r1",
+        "checksum": "sha256:8b24fbd9fc30662dbe3b22f734da457d307b796059a8e1ec312e7a8ccb557faa",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Bring the wrong into the light",
+        "body": "Read Psalm 32:5. Name the wrong plainly before God instead of softening it or punishing yourself for it. If another person was harmed, identify one honest step of confession, restitution, or repair that is safe and appropriate. Receive forgiveness as grace, then take that concrete step without using shame as a substitute for repentance."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.guilt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.forgiveness",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.repentance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Ilabas sa liwanag ang pagkakamali",
+            "body": "Basahin ang Psalm 32:5. Pangalanan nang malinaw sa Diyos ang nagawang mali sa halip na pagaanin ito o parusahan ang sarili. Kung may taong nasaktan, tukuyin ang isang tapat na hakbang ng pag-amin, pagsasauli, o pag-aayos na ligtas at nararapat. Tanggapin ang kapatawaran bilang biyaya, pagkatapos ay gawin ang konkretong hakbang na iyon nang hindi ginagawang kapalit ng pagsisisi ang kahihiyan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Dad-a sa kahayag ang sayop",
+            "body": "Basaha ang Psalm 32:5. Isulti sa Dios ang sayop nga tin-aw imbes nga pahumokon kini o silotan ang imong kaugalingon. Kon adunay tawo nga nasakitan, ilhon ang usa ka matinud-anong lakang sa pag-angkon, pag-uli, o pag-ayo nga luwas ug angay. Dawata ang kapasayloan isip grasya, dayon buhata ang maong konkretong lakang nga dili himuong puli sa paghinulsol ang kaulaw."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Iyegmo iti lawag ti biddut",
+            "body": "Basaem ti Psalm 32:5. Inagam ti biddut iti Dios a nalawag imbes a pabassitem dayta wenno dusaem ti bagim. No adda nasaktan a tao, ilasin ti maysa a napudno nga addang ti panangibaga, panangisubli, wenno panangurnos a natalged ken umno. Awatem ti pannakapakawan kas parabur, sa aramidem dayta a nalawag nga addang a saan a pagbalinen ti bain a kasukat ti panagbabawi."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.shame.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Reject the label that shame assigns",
+        "catalogId": "biblequest.v7.original.shame.11",
+        "revision": "r1",
+        "checksum": "sha256:36db3b9a6b63fc5e0c72a3110bfb93be39932605cd3134aeecf221a3ceefe733",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Reject the label that shame assigns",
+        "body": "Read Isaiah 54:4. Write down the label shame keeps attaching to you, then separate that label from what actually needs confession, healing, or growth. Choose one action today that treats you as a person still worthy of honest care before God: ask for help, return to community, or complete one responsibility without hiding."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.shame",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.grace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Tanggihan ang tatak na ibinibigay ng kahihiyan",
+            "body": "Basahin ang Isaiah 54:4. Isulat ang tatak na paulit-ulit na ikinakabit sa iyo ng kahihiyan, pagkatapos ay ihiwalay iyon sa talagang kailangang aminin, pagalingin, o palaguin. Pumili ngayong araw ng isang kilos na kumikilala na karapat-dapat ka pa ring alagaan nang tapat sa harap ng Diyos: humingi ng tulong, bumalik sa komunidad, o tapusin ang isang pananagutan nang hindi nagtatago."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Isalikway ang ngalan nga gipapilit sa kaulaw",
+            "body": "Basaha ang Isaiah 54:4. Isulat ang ngalan nga sige og ipilit sa imo sa kaulaw, dayon ilahi kana gikan sa tinuod nga kinahanglan angkonon, ayuhon, o patuboon. Pagpili karong adlawa og usa ka lihok nga nagtratar kanimo isip tawo nga angay gihapong atimanon sa atubangan sa Dios: pangayo og tabang, balik sa komunidad, o tapusa ang usa ka responsibilidad nga dili magtago."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Saanmo nga awaten ti marka ti bain",
+            "body": "Basaem ti Isaiah 54:4. Isuratmo ti marka a kanayon nga ikabil kenka ti bain, sa ilasinmo dayta manipud iti pudno a kasapulan nga ipudno, paimbagen, wenno padakkelen. Pilien ita nga aldaw ti maysa nga aramid a mangipakita a maikari ka pay iti napudno a panangaywan iti sangoanan ti Dios: agkiddaw iti tulong, agsubli iti komunidad, wenno leppasem ti maysa a pagrebbengan a saan nga aglemmeng."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Stay when you feel nothing",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.11",
+        "revision": "r1",
+        "checksum": "sha256:927a5c00f27f5b03d64513b0418b61bd24c8e7a991cc35732c0848845c653a63",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Stay when you feel nothing",
+        "body": "Read John 15:4. Do not use strong feelings as the test of whether abiding is real. Keep one simple rhythm for the next day: return to the passage, pray one honest sentence, and remain available to God even if the moment feels ordinary. Faithfulness during dryness is still faithfulness."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.spiritual_growth",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Manatili kahit wala kang maramdaman",
+            "body": "Basahin ang John 15:4. Huwag gawing sukatan ang matinding damdamin kung tunay ang pananatili kay Cristo. Panatilihin ang isang simpleng ritmo sa susunod na araw: balikan ang talata, manalangin ng isang tapat na pangungusap, at manatiling bukas sa Diyos kahit ordinaryo ang sandali. Ang katapatan sa panahon ng espirituwal na pagkatuyo ay katapatan pa rin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Pabilin bisan walay kusog nga pagbati",
+            "body": "Basaha ang John 15:4. Ayaw gamita ang kusog nga pagbati isip sukod kung tinuod ba ang pagpabilin kang Cristo. Hupti ang usa ka yano nga ritmo sa sunod nga adlaw: balika ang teksto, pag-ampo og usa ka matinud-anong sentence, ug magpabiling bukas sa Dios bisan ordinaryo ang higayon. Ang pagkamatinud-anon panahon sa espirituwal nga kauga, pagkamatinud-anon gihapon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Agtalinaedka uray awan ti napigsa a rikna",
+            "body": "Basaem ti John 15:4. Saanmo nga aramaten ti napigsa a rikna kas pagrukod no pudno ti panagtalinaed ken Cristo. Salimetmetam ti maysa a simple a ritmo iti sumaruno nga aldaw: subliem ti teksto, agkararagka iti maysa a napudno a pangungusap, ken agtalinaedka a silulukat iti Dios uray ordinaryo ti kanito. Ti kinapudno iti panawen ti espirituwal a tikag ket kinapudno latta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Change the conditions before temptation returns",
+        "catalogId": "biblequest.v7.original.temptation.11",
+        "revision": "r1",
+        "checksum": "sha256:2517ccb977983b82b6bdad598e24c1d3b3283340a581a1fbf25f0b0107c23d4d",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Change the conditions before temptation returns",
+        "body": "Read Matthew 26:41. Identify the place, time, device, conversation, or emotion that usually lowers your resistance. Change one condition before the next vulnerable moment: remove access, leave earlier, add accountability, or prepare a different response. Then pray specifically for alertness and strength rather than relying on willpower alone."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Baguhin ang kalagayan bago bumalik ang tukso",
+            "body": "Basahin ang Matthew 26:41. Tukuyin ang lugar, oras, device, usapan, o damdaming karaniwang nagpapahina sa iyong paglaban. Baguhin ang isang kondisyon bago dumating ang susunod na mahina mong sandali: alisin ang access, umalis nang mas maaga, magdagdag ng taong mananagot sa iyo, o maghanda ng ibang tugon. Pagkatapos ay manalangin nang tiyak para sa pag-iingat at lakas sa halip na umasa lamang sa sariling pagpipigil."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Usba ang kahimtang sa dili pa mobalik ang tentasyon",
+            "body": "Basaha ang Matthew 26:41. Ilhon ang lugar, oras, device, panag-istorya, o pagbati nga kasagarang makapaluya sa imong pagsukol. Usba ang usa ka kondisyon sa dili pa moabot ang sunod nga huyang nga higayon: kuhaa ang access, hawa sayo, pagdugang og accountability, o andama ang laing tubag. Dayon pag-ampo nga piho alang sa pagkaalerto ug kusog imbes nga mosalig lamang sa kaugalingong kusog."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Baliwam ti kasasaad sakbay nga agsubli ti sulisog",
+            "body": "Basaem ti Matthew 26:41. Ilasin ti lugar, oras, device, panagsarita, wenno rikna a gagangay a mangpakapuy iti panagkedkedmo. Baliwam ti maysa a kasasaad sakbay ti sumaruno a narigat a kanito: ikkaten ti akses, pumanaw a nasapsapa, mangala iti accountability, wenno mangisagana iti sabali a sungbat. Sa agkararagka a nalawag para iti panagserrek ken pigsa imbes nga agtalek laeng iti bukodmo a pigsa."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.excitement.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Let joy become gratitude, not self-importance",
+        "catalogId": "biblequest.v7.original.excitement.11",
+        "revision": "r1",
+        "checksum": "sha256:3b3cbc6aedd0c5b2565ecaa260dee1179cb07a0bc321f286c9694d04b4e04b0f",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Let joy become gratitude, not self-importance",
+        "body": "Read Luke 10:20. Enjoy what is good without making success, attention, or momentum the center of your identity. Name the gift, thank God for it, and choose one way to share the good without turning the moment into a performance. Let celebration make you more generous and grounded."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.excitement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.wisdom",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Gawing pasasalamat ang saya, hindi pagpapahalaga sa sarili",
+            "body": "Basahin ang Luke 10:20. Tamasahin ang mabuti nang hindi ginagawang sentro ng iyong pagkakakilanlan ang tagumpay, pansin, o mabilis na pag-usad. Pangalanan ang biyaya, magpasalamat sa Diyos, at pumili ng isang paraan upang ibahagi ang mabuti nang hindi ginagawang pagtatanghal ang sandali. Hayaang ang pagdiriwang ay gawin kang mas mapagbigay at matatag."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Himoang pasalamat ang kalipay, dili pagpasigarbo",
+            "body": "Basaha ang Luke 10:20. Lipayi ang maayo nga dili himuong sentro sa imong pagkatawo ang kalampusan, atensyon, o kusog nga pag-uswag. Hingani ang gasa, pasalamati ang Dios, ug pagpili og usa ka paagi sa pagpaambit sa maayo nga dili himuong pasundayag ang higayon. Tugoti ang pagsaulog nga maghimo kanimo nga mas manggihatagon ug lig-on."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Pagbalinem a panagyaman ti rag-o, saan a panagpateg iti bagim",
+            "body": "Basaem ti Luke 10:20. Agrag-oka iti naimbag a saan a pagbalinen ti balligi, atension, wenno napigsa a panagdur-as a sentro ti kinasiasinom. Inagam ti sagut, agyamanka iti Dios, ken pilien ti maysa a wagas a mangibingay iti naimbag a saan a pagbalinen ti kanito a pabuya. Palubosam ti panagrambak a mangaramid kenka a naparabur ken natibker."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.love_connection.11",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Obedience - Make love concrete in one relationship",
+        "catalogId": "biblequest.v7.original.love_connection.11",
+        "revision": "r1",
+        "checksum": "sha256:474803fa39a832f58c3491f19e4c68ddf79829ca1792d719e3dd6d36e372011c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Obey: Make love concrete in one relationship",
+        "body": "Read 1 Corinthians 13:4-5. Choose one relationship where love needs a visible form today. Pick one quality from the passage—patience, kindness, humility, or refusing self-seeking—and turn it into a specific action: listen without interrupting, serve without announcing it, apologize, or give someone unhurried attention."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional obedience exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.love_connection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.love",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Sumunod: Gawing konkreto ang pag-ibig sa isang relasyon",
+            "body": "Basahin ang 1 Corinthians 13:4-5. Pumili ng isang relasyon kung saan kailangang makita ang pag-ibig ngayong araw. Pumili ng isang katangian mula sa talata—pagtitiis, kabaitan, pagpapakumbaba, o hindi pagiging makasarili—at gawing tiyak na kilos: makinig nang hindi sumasabat, maglingkod nang hindi ipinapaalam, humingi ng tawad, o magbigay ng oras at buong pansin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Tuman: Himoang konkreto ang gugma sa usa ka relasyon",
+            "body": "Basaha ang 1 Corinthians 13:4-5. Pagpili og usa ka relasyon diin kinahanglan makita ang gugma karong adlawa. Pagpili og usa ka kalidad gikan sa teksto—pagpailob, kaayo, pagpaubos, o dili pagpangita sa kaugalingong kaayohan—ug himoa kini nga piho nga buhat: paminaw nga dili mosapaw, pag-alagad nga dili ipahibalo, pangayo og pasaylo, o paghatag og oras ug bug-os nga pagtagad."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:20:00Z",
+          "content": {
+            "title": "Agtulnog: Aramidem a nalawag ti ayat iti maysa a relasyon",
+            "body": "Basaem ti 1 Corinthians 13:4-5. Pilien ti maysa a relasyon a kasapulan ti makita nga ayat ita nga aldaw. Pilien ti maysa a kababalin manipud iti teksto—anus, kinamanangngaasi, kinapakumbaba, wenno saan a panagbirok iti bukod a pagimbagan—ket pagbalinem dayta a nalawag nga aramid: dumngeg a saan a mangsabat, agserbi a saan nga ipakaammo, agpakawan wenno agkiddaw iti pannakapakawan, wenno mangted iti oras ken naan-anay a panagdengngeg."
+          }
+        }
+      ]
+    }
+  ]
+}
