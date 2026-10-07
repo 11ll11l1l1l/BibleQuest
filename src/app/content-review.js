@@ -55,10 +55,82 @@ function normalizeBook(row){
   return Object.freeze({code,name,quarantinedQuestions:Number.isSafeInteger(count)&&count>=0?count:0});
 }
 
+function normalizeLibraryDecision(row,revisionId){
+  if(clean(row?.revision_id)!==String(revisionId))return null;
+  const reviewerType=clean(row?.reviewer_type),decision=clean(row?.decision);
+  if(!['automated_policy','human'].includes(reviewerType))return null;
+  if(!['auto_approved','needs_repair','approved','request_changes','rejected'].includes(decision))return null;
+  const criteria=Array.isArray(row?.criteria)?row.criteria.filter(item=>item&&typeof item==='object').map(item=>Object.freeze({
+    id:clean(item.id),result:clean(item.result),hard:item.hard===true,terminal:item.terminal===true,evaluator:clean(item.evaluator),evaluatedAt:item.evaluatedAt||item.evaluated_at||null,
+    evidenceRefs:Object.freeze(Array.isArray(item.evidenceRefs)?item.evidenceRefs.map(clean).filter(Boolean):Array.isArray(item.evidence_refs)?item.evidence_refs.map(clean).filter(Boolean):[]),
+    note:clean(item.note)
+  })):Object.freeze([]);
+  const rawSecondPass=row?.second_pass&&typeof row.second_pass==='object'&&!Array.isArray(row.second_pass)?row.second_pass:null;
+  const secondPass=rawSecondPass&&Object.keys(rawSecondPass).length?Object.freeze({
+    result:clean(rawSecondPass.result),revision:clean(rawSecondPass.revision),evaluator:clean(rawSecondPass.evaluator),
+    evaluatedAt:rawSecondPass.evaluatedAt||rawSecondPass.evaluated_at||null,
+    evidenceRefs:Object.freeze(Array.isArray(rawSecondPass.evidenceRefs)?rawSecondPass.evidenceRefs.map(clean).filter(Boolean):Array.isArray(rawSecondPass.evidence_refs)?rawSecondPass.evidence_refs.map(clean).filter(Boolean):[]),
+    note:clean(rawSecondPass.note)
+  }):null;
+  return Object.freeze({
+    id:String(row?.id??''),itemId:clean(row?.item_id),revisionId:String(revisionId),contentType:clean(row?.content_type),reviewerType,decision,
+    policyId:clean(row?.policy_id),policyVersion:clean(row?.policy_version),reviewerId:clean(row?.reviewer_id),
+    criteria:Object.freeze(criteria),secondPass,evidenceRefs:Object.freeze(Array.isArray(row?.evidence_refs)?row.evidence_refs.map(clean).filter(Boolean):[]),
+    note:clean(row?.note),decidedAt:row?.decided_at||null,createdAt:row?.created_at||null
+  });
+}
+
+function normalizeLibraryQueue(payload){
+  const rows=payload&&typeof payload==='object'?payload:{};
+  const revisions=new Map((Array.isArray(rows.revisions)?rows.revisions:[]).map(row=>[String(row?.id||''),row]));
+  const translationsByRevision=new Map();
+  for(const row of Array.isArray(rows.translations)?rows.translations:[]){
+    const revisionId=String(row?.revision_id||'');if(!revisionId)continue;
+    const bucket=translationsByRevision.get(revisionId)||[];
+    bucket.push(Object.freeze({
+      locale:clean(row?.locale),title:clean(row?.title),summary:clean(row?.summary),body:row?.body??{},translator:clean(row?.translator),
+      reviewStatus:clean(row?.review_status),reviewerId:clean(row?.reviewer_id),reviewedAt:row?.reviewed_at||null
+    }));
+    translationsByRevision.set(revisionId,bucket);
+  }
+  const taxonomyById=new Map((Array.isArray(rows.taxonomy)?rows.taxonomy:[]).map(row=>[clean(row?.id),row]));
+  const taxonomyByRevision=new Map();
+  for(const row of Array.isArray(rows.taxonomyLinks)?rows.taxonomyLinks:[]){
+    const revisionId=String(row?.revision_id||''),taxonomy=taxonomyById.get(clean(row?.taxonomy_id));if(!revisionId||!taxonomy)continue;
+    const bucket=taxonomyByRevision.get(revisionId)||[];
+    bucket.push(Object.freeze({id:clean(taxonomy.id),kind:clean(taxonomy.kind),labels:taxonomy.labels&&typeof taxonomy.labels==='object'?taxonomy.labels:{},order:Number(row?.display_order)||0}));
+    taxonomyByRevision.set(revisionId,bucket);
+  }
+  const decisionsByRevision=new Map();
+  for(const raw of Array.isArray(rows.decisions)?rows.decisions:[]){
+    const revisionId=String(raw?.revision_id||'');if(!revisionId)continue;
+    const decision=normalizeLibraryDecision(raw,revisionId);if(!decision)continue;
+    const bucket=decisionsByRevision.get(revisionId)||[];bucket.push(decision);decisionsByRevision.set(revisionId,bucket);
+  }
+  const items=[];
+  for(const row of Array.isArray(rows.items)?rows.items:[]){
+    const revisionId=String(row?.current_revision_id||''),revision=revisions.get(revisionId);if(!revision)continue;
+    const contentType=clean(row?.content_type);if(!['book','devotional','past_teaching'].includes(contentType))continue;
+    const history=(decisionsByRevision.get(revisionId)||[]).sort((a,b)=>String(b.decidedAt||'').localeCompare(String(a.decidedAt||'')));
+    items.push(Object.freeze({
+      itemId:String(row.id),revisionId,contentType,congregationId:clean(row?.congregation_id),publicationState:clean(row?.publication_state),
+      revisionNumber:Number(revision?.revision_number)||0,sourceLocale:clean(revision?.source_locale),title:clean(revision?.title),summary:clean(revision?.summary),body:revision?.body??{},
+      revisionPublicationState:clean(revision?.publication_state),reviewStatus:clean(revision?.review_status),reviewerType:clean(revision?.reviewer_type),
+      reviewedAt:revision?.reviewed_at||null,policyId:clean(revision?.review_policy_id),policyVersion:clean(revision?.review_policy_version),reviewEvidence:revision?.review_evidence&&typeof revision.review_evidence==='object'?revision.review_evidence:{},
+      source:Object.freeze({kind:clean(revision?.source_kind),title:clean(revision?.source_title),uri:clean(revision?.source_uri),catalogId:clean(revision?.source_catalog_id),revision:clean(revision?.source_revision),date:revision?.source_date||null,checksum:clean(revision?.source_checksum),creator:clean(revision?.creator),organization:clean(revision?.originating_organization)}),
+      rights:Object.freeze({status:clean(revision?.rights_status),holder:clean(revision?.rights_holder),basis:clean(revision?.rights_basis),attribution:clean(revision?.attribution),allowedUses:Object.freeze(Array.isArray(revision?.allowed_uses)?revision.allowed_uses.map(clean).filter(Boolean):[])}),
+      translations:Object.freeze(translationsByRevision.get(revisionId)||[]),taxonomy:Object.freeze((taxonomyByRevision.get(revisionId)||[]).sort((a,b)=>a.order-b.order)),history:Object.freeze(history),latestDecision:history[0]||null
+    }));
+  }
+  return Object.freeze(items);
+}
+
 export function createContentReviewService({api,session,congregation,recall,clock=()=>new Date()}={}){
   if(!api?.platformAccess||!api?.listPlatformCongregations||!api?.loadQueue||!api?.saveDecision||!api?.markReportsReviewed||!session?.getState||!congregation?.load||!recall?.loadManifest||!recall?.loadQuarantine)throw new Error('Content Review requires shared API, Session, Congregation Membership and Recall owners.');
+  const loadLibraryQueue=typeof api.loadLibraryQueue==='function'?()=>api.loadLibraryQueue():async()=>({items:[],revisions:[],translations:[],taxonomyLinks:[],taxonomy:[],decisions:[]});
+  const saveLibraryHumanDecision=typeof api.saveLibraryHumanDecision==='function'?row=>api.saveLibraryHumanDecision(row):null;
 
-  const emptyState=(status='idle',error='')=>({status,scopes:Object.freeze([]),congregationId:'',congregationName:'',platformRole:'',books:Object.freeze([]),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze([]),members:new Map(),decisions:new Map(),busy:false,error,warning:''});
+  const emptyState=(status='idle',error='')=>({status,scopes:Object.freeze([]),congregationId:'',congregationName:'',platformRole:'',books:Object.freeze([]),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze([]),members:new Map(),decisions:new Map(),libraryItems:Object.freeze([]),busy:false,error,warning:''});
   let state=emptyState(),contextUserId='',refreshRequest=0,operationRequest=0,stateGeneration=0;
 
   const sessionState=()=>session.getState()||{};
@@ -83,7 +155,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     syncContext();
     return Object.freeze({
       status:state.status,scopes:state.scopes,congregationId:state.congregationId,congregationName:state.congregationName,platformRole:state.platformRole,
-      books:state.books,selectedBook:state.selectedBook,quarantine:state.quarantine,reports:state.reports,decisionCount:state.decisions.size,busy:state.busy,error:state.error,warning:state.warning
+      books:state.books,selectedBook:state.selectedBook,quarantine:state.quarantine,reports:state.reports,decisionCount:state.decisions.size,libraryItems:state.libraryItems,busy:state.busy,error:state.error,warning:state.warning
     });
   };
   const reset=(status,error='',userId=currentUserId())=>{
@@ -134,13 +206,16 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       }else if(accessError&&!membershipScopes.length){throw reviewError(accessError,'BQ_CONTENT_REVIEW_ACCESS_UNAVAILABLE')}
       const byId=new Map();for(const row of [...membershipScopes,...platformScopes])if(!byId.has(row.id)||row.source==='platform')byId.set(row.id,row);
       const scopes=freezeArray([...byId.values()]);
-      if(!scopes.length)return reset('unauthorized','',userId);
+      if(!scopes.length&&!siteRole)return reset('unauthorized','',userId);
+      const loadedLibraryItems=normalizeLibraryQueue(await loadLibraryQueue());
+      const libraryItems=Object.freeze(loadedLibraryItems.filter(item=>item.congregationId?byId.has(item.congregationId):Boolean(siteRole)));
+      if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const requested=clean(preferredCongregationId);
       if(requested&&!byId.has(requested))throw reviewError('Your account cannot review that congregation.','BQ_CONTENT_REVIEW_SCOPE_DENIED');
       const keep=state.congregationId&&byId.has(state.congregationId)?state.congregationId:'';
       const selected=byId.get(requested||keep||clean(congregation.getActive?.()?.congregationId));
       if(!selected){
-        state={...emptyState('ready'),scopes,platformRole:siteRole,warning:accessError&&membershipScopes.length?accessError:''};
+        state={...emptyState('ready'),scopes,platformRole:siteRole,libraryItems,warning:accessError&&membershipScopes.length?accessError:''};
         return snapshot();
       }
       const [queue,manifest]=await Promise.all([api.loadQueue(selected.id),recall.loadManifest()]);
@@ -149,7 +224,7 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       const reports=[];for(const raw of Array.isArray(queue?.reports)?queue.reports:[]){const row=normalizeReport(raw,selected.id);if(row)reports.push(row)}
       const members=new Map();for(const raw of Array.isArray(queue?.members)?queue.members:[]){const row=normalizeMember(raw);if(row)members.set(row.userId,row)}
       const books=(Array.isArray(manifest?.books)?manifest.books:[]).map(normalizeBook).filter(Boolean).filter(row=>row.quarantinedQuestions!==0);
-      state={status:'ready',scopes,congregationId:selected.id,congregationName:selected.name,platformRole:siteRole,books:freezeArray(books),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze(reports),members,decisions,busy:false,error:'',warning:accessError&&membershipScopes.length?accessError:''};
+      state={status:'ready',scopes,congregationId:selected.id,congregationName:selected.name,platformRole:siteRole,books:freezeArray(books),selectedBook:'',quarantine:Object.freeze([]),reports:Object.freeze(reports),members,decisions,libraryItems,busy:false,error:'',warning:accessError&&membershipScopes.length?accessError:''};
       return snapshot();
     }catch(error){
       if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
@@ -189,6 +264,51 @@ export function createContentReviewService({api,session,congregation,recall,cloc
   }
 
   function decisionFor(contentKey){syncContext();return state.decisions.get(clean(contentKey))||null}
+  function libraryReviewItems(contentType=''){
+    syncContext();
+    const type=clean(contentType);
+    return Object.freeze(state.libraryItems.filter(item=>!type||item.contentType===type));
+  }
+
+  function findLibraryTarget(revisionId){
+    const id=String(revisionId||'');
+    return state.libraryItems.find(item=>item.revisionId===id)||null;
+  }
+
+  async function decideLibrary({revisionId,decision,rationale=''}={}){
+    const userId=currentUserId();
+    if(!saveLibraryHumanDecision)throw reviewError('Library audit writes are unavailable in this runtime.','BQ_LIBRARY_REVIEW_UNAVAILABLE');
+    if(!userId)throw reviewError('Sign in before reviewing Library content.','BQ_LIBRARY_REVIEW_AUTH_REQUIRED');
+    if(state.status!=='ready'||contextUserId!==userId)throw reviewError('Open Content Review before reviewing Library content.','BQ_LIBRARY_REVIEW_NOT_READY');
+    const choice=clean(decision);
+    if(!['approved','request_changes','rejected'].includes(choice))throw reviewError('Choose Approve, Request Changes, or Reject.','BQ_LIBRARY_REVIEW_DECISION_INVALID');
+    const note=clean(rationale);
+    if(note.length>4000)throw reviewError('Reviewer note must be 4,000 characters or fewer.','BQ_LIBRARY_REVIEW_RATIONALE_INVALID');
+    const target=findLibraryTarget(revisionId);
+    if(!target)throw reviewError('That Library revision is not in your authorized review queue.','BQ_LIBRARY_REVIEW_ITEM_INVALID');
+    const stampRaw=clock(),stamp=stampRaw instanceof Date?stampRaw:new Date(stampRaw);if(!Number.isFinite(stamp.getTime()))throw new Error('Library review timestamp is invalid.');
+    const decidedAt=stamp.toISOString(),generation=stateGeneration,request=++operationRequest;
+    state={...state,busy:true,error:''};
+    try{
+      const saved=await saveLibraryHumanDecision({
+        item_id:target.itemId,revision_id:target.revisionId,content_type:target.contentType,reviewer_type:'human',decision:choice,
+        policy_id:null,policy_version:null,reviewer_id:userId,criteria:[],evidence_refs:[],note:note||null,decided_at:decidedAt
+      });
+      if(!operationCurrent(userId,generation,request))throw staleError();
+      const normalized=normalizeLibraryDecision(saved||{},target.revisionId);
+      if(!normalized)throw reviewError('Saved Library review decision could not be verified.','BQ_LIBRARY_REVIEW_RESPONSE_INVALID');
+      state={...state,busy:false,libraryItems:Object.freeze(state.libraryItems.map(item=>{
+        if(item.revisionId!==target.revisionId)return item;
+        const history=Object.freeze([normalized,...item.history.filter(row=>row.id!==normalized.id)]);
+        return Object.freeze({...item,history,latestDecision:history[0]});
+      }))};
+      return Object.freeze({saved:true,decision:normalized,state:snapshot()});
+    }catch(error){
+      if(!operationCurrent(userId,generation,request))throw staleError();
+      state={...state,busy:false,error:error?.message||'Library review decision could not be saved.'};
+      throw error;
+    }
+  }
 
   function findReviewTarget(contentKey){
     const key=clean(contentKey);if(!key)return null;
@@ -244,5 +364,5 @@ export function createContentReviewService({api,session,congregation,recall,cloc
     stateGeneration++;
     return reset('idle','',currentUserId());
   }
-  return Object.freeze({refresh,selectCongregation,openQuarantine,reportItems,decisionFor,decide,getState:snapshot,clear,decisions:Object.freeze([...DECISIONS])});
+  return Object.freeze({refresh,selectCongregation,openQuarantine,reportItems,decisionFor,libraryReviewItems,decideLibrary,decide,getState:snapshot,clear,decisions:Object.freeze([...DECISIONS])});
 }
