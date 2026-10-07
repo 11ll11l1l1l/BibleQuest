@@ -55,8 +55,9 @@ test('rights-clear first-party Past Teaching sample replaces unresolved external
   const teaching = bundle.items[0];
   assert.equal(teaching.type, 'past_teaching');
   assert.equal(teaching.source.kind, 'first_party');
-  assert.equal(teaching.publicationState, 'pending_review');
-  assert.equal(teaching.review.status, 'pending_review');
+  assert.equal(teaching.publicationState, 'published');
+  assert.equal(teaching.review.status, 'approved');
+  assert.equal(teaching.review.reviewer, 'biblequest.v7.representative-policy-v1');
   assert.equal(teaching.rights.status, 'verified');
   assert.ok(teaching.rights.allowedUses.includes('display'));
   assert.match(teaching.sourceContent.body, /John 15:7/);
