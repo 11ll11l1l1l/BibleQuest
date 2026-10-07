@@ -30,5 +30,5 @@ test('shared API reads the global Library queue and writes only explicit human a
     assert.ok(api.includes(`.from('${table}')`),`missing Library review API table ${table}`);
   }
   assert.ok(api.includes('saveLibraryHumanDecision'));
-  assert.ok(api.includes("client.from('v7_library_review_decisions').insert(row)"));
+  assert.ok(api.includes("client.rpc('bible_v7_apply_human_library_review'"));
 });
