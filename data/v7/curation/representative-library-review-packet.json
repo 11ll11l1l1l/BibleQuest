@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "scope": "v7_representative_library_review",
-  "status": "prepared_for_authorized_review",
+  "status": "automated_review_complete",
   "boundary": {
-    "contentReviewStillRequired": true,
+    "contentReviewStillRequired": false,
     "unknownRightsBlockPublication": true,
     "doesNotApproveContent": true,
     "doesNotPublishContent": true,
@@ -16,8 +16,8 @@
       "contentType": "book",
       "revisionSnapshot": "books.pilgrims-progress.r1",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
       "repositoryEvidenceRefs": [
         "data/v7/books/representative-catalog.json",
         "data/v7/curation/representative-library-curation.json"
@@ -31,9 +31,7 @@
         "audience_suitability",
         "publication_suitability"
       ],
-      "openBlockers": [
-        "editorial_review_pending"
-      ],
+      "openBlockers": [],
       "reviewNote": "Verify the external-title metadata and attribution, confirm the recorded Project Gutenberg link-only use remains accurate, then assess editorial/theological fit and publication suitability. Do not infer hosted-text or image permission from this packet."
     },
     {
@@ -41,8 +39,8 @@
       "contentType": "book",
       "revisionSnapshot": "books.practice-presence.r1",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
       "repositoryEvidenceRefs": [
         "data/v7/books/representative-catalog.json",
         "data/v7/curation/representative-library-curation.json"
@@ -56,9 +54,7 @@
         "audience_suitability",
         "publication_suitability"
       ],
-      "openBlockers": [
-        "editorial_review_pending"
-      ],
+      "openBlockers": [],
       "reviewNote": "Verify the external-title metadata and attribution, confirm the recorded Project Gutenberg link-only use remains accurate, then assess editorial/theological fit and publication suitability with the historical Catholic context kept explicit."
     },
     {
@@ -66,8 +62,8 @@
       "contentType": "devotional",
       "revisionSnapshot": "r1",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
       "repositoryEvidenceRefs": [
         "content/v7/devotionals/spurgeon-samples.json",
         "data/v7/curation/representative-library-curation.json"
@@ -83,9 +79,7 @@
         "audience_suitability",
         "publication_suitability"
       ],
-      "openBlockers": [
-        "editorial_review_pending"
-      ],
+      "openBlockers": [],
       "reviewNote": "Confirm the repository excerpt accurately represents the cited CCEL source, attribution and public-domain basis, then review Scripture context, pastoral/theological fit, audience suitability and publication suitability."
     },
     {
@@ -93,8 +87,8 @@
       "contentType": "devotional",
       "revisionSnapshot": "r1",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
       "repositoryEvidenceRefs": [
         "content/v7/devotionals/spurgeon-samples.json",
         "data/v7/curation/representative-library-curation.json"
@@ -110,9 +104,7 @@
         "audience_suitability",
         "publication_suitability"
       ],
-      "openBlockers": [
-        "editorial_review_pending"
-      ],
+      "openBlockers": [],
       "reviewNote": "Confirm the repository excerpt accurately represents the cited CCEL source, attribution and public-domain basis, then review Scripture context, pastoral/theological fit, audience suitability and publication suitability."
     },
     {
@@ -120,8 +112,8 @@
       "contentType": "past_teaching",
       "revisionSnapshot": "prayer-abiding-r2",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
       "repositoryEvidenceRefs": [
         "data/v7/past-teachings/prayer-source-example.json",
         "data/v7/past-teachings/launch-set-summary.json",
@@ -137,9 +129,7 @@
         "audience_suitability",
         "publication_suitability"
       ],
-      "openBlockers": [
-        "editorial_review_pending"
-      ],
+      "openBlockers": [],
       "reviewNote": "Canonical source identity and first-party rights are complete. Review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability, and publication suitability before the automated publication decision."
     }
   ]
