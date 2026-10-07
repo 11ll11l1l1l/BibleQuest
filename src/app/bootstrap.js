@@ -257,6 +257,9 @@ function start(){
 }
 
 function boot(root){
+  // Capture ONE 2 ONE deep-link identity before router/session resume callbacks can
+  // normalize the current route during a full reload (for example a locale switch).
+  const initialDiscipleshipTarget=discipleshipHydrationTarget(location.hash);
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
@@ -527,8 +530,9 @@ function boot(root){
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(()=>{
     // Authentication must hydrate the requested route independently of cloud progress.
-    // ONE 2 ONE deep links retain their bounded resource query across page/language reloads.
-    const discipleshipTarget=discipleshipHydrationTarget(location.hash);
+    // Prefer the pre-router snapshot because account-resume callbacks can normalize
+    // location.hash before async session hydration resolves on a full page reload.
+    const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(location.hash);
     if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
     else if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
