@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "scope": "v7_representative_library",
-  "curationStatus": "prepared_for_editorial_review",
+  "curationStatus": "release_ready",
   "boundary": {
     "purpose": "Editorial curation metadata keyed to the canonical V7 representative Library records.",
     "doesNotApproveContent": true,
@@ -82,8 +82,8 @@
       "editorialPriority": "high",
       "sourceNotes": "Canonical record is metadata/link-only through Project Gutenberg. Do not infer permission to host text, images, translations, or offline copies from this curation record.",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review"
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
     },
     {
       "itemId": "books.practice-presence",
@@ -151,8 +151,8 @@
       "editorialPriority": "high",
       "sourceNotes": "Canonical record permits an external link only. The repository's source note warns against inferring hosting rights for the linked edition.",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review"
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
     },
     {
       "itemId": "devotional.spurgeon.january-02-am",
@@ -215,8 +215,8 @@
       "editorialPriority": "high",
       "sourceNotes": "CCEL source identity and public-domain basis are recorded in the canonical bundle; this sidecar does not expand permitted uses or substitute for editorial approval.",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review"
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
     },
     {
       "itemId": "devotional.spurgeon.january-06-am",
@@ -281,8 +281,8 @@
       "editorialPriority": "high",
       "sourceNotes": "CCEL source identity and public-domain basis are recorded in the canonical bundle; this sidecar does not expand permitted uses or substitute for editorial approval.",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review"
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
     },
     {
       "itemId": "teaching.prayer-abiding",
@@ -352,8 +352,8 @@
       "editorialPriority": "highest",
       "sourceNotes": "Original first-party BibleQuest teaching. No external sermon prose is reproduced or adapted; rights are verified for display, translation, modification, and distribution.",
       "rightsStatusSnapshot": "verified",
-      "reviewStatusSnapshot": "pending_review",
-      "publicationStateSnapshot": "pending_review"
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
     }
   ]
 }
