@@ -7,7 +7,7 @@ This reset supersedes conflicting remaining-work instructions in earlier V7 phas
 
 ## Product goal
 
-Finish BibleQuest V7 as a releasable **Library + structured ONE 2 ONE** release, including the expanded launch content requested after the original V7 scope freeze.
+Finish BibleQuest V7 as a releasable **Library + structured ONE 2 ONE + coherent whole-app UI/UX** release, including the expanded launch content and 2026-10-08 visual/navigation overhaul requested after the original V7 scope freeze.
 
 V7 now includes:
 - Books launch catalog;
@@ -18,7 +18,8 @@ V7 now includes:
 - automated fail-closed content approval;
 - an in-app Library audit workflow built on Content Review;
 - complete structured ONE 2 ONE;
-- automated exact-SHA release certification and deployment verification.
+- automated exact-SHA release certification and deployment verification;
+- a release-blocking UI/UX overhaul under `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`: clear five-or-fewer primary navigation, readable typography/contrast, original consistent icons, image-led devotional/book/teaching cards, coherent Home/Library/reader surfaces, robust loading/empty/offline/error states, and automated responsive/accessibility checks.
 
 ## Retired work structure
 
@@ -75,6 +76,6 @@ V7 is done when:
 1. Lane A has produced >=150 fully reviewable EN/TL/CEB/ILO devotionals, 8 launch books with permitted-use handling, and rights-clear Past Teachings;
 2. Lane B automatically evaluates/publishes passing content and exposes Library audit/override inside protected Content Review;
 3. Lane C proves the complete authenticated ONE 2 ONE mentor-to-mentee journey and denial paths;
-4. Lane D freezes one exact candidate, passes consolidated automated content/security/browser/a11y/PWA/performance/regression gates, deploys it through the supported path, and verifies deployed identity/smoke.
+4. Lane D completes the global UI/UX overhaul, freezes one exact candidate, passes consolidated automated content/security/browser/a11y/PWA/performance/regression gates including the UI/UX ship gate, deploys it through the supported path, and verifies deployed identity/smoke.
 
 No post-release user audit result is required to call the implementation/release complete.
