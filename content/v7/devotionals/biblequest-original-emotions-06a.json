@@ -1,0 +1,1208 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.anxiety_worry",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anxiety / worry"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.trust",
+      "kind": "topic",
+      "labels": {
+        "en": "Trust"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.fear",
+      "kind": "emotion",
+      "labels": {
+        "en": "Fear"
+      }
+    },
+    {
+      "id": "need.courage",
+      "kind": "need",
+      "labels": {
+        "en": "Courage"
+      }
+    },
+    {
+      "id": "emotion.sadness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Sadness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.grief_loss",
+      "kind": "emotion",
+      "labels": {
+        "en": "Grief / loss"
+      }
+    },
+    {
+      "id": "need.comfort",
+      "kind": "need",
+      "labels": {
+        "en": "Comfort"
+      }
+    },
+    {
+      "id": "life_situation.loss",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Loss"
+      }
+    },
+    {
+      "id": "emotion.loneliness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Loneliness"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "life_situation.isolation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Isolation"
+      }
+    },
+    {
+      "id": "emotion.anger",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anger"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.relationships",
+      "kind": "topic",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "life_situation.conflict",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Conflict"
+      }
+    },
+    {
+      "id": "emotion.hurt_betrayal",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hurt / betrayal"
+      }
+    },
+    {
+      "id": "need.healing",
+      "kind": "need",
+      "labels": {
+        "en": "Healing"
+      }
+    },
+    {
+      "id": "emotion.rejection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Rejection"
+      }
+    },
+    {
+      "id": "need.belonging",
+      "kind": "need",
+      "labels": {
+        "en": "Belonging"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "emotion.guilt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Guilt"
+      }
+    },
+    {
+      "id": "need.forgiveness",
+      "kind": "need",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "topic.repentance",
+      "kind": "topic",
+      "labels": {
+        "en": "Repentance"
+      }
+    },
+    {
+      "id": "life_situation.failure",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Failure"
+      }
+    },
+    {
+      "id": "emotion.shame",
+      "kind": "emotion",
+      "labels": {
+        "en": "Shame"
+      }
+    },
+    {
+      "id": "need.grace",
+      "kind": "need",
+      "labels": {
+        "en": "Grace"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.anxiety_worry.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.anxiety_worry.06",
+        "revision": "r1",
+        "checksum": "sha256:bd324fb43c64d3817162138e8e5fc9a0858a6414e506baaa8c195b952f191471",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Ask what faithfulness looks like now",
+        "body": "You do not need a perfect feeling before you can act faithfully. Psalm 94:19 gives you a place to ask what obedience looks like in this moment. Read the passage, name one response that fits its truth, and do that one thing with prayer."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anxiety_worry",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Hindi mo kailangan ng perpektong damdamin bago ka makakilos nang tapat. Ang Psalm 94:19 ay nagbibigay ng lugar upang itanong kung ano ang hitsura ng pagsunod sa sandaling ito. Basahin ang talata, tukuyin ang isang tugon na naaayon sa katotohanan nito, at gawin ang isang bagay na iyon nang may panalangin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Dili kinahanglan nga perpekto ang pagbati sa dili pa ka molihok nga matinud-anon. Ang Psalm 94:19 naghatag ug dapit aron mangutana unsa ang hitsura sa pagtuman niining higayona. Basaha ang teksto, ilhon ang usa ka tubag nga uyon sa kamatuoran niini, ug buhata kana uban sa pag-ampo."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Saan a masapul a perpekto ti riknam sakbay a makaaramidka iti napudno. Ti Psalm 94:19 mangted iti lugar tapno saludsodem no ania ti panagtulnog ita a kanito. Basaem ti teksto, ilasin ti maysa a sungbat a maitunos iti kinapudnona, ken aramidem dayta nga adda kararag."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.fear.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.fear.06",
+        "revision": "r1",
+        "checksum": "sha256:32deacb95990470d236b036fcb67001210a82fc24023d0ff1525849c8b874317",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Take the next step without carrying tomorrow",
+        "body": "Tomorrow's weight can make today's duty feel heavier than it is. Joshua 1:9 redirects attention to what can be received and practiced now. Let the passage narrow your focus to one faithful step for today, and leave tomorrow in God's hands."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.fear",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.courage",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Maaaring gawing mas mabigat ng bigat ng bukas ang tungkulin ngayon. Ibinabalik ng Joshua 1:9 ang pansin sa maaaring tanggapin at isabuhay ngayon. Hayaang ituon ng talata ang pansin mo sa isang tapat na hakbang para sa araw na ito, at ipaubaya ang bukas sa mga kamay ng Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Ang kabug-at sa ugma makapabati nga mas bug-at ang buluhaton karon. Ang Joshua 1:9 nagbalik sa pagtagad sa mahimo natong dawaton ug buhaton karon. Pasagdi nga ipunting sa teksto ang imong hunahuna sa usa ka matinud-anong lakang karon, ug itugyan ang ugma sa mga kamot sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Ti bigat ti inton bigat mabalinna a pagparangaren a dakdakkel ti obligasion ita. Ti Joshua 1:9 mangisubli iti imatang iti mabalin a awaten ken aramiden ita. Ipalubosmo a ti teksto ti mangiturong kenka iti maysa a napudno nga addang ita, ken italekmo ti inton bigat kadagiti ima ti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.sadness.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.sadness.06",
+        "revision": "r1",
+        "checksum": "sha256:e269c3ea988625828eb9293a80b846a8483c57c9a16a13d0e0024b39275823d2",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Turn attention toward what God has given",
+        "body": "Strong emotion can make the missing thing feel larger than everything that remains. Psalm 42:5 helps you notice what God has already placed before you. Read it slowly, name one gift or responsibility you still have, and respond to it with gratitude and care."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.sadness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Maaaring gawing napakalaki ng matinding damdamin ang bagay na kulang kumpara sa lahat ng natitira. Tinutulungan ka ng Psalm 42:5 na mapansin ang inilagay na ng Diyos sa harap mo. Basahin ito nang dahan-dahan, pangalanan ang isang biyaya o pananagutang nasa iyo pa, at tugunan iyon nang may pasasalamat at pag-iingat."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Ang kusog nga pagbati makapadako sa kulang nga butang kaysa sa tanan nga nagpabilin. Ang Psalm 42:5 motabang kanimo sa pagtan-aw sa gibutang na sa Dios sa imong atubangan. Basaha kini hinay-hinay, ilhon ang usa ka gasa o responsibilidad nga anaa pa kanimo, ug tubaga kini uban sa pagpasalamat ug pag-atiman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Iturongmo ti imatang iti inted ti Dios",
+            "body": "Ti napigsa a rikna mabalinna a pagparangaren a dakdakkel ti awan ngem dagiti adda pay. Ti Psalm 42:5 tumulong kenka a mangkita iti inted ti Dios iti sangoanam. Basaem a naannad, naganam ti maysa a sagut wenno responsabilidad nga adda pay kenka, ken sungbatam dayta babaen iti panagyaman ken panangaywan."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.grief_loss.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.grief_loss.06",
+        "revision": "r1",
+        "checksum": "sha256:fbe29e2fe87ef1528ede42fd82f188eb528edc7174a0a5da3f332b85cf6dc246",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let prayer interrupt the spiral",
+        "body": "Thoughts can circle the same fear, hurt, or question until it feels impossible to move. Psalm 23:4 gives you words and direction outside that loop. Stop, pray from the passage, and choose one action that breaks the cycle instead of feeding it."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.grief_loss",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.comfort",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.loss",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Maaaring umikot ang isip sa iisang takot, sakit, o tanong hanggang parang imposibleng kumilos. Ang Psalm 23:4 ay nagbibigay ng mga salita at direksiyon sa labas ng siklong iyon. Huminto, manalangin mula sa talata, at pumili ng isang kilos na pumuputol sa siklo sa halip na palakasin ito."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Ang hunahuna mahimong magsige og tuyok sa mao rang kahadlok, kasakit, o pangutana hangtod murag lisod na molihok. Ang Psalm 23:4 naghatag ug mga pulong ug direksyon gawas niana nga siklo. Hunong, pag-ampo gikan sa teksto, ug pagpili ug usa ka lihok nga moputol sa siklo imbis nga modugang niini."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Ti panunot mabalinna nga agsublisubli iti isu met laeng a buteng, sakit, wenno saludsod agingga a kasla saanen a mabalin ti agtignay. Ti Psalm 23:4 mangted iti sasao ken pannakaiturong iti ruar dayta a siklo. Agsardengka, agkararag manipud iti teksto, ken piliem ti maysa nga aramid a mangputol iti siklo imbes a mangpapigsa iti dayta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.loneliness.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.loneliness.06",
+        "revision": "r1",
+        "checksum": "sha256:940e8097c349316c158fb3680cbb98b3ca10339fd8efbee7206941921996028c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make one choice that agrees with hope",
+        "body": "Hope becomes practical when it changes a real choice. Psalm 25:16 offers a truth that can shape what you do next. Identify one decision, conversation, or habit today where you can act as if God's truth is more reliable than the pressure you feel."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.loneliness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.isolation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Nagiging praktikal ang pag-asa kapag binabago nito ang isang tunay na pasiya. Ang Psalm 25:16 ay nagbibigay ng katotohanang maaaring humubog sa susunod mong gagawin. Tukuyin ang isang pasiya, pag-uusap, o gawi ngayon kung saan maaari kang kumilos na parang mas maaasahan ang katotohanan ng Diyos kaysa sa presyong nararamdaman mo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Mahimong praktikal ang paglaom kon usbon niini ang tinuod nga pagpili. Ang Psalm 25:16 naghatag ug kamatuoran nga makahulma sa imong sunod nga buhaton. Ilhon ang usa ka desisyon, panag-istorya, o batasan karon diin makalihok ka nga mas kasaligan ang kamatuoran sa Dios kaysa sa pressure nga imong gibati."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Ti namnama agbalin a praktikal no baliwanna ti pudno a pili. Ti Psalm 25:16 mangted iti kinapudno a mabalin a sukogen ti sumaruno nga aramidem. Ilasin ti maysa a desision, panagsasarita, wenno ugali ita a mabalinmo nga aramiden a kasla ad-adda a mapagtalkan ti kinapudno ti Dios ngem ti presion a mariknam."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.anger.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.anger.06",
+        "revision": "r1",
+        "checksum": "sha256:6e5a798fd2a4f7c4c48dba80160132227b0fa03cbf95881d6ed4f0f0a3a3acd8",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Ask what faithfulness looks like now",
+        "body": "You do not need a perfect feeling before you can act faithfully. Ephesians 4:26-27 gives you a place to ask what obedience looks like in this moment. Read the passage, name one response that fits its truth, and do that one thing with prayer."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anger",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Hindi mo kailangan ng perpektong damdamin bago ka makakilos nang tapat. Ang Ephesians 4:26-27 ay nagbibigay ng lugar upang itanong kung ano ang hitsura ng pagsunod sa sandaling ito. Basahin ang talata, tukuyin ang isang tugon na naaayon sa katotohanan nito, at gawin ang isang bagay na iyon nang may panalangin."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Dili kinahanglan nga perpekto ang pagbati sa dili pa ka molihok nga matinud-anon. Ang Ephesians 4:26-27 naghatag ug dapit aron mangutana unsa ang hitsura sa pagtuman niining higayona. Basaha ang teksto, ilhon ang usa ka tubag nga uyon sa kamatuoran niini, ug buhata kana uban sa pag-ampo."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Saan a masapul a perpekto ti riknam sakbay a makaaramidka iti napudno. Ti Ephesians 4:26-27 mangted iti lugar tapno saludsodem no ania ti panagtulnog ita a kanito. Basaem ti teksto, ilasin ti maysa a sungbat a maitunos iti kinapudnona, ken aramidem dayta nga adda kararag."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hurt_betrayal.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.hurt_betrayal.06",
+        "revision": "r1",
+        "checksum": "sha256:2fdf78ebc01773340ea8732302d9d64fbbdb8c23d00a27fcda92ba22c35b8528",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Take the next step without carrying tomorrow",
+        "body": "Tomorrow's weight can make today's duty feel heavier than it is. Psalm 55:12-14 redirects attention to what can be received and practiced now. Let the passage narrow your focus to one faithful step for today, and leave tomorrow in God's hands."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hurt_betrayal",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.healing",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Maaaring gawing mas mabigat ng bigat ng bukas ang tungkulin ngayon. Ibinabalik ng Psalm 55:12-14 ang pansin sa maaaring tanggapin at isabuhay ngayon. Hayaang ituon ng talata ang pansin mo sa isang tapat na hakbang para sa araw na ito, at ipaubaya ang bukas sa mga kamay ng Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Ang kabug-at sa ugma makapabati nga mas bug-at ang buluhaton karon. Ang Psalm 55:12-14 nagbalik sa pagtagad sa mahimo natong dawaton ug buhaton karon. Pasagdi nga ipunting sa teksto ang imong hunahuna sa usa ka matinud-anong lakang karon, ug itugyan ang ugma sa mga kamot sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Ti bigat ti inton bigat mabalinna a pagparangaren a dakdakkel ti obligasion ita. Ti Psalm 55:12-14 mangisubli iti imatang iti mabalin a awaten ken aramiden ita. Ipalubosmo a ti teksto ti mangiturong kenka iti maysa a napudno nga addang ita, ken italekmo ti inton bigat kadagiti ima ti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.rejection.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.rejection.06",
+        "revision": "r1",
+        "checksum": "sha256:1e923788168a02c99ef01078821f85859847ab7a8dd783a4f1eed04761be5ee3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Turn attention toward what God has given",
+        "body": "Strong emotion can make the missing thing feel larger than everything that remains. Psalm 27:10 helps you notice what God has already placed before you. Read it slowly, name one gift or responsibility you still have, and respond to it with gratitude and care."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.rejection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.belonging",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Maaaring gawing napakalaki ng matinding damdamin ang bagay na kulang kumpara sa lahat ng natitira. Tinutulungan ka ng Psalm 27:10 na mapansin ang inilagay na ng Diyos sa harap mo. Basahin ito nang dahan-dahan, pangalanan ang isang biyaya o pananagutang nasa iyo pa, at tugunan iyon nang may pasasalamat at pag-iingat."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Ang kusog nga pagbati makapadako sa kulang nga butang kaysa sa tanan nga nagpabilin. Ang Psalm 27:10 motabang kanimo sa pagtan-aw sa gibutang na sa Dios sa imong atubangan. Basaha kini hinay-hinay, ilhon ang usa ka gasa o responsibilidad nga anaa pa kanimo, ug tubaga kini uban sa pagpasalamat ug pag-atiman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Iturongmo ti imatang iti inted ti Dios",
+            "body": "Ti napigsa a rikna mabalinna a pagparangaren a dakdakkel ti awan ngem dagiti adda pay. Ti Psalm 27:10 tumulong kenka a mangkita iti inted ti Dios iti sangoanam. Basaem a naannad, naganam ti maysa a sagut wenno responsabilidad nga adda pay kenka, ken sungbatam dayta babaen iti panagyaman ken panangaywan."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.guilt.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.guilt.06",
+        "revision": "r1",
+        "checksum": "sha256:41fc89d34e3ac2fdd6a176535c794133c8c83782c4ce54cfea48783ea8dd48e8",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let prayer interrupt the spiral",
+        "body": "Thoughts can circle the same fear, hurt, or question until it feels impossible to move. Psalm 32:5 gives you words and direction outside that loop. Stop, pray from the passage, and choose one action that breaks the cycle instead of feeding it."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.guilt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.forgiveness",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.repentance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Maaaring umikot ang isip sa iisang takot, sakit, o tanong hanggang parang imposibleng kumilos. Ang Psalm 32:5 ay nagbibigay ng mga salita at direksiyon sa labas ng siklong iyon. Huminto, manalangin mula sa talata, at pumili ng isang kilos na pumuputol sa siklo sa halip na palakasin ito."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Ang hunahuna mahimong magsige og tuyok sa mao rang kahadlok, kasakit, o pangutana hangtod murag lisod na molihok. Ang Psalm 32:5 naghatag ug mga pulong ug direksyon gawas niana nga siklo. Hunong, pag-ampo gikan sa teksto, ug pagpili ug usa ka lihok nga moputol sa siklo imbis nga modugang niini."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Ti panunot mabalinna nga agsublisubli iti isu met laeng a buteng, sakit, wenno saludsod agingga a kasla saanen a mabalin ti agtignay. Ti Psalm 32:5 mangted iti sasao ken pannakaiturong iti ruar dayta a siklo. Agsardengka, agkararag manipud iti teksto, ken piliem ti maysa nga aramid a mangputol iti siklo imbes a mangpapigsa iti dayta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.shame.06",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.shame.06",
+        "revision": "r1",
+        "checksum": "sha256:123c87946351df7f2420ebeee5225d83ffab09121631b704901ab3f710850c18",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Make one choice that agrees with hope",
+        "body": "Hope becomes practical when it changes a real choice. Isaiah 54:4 offers a truth that can shape what you do next. Identify one decision, conversation, or habit today where you can act as if God's truth is more reliable than the pressure you feel."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.shame",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.grace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Nagiging praktikal ang pag-asa kapag binabago nito ang isang tunay na pasiya. Ang Isaiah 54:4 ay nagbibigay ng katotohanang maaaring humubog sa susunod mong gagawin. Tukuyin ang isang pasiya, pag-uusap, o gawi ngayon kung saan maaari kang kumilos na parang mas maaasahan ang katotohanan ng Diyos kaysa sa presyong nararamdaman mo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Mahimong praktikal ang paglaom kon usbon niini ang tinuod nga pagpili. Ang Isaiah 54:4 naghatag ug kamatuoran nga makahulma sa imong sunod nga buhaton. Ilhon ang usa ka desisyon, panag-istorya, o batasan karon diin makalihok ka nga mas kasaligan ang kamatuoran sa Dios kaysa sa pressure nga imong gibati."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T03:20:00Z",
+          "content": {
+            "title": "Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Ti namnama agbalin a praktikal no baliwanna ti pudno a pili. Ti Isaiah 54:4 mangted iti kinapudno a mabalin a sukogen ti sumaruno nga aramidem. Ilasin ti maysa a desision, panagsasarita, wenno ugali ita a mabalinmo nga aramiden a kasla ad-adda a mapagtalkan ti kinapudno ti Dios ngem ti presion a mariknam."
+          }
+        }
+      ]
+    }
+  ]
+}
