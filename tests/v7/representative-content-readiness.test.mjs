@@ -85,20 +85,14 @@ test('otherwise-ready devotional remains blocked when a required translation is 
   assert.deepEqual(report.types.devotional.blockerCodes, ['translations_incomplete']);
 });
 
-test('current representative Library content reports the exact unresolved acceptance boundary', () => {
+test('current representative Library content is release-ready after automated policy materialization', () => {
   const report = assessV7RepresentativeLibraryContent(currentRepresentativeItems());
 
-  assert.equal(report.ready, false);
-
+  assert.equal(report.ready, true);
   assert.equal(report.types.book.candidateCount, 2);
-  assert.deepEqual(report.types.book.blockerCodes, ['review_unapproved', 'not_published']);
-
+  assert.deepEqual(report.types.book.blockerCodes, []);
   assert.equal(report.types.devotional.candidateCount, 2);
-  assert.deepEqual(report.types.devotional.blockerCodes, ['review_unapproved', 'not_published']);
-
+  assert.deepEqual(report.types.devotional.blockerCodes, []);
   assert.equal(report.types.past_teaching.candidateCount, 1);
-  assert.deepEqual(report.types.past_teaching.blockerCodes, [
-    'review_unapproved',
-    'not_published'
-  ]);
+  assert.deepEqual(report.types.past_teaching.blockerCodes, []);
 });
