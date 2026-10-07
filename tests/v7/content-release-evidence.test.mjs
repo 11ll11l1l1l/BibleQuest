@@ -198,23 +198,31 @@ test('release evidence fails closed when A2 packet/ledger do not match the exact
 
 test('release evidence fails closed on incomplete candidate or localization inputs', () => {
   const reviewEvidence = currentReviewEvidence();
+  const emptyReviewEvidence = {
+    reviewPacket: { items: [] },
+    reviewDecisionLedger: {
+      ...reviewEvidence.reviewDecisionLedger,
+      status: 'awaiting_authorized_decisions',
+      decisions: []
+    }
+  };
   assert.throws(() => buildV7ContentReleaseEvidence({
     candidateSha: 'abc', items: [], ...reviewEvidence, supportedLocales: ['en'], v7KeyCount: 1, missingV7KeysByLocale: { en: [] }
   }), /40-character/);
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'c'.repeat(40), items: [], reviewPacket: { items: [] }, reviewDecisionLedger: { ...reviewEvidence.reviewDecisionLedger },
+    candidateSha: 'c'.repeat(40), items: [], ...emptyReviewEvidence,
     supportedLocales: 'en', v7KeyCount: 1, missingV7KeysByLocale: { en: [] }
   }), /supportedLocales/);
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'c'.repeat(40), items: [], reviewPacket: { items: [] }, reviewDecisionLedger: { ...reviewEvidence.reviewDecisionLedger },
+    candidateSha: 'c'.repeat(40), items: [], ...emptyReviewEvidence,
     supportedLocales: ['en'], v7KeyCount: 0, missingV7KeysByLocale: { en: [] }
   }), /positive integer/);
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'c'.repeat(40), items: [], reviewPacket: { items: [] }, reviewDecisionLedger: { ...reviewEvidence.reviewDecisionLedger },
+    candidateSha: 'c'.repeat(40), items: [], ...emptyReviewEvidence,
     supportedLocales: ['en', 'tl'], v7KeyCount: 1, missingV7KeysByLocale: { en: [] }
   }), /missingV7KeysByLocale\.tl/);
   assert.throws(() => buildV7ContentReleaseEvidence({
-    candidateSha: 'c'.repeat(40), items: [], reviewPacket: { items: [] }, reviewDecisionLedger: { ...reviewEvidence.reviewDecisionLedger },
+    candidateSha: 'c'.repeat(40), items: [], ...emptyReviewEvidence,
     supportedLocales: ['en'], v7KeyCount: 1, missingV7KeysByLocale: { en: 'none' }
   }), /missingV7KeysByLocale\.en/);
 });
