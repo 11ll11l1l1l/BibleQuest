@@ -76,6 +76,7 @@ test('Lane D approval evidence passes only exact-policy decisions with independe
   assert.equal(report.status, 'PASS');
   assert.equal(report.readyForRelease, true);
   assert.equal(report.counts.autoApproved, 2);
-  assert.equal(report.counts.devotionalDeficit, 0);
+  assert.equal(report.counts.catalogDeficit, 0);
+  assert.equal(report.counts.approvedDevotionalDeficit, 0);
   assert.equal(report.machineWork.releaseFloorSatisfied, true);
 });
