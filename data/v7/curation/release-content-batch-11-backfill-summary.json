@@ -52,7 +52,8 @@
       "temptation",
       "excitement",
       "love_connection"
-    ]
+    ],
+    "qualityNote": "Six emotion-specific exercises; no shared generic body template."
   },
   "releaseBoundary": {
     "laneAContentCompleteForBatch": true,
@@ -66,7 +67,7 @@
       "entryId": "devotional.biblequest.guilt.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:ab83ee4e2d77f5aa7704f0fa0e32f19090c2107d07301c0930997131d0782179",
+      "sourceChecksum": "sha256:8b24fbd9fc30662dbe3b22f734da457d307b796059a8e1ec312e7a8ccb557faa",
       "bsbReferences": [
         "Psalm 32:5"
       ],
@@ -86,7 +87,7 @@
       "entryId": "devotional.biblequest.shame.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:aefc8a36562ac60ad63392d5f1fac45e1eb66a94137dee91bb5b274669d93a17",
+      "sourceChecksum": "sha256:36db3b9a6b63fc5e0c72a3110bfb93be39932605cd3134aeecf221a3ceefe733",
       "bsbReferences": [
         "Isaiah 54:4"
       ],
@@ -106,7 +107,7 @@
       "entryId": "devotional.biblequest.spiritual_dryness_distance.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:cb2d80ee0b4a00901d7e95eae1f02f5795b10fb1927150fc19181226f62ecf5b",
+      "sourceChecksum": "sha256:927a5c00f27f5b03d64513b0418b61bd24c8e7a991cc35732c0848845c653a63",
       "bsbReferences": [
         "John 15:4"
       ],
@@ -126,7 +127,7 @@
       "entryId": "devotional.biblequest.temptation.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:24f5bec80468832f9f0a40fa1a436fdd7e5ea03c4df58be666f914e4b632ef6a",
+      "sourceChecksum": "sha256:2517ccb977983b82b6bdad598e24c1d3b3283340a581a1fbf25f0b0107c23d4d",
       "bsbReferences": [
         "Matthew 26:41"
       ],
@@ -146,7 +147,7 @@
       "entryId": "devotional.biblequest.excitement.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:96a043a6e4a1513e3dc08678fc7a76fac41a538a20bc1aac381b5851209c5a7e",
+      "sourceChecksum": "sha256:3b3cbc6aedd0c5b2565ecaa260dee1179cb07a0bc321f286c9694d04b4e04b0f",
       "bsbReferences": [
         "Luke 10:20"
       ],
@@ -166,7 +167,7 @@
       "entryId": "devotional.biblequest.love_connection.11",
       "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:984a07f54e0cf797d663d1df0c3974038773cbc79a43668bd147b2ab4310a29a",
+      "sourceChecksum": "sha256:474803fa39a832f58c3491f19e4c68ddf79829ca1792d719e3dd6d36e372011c",
       "bsbReferences": [
         "1 Corinthians 13:4-5"
       ],
