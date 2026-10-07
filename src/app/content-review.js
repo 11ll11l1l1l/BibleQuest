@@ -207,7 +207,8 @@ export function createContentReviewService({api,session,congregation,recall,cloc
       const byId=new Map();for(const row of [...membershipScopes,...platformScopes])if(!byId.has(row.id)||row.source==='platform')byId.set(row.id,row);
       const scopes=freezeArray([...byId.values()]);
       if(!scopes.length&&!siteRole)return reset('unauthorized','',userId);
-      const libraryItems=normalizeLibraryQueue(await loadLibraryQueue());
+      const loadedLibraryItems=normalizeLibraryQueue(await loadLibraryQueue());
+      const libraryItems=Object.freeze(loadedLibraryItems.filter(item=>item.congregationId?byId.has(item.congregationId):Boolean(siteRole)));
       if(request!==refreshRequest||!contextCurrent(userId))return snapshot();
       const requested=clean(preferredCongregationId);
       if(requested&&!byId.has(requested))throw reviewError('Your account cannot review that congregation.','BQ_CONTENT_REVIEW_SCOPE_DENIED');
