@@ -1,5 +1,5 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
-const CACHE_NAME=`${CACHE_PREFIX}v2`;
+const CACHE_NAME=`${CACHE_PREFIX}v3`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
@@ -38,6 +38,46 @@ function staticImportUrls(source,baseUrl){
   return [...urls];
 }
 
+async function manifestGraphUrls(seedUrls){
+  let manifest;
+  try{
+    const request=new Request(new URL('vite-manifest.json',self.registration.scope).href,{method:'GET',credentials:'same-origin',cache:'reload'});
+    const response=await fetch(request);
+    if(!response?.ok)return[];
+    manifest=await response.json();
+  }catch{return[]}
+  const records=manifest&&typeof manifest==='object'?manifest:{};
+  const fileToKey=new Map();
+  for(const [key,record] of Object.entries(records)){
+    if(!record?.file)continue;
+    try{fileToKey.set(new URL(record.file,self.registration.scope).href,key)}catch{}
+  }
+  const pending=[],seenKeys=new Set(),urls=new Set();
+  const enqueueKey=key=>{if(key&&!seenKeys.has(key)&&records[key]){seenKeys.add(key);pending.push(key)}};
+  for(const [key,record] of Object.entries(records))if(record?.isEntry)enqueueKey(key);
+  for(const raw of Array.isArray(seedUrls)?seedUrls:[]){
+    try{
+      const url=new URL(raw,self.registration.scope);url.hash='';
+      enqueueKey(fileToKey.get(url.href));
+    }catch{}
+  }
+  while(pending.length){
+    const key=pending.shift(),record=records[key];
+    const addPath=value=>{
+      if(!value)return;
+      try{
+        const url=new URL(value,self.registration.scope);
+        if(sameOriginInScope(url)&&!isNetworkProbe(url))urls.add(url.href);
+      }catch{}
+    };
+    addPath(record.file);
+    for(const value of Array.isArray(record.css)?record.css:[])addPath(value);
+    for(const value of Array.isArray(record.assets)?record.assets:[])addPath(value);
+    for(const imported of Array.isArray(record.imports)?record.imports:[])enqueueKey(imported);
+  }
+  return [...urls];
+}
+
 async function warmOne(cache,raw){
   let url;
   try{url=new URL(raw,self.registration.scope);url.hash=''}catch{return[]}
@@ -56,7 +96,7 @@ async function warmOne(cache,raw){
 
 async function warmShell(urls){
   const cache=await caches.open(CACHE_NAME);
-  const pending=[],seen=new Set();
+  const pending=[],seen=new Set(),seeds=[];
   const enqueue=raw=>{
     let url;
     try{url=new URL(raw,self.registration.scope);url.hash=''}catch{return}
@@ -64,7 +104,11 @@ async function warmShell(urls){
     seen.add(url.href);
     pending.push(url.href);
   };
-  for(const raw of Array.isArray(urls)?urls:[])enqueue(raw);
+  for(const raw of Array.isArray(urls)?urls:[]){
+    try{const url=new URL(raw,self.registration.scope);url.hash='';seeds.push(url.href)}catch{}
+    enqueue(raw);
+  }
+  for(const raw of await manifestGraphUrls(seeds))enqueue(raw);
   while(pending.length){
     const batch=pending.splice(0,WARM_CONCURRENCY);
     const discovered=await Promise.all(batch.map(raw=>warmOne(cache,raw)));
