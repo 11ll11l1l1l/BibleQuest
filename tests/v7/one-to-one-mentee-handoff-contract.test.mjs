@@ -42,7 +42,7 @@ test('the same assigned revision is review-only when opened by the paired mentor
   const assignment=await assignmentRequest();const calls=[];const runner=runnerFor(pair.mentorId,assignment,calls);
   await runner.load();const state=runner.getState();
   assert.equal(state.lesson.revisionId,assignment.lessonRevisionId);assert.equal(state.writable,false);assert.equal(state.status,'ready');
-  assert.equal(calls.some(call=>call[0]==='responses'),false);
+  assert.equal(calls.some(call=>call[0]==='responses'),true);
 });
 
 test('runner identity is pinned to the assignment handoff and cannot drift to another revision',async()=>{

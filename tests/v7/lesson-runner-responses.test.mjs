@@ -21,6 +21,8 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
       return { id: `response-${stepId}` };
     },
     async saveProgress(pairId, revisionId, data) { log.push(['saveProgress', data.currentStepId]); progressWrites.push({ pairId, revisionId, data }); },
+    async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return [{ id: 'share', response_id: responseId }]; },
+    async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return { id: 'share', response_id: responseId }; },
   };
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
@@ -92,14 +94,26 @@ test('foreign-step or malformed hydration fails closed without erasing usable le
   assert.deepEqual(state.responseDrafts, {});
 });
 
-test('mentor preview never opens the owner-only private response reader', async () => {
+test('mentor preview hydrates only an explicitly shared response and never creates an editable draft', async () => {
   let reads = 0;
-  const f = fixture({ userId: 'mentor', loadResponses: async () => { reads += 1; return [row()]; } });
+  const shared = { ...row('step-3', 'mentor-visible'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ userId: 'mentor', loadResponses: async () => { reads += 1; return [shared]; } });
+  await f.runner.load();
+  const state = f.runner.getState();
+  assert.equal(state.writable, false);
+  assert.equal(reads, 1);
+  assert.equal(state.responses['step-3'].response, 'mentor-visible');
+  assert.deepEqual(state.responseDrafts, {});
+  assert.throws(() => f.runner.updateResponse('forbidden', 'step-3'), { code: 'BQ_LESSON_RESPONSE_DENIED' });
+});
+
+test('mentor preview fails closed if a repository ever returns an owner-only response', async () => {
+  const f = fixture({ userId: 'mentor', loadResponses: async () => [row('step-3', 'must-not-leak')] });
   await f.runner.load();
   assert.equal(f.runner.getState().writable, false);
-  assert.equal(reads, 0);
-  assert.deepEqual(f.runner.getState().responseDrafts, {});
-  assert.throws(() => f.runner.updateResponse('forbidden', 'step-3'), { code: 'BQ_LESSON_RESPONSE_DENIED' });
+  assert.equal(f.runner.getState().responses['step-3'], undefined);
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.match(f.runner.getState().responseError, /not explicitly shared/);
 });
 
 test('saving a step persists its private response before advancing operational progress', async () => {
@@ -138,4 +152,36 @@ test('private-response read failure is non-destructive and navigation can still 
   assert.equal(f.runner.getState().responseStatus, 'error');
   await f.runner.move(1);
   assert.equal(f.runner.getState().stepIndex, 1);
+});
+
+
+test('mentee explicitly shares a persisted response and can make it private again', async () => {
+  const f = fixture();
+  await f.runner.load();
+  await f.runner.move(1);
+  f.runner.updateResponse('share this carefully', 'step-1');
+  await f.runner.shareResponse('step-1', { confirmed: true });
+  const shared = f.runner.getState().responses['step-1'];
+  assert.equal(shared.visibility, 'shared');
+  assert.deepEqual(shared.audienceUserIds, ['mentor']);
+  const saveIndex = f.log.findIndex(entry => entry[0] === 'savePrivateResponse');
+  const shareIndex = f.log.findIndex(entry => entry[0] === 'shareResponse');
+  assert.ok(saveIndex >= 0 && shareIndex > saveIndex);
+  assert.equal(f.responseWrites[0].response, 'share this carefully');
+
+  await f.runner.revokeResponseShare('step-1');
+  const privateAgain = f.runner.getState().responses['step-1'];
+  assert.equal(privateAgain.visibility, 'owner');
+  assert.deepEqual(privateAgain.audienceUserIds, []);
+  assert.ok(f.log.some(entry => entry[0] === 'revokeResponseShare'));
+});
+
+test('mentee share requires explicit confirmation before any persistence or disclosure', async () => {
+  const f = fixture();
+  await f.runner.load();
+  await f.runner.move(1);
+  f.runner.updateResponse('not yet shared', 'step-1');
+  await assert.rejects(f.runner.shareResponse('step-1'), { code: 'BQ_LESSON_SHARE_CONFIRMATION_REQUIRED' });
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.log.some(entry => entry[0] === 'shareResponse'), false);
 });

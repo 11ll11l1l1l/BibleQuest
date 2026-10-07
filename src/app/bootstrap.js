@@ -1,4 +1,4 @@
-import { discipleshipRoute, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
+import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
 import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
@@ -257,6 +257,9 @@ function start(){
 }
 
 function boot(root){
+  // Capture ONE 2 ONE deep-link identity before router/session resume callbacks can
+  // normalize the current route during a full reload (for example a locale switch).
+  const initialDiscipleshipTarget=discipleshipHydrationTarget(location.hash);
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
@@ -306,7 +309,7 @@ function boot(root){
   const v7ContextListeners=new Set();
   const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
   const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
-  const congregation=createCongregationMembershipService({api,session,onContextChange:()=>{library.reset();notifyV7Context()}});
+  const congregation=createCongregationMembershipService({api,session,selectionStorage:privateStorage,onContextChange:()=>{library.reset();notifyV7Context()}});
   const discipleship=api.discipleship.createService({session,membership:congregation});
   let librarySessionKey='';
   const unsubscribeLibrarySession=store.subscribe(state=>{
@@ -526,9 +529,19 @@ function boot(root){
     unsubscribeTelemetry=store.subscribe(state=>telemetry.syncSession(state?.session));
   syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
-  session.boot().then(()=>{
+  session.boot().then(async()=>{
+    // Reload validated membership state only when cold-starting a tenant-scoped
+    // ONE 2 ONE deep link. Ordinary account/congregation boots keep their existing
+    // page-owned refresh flow, avoiding competing membership reads.
+    if(session.isAuthenticated()&&initialDiscipleshipTarget){
+      try{await congregation.load()}catch(error){console.warn('Congregation membership unavailable',error)}
+    }
     // Authentication must hydrate the requested route independently of cloud progress.
-    if(session.isAuthenticated())router.navigate(router.current());
+    // Prefer the pre-router snapshot because account-resume callbacks can normalize
+    // location.hash before async session hydration resolves on a full page reload.
+    const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(location.hash);
+    if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
+    else if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));

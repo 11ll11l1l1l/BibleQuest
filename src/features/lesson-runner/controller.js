@@ -10,8 +10,8 @@ export function createLessonRunner({ service, session, membership, pairId, revis
   if (!service || !session?.getState || !membership?.getActive || !pairId || !revisionId) throw new TypeError('Lesson runner requires the scoped discipleship service and lesson identity.');
   let generation = 0, disposed = false, loadedContext = null;
   const dirtyResponseSteps = new Set(), responseEditVersions = new Map();
-  let state = Object.freeze({ status: 'idle', lesson: null, stepIndex: 0, progress: null, writable: false, error: null,
-    responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null });
+  let state = Object.freeze({ status: 'idle', lesson: null, stepIndex: 0, progress: null, writable: false, mentorId: null, error: null,
+    responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null, shareStatus: 'idle', shareError: null });
   const listeners = new Set();
   const publish = patch => { state = Object.freeze({ ...state, ...patch }); for (const listener of listeners) listener(state); return state; };
   function context() {
@@ -27,8 +27,8 @@ export function createLessonRunner({ service, session, membership, pairId, revis
   function clearLesson(patch = {}) {
     dirtyResponseSteps.clear(); responseEditVersions.clear();
     loadedContext = null;
-    return publish({ status: 'idle', lesson: null, stepIndex: 0, progress: null, writable: false, error: null,
-      responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null, ...patch });
+    return publish({ status: 'idle', lesson: null, stepIndex: 0, progress: null, writable: false, mentorId: null, error: null,
+      responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null, shareStatus: 'idle', shareError: null, ...patch });
   }
   function invalidate() {
     generation += 1;
@@ -40,7 +40,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     try { return context() !== key; } catch { return true; }
   }
   async function hydrateResponses(token, key, lesson) {
-    if (!state.writable || typeof service.loadPrivateResponses !== 'function') {
+    if (typeof service.loadPrivateResponses !== 'function') {
       return publish({ responseStatus: 'ready', responseError: null });
     }
     const hydrationVersions = new Map(responseEditVersions);
@@ -55,9 +55,12 @@ export function createLessonRunner({ service, session, membership, pairId, revis
           fail('BQ_LESSON_RESPONSE_INVALID', 'A saved response did not belong to this lesson revision.');
         }
         const unchangedSinceRead = (responseEditVersions.get(row.stepId) ?? 0) === (hydrationVersions.get(row.stepId) ?? 0);
+        if (!state.writable && (row.visibility !== 'shared' || !Array.isArray(row.audienceUserIds) || !row.audienceUserIds.includes(state.mentorId))) {
+          fail('BQ_LESSON_RESPONSE_SCOPE', 'Mentor preview received a response that was not explicitly shared.');
+        }
         if (unchangedSinceRead) {
           responses[row.stepId] = row;
-          drafts[row.stepId] = responseText(row.response);
+          if (state.writable) drafts[row.stepId] = responseText(row.response);
         }
       }
       return publish({ responses: snapshot(responses), responseDrafts: snapshot(drafts), responseStatus: 'ready', responseError: null });
@@ -74,8 +77,8 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     if (disposed) return state;
     const token = ++generation;
     dirtyResponseSteps.clear(); responseEditVersions.clear();
-    publish({ status: 'loading', lesson: null, stepIndex: 0, progress: null, writable: false, error: null,
-      responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null });
+    publish({ status: 'loading', lesson: null, stepIndex: 0, progress: null, writable: false, mentorId: null, error: null,
+      responses: snapshot(), responseDrafts: snapshot(), responseStatus: 'idle', responseError: null, shareStatus: 'idle', shareError: null });
     try {
       const key = context();
       const pairs = await service.listPairs(); current(token, key);
@@ -98,7 +101,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       loadedContext = key;
       const writable = pair.menteeId === session.getState().user.id;
       publish({ status: progress?.status === 'completed' ? 'completed' : 'ready', lesson,
-        stepIndex, progress, writable, error: null, responseStatus: writable ? 'loading' : 'ready', responseError: null });
+        stepIndex, progress, writable, mentorId: pair.mentorId, error: null, responseStatus: 'loading', responseError: null, shareStatus: 'idle', shareError: null });
       await hydrateResponses(token, key, lesson);
       return state;
     } catch (error) {
@@ -136,9 +139,53 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     const result = await service.savePrivateResponse(pairId, revisionId, stepId, payload); current(token, key);
     dirtyResponseSteps.delete(stepId);
     const responses = { ...state.responses, [stepId]: Object.freeze({ ...(prior ?? {}), ...(result && typeof result === 'object' ? result : {}),
-      stepId, lessonRevisionId: revisionId, response: payload }) };
+      stepId, lessonRevisionId: revisionId, response: payload, visibility: prior?.visibility ?? 'owner',
+      audienceUserIds: Object.freeze([...(prior?.audienceUserIds ?? [])]) }) };
     publish({ responses: snapshot(responses), responseStatus: 'ready', responseError: null });
   }
+  async function setResponseSharing(stepId, shared, { confirmed = false } = {}) {
+    if (!state.lesson || !stepId || !state.lesson.steps.some(step => step.id === stepId)) {
+      fail('BQ_LESSON_RESPONSE_UNAVAILABLE', 'Open a lesson response before changing sharing.');
+    }
+    if (!state.writable) fail('BQ_LESSON_SHARE_DENIED', 'Only the mentee can change response sharing.');
+    if (state.lesson.steps.find(step => step.id === stepId)?.type === 'scripture') {
+      fail('BQ_LESSON_SHARE_DENIED', 'Scripture steps do not contain a personal response to share.');
+    }
+    if (shared && confirmed !== true) fail('BQ_LESSON_SHARE_CONFIRMATION_REQUIRED', 'Confirm sharing with your paired mentor.');
+    const baseStatus = state.status === 'completed' ? 'completed' : 'ready';
+    const token = generation;
+    let key;
+    try {
+      key = context();
+      if (key !== loadedContext) fail('BQ_LESSON_CONTEXT_STALE', 'Reload after your account or congregation changes.');
+      publish({ shareStatus: 'saving', shareError: null });
+      const index = state.lesson.steps.findIndex(step => step.id === stepId);
+      await persistResponse(index, token, key); current(token, key);
+      const response = state.responses[stepId];
+      if (!response?.id) fail('BQ_LESSON_RESPONSE_UNAVAILABLE', 'Save this response before changing sharing.');
+      if (shared) {
+        if (typeof service.shareResponse !== 'function') fail('BQ_LESSON_SHARE_UNAVAILABLE', 'Response sharing is unavailable.');
+        await service.shareResponse(pairId, revisionId, stepId, response.id, { confirmed: true });
+      } else {
+        if (typeof service.revokeResponseShare !== 'function') fail('BQ_LESSON_SHARE_UNAVAILABLE', 'Response sharing is unavailable.');
+        await service.revokeResponseShare(pairId, revisionId, stepId, response.id);
+      }
+      current(token, key);
+      const updated = Object.freeze({ ...response, visibility: shared ? 'shared' : 'owner',
+        audienceUserIds: Object.freeze(shared && state.mentorId ? [state.mentorId] : []) });
+      return publish({ status: baseStatus, responses: snapshot({ ...state.responses, [stepId]: updated }),
+        shareStatus: 'ready', shareError: null });
+    } catch (error) {
+      if (disposed || token !== generation) return state;
+      if (isContextFailure(error, key)) {
+        generation += 1;
+        return clearLesson({ status: 'error', error: error.message });
+      }
+      return publish({ status: baseStatus, shareStatus: 'error', shareError: error.message });
+    }
+  }
+  const shareResponse = (stepId, options) => setResponseSharing(stepId, true, options);
+  const revokeResponseShare = stepId => setResponseSharing(stepId, false);
   async function move(direction) {
     if (!state.lesson || !['ready', 'completed', 'save-error'].includes(state.status)) return state;
     if (![1, -1].includes(direction)) throw new TypeError('Move one lesson step at a time.');
@@ -183,7 +230,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     }
     return save(state.stepIndex, true);
   }
-  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, move, complete, updateResponse, invalidate,
+  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, move, complete, updateResponse, shareResponse, revokeResponseShare, invalidate,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     dispose() { disposed = true; generation += 1; dirtyResponseSteps.clear(); responseEditVersions.clear(); listeners.clear(); state = Object.freeze({ status: 'disposed', lesson: null }); },
   });

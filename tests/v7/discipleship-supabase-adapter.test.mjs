@@ -156,8 +156,14 @@ test('private resume queries only the resolved assignment, revision and learner 
   assert.equal(result[0].id, 'response');
   assert.equal(result[0].response.text, 'Synthetic reflection');
   assert.equal(f.writes.length, 0);
-  await assert.rejects(f.repository.loadPrivateResponses('pinned', pair, { ...context, userId: 'mentor' }),
-    { code: 'BQ_DISCIPLESHIP_SCOPE_DENIED' });
+  // Repository privacy is enforced by Supabase RLS. This in-memory fixture intentionally
+  // over-returns so the service-level projection can prove it still fails closed.
+  const rawMentorRows = await f.repository.loadPrivateResponses('pinned', pair, { ...context, userId: 'mentor' });
+  assert.equal(rawMentorRows.length, 1);
+  const mentorService = createSupabaseDiscipleshipService({ client: f.client,
+    session: { getState: () => ({ authenticated: true, user: { id: 'mentor' } }) },
+    membership: { getActive: () => ({ ...context, userId: 'mentor' }) } });
+  await assert.rejects(mentorService.loadPrivateResponses('pair', 'pinned'), { code: 'BQ_DISCIPLESHIP_RESPONSE_SCOPE' });
 });
 
 test('private resume stops before the response query if scope changes during assignment lookup', async () => {
