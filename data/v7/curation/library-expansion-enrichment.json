@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 1,
+  "advisoryOnly": true,
+  "publicationApprovalGranted": false,
+  "scriptureAnchorPolicy": "Suggested discovery/discussion anchors; verify any displayed Scripture text and context before publication.",
+  "items": [
+    {
+      "contentId": "books.imitation-of-christ",
+      "revision": "books.imitation-of-christ.r1",
+      "neutralSummary": "A medieval devotional emphasizing humility, inward formation, self-denial, prayer, and imitation of Jesus.",
+      "reviewFlags": [
+        "catholic-tradition-context",
+        "ascetic-language",
+        "historical-language"
+      ],
+      "topics": [
+        "humility",
+        "formation",
+        "self-denial",
+        "prayer"
+      ],
+      "scriptureAnchors": [
+        "Philippians 2:5",
+        "Luke 9:23"
+      ],
+      "collections": [
+        "christian-classics",
+        "spiritual-formation",
+        "humility"
+      ],
+      "lifePathways": [
+        "growing-in-faith",
+        "character-formation"
+      ],
+      "audience": [
+        "adult",
+        "mentor-mentee",
+        "mature-believer"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "medium",
+      "readingPlan": {
+        "fit": "high",
+        "days": 14,
+        "mode": "selected-passages"
+      },
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "books.holy-war",
+      "revision": "books.holy-war.r1",
+      "neutralSummary": "An allegory of the struggle for Mansoul as a picture of temptation, allegiance, fall, rescue, and spiritual vigilance.",
+      "reviewFlags": [
+        "historical-language",
+        "allegory-may-require-facilitation"
+      ],
+      "topics": [
+        "spiritual-warfare",
+        "repentance",
+        "redemption",
+        "perseverance"
+      ],
+      "scriptureAnchors": [
+        "Ephesians 6:10-18",
+        "1 Peter 5:8-9"
+      ],
+      "collections": [
+        "christian-classics",
+        "spiritual-warfare"
+      ],
+      "lifePathways": [
+        "growing-in-faith",
+        "resisting-temptation"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "group-study"
+      ],
+      "oneToOneFit": "medium",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "medium",
+        "days": 14,
+        "mode": "selected-passages"
+      },
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "books.orthodoxy",
+      "revision": "books.orthodoxy.r1",
+      "neutralSummary": "An autobiographical and argumentative defense of historic Christian belief using paradox, imagination, and cultural critique.",
+      "reviewFlags": [
+        "apologetics-not-catechism",
+        "historical-cultural-context",
+        "tradition-context"
+      ],
+      "topics": [
+        "apologetics",
+        "creed",
+        "faith-and-reason",
+        "worldview"
+      ],
+      "scriptureAnchors": [
+        "1 Peter 3:15",
+        "Jude 3"
+      ],
+      "collections": [
+        "christian-classics",
+        "apologetics",
+        "worldview"
+      ],
+      "lifePathways": [
+        "questions-about-faith",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "questioning-reader"
+      ],
+      "oneToOneFit": "medium",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "medium",
+        "days": 10,
+        "mode": "selected-chapters"
+      },
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "books.confessions-augustine",
+      "revision": "books.confessions-augustine.r1",
+      "neutralSummary": "Augustine's prayerful account of desire, sin, conversion, memory, and the search for God, combining autobiography and theology.",
+      "reviewFlags": [
+        "patristic-context",
+        "advanced-sections"
+      ],
+      "topics": [
+        "conversion",
+        "grace",
+        "repentance",
+        "desire-for-god",
+        "testimony"
+      ],
+      "scriptureAnchors": [
+        "Psalm 42:1-2",
+        "Luke 15:17-24"
+      ],
+      "collections": [
+        "christian-classics",
+        "conversion-stories",
+        "grace"
+      ],
+      "lifePathways": [
+        "returning-to-faith",
+        "questions-about-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "mentor-mentee"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "high",
+        "days": 14,
+        "mode": "selected-books"
+      },
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "books.life-teresa",
+      "revision": "books.life-teresa.r1",
+      "neutralSummary": "Teresa of Ávila's account of life, prayer, struggle, vocation, and mystical experience with reflection on growth in prayer.",
+      "reviewFlags": [
+        "catholic-tradition-context",
+        "mystical-experience-discernment",
+        "advanced-reader"
+      ],
+      "topics": [
+        "prayer",
+        "spiritual-formation",
+        "discernment",
+        "vocation"
+      ],
+      "scriptureAnchors": [
+        "Psalm 63:1",
+        "John 15:4-5"
+      ],
+      "collections": [
+        "christian-classics",
+        "prayer",
+        "historical-spirituality"
+      ],
+      "lifePathways": [
+        "prayer-life",
+        "mature-discipleship"
+      ],
+      "audience": [
+        "adult",
+        "mature-believer",
+        "leader"
+      ],
+      "oneToOneFit": "medium",
+      "groupFit": "medium",
+      "readingPlan": {
+        "fit": "medium",
+        "days": 10,
+        "mode": "selected-passages"
+      },
+      "editorialPriority": "low",
+      "theologicalTier": "review_required",
+      "theologicalFitRationale": "Tradition-specific mystical-experience material remains a review-required historical source; listed review flags must be resolved by authorized editorial review."
+    },
+    {
+      "contentId": "books.everlasting-man",
+      "revision": "books.everlasting-man.r1",
+      "neutralSummary": "A Christian apologetic contrasting humanity, myth, philosophy, and Jesus to argue for the distinctiveness of the Christian account of history.",
+      "reviewFlags": [
+        "catholic-tradition-context",
+        "historical-cultural-context",
+        "dated-anthropology"
+      ],
+      "topics": [
+        "apologetics",
+        "jesus-christ",
+        "worldview",
+        "history"
+      ],
+      "scriptureAnchors": [
+        "John 1:1-14",
+        "Colossians 1:15-20"
+      ],
+      "collections": [
+        "christian-classics",
+        "apologetics",
+        "jesus-christ"
+      ],
+      "lifePathways": [
+        "questions-about-faith",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "questioning-reader"
+      ],
+      "oneToOneFit": "medium",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "medium",
+        "days": 10,
+        "mode": "selected-chapters"
+      },
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "devotional.spurgeon.january-01-am",
+      "revision": "r1",
+      "neutralSummary": "Uses Israel entering the promised land to reflect on promised rest and future hope.",
+      "reviewFlags": [
+        "historical-language"
+      ],
+      "topics": [
+        "rest",
+        "hope",
+        "perseverance"
+      ],
+      "scriptureAnchors": [
+        "Joshua 5:12",
+        "Hebrews 4:9-11"
+      ],
+      "collections": [
+        "spurgeon-morning-and-evening",
+        "rest",
+        "new-beginnings"
+      ],
+      "lifePathways": [
+        "daily-devotion",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "mentor-mentee",
+        "group-study"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "high",
+        "days": 1,
+        "mode": "single-day-devotional"
+      },
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "devotional.spurgeon.january-04-am",
+      "revision": "r1",
+      "neutralSummary": "Encourages growth in grace, especially a stronger, steadier, simpler faith in God's promises.",
+      "reviewFlags": [
+        "historical-language"
+      ],
+      "topics": [
+        "spiritual-growth",
+        "faith",
+        "grace"
+      ],
+      "scriptureAnchors": [
+        "2 Peter 3:18",
+        "Hebrews 10:23"
+      ],
+      "collections": [
+        "spurgeon-morning-and-evening",
+        "spiritual-growth",
+        "faith"
+      ],
+      "lifePathways": [
+        "daily-devotion",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "mentor-mentee",
+        "group-study"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "high",
+        "days": 1,
+        "mode": "single-day-devotional"
+      },
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "devotional.spurgeon.january-05-am",
+      "revision": "r1",
+      "neutralSummary": "Moves from gratitude for created light to the greater value of gospel light that reveals eternal realities.",
+      "reviewFlags": [
+        "historical-language"
+      ],
+      "topics": [
+        "light",
+        "gospel",
+        "gratitude"
+      ],
+      "scriptureAnchors": [
+        "Genesis 1:4",
+        "2 Corinthians 4:6"
+      ],
+      "collections": [
+        "spurgeon-morning-and-evening",
+        "gospel",
+        "gratitude"
+      ],
+      "lifePathways": [
+        "daily-devotion",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "mentor-mentee",
+        "group-study"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "high",
+        "days": 1,
+        "mode": "single-day-devotional"
+      },
+      "editorialPriority": "medium",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    },
+    {
+      "contentId": "devotional.spurgeon.january-07-am",
+      "revision": "r1",
+      "neutralSummary": "Describes Christian life as centered on Christ, with love for Jesus shaping purpose, character, and witness.",
+      "reviewFlags": [
+        "historical-language"
+      ],
+      "topics": [
+        "life-in-christ",
+        "discipleship",
+        "christlike-character"
+      ],
+      "scriptureAnchors": [
+        "Philippians 1:21",
+        "Galatians 2:20"
+      ],
+      "collections": [
+        "spurgeon-morning-and-evening",
+        "identity-in-christ",
+        "discipleship"
+      ],
+      "lifePathways": [
+        "daily-devotion",
+        "growing-in-faith"
+      ],
+      "audience": [
+        "adult",
+        "young-adult",
+        "mentor-mentee",
+        "group-study"
+      ],
+      "oneToOneFit": "high",
+      "groupFit": "high",
+      "readingPlan": {
+        "fit": "high",
+        "days": 1,
+        "mode": "single-day-devotional"
+      },
+      "editorialPriority": "high",
+      "theologicalTier": "historical_secondary",
+      "theologicalFitRationale": "Historic Christian material is retained as secondary devotional/commentary material; listed review flags remain explicit and this classification does not grant publication approval."
+    }
+  ],
+  "scope": "v7_library_expansion_candidates",
+  "theologicalTierVocabulary": [
+    "alliance_core",
+    "compatible_evangelical",
+    "historical_secondary",
+    "review_required"
+  ],
+  "boundary": {
+    "advisoryOnly": true,
+    "doesNotApproveContent": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "doesNotSatisfyRepresentativeDecisionLedger": true
+  }
+}

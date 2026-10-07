@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "need.dependence",
+      "kind": "need",
+      "labels": {
+        "en": "Dependence on God"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "teaching.prayer-abiding",
+      "type": "past_teaching",
+      "revision": "prayer-abiding-r2",
+      "sourceLocale": "en",
+      "publicationState": "published",
+      "source": {
+        "kind": "first_party",
+        "title": "Prayer shaped by abiding in Christ",
+        "catalogId": "biblequest.v7.past-teaching.prayer-abiding",
+        "revision": "r2",
+        "checksum": "sha256:2a790e5e0b25c2e41f25e40e49d776b9d6e96da96b4ed4de321def442fd18fa2",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer shaped by abiding in Christ",
+        "body": "## Stay close to the source\n\nJohn 15:7 joins prayer with abiding in Christ and allowing his words to remain in us. Prayer is not presented as a technique for controlling outcomes. It grows from relationship, dependence, and a mind being reshaped by Jesus' teaching.\n\n## Let desire be formed\n\nBefore asking only whether God will grant a request, ask what this passage is doing to the request itself. Christ's words can expose selfishness, deepen compassion, and turn vague desire into faithful prayer.\n\n## Practice today\n\nRead John 15:1-8 slowly. Write one request you are carrying. Then write one way Jesus' words clarify what faithfulness would look like while you wait for an answer."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party teaching article created for BibleQuest V7. Scripture is cited by reference only; no external sermon prose is reproduced or adapted.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
+      },
+      "revisionHistory": [
+        "prayer-abiding-r1"
+      ],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "need.dependence",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": []
+    }
+  ]
+}

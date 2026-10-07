@@ -125,6 +125,51 @@
       ]
     },
     {
+      "id": "one-to-one-discipleship",
+      "testFiles": [
+        "supabase/tests/v7-one2one-stale-tenant-hardening.test.sql",
+        "supabase/tests/v7-pair-lifecycle-tenant-context-switch.test.sql",
+        "supabase/tests/v7-assignment-creation-tenant-context-switch.test.sql"
+      ],
+      "denialMarkers": [
+        "Switched mentor cannot read stale old-tenant pair",
+        "Switched learner cannot read stale old-tenant assignment",
+        "Switched learner cannot edit old-tenant response",
+        "Switched mentor cannot accept stale congregation A pair through SECURITY DEFINER RPC",
+        "Switched mentor cannot end stale congregation A pair through SECURITY DEFINER RPC",
+        "Switched mentor cannot create a new assignment in stale congregation A pair",
+        "Idempotent retry cannot bypass stale congregation membership denial"
+      ]
+    },
+    {
+      "id": "v7-library",
+      "testFiles": [
+        "supabase/tests/v7-library-stale-tenant-rls.test.sql"
+      ],
+      "denialMarkers": [
+        "Member A cannot force a congregation B Library item through a client filter",
+        "Switched member cannot force stale congregation A Library item through a client filter",
+        "Leader A cannot update congregation B draft",
+        "Switched leader cannot update stale congregation A draft"
+      ]
+    },
+    {
+      "id": "v7-curriculum",
+      "testFiles": [
+        "supabase/tests/v7-curriculum-stale-tenant-rls.test.sql",
+        "supabase/tests/v7-curriculum-publication-tenant-context-switch.test.sql"
+      ],
+      "denialMarkers": [
+        "Member A cannot force a congregation B track through a client filter",
+        "Switched member cannot force stale congregation A track through a client filter",
+        "Leader A cannot update congregation B draft track",
+        "Switched leader cannot update stale congregation A draft track",
+        "Switched former A leader cannot publish stale congregation A curriculum through SECURITY DEFINER RPC",
+        "Switched former A leader cannot withdraw stale congregation A curriculum through SECURITY DEFINER RPC",
+        "Switched ordinary member cannot publish congregation B curriculum through SECURITY DEFINER RPC"
+      ]
+    },
+    {
       "id": "polls",
       "testFiles": [
         "supabase/tests/v6-poll-tenant-integrity.test.sql"

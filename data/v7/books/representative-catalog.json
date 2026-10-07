@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "books.classics",
+      "kind": "category",
+      "labels": {
+        "en": "Christian classics",
+        "tl": "Mga klasikong Kristiyano",
+        "ceb": "Kristohanong mga klasiko"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "books.pilgrims-progress",
+      "type": "book",
+      "revision": "books.pilgrims-progress.r1",
+      "sourceLocale": "en",
+      "publicationState": "published",
+      "source": {
+        "kind": "external",
+        "title": "The Pilgrim’s Progress",
+        "uri": "https://www.gutenberg.org/ebooks/131",
+        "catalogId": "gutenberg:131",
+        "creator": "John Bunyan",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2021-09-23",
+        "date": "2021-09-23"
+      },
+      "sourceContent": {
+        "title": "The Pilgrim’s Progress"
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "John Bunyan; edition catalog provided by Project Gutenberg.",
+        "allowedUses": [
+          "external_link"
+        ],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-04"
+      },
+      "review": {
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
+      },
+      "revisionHistory": [],
+      "taxonomyLinks": [
+        {
+          "kind": "category",
+          "id": "books.classics",
+          "order": 0
+        }
+      ],
+      "translations": []
+    },
+    {
+      "id": "books.practice-presence",
+      "type": "book",
+      "revision": "books.practice-presence.r1",
+      "sourceLocale": "en",
+      "publicationState": "published",
+      "source": {
+        "kind": "external",
+        "title": "The Practice of the Presence of God",
+        "uri": "https://www.gutenberg.org/ebooks/5657",
+        "catalogId": "gutenberg:5657",
+        "creator": "Brother Lawrence",
+        "organization": "Project Gutenberg",
+        "revision": "catalog-2025-02-22",
+        "date": "2025-02-22"
+      },
+      "sourceContent": {
+        "title": "The Practice of the Presence of God"
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "Project Gutenberg — linking policy",
+        "basis": "External catalog links permitted by https://www.gutenberg.org/policy/linking.html; no hosted text or images authorized by this record.",
+        "attribution": "Brother Lawrence; edition catalog provided by Project Gutenberg.",
+        "allowedUses": [
+          "external_link"
+        ],
+        "evidenceUri": "https://www.gutenberg.org/policy/linking.html",
+        "verifiedAt": "2026-10-04"
+      },
+      "review": {
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
+      },
+      "revisionHistory": [],
+      "taxonomyLinks": [
+        {
+          "kind": "category",
+          "id": "books.classics",
+          "order": 0
+        }
+      ],
+      "translations": []
+    }
+  ]
+}

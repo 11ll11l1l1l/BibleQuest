@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - v6/architecture-upgrade
+      - v7/development
     paths:
       - 'supabase/**'
       - 'scripts/v6-prepare-local-supabase.mjs'
@@ -14,6 +15,7 @@ on:
       - 'docs/v6/evidence/ASSIGNMENT_PUSH_LIVE_READINESS_20261002.json'
       - 'docs/v6/V6_ASSIGNMENT_PUSH_DEPLOYMENT.md'
       - 'tests/v6/database-ci-contract.test.mjs'
+      - 'tests/v7/one-to-one-authenticated-api.mjs'
       - 'tests/v6/v4-v6-upgrade-database.test.mjs'
       - 'tests/v6/migration-history-guard.test.ts'
       - 'tests/v6/assignment-assigned-due-push.test.ts'
@@ -104,12 +106,42 @@ jobs:
           supabase gen types typescript --local > /tmp/database.types.second.ts
           cmp /tmp/database.types.ts /tmp/database.types.second.ts
           test -s /tmp/database.types.ts
+          cmp /tmp/database.types.ts "$GITHUB_WORKSPACE/supabase/database.types.ts"
           echo "Generated database types SHA-256:"
           sha256sum /tmp/database.types.ts
           cp "$GITHUB_WORKSPACE/supabase/database.types.sha256" /tmp/database.types.sha256
           cd /tmp
           sha256sum --check database.types.sha256
           echo "Generated local DB types are deterministic and match the reviewed canonical digest."
+
+      - name: Preserve generated database types for the V7 contract
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bq-v7-database-types
+          path: /tmp/database.types.ts
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: V7 authenticated API role and privacy journey
+        shell: bash
+        env:
+          BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-local-status.json
+        run: |
+          set -euo pipefail
+          umask 077
+          trap 'rm -f "$BQ_LOCAL_STATUS_FILE"' EXIT
+          (cd /tmp/bq-v6-db && supabase status -o json) > "$BQ_LOCAL_STATUS_FILE"
+          node tests/v7/one-to-one-authenticated-api.mjs
+
+      - name: Preserve V7 authenticated API evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bq-v7-authenticated-api-${{ env.BQ_EXACT_SHA }}
+          path: artifacts/v7/authenticated-api-journey.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Verify source tree remains unchanged
         run: |

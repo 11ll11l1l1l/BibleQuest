@@ -1,8 +1,11 @@
+import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
+import { createLibraryService } from '../features/library/service.js';
+import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
 import { createMyJourneyService } from './my-journey.js';
 import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
-import { createRouter } from './router.js';
+import { createRouter, readNavigationParams, readNavigationTarget } from './router.js';
 import { createSessionService } from './session.js';
 import { assertPasswordNotCompromised } from '../security/password-breach.js';
 import { createAccountService } from './account.js';
@@ -119,6 +122,17 @@ const bibleQuestPage = args => lazyFeaturePage('bible-quest', 'bibleQuestPage', 
 const accountPage = args => lazyFeaturePage('account', 'accountPage', args);
 const backupPage = args => lazyFeaturePage('backup', 'backupPage', args);
 const accessibilityPage = args => lazyFeaturePage('accessibility', 'accessibilityPage', args);
+const assignedCurriculumPage = args => lazyFeaturePage('discipleship-curriculum', 'assignedCurriculumPage', args);
+const lessonRoutePage = args => createLazyPage({key:'one-to-one-lesson',load:()=>import('../features/lesson-runner/route-page.js'),create:module=>module.lessonRoutePage(args)});
+const pairingPage = args => lazyFeaturePage('pairing', 'pairingPage', args);
+const oneToOnePage = args => lazyFeaturePage('one-to-one', 'oneToOnePage', args);
+const oneToOneWorkspacePage = ({api,...options}) => createLazyPage({
+  key:'one-to-one-workspace',
+  load:()=>api.discipleship.createWorkspace(options),
+  create:page=>page,
+});
+const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
+const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
 const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
 const deepQuestionsPage = args => lazyFeaturePage('deep-questions', 'deepQuestionsPage', args);
@@ -243,6 +257,9 @@ function start(){
 }
 
 function boot(root){
+  // Capture ONE 2 ONE deep-link identity before router/session resume callbacks can
+  // normalize the current route during a full reload (for example a locale switch).
+  const initialDiscipleshipTarget=discipleshipHydrationTarget(readNavigationTarget());
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
@@ -285,7 +302,24 @@ function boot(root){
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window,sessionOwner:()=>{const sessionSnapshot=session.getState();return sessionSnapshot?.authenticated&&sessionSnapshot?.user?.id?`account:${sessionSnapshot.user.id}`:'guest'},storage:privateStorage});
-  const congregation=createCongregationMembershipService({api,session});
+  const library=createLibraryService({repository:{
+    async listPublished(options){return (await api.library.createRepository()).listPublished(options)},
+    async getPublishedById(id){return (await api.library.createRepository()).getPublishedById(id)}
+  }});
+  const v7ContextListeners=new Set();
+  const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
+  const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
+  const congregation=createCongregationMembershipService({api,session,selectionStorage:privateStorage,onContextChange:()=>{library.reset();notifyV7Context()}});
+  const discipleship=api.discipleship.createService({session,membership:congregation});
+  let librarySessionKey='';
+  const unsubscribeLibrarySession=store.subscribe(state=>{
+    const current=state?.session||{};
+    const key=JSON.stringify([current.authenticated===true,current.user?.id||'',current.remoteAvailable!==false]);
+    if(key===librarySessionKey)return;
+    librarySessionKey=key;
+    library.reset();
+    notifyV7Context();
+  });
   const recordings=createRecordingsService({media:api.media,audio:recordingsMediaRuntime.audio,session,congregation});
   const liveRooms=createLiveRoomsService({api:api.liveRooms,session,congregation});
   const contentModeration=createContentModerationService({api:api.contentDecisions,session,congregation});
@@ -327,6 +361,25 @@ function boot(root){
   const reloadAfterLocalDataChange=()=>location.reload();
   const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)};
   const openFreeReader=()=>navigateGeneral('reader');
+  const libraryParams=()=>readNavigationParams();
+  const libraryDiscoveryQuery=()=>parseLibraryDiscoveryQuery(libraryParams());
+  const v7ContextReady=()=>{const auth=session.getState(),active=congregation.getActive();return Boolean(auth?.authenticated&&auth.user?.id&&active?.congregationId&&(!active.userId||active.userId===auth.user.id));};
+  const libraryContextReady=()=>session.getState()?.authenticated===true?v7ContextReady():true;
+  const assignedPage=view=>{
+    const context=Object.fromEntries(['pairId','trackId','moduleId'].map(key=>[key,libraryParams().get(key)||'']));
+    const back=view==='module'?{routeKey:'one-to-one-track',pairId:context.pairId,trackId:context.trackId}:context.trackId?{routeKey:'one-to-one-track',pairId:context.pairId}:{routeKey:'one-to-one-pair',pairId:context.pairId};
+    return assignedCurriculumPage({service:discipleship,view,...context,isContextReady:v7ContextReady,subscribeContext:subscribeV7Context,onNavigate:target=>router.navigate(discipleshipRoute(target)),onBack:()=>router.navigate(discipleshipRoute(back)),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')});
+  };
+  const navigateLibrary=target=>{
+    const params=new URLSearchParams();
+    if(target.resourceId)params.set('id',target.resourceId);
+    const context=target.returnTo||target;
+    if(context.query)params.set('query',context.query);
+    if(context.contentType)params.set('contentType',context.contentType);
+    if(context.taxonomyId)params.set('taxonomyId',context.taxonomyId);
+    if(context.discoveryQuery)serializeLibraryDiscoveryQuery(context.discoveryQuery,params);
+    router.navigate(`${target.routeKey}?${params}`);
+  };
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const openChallengeScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
   const openExplorerScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
@@ -340,7 +393,22 @@ function boot(root){
     home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center')}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
-    learn:()=>learnPage({translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
+    'one-to-one':()=>{
+      const view=libraryParams().get('view');
+      const navigation={subscribeContext:subscribeV7Context,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')};
+      if(view==='authoring'||view==='assignment')return oneToOneWorkspacePage({api,view,session,membership:congregation,service:discipleship,...navigation,onBack:()=>router.navigate('one-to-one')});
+      return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair')});
+    },
+    'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
+    'one-to-one-track':()=>assignedPage('track'),
+    'one-to-one-module':()=>assignedPage('module'),
+    'one-to-one-lesson':()=>{
+      const context=Object.fromEntries(['pairId','trackId','moduleId','revisionId','stepId'].map(key=>[key,libraryParams().get(key)||'']));
+      return lessonRoutePage({service:discipleship,session,membership:congregation,...context,isContextReady:v7ContextReady,subscribeContext:subscribeV7Context,onBack:()=>router.navigate(discipleshipRoute({routeKey:context.moduleId?'one-to-one-module':'one-to-one-track',...context})),onScripture:(ref,identity)=>router.navigate(lessonReaderRoute(ref,{...context,...identity}))});
+    },
+    'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType'),taxonomyId:libraryParams().get('taxonomyId')||'',discoveryQuery:libraryDiscoveryQuery()})}),
+    learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'deep-questions':()=>deepQuestionsPage({deepQuestions,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
     'story-journey':()=>storyJourneyPage({storyJourney,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
@@ -368,8 +436,12 @@ function boot(root){
     assignments:()=>assignmentsPage({assignments,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account')}),
     'content-review':()=>contentReviewPage({api,session,congregation,recall,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     // Lazy Reader adds managed offlinePackages and its gated audio provider when the feature opens.
-    reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage}),challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
-    grow:()=>progressPage({progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
+    reader:()=>{
+      const context=lessonReaderContext(libraryParams());
+      if(context){bibleQuest.deactivate();reader.setBook(context.book,context.chapter);}
+      return readerPage({reader,vocabulary,furigana,audioStore:privateStorage,initialVerse:context?.verseStart,onBack:context?()=>router.navigate(context.back):null});
+    },challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
+    grow:()=>progressPage({onOneToOne:()=>router.navigate('one-to-one'),progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),
     transform:()=>transformPage({transform,onGrow:()=>router.navigate('grow')}),
     'personality-profile':()=>personalityProfilePage({profile:personalityProfile,onBack:()=>router.navigate('grow'),onTransform:()=>router.navigate('transform')}),
@@ -457,12 +529,22 @@ function boot(root){
     unsubscribeTelemetry=store.subscribe(state=>telemetry.syncSession(state?.session));
   syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
-  session.boot().then(()=>{
+  session.boot().then(async()=>{
+    // Reload validated membership state only when cold-starting a tenant-scoped
+    // ONE 2 ONE deep link. Ordinary account/congregation boots keep their existing
+    // page-owned refresh flow, avoiding competing membership reads.
+    if(session.isAuthenticated()&&initialDiscipleshipTarget){
+      try{await congregation.load()}catch(error){console.warn('Congregation membership unavailable',error)}
+    }
     // Authentication must hydrate the requested route independently of cloud progress.
-    if(session.isAuthenticated())router.navigate(router.current());
+    // Prefer the pre-router snapshot because account-resume callbacks can normalize
+    // the browser route before async session hydration resolves on a full page reload.
+    const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(readNavigationTarget());
+    if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
+    else if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
-  window.addEventListener('pagehide',()=>{unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
+  window.addEventListener('pagehide',()=>{unsubscribeLibrarySession();library.reset();unsubscribeStore();unsubscribeModeration();unsubscribePushOnboarding();accountResumeRuntime.dispose();unsubscribeAdminAccess();unsubscribeNotificationSettings();unsubscribeTelemetry();telemetry.dispose();adminAccess.clear();progressLeaderboardBridge.dispose();progressCloudSync.dispose();bibleQuestCloudSync.dispose();weeklyJourneyCloudSync.dispose();personalChallengesCloudSync.dispose();explorerCloudSync.dispose();pushOnboarding.dispose();push.dispose();contentModeration.clear();contentReportingRuntime.dispose();accessibilityRuntime.dispose();accessibility.dispose();tutorialOverlay.dispose();offlineShell.dispose();pwaInstall.dispose();liveRooms.clear();communityBridge.clear();encouragements.clear();journeyGroups.clear();assignments.clear();recognition.clear();teamCenter.clear();void presence.dispose();workspace.clear();notifications.clear();congregation.clear();couplesCloud.clear();cloudNotes.clear();study.close();deepQuestions.close();storyJourney.close();adaptiveLearning.close();openReview.close();games.leave();recordings.dispose();disposeReaderAudioProvider();session.dispose()},{once:true});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();

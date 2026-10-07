@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "releasedSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "productionOrigin": "https://mybiblequest.pages.dev",
+  "verifiedAt": "2026-10-03T23:41:06.538Z",
+  "status": "DEPLOYED-EXACT-CERTIFIED-ARTIFACT",
+  "authorization": "Cant you just release v6 to main? Backup current v5 and release v6 to main?",
+  "mainRef": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "previousMainSha": "1cab2110cd15285e9ee388f7889b9fd284823274",
+  "rollbackRef": "rollback/v5-pre-v6-production-20261003",
+  "rollbackSha": "1cab2110cd15285e9ee388f7889b9fd284823274",
+  "deployment": {
+    "deploymentOrigin": "https://mybiblequest.pages.dev",
+    "sourceSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+    "artifactSha256": "0d927196b403c595c11aba811daf725ba1d64575e3e44a35a10d17c8874853ad",
+    "integritySha256": "c329b1d32c8f60254c0d4ebeca679cd2cfe00da906d032aec7d74e88004d2faf",
+    "fileCount": 1015,
+    "totalBytes": 122895955
+  },
+  "smoke": {
+    "schemaVersion": 2,
+    "deploymentOrigin": "https://mybiblequest.pages.dev",
+    "sourceSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+    "verifiedAt": "2026-10-03T23:36:39.549Z",
+    "checks": [
+      {
+        "path": "/",
+        "kind": "html-shell",
+        "ok": true
+      },
+      {
+        "path": "/bq-build.json",
+        "kind": "exact-sha",
+        "ok": true
+      },
+      {
+        "path": "/manifest.webmanifest",
+        "kind": "pwa-manifest",
+        "ok": true
+      },
+      {
+        "path": "/manifest.webmanifest",
+        "kind": "route-shortcuts",
+        "ok": true
+      },
+      {
+        "path": "/offline-shell-sw.js",
+        "kind": "offline-cache-contract",
+        "ok": true
+      },
+      {
+        "path": "/offline-shell-sw.js",
+        "kind": "push-worker-contract",
+        "ok": true
+      }
+    ]
+  },
+  "browser": {
+    "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+    "productionOrigin": "https://mybiblequest.pages.dev",
+    "observedAt": "2026-10-03T23:41:06.538Z",
+    "checks": [
+      {
+        "kind": "home-navigation",
+        "status": "PASS",
+        "detail": "Home and More render on production."
+      },
+      {
+        "kind": "reader",
+        "status": "PASS",
+        "detail": "John 1 BSB renders all 51 verses."
+      },
+      {
+        "kind": "bsb-audio-ui",
+        "status": "PASS",
+        "detail": "Play chapter audio changes to Pause audio and Playing JHN 1; physical/audible/background playback not asserted."
+      },
+      {
+        "kind": "account-entry",
+        "status": "PASS",
+        "detail": "Guest account route renders Sign in with Email and Password."
+      },
+      {
+        "kind": "assignments-guest-denial",
+        "status": "PASS",
+        "detail": "Guest sees sign-in requirement and no private assignment metadata."
+      },
+      {
+        "kind": "notifications-guest-denial",
+        "status": "PASS",
+        "detail": "Guest sees sign-in requirement for private inbox."
+      },
+      {
+        "kind": "privileged-content-review-guest-denial",
+        "status": "PASS",
+        "detail": "Content Review states no guest/local authority and requires sign-in."
+      },
+      {
+        "kind": "authenticated-session",
+        "status": "NOT-PERFORMED",
+        "detail": "No authenticated production account was available; no authenticated session success is claimed."
+      },
+      {
+        "kind": "physical-device",
+        "status": "OWNER-WAIVED-TEMPORARILY",
+        "detail": "Existing owner manual-test waiver remains, never PASS."
+      }
+    ]
+  },
+  "remainingAcceptance": "Post-production aggregate remains OPEN because its typed policy requires PHYSICAL-DEVICE evidence; machine checks PASS separately. Authenticated-session manual observation is not claimed."
+}

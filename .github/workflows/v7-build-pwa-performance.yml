@@ -1,0 +1,233 @@
+name: V7 Build PWA Performance Gate
+
+on:
+  pull_request:
+    branches:
+      - v7/development
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - "tsconfig.json"
+      - "vite.config.mjs"
+      - "index.html"
+      - "_headers"
+      - "offline-shell-sw.js"
+      - "src/**"
+      - "content/v7/**"
+      - "data/v7/**"
+      - "packages/db/**"
+      - "tests/v7/**"
+      - "tests/v6/pwa-built-artifact-browser.mjs"
+      - "tests/v6/built-artifact-browser.mjs"
+      - "tests/v3-accessibility-smoke.mjs"
+      - "scripts/v6-build-evidence.mjs"
+      - "scripts/v6-artifact-integrity.mjs"
+      - "scripts/v7-content-release-evidence.mjs"
+      - ".github/workflows/v7-build-pwa-performance.yml"
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Full 40-character V7 candidate commit SHA to certify
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v7-build-pwa-performance-${{ github.event.pull_request.number || inputs.candidate_sha || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.candidate_sha }}
+
+jobs:
+  certify:
+    name: Exact-SHA build, PWA, and performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Validate selected candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "${BQ_EXACT_SHA}" =~ ^[0-9a-fA-F]{40}$ ]]
+
+      - name: Checkout exact selected commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BQ_EXACT_SHA }}
+
+      - name: Prove checkout identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${BQ_EXACT_SHA}"
+
+      - name: Use pinned Node and npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Require committed lockfile
+        run: test -f package-lock.json
+
+      - name: Deterministic install
+        run: npm ci
+
+      - name: Lint client boundaries
+        run: npm run lint
+
+      - name: Verify formatting policy
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: V7 unit and contract tests
+        run: npm run unit:v7
+
+      - name: Record exact-candidate content and localization decisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/v7
+          node scripts/v7-content-release-evidence.mjs "$BQ_EXACT_SHA" > artifacts/v7/content-report.json
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const report = JSON.parse(await readFile('artifacts/v7/content-report.json', 'utf8'));
+          if (report.candidateSha !== process.env.BQ_EXACT_SHA) throw new Error('Content evidence candidate mismatch');
+          if (!report.localization.ready) throw new Error('V7 localization inventory is incomplete');
+          console.log(`V7 representative content: ${report.representative.ready ? 'PASS' : 'OPEN'}`);
+          NODE
+
+      - name: Build exact V7 candidate artifact
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: npm run build
+
+      - name: Verify exact-SHA identity and performance budgets
+        shell: bash
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/v7
+          node scripts/v6-build-evidence.mjs | tee artifacts/v7/build-report.json
+
+      - name: Install pinned browser harness outside application lockfile
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start exact built artifact preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 0.0.0.0 --port 4173 > /tmp/bq-v7-preview.log 2>&1 &
+          echo $! > /tmp/bq-v7-preview.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v7-preview.log
+          exit 1
+
+      - name: Built artifact Chromium parity
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/built-artifact-browser.mjs
+
+      - name: V7 ONE 2 ONE narrow and deep-link smoke
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v7/one-to-one-built-artifact-browser.mjs
+
+      - name: V7 Library narrow, locale and keyboard smoke
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v7/library-built-artifact-browser.mjs
+
+      - name: Built artifact PWA acceptance
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+        run: node tests/v6/pwa-built-artifact-browser.mjs
+
+      - name: Built artifact automated accessibility
+        env:
+          BQ_BASE_URL: http://127.0.0.1:4173/
+        run: node tests/v3-accessibility-smoke.mjs
+
+      - name: V7 release responsive accessibility matrix
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+          BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: node tests/v7/release-responsive-accessibility-browser.mjs
+
+      - name: Seal successful exact-SHA certification
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+          const candidateSha = process.env.BQ_EXACT_SHA;
+          const integrity = JSON.parse(await readFile('dist-v6/bq-artifact-integrity.json', 'utf8'));
+          const content = JSON.parse(await readFile('artifacts/v7/content-report.json', 'utf8'));
+          if (integrity.sourceSha !== candidateSha) {
+            throw new Error(`artifact source SHA ${integrity.sourceSha} does not match candidate ${candidateSha}`);
+          }
+          if (content.candidateSha !== candidateSha) throw new Error('Content evidence candidate mismatch');
+          const certification = {
+            schemaVersion: 1,
+            candidateSha,
+            artifactSha256: integrity.artifactSha256,
+            fileCount: integrity.fileCount,
+            totalBytes: integrity.totalBytes,
+            contentEvidence: {
+              report: 'content-report.json',
+              representativeContent: content.representative.ready ? 'PASS' : 'OPEN',
+              localization: content.localization.ready ? 'PASS' : 'FAIL',
+              releaseReady: content.ready
+            },
+            checks: [
+              'lint',
+              'format',
+              'typecheck',
+              'v7-unit-contract',
+              'exact-sha-build-identity',
+              'artifact-integrity',
+              'performance-budgets',
+              'built-artifact-browser-parity',
+              'v7-one-to-one-built-artifact-smoke',
+              'v7-library-built-artifact-smoke',
+              'pwa-built-artifact',
+              'built-artifact-accessibility'
+            ]
+          };
+          await mkdir('artifacts/v7', { recursive: true });
+          await writeFile('artifacts/v7/certification.json', `${JSON.stringify(certification, null, 2)}\n`, 'utf8');
+          NODE
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/certification.json dist-v6/bq-artifact-integrity.json > artifacts/v7/evidence.sha256
+
+      - name: Preview diagnostics
+        if: always()
+        run: cat /tmp/bq-v7-preview.log || true
+
+      - name: Upload exact candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v7-build-pwa-performance-${{ env.BQ_EXACT_SHA }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            artifacts/v7/build-report.json
+            artifacts/v7/content-report.json
+            artifacts/v7/certification.json
+            artifacts/v7/release-responsive-accessibility.json
+            artifacts/v7/evidence.sha256
+            dist-v6/

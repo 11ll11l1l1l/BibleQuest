@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.insecurity_unworthiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Insecurity / unworthiness"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.doubt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Doubt"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "topic.faith",
+      "kind": "topic",
+      "labels": {
+        "en": "Faith"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.confusion_uncertainty",
+      "kind": "emotion",
+      "labels": {
+        "en": "Confusion / uncertainty"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    },
+    {
+      "id": "emotion.discouragement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Discouragement"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.hopelessness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hopelessness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "emotion.overwhelm",
+      "kind": "emotion",
+      "labels": {
+        "en": "Overwhelm"
+      }
+    },
+    {
+      "id": "need.help",
+      "kind": "need",
+      "labels": {
+        "en": "Help"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.burnout",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Burnout"
+      }
+    },
+    {
+      "id": "emotion.stress",
+      "kind": "emotion",
+      "labels": {
+        "en": "Stress"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "emotion.tiredness_weariness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Tiredness / weariness"
+      }
+    },
+    {
+      "id": "need.strength",
+      "kind": "need",
+      "labels": {
+        "en": "Strength"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.insecurity_unworthiness.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.insecurity_unworthiness.07",
+        "revision": "r1",
+        "checksum": "sha256:043cbc080fb888b86bbc0864b525b6b58ddff3ff837544e59f0509031b611a29",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Ask what faithfulness looks like now",
+        "body": "Return slowly to Luke 12:6-7. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.insecurity_unworthiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Balikan nang dahan-dahan ang Luke 12:6-7. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Balika ug hinay-hinay ang Luke 12:6-7. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Subliem a siaannad ti Luke 12:6-7. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.doubt.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.doubt.07",
+        "revision": "r1",
+        "checksum": "sha256:95693e1508669202ac6ee9089522c7a478e4ea6baad60b83b4f03f143a90f175",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Take the next step without carrying tomorrow",
+        "body": "Return slowly to Acts 17:11. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.doubt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.faith",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Balikan nang dahan-dahan ang Acts 17:11. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Balika ug hinay-hinay ang Acts 17:11. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Subliem a siaannad ti Acts 17:11. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.confusion_uncertainty.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.confusion_uncertainty.07",
+        "revision": "r1",
+        "checksum": "sha256:057344d296d953c166ec25606f0ead0242df6861554b393fcf339192e6062f04",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Turn attention toward what God has given",
+        "body": "Return slowly to Psalm 119:105. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.confusion_uncertainty",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Balikan nang dahan-dahan ang Psalm 119:105. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Balika ug hinay-hinay ang Psalm 119:105. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Subliem a siaannad ti Psalm 119:105. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.discouragement.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.discouragement.07",
+        "revision": "r1",
+        "checksum": "sha256:636677d8fd33c2e3be27e031823f1e2a2778b5284aab08281fdfabe3062997ee",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Let prayer interrupt the spiral",
+        "body": "Return slowly to 2 Corinthians 4:16. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.discouragement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Balikan nang dahan-dahan ang 2 Corinthians 4:16. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Balika ug hinay-hinay ang 2 Corinthians 4:16. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Subliem a siaannad ti 2 Corinthians 4:16. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hopelessness.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.hopelessness.07",
+        "revision": "r1",
+        "checksum": "sha256:db91c21cf3a14e0b1af2d0f6dd0c5aef4668a20a6749b8ee31eaf8f003b54f41",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Make one choice that agrees with hope",
+        "body": "Return slowly to Romans 8:24-25. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hopelessness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Balikan nang dahan-dahan ang Romans 8:24-25. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Balika ug hinay-hinay ang Romans 8:24-25. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Subliem a siaannad ti Romans 8:24-25. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.overwhelm.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.overwhelm.07",
+        "revision": "r1",
+        "checksum": "sha256:60fb3f59dc809bc2e8b913c311faf4c7c6a96d9ff04670520d379cf0dc795819",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Ask what faithfulness looks like now",
+        "body": "Return slowly to Exodus 18:17-23. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.overwhelm",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.help",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Balikan nang dahan-dahan ang Exodus 18:17-23. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Balika ug hinay-hinay ang Exodus 18:17-23. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Subliem a siaannad ti Exodus 18:17-23. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.stress.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.stress.07",
+        "revision": "r1",
+        "checksum": "sha256:33c67752eb65da4e3c3180b33b656e344b0bcf18f3231813000f884881ed5def",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Take the next step without carrying tomorrow",
+        "body": "Return slowly to Psalm 46:10. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.stress",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Balikan nang dahan-dahan ang Psalm 46:10. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Balika ug hinay-hinay ang Psalm 46:10. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Subliem a siaannad ti Psalm 46:10. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.tiredness_weariness.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.tiredness_weariness.07",
+        "revision": "r1",
+        "checksum": "sha256:84893f9ef41fccb2f5f733e5e9cdda5d3456ea974e9ea72654782341c65f3e5f",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Turn attention toward what God has given",
+        "body": "Return slowly to Isaiah 40:29. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.tiredness_weariness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.strength",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Balikan nang dahan-dahan ang Isaiah 40:29. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Balika ug hinay-hinay ang Isaiah 40:29. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Subliem a siaannad ti Isaiah 40:29. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.07",
+        "revision": "r1",
+        "checksum": "sha256:2be64913e35d3fd4bcc353e16a841c796bf621c0d06c98b8c6b756f562d08faa",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Let prayer interrupt the spiral",
+        "body": "Return slowly to John 15:4. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.spiritual_growth",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Balikan nang dahan-dahan ang John 15:4. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Balika ug hinay-hinay ang John 15:4. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Subliem a siaannad ti John 15:4. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.07",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Practice - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.temptation.07",
+        "revision": "r1",
+        "checksum": "sha256:4461e0b38f62122f1758a0e74060c93e5bc1c3e0ef99fd708d3dae85a5c5f7ce",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Practice: Make one choice that agrees with hope",
+        "body": "Return slowly to Matthew 26:41. After reading, write one sentence about what the passage shows you about God, one sentence about the faithful response it invites, and one short prayer. Choose the smallest action that matches that prayer and do it today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional practice prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagsasanay: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Balikan nang dahan-dahan ang Matthew 26:41. Pagkatapos basahin, sumulat ng isang pangungusap tungkol sa ipinapakita ng talata tungkol sa Diyos, isang pangungusap tungkol sa tapat na tugon na hinihingi nito, at isang maikling panalangin. Piliin ang pinakamaliit na hakbang na naaayon sa panalanging iyon at gawin ito ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Pagbansay: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Balika ug hinay-hinay ang Matthew 26:41. Human sa pagbasa, pagsulat og usa ka sentence bahin sa gipakita sa teksto mahitungod sa Dios, usa ka sentence bahin sa matinud-anong tubag nga gitawag niini, ug usa ka mubo nga pag-ampo. Pilia ang pinakagamay nga lakang nga nahiuyon sa maong pag-ampo ug buhata kini karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:30:00Z",
+          "content": {
+            "title": "Panagsanay: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Subliem a siaannad ti Matthew 26:41. Kalpasan ti panagbasa, mangisuratka iti maysa a pangungusap maipapan iti ipakitana kenka maipanggep iti Dios, maysa a pangungusap maipapan iti napudno a sungbat a iyawisna, ken maysa a bassit a kararag. Piliem ti kabassitan nga addang a maitunos iti dayta a kararag ket aramidem ita nga aldaw."
+          }
+        }
+      ]
+    }
+  ]
+}

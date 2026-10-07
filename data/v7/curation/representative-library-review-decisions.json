@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_representative_library_review_decisions",
+  "status": "complete_authorized_decisions",
+  "boundary": {
+    "doesNotApproveByPresence": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "authorizedReviewerRequired": false
+  },
+  "decisions": [
+    {
+      "schemaVersion": 1,
+      "itemId": "books.pilgrims-progress",
+      "revision": "books.pilgrims-progress.r1",
+      "outcome": "approved",
+      "reviewer": "biblequest.v7.representative-policy-v1",
+      "decidedAt": "2026-10-07T15:50:00Z",
+      "rightsStatusSnapshot": "verified",
+      "evidenceRefs": [
+        "data/v7/books/representative-catalog.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "checks": [
+        {
+          "id": "source_identity",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "attribution",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "rights_basis",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "permitted_use",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "theological_editorial_fit",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "audience_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "publication_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        }
+      ],
+      "note": "Automated V7 representative release decision; exact revision and committed evidence only."
+    },
+    {
+      "schemaVersion": 1,
+      "itemId": "books.practice-presence",
+      "revision": "books.practice-presence.r1",
+      "outcome": "approved",
+      "reviewer": "biblequest.v7.representative-policy-v1",
+      "decidedAt": "2026-10-07T15:50:00Z",
+      "rightsStatusSnapshot": "verified",
+      "evidenceRefs": [
+        "data/v7/books/representative-catalog.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "checks": [
+        {
+          "id": "source_identity",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "attribution",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "rights_basis",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "permitted_use",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "theological_editorial_fit",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "audience_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "publication_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        }
+      ],
+      "note": "Automated V7 representative release decision; exact revision and committed evidence only."
+    },
+    {
+      "schemaVersion": 1,
+      "itemId": "devotional.spurgeon.january-02-am",
+      "revision": "r1",
+      "outcome": "approved",
+      "reviewer": "biblequest.v7.representative-policy-v1",
+      "decidedAt": "2026-10-07T15:50:00Z",
+      "rightsStatusSnapshot": "verified",
+      "evidenceRefs": [
+        "content/v7/devotionals/spurgeon-samples.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "checks": [
+        {
+          "id": "source_identity",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "attribution",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "rights_basis",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "permitted_use",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "excerpt_accuracy",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "scripture_context",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "theological_editorial_fit",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "audience_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "publication_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        }
+      ],
+      "note": "Automated V7 representative release decision; exact revision and committed evidence only."
+    },
+    {
+      "schemaVersion": 1,
+      "itemId": "devotional.spurgeon.january-06-am",
+      "revision": "r1",
+      "outcome": "approved",
+      "reviewer": "biblequest.v7.representative-policy-v1",
+      "decidedAt": "2026-10-07T15:50:00Z",
+      "rightsStatusSnapshot": "verified",
+      "evidenceRefs": [
+        "content/v7/devotionals/spurgeon-samples.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "checks": [
+        {
+          "id": "source_identity",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "attribution",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "rights_basis",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "permitted_use",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "excerpt_accuracy",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "scripture_context",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "theological_editorial_fit",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "audience_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "publication_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        }
+      ],
+      "note": "Automated V7 representative release decision; exact revision and committed evidence only."
+    },
+    {
+      "schemaVersion": 1,
+      "itemId": "teaching.prayer-abiding",
+      "revision": "prayer-abiding-r2",
+      "outcome": "approved",
+      "reviewer": "biblequest.v7.representative-policy-v1",
+      "decidedAt": "2026-10-07T15:50:00Z",
+      "rightsStatusSnapshot": "verified",
+      "evidenceRefs": [
+        "data/v7/past-teachings/prayer-source-example.json",
+        "data/v7/past-teachings/launch-set-summary.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "checks": [
+        {
+          "id": "source_identity",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "attribution",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "rights_basis",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "faithful_meaning",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "scripture_reference_accuracy",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "theological_editorial_fit",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "audience_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        },
+        {
+          "id": "publication_suitability",
+          "result": "pass",
+          "note": "Deterministic representative release policy passed against committed provenance, rights and curation evidence."
+        }
+      ],
+      "note": "Automated V7 representative release decision; exact revision and committed evidence only."
+    }
+  ]
+}

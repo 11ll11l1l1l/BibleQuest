@@ -115,18 +115,53 @@ async function verifyReducedMotionAndPerformance(){
 }
 
 async function verifyPwaOfflineReconnect(){
-  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();
+  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();const errors=[],failed=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('requestfailed',request=>failed.push({url:request.url(),failure:request.failure()?.errorText||''}));
   await page.goto(`${BASE}#/more`,{waitUntil:'networkidle'});await waitForApp(page);
   const pwa=await page.evaluate(async()=>{
+    const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     const manifest=await (await fetch('manifest.webmanifest')).json();
     const registration=await Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('service worker ready timeout')),12000))]);
-    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller)};
+    const requiredShellUrls=()=>{
+      const urls=new Set();
+      try{const current=new URL(location.href);current.hash='';urls.add(current.href)}catch{}
+      for(const entry of performance.getEntriesByType('resource')){
+        if(!['script','link','css','img'].includes(String(entry.initiatorType||'')))continue;
+        try{const url=new URL(entry.name,location.href);if(url.origin===location.origin)urls.add(url.href)}catch{}
+      }
+      return [...urls];
+    };
+    const required=requiredShellUrls();
+    let cacheReady=false,cachedCount=0;
+    for(let attempt=1;attempt<=80;attempt++){
+      const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
+      const cached=name?(await (await caches.open(name)).keys()).map(request=>request.url):[];
+      cachedCount=cached.length;
+      cacheReady=Boolean(name)&&required.every(url=>cached.includes(url));
+      if(navigator.serviceWorker.controller&&cacheReady)break;
+      await sleep(150);
+    }
+    const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'))||'';
+    const cached=name?(await (await caches.open(name)).keys()).map(request=>request.url):[];
+    const missing=required.filter(url=>!cached.includes(url));
+    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller),cacheReady,cachedCount,requiredCount:required.length,required,cached,missing};
   });
   assert(pwa.display==='standalone'&&pwa.startUrl==='./'&&pwa.scope==='./',`PWA manifest browser contract failed: ${JSON.stringify(pwa)}`);
   assert(pwa.worker.endsWith('/offline-shell-sw.js'),`Unexpected active service worker: ${pwa.worker}`);
-  await page.waitForTimeout(400);
+  assert(pwa.controlled&&pwa.cacheReady,`PWA must be controlled with a warmed shell before forcing offline: ${JSON.stringify(pwa)}`);
   await context.setOffline(true);
-  await page.reload({waitUntil:'domcontentloaded',timeout:10000});await waitForApp(page);
+  await page.reload({waitUntil:'domcontentloaded',timeout:10000});
+  try{await waitForApp(page)}catch(error){
+    const diagnostic=await page.evaluate(async()=>({
+      href:location.href,
+      readyState:document.readyState,
+      appHtml:document.querySelector('#app')?.innerHTML?.slice(0,1600)||'',
+      bodyText:document.body?.innerText?.slice(0,1600)||'',
+      controller:navigator.serviceWorker.controller?.scriptURL||'',
+      resources:performance.getEntriesByType('resource').map(entry=>entry.name),
+      cacheNames:await caches.keys()
+    })).catch(()=>({evaluateFailed:true}));
+    throw new Error(`Offline PWA boot failed: ${JSON.stringify({diagnostic,errors,failed})}; original=${error.message}`);
+  }
   const offline=await layoutSnapshot(page);assert(!offline.startup&&!offline.recovery,'Cached PWA shell failed while offline.');
   await context.setOffline(false);
   await page.reload({waitUntil:'networkidle',timeout:15000});await waitForApp(page);

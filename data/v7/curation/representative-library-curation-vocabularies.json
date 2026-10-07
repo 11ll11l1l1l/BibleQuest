@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_representative_library_curation",
+  "note": "Frozen A2 editorial vocabularies for the bounded V7 representative Library curation sidecar. These labels do not change runtime schemas, publication state, rights, or approval authority.",
+  "topics": [
+    "abiding",
+    "daily_faith",
+    "discipleship",
+    "faith",
+    "hope",
+    "perseverance",
+    "prayer",
+    "spiritual_growth",
+    "trust",
+    "worry"
+  ],
+  "collections": [
+    "christian_classics",
+    "daily_devotionals",
+    "discipleship_classics",
+    "hope_and_anxiety",
+    "past_teachings",
+    "prayer_and_presence"
+  ],
+  "lifePathways": [
+    "abiding_in_christ",
+    "building_prayer_habits",
+    "facing_worry",
+    "faith_in_daily_life",
+    "growing_in_faith",
+    "learning_trust",
+    "persevering_through_trials"
+  ],
+  "audiences": [
+    "adult",
+    "mature_youth",
+    "mentor_mentee",
+    "new_believer",
+    "youth"
+  ],
+  "oneToOneSteps": [
+    "action",
+    "apply",
+    "discuss",
+    "pray",
+    "reflect",
+    "scripture",
+    "understand"
+  ],
+  "readingTimeKinds": [
+    "adaptation_estimate",
+    "excerpt_estimate",
+    "long_form_external"
+  ],
+  "readingPlanCadences": [
+    "chapter_or_section_sequence",
+    "daily",
+    "short_section_sequence",
+    "single_session_or_prayer_series"
+  ]
+}

@@ -3,7 +3,7 @@ const SHELL_INITIATORS=new Set(['script','link','css','img']);
 
 function collectShellUrls({performanceRef,locationRef}){
   const urls=new Set();
-  try{if(locationRef?.href)urls.add(new URL(locationRef.href).href)}catch{}
+  try{if(locationRef?.href){const url=new URL(locationRef.href);url.hash='';urls.add(url.href)}}catch{}
   let entries=[];
   try{entries=performanceRef?.getEntriesByType?.('resource')||[]}catch{}
   for(const entry of entries){

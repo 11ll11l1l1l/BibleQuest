@@ -1,3 +1,4 @@
+import { localization } from '../../app/localization.js';
 import { createContextLab } from './context.js';
 import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary.js';
 import { japaneseFuriganaControl } from './furigana.js';
@@ -68,12 +69,14 @@ const offlinePackageHtml = (snapshot, active = false, inventory = [], translatio
   return `<div class="bq-reader-offline-manager" data-reader-offline-manager data-managed-installed="false" data-offline-update-available="${snapshot.updateAvailable ? 'true' : 'false'}"><b>Managed offline copy</b><span>${escapeHtml(snapshot.reason || 'Download this book for offline use.')}</span><small>Current book${escapeHtml(size)} · Storage: ${escapeHtml(usage)}</small><button type="button" class="bq-secondary-button" data-reader-offline-download>${action}</button>${bulkDownload}${inventoryHtml}</div>`;
 };
 
-export function readerPage({ reader, vocabulary = null, furigana = null, offlinePackages = null, audio = null, speech = null }) {
+export function readerPage({ reader, vocabulary = null, furigana = null, offlinePackages = null, audio = null, speech = null, initialVerse = null, onBack = null }) {
   return {
     title: 'Bible Reader',
-    html: '<section data-reader-page><div class="bq-panel"><p>Loading Bible Reader…</p></div></section>',
+    html: `${onBack ? `<button type="button" data-reader-lesson-back>${escapeHtml(localization.t('backToLesson', { dictionaries: { en: { backToLesson: 'Back to lesson' }, tl: { backToLesson: 'Bumalik sa aralin' }, ceb: { backToLesson: 'Balik sa leksyon' } } }))}</button>` : ''}<section data-reader-page><div class="bq-panel"><p>Loading Bible Reader…</p></div></section>`,
     mount(root) {
-      const host = root.querySelector('[data-reader-page]'); let searchResults = null, highlightVerse = null, operation = 0, furiganaPass = 0, currentChapter = null, activeOfflineDownload = null, activeOfflineTranslation = null, offlineInventory = null;
+      const host = root.querySelector('[data-reader-page]'); let searchResults = null, highlightVerse = Number.isInteger(initialVerse) && initialVerse > 0 ? initialVerse : null, operation = 0, furiganaPass = 0, currentChapter = null, activeOfflineDownload = null, activeOfflineTranslation = null, offlineInventory = null;
+      const backButton = root.querySelector('[data-reader-lesson-back]');
+      if (backButton) backButton.addEventListener('click', onBack);
       const getOfflineStatus = async () => { if (typeof reader.getOfflineStatus !== 'function') return null; try { return await reader.getOfflineStatus(); } catch { return null; } };
       const activeOfflineKey = state => activeOfflineDownload && activeOfflineDownload.translationId === state.translation && activeOfflineDownload.bookCode === state.book;
       const renderOfflinePackageControls = async () => {
@@ -563,7 +566,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
       const unsubscribeAudio = audio?.subscribe?.(refreshAudioPresentation);
       const unsubscribeSpeech = speech?.subscribe?.(refreshSpeechPresentation);
       host.addEventListener('change', onChange); host.addEventListener('click', onClick); host.addEventListener('submit', onSubmit); load();
-      return () => { operation++; furiganaPass++; unsubscribeAudio?.(); unsubscribeSpeech?.(); speech?.dispose?.(); if (activeOfflineDownload && offlinePackages) offlinePackages.cancel(activeOfflineDownload.translationId, activeOfflineDownload.bookCode); if (activeOfflineTranslation && offlinePackages) offlinePackages.cancelTranslation(activeOfflineTranslation.translationId); activeOfflineDownload = null; activeOfflineTranslation = null; host.querySelector('[data-verse-dialog]')?.close(); host.querySelector('[data-context-dialog]')?.close(); host.removeEventListener('change', onChange); host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); };
+      return () => { if (backButton) backButton.removeEventListener('click', onBack); operation++; furiganaPass++; unsubscribeAudio?.(); unsubscribeSpeech?.(); speech?.dispose?.(); if (activeOfflineDownload && offlinePackages) offlinePackages.cancel(activeOfflineDownload.translationId, activeOfflineDownload.bookCode); if (activeOfflineTranslation && offlinePackages) offlinePackages.cancelTranslation(activeOfflineTranslation.translationId); activeOfflineDownload = null; activeOfflineTranslation = null; host.querySelector('[data-verse-dialog]')?.close(); host.querySelector('[data-context-dialog]')?.close(); host.removeEventListener('change', onChange); host.removeEventListener('click', onClick); host.removeEventListener('submit', onSubmit); };
     }
   };
 }

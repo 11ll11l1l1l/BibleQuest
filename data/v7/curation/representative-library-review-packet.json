@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_representative_library_review",
+  "status": "automated_review_complete",
+  "boundary": {
+    "contentReviewStillRequired": false,
+    "unknownRightsBlockPublication": true,
+    "doesNotApproveContent": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "doesNotNameReviewer": true
+  },
+  "items": [
+    {
+      "itemId": "books.pilgrims-progress",
+      "contentType": "book",
+      "revisionSnapshot": "books.pilgrims-progress.r1",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
+      "repositoryEvidenceRefs": [
+        "data/v7/books/representative-catalog.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "requiredChecks": [
+        "source_identity",
+        "attribution",
+        "rights_basis",
+        "permitted_use",
+        "theological_editorial_fit",
+        "audience_suitability",
+        "publication_suitability"
+      ],
+      "openBlockers": [],
+      "reviewNote": "Verify the external-title metadata and attribution, confirm the recorded Project Gutenberg link-only use remains accurate, then assess editorial/theological fit and publication suitability. Do not infer hosted-text or image permission from this packet."
+    },
+    {
+      "itemId": "books.practice-presence",
+      "contentType": "book",
+      "revisionSnapshot": "books.practice-presence.r1",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
+      "repositoryEvidenceRefs": [
+        "data/v7/books/representative-catalog.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "requiredChecks": [
+        "source_identity",
+        "attribution",
+        "rights_basis",
+        "permitted_use",
+        "theological_editorial_fit",
+        "audience_suitability",
+        "publication_suitability"
+      ],
+      "openBlockers": [],
+      "reviewNote": "Verify the external-title metadata and attribution, confirm the recorded Project Gutenberg link-only use remains accurate, then assess editorial/theological fit and publication suitability with the historical Catholic context kept explicit."
+    },
+    {
+      "itemId": "devotional.spurgeon.january-02-am",
+      "contentType": "devotional",
+      "revisionSnapshot": "r1",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
+      "repositoryEvidenceRefs": [
+        "content/v7/devotionals/spurgeon-samples.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "requiredChecks": [
+        "source_identity",
+        "attribution",
+        "rights_basis",
+        "permitted_use",
+        "excerpt_accuracy",
+        "scripture_context",
+        "theological_editorial_fit",
+        "audience_suitability",
+        "publication_suitability"
+      ],
+      "openBlockers": [],
+      "reviewNote": "Confirm the repository excerpt accurately represents the cited CCEL source, attribution and public-domain basis, then review Scripture context, pastoral/theological fit, audience suitability and publication suitability."
+    },
+    {
+      "itemId": "devotional.spurgeon.january-06-am",
+      "contentType": "devotional",
+      "revisionSnapshot": "r1",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
+      "repositoryEvidenceRefs": [
+        "content/v7/devotionals/spurgeon-samples.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "requiredChecks": [
+        "source_identity",
+        "attribution",
+        "rights_basis",
+        "permitted_use",
+        "excerpt_accuracy",
+        "scripture_context",
+        "theological_editorial_fit",
+        "audience_suitability",
+        "publication_suitability"
+      ],
+      "openBlockers": [],
+      "reviewNote": "Confirm the repository excerpt accurately represents the cited CCEL source, attribution and public-domain basis, then review Scripture context, pastoral/theological fit, audience suitability and publication suitability."
+    },
+    {
+      "itemId": "teaching.prayer-abiding",
+      "contentType": "past_teaching",
+      "revisionSnapshot": "prayer-abiding-r2",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published",
+      "repositoryEvidenceRefs": [
+        "data/v7/past-teachings/prayer-source-example.json",
+        "data/v7/past-teachings/launch-set-summary.json",
+        "data/v7/curation/representative-library-curation.json"
+      ],
+      "requiredChecks": [
+        "source_identity",
+        "attribution",
+        "rights_basis",
+        "faithful_meaning",
+        "scripture_reference_accuracy",
+        "theological_editorial_fit",
+        "audience_suitability",
+        "publication_suitability"
+      ],
+      "openBlockers": [],
+      "reviewNote": "Canonical source identity and first-party rights are complete. Review faithful meaning, Scripture references, attribution, theological/editorial fit, audience suitability, and publication suitability before the automated publication decision."
+    }
+  ]
+}

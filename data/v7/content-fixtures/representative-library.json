@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    { "id": "fixture.books", "kind": "category", "labels": { "en": "Fixture Books" } },
+    { "id": "fixture.devotionals", "kind": "category", "labels": { "en": "Fixture Devotionals" } },
+    { "id": "fixture.teachings", "kind": "category", "labels": { "en": "Fixture Past Teachings" } },
+    { "id": "fixture.topic", "kind": "topic", "labels": { "en": "Fixture Topic" } },
+    { "id": "fixture.sample", "kind": "tag", "labels": { "en": "Fixture Only" } }
+  ],
+  "items": [
+    {
+      "id": "fixture.book-one", "type": "book", "revision": "fixture-r1", "sourceLocale": "en",
+      "publicationState": "draft", "source": { "kind": "fixture", "title": "Synthetic fixture; no external source" },
+      "sourceContent": { "title": "Fixture Book — do not publish", "body": "Synthetic import-format sample." },
+      "rights": { "status": "unknown", "basis": "", "attribution": "", "allowedUses": [] },
+      "review": { "status": "draft" }, "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "fixture.books", "order": 0 }, { "kind": "tag", "id": "fixture.sample", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "fixture.devotional-one", "type": "devotional", "revision": "fixture-r1", "sourceLocale": "en",
+      "publicationState": "draft", "source": { "kind": "fixture", "title": "Synthetic fixture; no external source" },
+      "sourceContent": { "title": "Fixture Devotional — do not publish", "body": "Synthetic import-format sample." },
+      "rights": { "status": "unknown", "basis": "", "attribution": "", "allowedUses": [] },
+      "review": { "status": "draft" }, "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "fixture.devotionals", "order": 0 }, { "kind": "topic", "id": "fixture.topic", "order": 0 }],
+      "translations": []
+    },
+    {
+      "id": "fixture.past-teaching-one", "type": "past_teaching", "revision": "fixture-r1", "sourceLocale": "en",
+      "publicationState": "draft", "source": { "kind": "fixture", "title": "Synthetic fixture; no external source" },
+      "sourceContent": { "title": "Fixture Past Teaching — do not publish", "body": "Synthetic import-format sample." },
+      "rights": { "status": "unknown", "basis": "", "attribution": "", "allowedUses": [] },
+      "review": { "status": "draft" }, "revisionHistory": [],
+      "taxonomyLinks": [{ "kind": "category", "id": "fixture.teachings", "order": 0 }, { "kind": "topic", "id": "fixture.topic", "order": 1 }],
+      "translations": []
+    }
+  ]
+}

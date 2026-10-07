@@ -36,6 +36,19 @@ for (const book of BIBLE_BOOKS) {
   for (const alias of aliases[book.code] || []) BOOK_ALIASES.set(normalizeBookToken(alias), book);
 }
 
+export function parseBibleReference(input) {
+    const query = String(input || '').trim();
+    const match = query.match(/^(.+?)\s+(\d{1,3})(?::(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?)?$/);
+    if (!match) return null;
+    const book = BOOK_ALIASES.get(normalizeBookToken(match[1]));
+    if (!book) return null;
+    const chapter = Number(match[2]);
+    const verseStart = match[3] ? Number(match[3]) : null;
+    const verseEnd = match[4] ? Number(match[4]) : verseStart;
+    if (chapter < 1 || chapter > book.chapters || (verseStart !== null && verseStart < 1) || (verseEnd !== null && verseEnd < verseStart)) return null;
+    return Object.freeze({ book, chapter, verseStart, verseEnd });
+  }
+
 const STEP_BOOK = Object.freeze({GEN:'Gen',EXO:'Exod',LEV:'Lev',NUM:'Num',DEU:'Deut',JOS:'Josh',JDG:'Judg',RUT:'Ruth','1SA':'1Sam','2SA':'2Sam','1KI':'1Kgs','2KI':'2Kgs','1CH':'1Chr','2CH':'2Chr',EZR:'Ezra',NEH:'Neh',EST:'Esth',JOB:'Job',PSA:'Ps',PRO:'Prov',ECC:'Eccl',SNG:'Song',ISA:'Isa',JER:'Jer',LAM:'Lam',EZK:'Ezek',DAN:'Dan',HOS:'Hos',JOL:'Joel',AMO:'Amos',OBA:'Obad',JON:'Jonah',MIC:'Mic',NAM:'Nah',HAB:'Hab',ZEP:'Zeph',HAG:'Hag',ZEC:'Zech',MAL:'Mal',MAT:'Matt',MRK:'Mark',LUK:'Luke',JHN:'John',ACT:'Acts',ROM:'Rom','1CO':'1Cor','2CO':'2Cor',GAL:'Gal',EPH:'Eph',PHP:'Phil',COL:'Col','1TH':'1Thess','2TH':'2Thess','1TI':'1Tim','2TI':'2Tim',TIT:'Titus',PHM:'Phlm',HEB:'Heb',JAS:'Jas','1PE':'1Pet','2PE':'2Pet','1JN':'1John','2JN':'2John','3JN':'3John',JUD:'Jude',REV:'Rev'});
 const safeVerse = row => { const start=Number(row?.v),end=row?.e===undefined?start:Number(row.e); return row && Number.isInteger(Number(row.c)) && Number(row.c) > 0 && Number.isInteger(start) && start > 0 && Number.isInteger(end) && end >= start && typeof row.t === 'string' && row.t.trim(); };
 const freezeVerse = row => { const start=Number(row.v),end=row.e===undefined?start:Number(row.e); return Object.freeze({ chapter: Number(row.c), verse: start, ...(end>start?{ verseEnd:end }:{}), text: String(row.t).trim() }); };
@@ -233,18 +246,7 @@ export function createBibleDataService({ fetcher = (...args) => fetch(...args), 
     return Object.freeze({ book, translation: loaded.translation, chapter: chapterNumber, verses: Object.freeze(verses) });
   }
 
-  function parseReference(input) {
-    const query = String(input || '').trim();
-    const match = query.match(/^(.+?)\s+(\d{1,3})(?::(\d{1,3})(?:\s*[-–]\s*(\d{1,3}))?)?$/);
-    if (!match) return null;
-    const book = BOOK_ALIASES.get(normalizeBookToken(match[1]));
-    if (!book) return null;
-    const chapter = Number(match[2]);
-    const verseStart = match[3] ? Number(match[3]) : null;
-    const verseEnd = match[4] ? Number(match[4]) : verseStart;
-    if (chapter < 1 || chapter > book.chapters || (verseStart !== null && verseStart < 1) || (verseEnd !== null && verseEnd < verseStart)) return null;
-    return Object.freeze({ book, chapter, verseStart, verseEnd });
-  }
+  function parseReference(input) { return parseBibleReference(input); }
 
   async function search(translationId, query, { limit = 30 } = {}) {
     const translation = getTranslation(translationId);

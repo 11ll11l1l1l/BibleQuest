@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_a2_devotional_curation_context_review",
+  "status": "awaiting_context_review",
+  "boundary": {
+    "doesNotApproveEditorialPublication": true,
+    "doesNotChangeRights": true,
+    "doesNotSatisfyTranslationReview": true,
+    "requiresSourceBodyContextReviewForDevotionalCandidates": true,
+    "requiresContextAndRelevanceReviewForBsbReferences": true
+  },
+  "decisions": []
+}

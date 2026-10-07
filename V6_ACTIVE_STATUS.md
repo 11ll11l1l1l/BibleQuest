@@ -1,6 +1,6 @@
 # BibleQuest V6 Official Active Status
 
-Updated: 2026-10-02 JST
+Updated: 2026-10-04 JST
 Execution model: one serialized integration stream with bounded specialist tranches
 Official V6 integration branch: `v6/architecture-upgrade`
 V5.0 production ancestry baseline: `f6a0cff0e63ddf676b77b8470d84678958fe9d70`
@@ -8,6 +8,36 @@ Certified V5.0 runtime/source freeze: `c0772d458e9d17ab1728c47c568e99857c7d67a1`
 Current production product parity baseline: `7420bbba789ce21e02ac667f98558681e71d2a28`
 Historical pre-V5 V6 archive: `archive/v6-pre-v5-experiment-20260913` at `8a5c09b7e95c0bd2956dac957fa359cc9829b20e`
 Pre-reconciliation V6 integration head: `684a2424c9451f555952d54434326a7baaa8084a`
+
+## Production release — 2026-10-04 JST
+
+- Released exact certified SHA: `7997d60e6069aa406ec005c32e33e46fee39bc12`; `main` points to this SHA and https://mybiblequest.pages.dev serves its certified artifact.
+- Production deployed-byte verification PASS: 1,015 files / 122,895,955 bytes; artifact SHA256 `0d927196b403c595c11aba811daf725ba1d64575e3e44a35a10d17c8874853ad`; integrity SHA256 `c329b1d32c8f60254c0d4ebeca679cd2cfe00da906d032aec7d74e88004d2faf`.
+- Existing machine production smoke PASS (HTML, exact SHA, manifest, route shortcuts, offline-cache contract, push-worker contract). Live guest browser routes and protected-route denial verified. Authenticated production session observation was not performed.
+- Acceptance: **203 PASS / 8 OPEN / 211**. Physical/manual rows and physical-dependent post-production aggregate remain OPEN/OWNER-WAIVED, never PASS.
+- V5 backup verified: `rollback/v5-pre-v6-production-20261003` → `1cab2110cd15285e9ee388f7889b9fd284823274`. Owner explicitly authorized replacing main from this backed-up state.
+- Durable evidence: `docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json`.
+
+## Owner release decision — 2026-10-04 JST
+
+- The owner explicitly instructed: "Skip rhe manual operatir test for now. Continue release".
+- Physical/manual device evidence and its dependent aggregate acceptance rows are temporarily OWNER-WAIVED for frozen candidate `7997d60e6069aa406ec005c32e33e46fee39bc12`. This supersedes the physical-evidence promotion boundary below. No physical observation is represented as PASS.
+- Automated certification remains SUCCESS on the same SHA. Production promotion and essential machine smoke remain mandatory and authorized.
+- Decision record: `docs/v6/evidence/RC_20261003/OWNER_MANUAL_TEST_WAIVER_20261004.json`.
+- Inventory stays **202 PASS / 9 unchecked**, including seven owner-waived physical-dependent rows and two outstanding production-operation rows. The physical component of post-production smoke is also deferred; it must not be claimed as tested.
+- Production has now been promoted using the owner's subsequent main-replacement authorization; main is pinned to the certified SHA and V5 history is preserved on the rollback branch.
+
+## Final release checkpoint — 2026-10-03 JST
+
+- Frozen release candidate: `7997d60e6069aa406ec005c32e33e46fee39bc12`; source integration base `c6da68b264977048ebebfed74dd34ff86f16060b`.
+- All ten existing exact-candidate workflows passed. Automated RC run `37127215783`; deployed-artifact certificate run `37127215778`; Cloudflare preview verification run `37127215782`.
+- Immutable preview: https://c5053016.mybiblequest.pages.dev. Durable certificate: `docs/v6/evidence/RC_20261003/v6-rc-certification.json`.
+- Current authoritative inventory: **202 PASS / 9 OPEN / 211 total**. The later historical checkpoints below are superseded by this checkpoint.
+- Machine-solvable RC preparation is complete. Genuine same-candidate physical observations remain required: installed-PWA offline, manual accessibility, background/lock-screen audio, physical push P1/P2 and their aggregate field records. The existing due-path backend evidence is retained; do not repeat P3 solely to duplicate it.
+- Production remains V5. Production promotion and essential post-production smoke remain OPEN. Production release is authorized by the owner, but may occur only after required physical evidence is accepted.
+- V5 rollback preserved: `rollback/v5-pre-v6-production-20261003` at `1cab2110cd15285e9ee388f7889b9fd284823274`; existing V4 rollback remains intact.
+- #1121 was rejected for real mobile viewport expansion. #1122 is merged with all applicable gates green; the final candidate includes its desktop-only scrollbar fix.
+- This evidence-only checkpoint does not replace the frozen candidate SHA or authorize releasing a newer status/documentation build.
 
 ## Authority
 

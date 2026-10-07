@@ -1,0 +1,11 @@
+# P2-C — Past Teachings article presentation
+
+Starting integration: `bfc7a65b`. Lane C owns `src/features/past-teachings/`, `data/v7/past-teachings/` and its focused tests. The shared Library detail page delegates only `past_teaching` content to this renderer; existing browse/type filters, route identity, service, account/congregation invalidation and publication authority are reused.
+
+Article bodies support the current import contract's plain-text string with paragraph breaks and standalone Markdown-style headings, plus database JSON bodies containing explicit paragraph/heading blocks. Text is always escaped; HTML, embeds and unsupported blocks are not rendered. Limits bound article input. Only recorded display/hosting rights allow a body. Source links require credential-free HTTPS and open with `noopener noreferrer`. Original source title/rights remain on the shared detail surface; article context also shows creator/date and the original teaching link.
+
+Reviewed current-revision translations use the existing V7 content resolver. Missing/stale translations show the source language explicitly. Article labels accept a translated dictionary and otherwise use English; the existing locale system owns current language selection. No full language rollout is claimed.
+
+`data/v7/past-teachings/prayer-source-example.json` is a representative editorial adaptation of Charles H. Spurgeon's *The Secret of Power in Prayer*, dated 1888-01-08, on John 15:7, verified against https://www.spurgeon.org/sermons/the-secret-of-power-in-prayer. Its source identity is real, and its article is a short paraphrase rather than an attributed transcript. Rights verification and publication review remain pending. The example is not imported into production, automatically approved, or used as a published fallback. A source date alone does not establish permission for every modern edition.
+
+Affected verification: 24 local tests (including integrated Books and shared Library checks), production build and typecheck covering article sections, safe source links, escaped text, restricted rights, unsupported bodies, reviewed translation/fallback, import validity and detail-page context invalidation. Node 24.19.0; browser/live database/content publication acceptance remains open. No schema or production data changes.

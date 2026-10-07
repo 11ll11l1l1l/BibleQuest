@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "candidateSha": "aa579e7dba29583f49f59c6c020c32356e57296c",
+  "result": "PASS",
+  "environment": "disposable-local-supabase",
+  "observedAt": "2026-10-05T23:07:25.655Z",
+  "actors": [
+    "leader-mentor",
+    "member-mentee",
+    "foreign-leader"
+  ],
+  "evidenceClass": "authenticated-api-backend",
+  "checks": [
+    "real-password-authentication-and-user-validation",
+    "mutual-pair-acceptance-and-foreign-participant-denial",
+    "authenticated-seven-step-authoring-and-atomic-publication",
+    "member-foreign-publication-and-direct-publication-denial",
+    "immutable-assignment-identity-idempotency-and-role-tenant-denial",
+    "persisted-resume-mentor-read-only-and-private-response-isolation",
+    "explicit-response-sharing-and-immediate-revocation",
+    "membership-revocation-invalidates-existing-session-authority",
+    "completion-reentry-ended-pair-denial-and-owner-history"
+  ],
+  "exclusions": [
+    "built-artifact-browser",
+    "production-backend",
+    "physical-device",
+    "representative-content-review"
+  ]
+}

@@ -10,6 +10,7 @@ const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;'
 
 const LEARN_COPY=Object.freeze({
   en:Object.freeze({
+    'learn.library':'Library','learn.library.detail':'Books · Devotionals · Past Teachings',
     'learn.title':'Learn','learn.eyebrow':'LEARN',
     'learn.description':'Read Scripture directly, follow a guided study, examine a deep question, walk through a Bible story, practice difficult Scripture-informed judgment, explore the biblical story map, review weak areas with spaced retrieval, or keep notes locally or with your signed-in account.',
     'learn.reader':'Bible Reader','learn.reader.detail':'English BSB + Tagalog ULB · search · verse tools',
@@ -26,6 +27,7 @@ const LEARN_COPY=Object.freeze({
     'learn.safety':'Binary-scored questions must stay tied to an explicit Scripture reference and pass doctrinal-safety review. A disputed or universal doctrine claim is quarantined instead of being guessed into a right/wrong answer. Passage-sensitive material stays contextual, while Deep Questions and Wisdom remain interpretive or applied exercises rather than spiritual-quality scores.'
   }),
   tl:Object.freeze({
+    'learn.library':'Aklatan','learn.library.detail':'Mga Aklat · Debosyonal · Mga Nakaraang Pagtuturo',
     'learn.title':'Matuto','learn.eyebrow':'MATUTO',
     'learn.description':'Direktang magbasa ng Kasulatan, sumunod sa gabay na pag-aaral, suriin ang malalim na tanong, lakaran ang isang kuwento sa Biblia, magsanay sa mahihirap na pasyang ginagabayan ng Kasulatan, tuklasin ang mapa ng kuwento ng Biblia, balikan ang mahihinang bahagi, o magtago ng mga tala sa device o account.',
     'learn.reader':'Mambabasa ng Biblia','learn.reader.detail':'English BSB + Tagalog ULB · paghahanap · mga tool sa talata',
@@ -42,6 +44,7 @@ const LEARN_COPY=Object.freeze({
     'learn.safety':'Ang mga tanong na tama o mali ang pagmamarka ay kailangang nakatali sa malinaw na sanggunian sa Kasulatan at pumasa sa doctrinal-safety review. Ang pinagtatalunang o pangkalahatang doktrinal na pahayag ay inilalagay sa quarantine sa halip na hulaan ang tama o maling sagot. Ang sensitibo sa konteksto ay nananatiling may konteksto, at ang Malalalim na Tanong at Karunungan ay hindi ginagawang espirituwal na marka.'
   }),
   ceb:Object.freeze({
+    'learn.library':'Library','learn.library.detail':'Mga Libro · Debosyonal · Mga Nangaging Pagtudlo',
     'learn.title':'Pagtuon','learn.eyebrow':'PAGTUON',
     'learn.description':'Basaha direkta ang Kasulatan, sunda ang giya nga pagtuon, susiha ang lawom nga pangutana, agi sa usa ka sugilanon sa Bibliya, praktisa ang lisod nga paghukom nga gigiyahan sa Kasulatan, susiha ang mapa sa biblikal nga sugilanon, balika ang huyang nga bahin, o tipigi ang mga nota sa device o account.',
     'learn.reader':'Magbabasa sa Bibliya','learn.reader.detail':'English BSB + Tagalog ULB · pagpangita · mga himan sa bersikulo',
@@ -59,7 +62,7 @@ const LEARN_COPY=Object.freeze({
   })
 });
 
-export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, onWisdomSituations, onAdaptiveLearning, onOpenReview, onBibleWorld, onExplorer, onPrivateNotes, onCloudNotes, translations = [], recallSource = null }) {
+export function learnPage({ onLibrary, onReader, onStudy, onDeepQuestions, onStoryJourney, onWisdomSituations, onAdaptiveLearning, onOpenReview, onBibleWorld, onExplorer, onPrivateNotes, onCloudNotes, translations = [], recallSource = null }) {
   const locale=localization.getLocale();
   const t=(key,values)=>localization.t(key,{locale,values,dictionaries:LEARN_COPY});
   const guide = sourceGuide({
@@ -73,6 +76,7 @@ export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, 
     html:`<section class="bq-panel"><p class="bq-eyebrow">${escapeHtml(t('learn.eyebrow'))}</p><h1>${escapeHtml(t('learn.title'))}</h1><p>${escapeHtml(t('learn.description'))}</p></section>` +
       `<section class="bq-panel bq-learn-primary" data-learn-primary><button type="button" class="bq-learn-primary-button" data-open-reader><span class="bq-learn-primary-icon" aria-hidden="true">${iconSvg('bible',{size:28})}</span><span class="bq-learn-primary-text"><b>${escapeHtml(t('learn.reader'))}</b><span>${escapeHtml(t('learn.reader.detail'))}</span></span></button></section>` +
       `<div class="bq-learn-group"><p class="bq-eyebrow">${escapeHtml(t('learn.studyGroup'))}</p><div class="bq-learning-grid">` +
+        card('data-open-library','learn.library','learn.library.detail') +
         card('data-open-study','learn.study','learn.study.detail') +
         card('data-open-deep-questions','learn.deep','learn.deep.detail') +
         card('data-open-story-journey','learn.story','learn.story.detail') +
@@ -90,10 +94,12 @@ export function learnPage({ onReader, onStudy, onDeepQuestions, onStoryJourney, 
       `</div></div>` +
       `<section class="bq-panel" data-doctrinal-policy><p class="bq-eyebrow">${escapeHtml(t('learn.safetyEyebrow'))}</p><h2>${escapeHtml(t('learn.safetyHeading'))}</h2><p>${escapeHtml(t('learn.safety'))}</p><p><small>${escapeHtml(DOCTRINAL_SAFETY.authority)}</small></p></section>${guide}`,
     mount(root) {
+      const library=root.querySelector('[data-open-library]'),goLibrary=()=>onLibrary?.();
+      library?.addEventListener('click',goLibrary);
       const reader=root.querySelector('[data-open-reader]'),study=root.querySelector('[data-open-study]'),deep=root.querySelector('[data-open-deep-questions]'),story=root.querySelector('[data-open-story-journey]'),wisdom=root.querySelector('[data-open-wisdom-situations]'),bibleWorld=root.querySelector('[data-open-bible-world]'),explorer=root.querySelector('[data-open-explorer]'),adaptive=root.querySelector('[data-open-adaptive-learning]'),openReview=root.querySelector('[data-open-open-review]'),privateNotes=root.querySelector('[data-open-private-notes]'),cloudNotes=root.querySelector('[data-open-cloud-notes]');
       const goReader=()=>onReader?.(),goStudy=()=>onStudy?.(),goDeep=()=>onDeepQuestions?.(),goStory=()=>onStoryJourney?.(),goWisdom=()=>onWisdomSituations?.(),goBibleWorld=()=>onBibleWorld?.(),goExplorer=()=>onExplorer?.(),goAdaptive=()=>onAdaptiveLearning?.(),goOpenReview=()=>onOpenReview?.(),goPrivateNotes=()=>onPrivateNotes?.(),goCloudNotes=()=>onCloudNotes?.();
       reader?.addEventListener('click',goReader);study?.addEventListener('click',goStudy);deep?.addEventListener('click',goDeep);story?.addEventListener('click',goStory);wisdom?.addEventListener('click',goWisdom);bibleWorld?.addEventListener('click',goBibleWorld);explorer?.addEventListener('click',goExplorer);adaptive?.addEventListener('click',goAdaptive);openReview?.addEventListener('click',goOpenReview);privateNotes?.addEventListener('click',goPrivateNotes);cloudNotes?.addEventListener('click',goCloudNotes);
-      return()=>{reader?.removeEventListener('click',goReader);study?.removeEventListener('click',goStudy);deep?.removeEventListener('click',goDeep);story?.removeEventListener('click',goStory);wisdom?.removeEventListener('click',goWisdom);bibleWorld?.removeEventListener('click',goBibleWorld);explorer?.removeEventListener('click',goExplorer);adaptive?.removeEventListener('click',goAdaptive);openReview?.removeEventListener('click',goOpenReview);privateNotes?.removeEventListener('click',goPrivateNotes);cloudNotes?.removeEventListener('click',goCloudNotes);};
+      return()=>{library?.removeEventListener('click',goLibrary);reader?.removeEventListener('click',goReader);study?.removeEventListener('click',goStudy);deep?.removeEventListener('click',goDeep);story?.removeEventListener('click',goStory);wisdom?.removeEventListener('click',goWisdom);bibleWorld?.removeEventListener('click',goBibleWorld);explorer?.removeEventListener('click',goExplorer);adaptive?.removeEventListener('click',goAdaptive);openReview?.removeEventListener('click',goOpenReview);privateNotes?.removeEventListener('click',goPrivateNotes);cloudNotes?.removeEventListener('click',goCloudNotes);};
     }
   };
 }

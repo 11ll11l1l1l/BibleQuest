@@ -1,296 +1,407 @@
+> **2026-10-07 RELEASE RESET:** Remaining V7 work is now governed by `V7_ACTIVE_STATUS.md`, `docs/v7/V7_RELEASE_RESET_20261007.md`, and issues #1300–#1303. The phase-specific A–D map below is retained as historical development context only. The old A1/A2/A3/A4 structure is retired. The reset explicitly brings the 150–300 devotional build plus TL/CEB/ILO translations into V7 and replaces human/manual release gates with fail-closed automated policy/evidence where technically possible.
+
 # BibleQuest V7 Development Plan
 
-Updated: 2026-09-17 JST
-Status: **PLANNED / BLOCKED BY V6**
-Authority before activation: this document
-Future active authority: `V7_ACTIVE_STATUS.md`
-Required baseline: exact accepted V6 production SHA after V6 Phase 12
-Depends on: the certified V6 engine
+Updated: 2026-10-04 JST
+Status: **ACTIVE — NARROWED SCOPE**
+Active authority for progress: `V7_ACTIVE_STATUS.md`
+Operational authority: `work/RULEBOOK.md`
+Development branch: `v7/development`
+Production baseline: V6 `7997d60e6069aa406ec005c32e33e46fee39bc12`
 
 ## 1. V7 line in the sand
 
-V5 completes the product. V6 replaces the engine. **V7 performs the full product overhaul using that engine.**
+**BibleQuest V7 = Library + structured ONE 2 ONE discipleship.**
 
-V7 is deliberately broader than a motion/sound polish pass. It may substantially redesign page composition, navigation treatment, information hierarchy, interaction patterns, component structure, responsive behavior, visual language, artwork placement, motion, sound and cross-page cohesion.
+V7 is intentionally smaller than the previous full-product-overhaul proposal. It builds two coherent product systems on the released V6 engine:
 
-V7 does **not** create another backend/client engine. It consumes the V6 app kernel, repositories, tenant context, Reader/content engine, Games engine, media engine, notification/sync engine, component/design-token system and motion/sound registry. If the V6 engine lacks a genuinely reusable capability, that gap is fixed at the engine layer rather than bypassed with page-specific hacks.
+1. a reusable Library for Books, Devotionals and Past Teachings; and
+2. a structured ONE 2 ONE discipleship journey for mentors and mentees.
 
-## 2. Goal
+V7 must reuse the V6 app kernel, authentication, tenant context, Reader/content engine, assignments/deep-link capabilities, PWA/offline foundation, localization system, notification infrastructure and design/component system. V7 does not rebuild those systems unless an actual V7 requirement exposes a bounded reusable gap.
 
-The V7 target is a BibleQuest that feels like one deliberately designed modern application rather than a set of independently modernized pages.
+The purpose of the narrowed scope is to deliver a complete, releasable discipleship product instead of combining unrelated realtime, media-storage, localization-rollout and content-expansion projects in one release.
 
-The overhaul must achieve all of the following together:
+## 2. In scope
 
-- coherent app shell/navigation and page hierarchy;
-- polished responsive layouts across phone/tablet/desktop;
-- consistent component behavior and state presentation;
-- page-family-specific visual identity without fragmentation;
-- complete replacement of legacy-looking UI patterns where the V6 engine makes a better pattern possible;
-- motion/sound/haptics used intentionally and accessibly;
-- consistent loading/empty/offline/error/unauthorized experiences;
-- preserved privacy, security, data and feature behavior from V5/V6;
-- measurable performance and accessibility budgets;
-- congregation-safe photo and file hosting/sharing without using Supabase Storage as the primary blob store and without requiring a paid storage plan.
+### Library
 
-## 3. V7 freedom and limits
+- Library landing and navigation.
+- Books MVP: metadata, browse/detail presentation and legitimate external links; hosted book content only where licensing permits.
+- Devotionals MVP: browse/detail, life-topic discovery and representative source-valid/public-domain content.
+- Past Teachings MVP: structured teaching/article model, browse/detail and representative converted content.
+- Shared categories, tags, topics, filtering and search across Library content.
+- Source/provenance/licensing metadata appropriate to each content type.
+- Multilingual-ready content contracts using existing V6 localization architecture.
 
-### V7 may change
+### ONE 2 ONE discipleship
 
-- page layouts and information architecture;
-- navigation placement/treatment and route composition;
-- cards, panels, dialogs, sheets, forms and controls;
-- responsive composition and density;
-- typography, spacing, depth and visual hierarchy;
-- artwork/icons/backgrounds and contextual illustrations;
-- interactions, progressive disclosure and onboarding flows;
-- transition/motion/sound/haptic treatment;
-- feature presentation as long as accepted capability remains available and secure.
+- Mentor/mentee pairing and relationship state.
+- Tracks → modules → lessons hierarchy.
+- Leader/authorized authoring and assignment/start flow.
+- Lesson runner with the canonical sequence:
+  `Scripture → Understand → Discuss → Reflect → Apply → Pray → Action`.
+- Progress, reflection, prayer/action and completion state.
+- Correct congregation/role/privacy boundaries.
+- QR/deep-link entry where useful.
+- Bounded reuse of existing V6 assignment, Scripture and communication capabilities rather than duplicate systems.
 
-### V7 may not silently change
+### Supporting V7 work
 
-- server authorization/RLS/privacy rules;
-- user data meaning or ownership;
-- feature availability accepted by V5/V6;
-- Bible translation licensing constraints;
-- tenant isolation;
-- privileged admin semantics;
-- engine contracts merely to solve one page's cosmetic problem.
+- Minimum navigation/app-shell wiring required to expose the new features.
+- Minimum content/media references required inside Library or lessons using existing V6 capabilities.
+- Accessibility, responsive behavior, localization readiness, PWA/offline compatibility and performance for the changed surfaces.
+- Ilocano-compatible contracts only; no full Ilocano Bible or UI rollout in V7.
 
-Any intentional product-contract change requires explicit acceptance and corresponding tests/evidence.
+## 3. Explicit V7 non-goals — moved to V8
 
-### V7 free media/file-storage contract
+The following are not V7 release requirements and must not expand a V7 lane unless the user explicitly changes scope:
 
-V7 adds a provider-agnostic attachment/media layer for user- and congregation-uploaded photos and files. Supabase remains the authority for metadata, ownership, congregation/group/couple scope, permissions and audit state; binary file bytes live in an external media/object-storage provider.
+- Leader Conversation Deck.
+- Participant broadcast and realtime small-group session engine.
+- Central Google Drive media ingest/storage pipeline.
+- Full media moderation workflow and storage-provider project.
+- Full Ilocano Bible rollout.
+- Full Ilocano application UI rollout.
+- Bulk devotional corpus ingestion.
+- Bulk Past Teachings/sermon conversion.
+- Large/expanded Books catalog or broad hosted-book program.
+- Couples expansion and new Couples question bank.
+- Advanced/personalized recommendation engine and deeper content discovery beyond the V7 Library MVP.
+- A second whole-app visual redesign unrelated to Library/ONE 2 ONE.
 
-The default V7 production policy is **strict zero-cost**:
-- no provider that requires automatic paid overage may be the default;
-- no credit-card-dependent pay-as-you-go tier may be required for normal operation;
-- hitting a free quota must fail closed by pausing new uploads/delivery as the provider defines, never by silently upgrading;
-- provider limits must be visible to Admin with local soft-quota warnings and upload throttles;
-- storage providers are adapters, not embedded into feature logic, so BibleQuest can switch provider later without rewriting Community/Media/Ministry surfaces.
+These are recorded once in `DEVELOPMENT_PLAN_V8.md`. `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is retained as historical planning input only and is **not an active V7 requirement**.
 
-The initial preferred provider is ImageKit Free because it supports image/audio/raw-file uploads, private files and signed delivery URLs while its free plan has fixed storage/bandwidth limits. Cloudinary Free is the supported secondary adapter. Cloudflare R2/Backblaze B2 may be evaluated later but are not strict-zero-cost defaults because usage beyond their included free allowance can become billable.
+## 4. Execution model from the rulebook
 
-Detailed contract: `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md`.
+V7 uses bounded parallel preparation/implementation with serialized integration.
 
-## 4. Execution model
+For every parallel lane:
 
-V7 uses one serialized integration stream with page-family tranches. Each tranche:
+1. record the exact `v7/development` starting SHA;
+2. give the chat one concrete outcome, owned surface/files, exclusions, affected existing checks and handoff destination;
+3. use a dedicated task branch such as `v7/p2-a-books`;
+4. produce implementation/evidence, not repeated repository-wide analysis;
+5. do not edit another lane's owned surface or shared status authority without explicit handoff;
+6. refresh from the live integration head before merge;
+7. integrate one ready change at a time and run the checks affected by the combined change.
 
-1. starts from the certified V6 engine and current V7 integration tip;
-2. inventories the full route/state matrix for the target family;
-3. designs the new composition and interaction model before coding;
-4. uses only V6 engine/component/motion/sound primitives unless a reusable engine gap is proven;
-5. migrates bounded surfaces and removes superseded page-specific legacy code;
-6. validates mobile/tablet/desktop, keyboard/touch, reduced motion, sound disabled, offline/error states and performance;
-7. runs accumulated regression/security/browser/PWA evidence;
-8. updates `V7_ACTIVE_STATUS.md` and V7 acceptance evidence.
+Single-owner/shared surfaces include migrations/schema ordering and generated DB contracts, global router/navigation wiring, service worker/PWA policy, deployment/workflow configuration, `V7_ACTIVE_STATUS.md`, and release-candidate identity. Parallel lanes consume these surfaces or request a serialized change; they do not race to modify them.
 
-No tranche should preserve an outdated V4/V5 page structure merely because it exists. The point of V7 is to use the engine to redesign confidently.
+Use the smallest checks that detect the risk introduced by the change. Full accumulated regression belongs at phase/integration/release boundaries, not after every small edit. Existing V6 evidence remains valid unless V7 changes its inputs or exposes an actual regression.
 
----
+### Persistent lane command contract
 
-# Phase 0 — Full-app overhaul inventory and design language
+Lane letters A, B, C and D persist for the entire V7 lifecycle. The user does **not** need to know or specify the current phase.
 
-## Work
+The command:
 
-- complete route/surface inventory, including member, leader and admin states;
-- map every page to a product family and primary user job;
-- define global shell/navigation model;
-- define page hierarchy, spacing, typography, component and responsive rules;
-- define family-specific visual registers: Explore/Journey, Play, Learn/Read, Grow/Reflect, Community, Ministry/Admin;
-- complete motion/sound/haptic moment-to-preset registry using V6 engine capabilities;
-- define accessibility/performance budgets and visual-regression strategy;
-- identify every legacy UI pattern to retire;
-- lock the V7 attachment/media-storage adapter contract, permitted file types, privacy scopes, signed-URL rules, quota policy and provider portability;
-- verify the selected default provider still has a suitable forever-free/no-paid-overage-required plan before V7 activation.
+`Continue V7 lane A`
 
-## Exit gate
+means: resolve the current eligible V7 assignment for persistent lane A from the live repository and continue execution immediately.
 
-A complete overhaul map exists with no major route/family omitted and every shared interaction mapped to canonical V6 components/presets.
+The same applies to lanes B, C and D.
 
----
+Required behavior:
 
-# Phase 1 — App shell, navigation, Home/Explore/Journey
+- read the live `V7_ACTIVE_STATUS.md` and current `v7/development` head first;
+- determine which phase is currently active/eligible and which assignment belongs to the requested lane letter;
+- continue unfinished work for that lane if present;
+- when that lane's current assignment is complete and the next same-letter assignment is eligible, continue directly into it without asking the user for the next phase;
+- when an entire phase exit gate is satisfied, advance to the next phase rather than stopping merely because the previous phase finished;
+- if another lane still blocks a genuine shared gate, do not fabricate readiness; perform safe non-overlapping gate-closing work or record the exact dependency;
+- P2 and P3 may overlap after P1 contracts are frozen, as already permitted below;
+- optional lane E in P3 is supplemental only and never changes A–D continuity;
+- after V7 release is complete, a V7 continuation command reports completion and stops; it does not silently begin V8.
 
-Overhaul the highest-traffic product frame first:
+Persistent lane map:
 
-- global shell/header/bottom or adaptive navigation;
-- Home/Explore hierarchy and Continue My Journey prominence;
-- Daily Journey progression/resume/completion;
-- Bible World and Calendar composition;
-- notification/account access patterns;
-- responsive behavior from narrow phone through desktop;
-- route transitions and primary completion feedback.
+| Lane | P0 | P1 | P2 | P3 | P4 | P5 |
+|---|---|---|---|---|---|---|
+| **A** | Domain/data contracts | DB/RLS/generated contracts | Books MVP | Pairing + relationship security | Library UX/a11y evidence | Browser/mobile/a11y release evidence |
+| **B** | UX/information architecture | Library core | Devotionals MVP | Tracks/modules/lessons authoring | ONE 2 ONE journey evidence | Backend/RLS/security release evidence |
+| **C** | Security/privacy/tenancy | Discipleship core | Past Teachings MVP | Mentee lesson runner | Backend/RLS/privacy hardening | Build/PWA/offline/performance release evidence |
+| **D** | Acceptance/content/provenance | Taxonomy/provenance/localization | Library discovery | Progress/reflection/prayer/action | Cross-cutting regression | Content/provenance/localization release evidence |
 
-## Exit gate
-
-The app shell and daily journey feel coherent on phone/tablet/desktop and all existing critical flows remain reachable and persistent.
+P3-E remains an optional extra lane for QR/deep-link/V6 integration bridges. If lane E is not separately active, the integration owner assigns that bounded work to an available lane without changing the persistent A–D meanings above.
 
 ---
 
-# Phase 2 — Learn / Reader / Study overhaul
+# Phase 0 — Scope freeze and contracts
 
-Use the V6 Reader/content engine to redesign without monolithic-render constraints:
+Goal: freeze the narrowed V7 product/data/security/acceptance contracts before runtime implementation.
 
-- Reader navigation/chapter controls;
-- translation/furigana/vocabulary presentation;
-- search and verse/context tools;
-- Guided Study / Smart Review / contextual learning flows;
-- offline/download states;
-- calm editorial motion/sound register;
-- legal/licensed translation handling remains explicit.
+Run at least four independent chat lanes in parallel:
 
-## Exit gate
+### P0-A — Domain and data contracts
 
-Reader/Study family is visually and behaviorally unified, supports online/offline states clearly and passes representative translation/device/accessibility matrices.
+Owns:
+- Library entities and relationships;
+- Books/Devotionals/Past Teachings common and type-specific metadata;
+- taxonomy/tag/topic model;
+- ONE 2 ONE relationship, track/module/lesson and progress-state contracts;
+- minimum content/media reference interfaces.
 
----
+Must not implement central Drive/media storage, realtime groups or V8 systems.
 
-# Phase 3 — Play / Games / Kids / Avatar overhaul
+### P0-B — UX and information architecture
 
-Use the V6 Games engine and component layer for the most playful family:
+Owns:
+- Library navigation and main journeys;
+- Books/Devotionals/Past Teachings browse/detail flows;
+- ONE 2 ONE mentor and mentee journeys;
+- lesson-runner sequence and progressive disclosure;
+- mobile-first route/surface map.
 
-- launcher/discovery;
-- individual game family UIs;
-- shared question/feedback/result/score patterns;
-- Memory Meadow and visual assets;
-- Avatar/achievement/unlock presentation;
-- solo/local-multiplayer flows;
-- stronger animation/sound/haptic use within accessibility preferences.
+Must not redesign unrelated V6 product families.
 
-## Exit gate
+### P0-C — Security, privacy and tenancy
 
-Every game family follows the shared engine/UI language while retaining its own personality; no legacy monolithic visual path remains live.
+Owns:
+- mentor/mentee visibility and mutation matrix;
+- author/leader/pastor/admin capabilities required by V7;
+- congregation scoping and denial cases;
+- private reflection/progress boundaries;
+- deep-link/session authorization requirements.
 
----
+Must preserve backend authority/RLS and existing V6 tenant rules.
 
-# Phase 4 — Grow / Reflect / Transformation overhaul
+### P0-D — Acceptance, content and provenance
 
-Redesign reflective/personal-growth experiences with a calm, private register:
+Owns:
+- V7 feature acceptance matrix;
+- evidence type for each acceptance item;
+- source/licensing/provenance requirements;
+- representative fixture/content policy;
+- multilingual/i18n readiness criteria;
+- explicit V8 transfer/non-goal manifest.
 
-- progress and reflection flows;
-- Transform/assessment presentation;
-- Personality/Profile/Psychometrics presentation where retained;
-- Notes/reflection continuity;
-- save/recovery/error states;
-- privacy messaging and boundaries.
+### Phase 0 exit gate
 
-No playful/game treatment should trivialize private reflection content.
-
----
-
-# Phase 5 — Community / Congregation / Couples overhaul
-
-Redesign relational surfaces around people and context:
-
-- congregation home/directory/context switching;
-- Journey Groups/Teams;
-- Live Rooms;
-- Couples/Family/Cloud features;
-- Recognition/Encouragements;
-- community notification/deep-link flows;
-- congregation/event/group photo galleries with responsive thumbnails and full-screen viewing;
-- safe member photo/file sharing using external private blob storage plus Supabase metadata/RLS;
-- attachment scopes for congregation, Journey Group/Team, Couple/Family and explicitly public content;
-- upload progress, retry, quota-full, deleted/missing-file and permission-denied states;
-- warm but non-gamified relational motion/sound language.
-
-## Exit gate
-
-Community flows remain tenant-safe and role-safe while becoming much easier to understand and navigate.
+- V7 scope and V8 deferrals are unambiguous.
+- Shared data/domain/security contracts are agreed.
+- Route/user-journey map is agreed.
+- Acceptance/evidence expectations exist before implementation.
+- No V7 implementation depends on an undefined central-media/realtime/Ilocano-rollout system.
 
 ---
 
-# Phase 6 — Ministry / Leader / Admin overhaul
+# Phase 1 — Shared V7 foundation
 
-Use the V6 engine to give operational surfaces a mature professional treatment:
+Goal: build the minimal reusable foundation for Library and ONE 2 ONE without feature-family collisions.
 
-- Leader Center;
-- Assignments/review/follow-up;
-- group/team management;
-- Content Review/moderation;
-- attachment/photo moderation and deletion controls without exposing private provider credentials;
-- Admin storage/quota dashboard showing estimated stored bytes, provider state and safe upload-disable controls;
-- Admin Console and privileged actions;
-- role/tenant context clarity;
-- restrained functional micro-feedback only.
+Run four parallel lanes:
 
-## Exit gate
+### P1-A — Database / RLS / generated data contracts
 
-Operational tools are efficient, trustworthy and clear without game-like decoration; role/privacy boundaries remain independently enforced.
+Sole owner for V7 schema migrations, RLS/policy changes and generated DB contracts during this phase.
 
----
+Deliver:
+- accepted Phase-0 schema;
+- append-only migrations;
+- relevant positive and denial fixtures/checks;
+- generated types/contracts required by other lanes.
 
-# Phase 7 — Media / Notifications / Settings / Account overhaul
+### P1-B — Library core
 
-Redesign cross-cutting utility experiences:
+Deliver:
+- Library domain/service/repository layer;
+- content-type registration/interfaces;
+- Library shell and bounded route integration interfaces;
+- common content presentation/state contracts.
 
-- Videos/Recordings/player surfaces using V6 media engine;
-- Photos/Files hub for authorized galleries, uploads, downloads and shared attachments;
-- external-media provider status, quota/error recovery and signed-access flows;
-- playlists/resume/PiP presentation;
-- Notification Center and push preferences;
-- offline/download/storage management;
-- account/security/recovery/settings;
-- install/update/PWA state;
-- consistent permission/error/recovery UI.
+### P1-C — Discipleship core
 
----
+Deliver:
+- ONE 2 ONE domain/service/repository layer;
+- pairing, curriculum hierarchy and progress interfaces;
+- shell/route integration interfaces;
+- explicit boundaries to existing assignments/Reader/communications.
 
-# Phase 8 — Cross-page cohesion, motion, sound and visual-completion pass
+### P1-D — Taxonomy, provenance and localization foundation
 
-This is the full-system pass that family-by-family work cannot do alone.
+Deliver:
+- categories/topics/tags contracts;
+- source/license/provenance handling;
+- multilingual-ready content fields and UI-string ownership;
+- content fixtures/import format for representative V7 content.
 
-- consistent route transitions;
-- one canonical treatment for completion/error/success/notification moments;
-- registered motion/sound presets only;
-- no one-off animation/audio implementations without registry justification;
-- visual spacing/typography/depth consistency;
-- empty/loading/offline/error/unauthorized consistency;
-- artwork/icon completeness;
-- reduced-motion/sound-off matrix;
-- performance and memory regression review;
-- accessibility sweep across every route family.
+Ilocano compatibility is allowed; a full Ilocano rollout is not.
 
-## Exit gate
+### Integration order
 
-A whole-app audit finds no major legacy UI, unregistered motion/sound, inconsistent state treatment or unexplained family drift.
+Integrate ready work serially, normally P1-A → P1-B → P1-C → P1-D, rebasing/refreshing each next candidate onto the current integration head. Global route/navigation wiring is a bounded integration-owner change after lane contracts are ready.
+
+### Phase 1 exit gate
+
+Library and ONE 2 ONE have stable shared foundations, RLS/data authority is defined, and feature lanes can implement without creating competing schema or infrastructure.
 
 ---
 
-# Phase 9 — Integrated V7 certification and promotion
+# Phase 2 — Library MVP
 
-## Required evidence
+Goal: deliver a complete but bounded Library rather than a bulk-content project.
 
-- complete route/surface acceptance matrix;
-- full accumulated feature/security/database/browser/PWA regression;
-- responsive matrix across representative phone/tablet/desktop sizes;
-- keyboard/focus/contrast/text-scaling checks;
-- reduced-motion and sound-off/on matrices;
-- physical-device audio-unlock/haptic verification where applicable;
-- performance/bundle/runtime budgets;
-- photo/file upload/download/delete/authorization matrix across public, congregation, group/team and private scopes;
-- signed-URL expiry and unauthorized-access tests;
-- strict-zero-cost quota behavior proving uploads stop safely rather than requiring a paid upgrade;
-- provider-outage/missing-object recovery and metadata/blob consistency checks;
-- exact-SHA candidate freeze and rollback plan.
+Run four parallel lanes:
 
-## Exit gate
+### P2-A — Books MVP
 
-One exact V7 candidate is accepted as the fully overhauled BibleQuest production application.
+- browse/detail;
+- metadata, source/licensing fields;
+- legitimate external links;
+- representative catalog entries;
+- no large catalog ingestion requirement.
+
+### P2-B — Devotionals MVP
+
+- browse/detail;
+- life-topic/category discovery;
+- representative public-domain/source-valid content;
+- clear source/provenance;
+- no bulk corpus requirement.
+
+### P2-C — Past Teachings MVP
+
+- browse/detail/article presentation;
+- structured teaching metadata;
+- representative sermon/teaching-to-article examples;
+- provenance to original source;
+- no bulk historical conversion requirement.
+
+### P2-D — Library discovery
+
+Sole owner for shared Library discovery behavior:
+- landing page;
+- cross-type search;
+- categories/topics/tags;
+- filtering/sorting where required;
+- empty/loading/offline/error states.
+
+### Phase 2 exit gate
+
+Books, Devotionals and Past Teachings are reachable through one coherent Library, representative content works end-to-end, and discovery does not require a V8 bulk-content pipeline.
+
+---
+
+# Phase 3 — ONE 2 ONE MVP
+
+Goal: deliver the end-to-end mentor/mentee discipleship experience.
+
+Run at least four lanes; five are preferred because the surfaces are naturally separable:
+
+### P3-A — Pairing and relationship security
+
+- mentor/mentee relationship lifecycle;
+- congregation and role checks;
+- relationship visibility;
+- allow/deny paths and account/congregation-switch handling.
+
+### P3-B — Tracks/modules/lessons authoring
+
+- curriculum hierarchy;
+- authorized create/edit/publish/archive behavior;
+- lesson-step content model presentation;
+- assignment/start preparation.
+
+### P3-C — Mentee lesson runner
+
+Implement the canonical flow:
+`Scripture → Understand → Discuss → Reflect → Apply → Pray → Action`.
+
+Own mobile lesson navigation, step states, resume and completion UX.
+
+### P3-D — Progress, reflection, prayer and action state
+
+- persisted progress;
+- reflection/private-state boundaries;
+- action/prayer state;
+- completion/resume behavior;
+- safe recovery/error behavior.
+
+### P3-E — QR/deep links and V6 integration bridges
+
+- QR/deep-link entry;
+- session hydration/protected route behavior;
+- bounded reuse of V6 assignments, Reader and existing communications where useful;
+- no new messaging platform.
+
+Any newly discovered schema/RLS requirement is routed through the serialized schema owner rather than independently migrated by multiple P3 chats.
+
+### Phase 3 exit gate
+
+An authorized leader/mentor can establish a discipleship path, a mentee can enter and complete lessons, and progress/resume/privacy/tenancy work correctly end-to-end.
+
+### Phase 2 / Phase 3 concurrency
+
+After Phase 1 contracts are frozen, substantial parts of Phase 2 and Phase 3 may execute concurrently because their runtime ownership is separate. Their merges remain serialized onto `v7/development`.
+
+---
+
+# Phase 4 — Integrated hardening and acceptance
+
+Goal: find integration defects without sending multiple chats to patch the same system.
+
+Run four independent evidence lanes:
+
+### P4-A — Library browser/mobile/accessibility
+
+Certify Library journeys, responsive states, keyboard/focus/contrast, language switching and affected offline/error behavior.
+
+### P4-B — ONE 2 ONE browser/mobile/role journeys
+
+Certify mentor/mentee/author journeys, deep links, resume/completion and representative device-width behavior.
+
+### P4-C — Backend/RLS/security/privacy
+
+Certify affected positive paths plus tenant/role/relationship denial, private-state boundaries and account/congregation switching.
+
+### P4-D — Cross-cutting regression
+
+Certify affected app-shell/navigation, PWA/offline, build/bundle/performance, localization and representative inherited V6 flows touched by V7.
+
+Certification lanes report exact defects. Fix ownership is then assigned once per defect/surface; all four lanes do not race to patch the same failure.
+
+### Phase 4 exit gate
+
+All machine-solvable V7 acceptance requirements are green or have an explicit bounded blocker, and affected inherited V6 behavior has no unresolved regression.
+
+---
+
+# Phase 5 — Exact-SHA V7 release certification and promotion
+
+Parallel preparation/evidence may use four lanes, but release-candidate ownership and promotion are serialized.
+
+### P5-A — Browser/mobile/accessibility evidence
+
+### P5-B — Backend/RLS/security evidence
+
+### P5-C — Build/PWA/offline/performance/regression evidence
+
+### P5-D — Content/provenance/localization evidence
+
+Then one integration/release owner:
+
+1. freezes one exact V7 candidate SHA;
+2. runs or reuses valid required gates for that exact candidate;
+3. deploys/verifies the exact candidate artifact in the supported preview/test path;
+4. obtains genuine backend/device/live evidence where the governing requirement needs it;
+5. keeps PASS, OPEN, FAIL and OWNER-WAIVED distinct;
+6. promotes the exact certified candidate through the existing production process;
+7. verifies deployed identity and essential production smoke;
+8. retains the verified V6 rollback reference until post-production verification is complete.
+
+A source/build change after candidate freeze creates a new candidate and reruns the affected certification. Static evidence does not replace browser/backend/device evidence.
 
 ## 5. Definition of done
 
-V7 is complete only when:
+V7 is complete when:
 
-- **Full** — every active product family and route is covered, not merely the most visible pages.
-- **Overhauled** — pages use the V6 engine/component system and no longer preserve obsolete structures by default.
-- **Coherent** — shared concepts use shared components/presets and navigation/state language across families.
-- **Appropriate** — Play can be expressive, Reader calm, Community warm and Ministry/Admin restrained without becoming visually disconnected.
-- **Accessible** — motion, sound, haptics and visual complexity remain controllable and understandable.
-- **Safe** — all V5/V6 privacy/security/data guarantees still hold.
-- **Shareable** — authorized users can upload, display and share photos/files without storing the binary payload in Supabase Storage.
-- **Zero-cost by default** — normal V7 media/file operation does not require a paid storage plan or silent usage overages.
+- one coherent Library exposes Books, Devotionals and Past Teachings with bounded real/representative content and valid provenance;
+- ONE 2 ONE pairing, authoring, lesson execution and progress work end-to-end with correct privacy/tenancy;
+- QR/deep-link and bounded V6 integrations work where included;
+- changed surfaces meet the required responsive/accessibility/i18n/PWA/performance expectations;
+- V7 has not weakened inherited V6 auth/RLS/privacy or broken affected released flows;
+- all required acceptance evidence is attached to one exact release candidate;
+- V8 features have not leaked into V7 merely because a future extension point exists.
 
-V7 is the product transformation version. V6 builds the engine that makes this breadth safe.
+V7 is a focused discipleship release: **Library + ONE 2 ONE, finished and releasable.**

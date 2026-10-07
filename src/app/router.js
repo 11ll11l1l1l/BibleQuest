@@ -5,6 +5,14 @@ const normalize = raw => {
   return value || 'home';
 };
 
+export function readNavigationTarget(){
+  return String(location.hash || '#/home');
+}
+
+export function readNavigationParams(){
+  return new URLSearchParams(readNavigationTarget().split('?').slice(1).join('?'));
+}
+
 export function requestNavigation(route){
   window.dispatchEvent(new CustomEvent(NAVIGATION_REQUEST,{detail:Object.freeze({route:String(route||'')})}));
 }
@@ -25,7 +33,9 @@ export function createRouter({ routes, onRoute }) {
 
   const navigate = route => {
     const target = normalize(route);
-    const next = `#/${target}`;
+    const query = String(route || '').split('?').slice(1).join('?');
+    const params = new URLSearchParams(query);
+    const next = `#/${target}${params.size ? `?${params}` : ''}`;
     if (location.hash === next) return resolve(true);
     history.pushState(null, '', next);
     resolve(true);
@@ -48,6 +58,6 @@ export function createRouter({ routes, onRoute }) {
       resolve(true);
     },
     navigate,
-    current() { return normalize(location.hash); }
+    current() { return normalize(readNavigationTarget()); }
   });
 }

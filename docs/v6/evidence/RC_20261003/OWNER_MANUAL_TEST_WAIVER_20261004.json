@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "status": "OWNER-WAIVED-TEMPORARILY",
+  "decisionDateJst": "2026-10-04",
+  "ownerInstruction": "Skip rhe manual operatir test for now. Continue release",
+  "scope": "Physical/manual operator and device evidence; automated, server-security, deployment-identity and production machine-smoke gates remain mandatory.",
+  "waivedChecklistRows": [
+    "Physical installed-PWA offline acceptance passes.",
+    "Background/lock-screen media controls work where supported and degrade safely where unsupported.",
+    "Physical-device push acceptance passes.",
+    "Critical physical/manual accessibility acceptance is recorded where automation cannot prove behavior.",
+    "Push tests include browser/service-worker coverage plus physical-device acceptance.",
+    "Required field/device evidence is attached to exact candidate.",
+    "One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion."
+  ],
+  "postProductionPhysicalObservations": "Deferred; machine-solvable production smoke remains required.",
+  "physicalEvidencePass": false,
+  "productionPromotionAuthorized": true,
+  "rollbackBranch": "rollback/v5-pre-v6-production-20261003",
+  "rollbackSha": "1cab2110cd15285e9ee388f7889b9fd284823274"
+}

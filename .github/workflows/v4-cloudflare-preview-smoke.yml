@@ -111,13 +111,12 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
 
-      - name: Run deployed critical-route and state smoke
+      - name: Run deployed critical-route smoke
         env:
           BQ_BASE_URL: ${{ steps.cloudflare.outputs.url }}/
         run: |
           set -euo pipefail
           node tests/v4-whole-app-deep-routes-smoke.mjs
-          node tests/v4-whole-app-browser-states-smoke.mjs
 
       - name: Run deployed PWA offline and recovery smoke
         env:

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "repository": "11ll11l1l1l/BibleQuest",
+  "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+  "artifactSha256": "0d927196b403c595c11aba811daf725ba1d64575e3e44a35a10d17c8874853ad",
+  "integritySha256": "c329b1d32c8f60254c0d4ebeca679cd2cfe00da906d032aec7d74e88004d2faf",
+  "deploymentOrigin": "https://c5053016.mybiblequest.pages.dev",
+  "certifyingRunId": "37127215778",
+  "verifiedAt": "2026-10-03T13:50:36.287Z",
+  "predeploy": {
+    "schemaVersion": 1,
+    "repository": "11ll11l1l1l/BibleQuest",
+    "candidateSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+    "verifiedAt": "2026-10-03T13:50:36.237Z",
+    "requiredWorkflowCount": 8,
+    "workflows": [
+      {
+        "workflow": "V6 Phase 1 Build Gate",
+        "runId": 37127215695,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215695",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:47:58Z"
+      },
+      {
+        "workflow": "V6 Database CI",
+        "runId": 37127215819,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215819",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:49:08Z"
+      },
+      {
+        "workflow": "V6 Client Artifact Security",
+        "runId": 37127215812,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215812",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:44:59Z"
+      },
+      {
+        "workflow": "V6 Dependency Security",
+        "runId": 37127215799,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215799",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:44:58Z"
+      },
+      {
+        "workflow": "V6 PR Serialization Guard",
+        "runId": 37127216062,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127216062",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:44:47Z"
+      },
+      {
+        "workflow": "V6 Cloudflare Exact-SHA Preview Verification",
+        "runId": 37127215782,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215782",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:45:39Z"
+      },
+      {
+        "workflow": "V6 V4 Rollback Reference Guard",
+        "runId": 37127215821,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215821",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:44:57Z"
+      },
+      {
+        "workflow": "BibleQuest inherited regression",
+        "runId": 37127215716,
+        "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37127215716",
+        "event": "pull_request",
+        "completedAt": "2026-10-03T13:50:30Z"
+      }
+    ],
+    "profile": "predeploy"
+  },
+  "deployment": {
+    "deploymentOrigin": "https://c5053016.mybiblequest.pages.dev",
+    "sourceSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+    "artifactSha256": "0d927196b403c595c11aba811daf725ba1d64575e3e44a35a10d17c8874853ad",
+    "integritySha256": "c329b1d32c8f60254c0d4ebeca679cd2cfe00da906d032aec7d74e88004d2faf",
+    "fileCount": 1015,
+    "totalBytes": 122895955
+  }
+}

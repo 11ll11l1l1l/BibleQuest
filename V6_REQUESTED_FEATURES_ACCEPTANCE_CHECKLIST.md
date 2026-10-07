@@ -1,6 +1,6 @@
 # BibleQuest V6 Requested Features & Architecture Acceptance Checklist
 
-Updated: 2026-10-03 JST
+Updated: 2026-10-04 JST
 Authority: `V6_ACTIVE_STATUS.md`
 Plan: `DEVELOPMENT_PLAN_V6.md`
 
@@ -69,7 +69,7 @@ Assignment-push production certification on 2026-10-03: the existing accepted du
 - [x] Route/domain code splitting is active: 44 feature-page modules load lazily and built Chromium waits for chunk completion.
 - [x] CSS/assets/images are owned by build pipeline.
 - [x] Bundle/chunk/image budgets are CI-visible; the browser entry is capped at 700 KiB and at least 40 feature dynamic chunks are required.
-- [ ] Cloudflare exact-SHA deployment identity works from built artifacts.
+- [x] Cloudflare exact-SHA deployment identity works from built artifacts.
 
 ## C. Real Supabase/Postgres CI
 
@@ -305,13 +305,13 @@ Production backend activation evidence (2026-10-02 JST; merged PR #1029): the ad
 - [x] Whole-app/protected-route/browser gates run against built output.
 - [x] PWA/offline gate covers real V6 SW/content architecture.
 - [ ] Push tests include browser/service-worker coverage plus physical-device acceptance.
-- [ ] Exact-SHA Cloudflare preview verification remains mandatory.
+- [x] Exact-SHA Cloudflare preview verification remains mandatory.
 - [x] V4→V6 upgrade database path is tested before RC.
 - [x] V4→V6 route/feature parity matrix is complete.
-- [ ] One exact V6 RC SHA passes all applicable automated gates.
+- [x] One exact V6 RC SHA passes all applicable automated gates.
 - [ ] Required field/device evidence is attached to exact candidate.
 - [x] No WAIVED item is represented as PASS.
-- [ ] Production promotion uses the exact certified candidate.
+- [x] Production promotion uses the exact certified candidate.
 - [ ] Post-production exact-SHA + route + PWA + offline + push smoke passes.
 - [x] V4 rollback reference remains available through V6 production acceptance.
 
@@ -334,3 +334,12 @@ Integrated-candidate authority evidence (2026-10-01): the systemic explicit-tena
 Evidence-policy closure (2026-10-02): `docs/v6/V6_ACCEPTANCE_EVIDENCE_POLICY.json` schema v2 classifies every currently unresolved V6 acceptance blocker with one or more explicit evidence paths and durable reference kinds. `tests/v6/acceptance-evidence-class-policy.test.ts` fails if a new unresolved row is unclassified, if a checked tracked row lacks typed exact-SHA evidence, or if physical/live/deployed evidence is represented by the wrong reference class. This closes only the cross-cutting evidence-policy invariant; all dependent physical-device, Cloudflare/deployment, BSB Audio, assignment-push, leaked-password and RC/promotion rows remain independently fail-closed until their own evidence exists.
 - [x] Overlapping runtime integrations remain serialized and are rebased/revalidated after parity/foundation changes.
 - [ ] One exact V6 RC SHA passes all applicable security, tenant, offline, PWA, push and regression gates before promotion.
+
+
+Final exact-RC automated/deployment checkpoint (2026-10-03 JST): candidate `7997d60e6069aa406ec005c32e33e46fee39bc12` passed all ten existing release workflows. Exact-SHA automated gate `37127215783`, deployed-artifact certification `37127215778`, and Cloudflare preview verification `37127215782` are SUCCESS. The immutable preview is https://c5053016.mybiblequest.pages.dev; 1,015 deployed files / 122,895,955 bytes match the certified artifact. Durable certificate: `docs/v6/evidence/RC_20261003/v6-rc-certification.json`. This promotes only the three automated/deployment rows above: **202 PASS / 9 OPEN / 211 total**. Physical/device evidence, the full cross-cutting release row, production promotion and post-production smoke remain OPEN. Production stays V5; rollback `rollback/v5-pre-v6-production-20261003` remains at `1cab2110cd15285e9ee388f7889b9fd284823274`. The rejected first RC failed mobile geometry; merged #1122 fixes desktop scrollbar sizing on touch devices without weakening tests.
+
+
+Owner waiver (2026-10-04 JST): the owner explicitly deferred manual operator/device testing and authorized continuation of the release. The seven physical-dependent unchecked rows are OWNER-WAIVED, never PASS. Machine certification, exact-artifact promotion and production machine smoke remain mandatory. Decision: `docs/v6/evidence/RC_20261003/OWNER_MANUAL_TEST_WAIVER_20261004.json`. Inventory remains **202 PASS / 9 unchecked**, with physical portions of post-production smoke deferred.
+
+
+Production release (2026-10-04 JST): owner explicitly authorized replacing main after preserving V5. Main and production now serve frozen candidate `7997d60e6069aa406ec005c32e33e46fee39bc12`. Existing exact-candidate verifier passed all 1,015 production files / 122,895,955 bytes with the same certified artifact and integrity digests. Existing live smoke passed six route/PWA/offline/push contract checks; live browser confirmed Home/Reader/account entry and signed-out assignment/notification/privileged-route denial. Evidence: `docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json`. Acceptance is **203 PASS / 8 OPEN / 211 total**. The post-production aggregate remains OPEN because its typed policy requires physical evidence; no waiver was converted to PASS. Authenticated production session observation was not performed. V5 rollback remains `rollback/v5-pre-v6-production-20261003` at `1cab2110cd15285e9ee388f7889b9fd284823274`.

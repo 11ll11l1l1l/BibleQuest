@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_representative_library",
+  "curationStatus": "release_ready",
+  "boundary": {
+    "purpose": "Editorial curation metadata keyed to the canonical V7 representative Library records.",
+    "doesNotApproveContent": true,
+    "doesNotPublishContent": true,
+    "doesNotChangeRights": true,
+    "theologicalTierVocabulary": [
+      "alliance_core",
+      "compatible_evangelical",
+      "historical_secondary",
+      "review_required"
+    ],
+    "note": "The frozen V7 content import schema does not carry these enrichment fields. This sidecar preserves curation without changing runtime/data contracts."
+  },
+  "items": [
+    {
+      "itemId": "books.pilgrims-progress",
+      "contentType": "book",
+      "neutralSummary": "A Christian allegory following a pilgrim's journey from spiritual burden toward the Celestial City, using encounters, setbacks, companions, and choices to explore perseverance in faith.",
+      "theologicalFit": {
+        "tier": "historical_secondary",
+        "rationale": "A seventeenth-century Puritan classic with enduring evangelical influence; retain its historical voice rather than treating it as a BibleQuest doctrinal authority."
+      },
+      "topics": [
+        "discipleship",
+        "faith",
+        "perseverance",
+        "spiritual_growth"
+      ],
+      "scriptureLinks": [
+        {
+          "reference": "Hebrews 11:13-16",
+          "relationship": "editorial_context",
+          "note": "Pilgrimage and longing for a better country provide a useful biblical frame for discussing the work's central journey image."
+        },
+        {
+          "reference": "Hebrews 12:1-2",
+          "relationship": "editorial_context",
+          "note": "Perseverance and fixing attention on Jesus fit reflection on the pilgrim's continued journey through obstacles."
+        }
+      ],
+      "collections": [
+        "christian_classics",
+        "discipleship_classics"
+      ],
+      "lifePathways": [
+        "growing_in_faith",
+        "persevering_through_trials"
+      ],
+      "audiences": [
+        "adult",
+        "mature_youth",
+        "mentor_mentee"
+      ],
+      "difficulty": "intermediate",
+      "readingTime": {
+        "kind": "long_form_external",
+        "minutes": null,
+        "basis": "BibleQuest links to the external edition and does not host a verified full-text word count."
+      },
+      "oneToOneFit": {
+        "level": "strong",
+        "stepFits": [
+          "understand",
+          "discuss",
+          "reflect",
+          "apply"
+        ],
+        "note": "Best used as a chapter-by-chapter discussion companion rather than required curriculum text."
+      },
+      "groupDiscussionFit": {
+        "level": "strong",
+        "note": "The allegorical episodes support discussion prompts without requiring a realtime/group-system feature."
+      },
+      "readingPlanFit": {
+        "level": "strong",
+        "suggestedCadence": "chapter_or_section_sequence"
+      },
+      "editorialPriority": "high",
+      "sourceNotes": "Canonical record is metadata/link-only through Project Gutenberg. Do not infer permission to host text, images, translations, or offline copies from this curation record.",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
+    },
+    {
+      "itemId": "books.practice-presence",
+      "contentType": "book",
+      "neutralSummary": "A collection associated with Brother Lawrence describing an everyday practice of attentive awareness of God's presence during ordinary work, prayer, and daily responsibilities.",
+      "theologicalFit": {
+        "tier": "historical_secondary",
+        "rationale": "A historic devotional work from a Catholic monastic context. It can support spiritual-formation discussion while its tradition-specific setting remains explicit."
+      },
+      "topics": [
+        "prayer",
+        "spiritual_growth",
+        "abiding",
+        "daily_faith"
+      ],
+      "scriptureLinks": [
+        {
+          "reference": "1 Thessalonians 5:17",
+          "relationship": "editorial_context",
+          "note": "Continuous prayer is a concise biblical connection for discussion of prayer woven through ordinary life."
+        },
+        {
+          "reference": "Colossians 3:17",
+          "relationship": "editorial_context",
+          "note": "Doing ordinary activity in the name of the Lord provides a useful frame for the work's emphasis on daily practice."
+        }
+      ],
+      "collections": [
+        "christian_classics",
+        "prayer_and_presence"
+      ],
+      "lifePathways": [
+        "building_prayer_habits",
+        "faith_in_daily_life"
+      ],
+      "audiences": [
+        "adult",
+        "mentor_mentee"
+      ],
+      "difficulty": "intermediate",
+      "readingTime": {
+        "kind": "long_form_external",
+        "minutes": null,
+        "basis": "BibleQuest links to the external edition and does not host a verified full-text word count."
+      },
+      "oneToOneFit": {
+        "level": "strong",
+        "stepFits": [
+          "understand",
+          "discuss",
+          "reflect",
+          "apply",
+          "pray"
+        ],
+        "note": "Useful for habit-oriented reflection when the historical and tradition-specific context is kept visible."
+      },
+      "groupDiscussionFit": {
+        "level": "moderate",
+        "note": "Works for facilitated discussion on prayer and daily vocation; avoid presenting it as a universal doctrinal standard."
+      },
+      "readingPlanFit": {
+        "level": "strong",
+        "suggestedCadence": "short_section_sequence"
+      },
+      "editorialPriority": "high",
+      "sourceNotes": "Canonical record permits an external link only. The repository's source note warns against inferring hosting rights for the linked edition.",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
+    },
+    {
+      "itemId": "devotional.spurgeon.january-02-am",
+      "contentType": "devotional",
+      "neutralSummary": "A short Spurgeon excerpt emphasizing the prominence of prayer throughout Scripture and encouraging prayer as a continuing feature of Christian life.",
+      "theologicalFit": {
+        "tier": "historical_secondary",
+        "rationale": "Historic Baptist devotional material with broad evangelical use; preserve its authorial voice and evaluate it as historical devotional commentary rather than Scripture."
+      },
+      "topics": [
+        "prayer",
+        "spiritual_growth",
+        "daily_faith"
+      ],
+      "scriptureLinks": [
+        {
+          "reference": "Colossians 4:2",
+          "relationship": "editorial_context",
+          "note": "The instruction to continue steadfastly in prayer is a direct thematic frame for this excerpt."
+        }
+      ],
+      "collections": [
+        "daily_devotionals",
+        "prayer_and_presence"
+      ],
+      "lifePathways": [
+        "building_prayer_habits"
+      ],
+      "audiences": [
+        "adult",
+        "youth",
+        "new_believer",
+        "mentor_mentee"
+      ],
+      "difficulty": "accessible",
+      "readingTime": {
+        "kind": "excerpt_estimate",
+        "minutes": 2,
+        "basis": "Short repository-hosted excerpt; rounded editorial estimate rather than a measured accessibility claim."
+      },
+      "oneToOneFit": {
+        "level": "strong",
+        "stepFits": [
+          "scripture",
+          "understand",
+          "reflect",
+          "pray",
+          "action"
+        ],
+        "note": "Suitable as a short prompt for discussing prayer habits and choosing a concrete prayer practice."
+      },
+      "groupDiscussionFit": {
+        "level": "strong",
+        "note": "Short enough for shared reading and discussion without requiring a dedicated group feature."
+      },
+      "readingPlanFit": {
+        "level": "strong",
+        "suggestedCadence": "daily"
+      },
+      "editorialPriority": "high",
+      "sourceNotes": "CCEL source identity and public-domain basis are recorded in the canonical bundle; this sidecar does not expand permitted uses or substitute for editorial approval.",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
+    },
+    {
+      "itemId": "devotional.spurgeon.january-06-am",
+      "contentType": "devotional",
+      "neutralSummary": "A short Spurgeon excerpt addressing anxious care and encouraging believers to entrust burdens to God rather than carrying them alone.",
+      "theologicalFit": {
+        "tier": "historical_secondary",
+        "rationale": "Historic Baptist devotional material with broad evangelical use; retain its pastoral rhetoric as commentary and keep Scripture as the primary authority."
+      },
+      "topics": [
+        "hope",
+        "prayer",
+        "worry",
+        "trust"
+      ],
+      "scriptureLinks": [
+        {
+          "reference": "1 Peter 5:7",
+          "relationship": "editorial_context",
+          "note": "Casting anxiety on God because he cares is the clearest biblical frame for the excerpt's burden-and-care language."
+        }
+      ],
+      "collections": [
+        "daily_devotionals",
+        "hope_and_anxiety"
+      ],
+      "lifePathways": [
+        "facing_worry",
+        "learning_trust"
+      ],
+      "audiences": [
+        "adult",
+        "youth",
+        "new_believer",
+        "mentor_mentee"
+      ],
+      "difficulty": "accessible",
+      "readingTime": {
+        "kind": "excerpt_estimate",
+        "minutes": 2,
+        "basis": "Short repository-hosted excerpt; rounded editorial estimate rather than a measured accessibility claim."
+      },
+      "oneToOneFit": {
+        "level": "strong",
+        "stepFits": [
+          "scripture",
+          "discuss",
+          "reflect",
+          "apply",
+          "pray"
+        ],
+        "note": "Supports a bounded conversation about worry, trust, and a specific burden the learner chooses to discuss."
+      },
+      "groupDiscussionFit": {
+        "level": "strong",
+        "note": "Suitable for a facilitated discussion on worry and trust; personal disclosures should remain optional."
+      },
+      "readingPlanFit": {
+        "level": "strong",
+        "suggestedCadence": "daily"
+      },
+      "editorialPriority": "high",
+      "sourceNotes": "CCEL source identity and public-domain basis are recorded in the canonical bundle; this sidecar does not expand permitted uses or substitute for editorial approval.",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
+    },
+    {
+      "itemId": "teaching.prayer-abiding",
+      "contentType": "past_teaching",
+      "neutralSummary": "A first-party BibleQuest teaching on John 15:7 connecting prayer with abiding in Christ, receiving Jesus' words, and allowing that relationship to shape desire and faithful action.",
+      "theologicalFit": {
+        "tier": "review_required",
+        "rationale": "The article is original first-party BibleQuest content with verified project rights. It still requires normal theological and editorial review before publication."
+      },
+      "topics": [
+        "prayer",
+        "abiding",
+        "discipleship",
+        "spiritual_growth"
+      ],
+      "scriptureLinks": [
+        {
+          "reference": "John 15:7",
+          "relationship": "source_explicit",
+          "note": "The canonical adaptation explicitly identifies John 15:7 as the sermon passage shaping the teaching."
+        },
+        {
+          "reference": "John 15:1-8",
+          "relationship": "editorial_context",
+          "note": "The surrounding passage supplies the immediate context for abiding, fruit, Jesus' words, and prayer."
+        }
+      ],
+      "collections": [
+        "past_teachings",
+        "prayer_and_presence"
+      ],
+      "lifePathways": [
+        "building_prayer_habits",
+        "abiding_in_christ"
+      ],
+      "audiences": [
+        "adult",
+        "mature_youth",
+        "mentor_mentee"
+      ],
+      "difficulty": "accessible",
+      "readingTime": {
+        "kind": "adaptation_estimate",
+        "minutes": 3,
+        "basis": "Short repository-hosted first-party teaching article; rounded estimate."
+      },
+      "oneToOneFit": {
+        "level": "strong",
+        "stepFits": [
+          "scripture",
+          "understand",
+          "discuss",
+          "reflect",
+          "apply",
+          "pray"
+        ],
+        "note": "The teaching moves from Scripture context to reflection and prayer, making it a strong discussion companion after editorial approval."
+      },
+      "groupDiscussionFit": {
+        "level": "strong",
+        "note": "Suitable for discussion after editorial review; this classification does not authorize publication."
+      },
+      "readingPlanFit": {
+        "level": "moderate",
+        "suggestedCadence": "single_session_or_prayer_series"
+      },
+      "editorialPriority": "highest",
+      "sourceNotes": "Original first-party BibleQuest teaching. No external sermon prose is reproduced or adapted; rights are verified for display, translation, modification, and distribution.",
+      "rightsStatusSnapshot": "verified",
+      "reviewStatusSnapshot": "approved",
+      "publicationStateSnapshot": "published"
+    }
+  ]
+}

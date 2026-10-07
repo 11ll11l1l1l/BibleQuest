@@ -1,14 +1,10 @@
-# BibleQuest Release Archive
+# BibleQuest release archive
 
-This directory is the human-readable map for frozen version history. Exact backup branches and SHAs are defined in `/BACKUP_MANIFEST.md`.
+Exact frozen references are in [backup manifest](../../BACKUP_MANIFEST.md).
 
-## Version archives
+- [V3](v3/README.md)
+- [V4](v4/README.md)
+- [V5](v5/README.md)
+- [V6](v6/README.md)
 
-- `v3/README.md` — V3.71 final/rollback archive and documentation map.
-- `v4/README.md` — V4.0 RC3 production archive and acceptance map.
-
-## Archive policy
-
-Archive branches are read-only by project policy. Do not use them for feature development. Historical documents may remain at repository root because CI, validators, old links, or architecture contracts rely on those paths; the archive indexes classify and route them instead of moving them blindly.
-
-V5 should begin from the cleaned current `main` baseline described in `/docs/V5_STARTING_POINT.md`.
+V7 development starts from [V7 starting point](../V7_STARTING_POINT.md). Archived status statements describe their release period. Runtime and validation references take priority over tidiness: path-bound historical documents remain at repository root. Archived records retain their original text and evidence; corrected Markdown links account for their new location.

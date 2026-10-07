@@ -22,7 +22,7 @@
   ],
   "rows": [
     {
-      "row": "V4\u2192V6 route/feature parity matrix is complete.",
+      "row": "V4→V6 route/feature parity matrix is complete.",
       "options": [
         {
           "id": "automated-route-parity",
@@ -68,7 +68,24 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+        "classes": [
+          "DEPLOYED"
+        ],
+        "references": [
+          {
+            "kind": "deployment-record",
+            "name": "Exact candidate deployed byte certificate",
+            "id": "docs/v6/evidence/RC_20261003/v6-rc-certification.json"
+          },
+          {
+            "kind": "workflow",
+            "name": "V6 Cloudflare Exact-SHA Preview Verification",
+            "id": "37127215782"
+          }
+        ]
+      }
     },
     {
       "row": "Physical installed-PWA offline acceptance passes.",
@@ -400,7 +417,24 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+        "classes": [
+          "DEPLOYED"
+        ],
+        "references": [
+          {
+            "kind": "deployment-record",
+            "name": "Exact candidate deployed byte certificate",
+            "id": "docs/v6/evidence/RC_20261003/v6-rc-certification.json"
+          },
+          {
+            "kind": "workflow",
+            "name": "V6 Cloudflare Exact-SHA Preview Verification",
+            "id": "37127215782"
+          }
+        ]
+      }
     },
     {
       "row": "One exact V6 RC SHA passes all applicable automated gates.",
@@ -417,7 +451,26 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+        "classes": [
+          "UNIT",
+          "BUILT-BROWSER",
+          "DATABASE"
+        ],
+        "references": [
+          {
+            "kind": "workflow",
+            "name": "V6 RC Exact-SHA Automated Gate",
+            "id": "37127215783"
+          },
+          {
+            "kind": "artifact",
+            "name": "Exact RC certification",
+            "id": "docs/v6/evidence/RC_20261003/v6-rc-certification.json"
+          }
+        ]
+      }
     },
     {
       "row": "Required field/device evidence is attached to exact candidate.",
@@ -447,7 +500,19 @@
           ]
         }
       ],
-      "evidence": null
+      "evidence": {
+        "headSha": "7997d60e6069aa406ec005c32e33e46fee39bc12",
+        "classes": [
+          "DEPLOYED"
+        ],
+        "references": [
+          {
+            "kind": "deployment-record",
+            "name": "Exact certified SHA production promotion and deployed-byte verification",
+            "id": "docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json"
+          }
+        ]
+      }
     },
     {
       "row": "Post-production exact-SHA + route + PWA + offline + push smoke passes.",

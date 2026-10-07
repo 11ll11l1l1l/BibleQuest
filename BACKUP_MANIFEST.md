@@ -1,10 +1,10 @@
 # BibleQuest Release Backup Manifest
 
-Updated: 2026-09-13 JST
+Updated: 2026-10-04 JST
 
 This file is the canonical map of preserved BibleQuest release backups. Archive branches are **read-only by project policy**: never develop on them, force-move them, or use them as active integration branches.
 
-## Canonical backups
+## Historical canonical backups
 
 | Version | Purpose | Branch | Exact SHA |
 |---|---|---|---|
@@ -30,6 +30,16 @@ These are historical development or release branches, not the preferred backup e
 
 The following branches were created during archive setup and are **not canonical backups**. They must never be used as a baseline: `archive/v4.0-production-docs-20260913`, `archive/v4.0-production-metadata-20260913`, and `temp-dummy`. The current GitHub connector does not expose branch-ref deletion, so they are documented here rather than silently treated as valid archives. If branch deletion becomes available, these aliases should be deleted without affecting any canonical backup above.
 
-## Restore rule
+## Historical V5 restore rule
 
 For rollback or forensic comparison, use the exact SHA from this manifest rather than a moving development branch. V5 must start from the cleaned, verified `main` line after the archive-cleanup PR, not from any V3/V4 archive branch.
+
+## V6 release and current rollback references — 2026-10-04 JST
+
+| Purpose | Reference | Exact SHA |
+|---|---|---|
+| Released V6 source | `release/v6-rc-final-20261003` | `7997d60e6069aa406ec005c32e33e46fee39bc12` |
+| V5 rollback before V6 | `rollback/v5-pre-v6-production-20261003` | `1cab2110cd15285e9ee388f7889b9fd284823274` |
+| V4 rollback before V5 | `rollback/v4-pre-v5-production-20260918` | `95d45c18aed3dbb9862749d73749b571fceaa66e` |
+
+`main` currently points to the released V6 SHA. V7 starts from `v7/development`, including V6 closeout evidence and repository cleanup. Earlier V5 starting instructions above are historical.

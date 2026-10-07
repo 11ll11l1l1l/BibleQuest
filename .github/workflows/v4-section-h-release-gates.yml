@@ -28,14 +28,19 @@ jobs:
           node scripts/validate-v3-architecture.mjs
           node tests/v4-section-h-static-contracts.mjs
       - name: Install Playwright
-        run: npm install --no-save playwright
+        run: |
+          npm ci
+          npm install --no-save playwright
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Start BibleQuest locally
+      - name: Build and start deployable BibleQuest artifact
+        env:
+          BQ_BUILD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/biblequest-v4-section-h-http.log 2>&1 &
+          npm run build
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v4-section-h-http.log 2>&1 &
           echo $! > /tmp/biblequest-v4-section-h-http.pid
-          for i in {1..20}; do
+          for i in {1..30}; do
             curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
             sleep 1
           done
@@ -49,4 +54,17 @@ jobs:
           node tests/v4-home-rail-smoke.mjs
           node tests/v3-pwa-install-smoke.mjs
           node tests/v3-offline-shell-smoke.mjs
-          node tests/v3-operational-recovery-smoke.mjs
+
+          # Operational Recovery is an isolated source-module harness. Keep it on
+          # a Vite dev server instead of weakening the deployable dist-v6 preview
+          # by publishing /src implementation files.
+          npm run dev -- --host 127.0.0.1 --port 4174 > /tmp/biblequest-v4-section-h-dev.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4174/ >/dev/null; then
+              BQ_BASE_URL=http://127.0.0.1:4174/ node tests/v3-operational-recovery-smoke.mjs
+              exit $?
+            fi
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-section-h-dev.log
+          exit 1

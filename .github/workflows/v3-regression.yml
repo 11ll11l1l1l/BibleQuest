@@ -352,4 +352,4 @@ jobs:
       - name: Run inherited browser regression suite
         uses: ./.github/actions/inherited-regression-browser
         with:
-          v6: ${{ github.base_ref == 'v6/architecture-upgrade' }}
+          v6: ${{ github.base_ref == 'v6/architecture-upgrade' || github.base_ref == 'main' }}
