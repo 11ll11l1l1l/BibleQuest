@@ -1,0 +1,972 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.anxiety_worry",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anxiety / worry"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.trust",
+      "kind": "topic",
+      "labels": {
+        "en": "Trust"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.fear",
+      "kind": "emotion",
+      "labels": {
+        "en": "Fear"
+      }
+    },
+    {
+      "id": "need.courage",
+      "kind": "need",
+      "labels": {
+        "en": "Courage"
+      }
+    },
+    {
+      "id": "emotion.sadness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Sadness"
+      }
+    },
+    {
+      "id": "need.comfort",
+      "kind": "need",
+      "labels": {
+        "en": "Comfort"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.grief_loss",
+      "kind": "emotion",
+      "labels": {
+        "en": "Grief / loss"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.loss",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Loss"
+      }
+    },
+    {
+      "id": "emotion.loneliness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Loneliness"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "life_situation.isolation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Isolation"
+      }
+    },
+    {
+      "id": "emotion.anger",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anger"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.conflict",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Conflict"
+      }
+    },
+    {
+      "id": "emotion.hurt_betrayal",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hurt / betrayal"
+      }
+    },
+    {
+      "id": "need.healing",
+      "kind": "need",
+      "labels": {
+        "en": "Healing"
+      }
+    },
+    {
+      "id": "topic.forgiveness",
+      "kind": "topic",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "emotion.rejection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Rejection"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.anxiety_worry.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Lower yourself under God's care",
+        "catalogId": "biblequest.v7.original.anxiety_worry.05",
+        "revision": "r1",
+        "checksum": "sha256:5f1a87d00527214b239d41b6920beff07db998139586e6d8bedb61906b9dbfc0",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Lower yourself under God's care",
+        "body": "Anxiety often grows when you feel responsible for holding everything together. First Peter 5:6-7 joins humility with casting anxieties on God because he cares for you. Do what belongs to you, then deliberately hand over the part that belongs to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anxiety_worry",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Magpakumbaba sa ilalim ng pag-aaruga ng Diyos",
+            "body": "Madalas lumalaki ang pagkabalisa kapag pakiramdam mo ikaw ang dapat humawak sa lahat. Inuugnay ng 1 Pedro 5:6-7 ang pagpapakumbaba sa paglalagak ng mga alalahanin sa Diyos dahil nagmamalasakit Siya sa iyo. Gawin ang para sa iyo, saka sadyang ipagkatiwala sa Diyos ang bahaging Kaniya."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Pagpaubos ilalom sa pag-atiman sa Dios",
+            "body": "Kasagaran motubo ang kabalaka kon mobati ka nga ikaw ang kinahanglan mopugong sa tanan. Gidugtong sa 1 Pedro 5:6-7 ang pagpaubos sa pagtugyan sa mga kabalaka ngadto sa Dios tungod kay nag-atiman Siya kanimo. Buhata ang imo, dayon tinuyo nga itugyan sa Dios ang bahin nga Iya."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Agpakumbaba iti sidong ti panangaywan ti Dios",
+            "body": "Masansan a dumakkel ti pakaseknan no mariknam a sikam ti masapul a mangiggem iti amin. Ti 1 Pedro 5:6-7 ikabitna ti kinapakumbaba iti panangitalek kadagiti pakaseknan iti Dios ta maseknan Isuna kenka. Aramidem ti para kenka, kalpasanna inggagara nga italek iti Dios ti paset nga isu ti kukuana."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.fear.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Do not fear the bad report",
+        "catalogId": "biblequest.v7.original.fear.05",
+        "revision": "r1",
+        "checksum": "sha256:dd95a79d5671a0f32245fa8e4ad8dc3296f44faff6542f99a637283f504b01a4",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Do not fear the bad report",
+        "body": "Fear can be triggered before the event itself, simply by hearing troubling news. Psalm 112:7 describes a heart that is steady because it trusts the Lord. Verify what is true, refuse rumor-driven panic, and respond from a settled center."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.fear",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.courage",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Huwag matakot sa masamang balita",
+            "body": "Maaaring magsimula ang takot bago pa ang mismong pangyayari, dahil lamang sa nakababahalang balita. Inilalarawan ng Awit 112:7 ang pusong matatag dahil nagtitiwala sa Panginoon. Suriin kung ano ang totoo, tanggihan ang takot na pinalalakas ng tsismis, at tumugon mula sa matatag na kalooban."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Ayaw kahadlok sa daotang balita",
+            "body": "Mahimong magsugod ang kahadlok sa dili pa ang panghitabo mismo, tungod lamang sa makapabalaka nga balita. Gihulagway sa Salmo 112:7 ang kasingkasing nga lig-on tungod kay nagsalig sa Ginoo. Susiha unsay tinuod, isalikway ang kalisang nga gipadako sa hungihong, ug tubag gikan sa malinawon nga sentro."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Saan a mabuteng iti madi a damag",
+            "body": "Mabalin a mangrugi ti buteng sakbay pay ti pasamak, gapu laeng iti makadanag a damag. Ti Salmo 112:7 iladawanna ti puso a natibker ta agtalek iti Apo. Paneknekan ti pudno, liklikam ti pannakariribuk a patauden dagiti damag-damag, ken sumungbat manipud iti natalged a puso."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.sadness.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let tears speak before words do",
+        "catalogId": "biblequest.v7.original.sadness.05",
+        "revision": "r1",
+        "checksum": "sha256:84b1a54178fc8d239559a2f5eb703544b3ff023e1812bc5f4d92ed9f29d77a98",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let tears speak before words do",
+        "body": "Sadness sometimes reaches a point where clear explanation is difficult. Psalm 6:6-9 makes room for exhausted tears before renewed confidence. You do not need polished language to pray; bring the weariness honestly and let simple presence be enough for today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.sadness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.comfort",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Hayaang maunang magsalita ang luha",
+            "body": "Minsan umaabot ang lungkot sa puntong mahirap nang ipaliwanag nang malinaw. Binibigyan ng Awit 6:6-9 ng puwang ang pagod na pag-iyak bago bumalik ang pagtitiwala. Hindi kailangan ng makinis na salita sa panalangin; dalhin nang tapat ang pagod at hayaang sapat muna ang simpleng presensya ngayon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Tugoti ang luha nga maoy unang mosulti",
+            "body": "Usahay moabot ang kasubo sa punto nga lisod na ang klarong pagsaysay. Gihatagan sa Salmo 6:6-9 ug luna ang gikapoy nga paghilak sa dili pa mobalik ang pagsalig. Dili kinahanglan hapsay nga mga pulong sa pag-ampo; dad-a sa tinuod ang kakapoy ug tugoti nga igo ang yano nga presensya karon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Palubosam dagiti lulua a manguna a mangisao",
+            "body": "No dadduma dumteng ti ladingit iti punto a narigat ti nalawag a panangilawlawag. Ti Salmo 6:6-9 mangted iti lugar kadagiti nabannog a lulua sakbay ti pannakasubli ti panagtalek. Saan a kasapulan ti napintas a sasao iti kararag; iyegmo a sipupudno ti pannakabannog ken palubosam a makaanay ti simple a kaadda ita."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.grief_loss.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Let someone enter the grief with you",
+        "catalogId": "biblequest.v7.original.grief_loss.05",
+        "revision": "r1",
+        "checksum": "sha256:f604e3aab6043b86d5f827a9fe6fec9a4337a41754d3fbd5ffc285b8a3018d40",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Let someone enter the grief with you",
+        "body": "Grief becomes heavier when it must be carried in isolation. Romans 12:15 calls believers to weep with those who weep. Choose one trustworthy person who can share the sorrow without trying to fix it, and let companionship become part of the care."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.grief_loss",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.comfort",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.loss",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Hayaang may pumasok sa pagdadalamhati mo",
+            "body": "Bumibigat ang pagdadalamhati kapag kailangang dalhin nang mag-isa. Tinatawag ng Roma 12:15 ang mga mananampalataya na makiiyak sa mga umiiyak. Pumili ng isang mapagkakatiwalaang taong makikibahagi sa lungkot nang hindi agad inaayos ito, at hayaang maging bahagi ng pag-aaruga ang pagsama."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Tugoti ang usa ka tawo nga mosulod sa imong kasubo",
+            "body": "Mas mobug-at ang kasubo kon kinahanglan pas-anon nga nag-inusara. Ang Roma 12:15 nagtawag sa mga magtutuo nga mohilak uban sa mga naghilak. Pagpili ug usa ka kasaligan nga tawo nga makaambit sa kasubo nga dili dayon mosulay sa pag-ayo niini, ug tugoti ang panag-uban nga mahimong bahin sa pag-atiman."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Palubosam ti maysa a tao a sumrek iti panagladingitmo",
+            "body": "Bumabannog ti panagladingit no masapul nga awiten a maymaysa. Ti Roma 12:15 ayabanna dagiti mamati a makisangit kadagiti agsangsangit. Pilien ti maysa a mapagtalkan a tao a makibingay iti ladingit a saan a dagus a mangrisut iti dayta, ken palubosam ti pannakikadua a mangbalin a paset ti pannakaaywan."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.loneliness.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Build a two-person bridge",
+        "catalogId": "biblequest.v7.original.loneliness.05",
+        "revision": "r1",
+        "checksum": "sha256:8c7e2b4b191620bf9538b9546e14fd418fe5a15f9a15eeca07fe6a87ec77484e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Build a two-person bridge",
+        "body": "Loneliness can make community feel too large and unreachable. Ecclesiastes 4:9-10 begins with the strength of two people helping each other. Do not solve all your social needs today; strengthen one dependable relationship with one concrete act of connection."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.loneliness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.isolation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Bumuo ng tulay na para sa dalawa",
+            "body": "Maaaring gawing napakalaki at mahirap abutin ng kalungkutan ang komunidad. Nagsisimula ang Eclesiastes 4:9-10 sa lakas ng dalawang taong nagtutulungan. Huwag lutasin lahat ng pangangailangang panlipunan ngayon; palakasin ang isang maaasahang ugnayan sa isang konkretong pagkilos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Paghimo ug tulay alang sa duha",
+            "body": "Ang kamingaw makapahimo nga ang komunidad murag dako kaayo ug dili maabot. Nagsugod ang Ecclesiastes 4:9-10 sa kusog sa duha ka tawo nga nagtinabangay. Ayaw sulbara ang tanan nimong sosyal nga panginahanglan karon; lig-ona ang usa ka kasaligan nga relasyon pinaagi sa usa ka konkretong lihok."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Mangbangon iti rangtay para iti dua",
+            "body": "Ti panagmaymaysa mabalinna a pagparang a dakkel unay ken saan a maabot ti komunidad. Mangrugi ti Eclesiastes 4:9-10 iti pigsa ti dua a tao a nagtinnulong. Saanmo a risuten amin a sosyal a kasapulan ita; patibkerem ti maysa a mapagtalkan a relasyon babaen iti maysa a nalawag nga aramid."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.anger.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Strength can look like restraint",
+        "catalogId": "biblequest.v7.original.anger.05",
+        "revision": "r1",
+        "checksum": "sha256:f1e0f0801db5f5c632cb567dfeb0257d90f6574c70594f5dc6b5fe7ae48de6f3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Strength can look like restraint",
+        "body": "Anger often equates power with immediate force. Proverbs 16:32 values self-control above conquest. Before acting, ask whether restraint would accomplish more than intensity. The strongest response may be the one that refuses escalation."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anger",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Maaaring pagpipigil ang tunay na lakas",
+            "body": "Madalas itinutumbas ng galit ang lakas sa agarang puwersa. Pinahahalagahan ng Kawikaan 16:32 ang pagpipigil sa sarili higit sa pananakop. Bago kumilos, itanong kung mas makabubuti ang pagpipigil kaysa tindi. Maaaring ang pinakamalakas na tugon ay ang tumatangging palalain ang alitan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Ang tinuod nga kusog mahimong pagpugong",
+            "body": "Kasagaran itandi sa kasuko ang gahum sa dali nga kusog. Mas gipabilhan sa Proverbio 16:32 ang pagpugong sa kaugalingon kaysa pagpildi sa uban. Sa dili pa molihok, pangutan-a kon mas daghan ba ang mahimo sa pagpugong kaysa kusog nga reaksyon. Ang pinakakusgan nga tubag mahimong mao ang dili pagpasamot."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Mabalin a panagteppel ti pudno a pigsa",
+            "body": "Masansan a pagkaykaysaen ti pungtot ti pannakabalin ken dagus a pigsa. Pateg ti Proverbio 16:32 ti panagteppel iti bagi ngem panangabak. Sakbay nga agtignay, saludsodem no ad-adu ti maaramid ti panagteppel ngem iti napigsa a reaksyon. Mabalin a ti kapigsaan a sungbat ket isu ti saan a mangpadakes."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hurt_betrayal.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Release revenge without denying justice",
+        "catalogId": "biblequest.v7.original.hurt_betrayal.05",
+        "revision": "r1",
+        "checksum": "sha256:d3de98b7f154b09c0910f4ca77bac0349703662c6377d86554bbae0f93de237a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Release revenge without denying justice",
+        "body": "Betrayal can make revenge feel like the only path to justice. Romans 12:19-21 rejects personal vengeance while still taking evil seriously. Protect what must be protected, pursue appropriate accountability, and refuse to let retaliation own your heart."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hurt_betrayal",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.healing",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.forgiveness",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Bitawan ang paghihiganti nang hindi itinatanggi ang katarungan",
+            "body": "Maaaring gawing parang tanging daan sa katarungan ng pagtataksil ang paghihiganti. Tinatanggihan ng Roma 12:19-21 ang personal na pagganti habang seryoso pa rin sa kasamaan. Protektahan ang dapat protektahan, humingi ng angkop na pananagutan, at huwag hayaang ang pagganti ang maghari sa puso."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Buhii ang panimalos nga dili isalikway ang hustisya",
+            "body": "Ang pagbudhi makapahimo nga ang panimalos murag mao ra ang dalan sa hustisya. Gisalikway sa Roma 12:19-21 ang personal nga pagpanimalos samtang seryoso gihapon sa daotan. Panalipdi ang kinahanglan panalipdan, pangitaa ang angay nga accountability, ug ayaw tugoti nga ang pagbalos maoy maghari sa kasingkasing."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Ibbatmo ti panagibales a saan nga ilibak ti hustisia",
+            "body": "Ti panangliput mabalinna a pagparang a ti panagibales ti laeng dalan iti hustisia. Ti Roma 12:19-21 salungasingenna ti personal a panagibales kabayatan a seryoso pay laeng iti kinadakes. Salakniban ti masapul a salakniban, suroten ti umno a panagpanagot, ken saanmo a palubosan ti panagibales a mangituray iti pusom."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.rejection.05",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Rejected by people, chosen by God",
+        "catalogId": "biblequest.v7.original.rejection.05",
+        "revision": "r1",
+        "checksum": "sha256:49394e725a8998f777c574231dac1ae9cf2ea1f2dbfa3ebb781f6e575aa15d9d",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Rejected by people, chosen by God",
+        "body": "Human rejection can make you question whether you belong anywhere. First Peter 2:4 describes Christ as rejected by people yet chosen and precious to God. Let that pattern remind you that human dismissal does not determine final worth."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.rejection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Tinanggihan ng tao, pinili ng Diyos",
+            "body": "Maaaring ipaduda ng pagtanggi ng tao kung may lugar ka ba saanman. Inilalarawan ng 1 Pedro 2:4 si Cristo bilang tinanggihan ng mga tao ngunit pinili at mahalaga sa Diyos. Hayaang ipaalala nito na hindi pagtanggi ng tao ang nagtatakda ng huling halaga."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Gisalikway sa tawo, gipili sa Dios",
+            "body": "Ang pagsalikway sa tawo makapapangutana kon aduna ba kay lugar bisan asa. Gihulagway sa 1 Pedro 2:4 si Cristo nga gisalikway sa mga tawo apan gipili ug bililhon sa Dios. Tugoti kini nga mopahinumdom nga dili pagsalikway sa tawo ang modeterminar sa kataposang bili."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:45:00Z",
+          "content": {
+            "title": "Intukiad dagiti tao, pinili ti Dios",
+            "body": "Ti pannakaitukiad dagiti tao mabalinna a pagduaduaen no adda lugar mo iti sadinoman. Ti 1 Pedro 2:4 iladawanna ni Cristo a naitukiad dagiti tao ngem pinili ken napateg iti Dios. Palubosam daytoy a mangipalagip a saan a pannakaitukiad ti tao ti mangikeddeng iti maudi a pateg."
+          }
+        }
+      ]
+    }
+  ]
+}
