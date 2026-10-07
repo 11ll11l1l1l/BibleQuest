@@ -4,6 +4,49 @@ const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
 const browser=await chromium.launch({headless:true});
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 
+
+async function runDeployedRecovery(page,errors){
+  const armFailure=message=>page.evaluate(failureMessage=>{
+    const original=Element.prototype.toggleAttribute;
+    Element.prototype.toggleAttribute=function(name,...args){
+      if(name==='aria-current'&&this?.matches?.('[data-route-link]')){
+        Element.prototype.toggleAttribute=original;
+        throw new Error(failureMessage);
+      }
+      return original.call(this,name,...args);
+    };
+  },message);
+
+  await armFailure('synthetic deployed render failure');
+  await page.locator('[data-route-link="learn"]').click();
+  const recovery=page.locator('[data-recovery-route="learn"]');
+  await recovery.waitFor();
+  assert(await page.locator('[data-bq-shell="v3"]').count()===1,'Deployed recovery must preserve exactly one application shell.');
+  assert(await page.locator('.bq-nav').count()===1,'Deployed recovery must preserve primary navigation.');
+  assert(!((await recovery.textContent())||'').includes('synthetic deployed render failure'),'Deployed recovery exposed technical failure text.');
+  const retryMetrics=await recovery.evaluate(panel=>({
+    innerWidth,
+    scrollWidth:document.documentElement.scrollWidth,
+    alert:panel.querySelectorAll('[role="alert"]').length,
+    targets:[...panel.querySelectorAll('.bq-recovery-actions button')].map(node=>node.getBoundingClientRect().height)
+  }));
+  assert(retryMetrics.alert===1,'Deployed recovery must expose one alert presentation.');
+  assert(retryMetrics.scrollWidth<=retryMetrics.innerWidth+1,`Operational recovery mobile overflow: ${retryMetrics.scrollWidth}px > ${retryMetrics.innerWidth}px.`);
+  assert(retryMetrics.targets.length===2&&retryMetrics.targets.every(height=>height>=44),`Operational recovery controls must be touch-safe: ${retryMetrics.targets.join(', ')}.`);
+  await recovery.locator('[data-recovery-retry]').click();
+  await page.waitForFunction(()=>location.hash.startsWith('#/learn')&&!document.querySelector('[data-recovery-route]'));
+
+  await armFailure('synthetic deployed home failure');
+  await page.locator('[data-route-link="play"]').click();
+  const homeRecovery=page.locator('[data-recovery-route="play"]');
+  await homeRecovery.waitFor();
+  assert(!((await homeRecovery.textContent())||'').includes('synthetic deployed home failure'),'Deployed recovery Home path exposed technical failure text.');
+  await homeRecovery.locator('[data-recovery-home]').click();
+  await page.waitForFunction(()=>location.hash==='#/home'&&!document.querySelector('[data-recovery-route]'));
+  assert(await page.locator('[data-bq-shell="v3"]').count()===1,'Deployed recovery actions must not duplicate the application shell.');
+  assert(errors.length===0,`Unexpected deployed operational recovery console/page errors: ${errors.join(' | ')}`);
+}
+
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];
@@ -11,6 +54,12 @@ async function run(){
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(BASE,{waitUntil:'networkidle'});
   await page.locator('[data-bq-shell="v3"]').waitFor();
+  const sourceMode=await page.evaluate(()=>performance.getEntriesByType('resource').some(entry=>String(entry.name||'').includes('/src/app/bootstrap.js')));
+  if(!sourceMode){
+    await runDeployedRecovery(page,errors);
+    await page.close();
+    return;
+  }
   await page.evaluate(async()=>{
     const [{createOperationalRecoveryService},{createRouter},{mountShell}]=await Promise.all([
       import('/src/app/operational-recovery.js'),import('/src/app/router.js'),import('/src/ui/shell.js')
