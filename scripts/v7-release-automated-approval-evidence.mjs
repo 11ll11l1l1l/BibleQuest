@@ -232,6 +232,10 @@ async function main() {
     'approval ledger scope is invalid');
   assert(ledger.policyId === V7_LIBRARY_APPROVAL_POLICY_ID, 'approval ledger policy id is stale');
   assert(ledger.policyVersion === V7_LIBRARY_APPROVAL_POLICY_VERSION, 'approval ledger policy version is stale');
+  if (ledger.candidateSha) {
+    assert(clean(ledger.candidateSha).toLowerCase() === candidateSha.toLowerCase(),
+      'approval ledger candidate SHA does not match the exact release candidate');
+  }
   assert(Array.isArray(ledger.decisions), 'approval ledger decisions must be an array');
 
   const report = buildLaneBAutomatedApprovalEvidence({
