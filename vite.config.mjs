@@ -3,6 +3,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
   renameSync,
   rmSync,
@@ -106,6 +107,26 @@ function copyLegacyRuntime() {
         ) + '\n',
         'utf8',
       );
+
+      // Vite treats the web manifest referenced by index.html as a build asset and
+      // rewrites it to a hashed /_v6 URL. BibleQuest intentionally keeps the
+      // canonical manifest at the deploy root so install/offline behavior remains
+      // relative and portable across exact-SHA preview hosts.
+      const indexPath = join(outDir, 'index.html');
+      const rootManifestPath = join(outDir, 'manifest.webmanifest');
+      if (!existsSync(indexPath) || !existsSync(rootManifestPath)) {
+        throw new Error('V6 build is missing the deployable index or root PWA manifest.');
+      }
+      const builtIndex = readFileSync(indexPath, 'utf8');
+      const manifestLinkPattern = /<link\s+rel=["']manifest["']\s+href=["'][^"']+["']\s*\/?>/i;
+      if (!manifestLinkPattern.test(builtIndex)) {
+        throw new Error('V6 build index is missing the PWA manifest link.');
+      }
+      const normalizedIndex = builtIndex.replace(
+        manifestLinkPattern,
+        '<link rel="manifest" href="manifest.webmanifest">',
+      );
+      writeFileSync(indexPath, normalizedIndex, 'utf8');
     },
   };
 }
