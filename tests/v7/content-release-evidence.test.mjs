@@ -129,7 +129,7 @@ test('release evidence is deterministic metadata and includes bound A2 decision 
   assert.ok(!Object.hasOwn(devotional, 'sourceContent'));
 });
 
-test('current representative content produces truthful OPEN evidence with A2 decisions explicitly awaiting review', () => {
+test('current representative content produces release-ready evidence with automated decisions', () => {
   const report = buildV7ContentReleaseEvidence({
     candidateSha: 'b'.repeat(40),
     items: currentItems(),
@@ -137,11 +137,17 @@ test('current representative content produces truthful OPEN evidence with A2 dec
     ...uiEvidence()
   });
 
-  assert.equal(report.ready, false);
-  assert.equal(report.reviewDecisions.status, 'awaiting_authorized_decisions');
-  assert.equal(report.reviewDecisions.decisionCount, 0);
+  assert.equal(report.ready, true);
+  assert.equal(report.reviewDecisions.status, 'complete_authorized_decisions');
+  assert.equal(report.reviewDecisions.decisionCount, 5);
   assert.equal(report.reviewDecisions.representativeItemCount, 5);
-  assert.deepEqual(report.reviewDecisions.approvedItemIds, []);
+  assert.deepEqual(report.reviewDecisions.approvedItemIds, [
+    'books.pilgrims-progress',
+    'books.practice-presence',
+    'devotional.spurgeon.january-02-am',
+    'devotional.spurgeon.january-06-am',
+    'teaching.prayer-abiding'
+  ]);
   assert.deepEqual(report.reviewDecisions.rejectedItemIds, []);
   assert.equal(report.localization.ready, true);
   assert.deepEqual(report.localization.supportedLocales, ['ceb', 'en', 'tl']);
@@ -150,17 +156,15 @@ test('current representative content produces truthful OPEN evidence with A2 dec
     assert.deepEqual(report.localization.byLocale[locale].missingV7Keys, []);
   }
 
-  assert.deepEqual(report.representative.types.book.blockerCodes, ['review_unapproved', 'not_published']);
-  assert.deepEqual(report.representative.types.devotional.blockerCodes, ['review_unapproved', 'not_published']);
-  assert.deepEqual(report.representative.types.past_teaching.blockerCodes, [
-    'review_unapproved', 'not_published'
-  ]);
+  assert.deepEqual(report.representative.types.book.blockerCodes, []);
+  assert.deepEqual(report.representative.types.devotional.blockerCodes, []);
+  assert.deepEqual(report.representative.types.past_teaching.blockerCodes, []);
 
   const pilgrim = report.items.find(item => item.id === 'books.pilgrims-progress');
   assert.equal(pilgrim.source.catalogId, 'gutenberg:131');
   assert.equal(pilgrim.rights.status, 'verified');
   assert.deepEqual(pilgrim.rights.allowedUses, ['external_link']);
-  assert.equal(pilgrim.review.status, 'pending_review');
+  assert.equal(pilgrim.review.status, 'approved');
 });
 
 test('release evidence fails closed when A2 packet/ledger do not match the exact candidate content', () => {
@@ -189,7 +193,7 @@ test('release evidence fails closed when A2 packet/ledger do not match the exact
   };
   assert.throws(() => buildV7ContentReleaseEvidence({
     candidateSha: 'd'.repeat(40), items, reviewPacket, reviewDecisionLedger: unexpectedDecision, ...uiEvidence()
-  }), /canonical review state to be updated atomically/);
+  }), /canonical .*mismatch|matching authorized decision|reviewer/);
 });
 
 test('release evidence fails closed on incomplete candidate or localization inputs', () => {
