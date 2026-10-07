@@ -35,8 +35,9 @@ test('bootstrap connects Library reset to account lifecycle and disposal', () =>
   assert.match(source, /unsubscribeLibrarySession=store\.subscribe/);
   assert.match(source, /JSON\.stringify\(\[current\.authenticated===true,current\.user\?\.id/);
   assert.match(source, /unsubscribeLibrarySession\(\);library\.reset\(\)/);
-  assert.match(source, /library:\(\)=>libraryPage\(\{service:library,[\s\S]*isContextReady:v7ContextReady,subscribeContext:subscribeV7Context/);
-  assert.match(source, /'library-item':\(\)=>libraryItemPage\(\{service:library,[\s\S]*isContextReady:v7ContextReady,subscribeContext:subscribeV7Context/);
+  assert.match(source, /const libraryContextReady=\(\)=>session\.getState\(\)\?\.authenticated===true\?v7ContextReady\(\):true/);
+  assert.match(source, /library:\(\)=>libraryPage\(\{service:library,[\s\S]*isContextReady:libraryContextReady,subscribeContext:subscribeV7Context/);
+  assert.match(source, /'library-item':\(\)=>libraryItemPage\(\{service:library,[\s\S]*isContextReady:libraryContextReady,subscribeContext:subscribeV7Context/);
 });
 
 test('bootstrap preserves Library taxonomy through browse, item, reload, and return routes', () => {
