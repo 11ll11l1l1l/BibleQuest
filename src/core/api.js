@@ -800,7 +800,13 @@ export function createApi() {
     },
     async saveLibraryHumanDecision(row) {
       const client=await getClient();
-      const {data,error}=await client.from('v7_library_review_decisions').insert(row).select(V7_LIBRARY_REVIEW_HISTORY_FIELDS).single();
+      const {data,error}=await client.rpc('bible_v7_apply_human_library_review',{
+        p_item_id:String(row?.item_id||''),
+        p_revision_id:String(row?.revision_id||''),
+        p_decision:String(row?.decision||''),
+        p_decided_at:row?.decided_at||null,
+        p_note:row?.note??null
+      }).single();
       if(error)throw error;
       return data;
     },
