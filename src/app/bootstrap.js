@@ -309,7 +309,7 @@ function boot(root){
   const v7ContextListeners=new Set();
   const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
   const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
-  const congregation=createCongregationMembershipService({api,session,onContextChange:()=>{library.reset();notifyV7Context()}});
+  const congregation=createCongregationMembershipService({api,session,selectionStorage:privateStorage,onContextChange:()=>{library.reset();notifyV7Context()}});
   const discipleship=api.discipleship.createService({session,membership:congregation});
   let librarySessionKey='';
   const unsubscribeLibrarySession=store.subscribe(state=>{
@@ -528,7 +528,13 @@ function boot(root){
     unsubscribeTelemetry=store.subscribe(state=>telemetry.syncSession(state?.session));
   syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
-  session.boot().then(()=>{
+  session.boot().then(async()=>{
+    // Reload validated membership state before restoring a tenant-scoped V7 route.
+    // The remembered congregation is user-scoped and is accepted only if the fresh
+    // server membership list still contains it.
+    if(session.isAuthenticated()){
+      try{await congregation.load()}catch(error){console.warn('Congregation membership unavailable',error)}
+    }
     // Authentication must hydrate the requested route independently of cloud progress.
     // Prefer the pre-router snapshot because account-resume callbacks can normalize
     // location.hash before async session hydration resolves on a full page reload.
