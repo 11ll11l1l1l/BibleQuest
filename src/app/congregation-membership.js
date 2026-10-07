@@ -27,8 +27,12 @@ function normalizeMembership(row){
   });
 }
 
-export function createCongregationMembershipService({api,session,onContextChange=()=>{}}){
+export function createCongregationMembershipService({api,session,onContextChange=()=>{},selectionStorage=null}){
   if(!api?.congregation||!session)throw new Error('Congregation membership requires shared API and session boundaries.');
+  const selectionKey=userId=>`active-congregation.${String(userId||'').trim()}`;
+  const readRemembered=userId=>{try{return String(selectionStorage?.read?.(selectionKey(userId),'')||'').trim()}catch{return ''}};
+  const remember=(userId,congregationId)=>{try{selectionStorage?.write?.(selectionKey(userId),String(congregationId||''))}catch{}};
+  const forgetRemembered=userId=>{try{selectionStorage?.remove?.(selectionKey(userId))}catch{}};
   let memberships=[];
   let activeCongregationId='';
   let loadedUserId='';
@@ -68,7 +72,12 @@ export function createCongregationMembershipService({api,session,onContextChange
     if(request!==loadRequest||currentUserId()!==userId)return list();
     memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row&&row.userId===userId);
     loadedUserId=userId;
-    if(!get(activeCongregationId))activeCongregationId='';
+    if(!get(activeCongregationId)){
+      activeCongregationId='';
+      const remembered=readRemembered(userId);
+      if(remembered&&get(remembered))activeCongregationId=remembered;
+      else if(remembered)forgetRemembered(userId);
+    }
     onContextChange();
     return list();
   }
@@ -134,6 +143,7 @@ export function createCongregationMembershipService({api,session,onContextChange
     if(!membership||membership.userId!==userId){const error=new Error('You are not a member of that congregation.');error.code='BQ_CONGREGATION_NOT_MEMBER';throw error}
     const changed=activeCongregationId!==membership.congregationId;
     activeCongregationId=membership.congregationId;
+    remember(userId,activeCongregationId);
     if(changed)onContextChange();
     return membership;
   }
