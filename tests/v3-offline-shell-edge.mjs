@@ -98,6 +98,7 @@ for(const token of[
 assert((workerSource.match(/url\.hash=''/g)||[]).length>=2,'Offline shell worker must normalize warmed URLs before cache lookup/write.');
 assert(workerSource.includes("ignoreSearch:request.mode==='navigate',ignoreVary:true"),'Offline shell fetch fallback must ignore response Vary headers for warmed shell resources.');
 assert(workerSource.includes("ignoreSearch:true,ignoreVary:true"),'Offline navigation root fallback must ignore response Vary headers.');
+assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offline recursive warm must traverse JavaScript and TypeScript module URLs.');
 for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
   assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
 }
