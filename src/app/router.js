@@ -1,5 +1,13 @@
 const NAVIGATION_REQUEST='bq:navigation-request';
 
+export function readNavigationHash(){
+  return String(location.hash || '');
+}
+
+export function readNavigationParams(){
+  return new URLSearchParams(readNavigationHash().split('?').slice(1).join('?'));
+}
+
 const normalize = raw => {
   const value = String(raw || '#/home').replace(/^#\/?/, '').split('?')[0].split('/')[0].trim();
   return value || 'home';
