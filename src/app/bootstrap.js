@@ -529,10 +529,10 @@ function boot(root){
   syncShell(store.getState());syncModeration(store.getState());syncPushOnboarding(store.getState());syncAdminAccess(store.getState());syncNotificationSettings(store.getState());telemetry.syncSession(store.getState().session);telemetry.start();router.start();
   offlineShell.start().catch(error=>console.warn('Offline shell unavailable',error));
   session.boot().then(async()=>{
-    // Reload validated membership state before restoring a tenant-scoped V7 route.
-    // The remembered congregation is user-scoped and is accepted only if the fresh
-    // server membership list still contains it.
-    if(session.isAuthenticated()){
+    // Reload validated membership state only when cold-starting a tenant-scoped
+    // ONE 2 ONE deep link. Ordinary account/congregation boots keep their existing
+    // page-owned refresh flow, avoiding competing membership reads.
+    if(session.isAuthenticated()&&initialDiscipleshipTarget){
       try{await congregation.load()}catch(error){console.warn('Congregation membership unavailable',error)}
     }
     // Authentication must hydrate the requested route independently of cloud progress.
