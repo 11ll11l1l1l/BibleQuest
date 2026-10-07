@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.insecurity_unworthiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Insecurity / unworthiness"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.doubt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Doubt"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "topic.faith",
+      "kind": "topic",
+      "labels": {
+        "en": "Faith"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.confusion_uncertainty",
+      "kind": "emotion",
+      "labels": {
+        "en": "Confusion / uncertainty"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    },
+    {
+      "id": "emotion.discouragement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Discouragement"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.hopelessness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hopelessness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "emotion.overwhelm",
+      "kind": "emotion",
+      "labels": {
+        "en": "Overwhelm"
+      }
+    },
+    {
+      "id": "need.help",
+      "kind": "need",
+      "labels": {
+        "en": "Help"
+      }
+    },
+    {
+      "id": "topic.community",
+      "kind": "topic",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "life_situation.burnout",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Burnout"
+      }
+    },
+    {
+      "id": "emotion.stress",
+      "kind": "emotion",
+      "labels": {
+        "en": "Stress"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "emotion.tiredness_weariness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Tiredness / weariness"
+      }
+    },
+    {
+      "id": "need.strength",
+      "kind": "need",
+      "labels": {
+        "en": "Strength"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.spiritual_growth",
+      "kind": "topic",
+      "labels": {
+        "en": "Spiritual growth"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.insecurity_unworthiness.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.insecurity_unworthiness.10",
+        "revision": "r1",
+        "checksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Ask what faithfulness looks like now",
+        "body": "Read Luke 12:6-7 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.insecurity_unworthiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang Luke 12:6-7 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang Luke 12:6-7 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti Luke 12:6-7 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.doubt.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.doubt.10",
+        "revision": "r1",
+        "checksum": "sha256:4371eb07f06b6fa8f2d2fec92ded9a76f50c2780567b7acdc1565aca71403849",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Take the next step without carrying tomorrow",
+        "body": "Read Acts 17:11 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.doubt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.faith",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Acts 17:11 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Acts 17:11 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Acts 17:11 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.confusion_uncertainty.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.confusion_uncertainty.10",
+        "revision": "r1",
+        "checksum": "sha256:9060c8ca841725347e06b4aced186b5e90b4ba08acc03bb6d05ef3343f29f649",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Turn attention toward what God has given",
+        "body": "Read Psalm 119:105 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.confusion_uncertainty",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang Psalm 119:105 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang Psalm 119:105 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti Psalm 119:105 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.discouragement.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.discouragement.10",
+        "revision": "r1",
+        "checksum": "sha256:0efc4b2b64c063147c37c27752752c687baf82bd27ad156849ad82772abff1f1",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Let prayer interrupt the spiral",
+        "body": "Read 2 Corinthians 4:16 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.discouragement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang 2 Corinthians 4:16 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang 2 Corinthians 4:16 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti 2 Corinthians 4:16 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hopelessness.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.hopelessness.10",
+        "revision": "r1",
+        "checksum": "sha256:8cd0de3e0ac3ed9a026ca783c97d3f11083593fcd8297f69359a3d12d6100b33",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Make one choice that agrees with hope",
+        "body": "Read Romans 8:24-25 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hopelessness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Romans 8:24-25 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Romans 8:24-25 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Romans 8:24-25 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.overwhelm.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.overwhelm.10",
+        "revision": "r1",
+        "checksum": "sha256:c503354b955ccc4f6ee0a736408d57402c45d44d5a2a61162a413e5ac62a62c4",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Ask what faithfulness looks like now",
+        "body": "Read Exodus 18:17-23 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.overwhelm",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.help",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.community",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang Exodus 18:17-23 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang Exodus 18:17-23 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti Exodus 18:17-23 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.stress.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.stress.10",
+        "revision": "r1",
+        "checksum": "sha256:57bebfbb96d8be421eee779240bcce16fd9aad4c9c6c8dc41e380fbd2aa802a3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Take the next step without carrying tomorrow",
+        "body": "Read Psalm 46:10 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.stress",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Psalm 46:10 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Psalm 46:10 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Psalm 46:10 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.tiredness_weariness.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.tiredness_weariness.10",
+        "revision": "r1",
+        "checksum": "sha256:9a485483179670f435a58346fb3d6dad063cc4e4bc4ffd8bd5079244a048d9ea",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Turn attention toward what God has given",
+        "body": "Read Isaiah 40:29 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.tiredness_weariness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.strength",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang Isaiah 40:29 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang Isaiah 40:29 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti Isaiah 40:29 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.10",
+        "revision": "r1",
+        "checksum": "sha256:8593771e1ab2a778c76a5a2d995c2ea05d20b1959690bda136ac6542c7ade634",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Let prayer interrupt the spiral",
+        "body": "Read John 15:4 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.spiritual_growth",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang John 15:4 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang John 15:4 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti John 15:4 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.10",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Remember - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.temptation.10",
+        "revision": "r1",
+        "checksum": "sha256:0840f00ba86522b0445388f9ee3be9f83420d0c62223c197f8febcfb4faeedc3",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Remember: Make one choice that agrees with hope",
+        "body": "Read Matthew 26:41 and choose one short idea from the passage to remember without copying verse text. Write the idea in your own words, set a cue to revisit it later today, and when you return, note what changed in your thinking or actions. Close with one sentence of gratitude or one clear request to God."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional memory exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Tandaan: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Matthew 26:41 at pumili ng isang maikling ideya mula sa talata na tatandaan mo nang hindi kinokopya ang teksto ng bersikulo. Isulat ang ideya sa sarili mong mga salita, magtakda ng paalala para balikan ito mamaya, at sa pagbabalik mo, pansinin kung ano ang nagbago sa iyong pag-iisip o kilos. Tapusin sa isang pangungusap ng pasasalamat o isang malinaw na kahilingan sa Diyos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Hinumdomi: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Matthew 26:41 ug pagpili og usa ka mubo nga ideya gikan sa teksto nga imong hinumdoman nga dili pagkopya sa teksto sa bersikulo. Isulat ang ideya sa imong kaugalingong mga pulong, paghimo og pahinumdom aron balikan kini unya, ug sa imong pagbalik, timan-i unsay nabag-o sa imong hunahuna o lihok. Tapusa sa usa ka sentence sa pagpasalamat o usa ka tin-aw nga hangyo ngadto sa Dios."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T10:00:00Z",
+          "content": {
+            "title": "Laglagipem: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Matthew 26:41 ket agpilika iti maysa a bassit a kapanunotan manipud iti teksto a laglagipem a saan a pagkopia ti teksto ti bersikulo. Isuratmo ti kapanunotan kadagiti bukodmo a sasao, mangikabilka iti palagip tapno subliem inton ud-udi, ket inton agsubli ka, kitaem no ania ti nagbalbaliw iti panunot wenno aramidmo. Leppasem iti maysa a pangungusap ti panagyaman wenno maysa a nalawag a kiddaw iti Dios."
+          }
+        }
+      ]
+    }
+  ]
+}
