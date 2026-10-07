@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(16);
 
 -- This is a production-readiness contract, not an RLS behavior fixture. Any new
 -- public V7 table must be reviewed here so accidental Data API exposure cannot
@@ -139,6 +139,20 @@ select ok(
     'EXECUTE'
   ),
   'Only the trusted service path can execute automated Library publication'
+);
+
+select ok(
+  not has_table_privilege('authenticated', 'public.v7_library_review_decisions', 'INSERT'),
+  'Authenticated clients cannot bypass the atomic Library human-review authority with direct audit inserts'
+);
+
+select ok(
+  has_function_privilege(
+    'authenticated',
+    'public.bible_v7_apply_human_library_review(uuid,uuid,text,timestamptz,text)',
+    'EXECUTE'
+  ),
+  'Authorized authenticated reviewers can call the atomic Library human-review authority'
 );
 
 select ok(
