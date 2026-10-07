@@ -168,11 +168,23 @@ test('owner-only resume reads return immutable private data without operational/
   assert.deepEqual(await privateReadFixture({ rows: [] }).service.loadPrivateResponses('pair-1', 'r1'), []);
 });
 
-test('mentor access is denied before opening the private-response reader', async () => {
+test('active mentor reads only responses explicitly shared to the paired mentor', async () => {
   let read = false;
-  const { service } = privateReadFixture({ userId: 'mentor-1', loader: async () => { read = true; return []; } });
-  await assert.rejects(service.loadPrivateResponses('pair-1', 'r1'), { code: 'BQ_DISCIPLESHIP_RESPONSE_DENIED' });
-  assert.equal(read, false);
+  const { service } = privateReadFixture({ userId: 'mentor-1', loader: async () => {
+    read = true;
+    return [privateRow({ audienceUserIds: ['mentor-1'] })];
+  } });
+  const [response] = await service.loadPrivateResponses('pair-1', 'r1');
+  assert.equal(read, true);
+  assert.equal(response.visibility, 'shared');
+  assert.deepEqual(response.audienceUserIds, ['mentor-1']);
+});
+
+test('mentor response projection fails closed if the repository over-returns owner-only data', async () => {
+  let read = false;
+  const { service } = privateReadFixture({ userId: 'mentor-1', loader: async () => { read = true; return [privateRow()]; } });
+  await assert.rejects(service.loadPrivateResponses('pair-1', 'r1'), { code: 'BQ_DISCIPLESHIP_RESPONSE_SCOPE' });
+  assert.equal(read, true);
 });
 
 test('private resume rejects foreign learners/revisions and duplicate response steps', async () => {

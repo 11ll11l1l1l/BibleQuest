@@ -379,12 +379,17 @@ export function createDiscipleshipService({ repository, session, membership }) {
       // Only this owner-history read relaxes the active-pair requirement; operational
       // progress, curriculum, writes and mentor visibility remain active-pair scoped.
       const pair = await resolvePair(pairId, context, { active: false });
-      if (context.userId !== pair.menteeId) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee can read personal lesson responses.');
+      const owner = context.userId === pair.menteeId;
+      const activeMentor = context.userId === pair.mentorId && pair.state === 'active';
+      if (!owner && !activeMentor) fail('BQ_DISCIPLESHIP_RESPONSE_DENIED', 'Only the mentee or active paired mentor can read lesson responses.');
       const revisionId = identifier(lessonRevisionId);
       if (!revisionId) fail('BQ_DISCIPLESHIP_LESSON_REQUIRED', 'Choose a published lesson revision first.');
-      const responses = await repository.loadPrivateResponses(revisionId, pair, context);
+      const responses = normalizePrivateResponses(await repository.loadPrivateResponses(revisionId, pair, context), pair, revisionId);
       assertCurrent(context);
-      return normalizePrivateResponses(responses, pair, revisionId);
+      if (activeMentor && responses.some(row => row.visibility !== 'shared' || !row.audienceUserIds.includes(pair.mentorId))) {
+        fail('BQ_DISCIPLESHIP_RESPONSE_SCOPE', 'Mentor response visibility exceeded an explicit mentee share.');
+      }
+      return responses;
     });
   }
 
