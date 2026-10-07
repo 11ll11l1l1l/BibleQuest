@@ -206,7 +206,7 @@ for each row execute function private.v7_guard_library_automated_publication();
 
 alter table public.v7_library_review_decisions enable row level security;
 revoke all on public.v7_library_review_decisions from public,anon,authenticated;
-grant select,insert on public.v7_library_review_decisions to authenticated;
+grant select on public.v7_library_review_decisions to authenticated;
 
 drop policy if exists "v7 library review authorized read" on public.v7_library_review_decisions;
 create policy "v7 library review authorized read"
@@ -237,6 +237,156 @@ with check (
 );
 
 
+
+create or replace function public.bible_v7_apply_human_library_review(
+  p_item_id uuid,
+  p_revision_id uuid,
+  p_decision text,
+  p_decided_at timestamptz,
+  p_note text default null
+)
+returns public.v7_library_review_decisions
+language plpgsql
+security definer
+set search_path = ''
+as $bq$
+declare
+  actor_id uuid := (select auth.uid());
+  target_item public.v7_library_items%rowtype;
+  target_revision public.v7_library_revisions%rowtype;
+  inserted public.v7_library_review_decisions%rowtype;
+begin
+  if actor_id is null then
+    raise exception 'Library review requires an authenticated reviewer';
+  end if;
+  if p_decision not in ('approved','request_changes','rejected') then
+    raise exception 'Unsupported human Library review decision';
+  end if;
+  if p_decided_at is null then
+    raise exception 'Human Library review requires a decision timestamp';
+  end if;
+  if p_note is not null and char_length(p_note) > 4000 then
+    raise exception 'Human Library review note is too long';
+  end if;
+
+  select * into target_item
+  from public.v7_library_items i
+  where i.id = p_item_id
+  for update;
+  if target_item.id is null then
+    raise exception 'V7 Library item is unavailable';
+  end if;
+
+  select * into target_revision
+  from public.v7_library_revisions r
+  where r.id = p_revision_id and r.item_id = p_item_id
+  for update;
+  if target_revision.id is null then
+    raise exception 'V7 Library revision is unavailable';
+  end if;
+  if target_item.current_revision_id is distinct from p_revision_id then
+    raise exception 'Human Library review must target the current revision';
+  end if;
+  if not private.bible_can_review_content(target_item.congregation_id) then
+    raise exception 'Library review is not authorized for this item';
+  end if;
+
+  insert into public.v7_library_review_decisions (
+    item_id,
+    revision_id,
+    content_type,
+    reviewer_type,
+    decision,
+    policy_id,
+    policy_version,
+    reviewer_id,
+    criteria,
+    second_pass,
+    evidence_refs,
+    note,
+    decided_at
+  ) values (
+    p_item_id,
+    p_revision_id,
+    target_item.content_type,
+    'human',
+    p_decision,
+    null,
+    null,
+    actor_id,
+    '[]'::jsonb,
+    '{}'::jsonb,
+    '[]'::jsonb,
+    p_note,
+    p_decided_at
+  )
+  returning * into inserted;
+
+  if p_decision = 'approved' then
+    update public.v7_library_revisions
+    set review_status = 'approved',
+        reviewer_type = 'human',
+        reviewer_id = actor_id,
+        review_policy_id = null,
+        review_policy_version = null,
+        review_evidence = jsonb_build_object('humanDecisionId', inserted.id),
+        reviewed_at = p_decided_at,
+        publication_state = 'published',
+        withdrawal_reason = null
+    where id = p_revision_id and item_id = p_item_id;
+
+    update public.v7_library_items
+    set current_revision_id = p_revision_id,
+        publication_state = 'published',
+        updated_at = p_decided_at
+    where id = p_item_id;
+  elsif p_decision = 'request_changes' then
+    update public.v7_library_revisions
+    set review_status = 'pending_review',
+        reviewer_type = 'human',
+        reviewer_id = actor_id,
+        review_policy_id = null,
+        review_policy_version = null,
+        review_evidence = jsonb_build_object('humanDecisionId', inserted.id),
+        reviewed_at = p_decided_at,
+        publication_state = 'pending_review',
+        withdrawal_reason = null
+    where id = p_revision_id and item_id = p_item_id;
+
+    update public.v7_library_items
+    set publication_state = 'pending_review',
+        updated_at = p_decided_at
+    where id = p_item_id;
+  else
+    update public.v7_library_revisions
+    set review_status = 'rejected',
+        reviewer_type = 'human',
+        reviewer_id = actor_id,
+        review_policy_id = null,
+        review_policy_version = null,
+        review_evidence = jsonb_build_object('humanDecisionId', inserted.id),
+        reviewed_at = p_decided_at,
+        publication_state = 'withdrawn',
+        withdrawal_reason = coalesce(nullif(btrim(p_note),''),'Rejected in Content Review')
+    where id = p_revision_id and item_id = p_item_id;
+
+    update public.v7_library_items
+    set publication_state = 'withdrawn',
+        updated_at = p_decided_at
+    where id = p_item_id;
+  end if;
+
+  return inserted;
+end;
+$bq$;
+
+revoke all on function public.bible_v7_apply_human_library_review(uuid,uuid,text,timestamptz,text)
+  from public,anon;
+grant execute on function public.bible_v7_apply_human_library_review(uuid,uuid,text,timestamptz,text)
+  to authenticated;
+
+comment on function public.bible_v7_apply_human_library_review(uuid,uuid,text,timestamptz,text) is
+  'Authenticated protected Content Review override: append immutable human audit history and atomically publish, requeue, or withdraw the exact current Library revision.';
 
 create or replace function public.bible_v7_apply_automated_library_review(
   p_item_id uuid,
