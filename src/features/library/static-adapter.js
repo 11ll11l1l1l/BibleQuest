@@ -22,7 +22,8 @@ function canonicalLocale(value) {
   catch { return 'en'; }
 }
 function translated(item, locale) {
-  const requested = canonicalLocale(locale).split('-')[0];
+  const requestedRaw = canonicalLocale(locale).split('-')[0];
+  const requested = requestedRaw === 'tl' ? 'fil' : requestedRaw;
   const match = (item.translations || []).find(row => canonicalLocale(row.locale).split('-')[0] === requested);
   if (!match) return { ...item, locale: item.sourceLocale || 'en' };
   return {
