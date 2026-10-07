@@ -12,7 +12,7 @@ assert.match(edge,/updateUserById\(target,\{email\}\)/);
 assert.match(edge,/audit\(a,u\.id,target,'change_email',\{emailChanged:true,sessionsRevoked:true\}\)/);
 assert.doesNotMatch(edge,/audit\([^\n]*change_email[^\n]*email:/);
 assert.match(api,/assertAdminMutationAllowed\(action/);
-assert.match(api,/changeEmail\(targetUserId,email\)\{return invokeAdminMutation\('bq-admin-ops','change_email',\{targetUserId,email\}\)\}/);
+assert.ok(api.includes("async changeEmail(targetUserId,email){return invokeAdminMutation('bq-admin-ops','change_email',{targetUserId,email});}"));
 assert.match(ui,/data-admin-change-email=/);
 assert.match(ui,/CHANGE EMAIL/);
 const calls=[];
