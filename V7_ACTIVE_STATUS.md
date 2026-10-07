@@ -1,10 +1,11 @@
 # BibleQuest V7 Active Status
 
-Updated: **2026-10-07 JST**  
+Updated: **2026-10-08 JST**  
 State: **Release-convergence reset active**  
 Development branch: `v7/development`  
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
-Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
+Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
+Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 
 ## Command contract
 
@@ -35,6 +36,8 @@ The largest remaining release gap is content completion:
 
 Useful unmerged automation exists in PR #1257 (authenticated ONE 2 ONE) and PR #1265 (authenticated populated Library/build browser). They are inputs to the reset lanes, not separate old-lane obligations.
 
+A 2026-10-08 owner scope override adds a **whole-app UI/UX release overhaul** to V7. Typography, color/contrast, primary navigation, iconography, image-led content cards, Library/Home/reader presentation and designed loading/empty/offline/error states are release-blocking requirements under `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`.
+
 ## New parallel lanes
 
 | Lane | Canonical issue | Mission | Primary owned surface |
@@ -42,7 +45,7 @@ Useful unmerged automation exists in PR #1257 (authenticated ONE 2 ONE) and PR #
 | **A** | #1300 | Release Content Factory | devotional/book/past-teaching corpus, translations, content metadata |
 | **B** | #1301 | Automated Approval + In-App Audit | review policy, publication decisions, Content Review Library workflow |
 | **C** | #1302 | ONE 2 ONE Final Closure | authenticated end-to-end ONE 2 ONE runtime and journey tests |
-| **D** | #1303 | Release Convergence + Deployment | browser/a11y/PWA/performance/release workflows, exact candidate, deployment |
+| **D** | #1303 | Global UI/UX + Release Convergence + Deployment | app shell/design system, browser/a11y/PWA/performance/release workflows, exact candidate, deployment |
 
 All four are authorized to work simultaneously from the live `v7/development` head.
 
@@ -53,6 +56,7 @@ Deliver actual launch content:
 - EN source plus TL/CEB/ILO for every selected devotional;
 - separate translation QA;
 - complete source/provenance/rights/permitted-use/checksum metadata;
+- content visual/cover metadata with source type, rights/provenance, alt/decorative state, crop/focal data and fallback key where appropriate;
 - emotion/need/topic/life-situation and BSB mappings;
 - 8 launch books with safe permitted-use behavior;
 - rights-clear Past Teachings launch content.
@@ -71,7 +75,7 @@ Replace human-gated publishing with fail-closed automated policy review:
 - exact revision + metadata integrity;
 - independent second-pass/adversarial QA.
 
-Add truthful automated reviewer identity/policy evidence and extend protected Content Review with Books / Devotionals / Past Teachings plus post-release user overrides.
+Add truthful automated reviewer identity/policy evidence and extend protected Content Review with Books / Devotionals / Past Teachings plus post-release user overrides. Validate visual-asset rights/provenance and expose relevant visual evidence in the audit UI.
 
 Lane B does not edit Lane A corpus files.
 
@@ -86,13 +90,18 @@ Finish ONE 2 ONE using automated authenticated journeys:
 - resume/completion;
 - QR/deep-link;
 - account/congregation switch denial;
-- responsive/localized browser journey.
+- responsive/localized browser journey;
+- V7 typography/color/icon/state-pattern adoption across ONE 2 ONE surfaces.
 
 Absorb/rebase the useful work from PR #1257.
 
 ### Lane D — #1303
 
-Prepare and then own final release convergence:
+Prepare and then own the global UI/UX overhaul and final release convergence:
+- implement/normalize global design tokens for typography, color, spacing, focus and states;
+- implement the consistent primary app-shell/navigation model;
+- implement reusable image-led content card/cover primitives and deliberate fallbacks;
+- apply coherent Home, Library and reader presentation patterns where not owned by another lane;
 - absorb/rebase useful work from PR #1265;
 - automated populated Library browser journeys;
 - automated keyboard/focus/contrast/text scaling/responsive checks;
@@ -149,6 +158,6 @@ Historical tests/evidence remain valid inputs and should be reused.
 
 ## Definition of V7 done
 
-V7 is finished when all four canonical reset issues are complete and one exact deployed candidate satisfies the consolidated automated release gate.
+V7 is finished when all four canonical reset issues are complete and one exact deployed candidate satisfies the consolidated automated release gate, including every ship-blocking UI/UX criterion in `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`.
 
 The user's subsequent in-app audit may change, reject or request changes to content through Content Review, but that audit is post-release quality stewardship rather than a prerequisite to finish V7.
