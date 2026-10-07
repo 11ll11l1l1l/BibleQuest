@@ -1,4 +1,5 @@
 /* V7 Learn hub: primary actions first, optional study tools second. */
+.bq-learn-primary{background:linear-gradient(145deg,color-mix(in srgb,var(--bq-brand-soft) 22%,transparent),transparent)}
 .bq-learn-primary {
   margin-top: 14px;
   padding: 0;
