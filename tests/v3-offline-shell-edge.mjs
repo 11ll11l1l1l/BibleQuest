@@ -27,7 +27,8 @@ assert(first.status==='ready'&&first.ready,'Successful warmup must publish ready
 assert(registerCalls===1,'Offline shell worker must register exactly once.');
 assert(updateCalls===1,'Offline shell startup must explicitly check for a newer worker.');
 assert(posted?.type==='BIBLEQUEST_WARM_SHELL','Offline owner must use the bounded shell-warm message.');
-assert(posted.urls.includes('https://example.test/app/#/learn'),'Current document must be warmed for navigation fallback.');
+assert(posted.urls.includes('https://example.test/app/'),'Current document must be warmed as a fragmentless navigation fallback.');
+assert(!posted.urls.some(url=>url.includes('#')),'Offline shell warm URLs must not retain client-side route fragments.');
 assert(posted.urls.includes('https://example.test/app/src/app/bootstrap.js')&&posted.urls.includes('https://example.test/app/src/ui/app.css'),'Loaded same-origin shell resources must be warmed.');
 assert(!posted.urls.some(url=>url.includes('/data/packs/')),'#98 must not warm Bible pack fetches reserved for #99.');
 assert(!posted.urls.some(url=>url.includes('cdn.example.test')),'#98 must not warm cross-origin resources.');
@@ -94,6 +95,7 @@ for(const token of[
 ]){
   assert(workerSource.includes(token),'Offline shell worker missing installed-client upgrade refresh contract: '+token);
 }
+assert((workerSource.match(/url\.hash=''/g)||[]).length>=2,'Offline shell worker must normalize warmed URLs before cache lookup/write.');
 for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
   assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
 }
