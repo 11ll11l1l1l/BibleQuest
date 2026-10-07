@@ -28,7 +28,7 @@
       "type": "devotional",
       "revision": "r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "Morning, January 2",
@@ -54,7 +54,9 @@
         "verifiedAt": "2026-10-05T09:45:00Z"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
       },
       "revisionHistory": [],
       "derivatives": [],
@@ -109,7 +111,7 @@
       "type": "devotional",
       "revision": "r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "Morning, January 6",
@@ -135,7 +137,9 @@
         "verifiedAt": "2026-10-05T09:45:00Z"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
       },
       "revisionHistory": [],
       "derivatives": [],
