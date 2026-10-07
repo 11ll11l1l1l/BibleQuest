@@ -7,10 +7,12 @@ function collectShellUrls({performanceRef,locationRef}){
   let entries=[];
   try{entries=performanceRef?.getEntriesByType?.('resource')||[]}catch{}
   for(const entry of entries){
-    if(!SHELL_INITIATORS.has(String(entry?.initiatorType||'')))continue;
     try{
       const url=new URL(entry.name,locationRef?.href);
-      if(url.origin===locationRef?.origin)urls.add(url.href);
+      if(url.origin!==locationRef?.origin)continue;
+      const initiator=String(entry?.initiatorType||'');
+      if(!SHELL_INITIATORS.has(initiator)&&!url.pathname.includes('/_v6/'))continue;
+      urls.add(url.href);
     }catch{}
   }
   return [...urls];
