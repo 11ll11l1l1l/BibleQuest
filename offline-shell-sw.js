@@ -1,5 +1,5 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
-const CACHE_NAME=`${CACHE_PREFIX}v5`;
+const CACHE_NAME=`${CACHE_PREFIX}v6`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
@@ -75,6 +75,7 @@ async function manifestGraphUrls(seedUrls){
     for(const value of Array.isArray(record.css)?record.css:[])addPath(value);
     for(const value of Array.isArray(record.assets)?record.assets:[])addPath(value);
     for(const imported of Array.isArray(record.imports)?record.imports:[])enqueueKey(imported);
+    for(const imported of Array.isArray(record.dynamicImports)?record.dynamicImports:[])enqueueKey(imported);
   }
   return [...urls];
 }
