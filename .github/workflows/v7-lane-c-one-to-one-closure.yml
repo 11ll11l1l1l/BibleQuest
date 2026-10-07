@@ -81,6 +81,7 @@ jobs:
             tests/v7/discipleship-share-revocation.test.mjs \
             tests/v7/lesson-runner-response-page.test.mjs \
             tests/v7/lesson-runner-responses.test.mjs \
+            tests/v7/one-to-one-congregation-resume.test.mjs \
             tests/v7/one-to-one-mentee-handoff-contract.test.mjs \
             tests/v7/one-to-one-stale-tenant-hardening.test.mjs
 
