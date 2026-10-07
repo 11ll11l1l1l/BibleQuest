@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_lane_a_release_content_batch_11_backfill",
+  "generatedDate": "2026-10-07",
+  "status": "ready_for_automated_policy_review",
+  "sourceKind": "first_party_original",
+  "contentFiles": [
+    "content/v7/devotionals/biblequest-original-emotions-11-backfill.json"
+  ],
+  "counts": {
+    "devotionals": 6,
+    "historicalGapBackfilled": 6,
+    "requiredTranslationsPerDevotional": 3,
+    "reviewedTranslations": 18,
+    "verifiedRights": 6,
+    "pendingPublicationReview": 6
+  },
+  "requiredLocales": [
+    "en",
+    "tl",
+    "ceb",
+    "ilo"
+  ],
+  "bibleVersion": "BSB",
+  "scriptureCitationMode": "reference_only_no_verse_text",
+  "qaDimensions": [
+    "semanticFidelity",
+    "theologicalDrift",
+    "scriptureDrift",
+    "omissionsAdditions",
+    "grammarNaturalness",
+    "staleRevision"
+  ],
+  "qaPolicy": {
+    "allDimensionsMustPass": true,
+    "translationMustMatchSourceRevision": true,
+    "humanReviewRequired": false
+  },
+  "sourceWork": {
+    "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+    "title": "BibleQuest V7 Original Emotion Obedience Backfill",
+    "author": "BibleQuest V7 Content Factory",
+    "rightsMode": "first_party_original"
+  },
+  "backfill": {
+    "reason": "Historical batch 05 contains 24 items; aggregate batches 01-10 total 294.",
+    "targetCorpusCount": 300,
+    "emotions": [
+      "guilt",
+      "shame",
+      "spiritual_dryness_distance",
+      "temptation",
+      "excitement",
+      "love_connection"
+    ],
+    "qualityNote": "Six emotion-specific exercises; no shared generic body template."
+  },
+  "releaseBoundary": {
+    "laneAContentCompleteForBatch": true,
+    "laneBAutomatedApprovalRequired": true,
+    "publicationStateBeforeLaneB": "pending_review",
+    "noHumanReviewRequiredForLaneA": true
+  },
+  "items": [
+    {
+      "contentId": "devotional.biblequest.guilt.11",
+      "entryId": "devotional.biblequest.guilt.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:8b24fbd9fc30662dbe3b22f734da457d307b796059a8e1ec312e7a8ccb557faa",
+      "bsbReferences": [
+        "Psalm 32:5"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.shame.11",
+      "entryId": "devotional.biblequest.shame.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:36db3b9a6b63fc5e0c72a3110bfb93be39932605cd3134aeecf221a3ceefe733",
+      "bsbReferences": [
+        "Isaiah 54:4"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.spiritual_dryness_distance.11",
+      "entryId": "devotional.biblequest.spiritual_dryness_distance.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:927a5c00f27f5b03d64513b0418b61bd24c8e7a991cc35732c0848845c653a63",
+      "bsbReferences": [
+        "John 15:4"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.temptation.11",
+      "entryId": "devotional.biblequest.temptation.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:2517ccb977983b82b6bdad598e24c1d3b3283340a581a1fbf25f0b0107c23d4d",
+      "bsbReferences": [
+        "Matthew 26:41"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.excitement.11",
+      "entryId": "devotional.biblequest.excitement.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3b3cbc6aedd0c5b2565ecaa260dee1179cb07a0bc321f286c9694d04b4e04b0f",
+      "bsbReferences": [
+        "Luke 10:20"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.love_connection.11",
+      "entryId": "devotional.biblequest.love_connection.11",
+      "workId": "work.biblequest.v7.original-emotion-obedience-backfill",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:474803fa39a832f58c3491f19e4c68ddf79829ca1792d719e3dd6d36e372011c",
+      "bsbReferences": [
+        "1 Corinthians 13:4-5"
+      ],
+      "translationRevisions": {
+        "tl": "r1",
+        "ceb": "r1",
+        "ilo": "r1"
+      },
+      "qaPass": {
+        "tl": true,
+        "ceb": true,
+        "ilo": true
+      }
+    }
+  ]
+}
