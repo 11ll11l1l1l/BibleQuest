@@ -98,7 +98,9 @@ jobs:
           mkdir -p artifacts/v7
           node scripts/v7-content-release-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/content-report.json
           node scripts/v7-release-content-factory-evidence.mjs > artifacts/v7/release-content-factory.json
-          node scripts/v7-release-automated-approval-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/lane-b-automated-approval.json
+          node scripts/v7-release-automated-approval-decisions.mjs "${BQ_EXACT_SHA}" > artifacts/v7/release-automated-approval-decisions.json
+          BQ_V7_APPROVAL_LEDGER=artifacts/v7/release-automated-approval-decisions.json \
+            node scripts/v7-release-automated-approval-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/lane-b-automated-approval.json
           node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises';
           const [report, factory, approval] = await Promise.all([
@@ -259,6 +261,7 @@ jobs:
               laneAAndBRepresentative: 'artifacts/v7/content-report.json',
               laneAReleaseFactory: 'artifacts/v7/release-content-factory.json',
               laneBAutomatedApproval: 'artifacts/v7/lane-b-automated-approval.json',
+              laneBAutomatedApprovalLedger: 'artifacts/v7/release-automated-approval-decisions.json',
               laneCBackend: 'artifacts/v7/authenticated-api-journey.json',
               laneCAndDPopulatedBrowser: 'artifacts/v7/authenticated-built-browser-journey.json',
               laneDResponsiveAccessibility: 'artifacts/v7/release-responsive-accessibility.json',
@@ -270,7 +273,7 @@ jobs:
           await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
           console.log(JSON.stringify(report, null, 2));
           NODE
-          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
 
       - name: Verify production deployed identity and full artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -355,6 +358,7 @@ jobs:
             artifacts/v7/build-report.json
             artifacts/v7/content-report.json
             artifacts/v7/release-content-factory.json
+            artifacts/v7/release-automated-approval-decisions.json
             artifacts/v7/lane-b-automated-approval.json
             artifacts/v7/release-responsive-accessibility.json
             artifacts/v7/authenticated-api-journey.json
