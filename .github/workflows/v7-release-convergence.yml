@@ -19,6 +19,7 @@ on:
       - 'scripts/v6-live-smoke.mjs'
       - 'scripts/v7-content-release-evidence.mjs'
       - 'scripts/v7-release-content-factory-evidence.mjs'
+      - 'scripts/v7-release-automated-approval-evidence.mjs'
       - '.github/workflows/v7-*.yml'
       - 'package.json'
       - 'package-lock.json'
@@ -97,21 +98,24 @@ jobs:
           mkdir -p artifacts/v7
           node scripts/v7-content-release-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/content-report.json
           node scripts/v7-release-content-factory-evidence.mjs > artifacts/v7/release-content-factory.json
+          node scripts/v7-release-automated-approval-evidence.mjs "${BQ_EXACT_SHA}" > artifacts/v7/lane-b-automated-approval.json
           node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises';
-          const [report, factory] = await Promise.all([
+          const [report, factory, approval] = await Promise.all([
             readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
           ]);
           const candidateSha = process.env.BQ_EXACT_SHA;
           const strict = process.env.BQ_STRICT_RELEASE === 'true';
           if (report.candidateSha !== candidateSha) throw new Error('V7 content evidence candidate mismatch.');
           if (factory.candidateSha && factory.candidateSha !== candidateSha) throw new Error('Lane A factory evidence candidate mismatch.');
+          if (approval.candidateSha !== candidateSha) throw new Error('Lane B automated-approval evidence candidate mismatch.');
           if (!report.localization?.ready) throw new Error('V7 localization inventory is incomplete.');
-          if (strict && (!report.ready || !factory.readyForAutomatedPolicyReview)) {
-            throw new Error('Strict V7 release convergence requires Lane A/B representative content and the >=150 Lane A factory handoff to be ready.');
+          if (strict && (!report.ready || !factory.readyForAutomatedPolicyReview || !approval.readyForRelease)) {
+            throw new Error('Strict V7 release convergence requires representative content, >=150 factory items, and exact-revision Lane B automated approvals.');
           }
-          console.log(`V7 representative content: ${report.ready ? 'PASS' : 'OPEN'}; Lane A factory: ${factory.status}`);
+          console.log(`V7 representative content: ${report.ready ? 'PASS' : 'OPEN'}; Lane A factory: ${factory.status}; Lane B approvals: ${approval.status}`);
           NODE
 
       - name: Build exact candidate
@@ -156,6 +160,7 @@ jobs:
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/built-artifact-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/one-to-one-built-artifact-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/library-built-artifact-browser.mjs
+          BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/content-review-library-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/pwa-built-artifact-browser.mjs
           BQ_BASE_URL=http://127.0.0.1:4173/ node tests/v3-accessibility-smoke.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/release-responsive-accessibility-browser.mjs
@@ -196,16 +201,17 @@ jobs:
 
           const candidateSha = process.env.BQ_EXACT_SHA;
           const strict = process.env.BQ_STRICT_RELEASE === 'true';
-          const [integrity, content, factory, responsive, apiJourney, browserJourney] = await Promise.all([
+          const [integrity, content, factory, approval, responsive, apiJourney, browserJourney] = await Promise.all([
             readFile('dist-v6/bq-artifact-integrity.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-responsive-accessibility.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/authenticated-api-journey.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/authenticated-built-browser-journey.json', 'utf8').then(JSON.parse),
           ]);
 
-          for (const [name, evidence] of Object.entries({ content, factory, responsive, apiJourney, browserJourney })) {
+          for (const [name, evidence] of Object.entries({ content, factory, approval, responsive, apiJourney, browserJourney })) {
             if (String(evidence.candidateSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
               throw new Error(`${name} evidence candidate SHA mismatch.`);
             }
@@ -219,6 +225,7 @@ jobs:
 
           const releaseReady = Boolean(content.ready)
             && factory.readyForAutomatedPolicyReview === true
+            && approval.readyForRelease === true
             && responsive.result === 'PASS'
             && apiJourney.result === 'PASS'
             && browserJourney.result === 'PASS';
@@ -237,6 +244,10 @@ jobs:
             artifactFileCount: integrity.fileCount,
             contentReady: Boolean(content.ready),
             laneAFactoryReady: factory.readyForAutomatedPolicyReview === true,
+            laneBAutomatedApprovalReady: approval.readyForRelease === true,
+            laneBAutoApprovedItems: approval.counts?.autoApproved || 0,
+            laneBMissingApprovalDecisions: approval.counts?.missingDecisions || 0,
+            laneBDevotionalDeficit: approval.counts?.devotionalDeficit || 0,
             laneADevotionals: factory.counts?.devotionals || 0,
             laneAExpansionGoal: factory.target?.expansionGoal || 300,
             localizationReady: Boolean(content.localization?.ready),
@@ -246,6 +257,7 @@ jobs:
             inputs: {
               laneAAndBRepresentative: 'artifacts/v7/content-report.json',
               laneAReleaseFactory: 'artifacts/v7/release-content-factory.json',
+              laneBAutomatedApproval: 'artifacts/v7/lane-b-automated-approval.json',
               laneCBackend: 'artifacts/v7/authenticated-api-journey.json',
               laneCAndDPopulatedBrowser: 'artifacts/v7/authenticated-built-browser-journey.json',
               laneDResponsiveAccessibility: 'artifacts/v7/release-responsive-accessibility.json',
@@ -257,7 +269,7 @@ jobs:
           await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
           console.log(JSON.stringify(report, null, 2));
           NODE
-          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
 
       - name: Verify production deployed identity and full artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -342,6 +354,7 @@ jobs:
             artifacts/v7/build-report.json
             artifacts/v7/content-report.json
             artifacts/v7/release-content-factory.json
+            artifacts/v7/lane-b-automated-approval.json
             artifacts/v7/release-responsive-accessibility.json
             artifacts/v7/authenticated-api-journey.json
             artifacts/v7/authenticated-built-browser-journey.json

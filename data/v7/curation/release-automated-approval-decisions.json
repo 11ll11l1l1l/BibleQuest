@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "scope": "v7_library_release_automated_approval_decisions",
+  "policyId": "biblequest.v7.library-release",
+  "policyVersion": "1.0.0",
+  "status": "open",
+  "decisions": []
+}
