@@ -1,0 +1,1208 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.anxiety_worry",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anxiety / worry"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.trust",
+      "kind": "topic",
+      "labels": {
+        "en": "Trust"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.fear",
+      "kind": "emotion",
+      "labels": {
+        "en": "Fear"
+      }
+    },
+    {
+      "id": "need.courage",
+      "kind": "need",
+      "labels": {
+        "en": "Courage"
+      }
+    },
+    {
+      "id": "emotion.sadness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Sadness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.grief_loss",
+      "kind": "emotion",
+      "labels": {
+        "en": "Grief / loss"
+      }
+    },
+    {
+      "id": "need.comfort",
+      "kind": "need",
+      "labels": {
+        "en": "Comfort"
+      }
+    },
+    {
+      "id": "life_situation.loss",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Loss"
+      }
+    },
+    {
+      "id": "emotion.loneliness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Loneliness"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "life_situation.isolation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Isolation"
+      }
+    },
+    {
+      "id": "emotion.anger",
+      "kind": "emotion",
+      "labels": {
+        "en": "Anger"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.relationships",
+      "kind": "topic",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "life_situation.conflict",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Conflict"
+      }
+    },
+    {
+      "id": "emotion.hurt_betrayal",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hurt / betrayal"
+      }
+    },
+    {
+      "id": "need.healing",
+      "kind": "need",
+      "labels": {
+        "en": "Healing"
+      }
+    },
+    {
+      "id": "emotion.rejection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Rejection"
+      }
+    },
+    {
+      "id": "need.belonging",
+      "kind": "need",
+      "labels": {
+        "en": "Belonging"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    },
+    {
+      "id": "emotion.guilt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Guilt"
+      }
+    },
+    {
+      "id": "need.forgiveness",
+      "kind": "need",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "topic.repentance",
+      "kind": "topic",
+      "labels": {
+        "en": "Repentance"
+      }
+    },
+    {
+      "id": "life_situation.failure",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Failure"
+      }
+    },
+    {
+      "id": "emotion.shame",
+      "kind": "emotion",
+      "labels": {
+        "en": "Shame"
+      }
+    },
+    {
+      "id": "need.grace",
+      "kind": "need",
+      "labels": {
+        "en": "Grace"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.anxiety_worry.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.anxiety_worry.08",
+        "revision": "r1",
+        "checksum": "sha256:aceb5bbaa6825b86784419dd806c7f458ef81d7a8928e5eb281e6defc7e66292",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Ask what faithfulness looks like now",
+        "body": "Read Psalm 94:19 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anxiety_worry",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang Psalm 94:19 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang Psalm 94:19 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti Psalm 94:19 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.fear.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.fear.08",
+        "revision": "r1",
+        "checksum": "sha256:408c3572f8fe21d6a61d902773ac11715fff750a81d003ed8c16e2138ca6d958",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Take the next step without carrying tomorrow",
+        "body": "Read Joshua 1:9 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.fear",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.courage",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Joshua 1:9 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Joshua 1:9 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Joshua 1:9 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.sadness.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.sadness.08",
+        "revision": "r1",
+        "checksum": "sha256:f3a0d4d0d981297fda3360a88debb37c726dd76a3a1e6c5da016d740abba1357",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Turn attention toward what God has given",
+        "body": "Read Psalm 42:5 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.sadness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang Psalm 42:5 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang Psalm 42:5 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti Psalm 42:5 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.grief_loss.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.grief_loss.08",
+        "revision": "r1",
+        "checksum": "sha256:6bdbf89ce28df972edcccb624ec36e3aaaf716da4180dc0802fd5161aa4b9603",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Let prayer interrupt the spiral",
+        "body": "Read Psalm 23:4 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.grief_loss",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.comfort",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.loss",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Psalm 23:4 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Psalm 23:4 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Psalm 23:4 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.loneliness.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.loneliness.08",
+        "revision": "r1",
+        "checksum": "sha256:65e1fe5319ebb926b1808471b01dd7a435fc8b68c7cccfb6485afc6678856a69",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Make one choice that agrees with hope",
+        "body": "Read Psalm 25:16 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.loneliness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.isolation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Psalm 25:16 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Psalm 25:16 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Psalm 25:16 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.anger.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.anger.08",
+        "revision": "r1",
+        "checksum": "sha256:3bd37906fa0435d3b20fedea061f865de22fd48f0d3ebcf9affd0a5bef7692e0",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Ask what faithfulness looks like now",
+        "body": "Read Ephesians 4:26-27 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.anger",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang Ephesians 4:26-27 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang Ephesians 4:26-27 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti Ephesians 4:26-27 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hurt_betrayal.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.hurt_betrayal.08",
+        "revision": "r1",
+        "checksum": "sha256:8f3993eac4d580fce3ddb7b8e01d0d80cd8f0abdb2bdbd99e076def65718359a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Take the next step without carrying tomorrow",
+        "body": "Read Psalm 55:12-14 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hurt_betrayal",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.healing",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.relationships",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Psalm 55:12-14 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Psalm 55:12-14 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Psalm 55:12-14 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.rejection.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.rejection.08",
+        "revision": "r1",
+        "checksum": "sha256:8a2b005ef797cc1c7d853b79ab3f17e515c7b52c9cda1a9f135bbb4b9dabc63d",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Turn attention toward what God has given",
+        "body": "Read Psalm 27:10 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.rejection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.belonging",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang Psalm 27:10 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang Psalm 27:10 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti Psalm 27:10 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.guilt.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.guilt.08",
+        "revision": "r1",
+        "checksum": "sha256:880ba81562f9c2d8696b9f79eae2176468fb78c2d440e79cc7f1f148770bc47c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Let prayer interrupt the spiral",
+        "body": "Read Psalm 32:5 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.guilt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.forgiveness",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.repentance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Psalm 32:5 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Psalm 32:5 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Psalm 32:5 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.shame.08",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Prayer - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.shame.08",
+        "revision": "r1",
+        "checksum": "sha256:449448c1852a37f4a5fb4ee6a0f25738eb92493ef7e868e56d8110b41359896a",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Prayer: Make one choice that agrees with hope",
+        "body": "Read Isaiah 54:4 once, then again more slowly. Turn the passage into a three-part prayer: thank God for one truth you see, ask for help with one response the passage calls for, and surrender one outcome you cannot control. End by naming one person or situation you will carry before God today."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prayer exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.shame",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.grace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.failure",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Panalangin: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Isaiah 54:4 nang isang beses, pagkatapos ay muli nang mas mabagal. Gawing tatlong bahaging panalangin ang talata: magpasalamat sa Diyos para sa isang katotohanang nakikita mo, humingi ng tulong para sa isang tugong hinihingi ng talata, at ipagkatiwala ang isang kinalabasang hindi mo makokontrol. Tapusin sa pagbanggit ng isang tao o sitwasyong dadalhin mo sa Diyos ngayong araw."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Pag-ampo: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Isaiah 54:4 kausa, dayon usba paghinay. Himoa ang teksto nga tulo ka bahin nga pag-ampo: pasalamati ang Dios sa usa ka kamatuoran nga imong nakita, pangayo og tabang alang sa usa ka tubag nga gitawag sa teksto, ug itugyan ang usa ka resulta nga dili nimo makontrol. Tapusa pinaagi sa paghingalan sa usa ka tawo o kahimtang nga imong dad-on sa Dios karong adlawa."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:40:00Z",
+          "content": {
+            "title": "Kararag: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Isaiah 54:4 iti maminsan, sa subliem a naannad. Aramidem ti teksto a tallo a paset ti kararag: agyaman ka iti Dios gapu iti maysa a kinapudno a makitam, agkiddaw iti tulong para iti maysa a sungbat a iyawis ti teksto, ken italkam ti maysa a pagbanagan a saanmo a makontrol. Leppasem babaen ti pananginagan iti maysa a tao wenno kasasaad a iyegmo iti Dios ita nga aldaw."
+          }
+        }
+      ]
+    }
+  ]
+}
