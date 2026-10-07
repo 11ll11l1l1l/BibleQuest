@@ -14,7 +14,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
   let userId='u1';
   const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})};
   const memberships=()=>[{congregationId:'c1',userId,role:'leader',roleKnown:true,roleLabel:'Leader',congregation:{id:'c1',name:'Church One'}}];
-  const congregation={load:async()=>memberships(),assert:()=>{},can:()=>true};
+  const congregation={load:async()=>memberships(),getActive:()=>({congregationId:'c1'}),assert:()=>{},can:()=>true};
   const api={
     load:async()=>({assignments:[assignment],progress:[]}),start:async()=>({}),complete:async()=>({}),subscribe:async()=>()=>{},
     targets:async()=>({members:[{id:`target-${userId}`,label:`Member for ${userId}`,role:'member'}],teams:[],groups:[]}),
@@ -38,7 +38,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
 {
   let userId='u1';
   const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})};
-  const congregation={load:async()=>[{congregationId:'c1',role:'leader',roleLabel:'Leader',congregation:{id:'c1',name:'Church One'}}],can:()=>true,assert:()=>{}};
+  const congregation={load:async()=>[{congregationId:'c1',role:'leader',roleLabel:'Leader',congregation:{id:'c1',name:'Church One'}}],getActive:()=>({congregationId:'c1'}),can:()=>true,assert:()=>{}};
   const api={
     list:async id=>id==='u1'?{groups:[{id:'g1',owner_id:'u1',congregation_id:'c1',name:'U1 Group',description:'',schedule_text:'',max_members:6,active:true}],members:[{group_id:'g1',user_id:'u1',role:'leader',joined_at:now}]}:{groups:[{id:'g2',owner_id:'u9',congregation_id:'c1',name:'Foreign',description:'',schedule_text:'',max_members:6,active:true}],members:[{group_id:'g2',user_id:'u9',role:'leader',joined_at:now}]},
     create:async()=>({}),join:async()=>({}),rotateCode:async()=>({}),leave:async()=>({})
@@ -55,7 +55,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
 {
   let userId='u1';
   const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})};
-  const congregation={load:async()=>[{congregationId:userId==='u1'?'c1':'c2',role:'leader',roleLabel:'Leader',congregation:{id:userId==='u1'?'c1':'c2',name:'Church'}}],can:()=>true,assert:()=>{}};
+  const congregation={load:async()=>[{congregationId:userId==='u1'?'c1':'c2',role:'leader',roleLabel:'Leader',congregation:{id:userId==='u1'?'c1':'c2',name:'Church'}}],getActive:()=>({congregationId:userId==='u1'?'c1':'c2'}),can:()=>true,assert:()=>{}};
   const api={
     list:async ids=>ids[0]==='c1'?{teams:[{id:'t1',congregation_id:'c1',created_by:'u1',team_type:'game_team',name:'U1 Team',active:true,created_at:now}],members:[{team_id:'t1',user_id:'u1',joined_at:now}],directory:[{congregation_id:'c1',user_id:'u1',display_name:'U1',role:'leader',active:true,joined_at:now}]}:{teams:[{id:'bad',congregation_id:'c9',created_by:'u9',team_type:'game_team',name:'Foreign',active:true,created_at:now}],members:[],directory:[]},
     create:async()=>({}),add:async()=>({}),remove:async()=>({}),rename:async()=>({}),archive:async()=>({})
@@ -93,7 +93,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
 {
   let userId='u1',memberships=[{congregationId:'c1',congregation:{name:'Church One'},role:'leader'}],joinCalls=0;
   const session={getState:()=>({authenticated:true,remoteAvailable:true,user:{id:userId}})};
-  const congregation={async load(){return memberships},get(id){return memberships.find(row=>row.congregationId===id)||null},can:()=>true,assert:()=>{}};
+  const congregation={async load(){return memberships},getActive(){return memberships[0]?{congregationId:memberships[0].congregationId}:null},get(id){return memberships.find(row=>row.congregationId===id)||null},can:()=>true,assert:()=>{}};
   const room={id:'r1',congregation_id:'c1',created_by:'u1',session_type:'live-room',title:'Private room',room_code:'ABC234',status:'lobby',state:{},updated_at:now};
   const api={create:async()=>room,findByCode:async()=>room,loadRoom:async()=>room,joinParticipant:async()=>{joinCalls++;return{}},participants:async()=>({participants:[{session_id:'r1',user_id:'u1',created_at:now}],directory:[{user_id:'u1',display_name:'U1'}]}),subscribe:async()=>()=>{},endRoom:async()=>room};
   const service=createLiveRoomsService({api,session,congregation,codeFactory:()=> 'ABC234'});
