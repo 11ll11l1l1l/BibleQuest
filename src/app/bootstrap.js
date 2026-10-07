@@ -5,7 +5,7 @@ import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
 import { createMyJourneyService } from './my-journey.js';
 import { installV5LunaRegressionGuards } from './v5-luna-regression-guards.js';
-import { createRouter } from './router.js';
+import { createRouter, readNavigationHash, readNavigationParams } from './router.js';
 import { createSessionService } from './session.js';
 import { assertPasswordNotCompromised } from '../security/password-breach.js';
 import { createAccountService } from './account.js';
@@ -259,7 +259,7 @@ function start(){
 function boot(root){
   // Capture ONE 2 ONE deep-link identity before router/session resume callbacks can
   // normalize the current route during a full reload (for example a locale switch).
-  const initialDiscipleshipTarget=discipleshipHydrationTarget(location.hash);
+  const initialDiscipleshipTarget=discipleshipHydrationTarget(readNavigationHash());
   const store=createStore({route:'home',bootedAt:Date.now(),session:Object.freeze({status:'booting',authenticated:false,remoteAvailable:true,user:null,expiresAt:null,error:''})});
   const featureCompatibility=createFeatureCompatibilitySeam({[ACCESSIBILITY_PREFERENCES_FEATURE]:true});
   const api=createApi();
@@ -361,7 +361,7 @@ function boot(root){
   const reloadAfterLocalDataChange=()=>location.reload();
   const navigateGeneral=route=>{if(route==='reader'){bibleQuest.deactivate();router.navigate('reader');return}router.navigate(route)};
   const openFreeReader=()=>navigateGeneral('reader');
-  const libraryParams=()=>new URLSearchParams(location.hash.split('?').slice(1).join('?'));
+  const libraryParams=()=>readNavigationParams();
   const libraryDiscoveryQuery=()=>parseLibraryDiscoveryQuery(libraryParams());
   const v7ContextReady=()=>{const auth=session.getState(),active=congregation.getActive();return Boolean(auth?.authenticated&&auth.user?.id&&active?.congregationId&&(!active.userId||active.userId===auth.user.id));};
   const libraryContextReady=()=>session.getState()?.authenticated===true?v7ContextReady():true;
@@ -538,8 +538,8 @@ function boot(root){
     }
     // Authentication must hydrate the requested route independently of cloud progress.
     // Prefer the pre-router snapshot because account-resume callbacks can normalize
-    // location.hash before async session hydration resolves on a full page reload.
-    const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(location.hash);
+    // the browser route before async session hydration resolves on a full page reload.
+    const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(readNavigationHash());
     if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
     else if(session.isAuthenticated())router.navigate(router.current());
     presence.start().catch(error=>console.warn('Presence unavailable',error));
