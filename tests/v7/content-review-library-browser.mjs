@@ -169,7 +169,16 @@ async function mountedLibraryReview() {
     window.__libraryReviewCleanup = definition.mount(root);
   }, contentReviewModuleUrl);
 
-  await page.locator('[data-library-review-item="revision-book"]').waitFor();
+  try {
+    await page.locator('[data-library-review-item="revision-book"]').waitFor({ timeout: 10000 });
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => ({
+      html: document.body.innerHTML.slice(0, 12000),
+      text: document.body.innerText.slice(0, 6000),
+      reviewCalls: window.__libraryReviewCalls || null,
+    }));
+    throw new Error(`Library Content Review did not render the first audit card: ${error?.message || error}\n${JSON.stringify(diagnostic, null, 2)}`);
+  }
   return page;
 }
 
