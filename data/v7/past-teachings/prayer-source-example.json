@@ -29,7 +29,7 @@
       "type": "past_teaching",
       "revision": "prayer-abiding-r2",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "first_party",
         "title": "Prayer shaped by abiding in Christ",
@@ -56,7 +56,9 @@
         ]
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.representative-policy-v1",
+        "decidedAt": "2026-10-07T15:50:00Z"
       },
       "revisionHistory": [
         "prayer-abiding-r1"
