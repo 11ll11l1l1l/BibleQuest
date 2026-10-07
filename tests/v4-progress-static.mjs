@@ -56,6 +56,8 @@ for(const hook of[
   'data-open-personality-profile',
   'data-open-psychometrics',
   'data-open-avatar-vault',
+  'data-open-my-journey',
+  'data-open-one-to-one',
   'data-progress-badge'
 ]) assert.ok(feature.includes(hook),`Progress/Grow feature must preserve ${hook}.`);
 assert.ok(feature.includes("const PROGRESS_ART='assets/progress-feature-icons.svg';"),'Progress/Grow must retain its committed same-origin semantic artwork sprite.');
