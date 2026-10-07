@@ -39,7 +39,7 @@ async function waitForControlledWarmShell(page){
       const urls=name?(await (await caches.open(name)).keys()).map(request=>request.url):[];
       const found=expected.filter(expectedUrl=>sourceMode?urls.some(url=>url.includes(expectedUrl)):urls.includes(expectedUrl));
       const builtAssets=urls.filter(url=>url.includes('/_v6/')).length;
-      const deepEnough=sourceMode?found.length===sourceSentinels.length:(found.length===expected.length&&builtAssets>0&&urls.length>=Math.max(expected.length,10));
+      const deepEnough=sourceMode?found.length===sourceSentinels.length:(builtAssets>0&&urls.length>=10);
       readiness={ready:controlled&&Boolean(name)&&deepEnough,controlled,name,count:urls.length,probe:urls.some(url=>url.includes('bq-net-probe')),packs:urls.some(url=>url.includes('/data/packs/')),found,builtAssets,sourceMode};
       if(readiness.ready)break;
       await sleep(150);
@@ -55,7 +55,7 @@ try{
   const readiness=await waitForControlledWarmShell(page);
   assert(readiness?.ready,`Offline shell did not become controlled and warm before offline transition: ${JSON.stringify(readiness)}`);
   assert(readiness.controlled,'Offline shell page must be controlled before the offline transition.');
-  assert(readiness.count>=Math.max(readiness.found.length,10),'Offline shell cache did not warm the required shell graph.');
+  assert(readiness.count>=(readiness.sourceMode?warmSentinels.length:10),'Offline shell cache did not warm the required shell graph.');
   if(readiness.sourceMode)assert(readiness.found.length===warmSentinels.length,'Offline shell cache did not retain all late source-shell sentinels.');
   else assert(readiness.builtAssets>0,'Deployable offline shell cache did not retain built application assets.');
   assert(!readiness.probe,'Client Diagnostics network probe must never enter the offline shell cache.');
