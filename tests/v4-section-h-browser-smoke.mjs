@@ -118,13 +118,33 @@ async function verifyPwaOfflineReconnect(){
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();
   await page.goto(`${BASE}#/more`,{waitUntil:'networkidle'});await waitForApp(page);
   const pwa=await page.evaluate(async()=>{
+    const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
     const manifest=await (await fetch('manifest.webmanifest')).json();
     const registration=await Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('service worker ready timeout')),12000))]);
-    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller)};
+    const requiredShellUrls=()=>{
+      const urls=new Set();
+      try{const current=new URL(location.href);current.hash='';urls.add(current.href)}catch{}
+      for(const entry of performance.getEntriesByType('resource')){
+        if(!['script','link','css','img'].includes(String(entry.initiatorType||'')))continue;
+        try{const url=new URL(entry.name,location.href);if(url.origin===location.origin)urls.add(url.href)}catch{}
+      }
+      return [...urls];
+    };
+    const required=requiredShellUrls();
+    let cacheReady=false,cachedCount=0;
+    for(let attempt=1;attempt<=80;attempt++){
+      const name=(await caches.keys()).find(value=>value.startsWith('biblequest-v3-offline-shell-'));
+      const cached=name?(await (await caches.open(name)).keys()).map(request=>request.url):[];
+      cachedCount=cached.length;
+      cacheReady=Boolean(name)&&required.every(url=>cached.includes(url));
+      if(navigator.serviceWorker.controller&&cacheReady)break;
+      await sleep(150);
+    }
+    return{display:manifest.display,startUrl:manifest.start_url,scope:manifest.scope,worker:registration.active?.scriptURL||'',controlled:Boolean(navigator.serviceWorker.controller),cacheReady,cachedCount};
   });
   assert(pwa.display==='standalone'&&pwa.startUrl==='./'&&pwa.scope==='./',`PWA manifest browser contract failed: ${JSON.stringify(pwa)}`);
   assert(pwa.worker.endsWith('/offline-shell-sw.js'),`Unexpected active service worker: ${pwa.worker}`);
-  await page.waitForTimeout(400);
+  assert(pwa.controlled&&pwa.cacheReady,`PWA must be controlled with a warmed shell before forcing offline: ${JSON.stringify(pwa)}`);
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded',timeout:10000});await waitForApp(page);
   const offline=await layoutSnapshot(page);assert(!offline.startup&&!offline.recovery,'Cached PWA shell failed while offline.');
