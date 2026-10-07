@@ -58,6 +58,12 @@ const CONTENT_DECISION_FIELDS='congregation_id,content_key,content_type,origin,d
 const CONTENT_REVIEW_DECISION_FIELDS='congregation_id,content_key,content_type,origin,decision,content_ref,content_snapshot,rationale,reviewed_by,reviewed_at,updated_at';
 const CONTENT_REVIEW_REPORT_FIELDS='id,congregation_id,reporter_id,content_key,content_type,content_source,content_ref,content_text,content_payload,reason,note,status,reviewed_by,reviewed_at,created_at,updated_at';
 const CONTENT_REVIEW_MEMBER_FIELDS='user_id,display_name,role,avatar,active,joined_at';
+const V7_LIBRARY_REVIEW_ITEM_FIELDS='id,content_type,congregation_id,publication_state,current_revision_id,updated_at';
+const V7_LIBRARY_REVIEW_REVISION_FIELDS='id,item_id,revision_number,source_locale,title,summary,body,reading_minutes,source_kind,source_title,source_uri,source_catalog_id,source_revision,source_date,source_checksum,creator,originating_organization,rights_status,rights_holder,rights_basis,attribution,allowed_uses,publication_state,review_status,reviewer_type,reviewer_id,review_policy_id,review_policy_version,review_evidence,reviewed_at,created_at';
+const V7_LIBRARY_REVIEW_TRANSLATION_FIELDS='id,revision_id,locale,title,summary,body,translated_from_revision_id,translator,review_status,reviewer_id,reviewed_at,created_at';
+const V7_LIBRARY_REVIEW_TAXONOMY_LINK_FIELDS='revision_id,taxonomy_id,display_order';
+const V7_LIBRARY_REVIEW_TAXONOMY_FIELDS='id,kind,labels,congregation_id';
+const V7_LIBRARY_REVIEW_HISTORY_FIELDS='id,item_id,revision_id,content_type,reviewer_type,decision,policy_id,policy_version,reviewer_id,criteria,second_pass,evidence_refs,note,decided_at,created_at';
 const LIVE_ROOM_FIELDS='id,congregation_id,created_by,session_type,title,room_code,status,state,metadata,updated_at';
 const LIVE_ROOM_PARTICIPANT_FIELDS='session_id,user_id,participation_points,created_at';
 const LIVE_ROOM_DIRECTORY_FIELDS='user_id,display_name,avatar,active';
@@ -753,6 +759,56 @@ export function createApi() {
       const [decisions,reports,members]=await withTimeout(request,6000,'Content Review queue took too long to load.');
       for(const result of[decisions,reports,members])if(result.error)throw result.error;
       return {decisions:decisions.data||[],reports:reports.data||[],members:members.data||[]};
+    },
+    async loadLibraryQueue() {
+      const client=await getClient();
+      const itemsResult=await withTimeout(
+        client.from('v7_library_items').select(V7_LIBRARY_REVIEW_ITEM_FIELDS).order('updated_at',{ascending:false}).limit(2000),
+        6000,
+        'Library review queue took too long to load.'
+      );
+      if(itemsResult.error)throw itemsResult.error;
+      const items=itemsResult.data||[];
+      const revisionIds=[...new Set(items.map(row=>String(row.current_revision_id||'')).filter(Boolean))];
+      if(!revisionIds.length)return {items,revisions:[],translations:[],taxonomyLinks:[],taxonomy:[],decisions:[]};
+      const [revisionsResult,translationsResult,taxonomyLinksResult,decisionsResult]=await withTimeout(Promise.all([
+        client.from('v7_library_revisions').select(V7_LIBRARY_REVIEW_REVISION_FIELDS).in('id',revisionIds),
+        client.from('v7_library_translations').select(V7_LIBRARY_REVIEW_TRANSLATION_FIELDS).in('revision_id',revisionIds).order('locale',{ascending:true}),
+        client.from('v7_library_revision_taxonomy').select(V7_LIBRARY_REVIEW_TAXONOMY_LINK_FIELDS).in('revision_id',revisionIds).order('display_order',{ascending:true}),
+        client.from('v7_library_review_decisions').select(V7_LIBRARY_REVIEW_HISTORY_FIELDS).in('revision_id',revisionIds).order('decided_at',{ascending:false}).limit(10000)
+      ]),6000,'Library review evidence took too long to load.');
+      for(const result of[revisionsResult,translationsResult,taxonomyLinksResult,decisionsResult])if(result.error)throw result.error;
+      const taxonomyIds=[...new Set((taxonomyLinksResult.data||[]).map(row=>String(row.taxonomy_id||'')).filter(Boolean))];
+      let taxonomy=[];
+      if(taxonomyIds.length){
+        const taxonomyResult=await withTimeout(
+          client.from('v7_library_taxonomy').select(V7_LIBRARY_REVIEW_TAXONOMY_FIELDS).in('id',taxonomyIds),
+          4000,
+          'Library review taxonomy took too long to load.'
+        );
+        if(taxonomyResult.error)throw taxonomyResult.error;
+        taxonomy=taxonomyResult.data||[];
+      }
+      return {
+        items,
+        revisions:revisionsResult.data||[],
+        translations:translationsResult.data||[],
+        taxonomyLinks:taxonomyLinksResult.data||[],
+        taxonomy,
+        decisions:decisionsResult.data||[]
+      };
+    },
+    async saveLibraryHumanDecision(row) {
+      const client=await getClient();
+      const {data,error}=await client.rpc('bible_v7_apply_human_library_review',{
+        p_item_id:String(row?.item_id||''),
+        p_revision_id:String(row?.revision_id||''),
+        p_decision:String(row?.decision||''),
+        p_decided_at:row?.decided_at||null,
+        p_note:row?.note??null
+      }).single();
+      if(error)throw error;
+      return data;
     },
     async saveDecision(congregationId,row) {
       const tenantId=String(congregationId||'').trim();if(!tenantId)throw Error();

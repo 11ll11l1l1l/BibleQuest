@@ -186,8 +186,12 @@ export function validateRepresentativeReviewDecisionLedger(ledger, canonicalItem
     'doesNotChangeRights',
     'authorizedReviewerRequired'
   ], 'ledger.boundary');
-  for (const key of ['doesNotApproveByPresence', 'doesNotPublishContent', 'doesNotChangeRights', 'authorizedReviewerRequired']) {
+  for (const key of ['doesNotApproveByPresence', 'doesNotPublishContent', 'doesNotChangeRights']) {
     if (ledger.boundary[key] !== true) reject('boundary', `ledger.boundary.${key}`, 'must remain true');
+  }
+  if (ledger.boundary.authorizedReviewerRequired !== undefined
+      && typeof ledger.boundary.authorizedReviewerRequired !== 'boolean') {
+    reject('boundary', 'ledger.boundary.authorizedReviewerRequired', 'must be boolean when retained for legacy representative-review compatibility');
   }
   if (!Array.isArray(ledger.decisions)) reject('decisions', 'ledger.decisions', 'must be an array');
 

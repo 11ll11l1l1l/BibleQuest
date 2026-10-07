@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "topic.forgiveness",
+      "kind": "topic",
+      "labels": {
+        "en": "Forgiveness"
+      }
+    },
+    {
+      "id": "need.healing",
+      "kind": "need",
+      "labels": {
+        "en": "Healing"
+      }
+    },
+    {
+      "id": "life_situation.conflict",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Conflict"
+      }
+    },
+    {
+      "id": "topic.service",
+      "kind": "topic",
+      "labels": {
+        "en": "Service"
+      }
+    },
+    {
+      "id": "need.humility",
+      "kind": "need",
+      "labels": {
+        "en": "Humility"
+      }
+    },
+    {
+      "id": "life_situation.community",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Community"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "teaching.enduring-hardship",
+      "type": "past_teaching",
+      "revision": "enduring-hardship-r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "Enduring hardship without wasting it",
+        "catalogId": "biblequest.v7.past-teaching.enduring-hardship",
+        "revision": "r1",
+        "checksum": "sha256:978d041f31c218c94bba1df8b5ef7bc99adf9c53cdc696c2c998b35bc218d64e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Enduring hardship without wasting it",
+        "body": "## Pressure can form something\n\nRomans 5:3-5 describes a sequence from suffering to perseverance, character, and hope. The passage does not call suffering pleasant or good in itself. It shows that hardship need not be empty when it is met with faithful endurance.\n\n## Ask what can grow\n\nPain often narrows attention to escape. Relief matters, but growth can also happen while relief is delayed. Ask what patience, honesty, courage, or dependence this season is asking you to practice.\n\n## Practice today\n\nName one pressure you cannot remove immediately. Choose one faithful response you can repeat today without pretending the hardship is smaller than it is."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party teaching article created for BibleQuest V7. Scripture is cited by reference only; no third-party sermon prose is reproduced or adapted.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": []
+    },
+    {
+      "id": "teaching.forgiveness-reconciliation",
+      "type": "past_teaching",
+      "revision": "forgiveness-reconciliation-r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "Forgiveness without pretending nothing happened",
+        "catalogId": "biblequest.v7.past-teaching.forgiveness-reconciliation",
+        "revision": "r1",
+        "checksum": "sha256:9ed3ea9a7b6f9e4a7ca6afa03fc2c4fad0ff0836a81fcb89442dd36357691402",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Forgiveness without pretending nothing happened",
+        "body": "## Forgiveness is not denial\n\nEphesians 4:32 calls believers toward kindness, compassion, and forgiveness. That does not require calling wrong actions harmless or restoring trust without wisdom. Forgiveness can release revenge while still telling the truth about damage.\n\n## Separate forgiveness and trust\n\nForgiveness can be offered before trust is rebuilt. Trust normally requires evidence, time, and changed behavior. Healthy boundaries can protect the possibility of reconciliation rather than destroy it.\n\n## Practice today\n\nName the wrong clearly. Ask what resentment you need to release, what boundary is still necessary, and what evidence would be required before deeper trust could return."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party teaching article created for BibleQuest V7. Scripture is cited by reference only; no third-party sermon prose is reproduced or adapted.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.forgiveness",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "need.healing",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "life_situation.conflict",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": []
+    },
+    {
+      "id": "teaching.serving-humility",
+      "type": "past_teaching",
+      "revision": "serving-humility-r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "Serving without making yourself the center",
+        "catalogId": "biblequest.v7.past-teaching.serving-humility",
+        "revision": "r1",
+        "checksum": "sha256:a2b934c32fd3894986c37c2bcd236dd05e77a8951ab10774c857702f92185f0f",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Serving without making yourself the center",
+        "body": "## Attention can move outward\n\nPhilippians 2:3-4 challenges selfish ambition and asks believers to consider the interests of others. Humility is not self-hatred. It is freedom from needing every situation to confirm your importance.\n\n## Serve what is actually needed\n\nSometimes service fails because we offer what makes us feel useful rather than what another person needs. Ask, listen, and notice before acting. Quiet usefulness can be more loving than visible activity.\n\n## Practice today\n\nChoose one person or group. Ask what would genuinely help them, then do one useful thing without needing recognition for it."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party teaching article created for BibleQuest V7. Scripture is cited by reference only; no third-party sermon prose is reproduced or adapted.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.service",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "need.humility",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "life_situation.community",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": []
+    },
+    {
+      "id": "teaching.wisdom-decisions",
+      "type": "past_teaching",
+      "revision": "wisdom-decisions-r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "Seeking wisdom when the path is unclear",
+        "catalogId": "biblequest.v7.past-teaching.wisdom-decisions",
+        "revision": "r1",
+        "checksum": "sha256:6be9d56f6c44084e08f414811bb7c412771727e3a0c8de885f6e606def4a3579",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Seeking wisdom when the path is unclear",
+        "body": "## Wisdom can be requested\n\nJames 1:5 tells those who lack wisdom to ask God. The promise encourages dependence, but it does not remove the ordinary work of discernment. Prayer and careful thinking belong together.\n\n## Gather what faithfulness requires\n\nSeparate facts from assumptions. Seek counsel from people with relevant wisdom. Identify what Scripture clearly requires or forbids. Then compare the available choices by their likely fruit, responsibilities, and risks.\n\n## Practice today\n\nWrite the decision in one sentence. List the facts you know, the facts you still need, and the next honest step that would reduce uncertainty without forcing a premature answer."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party teaching article created for BibleQuest V7. Scripture is cited by reference only; no third-party sermon prose is reproduced or adapted.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": []
+    }
+  ]
+}
