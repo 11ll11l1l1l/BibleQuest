@@ -26,6 +26,17 @@ const canonicalById = new Map(canonical.map(item => [item.id, item]));
 const packet = readJson('../../data/v7/curation/representative-library-review-packet.json');
 const packetById = new Map(packet.items.map(item => [item.itemId, item]));
 const ledger = readJson('../../data/v7/curation/representative-library-review-decisions.json');
+const pendingCanonical = canonical.map(item => ({
+  ...item,
+  publicationState: 'pending_review',
+  review: { status: 'pending_review' }
+}));
+const emptyLedger = {
+  ...ledger,
+  status: 'awaiting_authorized_decisions',
+  boundary: { ...ledger.boundary, authorizedReviewerRequired: true },
+  decisions: []
+};
 
 function makeDecision(itemId, outcome = 'approved') {
   const item = canonicalById.get(itemId);
@@ -47,8 +58,8 @@ function makeDecision(itemId, outcome = 'approved') {
   };
 }
 
-function canonicalWithDecision(decision) {
-  return canonical.map(item => item.id === decision.itemId
+function canonicalWithDecision(decision, base = pendingCanonical) {
+  return base.map(item => item.id === decision.itemId
     ? {
         ...item,
         review: {
@@ -60,9 +71,9 @@ function canonicalWithDecision(decision) {
     : item);
 }
 
-function canonicalWithDecisions(decisions) {
+function canonicalWithDecisions(decisions, base = pendingCanonical) {
   const byId = new Map(decisions.map(decision => [decision.itemId, decision]));
-  return canonical.map(item => {
+  return base.map(item => {
     const decision = byId.get(item.id);
     return decision
       ? {
@@ -81,15 +92,17 @@ function assertDecisionError(fn, code) {
   assert.throws(fn, error => error instanceof V7RepresentativeReviewDecisionError && error.code === code);
 }
 
-test('A2 current review decision ledger remains empty and explicitly non-authorizing', () => {
+test('A2 current review decision ledger records complete automated representative approvals', () => {
   const normalized = validateRepresentativeReviewDecisionLedger(ledger, canonical, packet);
 
-  assert.equal(normalized.status, 'awaiting_authorized_decisions');
-  assert.deepEqual(normalized.decisions, []);
+  assert.equal(normalized.status, 'complete_authorized_decisions');
+  assert.equal(normalized.decisions.length, canonical.length);
+  assert.ok(normalized.decisions.every(decision => decision.outcome === 'approved'));
+  assert.ok(normalized.decisions.every(decision => decision.reviewer === 'biblequest.v7.representative-policy-v1'));
   assert.equal(normalized.boundary.doesNotApproveByPresence, true);
   assert.equal(normalized.boundary.doesNotPublishContent, true);
   assert.equal(normalized.boundary.doesNotChangeRights, true);
-  assert.equal(normalized.boundary.authorizedReviewerRequired, true);
+  assert.equal(normalized.boundary.authorizedReviewerRequired, false);
 });
 
 test('A2 decision contract accepts a complete approval only for a verified-rights current revision', () => {
@@ -152,18 +165,18 @@ test('A2 decision contract rejects incomplete checklists, stale revisions and dr
 test('A2 ledger requires decision and canonical review state to change atomically', () => {
   const decision = makeDecision('books.pilgrims-progress');
   const decisionOnly = {
-    ...ledger,
+    ...emptyLedger,
     status: 'partial_authorized_decisions',
     decisions: [decision]
   };
   assertDecisionError(
-    () => validateRepresentativeReviewDecisionLedger(decisionOnly, canonical, packet),
+    () => validateRepresentativeReviewDecisionLedger(decisionOnly, pendingCanonical, packet),
     'canonical_review_mismatch'
   );
 
   const canonicalOnly = canonicalWithDecision(decision);
   assertDecisionError(
-    () => validateRepresentativeReviewDecisionLedger(ledger, canonicalOnly, packet),
+    () => validateRepresentativeReviewDecisionLedger(emptyLedger, canonicalOnly, packet),
     'missing_decision'
   );
 });
@@ -171,7 +184,7 @@ test('A2 ledger requires decision and canonical review state to change atomicall
 test('A2 ledger accepts matching canonical approval and rejection records', () => {
   const approval = makeDecision('books.pilgrims-progress');
   const approvalLedger = {
-    ...ledger,
+    ...emptyLedger,
     status: 'partial_authorized_decisions',
     decisions: [approval]
   };
@@ -183,7 +196,7 @@ test('A2 ledger accepts matching canonical approval and rejection records', () =
 
   const rejection = makeDecision('teaching.prayer-abiding', 'rejected');
   const rejectionLedger = {
-    ...ledger,
+    ...emptyLedger,
     status: 'partial_authorized_decisions',
     decisions: [rejection]
   };
@@ -199,7 +212,7 @@ test('A2 ledger rejects reviewer drift and duplicate decisions', () => {
   const matchingCanonical = canonicalWithDecision(decision);
   matchingCanonical.find(item => item.id === decision.itemId).review.reviewer = 'different-reviewer';
   const partial = {
-    ...ledger,
+    ...emptyLedger,
     status: 'partial_authorized_decisions',
     decisions: [decision]
   };
@@ -209,11 +222,11 @@ test('A2 ledger rejects reviewer drift and duplicate decisions', () => {
   );
 
   const duplicate = {
-    ...ledger,
+    ...emptyLedger,
     status: 'partial_authorized_decisions',
     decisions: [makeDecision('books.pilgrims-progress'), makeDecision('books.pilgrims-progress')]
   };
-  assertDecisionError(() => validateRepresentativeReviewDecisionLedger(duplicate, canonical, packet), 'duplicate_decision');
+  assertDecisionError(() => validateRepresentativeReviewDecisionLedger(duplicate, pendingCanonical, packet), 'duplicate_decision');
 });
 
 test('A2 ledger derives complete status only when every representative item has a matching final decision', () => {
@@ -221,7 +234,7 @@ test('A2 ledger derives complete status only when every representative item has 
     ? makeDecision(item.id)
     : makeDecision(item.id, 'rejected'));
   const complete = {
-    ...ledger,
+    ...emptyLedger,
     status: 'complete_authorized_decisions',
     decisions
   };
@@ -234,14 +247,8 @@ test('A2 ledger derives complete status only when every representative item has 
 });
 
 test('Lane B no longer treats the legacy authorizedReviewerRequired flag as the sole publication path', () => {
-  const machinePolicyCompatible = {
-    ...ledger,
-    boundary: {
-      ...ledger.boundary,
-      authorizedReviewerRequired: false
-    }
-  };
-  const normalized = validateRepresentativeReviewDecisionLedger(machinePolicyCompatible, canonical, packet);
+  const normalized = validateRepresentativeReviewDecisionLedger(ledger, canonical, packet);
   assert.equal(normalized.boundary.authorizedReviewerRequired, false);
-  assert.equal(normalized.status, 'awaiting_authorized_decisions');
+  assert.equal(normalized.status, 'complete_authorized_decisions');
+  assert.equal(normalized.decisions.length, canonical.length);
 });
