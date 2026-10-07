@@ -107,16 +107,16 @@ test('A2 decision contract accepts a complete approval only for a verified-right
   assert.ok(normalized.checks.every(check => check.result === 'pass'));
 });
 
-test('A2 decision contract rejects approval while Past Teaching rights remain unknown', () => {
+test('rights-clear Past Teaching accepts a complete approval for the current revision', () => {
   const itemId = 'teaching.prayer-abiding';
-  assertDecisionError(
-    () => validateRepresentativeReviewDecision(
-      makeDecision(itemId),
-      canonicalById.get(itemId),
-      packetById.get(itemId)
-    ),
-    'rights_not_verified'
+  const normalized = validateRepresentativeReviewDecision(
+    makeDecision(itemId),
+    canonicalById.get(itemId),
+    packetById.get(itemId)
   );
+  assert.equal(normalized.outcome, 'approved');
+  assert.equal(normalized.revision, 'prayer-abiding-r2');
+  assert.equal(normalized.rightsStatusSnapshot, 'verified');
 });
 
 test('A2 decision contract permits an evidence-backed rejection when a required check fails', () => {
@@ -232,7 +232,6 @@ test('A2 ledger derives complete status only when every representative item has 
     'complete_authorized_decisions'
   );
 });
-
 
 test('Lane B no longer treats the legacy authorizedReviewerRequired flag as the sole publication path', () => {
   const machinePolicyCompatible = {

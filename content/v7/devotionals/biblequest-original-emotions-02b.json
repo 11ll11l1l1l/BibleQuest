@@ -1,0 +1,1215 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.insecurity_unworthiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Insecurity / unworthiness"
+      }
+    },
+    {
+      "id": "need.identity",
+      "kind": "need",
+      "labels": {
+        "en": "Secure identity"
+      }
+    },
+    {
+      "id": "topic.identity_in_christ",
+      "kind": "topic",
+      "labels": {
+        "en": "Identity in Christ"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.doubt",
+      "kind": "emotion",
+      "labels": {
+        "en": "Doubt"
+      }
+    },
+    {
+      "id": "need.clarity",
+      "kind": "need",
+      "labels": {
+        "en": "Clarity"
+      }
+    },
+    {
+      "id": "topic.faith",
+      "kind": "topic",
+      "labels": {
+        "en": "Faith"
+      }
+    },
+    {
+      "id": "life_situation.uncertainty",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Uncertainty"
+      }
+    },
+    {
+      "id": "emotion.confusion_uncertainty",
+      "kind": "emotion",
+      "labels": {
+        "en": "Confusion / uncertainty"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.decision_making",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Decision making"
+      }
+    },
+    {
+      "id": "emotion.discouragement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Discouragement"
+      }
+    },
+    {
+      "id": "need.endurance",
+      "kind": "need",
+      "labels": {
+        "en": "Endurance"
+      }
+    },
+    {
+      "id": "topic.perseverance",
+      "kind": "topic",
+      "labels": {
+        "en": "Perseverance"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.hopelessness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hopelessness"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "emotion.overwhelm",
+      "kind": "emotion",
+      "labels": {
+        "en": "Overwhelm"
+      }
+    },
+    {
+      "id": "need.rest",
+      "kind": "need",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "topic.trust",
+      "kind": "topic",
+      "labels": {
+        "en": "Trust"
+      }
+    },
+    {
+      "id": "life_situation.burnout",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Burnout"
+      }
+    },
+    {
+      "id": "emotion.stress",
+      "kind": "emotion",
+      "labels": {
+        "en": "Stress"
+      }
+    },
+    {
+      "id": "need.peace",
+      "kind": "need",
+      "labels": {
+        "en": "Peace"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "emotion.tiredness_weariness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Tiredness / weariness"
+      }
+    },
+    {
+      "id": "topic.rest",
+      "kind": "topic",
+      "labels": {
+        "en": "Rest"
+      }
+    },
+    {
+      "id": "emotion.spiritual_dryness_distance",
+      "kind": "emotion",
+      "labels": {
+        "en": "Spiritual dryness / distance"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.temptation",
+      "kind": "emotion",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "need.self_control",
+      "kind": "need",
+      "labels": {
+        "en": "Self-control"
+      }
+    },
+    {
+      "id": "topic.temptation",
+      "kind": "topic",
+      "labels": {
+        "en": "Temptation"
+      }
+    },
+    {
+      "id": "life_situation.temptation",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Temptation"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.insecurity_unworthiness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - You are not an audition",
+        "catalogId": "biblequest.v7.original.insecurity_unworthiness.02",
+        "revision": "r1",
+        "checksum": "sha256:be16d4ad339aca1d1a6b5c288c78b1802aff4be87a4cec24eb6b731b96900c77",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "You are not an audition",
+        "body": "Insecurity turns ordinary life into a constant audition for approval. Psalm 139:14 points to a worth received before performance. Learn, grow, and accept correction, but stop treating every room as a verdict on your value. You can contribute without proving that you deserve to exist there."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.insecurity_unworthiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.identity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.identity_in_christ",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hindi audition ang buhay mo",
+            "body": "Ginagawang tuloy-tuloy na audition ng kawalan ng katiyakan ang karaniwang buhay para sa pagsang-ayon ng iba. Itinuturo ng Awit 139:14 ang halagang natatanggap bago pa ang pagganap. Matuto, lumago, at tumanggap ng pagwawasto, ngunit huwag gawing hatol sa halaga mo ang bawat silid. Maaari kang mag-ambag nang hindi pinatutunayang karapat-dapat kang naroon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Dili audition ang imong kinabuhi",
+            "body": "Ang kawalay kasigurohan naghimo sa ordinaryong kinabuhi nga pirming audition alang sa pag-uyon sa uban. Ang Salmo 139:14 nagtudlo sa bili nga nadawat una pa sa performance. Pagkat-on, pagtubo, ug dawata ang pagtul-id, apan ayaw himoa ang matag lugar nga hukom sa imong bili. Makatampo ka nga dili magpamatuod nga takos ka nga anaa didto."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Saan nga audition ti biagmo",
+            "body": "Ti kinaawan ti panagtalek iti bagi pagbalinenna ti ordinaryo a biag a kanayon a pannakapadas para iti pananganamong dagiti sabali. Ti Salmo 139:14 iturongnatayo iti pateg a naawat sakbay ti performance. Agadal, agtubo, ken awatem ti pannakakorehir, ngem saanmo a pagbalinen ti tunggal lugar a ukom iti pategmo. Mabalin kang makatulong a saan nga paneknekan a maikarika nga adda sadiay."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.doubt.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Keep the question in the room",
+        "catalogId": "biblequest.v7.original.doubt.02",
+        "revision": "r1",
+        "checksum": "sha256:c889de3c0ff1acab908fba6268d6868f1b24a3a2f5e2fd2ebdc4a974ccbb4081",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Keep the question in the room",
+        "body": "Doubt becomes dangerous when it has to stay hidden. John 20:27 shows Jesus meeting Thomas in the middle of his questions. Bring the question into prayer, Scripture, and trusted conversation. Faith is not strengthened by pretending certainty; it grows as truth is examined without abandoning Christ."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.doubt",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.faith",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.uncertainty",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Huwag itago ang tanong",
+            "body": "Nagiging mapanganib ang pag-aalinlangan kapag kailangan itong manatiling lihim. Ipinapakita ng Juan 20:27 si Jesus na sinasalubong si Tomas sa gitna ng kaniyang mga tanong. Dalhin ang tanong sa panalangin, Kasulatan, at mapagkakatiwalaang usapan. Hindi lumalakas ang pananampalataya sa pagpapanggap na tiyak ang lahat; lumalago ito habang sinusuri ang katotohanan nang hindi iniiwan si Cristo."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ayaw tagoa ang pangutana",
+            "body": "Mahimong peligroso ang pagduhaduha kon kinahanglan kining tagoan. Gipakita sa Juan 20:27 si Jesus nga misugat kang Tomas taliwala sa iyang mga pangutana. Dad-a ang pangutana sa pag-ampo, Kasulatan, ug kasaligan nga panag-istorya. Dili molig-on ang pagtuo pinaagi sa pagpakaaron-ingnon nga sigurado ang tanan; motubo kini samtang susihon ang kamatuoran nga dili biyaan si Cristo."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Saanmo nga ilemmeng ti saludsod",
+            "body": "Agbalin a napeggad ti panagduadua no masapul nga ilemmeng. Ti Juan 20:27 ipakitana ni Jesus a sumabat ken Tomas iti tengnga dagiti saludsodna. Iyegmo ti saludsod iti kararag, Surat, ken mapagtalkan a panagsaritaan. Saan a bumileg ti pammati babaen iti panagpamarang a sigurado amin; dumakkel dayta bayat ti panangsukimat iti kinapudno a saan nga ibati ni Cristo."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.confusion_uncertainty.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Do the clear next thing",
+        "catalogId": "biblequest.v7.original.confusion_uncertainty.02",
+        "revision": "r1",
+        "checksum": "sha256:8f0dff509f6177ec29d7075b79e0d78c8cd95c4c98dc3065a4a00fa66ea94696",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Do the clear next thing",
+        "body": "Confusion makes every option feel equally uncertain. Proverbs 3:5-6 calls for trust while acknowledging God in the path. Start with what is already clear: obey what Scripture plainly teaches, gather missing facts, and take the next honest step. More direction often becomes visible after movement begins."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.confusion_uncertainty",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.clarity",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.decision_making",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Gawin ang malinaw na susunod na hakbang",
+            "body": "Ginagawang magkakaparehong malabo ng pagkalito ang lahat ng pagpipilian. Tinatawag ng Kawikaan 3:5-6 ang pagtitiwala habang kinikilala ang Diyos sa daan. Magsimula sa malinaw na: sundin ang malinaw na itinuturo ng Kasulatan, tipunin ang kulang na impormasyon, at gawin ang susunod na tapat na hakbang. Madalas lumilinaw ang direksyon pagkatapos magsimulang kumilos."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Buhata ang klarong sunod nga lakang",
+            "body": "Ang kalibog makapahimo nga parehas kaayo ka walay kasigurohan ang tanang kapilian. Ang Proverbio 3:5-6 nagtawag sa pagsalig samtang giila ang Dios sa dalan. Sugdi sa klaro na: tumanon ang klarong gitudlo sa Kasulatan, tiguma ang kulang nga impormasyon, ug buhata ang sunod nga matinud-anong lakang. Kasagaran mas makita ang direksyon human magsugod ang lihok."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Aramidem ti nalawag a sumaruno nga addang",
+            "body": "Ti pannakariribuk pagbalinenna a kasla agpada a saan a sigurado ti amin a pagpili. Ti Proverbio 3:5-6 ayabannatayo iti panagtalek bayat ti panangbigbig iti Dios iti dalan. Mangrugika iti nalawag: tungpalem ti nalawag nga isuro ti Surat, urnongem ti kulang a datos, ken aramidem ti sumaruno a napudno nga addang. Masansan a makita ti ad-adda a direksyon kalpasan a mangrugi ti panagtignay."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.discouragement.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Keep sowing before you see fruit",
+        "catalogId": "biblequest.v7.original.discouragement.02",
+        "revision": "r1",
+        "checksum": "sha256:9afffffa9d5051701cc83a004064bf3d78a552ad359b393b4caeeb19a57556ef",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Keep sowing before you see fruit",
+        "body": "Discouragement asks why you should keep working when nothing seems to change. Psalm 126:5-6 connects tears, sowing, and future harvest. Keep doing the faithful work that still belongs to you. Not every seed shows immediate evidence of growth, and unseen progress is still progress."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.discouragement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.endurance",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.perseverance",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Magpatuloy sa paghahasik bago makita ang bunga",
+            "body": "Itinatanong ng panghihina ng loob kung bakit ka magpapatuloy kapag tila walang nagbabago. Inuugnay ng Awit 126:5-6 ang luha, paghahasik, at darating na ani. Ipagpatuloy ang tapat na gawaing iyo pa ring gawin. Hindi lahat ng binhi ay agad nagpapakita ng paglago, at pag-unlad pa rin ang hindi nakikitang pag-usad."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Padayon sa pagpugas bisan wala pa makita ang bunga",
+            "body": "Ang pagkaluya mangutana nganong magpadayon ka kon murag walay mausab. Gidugtong sa Salmo 126:5-6 ang mga luha, pagpugas, ug umaabot nga ani. Padayon sa matinud-anong buluhaton nga imo gihapon. Dili tanang binhi dayon magpakita ug pagtubo, ug progreso gihapon ang wala pa makita nga pag-uswag."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agtultuloy a mangimula sakbay a makita ti bunga",
+            "body": "Ti pannakaupay saludsodenna no apay nga agtultuloyka no kasla awan ti agbaliw. Ti Salmo 126:5-6 pagkaykaysaenna ti lulua, panagmula, ken masakbayan nga apit. Itultuloymo ti napudno a trabaho a sikam pay laeng ti mangaramid. Saan nga amin a bukel ket dagus a mangipakita iti panagtubo, ken panagdur-as latta ti saan pay a makita."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hopelessness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Call to mind what remains true",
+        "catalogId": "biblequest.v7.original.hopelessness.02",
+        "revision": "r1",
+        "checksum": "sha256:58054a17cce227cc9b5812b09cf80cd31587fe26dd6d3bcbac56a76d9aacde7b",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Call to mind what remains true",
+        "body": "Hopelessness edits the story until only the worst evidence remains. Lamentations 3:21-23 deliberately calls God's steadfast love and mercy back to mind in the middle of suffering. Name what is still true today, especially truths your pain is tempted to erase. Hope can begin with remembering."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hopelessness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Alalahanin ang nananatiling totoo",
+            "body": "Binabago ng kawalan ng pag-asa ang kuwento hanggang ang pinakamasamang ebidensya na lamang ang natitira. Sadyang ibinabalik ng Panaghoy 3:21-23 sa isip ang matatag na pag-ibig at awa ng Diyos sa gitna ng paghihirap. Pangalanan ang nananatiling totoo ngayon, lalo na ang mga katotohanang gustong burahin ng sakit. Maaaring magsimula ang pag-asa sa pag-alala."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hinumdomi ang nagpabiling tinuod",
+            "body": "Ang kawalay paglaom nag-usab sa istorya hangtod ang pinakadaot nga ebidensya na lang ang mabilin. Tinuyo sa Panaghoy 3:21-23 nga ibalik sa hunahuna ang makanunayong gugma ug kalooy sa Dios taliwala sa pag-antos. Isulti ang nagpabiling tinuod karon, ilabi na ang kamatuoran nga gustong papason sa kasakit. Ang paglaom mahimong magsugod sa paghinumdom."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Laglagipem ti agtalinaed a pudno",
+            "body": "Ti kinaawan ti namnama baliwanna ti pakasaritaan agingga a ti kadadaksan laeng a pammaneknek ti mabati. Ti Un-unnoy 3:21-23 inggagaraanna a lagipen ti natibker nga ayat ken asi ti Dios iti tengnga ti panagsagaba. Naganam ti agtalinaed a pudno ita, nangnangruna dagiti kinapudno a kayat ti sakit a pukawen. Mabalin a mangrugi ti namnama iti panaglagip."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.overwhelm.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Carry today's load",
+        "catalogId": "biblequest.v7.original.overwhelm.02",
+        "revision": "r1",
+        "checksum": "sha256:8843d83bb35065ebd6f4c60ec52f4936aef022745017996dbecdd9a631383c0c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Carry today's load",
+        "body": "Overwhelm borrows weight from tomorrow and adds it to today. Matthew 6:34 refuses that double load. Write down what truly belongs to today, schedule what can wait, and release what is outside your control. A smaller faithful load is not avoidance; it is wise stewardship."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.overwhelm",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.rest",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.trust",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pasanin ang para sa araw na ito",
+            "body": "Humihiram ang pagka-overwhelm ng bigat mula sa bukas at idinadagdag ito sa ngayon. Tinatanggihan ng Mateo 6:34 ang dobleng pasanin na iyon. Isulat ang talagang para sa araw na ito, itakda sa ibang oras ang maaaring maghintay, at bitawan ang hindi mo kontrolado. Ang mas maliit na tapat na pasanin ay hindi pag-iwas; ito ay matalinong pangangasiwa."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pas-ana ang lulan sa karong adlawa",
+            "body": "Ang sobra nga kabug-at sa hunahuna manghulam ug gibug-aton gikan sa ugma ug idugang kini sa karon. Gisalikway sa Mateo 6:34 kanang doble nga lulan. Isulat ang tinuod nga para karong adlawa, iskedyul ang makahulat, ug buhii ang wala sa imong kontrol. Ang mas gamay nga matinud-anong lulan dili paglikay; maalamon kini nga pagdumala."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Awitem ti para ita nga aldaw",
+            "body": "Ti pannakapuno unay ti isip mangala iti dagsen ti inton bigat ken inayon dayta iti ita. Saan nga awaten ti Mateo 6:34 dayta a doble a dagsen. Isuratmo ti pudno a masapul ita nga aldaw, ituding ti makauray, ken ibbatmo ti saanmo a matengngel. Ti basbassit a napudno nga awit ket saan a panagliklik; nasirib a panangimanehar dayta."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.stress.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Release borrowed pressure",
+        "catalogId": "biblequest.v7.original.stress.02",
+        "revision": "r1",
+        "checksum": "sha256:0a73847af42e855d7144e0125d33d1dd78b88f41e59eeebcea848bd69426c36e",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Release borrowed pressure",
+        "body": "Stress often includes pressure you were never asked to carry: imagined expectations, future conversations, and outcomes you cannot control. First Peter 5:7 directs anxiety toward God because He cares. Name the pressure, ask whether it is truly yours, and release what belongs outside your responsibility."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.stress",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.peace",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Bitawan ang hiniram na presyon",
+            "body": "Madalas kasama sa stress ang presyong hindi naman ipinapasan sa iyo: mga inaakalang inaasahan, mga usapang hindi pa nangyayari, at mga resultang hindi mo kontrolado. Itinuturo ng 1 Pedro 5:7 na ilagak sa Diyos ang pagkabalisa dahil nagmamalasakit Siya. Pangalanan ang presyon, itanong kung talagang iyo ito, at bitawan ang wala sa iyong pananagutan."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Buhii ang presyur nga dili imo",
+            "body": "Kasagaran apil sa stress ang presyur nga wala gyud gipapas-an kanimo: gituohang mga gilauman, umaabot nga mga panag-istorya, ug resulta nga dili nimo kontrolado. Gidirekta sa 1 Pedro 5:7 ang kabalaka ngadto sa Dios tungod kay nag-atiman Siya. Isulti ang presyur, pangutan-a kon tinuod ba kini nga imo, ug buhii ang wala sa imong responsibilidad."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ibbatmo ti presion a saanmo",
+            "body": "Masansan a karaman ti stress ti presion a saan a naited kenka: dagiti pagarup a namnama, masakbayan a panagsaritaan, ken resulta a saanmo a matengngel. Ti 1 Pedro 5:7 iturongna ti pakaseknan iti Dios ta maseknan Isuna. Naganam ti presion, saludsodem no pudno a sikam ti mangawit, ken ibbatmo ti saan a sakup ti pagrebbengam."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.tiredness_weariness.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Limits are not laziness",
+        "catalogId": "biblequest.v7.original.tiredness_weariness.02",
+        "revision": "r1",
+        "checksum": "sha256:5cc0df14a0e36181f170914584f1a7404056b61c0870cc5543e47e6653f5973c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Limits are not laziness",
+        "body": "Weariness can make rest feel irresponsible. Psalm 127:2 challenges anxious striving and recognizes sleep as a gift. Respect the limits built into your body. Finish what truly must be done, then stop. Rest is not the opposite of faithfulness when it prepares you to return with strength."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.tiredness_weariness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.rest",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.rest",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.burnout",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Hindi katamaran ang pagkakaroon ng hangganan",
+            "body": "Maaaring ipadama ng pagkapagod na iresponsable ang pahinga. Hinahamon ng Awit 127:2 ang balisang pagpupunyagi at kinikilalang kaloob ang pagtulog. Igalang ang hangganang likas sa katawan mo. Tapusin ang talagang kailangang gawin, saka huminto. Hindi kabaligtaran ng katapatan ang pahinga kapag inihahanda ka nitong bumalik nang may lakas."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Dili katapulan ang pagbaton ug limitasyon",
+            "body": "Ang kakapoy makapabati nga walay responsibilidad ang pagpahulay. Gihagit sa Salmo 127:2 ang kabalaka nga pagpaningkamot ug giila ang tulog isip gasa. Tahura ang mga limitasyon sa imong lawas. Humanon ang tinuod nga kinahanglan, dayon hunong. Dili kaatbang sa pagkamatinud-anon ang pahulay kon giandam ka niini sa pagbalik nga adunay kusog."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Saan a kinatamad ti beddeng",
+            "body": "Ti pannakabannog mabalinna a pagriknaen a kasla awan pagrebbengan ti panaginana. Ti Salmo 127:2 karitenna ti nadanagan a panagregget ken bigbigenna ti turog a kas sagut. Raemem dagiti beddeng a naited iti bagim. Leppasem ti pudno a masapul, kalpasanna agsardengka. Saan a kabaliktadan ti kinamatalek ti panaginana no isaganana kenka a sumubli a napigsa."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.spiritual_dryness_distance.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Pray the small prayer",
+        "catalogId": "biblequest.v7.original.spiritual_dryness_distance.02",
+        "revision": "r1",
+        "checksum": "sha256:2a5b01355e804dd8283ff1863d69c8244737629bfa5d286e033fd1caeaa481b1",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Pray the small prayer",
+        "body": "When spiritual desire feels weak, large goals can make distance feel worse. Psalm 63:1 begins with simple thirst for God. Pray one honest sentence. Read a few verses slowly. Stay present for a few quiet minutes. Small sincere attention can keep the relationship open while desire is being renewed."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.spiritual_dryness_distance",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Ipanalangin ang maliit na panalangin",
+            "body": "Kapag mahina ang espirituwal na pagnanais, maaaring palalain ng malalaking layunin ang pakiramdam ng layo. Nagsisimula ang Awit 63:1 sa simpleng pagkauhaw sa Diyos. Manalangin ng isang tapat na pangungusap. Basahin nang dahan-dahan ang ilang talata. Manatiling tahimik nang ilang minuto. Ang maliit ngunit tapat na pansin ay makapagpapanatiling bukas sa ugnayan habang muling binubuhay ang pagnanais."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pag-ampo sa gamay nga pag-ampo",
+            "body": "Kon huyang ang espirituwal nga tinguha, ang dagkong tumong makapadugang sa pagbati sa kalayo. Nagsugod ang Salmo 63:1 sa yano nga kauhaw sa Dios. Pag-ampo ug usa ka matinud-anong tudling. Basaha hinay ang pipila ka bersikulo. Pabilin sa kahilom sulod sa pipila ka minuto. Ang gamay apan tinuod nga pagtagad makapabiling bukas sa relasyon samtang ginabag-o ang tinguha."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Agkararag iti bassit a kararag",
+            "body": "No nakapuy ti naespirituan a tarigagay, dagiti dadakkel a panggep mabalinda a padakkelen ti rikna ti pannakaadayo. Ti Salmo 63:1 mangrugi iti simple a mawaw iti Dios. Agkararagka iti maysa a napudno a sasao. Basaem a naannad ti sumagmamano a bersikulo. Agtalinaedka a naulimek iti sumagmamano a minuto. Ti bassit ngem napudno a panangipateg mabalinna a pagtalinaeden a nakalukat ti relasyon bayat ti pannakapabaro ti tarigagay."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.temptation.02",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original - Leave before you negotiate",
+        "catalogId": "biblequest.v7.original.temptation.02",
+        "revision": "r1",
+        "checksum": "sha256:9b8b5485793f9db3f4ef9bc881eaf612b7f3e7660b2d6209e1b7a696cd038d8c",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Leave before you negotiate",
+        "body": "Temptation becomes harder to resist after you begin negotiating with it. Second Timothy 2:22 uses the language of fleeing harmful desires and pursuing what is good. Move early: leave the place, close the screen, change the route, or call someone before desire becomes a plan."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.temptation",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.self_control",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.temptation",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.temptation",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Umalis bago ka makipagtawaran",
+            "body": "Mas nagiging mahirap labanan ang tukso kapag nagsimula ka nang makipagtawaran dito. Gumagamit ang 2 Timoteo 2:22 ng wika ng pagtakas sa mapanirang pagnanasa at paghahangad sa mabuti. Kumilos nang maaga: umalis sa lugar, isara ang screen, baguhin ang daan, o tawagan ang isang tao bago maging plano ang pagnanasa."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Biya sa dili pa ka makigsabot",
+            "body": "Mas lisod supakon ang tentasyon human ka magsugod ug pakigsabot niini. Ang 2 Timoteo 2:22 naggamit sa pulong sa pagpalayo gikan sa makadaot nga tinguha ug paggukod sa maayo. Lihok sayo: biya sa lugar, sirad-i ang screen, usba ang agianan, o tawag ug usa ka tawo sa dili pa mahimong plano ang tinguha."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T00:00:00Z",
+          "content": {
+            "title": "Pumanaw sakbay a makitungtong",
+            "body": "Agbalin a narigrigat a salungasingen ti sulisog kalpasan a mangrugika a makitungtong iti dayta. Ti 2 Timoteo 2:22 aramatenna ti sasao ti panagliklik kadagiti makadangran a tarigagay ken panangsurot iti naimbag. Agtignayka a nasapa: pumanaw iti lugar, iserram ti screen, baliwam ti dalan, wenno awagam ti maysa a tao sakbay a ti tarigagay ket agbalin a plano."
+          }
+        }
+      ]
+    }
+  ]
+}
