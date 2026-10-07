@@ -31,7 +31,27 @@ async function waitForControlledWarmShell(page){
     };
     const initial=shellResources();
     const sourceMode=initial.some(url=>url.includes('/src/app/bootstrap.js'));
-    const expected=sourceMode?sourceSentinels:initial;
+    const manifestExpected=[];
+    if(!sourceMode){
+      try{
+        const response=await fetch(new URL('vite-manifest.json',location.href),{cache:'reload'});
+        if(response.ok){
+          const manifest=await response.json();
+          const add=value=>{
+            if(!value)return;
+            try{
+              const url=new URL(value,location.href);
+              if(url.origin===location.origin&&/\\.(?:[cm]?js|css)$/i.test(url.pathname))manifestExpected.push(url.href);
+            }catch{}
+          };
+          for(const record of Object.values(manifest||{})){
+            add(record?.file);
+            for(const value of Array.isArray(record?.css)?record.css:[])add(value);
+          }
+        }
+      }catch{}
+    }
+    const expected=sourceMode?sourceSentinels:[...new Set([...initial,...manifestExpected])];
     let readiness={ready:false,controlled:false,name:'',count:0,probe:false,packs:false,found:[],builtAssets:0,sourceMode};
     for(let attempt=1;attempt<=80;attempt++){
       const controlled=Boolean(navigator.serviceWorker.controller);
