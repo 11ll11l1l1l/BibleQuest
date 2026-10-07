@@ -1,0 +1,1215 @@
+{
+  "schemaVersion": 1,
+  "taxonomy": [
+    {
+      "id": "emotion.impatience_waiting",
+      "kind": "emotion",
+      "labels": {
+        "en": "Impatience / waiting"
+      }
+    },
+    {
+      "id": "need.patience",
+      "kind": "need",
+      "labels": {
+        "en": "Patience"
+      }
+    },
+    {
+      "id": "topic.waiting",
+      "kind": "topic",
+      "labels": {
+        "en": "Waiting"
+      }
+    },
+    {
+      "id": "life_situation.waiting",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Waiting"
+      }
+    },
+    {
+      "id": "emotion.jealousy_envy",
+      "kind": "emotion",
+      "labels": {
+        "en": "Jealousy / envy"
+      }
+    },
+    {
+      "id": "need.contentment",
+      "kind": "need",
+      "labels": {
+        "en": "Contentment"
+      }
+    },
+    {
+      "id": "topic.contentment",
+      "kind": "topic",
+      "labels": {
+        "en": "Contentment"
+      }
+    },
+    {
+      "id": "life_situation.comparison",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Comparison"
+      }
+    },
+    {
+      "id": "emotion.frustration",
+      "kind": "emotion",
+      "labels": {
+        "en": "Frustration"
+      }
+    },
+    {
+      "id": "topic.wisdom",
+      "kind": "topic",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "life_situation.disappointment",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Disappointment"
+      }
+    },
+    {
+      "id": "emotion.numbness_emptiness",
+      "kind": "emotion",
+      "labels": {
+        "en": "Numbness / emptiness"
+      }
+    },
+    {
+      "id": "need.renewal",
+      "kind": "need",
+      "labels": {
+        "en": "Renewal"
+      }
+    },
+    {
+      "id": "topic.prayer",
+      "kind": "topic",
+      "labels": {
+        "en": "Prayer"
+      }
+    },
+    {
+      "id": "life_situation.spiritual_dryness",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Spiritual dryness"
+      }
+    },
+    {
+      "id": "emotion.joy",
+      "kind": "emotion",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "need.strength",
+      "kind": "need",
+      "labels": {
+        "en": "Strength"
+      }
+    },
+    {
+      "id": "topic.joy",
+      "kind": "topic",
+      "labels": {
+        "en": "Joy"
+      }
+    },
+    {
+      "id": "life_situation.celebration",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Celebration"
+      }
+    },
+    {
+      "id": "emotion.gratitude",
+      "kind": "emotion",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "need.gratitude",
+      "kind": "need",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "topic.gratitude",
+      "kind": "topic",
+      "labels": {
+        "en": "Gratitude"
+      }
+    },
+    {
+      "id": "life_situation.daily_life",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Daily life"
+      }
+    },
+    {
+      "id": "emotion.peace_contentment",
+      "kind": "emotion",
+      "labels": {
+        "en": "Peace / contentment"
+      }
+    },
+    {
+      "id": "emotion.hope",
+      "kind": "emotion",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "need.hope",
+      "kind": "need",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "topic.hope",
+      "kind": "topic",
+      "labels": {
+        "en": "Hope"
+      }
+    },
+    {
+      "id": "life_situation.hard_season",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Hard season"
+      }
+    },
+    {
+      "id": "emotion.excitement",
+      "kind": "emotion",
+      "labels": {
+        "en": "Excitement"
+      }
+    },
+    {
+      "id": "need.wisdom",
+      "kind": "need",
+      "labels": {
+        "en": "Wisdom"
+      }
+    },
+    {
+      "id": "emotion.love_connection",
+      "kind": "emotion",
+      "labels": {
+        "en": "Love / connection"
+      }
+    },
+    {
+      "id": "need.connection",
+      "kind": "need",
+      "labels": {
+        "en": "Connection"
+      }
+    },
+    {
+      "id": "topic.love",
+      "kind": "topic",
+      "labels": {
+        "en": "Love"
+      }
+    },
+    {
+      "id": "life_situation.relationships",
+      "kind": "life_situation",
+      "labels": {
+        "en": "Relationships"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "devotional.biblequest.impatience_waiting.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.impatience_waiting.09",
+        "revision": "r1",
+        "checksum": "sha256:7129ef9de3f46276440391870b35446baa0409b3ec5778c3bee4aa0ec84957d9",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Ask what faithfulness looks like now",
+        "body": "Read James 5:7-8 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.impatience_waiting",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.patience",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.waiting",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.waiting",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang James 5:7-8 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang James 5:7-8 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti James 5:7-8 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.jealousy_envy.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.jealousy_envy.09",
+        "revision": "r1",
+        "checksum": "sha256:5afa0d2f8fcc270fc87bae0dae5b495a9eaa95c51650f55c1d509b25711b2c19",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Take the next step without carrying tomorrow",
+        "body": "Read Proverbs 14:30 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.jealousy_envy",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.contentment",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.contentment",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.comparison",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Proverbs 14:30 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Proverbs 14:30 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Proverbs 14:30 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.frustration.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.frustration.09",
+        "revision": "r1",
+        "checksum": "sha256:8a5c8d4fc6cc3515e93d569f8a4f116b17c05ead2d8fa2f9ec4a829f3159a246",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Turn attention toward what God has given",
+        "body": "Read Ecclesiastes 7:8-9 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.frustration",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.patience",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.wisdom",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.disappointment",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang Ecclesiastes 7:8-9 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang Ecclesiastes 7:8-9 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti Ecclesiastes 7:8-9 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.numbness_emptiness.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.numbness_emptiness.09",
+        "revision": "r1",
+        "checksum": "sha256:4348db7c6180a64e8b768473358767b890b9b35bc3f475465e1cf384b28d5924",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Let prayer interrupt the spiral",
+        "body": "Read Psalm 51:10 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.numbness_emptiness",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.renewal",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.prayer",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.spiritual_dryness",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Psalm 51:10 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Psalm 51:10 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Psalm 51:10 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.joy.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.joy.09",
+        "revision": "r1",
+        "checksum": "sha256:dd4d528e5756104067ec91904d901fe0bc1cf459148e05b5905878b1ed5164d2",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Make one choice that agrees with hope",
+        "body": "Read Nehemiah 8:10 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.joy",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.strength",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang Nehemiah 8:10 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang Nehemiah 8:10 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti Nehemiah 8:10 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.gratitude.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Ask what faithfulness looks like now",
+        "catalogId": "biblequest.v7.original.gratitude.09",
+        "revision": "r1",
+        "checksum": "sha256:62c58c165d9214cc91a3ad0bca8ab5c7401c7a8831f54c15b6ccb6a3ea6e138b",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Ask what faithfulness looks like now",
+        "body": "Read Psalm 103:2 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.gratitude",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.gratitude",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.gratitude",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.daily_life",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Itanong kung ano ang hitsura ng katapatan ngayon",
+            "body": "Basahin ang Psalm 103:2 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Pangutan-a unsa ang matinud-anong buhaton karon",
+            "body": "Basaha ang Psalm 103:2 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Saludsodem no ania ti napudno nga aramid ita",
+            "body": "Basaem ti Psalm 103:2 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.peace_contentment.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Take the next step without carrying tomorrow",
+        "catalogId": "biblequest.v7.original.peace_contentment.09",
+        "revision": "r1",
+        "checksum": "sha256:9e63a36068c8b0fb31bffaea07f35e06613cde29f85c5af8cce4e372f8267cee",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Take the next step without carrying tomorrow",
+        "body": "Read Hebrews 13:5 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.peace_contentment",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.contentment",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.contentment",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.daily_life",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Gawin ang susunod na hakbang nang hindi pasan ang bukas",
+            "body": "Basahin ang Hebrews 13:5 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Buhata ang sunod nga lakang nga dili pas-an ang ugma",
+            "body": "Basaha ang Hebrews 13:5 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Aramidem ti sumaruno nga addang a saanmo a pasan ti bigat ti inton bigat",
+            "body": "Basaem ti Hebrews 13:5 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.hope.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Turn attention toward what God has given",
+        "catalogId": "biblequest.v7.original.hope.09",
+        "revision": "r1",
+        "checksum": "sha256:7ddb11bac828018b09f41b358c9feaa70ede101af362edc57ba24f968007e2ee",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Turn attention toward what God has given",
+        "body": "Read 1 Peter 1:3 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.hope",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.hope",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.hope",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.hard_season",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Ituon ang pansin sa ibinigay ng Diyos",
+            "body": "Basahin ang 1 Peter 1:3 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Ibalik ang pagtagad sa gihatag sa Dios",
+            "body": "Basaha ang 1 Peter 1:3 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Iturongmo ti imatang iti inted ti Dios",
+            "body": "Basaem ti 1 Peter 1:3 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.excitement.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Let prayer interrupt the spiral",
+        "catalogId": "biblequest.v7.original.excitement.09",
+        "revision": "r1",
+        "checksum": "sha256:597cbf7c1da6cddce1eb5a02cfdd4cbfb02d9dc57b443ec2ce58233adfdefac7",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Let prayer interrupt the spiral",
+        "body": "Read Luke 10:20 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.excitement",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.wisdom",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.joy",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.celebration",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Hayaang putulin ng panalangin ang paikot na isip",
+            "body": "Basahin ang Luke 10:20 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Pasagdi ang pag-ampo nga moputol sa balik-balik nga hunahuna",
+            "body": "Basaha ang Luke 10:20 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Palubosam ti kararag a mangputol iti agsublisubli a panunot",
+            "body": "Basaem ti Luke 10:20 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    },
+    {
+      "id": "devotional.biblequest.love_connection.09",
+      "type": "devotional",
+      "revision": "r1",
+      "sourceLocale": "en",
+      "publicationState": "pending_review",
+      "source": {
+        "kind": "first_party",
+        "title": "BibleQuest V7 Original Share - Make one choice that agrees with hope",
+        "catalogId": "biblequest.v7.original.love_connection.09",
+        "revision": "r1",
+        "checksum": "sha256:33f4809c3cac1ce8d78bbe6d701b74e1e9bf726fd7f4d3910d0344a6e3d6ec52",
+        "creator": "BibleQuest V7 Content Factory",
+        "organization": "BibleQuest"
+      },
+      "sourceContent": {
+        "title": "Share: Make one choice that agrees with hope",
+        "body": "Read 1 Corinthians 13:4-5 and notice one truth you could carry into a conversation. Write it in your own words without copying verse text, then think of one trustworthy person who could benefit from hearing what you learned. Ask one sincere question, listen first, and share the truth with humility if the moment is right."
+      },
+      "rights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional conversation exercise created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "review": {
+        "status": "pending_review"
+      },
+      "revisionHistory": [],
+      "derivatives": [],
+      "taxonomyLinks": [
+        {
+          "id": "emotion.love_connection",
+          "kind": "emotion",
+          "order": 0
+        },
+        {
+          "id": "need.connection",
+          "kind": "need",
+          "order": 0
+        },
+        {
+          "id": "topic.love",
+          "kind": "topic",
+          "order": 0
+        },
+        {
+          "id": "life_situation.relationships",
+          "kind": "life_situation",
+          "order": 0
+        }
+      ],
+      "translations": [
+        {
+          "locale": "tl",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibahagi: Gumawa ng isang pasiyang naaayon sa pag-asa",
+            "body": "Basahin ang 1 Corinthians 13:4-5 at pansinin ang isang katotohanang maaari mong dalhin sa isang pag-uusap. Isulat ito sa sarili mong mga salita nang hindi kinokopya ang teksto ng talata, pagkatapos ay isipin ang isang mapagkakatiwalaang taong maaaring makinabang sa natutuhan mo. Magtanong nang tapat, makinig muna, at ibahagi ang katotohanan nang may kababaang-loob kung angkop ang pagkakataon."
+          }
+        },
+        {
+          "locale": "ceb",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ipaambit: Paghimo ug usa ka pagpili nga uyon sa paglaom",
+            "body": "Basaha ang 1 Corinthians 13:4-5 ug timan-i ang usa ka kamatuoran nga mahimo nimong dad-on sa usa ka panag-istorya. Isulat kini sa imong kaugalingong mga pulong nga dili pagkopya sa teksto sa bersikulo, dayon hunahunaa ang usa ka kasaligan nga tawo nga mahimong makabenepisyo sa imong nakat-onan. Pangutana og matinud-anon, paminaw una, ug ipaambit ang kamatuoran nga mapainubsanon kon husto ang higayon."
+          }
+        },
+        {
+          "locale": "ilo",
+          "translatedFromRevision": "r1",
+          "translatedBy": "OpenAI GPT-5.6 Sol - BibleQuest V7 Lane A",
+          "reviewStatus": "reviewed",
+          "reviewedBy": "BibleQuest AI translation QA - Rulebook v1.0",
+          "reviewedAt": "2026-10-07T09:50:00Z",
+          "content": {
+            "title": "Ibingay: Mangaramidka iti maysa a pili a maitunos iti namnama",
+            "body": "Basaem ti 1 Corinthians 13:4-5 ket kitaem ti maysa a kinapudno a mabalinmo nga iyeg iti panagsarita. Isuratmo dayta kadagiti bukodmo a sasao a saan a pagkopia ti teksto ti bersikulo, sa panunotem ti maysa a mapagtalkan a tao a makatulongan ti nasursurom. Agsaludsodka a napudno, dumngegka pay nga umuna, ket ibingaymo ti kinapudno a sipapakumbaba no umno ti gundaway."
+          }
+        }
+      ]
+    }
+  ]
+}
