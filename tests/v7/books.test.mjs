@@ -16,8 +16,8 @@ test('book presentation escapes author metadata and marks external navigation',(
   assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
   assert.match(html,/rel="noopener noreferrer"/);assert.match(html,/target="_blank"/);
 });
-test('representative book catalog retains real source identities and link-only pending review',()=>{
+test('representative book catalog retains real source identities and link-only approved publication',()=>{
   const bundle=parseV7ContentBundle(JSON.parse(readFileSync(new URL('../../data/v7/books/representative-catalog.json',import.meta.url))));
   assert.equal(bundle.items.length,2);
-  for(const item of bundle.items){assert.equal(item.publicationState,'pending_review');assert.equal(item.review.status,'pending_review');assert.equal(item.source.kind,'external');assert.deepEqual(item.rights.allowedUses,['external_link']);assert.equal(item.sourceContent.body,undefined)}
+  for(const item of bundle.items){assert.equal(item.publicationState,'published');assert.equal(item.review.status,'approved');assert.equal(item.review.reviewer,'biblequest.v7.representative-policy-v1');assert.equal(item.source.kind,'external');assert.deepEqual(item.rights.allowedUses,['external_link']);assert.equal(item.sourceContent.body,undefined)}
 });
