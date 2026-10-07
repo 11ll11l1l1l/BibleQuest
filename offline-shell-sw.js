@@ -1,7 +1,8 @@
 const CACHE_PREFIX='biblequest-v3-offline-shell-';
-const CACHE_NAME=`${CACHE_PREFIX}v3`;
+const CACHE_NAME=`${CACHE_PREFIX}v4`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
+const MANIFEST_SHELL_EXTENSIONS=/\.(?:[cm]?js|css)$/i;
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
 
 const sameOriginInScope=url=>url.origin===self.location.origin&&url.href.startsWith(self.registration.scope);
@@ -39,22 +40,40 @@ function staticImportUrls(source,baseUrl){
 }
 
 async function manifestGraphUrls(seedUrls){
+  const builtMode=(Array.isArray(seedUrls)?seedUrls:[]).some(raw=>{
+    try{return new URL(raw,self.registration.scope).pathname.includes('/_v6/')}catch{return false}
+  });
   let manifest;
   try{
     const request=new Request(new URL('vite-manifest.json',self.registration.scope).href,{method:'GET',credentials:'same-origin',cache:'reload'});
     const response=await fetch(request);
-    if(!response?.ok)return[];
+    if(!response?.ok){
+      if(builtMode)throw new Error(`Vite manifest unavailable: HTTP ${response?.status||0}`);
+      return[];
+    }
     manifest=await response.json();
-  }catch{return[]}
-  const records=manifest&&typeof manifest==='object'?manifest:{};
-  const fileToKey=new Map();
-  for(const [key,record] of Object.entries(records)){
-    if(!record?.file)continue;
-    try{fileToKey.set(new URL(record.file,self.registration.scope).href,key)}catch{}
+  }catch(error){
+    if(builtMode)throw error;
+    return[];
   }
-  const pending=[],seenKeys=new Set(),urls=new Set();
+  const records=manifest&&typeof manifest==='object'?manifest:{};
+  const fileToKey=new Map(),pending=[],seenKeys=new Set(),urls=new Set();
+  const addPath=value=>{
+    if(!value)return;
+    try{
+      const url=new URL(value,self.registration.scope);
+      if(sameOriginInScope(url)&&!isNetworkProbe(url)&&MANIFEST_SHELL_EXTENSIONS.test(url.pathname))urls.add(url.href);
+    }catch{}
+  };
   const enqueueKey=key=>{if(key&&!seenKeys.has(key)&&records[key]){seenKeys.add(key);pending.push(key)}};
-  for(const [key,record] of Object.entries(records))if(record?.isEntry)enqueueKey(key);
+  for(const [key,record] of Object.entries(records)){
+    if(record?.file){
+      try{fileToKey.set(new URL(record.file,self.registration.scope).href,key)}catch{}
+    }
+    addPath(record?.file);
+    for(const value of Array.isArray(record?.css)?record.css:[])addPath(value);
+    if(record?.isEntry)enqueueKey(key);
+  }
   for(const raw of Array.isArray(seedUrls)?seedUrls:[]){
     try{
       const url=new URL(raw,self.registration.scope);url.hash='';
@@ -63,18 +82,12 @@ async function manifestGraphUrls(seedUrls){
   }
   while(pending.length){
     const key=pending.shift(),record=records[key];
-    const addPath=value=>{
-      if(!value)return;
-      try{
-        const url=new URL(value,self.registration.scope);
-        if(sameOriginInScope(url)&&!isNetworkProbe(url))urls.add(url.href);
-      }catch{}
-    };
-    addPath(record.file);
-    for(const value of Array.isArray(record.css)?record.css:[])addPath(value);
-    for(const value of Array.isArray(record.assets)?record.assets:[])addPath(value);
-    for(const imported of Array.isArray(record.imports)?record.imports:[])enqueueKey(imported);
+    addPath(record?.file);
+    for(const value of Array.isArray(record?.css)?record.css:[])addPath(value);
+    for(const imported of Array.isArray(record?.imports)?record.imports:[])enqueueKey(imported);
+    for(const imported of Array.isArray(record?.dynamicImports)?record.dynamicImports:[])enqueueKey(imported);
   }
+  if(builtMode&&urls.size===0)throw new Error('Deployable Vite shell manifest contained no cacheable JS/CSS assets.');
   return [...urls];
 }
 
@@ -108,12 +121,20 @@ async function warmShell(urls){
     try{const url=new URL(raw,self.registration.scope);url.hash='';seeds.push(url.href)}catch{}
     enqueue(raw);
   }
-  for(const raw of await manifestGraphUrls(seeds))enqueue(raw);
+  const manifestUrls=await manifestGraphUrls(seeds);
+  for(const raw of manifestUrls)enqueue(raw);
   while(pending.length){
     const batch=pending.splice(0,WARM_CONCURRENCY);
     const discovered=await Promise.all(batch.map(raw=>warmOne(cache,raw)));
     for(const imports of discovered)for(const imported of imports)enqueue(imported);
   }
+  const missing=[];
+  for(const raw of manifestUrls){
+    const cached=await cache.match(raw,{ignoreVary:true});
+    if(!cached)missing.push(raw);
+  }
+  if(missing.length)throw new Error(`Offline shell warmup missing ${missing.length} Vite shell assets.`);
+  return{cachedCount:seen.size,manifestCount:manifestUrls.length};
 }
 
 self.addEventListener('install',event=>{
@@ -142,7 +163,7 @@ self.addEventListener('activate',event=>{
 
 self.addEventListener('message',event=>{
   if(event?.data?.type!=='BIBLEQUEST_WARM_SHELL')return;
-  event.waitUntil(warmShell(event.data.urls).then(()=>event.ports?.[0]?.postMessage({ok:true})).catch(()=>event.ports?.[0]?.postMessage({ok:false})));
+  event.waitUntil(warmShell(event.data.urls).then(result=>event.ports?.[0]?.postMessage({ok:true,...result})).catch(error=>event.ports?.[0]?.postMessage({ok:false,error:String(error?.message||error)})));
 });
 
 self.addEventListener('push',event=>{
