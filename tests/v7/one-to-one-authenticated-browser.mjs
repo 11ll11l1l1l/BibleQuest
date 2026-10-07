@@ -405,10 +405,12 @@ try {
       ]);
       await menteePage.waitForLoadState('networkidle');
     }
+    // A language reload must retain the bounded ONE 2 ONE identity before the
+    // lesson view hydrates; fail immediately instead of timing out on the heading.
+    assert.match(menteePage.url(), /pairId=.*revisionId=/);
     const heading = menteePage.locator('[data-lesson-heading][data-step-type="apply"]');
     await heading.waitFor({ state: 'visible' });
     assert.equal((await heading.textContent())?.trim(), label);
-    assert.match(menteePage.url(), /pairId=.*revisionId=/);
   }
   const localeSelector = menteePage.locator('[data-locale-select]');
   await Promise.all([
