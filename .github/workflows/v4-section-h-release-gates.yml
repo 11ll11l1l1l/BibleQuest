@@ -33,11 +33,14 @@ jobs:
           npm install --no-save playwright
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Start BibleQuest locally
+      - name: Build and start deployable BibleQuest artifact
+        env:
+          BQ_BUILD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v4-section-h-http.log 2>&1 &
+          npm run build
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v4-section-h-http.log 2>&1 &
           echo $! > /tmp/biblequest-v4-section-h-http.pid
-          for i in {1..20}; do
+          for i in {1..30}; do
             curl -fsS http://127.0.0.1:4173/ >/dev/null && exit 0
             sleep 1
           done

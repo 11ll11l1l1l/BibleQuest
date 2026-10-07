@@ -53,5 +53,21 @@ jobs:
           node tests/v4-daily-journey-page-smoke.mjs
           node tests/v3-games-smoke.mjs
           node tests/v3-cloud-notes-smoke.mjs
-          node tests/v3-offline-shell-smoke.mjs
           node tests/v3-operational-recovery-smoke.mjs
+      - name: Re-run offline shell against deployable artifact
+        env:
+          BQ_BUILD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          kill "$(cat /tmp/biblequest-v4-whole-app-http.pid)" || true
+          npm run build
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/biblequest-v4-whole-app-preview.log 2>&1 &
+          echo $! > /tmp/biblequest-v4-whole-app-preview.pid
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then
+              node tests/v3-offline-shell-smoke.mjs
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/biblequest-v4-whole-app-preview.log
+          exit 1

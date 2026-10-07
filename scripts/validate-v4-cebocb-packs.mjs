@@ -72,6 +72,7 @@ if(!packsOnly){
   const readerService=fs.readFileSync(path.join(root,'src','app','reader.js'),'utf8');
   const readerPage=fs.readFileSync(path.join(root,'src','features','reader','index.js'),'utf8');
   const contextHelpers=fs.readFileSync(path.join(root,'src','v6','reader','context-helpers.ts'),'utf8');
+  const readerPresentation=fs.readFileSync(path.join(root,'src','v6','reader','presentation.ts'),'utf8');
   const attribution=fs.readFileSync(path.join(root,'data','packs','ATTRIBUTION.md'),'utf8');
   assert.ok(bible.includes("cebocb: Object.freeze({ id: 'cebocb'"),'Central Bible registry must contain the CEBOCB translation id.');
   assert.ok(bible.includes("folder: 'cebuano'"),'CEBOCB registry must use bundled Cebuano packs.');
@@ -79,7 +80,7 @@ if(!packsOnly){
   assert.ok(/label: 'Cebuano\/Bisaya ·/.test(bible),'Reader translation label must visibly include both Cebuano and Bisaya.');
   assert.ok(bible.includes('verseEnd'),'Bible data owner must explicitly preserve optional verse-bridge range ends.');
   assert.ok(readerService.includes('deriveVersePeek')&&contextHelpers.includes('candidate.verseEnd ?? candidate.verse'),'Reader service must resolve verse peeks/search results through the bridge-aware Scripture projection boundary.');
-  assert.ok(readerPage.includes('verseEnd'),'Reader UI must render a bridge as one labeled range instead of duplicated text rows.');
+  assert.ok(readerPage.includes('renderReaderChapterPresentation')&&readerPresentation.includes('const end = verse.verseEnd ?? verse.verse')&&readerPresentation.includes('label: end > verse.verse'),'Reader UI must render a bridge as one labeled range instead of duplicated text rows.');
   assert.match(attribution,/Biblica® Open Ang Pulong sa Dios™/,'CEBOCB attribution must retain the Cebuano title/trademark notice.');
   assert.match(attribution,/Biblica® Open Cebuano Contemporary Bible™/,'CEBOCB attribution must retain the English title/trademark notice.');
   assert.match(attribution,/2009, 2010, 2014, 2024/,'CEBOCB attribution must retain the copyright years.');
