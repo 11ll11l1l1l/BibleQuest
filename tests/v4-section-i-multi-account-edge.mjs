@@ -22,7 +22,7 @@ const assignment={id:'a1',congregation_id:'c1',created_by:'leader',title:'Privat
     loadPrivateResponses:async()=>[{assignment_id:'a1',user_id:'member1',status:'completed',submission:`secret-for-${userId}`,leader_feedback:'',completed_at:now,updated_at:now}]
   };
   const service=createAssignmentsService({api,session,congregation});
-  await service.load();await service.loadPublishTargets();service.open('a1');await service.loadReview();
+  await service.load({congregationId:'c1'});await service.loadPublishTargets();service.open('a1');await service.loadReview();
   assert.equal(service.snapshot().activeReview.responses[0].submission,'secret-for-u1');
   assert.equal(service.snapshot().publishTargets.members[0].id,'target-u1');
   userId='u2';

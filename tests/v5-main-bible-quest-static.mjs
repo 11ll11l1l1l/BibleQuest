@@ -47,7 +47,7 @@ for(const token of[
   "'bible-quest':()=>bibleQuestPage",
   'onBibleQuestContinue:openBibleQuestNext',
   'createReaderService({bible,storage,progress,bibleQuest})',
-  'reader:()=>readerPage({reader,vocabulary,furigana,audioStore:privateStorage})',
+  'return readerPage({reader,vocabulary,furigana,audioStore:privateStorage',
   "import('./reader-v6-page.js')",
   'createMyJourneyService({progress,assignments,bibleQuest})'
 ]) assert.ok(bootstrap.includes(token),`Bootstrap missing Main Bible Quest composition: ${token}`);
