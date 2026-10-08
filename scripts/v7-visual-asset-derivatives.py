@@ -60,7 +60,7 @@ def metadata(path, root, kind, **extra):
     }
 
 
-def render(master, output_dir, asset_id, family, title, locale, font_path, thumbnail_size):
+def render(master, output_dir, asset_id, family, title, locale, font_path, thumbnail_size, focal_x, focal_y):
     if not re.fullmatch(r"bqv7-[a-z0-9]+-[a-z0-9-]+-[0-9]{2,}", asset_id):
         raise ValueError("Invalid asset ID")
     if not re.fullmatch(r"[a-z]{2,3}(?:-[a-z]{2})?", locale, flags=re.I):
@@ -71,6 +71,8 @@ def render(master, output_dir, asset_id, family, title, locale, font_path, thumb
         raise ValueError("Typography title is too long for a card")
     if not 128 <= thumbnail_size <= 640:
         raise ValueError("Thumbnail size must be 128..640")
+    if not (0 <= focal_x <= 1 and 0 <= focal_y <= 1):
+        raise ValueError("Focal coordinates must be normalized between 0 and 1")
     if not master.exists():
         raise FileNotFoundError(master)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -86,7 +88,7 @@ def render(master, output_dir, asset_id, family, title, locale, font_path, thumb
         # Preserve a reproducible crop for the small, swipeable card, independently
         # of the text-overlay variant. No title or other UI information is rasterized.
         thumbnail = ImageOps.fit(source, (thumbnail_size, thumbnail_size), method=Image.Resampling.LANCZOS,
-                                 centering=(0.5, 0.5))
+                                 centering=(focal_x, focal_y))
         thumbnail.save(thumb_path, "WEBP", quality=86, method=6)
 
         text_image = source.copy()
@@ -136,6 +138,8 @@ def main():
     parser.add_argument("--locale", default="en")
     parser.add_argument("--font", help="Licensed Unicode font file installed in the generation environment")
     parser.add_argument("--thumbnail-size", type=int, default=320)
+    parser.add_argument("--focal-x", type=float, default=0.5, help="Measured focal point x from sidecar, normalized 0..1")
+    parser.add_argument("--focal-y", type=float, default=0.5, help="Measured focal point y from sidecar, normalized 0..1")
     parser.add_argument("--public-root", type=Path, default=Path("public"))
     args = parser.parse_args()
     output_dir = args.public_root / "v7" / "images" / args.family
@@ -146,7 +150,7 @@ def main():
     try:
         with_text, thumbnail = render(args.master, output_dir, args.asset_id,
                                       args.family, args.title, args.locale,
-                                      args.font, args.thumbnail_size)
+                                      args.font, args.thumbnail_size, args.focal_x, args.focal_y)
     except Exception as exc:
         parser.exit(1, "Derivative production failed: " + str(exc) + "\n")
     print(json.dumps({"assetId": args.asset_id, "variants": [with_text, thumbnail]}, indent=2))
