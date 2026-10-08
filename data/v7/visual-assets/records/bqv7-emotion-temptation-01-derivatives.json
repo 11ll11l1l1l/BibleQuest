@@ -2,8 +2,44 @@
   "schemaVersion": 2,
   "sourceMasterAssetId": "bqv7-emotion-temptation-01",
   "agentId": "visual-agent-4",
-  "status": "candidate_transfer_blocked",
-  "variants": [],
+  "status": "candidate_corrected_type_svg_static_verified_browser_qa_pending",
+  "variants": [
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en-corrected.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 172975,
+      "sha256": "9e674f53c1b36d671320194b10651382a50f85c99218028ac930ba169337d32f",
+      "embeddedWording": {
+        "label": "Tempted",
+        "scriptureReference": "1 Corinthians 10:13",
+        "scriptureTextIncluded": false
+      },
+      "cropIntent": "4:5 portrait, original CLEAN source displayed below independent dark title band",
+      "altText": "A commuter hesitates over a lost wallet on a train; editorial heading Tempted and reference 1 Corinthians 10:13.",
+      "qa": {
+        "structuralMarkupChecked": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "referenceCheckedAgainstTaxonomy": true,
+        "sourceWebPEmbedded": true,
+        "visualInspected": false,
+        "typeReadableAt320px": false,
+        "imageDecoded": false,
+        "dimensionsMeasured": false,
+        "sha256Measured": true,
+        "renderPending": true,
+        "sourceCleanBlobIdentityVerified": true,
+        "svgSourceDimensionsDeclared": true,
+        "referenceFontPx": 48,
+        "referenceEquivalentAt320Px": 15,
+        "referenceMobileGeometryChecked": true
+      },
+      "gitBlobSha": "c3a4a7e91ca981d7deb57749068fc32f7c7ebf67"
+    }
+  ],
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -16,7 +52,25 @@
   "issue": {
     "existingTypeLabel": "Temptation",
     "expectedTypeLabel": "Tempted",
-    "correctedTypeCandidateCommitted": false,
-    "reason": "Image binary write rejected. Existing WebP master and thumbnail retained; current TYPE quarantined pending replacement."
+    "correctedTypeCandidateCommitted": true,
+    "reason": "Exact-label TYPE SVG reference increased to 48px (15px at 320px geometric scale); embedded CLEAN source matches Git blob 10fe6e841fbd333244de4ea12645b1fe38f29c68. Browser raster render, font appearance, phone legibility and WebP conversion remain pending."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "sourceMasterAssetId": "bqv7-emotion-temptation-01",
+    "fontNote": "Platform Georgia/Times New Roman font family; no font files embedded or distributed. Actual platform font availability and render rights require browser QA.",
+    "scripture": "Reference only; no Bible prose.",
+    "sourceCleanGitBlobSha": "10fe6e841fbd333244de4ea12645b1fe38f29c68"
+  },
+  "qa": {
+    "sourceWebPEmbeddedIdenticalToClean": true,
+    "svgStaticSafetyChecked": true,
+    "typographyExactTaxonomy": true,
+    "referenceEquivalentAt320Px": 15,
+    "browserRendered": false,
+    "webpTypeExported": false,
+    "productionReady": false,
+    "visualAuditScript": "not_run",
+    "note": "Source SVG inspected and independently SHA-256 measured. No local browser screenshot or decoded SVG raster; keep quarantined."
   }
 }
