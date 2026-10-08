@@ -93,7 +93,7 @@ test('ONE 2 ONE accepts only a local audited resolver result, never an arbitrary
         assert.equal(tag, 'img');
         const listeners = new Map();
         const img = {
-          isConnected: true, src: '', alt: '', decoding: '', loading: '',
+          isConnected: true, src: '', alt: '', decoding: '', loading: '', style: {},
           addEventListener(name, fn) { listeners.set(name, fn); },
           setAttribute() {},
           remove() { this.isConnected = false; },
@@ -131,15 +131,16 @@ test('ONE 2 ONE accepts only a local audited resolver result, never an arbitrary
 
   const good = makeView(key => {
     submitted += 1;
-    assert.equal(key, 'one-to-one:overview');
-    return { assetId: 'bqv7-one2one-first-01', src: '/v7/images/one2one/bqv7-one2one-first-01.webp' };
+    assert.equal(key, 'hero:one-to-one-overview');
+    return { assetId: 'bqv7-hero-one-to-one-overview-01', src: '/v7/images/hero/bqv7-hero-one-to-one-overview-01.webp', focalPoint: {x:0.25,y:0.65} };
   });
   const dispose = good.mount(root);
   await tick(); await tick();
   assert.equal(submitted, 1);
   assert.equal(imageCount, 1);
   assert.equal(art.image.alt, '');
-  assert.equal(art.image.src, '/v7/images/one2one/bqv7-one2one-first-01.webp');
+  assert.equal(art.image.src, '/v7/images/hero/bqv7-hero-one-to-one-overview-01.webp');
+  assert.equal(art.image.style.objectPosition, '25% 65%', 'Approved focal point should survive mobile crop.');
   art.image.fire('load');
   assert.equal(hero.dataset.coverState, 'ready');
   art.image.fire('error');
