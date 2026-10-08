@@ -370,6 +370,17 @@ try {
   ]);
   await page.locator('[data-library-page]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
+  const reloadEvidence = await page.evaluate(() => ({
+    route: location.hash,
+    language: document.querySelector('[data-locale-select]')?.value,
+    query: document.querySelector('#bq-library-query')?.value,
+    contentType: document.querySelector('#bq-library-type')?.value,
+    resultIds: Array.from(document.querySelectorAll('[data-library-results] [data-library-item]'))
+      .slice(0, 25).map(node => node.getAttribute('data-library-item')),
+    status: document.querySelector('[data-library-status]')?.textContent?.trim(),
+  }));
+  assert.ok(reloadEvidence.resultIds.includes(approvedPublicItemId),
+    'Reviewed public Library card missing after locale reload: ' + JSON.stringify(reloadEvidence));
   await libraryCard.waitFor({ state: 'visible' });
   assert.equal(await page.locator('[data-locale-select]').inputValue(), 'tl');
   assert.notEqual((await libraryCard.textContent()).includes('One concern at a time'), true,
