@@ -30,7 +30,7 @@ test('ONE 2 ONE reading exposes semantic progress and a single primary next acti
     status: 'ready', lesson: { steps: STEPS }, stepIndex: 2,
     writable: true, progress: { status: 'active' }, responses: {}, responseDrafts: {},
   });
-  assert.match(pageHtml, /class="bq-one2one-lesson"/);
+  assert.match(pageHtml, /class="bq-panel bq-one2one-lesson"/);
   assert.match(html, /<article class="bq-lesson-reading">/);
   assert.match(html, /<progress class="bq-lesson-progress"[^>]*max="7" value="3"/);
   assert.match(html, /data-step-type="discuss"/);
