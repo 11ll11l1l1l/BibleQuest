@@ -379,6 +379,10 @@ try {
       .slice(0, 25).map(node => node.getAttribute('data-library-item')),
     status: document.querySelector('[data-library-status]')?.textContent?.trim(),
   }));
+  assert.equal(new URLSearchParams(reloadEvidence.route.split('?').slice(1).join('?')).get('query'), 'concern',
+    'Authenticated locale reload must retain the routed public Library query: ' + JSON.stringify(reloadEvidence));
+  assert.equal(reloadEvidence.query, 'concern');
+  assert.equal(reloadEvidence.contentType, 'devotional');
   assert.ok(reloadEvidence.resultIds.includes(approvedPublicItemId),
     'Reviewed public Library card missing after locale reload: ' + JSON.stringify(reloadEvidence));
   await libraryCard.waitFor({ state: 'visible' });
