@@ -183,3 +183,60 @@ test('evaluation timestamps are mandatory audit evidence', () => {
     /evaluatedAt must be a valid timestamp/
   );
 });
+
+function reviewedVisualAsset(patch = {}) {
+  return {
+    id: 'devotional-cover',
+    source: { uri: 'https://example.com/cover.png' },
+    provenance: { evidenceRefs: ['evidence:asset-generation'] },
+    rights: { status: 'verified', allowedUses: ['display'], evidenceRefs: ['evidence:asset-license'] },
+    altText: 'A sunrise over the hills',
+    fallback: 'theme-gradient',
+    ...patch
+  };
+}
+
+test('attached visual assets must carry independent source and permitted-use evidence', () => {
+  const valid = item('devotional', { visualAssets: [reviewedVisualAsset()] });
+  const approved = evaluateV7LibraryApproval({
+    item: valid, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(approved.outcome, 'auto_approved');
+  assert.equal(canAutoPublishV7LibraryDecision(approved, valid), true);
+
+  const missingRights = item('devotional', { visualAssets: [reviewedVisualAsset({ rights: { status: 'unknown', allowedUses: ['display'] } })] });
+  const rejected = evaluateV7LibraryApproval({
+    item: missingRights, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(rejected.outcome, 'rejected');
+  assert.ok(rejected.rejectionReasons.includes('visual_asset_0_rights_unverified'));
+  assert.equal(canAutoPublishV7LibraryDecision(rejected, missingRights), false);
+
+  const unknownSource = item('devotional', { visualAssets: [reviewedVisualAsset({ provenance: { evidenceRefs: [] } })] });
+  const unproven = evaluateV7LibraryApproval({
+    item: unknownSource, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(unproven.outcome, 'rejected');
+  assert.ok(unproven.rejectionReasons.includes('visual_asset_0_provenance_unverified'));
+});
+
+test('missing visual alt text or fallback enters automated repair rather than publication', () => {
+  for (const [field, reason] of [['altText', 'visual_asset_0_alt_missing'], ['fallback', 'visual_asset_0_fallback_missing']]) {
+    const target = item('devotional', { visualAssets: [reviewedVisualAsset({ [field]: '' })] });
+    const decision = evaluateV7LibraryApproval({
+      item: target, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+    });
+    assert.equal(decision.outcome, 'needs_repair');
+    assert.ok(decision.repairReasons.includes(reason));
+    assert.equal(canAutoPublishV7LibraryDecision(decision, target), false);
+  }
+});
+
+test('an approved decision cannot publish an attached visual asset whose rights change', () => {
+  const original = item('book', { visualAssets: [reviewedVisualAsset()] });
+  const approval = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass()
+  });
+  const changed = item('book', { visualAssets: [reviewedVisualAsset({ rights: { status: 'unknown', allowedUses: [] } })] });
+  assert.equal(canAutoPublishV7LibraryDecision(approval, changed), false);
+});
