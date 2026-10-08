@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-peace-contentment-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-08T16:09:37+09:00",
+  "status": "three_files_present_local_render_pass_browser_qa_pending",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-peace-contentment-01.svg",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "peaceful",
+  "queueConcept": "peace_contentment",
+  "concept": "Quiet contentment after daily routines: a woman rests in her living room with warm tea",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "svg",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 8295,
+  "sha256": "f1a536927535fc8f97e7efa8e1a21f93c2d4edafb24d16928c7677753efb7b51",
+  "focalPoint": {
+    "x": 0.69,
+    "y": 0.48
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-peace-contentment-01.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 8295,
+      "sha256": "f1a536927535fc8f97e7efa8e1a21f93c2d4edafb24d16928c7677753efb7b51",
+      "altText": "A relaxed woman with closed eyes holds a warm mug in a comfortable armchair beside a broad window and potted plant.",
+      "focalPoint": {
+        "x": 0.69,
+        "y": 0.48
+      },
+      "textSafeRegion": "none",
+      "qc": {
+        "noBakedText": true,
+        "originalVectorArtwork": true,
+        "anatomyAcceptable": "stylized illustration",
+        "renderedWithCairoSVG": true,
+        "visualReviewed": true,
+        "duplicateChecked": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-peace-contentment-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 20433,
+      "sha256": "9f94ccf69b4b39078f004bbee677a47876421dcacc5489a46d7fbbd8a4704255",
+      "locale": "en",
+      "includedWording": "Peaceful / content",
+      "scriptureReference": "John 14:27",
+      "scriptureText": null,
+      "wordingSource": "src/features/library/emotion-taxonomy.js@e64366970838d62c11ea602dd606e0acfe5b0cb2; entry emotion/peaceful labels.en",
+      "wordingRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "font": "Noto Serif Display Regular / EB Garamond 12 Italic / Lato Regular",
+      "fontLicense": "SIL Open Font License 1.1",
+      "fontDistribution": "glyphs converted to SVG paths; no font files embedded",
+      "altText": "Editorial illustration of a woman peacefully resting with a mug at home. Embedded English words: Peaceful / content; John 14:27.",
+      "focalPoint": {
+        "x": 0.69,
+        "y": 0.56
+      },
+      "textSafeRegion": "top",
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 0,
+        "y": 0,
+        "width": 1024,
+        "height": 1024,
+        "outputWidth": 1024,
+        "outputHeight": 1280,
+        "artOffsetY": 256,
+        "aspect": "4:5"
+      },
+      "qc": {
+        "spellingVerifiedAgainstSource": true,
+        "referenceVerifiedAgainstTaxonomy": true,
+        "scriptureTextOmitted": true,
+        "noPseudoText": true,
+        "outlinedFontGlyphs": true,
+        "renderedWithCairoSVG": true,
+        "visualReviewed": true,
+        "browserRenderPending": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-peace-contentment-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 8400,
+      "sha256": "84f9c4a7d09fd080be93ca386272b90168021976f9f4665003e0cc697915f07c",
+      "altText": "A relaxed woman sits in a chair with eyes closed, holding a steaming mug beside a window.",
+      "focalPoint": {
+        "x": 0.69,
+        "y": 0.45
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 250,
+        "y": 55,
+        "width": 670,
+        "height": 837.5,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      },
+      "qc": {
+        "noBakedText": true,
+        "focalCropReviewed": true,
+        "renderedWithCairoSVG": true,
+        "subjectReadableAtCardSize": true,
+        "browserRenderPending": true
+      }
+    }
+  ],
+  "generation": {
+    "provider": "local authored vector illustration using Python/CairoSVG/Pillow/fontTools",
+    "method": "Original custom SVG shapes/gradients, distinct indoor living-room setting. SVG CLEAN, TYPE with outlined OFL glyphs, focal-aware SVG THUMB.",
+    "sourceImageModelAttempts": 3,
+    "sourceImageModelRejected": 3,
+    "sourceImageModelRejectionReasons": [
+      "Generated triptych rather than separate clean asset; repetitive golden sunset/lake scene; inaccurate label Peace & Contentment vs reviewed Peaceful / content",
+      "Near-identical golden-hour triptych; same landscape, face, and unreviewed lettering",
+      "Repeated golden-hour triptych despite need for distinct scene; cannot count as new master"
+    ],
+    "acceptedVectorCandidate": 1,
+    "sourceImageModelOutputUsed": false,
+    "artProvenance": "original programmatic vector drawing; no third-party imagery, source photos or book covers"
+  },
+  "rights": {
+    "sourceType": "original_programmatic_vector",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original vector paths composed in this run; no external artwork used",
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontDistribution": "only vector glyph outlines embedded, no font binaries redistributed",
+    "scriptureText": null,
+    "scriptureReference": "John 14:27",
+    "scriptureReferenceEvidence": "src/features/library/emotion-taxonomy.js entry emotion/peaceful; exact blob e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "scriptureTranslation": null,
+    "scriptureRevision": null
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A relaxed woman with closed eyes holds a warm mug in a comfortable armchair beside a broad window and potted plant.",
+    "fallback": "CLEAN SVG plus live localized label from src/features/library/emotion-taxonomy.js for en/tl/ceb/ilo; English TYPE must not be used for other locales",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "fileBytesAndSHA256Measured": true,
+    "svgRenderedLocally": true,
+    "threeIndependentFiles": true,
+    "sceneDistinctFromExisting": true,
+    "anatomy": "stylized illustration; no photorealistic anatomy claim",
+    "typography": "exact English label, outlined serif/italic; reviewed via CairoSVG",
+    "thumbnail": "4:5 cropped with face and mug retained",
+    "noUnverifiedScriptureQuote": true,
+    "visualQA": "Local PNG previews of all SVG outputs inspected; no built-app browser/mobile screenshot or CI run",
+    "browserRenderPending": true,
+    "auditRun": "not available in local container because repository clone/network unavailable"
+  }
+}
