@@ -202,6 +202,43 @@
       "visualInspected": false,
       "browserRendered": false
     },
-    "nextAction": "Render full TYPE and THUMB in browser at 320px, inspect type/crop, run Node audit; then consolidate if all gates pass."
+    "nextAction": "Render full TYPE and THUMB in browser at 320px, inspect type/crop, run Node audit; then consolidate if all gates pass.",
+    "binaryReverification20261009": {
+      "method": "GitHub base64 decoded independently; recomputed SHA-256; verified SVG viewBoxes, embedded CLEAN byte identity, no scripts or external references. This is structural verification, not browser visual QA.",
+      "taxonomySourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "bytes": 75334,
+          "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+          "gitBlobSha": "54074fde196d30175c25c0ce08b68f43b8f5cd6a"
+        },
+        {
+          "kind": "TYPE",
+          "bytes": 107267,
+          "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
+          "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
+          "viewBox": "0 0 1024 1280",
+          "embeddedCleanByteIdentical": true,
+          "staticSafe": true
+        },
+        {
+          "kind": "THUMB",
+          "bytes": 100730,
+          "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
+          "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+          "viewBox": "0 0 384 480",
+          "embeddedCleanByteIdentical": true,
+          "staticSafe": true
+        }
+      ],
+      "pending": [
+        "320px actual TYPE visual legibility",
+        "THUMB focal-crop visual inspection",
+        "built-app QA",
+        "official Node audit"
+      ],
+      "productionReady": false
+    }
   }
 }
