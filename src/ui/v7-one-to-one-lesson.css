@@ -393,3 +393,152 @@
   transition: none;
   transform: none;
 }
+
+/* Lane C assigned curriculum: the track/module/lesson hierarchy is one
+   keyboard-accessible image-capable card deck. Actual pixels are accepted only
+   from the audited visual registry; fallback remains usable offline. */
+.bq-assigned-curriculum {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: clamp(16px, 4vw, 28px);
+}
+.bq-assigned-curriculum h1 { color: var(--bq-text); }
+.bq-assigned-curriculum__parent {
+  margin: 18px 0;
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  color: var(--bq-text);
+  overflow-wrap: anywhere;
+}
+.bq-assigned-curriculum [data-assigned-status] {
+  min-height: 0;
+  color: var(--bq-text-secondary);
+}
+.bq-assigned-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin: 18px 0 24px;
+  padding: 0;
+  list-style: none;
+}
+.bq-assigned-cards__item { min-width: 0; }
+.bq-assigned-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  min-height: 188px;
+  padding: clamp(18px, 5vw, 24px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: var(--bq-radius-surface, 18px);
+  background: #19444d;
+  color: #fff;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.bq-assigned-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(6,19,28,.92), rgba(6,19,28,.55) 48%, rgba(6,19,28,.12));
+}
+.bq-assigned-card__art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 78% 22%, #74929c, transparent 53%), linear-gradient(145deg, #3e6d73, #133946);
+}
+.bq-assigned-card--module .bq-assigned-card__art {
+  background: radial-gradient(ellipse at 78% 28%, #ba916b, transparent 48%), linear-gradient(150deg, #756351, #393c54);
+}
+.bq-assigned-card--lesson .bq-assigned-card__art {
+  background: radial-gradient(ellipse at 80% 24%, #a7a079, transparent 51%), linear-gradient(145deg, #4b725e, #243f49);
+}
+.bq-assigned-cards__item:nth-child(3n + 2) .bq-assigned-card__art { filter: hue-rotate(18deg); }
+.bq-assigned-cards__item:nth-child(3n + 3) .bq-assigned-card__art { filter: hue-rotate(-16deg); }
+.bq-assigned-card__halo {
+  position: absolute;
+  inset: -48% -12% auto auto;
+  width: min(67%, 280px);
+  aspect-ratio: 1;
+  border: 2px solid rgba(255,244,211,.22);
+  border-radius: 50%;
+  box-shadow: 0 0 0 32px rgba(255,244,211,.055), 0 0 0 80px rgba(255,244,211,.035);
+}
+.bq-assigned-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bq-assigned-card__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bq-assigned-card__kind {
+  color: #fff0ca;
+  font-size: .8125rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.bq-assigned-card__title {
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  font-size: clamp(1.35rem, 5vw, 1.9rem);
+  font-weight: 720;
+  line-height: 1.2;
+  color: #fff;
+}
+.bq-assigned-card__open {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 760;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.bq-assigned-card:hover:not(:disabled) {
+  border-color: rgba(255,255,255,.45);
+}
+.bq-assigned-card:focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 4px;
+}
+.bq-assigned-curriculum [data-assigned-action] {
+  min-height: 44px;
+  margin: 4px 8px 4px 0;
+}
+@media (min-width: 660px) {
+  .bq-assigned-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  .bq-assigned-card { min-height: 170px; padding: 18px; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .bq-assigned-card__art {
+    transition: transform var(--bq-v7-motion-standard, 220ms) var(--bq-v7-ease, ease-out);
+  }
+  .bq-assigned-card:hover:not(:disabled) .bq-assigned-card__art {
+    transform: scale(1.025);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-assigned-card__art { transition: none; transform: none; }
+}
+:root[data-bq-effective-motion="reduce"] .bq-assigned-card__art,
+:root[data-bq-motion="off"] .bq-assigned-card__art {
+  transition: none;
+  transform: none !important;
+}
