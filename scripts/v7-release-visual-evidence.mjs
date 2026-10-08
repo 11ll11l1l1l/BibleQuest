@@ -3,7 +3,8 @@
  */
 import { createHash } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
-import { resolve, fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { auditV7VisualAssets } from './v7-visual-assets-audit.mjs';
 import { buildV7VisualCoverageReport } from './v7-visual-coverage-report.mjs';
 
