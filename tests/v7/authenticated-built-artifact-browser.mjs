@@ -264,9 +264,11 @@ async function login(page, actorRecord) {
   await page.locator('[data-account-login] input[name="email"]').fill(actorRecord.email);
   await page.locator('[data-account-login] input[name="password"]').fill(actorRecord.password);
   await page.locator('[data-account-login] button[type="submit"]').click();
-  // Successful sign-in navigates Home. Wait for Account to unmount, then reopen it
-  // to assert the persisted authenticated session before selecting the seeded tenant.
-  await page.locator('[data-account-login]').waitFor({ state: 'detached', timeout: 30000 });
+  // Account can re-render its guest form during the intermediate
+  // `authenticating` state, before Supabase credentials are verified. Form
+  // detachment alone is not a successful sign-in signal and races a reload.
+  // The account page only calls onHome() after await account.signIn() succeeds.
+  await page.waitForURL(url => url.hash === '#/home', { timeout: 30000 });
   await openRoute(page, 'account', '[data-account-signout]');
   assert.ok((await page.locator('.bq-account-signed-hero').textContent()).includes(actorRecord.email));
   await activateCongregation(page, actorRecord.congregationId);
