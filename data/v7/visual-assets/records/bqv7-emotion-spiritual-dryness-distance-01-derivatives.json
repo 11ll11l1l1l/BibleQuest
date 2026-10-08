@@ -24,12 +24,12 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
       "format": "svg",
       "width": 1024,
       "height": 1280,
       "fileBytes": 72957,
-      "sha256": "3637b38ed7ee4e5b948036b907c9dfde08b27f170de063145ea4443f36e98baf",
+      "sha256": "e6d45de876caff99303a4f0fe1622a00b780bf060cad815a1abd3bd0e899c888",
       "locale": "en",
       "exactWording": "Spiritually dry / distant",
       "referenceOnly": "Psalm 42:1-2",
@@ -55,12 +55,18 @@
         "textMatchesTaxonomy": true,
         "noVerseText": true,
         "embeddedSource": true,
-        "browserRenderPending": true
+        "browserRenderPending": true,
+        "referenceFontPx": 52,
+        "referenceEquivalentAt320Px": 16.25,
+        "referenceMobileGeometryChecked": true,
+        "typeReadableAt320px": false,
+        "visualInspected": false,
+        "imageDecoded": false
       }
     },
     {
       "kind": "THUMB",
-      "imagePath": "/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
       "format": "svg",
       "width": 400,
       "height": 500,
@@ -103,7 +109,7 @@
   "rights": {
     "sourceType": "generated",
     "sourceMasterRecord": "data/v7/visual-assets/records/bqv7-emotion-spiritual-dryness-distance-01.json",
-    "font": "No font files distributed or embedded. Uses browser/system serif and sans-serif fonts. Platform font rendering requires final QA.",
+    "font": "Platform Arial/Georgia/Times New Roman fallback stack, no font binaries embedded. Rendering and redistribution/usage evidence not independently certified.",
     "scripture": "Reference only, verified against taxonomy; no translation text embedded."
   },
   "accessibility": {
@@ -116,6 +122,7 @@
     "reviewedEnglishWording": true,
     "exactMetadataMeasured": true,
     "browserRenderedTypeQA": "pending",
-    "notes": "Two self-contained SVG derivatives embed the real WebP master; visual browser rendering and small-screen inspection still required."
+    "notes": "Corrected previously 7.81px-equivalent reference to 16.25px-equivalent. Original WebP embedded unchanged. Actual browser render, font licensing/appearance, legibility and crop remain pending; candidate not production ready.",
+    "referenceGeometryAt320Px": "16.25px equivalent, not visually certified"
   }
 }
