@@ -13,11 +13,32 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[character]));
 
+// Current Library taxonomy IDs predate the short names shown on Feeling cards.
+// This only resolves approved visual identities; search filtering stays separate.
+const EMOTION_VISUAL_IDS = Object.freeze({
+  anxious: 'anxiety_worry', afraid: 'fear', sad: 'sadness',
+  grieving: 'grief_loss', lonely: 'loneliness', angry: 'anger',
+  hurt: 'hurt_betrayal', rejected: 'rejection', guilty: 'guilt',
+  ashamed: 'shame', insecure: 'insecurity_unworthiness', doubtful: 'doubt',
+  confused: 'confusion_uncertainty', discouraged: 'discouragement',
+  hopeless: 'hopelessness', overwhelmed: 'overwhelm', stressed: 'stress',
+  tired: 'tiredness_weariness', spiritually_dry: 'spiritual_dryness_distance',
+  tempted: 'temptation', impatient: 'impatience_waiting',
+  jealous: 'jealousy_envy', frustrated: 'frustration',
+  numb: 'numbness_emptiness', joyful: 'joy', grateful: 'gratitude',
+  peaceful: 'peace_contentment', hopeful: 'hope', excited: 'excitement',
+  connected: 'love_connection',
+});
+
 function discoveryArtwork(item, registry, locale, label) {
   const filters = item.kind === 'emotion'
     ? toLibraryDiscoveryTaxonomyFilters({ emotions: [item.id] }).emotions
     : toLibraryDiscoveryTaxonomyFilters({ needs: [item.id] }).needs;
-  return findV7Visual(registry, filters.map(id => id.replace('.', ':')), locale, label);
+  const keys = filters.map(id => id.replace('.', ':'));
+  if (item.kind === 'emotion' && EMOTION_VISUAL_IDS[item.id]) {
+    keys.push('emotion:' + EMOTION_VISUAL_IDS[item.id]);
+  }
+  return findV7Visual(registry, keys, locale, label);
 }
 
 function chip(item, selected, locale, registry) {
