@@ -3,7 +3,7 @@
   "assetId": "bqv7-emotion-discouragement-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T17:04:00+09:00",
-  "status": "production_ready",
+  "status": "candidate_built_app_qa_pending",
   "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp",
   "family": "emotion",
   "visualRole": "emotion_tile",
@@ -90,10 +90,14 @@
       "phone320pxQA": "not_performed",
       "builtAppBrowserQA": "not_performed",
       "officialNodeAudit": "not_run"
-    }
+    },
+    "builtAppBrowserQA": "not_performed",
+    "officialNodeAudit": "not_run",
+    "productionCertification": "not_claimed",
+    "notes": "Three real variants and source wording are recorded; phone-size/browser QA and official repository-wide audit remain unverified. Quarantined pending evidence. Do not publish TYPE as production-ready solely from binary metadata."
   },
   "canonicalEmotionId": "discouraged",
-  "bundleStatus": "complete_three_real_files",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
