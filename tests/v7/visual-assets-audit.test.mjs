@@ -315,3 +315,121 @@ test('Needs are allocated across five agents without overlap, independently of q
     ['visual-agent-1','visual-agent-2','visual-agent-3','visual-agent-4','visual-agent-5']
   );
 });
+
+
+async function needV2BundleFixture(t) {
+  const f = await needFixture(t);
+  const id = f.record.assetId;
+  const folder = join(f.root, 'public/v7/images/need');
+  const taxonomyBytes = await readFile(new URL('../../src/features/library/emotion-taxonomy.js', import.meta.url));
+  const sourceDir = join(f.root, 'src/features/library');
+  await mkdir(sourceDir, { recursive: true });
+  await writeFile(join(sourceDir, 'emotion-taxonomy.js'), taxonomyBytes);
+  const sourceBlobSha = createHash('sha1')
+    .update(Buffer.from('blob ' + taxonomyBytes.length))
+    .update(Buffer.from([0])).update(taxonomyBytes).digest('hex');
+  const typeBytes = Buffer.concat([PNG, Buffer.from('verified-type')]);
+  const thumbBytes = Buffer.concat([PNG, Buffer.from('verified-thumb')]);
+  await Promise.all([
+    writeFile(join(folder, id + '-with-text-en.png'), typeBytes),
+    writeFile(join(folder, id + '-thumbnail.png'), thumbBytes)
+  ]);
+  const qc = { imageDecoded: true, dimensionsMeasured: true, sha256Measured: true, visualInspected: true };
+  const variant = (kind, suffix, bytes, extra = {}) => ({
+    kind, imagePath: '/v7/images/need/' + id + suffix + '.png',
+    format: 'png', width: 1, height: 1, fileBytes: bytes.length,
+    sha256: createHash('sha256').update(bytes).digest('hex'), ...extra
+  });
+  f.record.schemaVersion = 2;
+  f.record.canonicalNeedId = 'peace';
+  f.record.bundleStatus = 'complete_three_real_files';
+  f.record.qc = {
+    allThreeLocalWebPDecodingAndSHA256Verified: true,
+    localTypeAndThumbnailInspected: true
+  };
+  f.record.variants = [
+    variant('CLEAN', '', PNG, {
+      qa: { ...qc, anatomyAcceptable: true, noBakedText: true, cropReviewed: true }
+    }),
+    variant('TYPE', '-with-text-en', typeBytes, {
+      locale: 'en',
+      embeddedWording: {
+        label: 'Peace', scriptureReference: 'John 14:27', scriptureTextIncluded: false
+      },
+      qa: { ...qc, spellingCheckedAgainstTaxonomy: true, typeReadableAt320px: true }
+    }),
+    variant('THUMB', '-thumbnail', thumbBytes, {
+      qa: { ...qc, noBakedText: true, subjectReadableAtThumbnail: true, cropReviewed: true }
+    })
+  ];
+  f.record.wordingEvidence = {
+    sourcePath: 'src/features/library/emotion-taxonomy.js',
+    sourceBlobSha, canonicalNeedId: 'peace', locale: 'en',
+    exactLabel: 'Peace', reference: 'John 14:27',
+    scriptureTextIncluded: false
+  };
+  await f.saveNeed();
+  return f;
+}
+
+test('publishes verified V2 Need CLEAN/TYPE/THUMB with canonical Need lookup only', async t => {
+  const f = await needV2BundleFixture(t);
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\\n'));
+  assert.equal(result.counts.completeBundles, 1);
+  assert.deepEqual(result.manifest.byContent['need:peace'], [f.record.assetId]);
+  assert.equal(result.manifest.byContent['need:hope'], undefined);
+  assert.deepEqual(result.manifest.assets[0].variants.map(v => v.kind), ['with_text', 'thumbnail']);
+  assert.equal(result.manifest.assets[0].variants[0].embeddedText, 'Peace');
+});
+
+test('rejects V2 Need with mismatched text or unsupported Scripture reference', async t => {
+  const f = await needV2BundleFixture(t);
+  f.record.variants[1].embeddedWording.label = 'Courage';
+  await f.saveNeed();
+  let result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /TYPE embedded wording does not match reviewed taxonomy/);
+  assert.deepEqual(result.manifest.assets, []);
+  f.record.variants[1].embeddedWording.label = 'Peace';
+  f.record.wordingEvidence.reference = 'Proverbs 1:1';
+  f.record.variants[1].embeddedWording.scriptureReference = 'Proverbs 1:1';
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /Scripture reference is not approved/);
+});
+
+test('rejects V2 Need when typography source revision or canonical Need ID drifts', async t => {
+  const f = await needV2BundleFixture(t);
+  f.record.wordingEvidence.sourceBlobSha = '0'.repeat(40);
+  await f.saveNeed();
+  let result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /TYPE taxonomy source revision changed/);
+  f.record.wordingEvidence.sourceBlobSha = createHash('sha1')
+    .update(Buffer.from('blob ' + (await readFile(new URL('../../src/features/library/emotion-taxonomy.js', import.meta.url))).length))
+    .update(Buffer.from([0]))
+    .update(await readFile(new URL('../../src/features/library/emotion-taxonomy.js', import.meta.url)))
+    .digest('hex');
+  f.record.wordingEvidence.canonicalNeedId = 'hope';
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /TYPE content ID or locale cannot be resolved/);
+});
+
+test('rejects V2 Need variants falsely claiming reviewed typography or containing Scripture prose', async t => {
+  const f = await needV2BundleFixture(t);
+  f.record.variants[1].qa.typeReadableAt320px = false;
+  await f.saveNeed();
+  let result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /TYPE typography review evidence is incomplete/);
+  f.record.variants[1].qa.typeReadableAt320px = true;
+  f.record.variants[1].embeddedWording.scriptureTextIncluded = true;
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'), /Scripture prose requires a separately verified text-source contract/);
+});
