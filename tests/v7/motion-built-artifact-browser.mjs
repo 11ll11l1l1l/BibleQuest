@@ -87,7 +87,7 @@ try {
       // Enter activates the actual reading route, including in reduced motion.
       await heroAction.focus();
       await page.keyboard.press('Enter');
-      await page.locator('[data-route-link="learn"][aria-current="page"]').waitFor();
+      await page.locator('[data-route-link="reader"][aria-current="page"]').waitFor();
       assert.ok((await page.evaluate(() => location.hash)).startsWith('#/reader'));
       await page.locator('[data-route-link="home"]').click();
       await feature.waitFor({ state: 'visible' });
@@ -111,16 +111,16 @@ try {
 
       // Keyboard Enter and repeated destination changes must not get stuck on
       // a stale selected state or delay activation behind animation.
-      const learn = page.locator('[data-route-link="learn"]');
-      await learn.focus();
+      const bible = page.locator('[data-route-link="reader"]');
+      await bible.focus();
       await page.keyboard.press('Enter');
-      await page.locator('[data-route-link="learn"][aria-current="page"]').waitFor();
+      await page.locator('[data-route-link="reader"][aria-current="page"]').waitFor();
       if (width === 390) {
         const file = 'artifacts/v7/motion-interacting-' + locale + '-' + reducedMotion + '-390.png';
         await page.screenshot({ path: file, animations: 'disabled' });
         files.push(file);
       }
-      for (const destination of ['home', 'learn', 'home']) {
+      for (const destination of ['home', 'reader', 'home']) {
         await page.locator('[data-route-link="' + destination + '"]').click();
         await page.locator('[data-route-link="' + destination + '"][aria-current="page"]').waitFor();
         assert.equal(await nav.locator('[aria-current="page"]').count(), 1);
