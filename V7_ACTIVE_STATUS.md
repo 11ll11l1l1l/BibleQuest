@@ -1,12 +1,22 @@
 # BibleQuest V7 Active Status
 
-Updated: **2026-10-08 JST**  
-State: **V7 initial release on main; four parallel image-first closure lanes active**  
+Updated: **2026-10-09 JST**  
+State: **V7 initial foundation on main; image-first release incomplete; Lane A and Lane D active, Lanes B and C core work closed**  
 Development branch: `v7/development`  
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
 Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
+
+## Integration update — 2026-10-09 JST
+
+The 2026-10-08 baseline below is retained as historical evidence, **not** the current blocker list.
+
+- **Development integration:** exact-head validated #1400 (Lane A browser/three-binary artwork QA, including independently triggered manual integrity regressions) merged at `0b9f44545820eed1e574b77d5985aa96902b7b1b`; exact-head validated #1401 (Lane B reject embedded data/blob/file/javascript image, derivative and fallback resources) merged at `6becd6d74a392f566e6ef5daf54307f527741945`. Both changes are present on `v7/development` and were read back by blob SHA after merge. **Their successful individual PR checks do not by themselves certify the resulting combined release SHA.**
+- **Lane statuses:** A #1300 remains **open** for image production/binary/artistic coverage. B #1301 is **closed** for core Library/approval/deck delivery; follow-up image-URL fail-closed hardening #1401 is integrated. C #1302 is **closed** after merged typing focus #1387, sharing-controls #1392 and privacy/auth #1396/#1397. D #1303 remains **open**, owning consolidated release gates and deployment.
+- **Artwork candidates:** Agent-created image bundles #1398 and #1399 remain **drafts** with built-app QA pending in their records. A verified file/URL check or CI screenshot is not independent visual, text, rights or publication approval. Keep pending assets excluded from production registry until actual full checks pass.
+- **Stale PR cleanup:** older Lane A #1377, #1389 and #1391 are closed as superseded by merged #1400; older Lane C #1257 and #1390 closed as superseded. Old main-target #1354 is closed, not deployed as the final V7 image-first release.
+- **Next strict convergence:** integrate only artwork that passes binary SHA/dimensions, rights, locale/type and built browser QA; consume B's immutable approval evidence; certify **one** exact combined candidate at 320/390/430 plus tablet, normal/reduced motion, EN/TL/CEB/ILO as supported, auth/tenant privacy, PWA/offline/performance, and deployed identity. No unverified promotion to `main`.
 
 ## Command contract
 
@@ -20,7 +30,7 @@ Resolve the live issue below and continue immediately. Do not ask which phase or
 
 The old **A1/A2/A3/A4** subdivision is retired. The old phase-specific A–D map is historical only for remaining V7 work.
 
-## Current factual baseline — verified 2026-10-08
+## Historical factual baseline — verified 2026-10-08 (superseded by the update above)
 
 - **V7 initial release merged into `main`** through PR #1335. This is the already-shipped foundation, not proof the newer image-first requirements have passed.
 - **Lane A core content complete:** 300 original audited devotionals with EN/TL/CEB/ILO, 30 canonical emotions, 8 launch books and 5 first-party Past Teachings (#1334 plus earlier integrated batches).
