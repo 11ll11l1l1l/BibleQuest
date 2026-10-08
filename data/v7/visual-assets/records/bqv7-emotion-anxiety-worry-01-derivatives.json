@@ -203,11 +203,11 @@
         "kind": "THUMB",
         "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
         "format": "svg",
-        "width": 400,
-        "height": 500,
-        "fileBytes": 67178,
-        "sha256": "244f4625563218cef1c4e975b13a65c210cd815c68fae36b16385e30a8dbf64c",
-        "gitBlobSha": "86f4f9b2995d25651bd22d0beb79ed55370676c7",
+        "width": 384,
+        "height": 480,
+        "fileBytes": 67330,
+        "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
+        "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
         "independentHashRecomputed": true,
         "geometry": {
           "viewBox": "0 0 400 500",
@@ -242,6 +242,25 @@
       },
       "visualInspected": false,
       "browserRendered": false
+    },
+    "binaryReverification20261009": {
+      "method": "GitHub base64 bytes decoded independently; SHA-256 recomputed; SVG source embedding matched CLEAN exactly",
+      "clean": {
+        "bytes": 50182,
+        "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61"
+      },
+      "type": {
+        "bytes": 52276,
+        "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa"
+      },
+      "thumb": {
+        "bytes": 67330,
+        "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
+        "viewBox": "0 0 384 480",
+        "embeddedCleanByteIdentical": true
+      },
+      "browserQa": "pending",
+      "officialAudit": "not_run"
     }
   }
 }
