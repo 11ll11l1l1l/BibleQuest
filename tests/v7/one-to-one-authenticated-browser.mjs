@@ -443,6 +443,34 @@ try {
   await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
   checks.push('supported-locales-en-tl-ceb-with-deep-link-preservation-on-mobile-width');
 
+  stage = 'mentee-mobile-responsive-reading';
+  for (const width of [320, 390, 430]) {
+    await menteePage.setViewportSize({ width, height: 900 });
+    const metrics = await menteePage.locator('[data-lesson-runner]').evaluate(root => {
+      const reading = root.querySelector('.bq-lesson-reading')?.getBoundingClientRect();
+      const response = root.querySelector('[data-lesson-response]')?.getBoundingClientRect();
+      const primary = root.querySelector('[data-lesson-next], [data-lesson-complete]')?.getBoundingClientRect();
+      const copy = root.querySelector('.bq-lesson-copy');
+      return {
+        width: innerWidth, documentWidth: document.documentElement.scrollWidth,
+        readingLeft: reading?.left, readingRight: reading?.right, readingWidth: reading?.width,
+        responseLeft: response?.left, responseRight: response?.right,
+        primaryHeight: primary?.height, primaryLeft: primary?.left, primaryRight: primary?.right,
+        copyFontSize: copy ? parseFloat(getComputedStyle(copy).fontSize) : 0,
+      };
+    });
+    assert.equal(metrics.width, width, 'Unexpected mobile viewport width.');
+    assert.ok(metrics.documentWidth <= width + 1, `Lesson overflows the ${width}px viewport.`);
+    assert.ok(metrics.readingWidth >= 200 && metrics.readingLeft >= -1 && metrics.readingRight <= width + 1,
+      `Lesson reading card clips at ${width}px.`);
+    assert.ok(metrics.responseLeft >= -1 && metrics.responseRight <= width + 1, `Private-response editor clips at ${width}px.`);
+    assert.ok(metrics.primaryHeight >= 44 && metrics.primaryLeft >= -1 && metrics.primaryRight <= width + 1,
+      `Next-step action is not touch-safe at ${width}px.`);
+    assert.ok(metrics.copyFontSize >= 16, `Lesson text is too small at ${width}px.`);
+  }
+  await menteePage.setViewportSize({ width: 390, height: 900 });
+  checks.push('authenticated-320-390-430-reading-editor-and-primary-action-layout');
+
   stage = 'mentee-complete-seven-step-journey';
   for (const [type, next] of [['apply', true], ['pray', true], ['action', false]]) {
     const heading = menteePage.locator(`[data-lesson-heading][data-step-type="${type}"]`);
