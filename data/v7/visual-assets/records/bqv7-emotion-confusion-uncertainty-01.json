@@ -77,7 +77,40 @@
     "rightsClear": true,
     "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices.",
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
-    "localTypeAndThumbnailInspected": true
+    "localTypeAndThumbnailInspected": true,
+    "independentGitHubBinaryVerification20261009": {
+      "method": "Read live GitHub base64 blobs, independently decode RIFF/WebP VP8 dimensions and recompute SHA-256 in JavaScript; visually inspect fetched exact TYPE and THUMB image bytes",
+      "sourceBranch": "v7/development",
+      "sourceCommitAtRead": "9116dbb32a9f3a0a4ddab6bfd4c58b843a0d1c80",
+      "verified": {
+        "CLEAN": {
+          "gitBlobSha": "eb4acee9743323aa347294a052156d866495074b",
+          "bytes": 112688,
+          "width": 1024,
+          "height": 1024,
+          "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2"
+        },
+        "TYPE": {
+          "gitBlobSha": "74a0d60c613d2d1bb12c371439b4fb1a4cfe09be",
+          "bytes": 111034,
+          "width": 960,
+          "height": 1200,
+          "sha256": "4cf085ed61be03a186e409da2a6f05c91e9dc3859d8c22da1ded029d02151be5"
+        },
+        "THUMB": {
+          "gitBlobSha": "a33fc2df9e0fe7d440d4a22f6a072da1d1f346de",
+          "bytes": 34634,
+          "width": 384,
+          "height": 480,
+          "sha256": "b33b098f9b21c4a77cba87e37e978d7a331c5f40537ea647d302e69ec51d7e26"
+        }
+      },
+      "visualReview": "Exact fetched TYPE label 'Confused / uncertain' and reference 'James 1:5' visually inspected at full resolution; THUMB crop and divergent choices visually inspected. No generated pseudo-lettering seen.",
+      "exact320pxRenderedQA": "not_performed_this_run",
+      "builtAppBrowserQA": "not_performed",
+      "officialNodeAudit": "not_run",
+      "releaseCertification": "not_claimed"
+    }
   },
   "canonicalEmotionId": "confused",
   "bundleStatus": "complete_three_real_files",
