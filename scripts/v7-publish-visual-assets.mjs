@@ -44,6 +44,16 @@ export async function publishV7VisualAssets({ root = REPO_ROOT, outDir } = {}) {
         continue;
       }
       if (record.status !== 'production_ready') continue;
+      // Stale declarations from image agents are quarantined, never treated
+      // as permission to bypass the strict published-asset schema.
+      const permittedSource = ['generated', 'licensed', 'public_domain', 'owned'];
+      const compatibleVariants = record.variants === undefined ||
+        (Array.isArray(record.variants) && record.variants.every(variant =>
+          ['with_text', 'thumbnail'].includes(variant?.kind)));
+      if (!permittedSource.includes(record.rights?.sourceType) || !compatibleVariants) {
+        quarantined.push(name);
+        continue;
+      }
       if (name !== record.assetId + '.json') {
         throw new Error('Malformed V7 production-ready sidecar: ' + name);
       }
