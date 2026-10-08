@@ -52,6 +52,9 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   open.type = 'button';
   open.className = 'bq-v7-content-card__action';
   open.setAttribute('aria-label', labels.action + ': ' + item.title);
+  // Keep the reviewed, localized title in the action's DOM text for browser
+  // audits and non-visual consumers; CSS hides duplicate visible lettering.
+  open.textContent = labels.action + ': ' + item.title;
   open.dataset.libraryItem = String(item.id);
   // The Library page also delegates [data-library-item] events for legacy
   // cards; stop bubbling so a visual-card click navigates exactly once.
