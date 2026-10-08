@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-love-connection-01",
+  "agentId": "visual-agent-5",
+  "status": "candidate_three_real_files_pending_type_font_browser_QA",
+  "bundleStatus": "three_files_present_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "connected",
+  "canonicalEmotionId": "connected",
+  "queueConcept": "love_connection",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 6563,
+  "sha256": "c2d67d0e204de35cc02ed38e515933457c5d76c661b8aeb2e4505aebe9e4ef2c",
+  "focalPoint": {
+    "x": 0.5,
+    "y": 0.48
+  },
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "concept": "Two friends reach across a community table to hold hands during a caring conversation, distinct from gratitude's embrace and bouquet.",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 6563,
+      "sha256": "c2d67d0e204de35cc02ed38e515933457c5d76c661b8aeb2e4505aebe9e4ef2c",
+      "altText": "Two friends smile and reach across a table to hold hands during a caring conversation.",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.48
+      },
+      "cropIntent": "full square",
+      "qa": {
+        "localAnalogousSceneInspected": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "sourceOriginality": "original programmatic vector",
+        "browserRender": "pending"
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 7138,
+      "sha256": "76e566c5b0a1bb37f7868d2c75d7d6bc5d92a8be015cace70687b0b329bf16cc",
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Loving / connected",
+        "scriptureReference": "John 13:34-35",
+        "scriptureTextIncluded": false
+      },
+      "altText": "Two friends hold hands. Embedded English words: Loving / connected; John 13:34-35.",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.61
+      },
+      "cropIntent": "4:5 portrait with 320px editorial title band",
+      "qa": {
+        "spellingCheckedAgainstTaxonomy": true,
+        "scriptureReferenceVerified": true,
+        "visualInspected": false,
+        "typeReadableAt320px": false,
+        "fontRenderingVerified": false,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 6586,
+      "sha256": "fa1f94001e40e40ea515f038efe2fb121cd60427345a2469acc5d514d1ed5ffc",
+      "altText": "Two friends smile while reaching across a table to hold hands.",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 103,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "aspect": "4:5"
+      },
+      "qa": {
+        "cropReviewed": true,
+        "localAnalogousSceneInspected": true,
+        "visualInspected": true,
+        "browserRender": "pending"
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "connected",
+    "locale": "en",
+    "exactLabel": "Loving / connected",
+    "reference": "John 13:34-35",
+    "scriptureTextIncluded": false
+  },
+  "rights": {
+    "sourceType": "original_programmatic_vector",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original vector paths created for BibleQuest; no stock source",
+    "fontRights": "No font file embedded or redistributed; fallback rendering not yet verified",
+    "scripture": "Reference only; no Bible prose"
+  },
+  "accessibility": {
+    "altText": "Two friends share a caring conversation while holding hands across a table.",
+    "fallback": "CLEAN plus localized accessible live taxonomy label; English TYPE is not for tl/ceb/ilo",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "cleanAndThumbnailSceneInspected": true,
+    "threeSeparateFiles": true,
+    "sourceVisualDiversityChecked": true,
+    "typographyBrowserReview": "pending",
+    "fontRightsAndRendering": "pending",
+    "builtAppBrowserQA": "pending",
+    "visualAudit": "not_run",
+    "releaseReady": false
+  }
+}
