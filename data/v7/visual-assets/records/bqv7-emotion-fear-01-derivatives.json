@@ -8,7 +8,7 @@
   "contentType": "emotion",
   "contentId": "fear",
   "canonicalEmotionId": "afraid",
-  "status": "three_files_present_type_mobile_qa_failed",
+  "status": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
   "variants": [
     {
       "kind": "CLEAN",
@@ -37,9 +37,9 @@
       "format": "svg",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 104217,
-      "sha256": "30a68959fca7345a248898a8e4f8a273543971e1d132f2d7b6022f09accdd8ac",
-      "gitBlobSha": "4050d517e94bbe8975894015f3443287324d8de5",
+      "fileBytes": 104219,
+      "sha256": "9784268bc916b3d0946e831dd4ddf239a4d93474b4ed5e5819c249ad1a922c71",
+      "gitBlobSha": "859123c070a50f727890d73ea77f2901e9980206",
       "includedWording": "Afraid",
       "includedReference": "Psalm 34:4",
       "wordingSource": {
@@ -53,7 +53,7 @@
       "translation": null,
       "revision": null,
       "typography": {
-        "method": "SVG with embedded source WebP, Noto Serif Display SemiBold title converted to vector outlines, reference as vector text",
+        "method": "Existing outlined Noto Serif Display title plus revised Noto Sans reference: 48px at 1024px, 15px geometrical equivalent at 320px; raster/browser legibility not yet checked",
         "fontLicense": "SIL OFL-1.1",
         "fontLicenseEvidence": "fonts-noto-core /usr/share/doc/fonts-noto-core/copyright",
         "fontBinaryRedistributed": false
@@ -65,7 +65,24 @@
         "sourceTaxonomyVerified": true,
         "geometryChecked": true,
         "browserRender": "pending",
-        "phoneReadability": "pending"
+        "phoneReadability": "pending",
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": false,
+        "visualInspected": false
+      },
+      "wordingEvidence": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "canonicalEmotionId": "afraid",
+        "locale": "en",
+        "exactLabel": "Afraid",
+        "reference": "Psalm 34:4",
+        "scriptureTextIncluded": false
+      },
+      "embeddedWording": {
+        "label": "Afraid",
+        "scriptureReference": "Psalm 34:4",
+        "scriptureTextIncluded": false
       }
     },
     {
@@ -114,17 +131,18 @@
     "browserQA": "pending",
     "staticSvgSafetyReviewed": true,
     "svgSourceWebPByteIdentityVerified": true,
-    "typeReferenceMobileReadable": false,
-    "referenceFontSizeAt1024Px": 27,
-    "referenceEquivalentAt320Px": 8.4375,
-    "referenceReadabilityIssue": "SVG TYPE reference is only 8.44px at a 320px card width; requires re-export with larger type before production.",
+    "typeReferenceMobileReadable": null,
+    "referenceFontSizeAt1024Px": 48,
+    "referenceEquivalentAt320Px": 15,
+    "referenceReadabilityIssue": "Previous 8.44px reference corrected to 15px equivalent by 48px SVG font-size. Exact rendered mobile typography/contrast remains unverified.",
     "gitHubEmbeddedSvgWriteAttempt": "blocked_by_connector_safety_check",
-    "productionReady": false
+    "productionReady": false,
+    "typeReferenceMobileGeometryPassed": true
   },
-  "bundleStatus": "three_files_present_type_mobile_qa_failed",
+  "bundleStatus": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
   "inspectionEvidence": {
-    "inspectedAt": "2026-10-08T20:01:47+09:00",
-    "inspectionMethod": "Exact v7/development SVG source retrieved through GitHub; independent JS SHA-256 over UTF-8; embedded WebP base64 compared byte-for-byte with canonical CLEAN; static SVG safety and crop geometry inspected; exact browser raster rendering NOT performed.",
+    "inspectedAt": "2026-10-08T12:07:12.064Z",
+    "inspectionMethod": "Exact GitHub SVG source inspected and modified; verified embedded WebP unchanged, reference exact taxonomy wording, static font geometry. No browser screenshot, raster visual QA, or WebP derivative export was performed.",
     "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
     "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
     "canonicalEmotionId": "afraid",
@@ -140,15 +158,15 @@
     },
     "type": {
       "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
-      "gitBlobSha": "4050d517e94bbe8975894015f3443287324d8de5",
-      "sha256": "30a68959fca7345a248898a8e4f8a273543971e1d132f2d7b6022f09accdd8ac",
-      "fileBytes": 104217,
+      "gitBlobSha": "859123c070a50f727890d73ea77f2901e9980206",
+      "sha256": "9784268bc916b3d0946e831dd4ddf239a4d93474b4ed5e5819c249ad1a922c71",
+      "fileBytes": 104219,
       "width": 1024,
       "height": 1280,
       "staticSafe": true,
       "embeddedSourceExact": true,
-      "referenceFontPx": 27,
-      "referenceAt320Px": 8.4375,
+      "referenceFontPx": 48,
+      "referenceAt320Px": 15,
       "visualInspected": false,
       "phoneReadabilityPassed": false
     },
@@ -176,6 +194,6 @@
       "visualInspected": false,
       "browserRendered": false
     },
-    "nextAction": "Re-export TYPE with exact-case Psalm 34:4 reference at >=44px on 1024px art, render and inspect at 320px; rasterize 4:5 thumbnail, inspect at 80x100; then independently audit and consolidate original schema V2 master. Keep current derivative candidate quarantined."
+    "nextAction": "Render corrected TYPE SVG in browser at 320px, independently inspect actual text contrast and glyph rendering; rasterize TYPE and THUMB to separate WebP, inspect thumbnail at 80x100; run Node audit, then consolidate schema V2 original master only if all gates pass."
   }
 }
