@@ -43,7 +43,6 @@
   cursor: pointer;
   scroll-snap-align: center;
   scroll-snap-stop: always;
-  touch-action: pan-x pan-y;
   opacity: .84;
 }
 .bq-v7-visual-deck__card[aria-current="true"] {
@@ -193,3 +192,6 @@
   .bq-v7-content-card { grid-template-columns: minmax(160px, .85fr) minmax(0, 1fr); }
   .bq-v7-content-card__cover { aspect-ratio: 3/4; }
 }
+
+.bq-v7-visual-deck__image img[hidden],
+.bq-v7-content-card__cover img[hidden] { display: none; }
