@@ -4,6 +4,7 @@ import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscove
 import { renderLibraryDiscoveryEmptyState, renderLibraryEmotionDiscovery } from './emotion-discovery-panel.js';
 import { normalizeLibraryDiscoveryQuery, toLibraryDiscoveryRequest, toggleLibraryDiscoverySelection } from './emotion-taxonomy.js';
 import { consumeLibraryReturnFocus } from './navigation-focus.js';
+import { loadV7VisualRegistry, findV7Visual } from './visual-assets.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -19,6 +20,7 @@ export function createLibraryPage({
   }
   if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
   const t = (key, values) => localization.t(key, { values });
+  let visualRegistry = null;
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
     ? t('v7.library.type.' + type.id) : type.label;
   const typeOptions = () => registry.list().map(type =>
@@ -30,7 +32,15 @@ export function createLibraryPage({
       ? t('v7.library.description.' + item.contentType) : view.supportingText);
     const readingTime = view.readingMinutes
       ? `<span>${escapeHtml(t('v7.library.readingTime', { minutes: view.readingMinutes }))}</span>` : '';
-    return `<li class="bq-library-card"><button type="button" class="bq-library-card__open" data-library-item="${escapeHtml(view.id)}"><span class="bq-eyebrow">${escapeHtml(typeLabel(definition))}</span><span class="bq-library-card__title">${escapeHtml(view.title)}</span><span>${escapeHtml(supportingText)}</span><span class="bq-library-card__meta"><span lang="${escapeHtml(view.locale || '')}">${escapeHtml(view.locale || t('v7.library.languageUnknown'))}</span> ${readingTime}</span></button></li>`;
+    const keys = [`${item.contentType}:${item.id}`, ...(item.taxonomyLinks || [])
+      .filter(link => link.kind === 'emotion')
+      .map(link => link.id.replace('.', ':'))];
+    const visual = findV7Visual(visualRegistry, keys, view.locale, view.title);
+    const image = visual
+      ? `<img src="${escapeHtml(visual.src)}" alt="${escapeHtml(visual.alt)}" loading="lazy" decoding="async" style="object-position:${Math.round(visual.focalPoint.x * 100)}% ${Math.round(visual.focalPoint.y * 100)}%">`
+      : '';
+    const media = `<span class="bq-library-card__media ${visual ? 'has-approved-art' : 'has-visual-fallback'}">${image}</span>`;
+    return `<li class="bq-library-card"><button type="button" class="bq-library-card__open" data-library-item="${escapeHtml(view.id)}">${media}<span class="bq-eyebrow">${escapeHtml(typeLabel(definition))}</span><span class="bq-library-card__title">${escapeHtml(view.title)}</span><span>${escapeHtml(supportingText)}</span><span class="bq-library-card__meta"><span lang="${escapeHtml(view.locale || '')}">${escapeHtml(view.locale || t('v7.library.languageUnknown'))}</span> ${readingTime}</span></button></li>`;
   };
 
   return Object.freeze({
@@ -93,7 +103,7 @@ export function createLibraryPage({
         const locale = localization.getLocale();
         const key = `${locale}:${JSON.stringify(discoveryQuery)}`;
         if (key === lastDiscoveryRenderKey) return;
-        emotionDiscovery.innerHTML = renderLibraryEmotionDiscovery(discoveryQuery, locale);
+        emotionDiscovery.innerHTML = renderLibraryEmotionDiscovery(discoveryQuery, locale, visualRegistry);
         lastDiscoveryRenderKey = key;
       };
       let disposed = false;
@@ -274,6 +284,12 @@ export function createLibraryPage({
       });
       render(service.getState());
       started = true;
+      void loadV7VisualRegistry().then(registry => {
+        if (disposed || !registry) return;
+        visualRegistry = registry;
+        lastDiscoveryRenderKey = '';
+        render(service.getState());
+      });
       void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
