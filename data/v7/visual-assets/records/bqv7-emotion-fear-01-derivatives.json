@@ -8,7 +8,7 @@
   "contentType": "emotion",
   "contentId": "fear",
   "canonicalEmotionId": "afraid",
-  "status": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
+  "status": "candidate_svg_policy_failure",
   "variants": [
     {
       "kind": "CLEAN",
@@ -143,9 +143,17 @@
     "productionReady": false,
     "typeReferenceMobileGeometryPassed": true,
     "typeReferenceVectorOutlined": true,
-    "typeReferenceIsolated320RasterPreviewPassed": true
+    "typeReferenceIsolated320RasterPreviewPassed": true,
+    "svgPolicyCompliance": "FAIL",
+    "prohibitedEmbeddedDataUriVariantPaths": [
+      "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
+      "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg"
+    ],
+    "checkedOn": "2026-10-09",
+    "builtAppBrowserQA": "pending",
+    "officialNodeAudit": "not_run"
   },
-  "bundleStatus": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
+  "bundleStatus": "partial_svg_policy_failure_browser_qa_pending",
   "inspectionEvidence": {
     "inspectedAt": "2026-10-08T12:07:12.064Z",
     "inspectionMethod": "Existing CLEAN/title unchanged; Noto Sans SemiBold reference converted to glyph outlines, locally rasterized at 320px and inspected in isolation. Full artwork browser/app QA still pending.",
