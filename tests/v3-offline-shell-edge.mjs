@@ -108,6 +108,8 @@ assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offl
 assert(workerSource.includes("(?:import|export)(?!\\s*\\()\\s*"),'Offline recursive warm must recognize minified static import/export syntax.');
 assert(workerSource.includes("async function manifestGraphUrls(seedUrls)"),'Offline shell worker must derive deterministic deployable dependencies from the Vite manifest.');
 assert(workerSource.includes('MANIFEST_SHELL_EXTENSIONS')&&workerSource.includes('manifestUrls')&&workerSource.includes('cache.match(raw,{ignoreVary:true})'),'Offline shell worker must validate every Vite JS/CSS cache entry before signaling success.');
+assert(workerSource.includes("const PUBLIC_V7_OFFLINE_ARTIFACTS=['data/v7/library-public-catalog.json','data/v7/visual-assets.json'];"),'Public V7 Library and audited visual index must be declared for offline installation.');
+assert(workerSource.includes('isPublicV7Artifact(url)')&&workerSource.includes('reviewedPublicUrls')&&workerSource.includes('...manifestUrls,...reviewedPublicUrls'),'Fresh offline install must prewarm and cache-check only public reviewed V7 files.');
 assert(workerSource.includes("vite-manifest.json"),'Offline shell worker must read the deployable Vite manifest.');
 assert(workerSource.includes("record?.isEntry")&&workerSource.includes("record.imports"),'Offline shell Vite-manifest warm must traverse entry/static import records.');
 assert(workerSource.includes("record.dynamicImports"),'Offline shell Vite-manifest warm must traverse dynamic import records for route/startup chunks.');
