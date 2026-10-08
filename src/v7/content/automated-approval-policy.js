@@ -1,3 +1,5 @@
+import { evaluateV7VisualAssetGates, visualAssetEvidenceSnapshot } from './visual-asset-review.js';
+
 export const V7_LIBRARY_APPROVAL_POLICY_ID = 'biblequest.v7.library-release';
 export const V7_LIBRARY_APPROVAL_POLICY_VERSION = '1.0.0';
 
@@ -122,36 +124,6 @@ function normalizeSecondPass(secondPass, revision) {
   });
 }
 
-function visualAssetGates(item) {
-  const assets = item?.visualAssets ?? item?.visual_assets ?? item?.body?.visualAssets ?? item?.body?.visual_assets;
-  const rejectionReasons = [], repairReasons = [];
-  if (assets === undefined || assets === null) return { rejectionReasons, repairReasons };
-  if (!Array.isArray(assets)) return { rejectionReasons: ['visual_asset_manifest_invalid'], repairReasons };
-  for (const [index, asset] of assets.entries()) {
-    const prefix = `visual_asset_${index}`;
-    if (!asset || typeof asset !== 'object' || Array.isArray(asset)) {
-      rejectionReasons.push(`${prefix}_invalid`);
-      continue;
-    }
-    const source = asset.source && typeof asset.source === 'object' ? asset.source : {};
-    const provenance = asset.provenance && typeof asset.provenance === 'object' ? asset.provenance : {};
-    const sourceId = clean(asset.sourceUri || asset.source_uri || asset.sourceRef || source.uri || source.ref || source.id);
-    const provenanceRefs = provenance.evidenceRefs || provenance.evidence_refs || asset.provenanceRefs || asset.provenance_refs;
-    if (!sourceId || !Array.isArray(provenanceRefs) || !provenanceRefs.some(ref => clean(ref))) {
-      rejectionReasons.push(`${prefix}_provenance_unverified`);
-    }
-    const rights = asset.rights && typeof asset.rights === 'object' ? asset.rights : {};
-    const rightsRefs = rights.evidenceRefs || rights.evidence_refs;
-    if (rights.status !== 'verified' || !Array.isArray(rights.allowedUses) || !rights.allowedUses.includes('display')
-      || !Array.isArray(rightsRefs) || !rightsRefs.some(ref => clean(ref))) {
-      rejectionReasons.push(`${prefix}_rights_unverified`);
-    }
-    if (!clean(asset.alt || asset.altText || asset.alt_text)) repairReasons.push(`${prefix}_alt_missing`);
-    if (!clean(asset.fallback || asset.fallbackUrl || asset.fallback_url)) repairReasons.push(`${prefix}_fallback_missing`);
-  }
-  return { rejectionReasons, repairReasons };
-}
-
 function rightsHardFailure(item) {
   if (item?.rights?.status !== 'verified') return 'rights_not_verified';
   if (!Array.isArray(item?.rights?.allowedUses) || item.rights.allowedUses.length === 0) return 'no_permitted_use';
@@ -194,7 +166,7 @@ export function evaluateV7LibraryApproval({
   const repairFailures = normalized.filter(row => !row.terminal && row.result === 'fail').map(row => row.id);
   const unknownCriteria = normalized.filter(row => row.result === 'unknown').map(row => row.id);
   const hardBoundary = rightsHardFailure(item);
-  const visualBoundary = visualAssetGates(item);
+  const visualBoundary = evaluateV7VisualAssetGates(item);
   const normalizedSecondPass = normalizeSecondPass(secondPass, revision);
 
   const primaryEvaluators = new Set(normalized.filter(row => row.result !== 'unknown').map(row => row.evaluator));
@@ -236,6 +208,8 @@ export function evaluateV7LibraryApproval({
     policyVersion: clean(policyVersion) || V7_LIBRARY_APPROVAL_POLICY_VERSION,
     decidedAt: new Date(decidedAt).toISOString(),
     rightsStatusSnapshot: clean(item?.rights?.status),
+    visualAssetEvidenceSnapshot: visualAssetEvidenceSnapshot(item),
+    visualAssetEvidence: Object.freeze(visualBoundary.assetEvidence.map(row => Object.freeze(row))),
     criteria: normalized,
     secondPass: normalizedSecondPass,
     rejectionReasons: Object.freeze(rejectionReasons),
@@ -255,8 +229,9 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.itemId === item?.id
     && decision.revision === item?.revision
     && decision.rightsStatusSnapshot === 'verified'
-    && visualAssetGates(item).rejectionReasons.length === 0
-    && visualAssetGates(item).repairReasons.length === 0
+    && evaluateV7VisualAssetGates(item).rejectionReasons.length === 0
+    && evaluateV7VisualAssetGates(item).repairReasons.length === 0
+    && (visualAssetEvidenceSnapshot(item) === null || decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item))
     && decision.auditable === true
     && Array.isArray(decision.criteria)
     && decision.criteria.length === criteriaFor(item?.type).length
@@ -267,4 +242,45 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
 
 export function requiredV7LibraryApprovalCriteria(contentType) {
   return criteriaFor(contentType);
+}
+
+/**
+ * Deterministic, JSON-serializable Lane B -> Lane D evidence handoff.
+ * Contains exact-revision outcomes and repair codes, never reviewer secrets.
+ * No wall-clock timestamp is inserted: byte-identical input gives identical output.
+ */
+export function createV7LibraryAssetDecisionReport(decisions = []) {
+  if (!Array.isArray(decisions)) throw new TypeError('decisions must be an array');
+  const entries = decisions.map(row => {
+    if (!row || !['auto_approved', 'needs_repair', 'rejected'].includes(row.outcome)
+      || !clean(row.itemId) || !clean(row.revision)
+      || row.policyId !== V7_LIBRARY_APPROVAL_POLICY_ID
+      || row.policyVersion !== V7_LIBRARY_APPROVAL_POLICY_VERSION)
+      throw new TypeError('decision missing versioned Lane B policy or revision');
+    return {
+      itemId: row.itemId,
+      revision: row.revision,
+      contentType: row.contentType,
+      outcome: row.outcome,
+      policyId: row.policyId,
+      policyVersion: row.policyVersion,
+      visualAssetEvidence: row.visualAssetEvidence || [],
+      rejectionReasons: row.rejectionReasons || [],
+      repairReasons: row.repairReasons || []
+    };
+  }).sort((a,b) => (a.itemId + ':' + a.revision).localeCompare(b.itemId + ':' + b.revision));
+  const keys = entries.map(row => row.itemId + ':' + row.revision);
+  if (new Set(keys).size !== keys.length) throw new TypeError('duplicate item revision in Lane B report');
+  return {
+    schemaVersion: 1,
+    reportType: 'biblequest.v7.library.visual-asset-decisions',
+    policyId: V7_LIBRARY_APPROVAL_POLICY_ID,
+    policyVersion: V7_LIBRARY_APPROVAL_POLICY_VERSION,
+    counts: {
+      auto_approved: entries.filter(row => row.outcome === 'auto_approved').length,
+      needs_repair: entries.filter(row => row.outcome === 'needs_repair').length,
+      rejected: entries.filter(row => row.outcome === 'rejected').length
+    },
+    entries
+  };
 }
