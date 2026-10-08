@@ -4,7 +4,7 @@
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T14:09:31+09:00",
   "status": "production_ready",
-  "bundleStatus": "complete",
+  "bundleStatus": "partial_clean_master_only",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -53,7 +53,11 @@
     "translation": null,
     "translationRevision": null,
     "bibleVerseTextEmbedded": false,
-    "accessibilityFallback": "Use CLEAN image plus live localized label when no approved locale-specific TYPE exists."
+    "accessibilityFallback": "Use CLEAN image plus live localized label when no approved locale-specific TYPE exists.",
+    "expectedCanonicalEmotionId": "tempted",
+    "expectedExactTaxonomyLabel": "Tempted",
+    "taxonomySourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "typeMatchesTaxonomy": false
   },
   "accessibility": {
     "decorative": false,
@@ -71,8 +75,9 @@
     "duplicateChecked": true,
     "conceptAccurate": true,
     "rightsClear": true,
-    "typeIntentionallyHasVerifiedEmbeddedText": true,
-    "notes": "Original clean has no embedded lettering. TYPE programmatically typeset (not AI text), reviewed against exact queue label and verse reference. Crop retains wallet, reaching hand, expression. Compared to existing records: no other train/wallet scene. First candidate rejected for shallow dietary temptation framing."
+    "typeIntentionallyHasVerifiedEmbeddedText": false,
+    "notes": "Verified CLEAN and THUMB imagery/bytes/dimensions/SHA256; existing TYPE WebP contains TEMPTATION, not taxonomy labels.en Tempted. V1 derivatives are quarantined by audit; do not promote until exact-label replacement is independently rendered and verified.",
+    "typeWordingRequiresReplacement": true
   },
   "variants": [
     {
