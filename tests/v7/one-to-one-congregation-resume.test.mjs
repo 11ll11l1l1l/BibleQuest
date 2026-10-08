@@ -67,3 +67,50 @@ test('remembered congregation is scoped to the authenticated user', async () => 
   await service.load();
   assert.equal(service.getActive(), null);
 });
+
+
+test('identical membership refreshes do not retrigger tenant consumers or overwrite a settled selection', async () => {
+  const state = { authenticated: true, user: { id: USER } };
+  let records = [row('church-a'), row('church-b')];
+  let invalidations = 0;
+  const service = createCongregationMembershipService({
+    api: { congregation: { async listMemberships() { return records; } } },
+    session: { getState: () => state },
+    selectionStorage: privateStore(),
+    onContextChange: () => { invalidations += 1; },
+  });
+
+  await service.load();
+  assert.equal(invalidations, 1, 'First hydration must announce the tenant context.');
+  records = records.slice().reverse();
+  await service.load();
+  assert.equal(invalidations, 1, 'Same memberships in a different order must be idempotent.');
+  assert.equal(service.getActive(), null, 'Reload cannot silently select a congregation.');
+
+  service.setActive('church-b');
+  assert.equal(invalidations, 2);
+  await service.load();
+  assert.equal(service.getActive()?.congregationId, 'church-b');
+  assert.equal(invalidations, 2, 'Membership refresh after selection must not restart the route.');
+
+  records = records.map(member => member.congregationId === 'church-b'
+    ? { ...member, role: 'leader', congregation: { ...member.congregation, name: 'Renamed church' } }
+    : member);
+  await service.load();
+  assert.equal(invalidations, 3, 'Role or metadata changes must invalidate the tenant context.');
+  assert.equal(service.getActive()?.role, 'leader');
+
+  records = [row('church-a')];
+  await service.load();
+  assert.equal(service.getActive(), null, 'Revoked membership must clear active authority.');
+  assert.equal(invalidations, 4);
+  await service.load();
+  assert.equal(invalidations, 4, 'Repeated revoked-membership refresh must remain idempotent.');
+
+  state.user = { id: OTHER };
+  records = [row('church-other', OTHER)];
+  await service.load();
+  assert.equal(invalidations, 5, 'Account switch must invalidate the previous tenant context.');
+  assert.equal(service.getActive(), null);
+  assert.equal(service.list()[0].userId, OTHER);
+});
