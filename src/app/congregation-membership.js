@@ -37,6 +37,7 @@ export function createCongregationMembershipService({api,session,onContextChange
   let activeCongregationId='';
   let loadedUserId='';
   let loadRequest=0;
+  let pendingLoad=null; // Same-account concurrent consumers share one validated snapshot.
   // Context listeners drive tenant-scoped route invalidation. Repeated identical
   // fetches must not restart a mounted page (and another membership fetch).
   const membershipFingerprint=()=>JSON.stringify({
@@ -66,9 +67,14 @@ export function createCongregationMembershipService({api,session,onContextChange
     return get(activeCongregationId);
   };
 
-  async function load(){
+  function load(){
     const user=requireUser();
     const userId=String(user.id);
+    // Multiple pages and restored-session consumers can ask for membership in
+    // the same event tick. Last-request-wins made earlier page requests resolve
+    // to the *old* empty snapshot, even when another read correctly hydrated
+    // membership. Share one authoritative read among same-user consumers.
+    if(pendingLoad?.userId===userId)return pendingLoad.promise;
     const before=membershipFingerprint();
     const request=++loadRequest;
     if(loadedUserId&&loadedUserId!==userId){
@@ -76,20 +82,28 @@ export function createCongregationMembershipService({api,session,onContextChange
       activeCongregationId='';
       loadedUserId='';
     }
-    let rows;
-    try{rows=await api.congregation.listMemberships(user.id)}
-    catch(error){if(request!==loadRequest||currentUserId()!==userId)return list();throw error}
-    if(request!==loadRequest||currentUserId()!==userId)return list();
-    memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row&&row.userId===userId);
-    loadedUserId=userId;
-    if(!get(activeCongregationId)){
-      activeCongregationId='';
-      const remembered=readRemembered(userId);
-      if(remembered&&get(remembered))activeCongregationId=remembered;
-      else if(remembered)forgetRemembered(userId);
-    }
-    if(membershipFingerprint()!==before)onContextChange();
-    return list();
+    const promise=(async()=>{
+      let rows;
+      try{rows=await api.congregation.listMemberships(user.id)}
+      catch(error){if(request!==loadRequest||currentUserId()!==userId)return list();throw error}
+      if(request!==loadRequest||currentUserId()!==userId)return list();
+      memberships=(Array.isArray(rows)?rows:[]).map(normalizeMembership).filter(row=>row&&row.userId===userId);
+      loadedUserId=userId;
+      if(!get(activeCongregationId)){
+        activeCongregationId='';
+        const remembered=readRemembered(userId);
+        if(remembered&&get(remembered))activeCongregationId=remembered;
+        else if(remembered)forgetRemembered(userId);
+      }
+      if(membershipFingerprint()!==before)onContextChange();
+      return list();
+    })();
+    pendingLoad={userId,promise};
+    const release=()=>{if(pendingLoad?.promise===promise)pendingLoad=null};
+    // Attach both handlers: a rejected request must not produce an unhandled
+    // rejection while its original caller still receives the error.
+    void promise.then(release,release);
+    return promise;
   }
 
   async function join(inviteCode){
@@ -174,7 +188,7 @@ export function createCongregationMembershipService({api,session,onContextChange
     throw error;
   }
 
-  function clear(){loadRequest++;memberships=[];activeCongregationId='';loadedUserId='';onContextChange()}
+  function clear(){loadRequest++;pendingLoad=null;memberships=[];activeCongregationId='';loadedUserId='';onContextChange()}
 
   return Object.freeze({load,join,updateSettings,loadManagedMembers,manageMember,list,get,getActive,setActive,can,assert,clear,roles:()=>ROLES.slice(),isAuthenticated:()=>Boolean(session.getState().authenticated)});
 }
