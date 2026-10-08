@@ -3,6 +3,7 @@
 Updated: 2026-10-08 JST
 Status: ACTIVE — production contract for the five V7 image agents
 Parent UI authority: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
+Manual board triage: `docs/v7/V7_MANUAL_IMAGE_RUN_TRIAGE_20261008.md`. Flattened manual asset sheets are design references, **not** independently audited CLEAN/TYPE/THUMB exports. Preserve the later V7 image-first override: CLEAN/THUMB stay text-free; TYPE requires reviewed exact lettering, an independently exported file and locale/source proof.
 
 ## Purpose
 
