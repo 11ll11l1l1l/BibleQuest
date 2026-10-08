@@ -13,10 +13,11 @@ assert.match(candidateSha, /^[a-f0-9]{40}$/);
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://bq.localhost:4173';
 assert.equal(new URL(baseUrl).hostname.endsWith('.localhost'), true);
 const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
-const scopeA = '10000000-0000-4000-8000-000000000001';
+const scopeA = randomUUID(); // An isolated rights-valid test tenant, not the shared V6 seed.
 const marker = randomUUID();
 const scopeB = randomUUID();
 const checks = [];
+const backendReads = []; // Status-only diagnostics; never record response data or access tokens.
 let stage = 'bootstrap';
 
 async function request(path, token, method = 'GET', body, prefer = 'return=representation') {
@@ -51,13 +52,6 @@ async function actor(label, role) {
   const user = await request('/auth/v1/admin/users', status.SERVICE_ROLE_KEY, 'POST', { email, password, email_confirm: true });
   assert.ok(user.id);
   await insert('bible_app_access', status.SERVICE_ROLE_KEY, { user_id: user.id, role, active: true });
-  await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-    congregation_id: scopeA,
-    user_id: user.id,
-    role,
-    display_name: `V7 Browser ${label}`,
-    active: true,
-  });
   const session = await request('/auth/v1/token?grant_type=password', status.ANON_KEY, 'POST', { email, password }, null);
   assert.equal(session.user.id, user.id);
   return Object.freeze({ id: user.id, email, password, token: session.access_token });
@@ -72,6 +66,16 @@ async function installDisposableBackend(context) {
     if ((headers.authorization || '').includes('sb_publishable_')) headers.authorization = `Bearer ${status.ANON_KEY}`;
     delete headers.host;
     const response = await route.fetch({ url: target.href, headers });
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+      let returnedRows = null;
+      try { const body = await response.json(); returnedRows = Array.isArray(body) ? body.length : null; } catch {}
+      backendReads.push({
+        resource: source.pathname.split('/').pop(),
+        status: response.status(),
+        returnedRows,
+        authMode: /^Bearer eyJ/i.test(headers.authorization || '') ? 'signed-jwt' : 'anonymous-or-publishable',
+      });
+    }
     await route.fulfill({ response });
   });
 }
@@ -143,16 +147,34 @@ stage = 'synthetic-actors';
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
 const foreign = await actor('foreign', 'member');
-await insert('bible_congregations', status.SERVICE_ROLE_KEY, {
-  id: scopeB, owner_id: mentor.id, name: `Lane C alternate ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo',
-});
-await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-  congregation_id: scopeB, user_id: mentor.id, role: 'leader', display_name: 'V7 Browser mentor alternate', active: true,
-});
-await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-  congregation_id: scopeB, user_id: mentee.id, role: 'member', display_name: 'V7 Browser mentee alternate', active: true,
-});
-checks.push('synthetic-three-user-two-congregation-password-auth-fixture');
+// Create congregations owned by this test's real signed-in leader before
+// granting membership. No fixture inherits a V6 seed owner's permissions.
+for (const [id, label] of [[scopeA, 'primary'], [scopeB, 'alternate']]) {
+  await insert('bible_congregations', status.SERVICE_ROLE_KEY, {
+    id, owner_id: mentor.id, name: `Lane C ${label} ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo', active: true,
+  });
+}
+for (const [id, member, role, label] of [
+  [scopeA, mentor, 'leader', 'mentor'],
+  [scopeA, mentee, 'member', 'mentee'],
+  [scopeA, foreign, 'member', 'foreign'],
+  [scopeB, mentor, 'leader', 'mentor alternate'],
+  [scopeB, mentee, 'member', 'mentee alternate'],
+]) {
+  await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
+    congregation_id: id, user_id: member.id, role, display_name: `V7 Browser ${label}`, active: true,
+  });
+}
+// Verify service-role writes are actually visible under each user's JWT,
+// including the congregation record required by the real application UI.
+for (const member of [mentor, mentee, foreign]) {
+  const memberships = await select('bible_congregation_members', member.token, `user_id=eq.${member.id}&active=eq.true`);
+  const expectedIds = member.id === foreign.id ? [scopeA] : [scopeA, scopeB];
+  assert.deepEqual(memberships.map(row => row.congregation_id).sort(), expectedIds.slice().sort(), 'Authenticated membership RLS visibility');
+  const congregations = await select('bible_congregations', member.token, `id=in.(${expectedIds.join(',')})&active=eq.true`);
+  assert.deepEqual(congregations.map(row => row.id).sort(), expectedIds.slice().sort(), 'Authenticated congregation RLS visibility');
+}
+checks.push('isolated-two-congregation-password-auth-and-real-jwt-rls-fixture');
 
 stage = 'browser-launch';
 const browser = await chromium.launch({ headless: true });
@@ -421,6 +443,34 @@ try {
   await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
   checks.push('supported-locales-en-tl-ceb-with-deep-link-preservation-on-mobile-width');
 
+  stage = 'mentee-mobile-responsive-reading';
+  for (const width of [320, 390, 430]) {
+    await menteePage.setViewportSize({ width, height: 900 });
+    const metrics = await menteePage.locator('[data-lesson-runner]').evaluate(root => {
+      const reading = root.querySelector('.bq-lesson-reading')?.getBoundingClientRect();
+      const response = root.querySelector('[data-lesson-response]')?.getBoundingClientRect();
+      const primary = root.querySelector('[data-lesson-next], [data-lesson-complete]')?.getBoundingClientRect();
+      const copy = root.querySelector('.bq-lesson-copy');
+      return {
+        width: innerWidth, documentWidth: document.documentElement.scrollWidth,
+        readingLeft: reading?.left, readingRight: reading?.right, readingWidth: reading?.width,
+        responseLeft: response?.left, responseRight: response?.right,
+        primaryHeight: primary?.height, primaryLeft: primary?.left, primaryRight: primary?.right,
+        copyFontSize: copy ? parseFloat(getComputedStyle(copy).fontSize) : 0,
+      };
+    });
+    assert.equal(metrics.width, width, 'Unexpected mobile viewport width.');
+    assert.ok(metrics.documentWidth <= width + 1, `Lesson overflows the ${width}px viewport.`);
+    assert.ok(metrics.readingWidth >= 200 && metrics.readingLeft >= -1 && metrics.readingRight <= width + 1,
+      `Lesson reading card clips at ${width}px.`);
+    assert.ok(metrics.responseLeft >= -1 && metrics.responseRight <= width + 1, `Private-response editor clips at ${width}px.`);
+    assert.ok(metrics.primaryHeight >= 44 && metrics.primaryLeft >= -1 && metrics.primaryRight <= width + 1,
+      `Next-step action is not touch-safe at ${width}px.`);
+    assert.ok(metrics.copyFontSize >= 16, `Lesson text is too small at ${width}px.`);
+  }
+  await menteePage.setViewportSize({ width: 390, height: 900 });
+  checks.push('authenticated-320-390-430-reading-editor-and-primary-action-layout');
+
   stage = 'mentee-complete-seven-step-journey';
   for (const [type, next] of [['apply', true], ['pray', true], ['action', false]]) {
     const heading = menteePage.locator(`[data-lesson-heading][data-step-type="${type}"]`);
@@ -517,6 +567,7 @@ try {
     error: error?.stack || error?.message || String(error),
     checks,
     browserErrors: { mentor: mentorErrors.errors, mentee: menteeErrors.errors },
+    backendReads: backendReads.slice(-40),
     mentor: await pageSummary(mentorPage),
     mentee: await pageSummary(menteePage),
   };
