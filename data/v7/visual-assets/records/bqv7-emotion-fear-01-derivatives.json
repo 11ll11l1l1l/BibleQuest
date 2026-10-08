@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 2,
+  "recordType": "derivative_bundle",
+  "assetId": "bqv7-emotion-fear-01-derivatives",
+  "sourceMasterAssetId": "bqv7-emotion-fear-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-08T07:03:09.691Z",
+  "contentType": "emotion",
+  "contentId": "fear",
+  "canonicalEmotionId": "afraid",
+  "status": "three_files_present_render_qa_pending",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 75334,
+      "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "gitBlobSha": "54074fde196d30175c25c0ce08b68f43b8f5cd6a",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.36
+      },
+      "rights": "Original generated artwork",
+      "altText": "A frightened woman grips a wooden door and glances over her shoulder.",
+      "qc": {
+        "sourceRecordVerified": true,
+        "previouslyReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 104217,
+      "sha256": "30a68959fca7345a248898a8e4f8a273543971e1d132f2d7b6022f09accdd8ac",
+      "gitBlobSha": "4050d517e94bbe8975894015f3443287324d8de5",
+      "includedWording": "Afraid",
+      "includedReference": "Psalm 34:4",
+      "wordingSource": {
+        "path": "src/features/library/emotion-taxonomy.js",
+        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "canonicalId": "afraid",
+        "field": "labels.en",
+        "referenceField": "verses[0]"
+      },
+      "scriptureQuoteIncluded": false,
+      "translation": null,
+      "revision": null,
+      "typography": {
+        "method": "SVG with embedded source WebP, Noto Serif Display SemiBold title converted to vector outlines, reference as vector text",
+        "fontLicense": "SIL OFL-1.1",
+        "fontLicenseEvidence": "fonts-noto-core /usr/share/doc/fonts-noto-core/copyright",
+        "fontBinaryRedistributed": false
+      },
+      "altText": "Frightened woman behind a door. Embedded English words: Afraid; Psalm 34:4.",
+      "fallback": "CLEAN plus live localized label",
+      "qc": {
+        "spellingVerified": true,
+        "sourceTaxonomyVerified": true,
+        "geometryChecked": true,
+        "browserRender": "pending",
+        "phoneReadability": "pending"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 100730,
+      "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
+      "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+      "crop": {
+        "sourceRectPixels": {
+          "left": 153.6,
+          "top": 0,
+          "right": 972.8,
+          "bottom": 1024
+        },
+        "targetAspect": "4:5",
+        "method": "embedded source WebP, focal-safe center crop"
+      },
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.36
+      },
+      "altText": "A frightened woman grips a wooden door.",
+      "fallback": "CLEAN",
+      "qc": {
+        "geometryChecked": true,
+        "noBakedText": true,
+        "browserRender": "pending",
+        "thumbnailVisualQA": "pending"
+      }
+    }
+  ],
+  "rights": {
+    "sourceImage": "Original generated art; no third-party cover",
+    "font": "Noto Serif Display OFL-1.1; glyph outlines only",
+    "scripture": "Reference only; no verse wording",
+    "localizedFallback": "CLEAN plus live localized text for non-English locales"
+  },
+  "qc": {
+    "newCandidates": 0,
+    "rejectedCandidates": 0,
+    "duplicateSceneAvoidance": "Existing approved master reused",
+    "browserQA": "pending"
+  },
+  "bundleStatus": "three_files_present_render_qa_pending"
+}
