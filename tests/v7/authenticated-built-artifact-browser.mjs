@@ -241,7 +241,24 @@ async function login(page, actorRecord) {
   // Successful sign-in navigates Home. Wait for Account to unmount, then reopen it
   // to assert the persisted authenticated session before selecting the seeded tenant.
   await page.locator('[data-account-login]').waitFor({ state: 'detached', timeout: 30000 });
-  await openRoute(page, 'account', '[data-account-signout]');
+  // Sign-in must survive a full page navigation, not merely a SPA transition.
+  // When a test fails, expose only safe account UI/storage *status* (never tokens).
+  await page.goto(`${baseUrl}/#/account`, { waitUntil: 'domcontentloaded' });
+  try {
+    await page.locator('[data-account-signout]').waitFor({ state: 'visible', timeout: 15000 });
+  } catch (error) {
+    const diagnostics = await page.evaluate(() => ({
+      route: location.hash.split('?')[0],
+      signedInView: Boolean(document.querySelector('.bq-account-signed-hero')),
+      loginView: Boolean(document.querySelector('[data-account-login]')),
+      accountMessage: String(document.querySelector('[data-auth-message]')?.textContent || '').slice(0, 160),
+      startupFailure: Boolean(document.querySelector('[data-startup-failure]')),
+      persistedAuthKeyCount: Object.keys(localStorage).filter(key => /^sb-.*-auth-token$/.test(key)).length,
+      signOutButtonCount: document.querySelectorAll('[data-account-signout]').length,
+    }));
+    throw new Error('Authenticated session did not survive account route reload: ' +
+      JSON.stringify(diagnostics), { cause: error });
+  }
   assert.ok((await page.locator('.bq-account-signed-hero').textContent()).includes(actorRecord.email));
   await activateCongregation(page, actorRecord.congregationId);
 }
