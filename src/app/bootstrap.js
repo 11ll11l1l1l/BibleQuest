@@ -364,7 +364,9 @@ function boot(root){
   const libraryParams=()=>readNavigationParams();
   const libraryDiscoveryQuery=()=>parseLibraryDiscoveryQuery(libraryParams());
   const v7ContextReady=()=>{const auth=session.getState(),active=congregation.getActive();return Boolean(auth?.authenticated&&auth.user?.id&&active?.congregationId&&(!active.userId||active.userId===auth.user.id));};
-  const libraryContextReady=()=>session.getState()?.authenticated===true?v7ContextReady():true;
+  // Public Library reads only the approved static catalog; no tenant JWT, membership or congregation is required.
+  // Private Content Review and ONE 2 ONE retain their independent scoped access gates.
+  const libraryContextReady=()=>true;
   const assignedPage=view=>{
     const context=Object.fromEntries(['pairId','trackId','moduleId'].map(key=>[key,libraryParams().get(key)||'']));
     const back=view==='module'?{routeKey:'one-to-one-track',pairId:context.pairId,trackId:context.trackId}:context.trackId?{routeKey:'one-to-one-track',pairId:context.pairId}:{routeKey:'one-to-one-pair',pairId:context.pairId};
