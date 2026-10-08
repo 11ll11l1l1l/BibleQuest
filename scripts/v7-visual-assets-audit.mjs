@@ -15,7 +15,7 @@ const REGIONS = new Set(['bottom', 'top', 'left', 'right', 'none']);
 const CONTENT_TYPES = new Set(['emotion', 'devotional', 'book', 'past_teaching', 'hero']);
 // Immutable bridge between the image-agent queues and the app's published 30-feeling taxonomy.
 // Validate every queue assignment against this bridge before publishing any artwork.
-const EMOTION_QUEUE_CANONICAL = Object.freeze({
+export const EMOTION_QUEUE_CANONICAL = Object.freeze({
   anxiety_worry: 'anxious',
   fear: 'afraid',
   sadness: 'sad',
