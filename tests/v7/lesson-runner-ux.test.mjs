@@ -100,11 +100,11 @@ test('Lane C motion excludes long Scripture/response text and disables animation
   const css = readFileSync(new URL('../../src/ui/v7-one-to-one-lesson.css', import.meta.url), 'utf8');
   assert.match(css, /--bq-motion-duration-standard/);
   assert.match(css, /--bq-motion-duration-micro/);
-  assert.match(css, /\\.bq-lesson-header\\[data-step-arriving\\]/);
-  assert.match(css, /@media \\(prefers-reduced-motion: reduce\\)/);
+  assert.match(css, /\.bq-lesson-header\[data-step-arriving\]/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   const keyframe = css.slice(css.indexOf('@keyframes bq-one2one-step-arrive'), css.indexOf('@keyframes bq-one2one-step-arrive') + 170);
   assert.match(keyframe, /opacity/);
   assert.match(keyframe, /transform/);
   const motion = css.slice(css.indexOf('@keyframes bq-one2one-step-arrive'));
-  assert.doesNotMatch(motion, /\\.bq-lesson-copy|\\.bq-lesson-response-editor/, 'Reading and response fields must never animate.');
+  assert.doesNotMatch(motion, /\.bq-lesson-copy|\.bq-lesson-response-editor/, 'Reading and response fields must never animate.');
 });
