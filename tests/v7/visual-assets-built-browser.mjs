@@ -76,12 +76,17 @@ const screenshots = [];
 const candidateBrowserFailures = new Map();
 try {
   for (const width of [320, 390, 430]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+    // Service workers can fulfill image URLs before Playwright interception.
+    // This isolated candidate QA context must route exact source bytes itself.
+    const page = await browser.newPage({ viewport: { width, height: 900 },
+      deviceScaleFactor: 1, serviceWorkers: 'block' });
+    const routedCandidatePaths = new Set();
     await page.route('**/v7/images/**', route => {
       const path = new URL(route.request().url()).pathname;
       const candidate = candidateResponses.get(path);
       // All released images continue through the immutable built HTTP preview.
       if (!candidate) return route.continue();
+      routedCandidatePaths.add(path);
       return route.fulfill({ status: 200, contentType: candidate.contentType, body: candidate.bytes });
     });
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
@@ -117,6 +122,8 @@ try {
             viewportWidth: window.innerWidth
           };
         }, { src: variant.src, kind: variant.kind, label: asset.assetId });
+        if (asset.candidate) assert(routedCandidatePaths.has(variant.src),
+          'Candidate byte route was bypassed: ' + variant.src);
         assert.equal(geometry.naturalWidth, variant.width, 'Chromium width mismatch: ' + variant.src);
         assert.equal(geometry.naturalHeight, variant.height, 'Chromium height mismatch: ' + variant.src);
         assert(geometry.renderedWidth >= width * 0.70, 'Image too small for phone card: ' + variant.src);
