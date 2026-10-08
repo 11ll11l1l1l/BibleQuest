@@ -102,8 +102,8 @@ test('Lane C motion excludes long Scripture/response text and disables animation
   assert.match(css, /--bq-v7-motion-micro/);
   assert.match(css, /\.bq-lesson-header\[data-step-arriving\]/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(css, /:root\\[data-bq-effective-motion="reduce"\\]/, 'App-level reduced-motion preference must override feature animations.');
-  assert.match(css, /:root\\[data-bq-motion="off"\\]/, 'Explicitly disabled app motion must be static.');
+  assert.ok(css.includes(':root[data-bq-effective-motion="reduce"]'), 'App-level reduced-motion preference must override feature animations.');
+  assert.ok(css.includes(':root[data-bq-motion="off"]'), 'Explicitly disabled app motion must be static.');
   const shared = readFileSync(new URL('../../src/ui/v7-motion.css', import.meta.url), 'utf8');
   assert.match(shared, /--bq-v7-motion-standard/);
   assert.match(shared, /--bq-v7-motion-micro/);
