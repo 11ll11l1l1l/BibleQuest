@@ -2,8 +2,38 @@
   "schemaVersion": 2,
   "sourceMasterAssetId": "bqv7-emotion-temptation-01",
   "agentId": "visual-agent-4",
-  "status": "candidate_transfer_blocked",
-  "variants": [],
+  "status": "candidate_corrected_type_svg_render_qa_pending",
+  "variants": [
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en-corrected.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 172956,
+      "sha256": "1e3a030774ec27878e61ba3233f1862c0f01cfb806c581e9d440f96f397ba26d",
+      "embeddedWording": {
+        "label": "Tempted",
+        "scriptureReference": "1 Corinthians 10:13",
+        "scriptureTextIncluded": false
+      },
+      "cropIntent": "4:5 portrait, original CLEAN source displayed below independent dark title band",
+      "altText": "A commuter hesitates over a lost wallet on a train; editorial heading Tempted and reference 1 Corinthians 10:13.",
+      "qa": {
+        "structuralMarkupChecked": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "referenceCheckedAgainstTaxonomy": true,
+        "sourceWebPEmbedded": true,
+        "visualInspected": false,
+        "typeReadableAt320px": false,
+        "imageDecoded": false,
+        "dimensionsMeasured": false,
+        "sha256Measured": true,
+        "renderPending": true
+      }
+    }
+  ],
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -16,7 +46,13 @@
   "issue": {
     "existingTypeLabel": "Temptation",
     "expectedTypeLabel": "Tempted",
-    "correctedTypeCandidateCommitted": false,
-    "reason": "Image binary write rejected. Existing WebP master and thumbnail retained; current TYPE quarantined pending replacement."
+    "correctedTypeCandidateCommitted": true,
+    "reason": "Corrected self-contained SVG candidate; browser rendering and 320px QA pending, so canonical V1 CLEAN remains partial."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "sourceMasterAssetId": "bqv7-emotion-temptation-01",
+    "fontNote": "Browser/platform Georgia or Times New Roman only; no font binary embedded or distributed. Platform rendering and font availability not yet visually verified.",
+    "scripture": "Reference only; no Bible prose."
   }
 }
