@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
+import { publishV7VisualAssets } from './scripts/v7-publish-visual-assets.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -64,7 +65,7 @@ function walkFiles(directory) {
 function copyLegacyRuntime() {
   return {
     name: 'biblequest-v5-runtime-compatibility-copy',
-    closeBundle() {
+    async closeBundle() {
       mkdirSync(outDir, { recursive: true });
 
       for (const entry of readdirSync(root, { withFileTypes: true })) {
@@ -127,6 +128,10 @@ function copyLegacyRuntime() {
         '<link rel="manifest" href="manifest.webmanifest">',
       );
       writeFileSync(indexPath, normalizedIndex, 'utf8');
+
+      // Only audit-verified, production-ready Lane A images enter the deployable artifact.
+      // Staged 3-output image-agent drafts never ship or contaminate the integrity manifest.
+      await publishV7VisualAssets({ root, outDir });
     },
   };
 }
