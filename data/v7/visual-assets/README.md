@@ -12,6 +12,7 @@ Rules:
 - one unique asset ID per image;
 - never overwrite another asset;
 - no baked-in text on CLEAN or THUMB; reviewed embedded typography is allowed only on locale-specific TYPE;
+- SVG art must be self-contained: only internal `href="#id"` / `url(#id)` references are allowed. No remote or data-URI image/font loads, CSS `@import`/`@font-face`, XML DTD/stylesheet, scripting, or event-handler attributes. Use licensed render-to-path lettering rather than runtime font fetches; still verify exact TYPE wording and Chromium rendering.
 - generated assets must say `sourceType: generated`;
 - official third-party book covers are not to be fabricated;
 - every image gets alt/decorative metadata, intended usage, focal point/text-safe region and QC results;
