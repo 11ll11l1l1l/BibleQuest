@@ -4,7 +4,7 @@ import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
+import { auditV7VisualAssets, NEED_VISUAL_ASSIGNMENTS } from '../../scripts/v7-visual-assets-audit.mjs';
 
 const ID = 'bqv7-emotion-anxiety-worry-01';
 const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/tAAAAABJRU5ErkJggg==', 'base64');
@@ -247,4 +247,71 @@ test('canonical emotion stored as contentId still resolves its original image-ag
   assert.deepEqual(result.manifest.byContent['emotion:anxiety_worry'], [ID]);
   assert.equal(result.queues[0].completed, 1);
   assert.equal(result.queues[0].next, 'fear');
+});
+
+async function needFixture(t) {
+  const f = await fixture(t);
+  const id = 'bqv7-need-peace-01';
+  const newFolder = join(f.root, 'public/v7/images/need');
+  await mkdir(newFolder, { recursive: true });
+  const newImage = join(newFolder, id + '.png');
+  const newRecord = join(f.root, 'data/v7/visual-assets/records', id + '.json');
+  f.record.assetId = id;
+  f.record.family = 'need';
+  f.record.contentType = 'need';
+  f.record.contentId = 'peace';
+  f.record.visualRole = 'need_tile';
+  f.record.agentId = NEED_VISUAL_ASSIGNMENTS.peace;
+  f.record.usage = ['needs_carousel'];
+  f.record.imagePath = '/v7/images/need/' + id + '.png';
+  await Promise.all([rm(f.imagePath), rm(f.metadataPath)]);
+  await Promise.all([
+    writeFile(newImage, PNG),
+    writeFile(newRecord, JSON.stringify(f.record))
+  ]);
+  return { ...f, newImage, newRecord, saveNeed: () => writeFile(newRecord, JSON.stringify(f.record)) };
+}
+
+test('Need cards are verified, available by need ID and assigned to one visual agent', async t => {
+  const f = await needFixture(t);
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.deepEqual(result.manifest.byContent['need:peace'], ['bqv7-need-peace-01']);
+  assert.equal(result.manifest.assets[0].canonicalContentId, 'peace');
+  assert.equal(result.manifest.assets[0].visualRole, 'need_tile');
+  assert.equal(result.manifest.assets[0].rights.sourceType, 'generated');
+});
+
+test('Need image IDs and agent ownership reject cross-category or wrong assignments', async t => {
+  const f = await needFixture(t);
+  f.record.agentId = 'visual-agent-5';
+  await f.saveNeed();
+  const denied = await auditV7VisualAssets(f.root);
+  assert.equal(denied.status, 'FAIL');
+  assert.match(denied.errors.join('\n'), /need taxonomy ID\/agent ownership mismatch/);
+  f.record.agentId = NEED_VISUAL_ASSIGNMENTS.peace;
+  f.record.contentId = 'not_in_taxonomy';
+  await f.saveNeed();
+  const unknown = await auditV7VisualAssets(f.root);
+  assert.equal(unknown.status, 'FAIL');
+  assert.match(unknown.errors.join('\n'), /need taxonomy ID\/agent ownership mismatch/);
+});
+
+test('Need art cannot spoof a mismatched canonical taxonomy ID', async t => {
+  const f = await needFixture(t);
+  f.record.canonicalNeedId = 'hope';
+  await f.saveNeed();
+  const denied = await auditV7VisualAssets(f.root);
+  assert.equal(denied.status, 'FAIL');
+  assert.match(denied.errors.join('\n'), /need taxonomy ID\/agent ownership mismatch/);
+});
+
+test('Needs are allocated across five agents without overlap, independently of queue order', () => {
+  const ids = Object.keys(NEED_VISUAL_ASSIGNMENTS);
+  assert.equal(ids.length, 19);
+  assert.equal(new Set(ids).size, 19);
+  assert.deepEqual(
+    [...new Set(Object.values(NEED_VISUAL_ASSIGNMENTS))].sort(),
+    ['visual-agent-1','visual-agent-2','visual-agent-3','visual-agent-4','visual-agent-5']
+  );
 });
