@@ -11,7 +11,7 @@ test('ONE 2 ONE overview makes invitation primary and groups mentor/context acti
     onAccount() {}, onCongregation() {}, onBack() {},
   });
   const html = view.html;
-  assert.match(html, /class="bq-one2one-home"/);
+  assert.match(html, /class="bq-panel bq-one2one-home"/);
   assert.match(html, /class="bq-primary-button" data-pair-invite/);
   assert.equal((html.match(/class="bq-primary-button"/g) || []).length, 1);
   const relationship = html.indexOf('data-pair-results');
