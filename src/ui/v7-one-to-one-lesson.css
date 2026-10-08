@@ -169,3 +169,88 @@
 @media (prefers-reduced-motion: reduce) {
   .bq-one2one-lesson * { scroll-behavior: auto; }
 }
+
+/* ONE 2 ONE relationship overview: one primary action, supporting tools below. */
+.bq-one2one-home {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(16px, 4.5vw, 28px);
+}
+.bq-one2one-home .bq-one2one-home__header h1 {
+  margin-bottom: 10px;
+  color: var(--bq-text);
+}
+.bq-one2one-home .bq-one2one-home__header p {
+  max-width: 56ch;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  line-height: 1.58;
+}
+.bq-one2one-home .bq-one2one-home__primary { margin-block: 24px; }
+.bq-one2one-home .bq-one2one-home__primary button {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--bq-brand);
+  background: var(--bq-brand);
+  color: var(--bq-surface);
+  font-weight: 800;
+}
+.bq-one2one-home .bq-one2one-home__relationships,
+.bq-one2one-home .bq-one2one-home__tools {
+  padding: 20px 0;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-home :is(.bq-one2one-home__relationships, .bq-one2one-home__tools) h2 {
+  margin-bottom: 12px;
+  color: var(--bq-text);
+  font-size: var(--bq-type-section);
+}
+.bq-one2one-home [data-pair-status] {
+  margin-bottom: 12px;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+}
+.bq-one2one-home [data-pair-results] {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.bq-one2one-home__pair button {
+  width: 100%;
+  min-height: 60px;
+  padding: 14px;
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-home :is(.bq-one2one-home__links, .bq-one2one-home__context) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.bq-one2one-home__context {
+  padding-top: 20px;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-home button {
+  min-height: 44px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-home :is(button, a):focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 390px) {
+  .bq-one2one-home :is(.bq-one2one-home__links, .bq-one2one-home__context) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
