@@ -112,3 +112,51 @@ test('lesson response and step labels follow every supported V7 locale', () => {
     else globalThis.localStorage = previous;
   }
 });
+
+test('typing retains the same editor node and selection while updating share eligibility', () => {
+  let state = {
+    status: 'ready', responseStatus: 'ready', shareStatus: 'idle', stepIndex: 1,
+    writable: true, progress: null, error: null, responses: {}, responseDrafts: { 'step-1': '' },
+    lesson: { steps: [
+      { id:'step-0', type:'scripture', content:{text:'Read'} },
+      { id:'step-1', type:'understand', content:{text:'Write'} },
+    ] },
+  };
+  const handlers=new Map();
+  let publish, writes=0, markup='';
+  const editor={value:'',selectionStart:0,selectionEnd:0,getAttribute(key){return key==='data-lesson-response'?'step-1':null;},closest(){return this;}};
+  const share={disabled:true};
+  const host={
+    get innerHTML(){return markup;},
+    set innerHTML(value){markup=value;writes++;},
+    querySelector(selector){return selector==='[data-lesson-response]'?editor:selector==='[data-lesson-share]'?share:null;},
+  };
+  const page={querySelector(){return host;},addEventListener(k,fn){handlers.set(k,fn);},removeEventListener(k){handlers.delete(k);}};
+  const runner={
+    getState:()=>state,subscribe(fn){publish=fn;return()=>{};},
+    load(){},invalidate(){},dispose(){},
+    updateResponse(value, stepId){
+      assert.equal(stepId,'step-1');
+      state={...state,responseDrafts:{...state.responseDrafts,[stepId]:value}};
+      publish(state);
+    },
+  };
+  const dispose=createLessonRunnerPage({runner,onBack(){},subscribeContext(){return()=>{};}}).mount({querySelector(){return page;}});
+  assert.equal(writes,1,'initial lesson render');
+  editor.value='A';editor.selectionStart=1;editor.selectionEnd=1;
+  handlers.get('input')({target:editor});
+  assert.equal(writes,1,'typing must not replace the focused textarea');
+  assert.equal(editor.selectionStart,1);
+  assert.equal(share.disabled,false,'share remains optional but available after typing');
+  editor.value='';editor.selectionStart=0;editor.selectionEnd=0;
+  handlers.get('input')({target:editor});
+  assert.equal(writes,1);
+  assert.equal(share.disabled,true,'empty, unsaved response cannot be shared');
+  state={...state,status:'saving'};
+  publish(state);
+  assert.equal(writes,2,'save status still redraws for pending action feedback');
+  state={...state,lesson:null,status:'idle'};
+  publish(state);
+  assert.equal(writes,3,'tenant/context invalidation still removes protected content');
+  dispose();
+});

@@ -380,8 +380,28 @@ try {
   stage = 'mentee-private-response';
   await menteePage.locator('[data-lesson-next]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="understand"]').waitFor({ state: 'visible' });
+  stage = 'mentee-private-editor-focus-continuity';
+  // Real typing must not unmount the textarea after the first keystroke. A
+  // fill() alone dispatches one input event and misses this mobile IME bug.
+  const privateEditor = menteePage.locator('[data-lesson-response]');
+  await privateEditor.focus();
+  await privateEditor.pressSequentially('Type continuously', { delay: 15 });
+  const editorContinuity = await privateEditor.evaluate(node => ({
+    focused: document.activeElement === node,
+    value: node.value,
+    cursor: node.selectionStart,
+    sameNode: document.querySelector('[data-lesson-response]') === node,
+  }));
+  assert.equal(editorContinuity.focused, true, 'Typing should not detach the focused editor.');
+  assert.equal(editorContinuity.sameNode, true);
+  assert.equal(editorContinuity.value, 'Type continuously');
+  assert.equal(editorContinuity.cursor, editorContinuity.value.length);
+  assert.equal(await menteePage.locator('[data-lesson-share]').isEnabled(), true,
+    'Nonempty local drafts enable optional explicit-sharing action, never auto-share.');
+  checks.push('private-response-mobile-continuous-typing-retains-focus-caret-and-consent');
+  stage = 'mentee-private-response';
   const privateText = `Browser private response ${marker}`;
-  await menteePage.locator('[data-lesson-response]').fill(privateText);
+  await privateEditor.fill(privateText);
   await menteePage.locator('[data-lesson-next]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="discuss"]').waitFor({ state: 'visible' });
   const persistedPrivate = await waitForBackend(async () => {
