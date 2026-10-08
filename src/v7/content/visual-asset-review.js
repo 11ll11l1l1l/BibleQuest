@@ -14,6 +14,15 @@ const canonicalLocale = value => {
 };
 const knownKinds = new Set(['with_text', 'thumbnail']);
 const assetsFor = item => item?.visualAssets ?? item?.visual_assets ?? item?.body?.visualAssets ?? item?.body?.visual_assets;
+// Data/blob/file/script URLs are not independently audited image binaries. Reject
+// them even when a sidecar claims a valid SHA or rights declaration. The Lane A
+// binary auditor remains responsible for proving local-file bytes and dimensions.
+const embeddedResource = value => typeof value === 'string'
+  && /^(?:data|blob|file|javascript):/i.test(value.trim());
+const unverifiedEmbeddedMedia = row => [
+  row?.imagePath, row?.src, row?.url, row?.imageUrl, row?.image_url,
+  row?.fallback, row?.fallbackUrl, row?.fallback_url, row?.source?.uri,
+].some(embeddedResource);
 
 function stableSerialize(value) {
   if (value === undefined) return 'null';
@@ -82,6 +91,8 @@ export function evaluateV7VisualAssetGates(item) {
     const source = asset.source && typeof asset.source === 'object' ? asset.source : {};
     const provenance = asset.provenance && typeof asset.provenance === 'object' ? asset.provenance : {};
     const sourceId = exact(asset.sourceUri || asset.source_uri || asset.sourceRef || source.uri || source.ref || source.id);
+    if (unverifiedEmbeddedMedia(asset) || embeddedResource(sourceId))
+      rejectionReasons.push(`${prefix}_embedded_resource_forbidden`);
     if (!sourceId || !refs(provenance.evidenceRefs ?? provenance.evidence_refs ?? asset.provenanceRefs ?? asset.provenance_refs))
       rejectionReasons.push(`${prefix}_provenance_unverified`);
     if (!validRights(asset.rights)) rejectionReasons.push(`${prefix}_rights_unverified`);
@@ -106,6 +117,8 @@ export function evaluateV7VisualAssetGates(item) {
       if (!variant || typeof variant !== 'object' || Array.isArray(variant) || !knownKinds.has(variant.kind)) {
         rejectionReasons.push(`${keyPrefix}_invalid`);continue;
       }
+      if (unverifiedEmbeddedMedia(variant))
+        rejectionReasons.push(`${keyPrefix}_embedded_resource_forbidden`);
       const rawLocale = exact(variant.locale).toLowerCase();
       const locale = canonicalLocale(rawLocale);
       const variantKey = variant.kind + ':' + (variant.kind === 'with_text' ? locale : '');

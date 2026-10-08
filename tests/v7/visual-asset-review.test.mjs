@@ -186,3 +186,37 @@ test('Lane D report cannot accept unknown policy or duplicate revision entries',
   assert.throws(() => createV7LibraryAssetDecisionReport([decision,decision]), /duplicate item revision/);
   assert.throws(() => createV7LibraryAssetDecisionReport([{ ...decision,policyVersion:'99' }]), /versioned Lane B policy/);
 });
+
+
+test('embedded data, blob and executable URLs fail closed despite claimed hash and rights', () => {
+  const edits = [
+    asset => { asset.src = 'data:image/png;base64,AA=='; },
+    asset => { asset.fallbackUrl = 'data:image/svg+xml,%3Csvg%3E'; },
+    asset => { asset.source.uri = 'data:image/png;base64,AA=='; },
+    asset => { asset.variants[0].url = 'blob:https://example.test/bad'; },
+    asset => { asset.variants[1].src = 'javascript:alert(1)'; },
+    asset => { asset.variants[1].fallback = 'file:///private/cover.png'; }
+  ];
+  for (const [index, edit] of edits.entries()) {
+    const item = { ...baseItem(), visualAssets: [visual()] };
+    edit(item.visualAssets[0]);
+    const gates = evaluateV7VisualAssetGates(item);
+    const target = index < 3
+      ? 'visual_asset_0_embedded_resource_forbidden'
+      : `visual_asset_0_variant_${index === 3 ? 0 : 1}_embedded_resource_forbidden`;
+    assert.ok(gates.rejectionReasons.includes(target), target);
+    const decision = decisionFor(item);
+    assert.equal(decision.outcome, 'rejected');
+    assert.equal(canAutoPublishV7LibraryDecision(decision, item), false);
+    assert.ok(createV7LibraryAssetDecisionReport([decision]).entries[0].rejectionReasons.includes(target));
+  }
+});
+
+test('embedded-image rejection also applies to CLEAN-only legacy metadata', () => {
+  const item = { ...baseItem(), visualAssets: [visual()] };
+  delete item.visualAssets[0].variants;
+  assert.equal(decisionFor(item).outcome, 'auto_approved');
+  item.visualAssets[0].src = 'data:image/png;base64,AA==';
+  assert.equal(decisionFor(item).outcome, 'rejected');
+  assert.ok(evaluateV7VisualAssetGates(item).rejectionReasons.includes('visual_asset_0_embedded_resource_forbidden'));
+});
