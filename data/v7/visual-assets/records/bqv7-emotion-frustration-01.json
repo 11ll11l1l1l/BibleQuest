@@ -77,7 +77,14 @@
     "productionReady": false,
     "generatedCandidatesThisRun": 2,
     "rejectedCandidatesThisRun": 1,
-    "notes": "One rejected off-topic waiting-in-church composite; this separate bicycle repair scene was accepted for local QA. Full built-app browser and repository audit pending."
+    "notes": "One rejected off-topic waiting-in-church composite; this separate bicycle repair scene was accepted for local QA. Full built-app browser and repository audit pending.",
+    "nodeFocusedTests": {
+      "passed": 6,
+      "total": 6,
+      "source": "local node:test; candidate metadata, exact taxonomy evidence, WebP binary dimensions/bytes/SHA256, rights/fallback"
+    },
+    "isolatedChromiumQA": "attempted_timeout_no_render_evidence",
+    "local320TypeAndCropEvidence": "previously generated 320px PNG previews inspected; not a built-app browser test"
   },
   "variants": [
     {
