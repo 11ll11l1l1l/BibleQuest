@@ -73,6 +73,7 @@ for (const row of candidateTriage.technicallyVerified) {
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const screenshots = [];
+const candidateBrowserFailures = new Map();
 try {
   for (const width of [320, 390, 430]) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
@@ -89,7 +90,8 @@ try {
       assert(asset.variants?.some(v => v.kind === 'thumbnail'), 'Complete bundle needs THUMB: ' + asset.assetId);
       for (const variant of [{ kind: 'clean', src: asset.src, width: asset.width, height: asset.height },
         ...asset.variants]) {
-        const geometry = await page.evaluate(async ({ src, kind, label }) => {
+        try {
+          const geometry = await page.evaluate(async ({ src, kind, label }) => {
           document.getElementById('bq-artwork-browser-qa')?.remove();
           const stage = document.createElement('main');
           stage.id = 'bq-artwork-browser-qa';
@@ -126,6 +128,18 @@ try {
           await page.locator('#bq-artwork-browser-qa figure').screenshot({ path: screenshot });
           screenshots.push(screenshot);
         }
+        } catch (error) {
+          if (!asset.candidate) {
+            throw new Error('Audited release image failed Chromium QA: ' + asset.assetId
+              + ' ' + variant.src + ' at ' + width + 'px: ' + error.message, { cause: error });
+          }
+          // A broken draft never becomes a release failure or an approved
+          // screenshot claim. Capture enough information for the image agent
+          // to repair its own source and rerun the exact-commit QA.
+          const prior = candidateBrowserFailures.get(asset.assetId) || [];
+          prior.push({ path: variant.src, viewportWidth: width, reason: error.message });
+          candidateBrowserFailures.set(asset.assetId, prior);
+        }
       }
     }
     await page.close();
@@ -138,9 +152,14 @@ const report = {
   sourceAuditStatus: audit.status, sourceAuditProductionReady: audit.counts.productionReady,
   completeBundles: publishedBundles.map(asset => ({ assetId: asset.assetId, contentType: asset.contentType })),
   draftCandidateTriage: {
-    technicallyVerified: candidateBundles.map(asset => ({ assetId: asset.assetId,
-      contentType: asset.contentType, status: 'technical_browser_pass_only', publicationApproved: false })),
-    rejected: candidateTriage.rejected,
+    technicallyVerified: candidateBundles.filter(asset => !candidateBrowserFailures.has(asset.assetId))
+      .map(asset => ({ assetId: asset.assetId, contentType: asset.contentType,
+        status: 'technical_browser_pass_only', publicationApproved: false })),
+    locallyVerifiedButBrowserFailed: [...candidateBrowserFailures.entries()]
+      .map(([assetId, failures]) => ({ assetId, failures })),
+    rejected: [...candidateTriage.rejected, ...[...candidateBrowserFailures.entries()]
+      .map(([assetId, failures]) => ({ assetId,
+        reason: 'Chromium decode, geometry or screenshot failed', failures }))],
     threeFileCandidates: candidateTriage.threeFileCandidates,
     publicationApproved: false,
     browserDelivery: 'QA-only Playwright fulfillment from independently verified source bytes; excluded from deployable build',
@@ -155,6 +174,6 @@ const report = {
 await writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log('PASS visual binary built-browser QA: ' + downloaded.length + ' image files, '
   + publishedBundles.length + ' release bundles, '
-  + candidateBundles.length + ' draft bundles technically tested, '
-  + candidateTriage.rejected.length + ' drafts requiring repair, '
+  + (candidateBundles.length - candidateBrowserFailures.size) + ' draft bundles passed browser QA, '
+  + (candidateTriage.rejected.length + candidateBrowserFailures.size) + ' drafts requiring repair, '
   + screenshots.length + ' TYPE/THUMB screenshots; draft publication remains blocked');
