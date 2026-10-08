@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -16,8 +16,16 @@ async function fixture(t) {
   const queues = join(root, 'data/v7/visual-assets/queues');
   const images = join(root, 'public/v7/images/emotion');
   await Promise.all([mkdir(records, { recursive: true }), mkdir(queues, { recursive: true }), mkdir(images, { recursive: true })]);
-  await writeFile(join(queues, 'visual-agent-1.json'),
-    JSON.stringify({ schemaVersion: 1, agentId: 'visual-agent-1', initialQueue: ['anxiety_worry', 'fear'] }));
+  const queuesByAgent = [
+    ['anxiety_worry', 'fear', 'sadness', 'grief_loss', 'loneliness', 'anger'],
+    ['hurt_betrayal', 'rejection', 'guilt', 'shame', 'insecurity_unworthiness', 'doubt'],
+    ['confusion_uncertainty', 'discouragement', 'hopelessness', 'overwhelm', 'stress', 'tiredness_weariness'],
+    ['spiritual_dryness_distance', 'temptation', 'impatience_waiting', 'jealousy_envy', 'frustration', 'numbness_emptiness'],
+    ['joy', 'gratitude', 'peace_contentment', 'hope', 'excitement', 'love_connection']
+  ];
+  await Promise.all(queuesByAgent.map((initialQueue, index) =>
+    writeFile(join(queues, 'visual-agent-' + (index + 1) + '.json'),
+      JSON.stringify({ schemaVersion: 1, agentId: 'visual-agent-' + (index + 1), initialQueue }))));
   const imagePath = join(images, ID + '.png');
   const metadataPath = join(records, ID + '.json');
   const record = {
@@ -49,6 +57,10 @@ test('builds deterministic, rights-aware lookup and next agent assignment', asyn
   assert.equal(first.counts.productionReady, 1);
   assert.equal(first.queues[0].next, 'fear');
   assert.deepEqual(first.manifest.byContent['emotion:anxiety_worry'], [ID]);
+  assert.deepEqual(first.manifest.byContent['emotion:anxious'], [ID]);
+  assert.equal(first.manifest.assets[0].canonicalContentId, 'anxious');
+  assert.equal(first.manifest.assets[0].queueConcept, 'anxiety_worry');
+  assert.equal(first.counts.emotionQueueTotal, 30);
   assert.equal(first.manifest.assets[0].src, '/v7/images/emotion/' + ID + '.png');
   assert.equal(first.manifest.assets[0].rights.sourceType, 'generated');
 });
@@ -77,7 +89,7 @@ test('rejects an image with mismatched emotion queue ownership', async t => {
   await f.save();
   const result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
-  assert.match(result.errors.join('\n'), /queue owner/);
+  assert.match(result.errors.join('\n'), /agent ownership mismatch/);
 });
 
 test('detects untracked image files instead of silently publishing them', async t => {
@@ -140,4 +152,99 @@ test('fails closed on altered with-text artwork or a missing thumbnail', async t
   const result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
   assert.match(result.errors.join('\n'), /variant SHA-256 or bytes mismatch/);
+});
+
+test('recognizes full V2 CLEAN/TYPE/THUMB bundle and canonical emotion lookup', async t => {
+  const f = await fixture(t);
+  const typeData = Buffer.concat([PNG, Buffer.from('type-image')]);
+  const thumbData = Buffer.concat([PNG, Buffer.from('thumb-image')]);
+  await writeFile(join(f.images, ID + '-with-text-en.png'), typeData);
+  await writeFile(join(f.images, ID + '-thumbnail.png'), thumbData);
+  const taxonomy = await readFile(new URL('../../src/features/library/emotion-taxonomy.js', import.meta.url));
+  const taxonomyPath = join(f.root, 'src/features/library/emotion-taxonomy.js');
+  await mkdir(join(f.root, 'src/features/library'), { recursive: true });
+  await writeFile(taxonomyPath, taxonomy);
+  const blobSha = createHash('sha1').update(Buffer.from('blob ' + taxonomy.length))
+    .update(Buffer.from([0])).update(taxonomy).digest('hex');
+  const variant = (kind, pathSuffix, bytes, extra = {}) => ({
+    kind, imagePath: '/v7/images/emotion/' + ID + pathSuffix + '.png',
+    format: 'png', width: 1, height: 1, fileBytes: bytes.length,
+    sha256: createHash('sha256').update(bytes).digest('hex'), ...extra
+  });
+  const cleanQA = { imageDecoded: true, dimensionsMeasured: true, sha256Measured: true,
+    visualInspected: true, anatomyAcceptable: true, noBakedText: true, cropReviewed: true };
+  const typeQA = { imageDecoded: true, dimensionsMeasured: true, sha256Measured: true,
+    visualInspected: true, spellingCheckedAgainstTaxonomy: true, typeReadableAt320px: true };
+  const thumbQA = { imageDecoded: true, dimensionsMeasured: true, sha256Measured: true,
+    visualInspected: true, noBakedText: true, subjectReadableAtThumbnail: true, cropReviewed: true };
+  f.record.schemaVersion = 2;
+  f.record.canonicalEmotionId = 'anxious';
+  f.record.bundleStatus = 'complete_three_real_files';
+  f.record.qc = { allThreeLocalWebPDecodingAndSHA256Verified: true, localTypeAndThumbnailInspected: true };
+  f.record.variants = [
+    variant('CLEAN', '', PNG, { qa: cleanQA }),
+    variant('TYPE', '-with-text-en', typeData, {
+      locale: 'en',
+      embeddedWording: { label: 'Anxious / worried', scriptureReference: 'Philippians 4:6-7',
+        scriptureTextIncluded: false },
+      qa: typeQA
+    }),
+    variant('THUMB', '-thumbnail', thumbData, { qa: thumbQA })
+  ];
+  f.record.wordingEvidence = { sourcePath: 'src/features/library/emotion-taxonomy.js',
+    sourceBlobSha: blobSha, canonicalEmotionId: 'anxious', locale: 'en',
+    exactLabel: 'Anxious / worried', reference: 'Philippians 4:6-7',
+    scriptureTextIncluded: false };
+  await f.save();
+  const pass = await auditV7VisualAssets(f.root);
+  assert.equal(pass.status, 'PASS', pass.errors.join('\n'));
+  assert.equal(pass.counts.completeBundles, 1);
+  assert.deepEqual(pass.manifest.byContent['emotion:anxious'], [ID]);
+  assert.deepEqual(pass.manifest.byContent['emotion:anxiety_worry'], [ID]);
+  assert.equal(pass.manifest.assets[0].variants.length, 2); // CLEAN is top-level master.
+  f.record.variants[1].embeddedWording.label = 'Anxiety / worried';
+  await f.save();
+  const fail = await auditV7VisualAssets(f.root);
+  assert.equal(fail.status, 'FAIL');
+  assert.match(fail.errors.join('\n'), /TYPE embedded wording does not match/);
+});
+
+test('reported V2 full bundle fails closed when THUMB is absent', async t => {
+  const f = await fixture(t);
+  f.record.schemaVersion = 2;
+  f.record.bundleStatus = 'complete_three_real_files';
+  f.record.qc = { allThreeLocalWebPDecodingAndSHA256Verified: true, localTypeAndThumbnailInspected: true };
+  f.record.variants = [{ kind: 'CLEAN', ...{
+    imagePath: f.record.imagePath, format: 'png', width: 1, height: 1,
+    fileBytes: PNG.length, sha256: f.record.sha256,
+    qa: { imageDecoded: true, dimensionsMeasured: true, sha256Measured: true,
+      visualInspected: true, anatomyAcceptable: true, noBakedText: true, cropReviewed: true }
+  }}];
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /bundleStatus disagrees/);
+});
+
+test('rejects conflicting visual canonical ID instead of publishing a wrongly tagged feeling', async t => {
+  const f = await fixture(t);
+  f.record.canonicalEmotionId = 'afraid';
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /queue\/canonical ID\/agent ownership mismatch/);
+});
+
+test('canonical emotion stored as contentId still resolves its original image-agent queue', async t => {
+  const f = await fixture(t);
+  f.record.contentId = 'anxious';
+  f.record.queueConcept = 'anxiety_worry';
+  f.record.canonicalEmotionId = 'anxious';
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.deepEqual(result.manifest.byContent['emotion:anxious'], [ID]);
+  assert.deepEqual(result.manifest.byContent['emotion:anxiety_worry'], [ID]);
+  assert.equal(result.queues[0].completed, 1);
+  assert.equal(result.queues[0].next, 'fear');
 });
