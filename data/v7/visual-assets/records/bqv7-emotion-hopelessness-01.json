@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-hopelessness-01",
+  "agentId": "visual-agent-3",
+  "createdAt": "2026-10-08T20:06:35+00:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hopelessness-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "hopelessness",
+  "queueConcept": "hopelessness",
+  "canonicalEmotionId": "hopeless",
+  "concept": "After an exhausting night, a young man sits alone in a nearly empty laundromat, head bowed into clasped hands; a concrete moment of lost hope distinct from route confusion or repeated-work discouragement.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 94290,
+  "sha256": "7de537169bbf6202f4f8f982349c20564f888ad0d9f760d271bf1d94a8639942",
+  "focalPoint": {
+    "x": 0.48,
+    "y": 0.42
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "57b95544-9f98-423f-83c7-3b93a7863132",
+    "sourceImage": "a_clean_composite_presentation_product_mockup_im.png",
+    "sourceDescription": "Image generation unexpectedly returned a review sheet. The text-free left original photorealistic panel alone was cropped and exported as CLEAN; no review-sheet lettering or false metrics were imported.",
+    "sourceRect": {
+      "x": 26,
+      "y": 40,
+      "width": 606,
+      "height": 606
+    },
+    "derivatives": "Pillow licensed-font editorial composition and focal crop",
+    "sourceType": "generated",
+    "thirdPartyAsset": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated image; no user-supplied third-party photograph or book cover. No font files distributed.",
+    "fontFilesDistributed": false,
+    "fonts": [
+      {
+        "family": "EB Garamond",
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "Debian /usr/share/doc/fonts-ebgaramond-extra/copyright",
+        "use": "baked TYPE serif title"
+      },
+      {
+        "family": "Lato",
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "Debian /usr/share/doc/fonts-lato/copyright",
+        "use": "baked TYPE reference"
+      }
+    ],
+    "scriptureQuoteRights": "reference_only_no_verse_text"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young man sits alone in a nearly empty laundromat at night, forehead resting against his clasped hands.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "English TYPE only; for Tagalog, Cebuano and Ilocano use CLEAN with semantic localized live label and reference."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "hopeless",
+    "locale": "en",
+    "exactLabel": "Hopeless",
+    "reference": "Romans 15:13",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "rightsClear": true,
+    "localThreeWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "isolatedChromiumFixture": {
+      "status": "passed",
+      "viewportWidths": [
+        320,
+        390,
+        430
+      ],
+      "locales": [
+        "en",
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "checksPassed": 12,
+      "checksTotal": 12,
+      "builtApp": false
+    },
+    "builtAppBrowserQA": "not_performed",
+    "officialNodeAudit": "not_run_repository_unavailable_in_container",
+    "productionCertification": "not_claimed",
+    "notes": "Visually reviewed clean/type/thumb and actual 320px fixture. This candidate is not registered as production_ready until repository audit and BibleQuest built-app browser QA."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hopelessness-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 94290,
+      "sha256": "7de537169bbf6202f4f8f982349c20564f888ad0d9f760d271bf1d94a8639942",
+      "focalPoint": {
+        "x": 0.48,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "altText": "A young man sits with his forehead against clasped hands in a quiet, nearly empty laundromat at night.",
+      "decorative": false,
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hopelessness-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 104114,
+      "sha256": "767421a83f565ac12f4f53b2102824de0343311ea1f1dac14ed830d36be248f1",
+      "focalPoint": {
+        "x": 0.48,
+        "y": 0.42
+      },
+      "textSafeRegion": "top",
+      "altText": "A young man sits alone in a laundromat. English artwork title: Hopeless. Reference: Romans 15:13.",
+      "decorative": true,
+      "embeddedWording": {
+        "label": "Hopeless",
+        "scriptureReference": "Romans 15:13",
+        "scriptureTextIncluded": false
+      },
+      "crop": {
+        "sourceRect": {
+          "x": 26,
+          "y": 40,
+          "width": 606,
+          "height": 606
+        },
+        "composite": {
+          "photoOffsetY": 248,
+          "mastheadHeight": 248
+        }
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "fontLicenseVerified": true,
+        "referenceOnlyNoVerseText": true,
+        "isolatedBrowserFixture320pxPassed": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hopelessness-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 29786,
+      "sha256": "7337240855dd3e88315574a284c6691857bf1d831418ff3bd44b8a9bf575ed81",
+      "focalPoint": {
+        "x": 0.48,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "altText": "A young man sits with his forehead against clasped hands in a quiet, nearly empty laundromat at night.",
+      "decorative": false,
+      "crop": {
+        "sourceRect": {
+          "x": 90,
+          "y": 0,
+          "width": 819,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      }
+    }
+  ]
+}
