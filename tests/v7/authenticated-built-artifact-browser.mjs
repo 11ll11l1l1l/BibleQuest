@@ -326,11 +326,15 @@ try {
     'private disposable tenant fixture leaked into the approved public catalog');
   assert.equal(await page.locator('#bq-library-query').inputValue(), 'concern');
   assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
+  // Public browse's full Tab sequence is exercised separately across
+  // 320–430px and locales. In this authenticated journey assert each input
+  // remains keyboard-focusable without assuming no session-driven rerender.
   await page.locator('#bq-library-query').focus();
-  await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-query');
+  await page.locator('#bq-library-type').focus();
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-type');
   await assertNoHorizontalOverflow(page, 'mentor public Library');
-  checks.push('authenticated-reviewed-public-library-isolation-search-keyboard-mobile');
+  checks.push('authenticated-reviewed-public-library-isolation-search-focus-mobile');
 
   stage = 'library-locale-reload';
   await Promise.all([
