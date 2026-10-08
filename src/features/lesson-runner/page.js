@@ -63,6 +63,15 @@ function mentorSharedResponse(state, step, t) {
   if (!response || response.visibility !== 'shared') return '';
   return `<section class="bq-lesson-mentor-response" data-lesson-shared-response="${escape(step.id)}"><h2>${t('mentorShared')}</h2><p>${escape(responseText(response)).replace(/\n/g, '<br>')}</p></section>`;
 }
+// Draft keystrokes are local edits, not a reason to replace an active textarea.
+// Other state changes (save, step, authorization, share status) still redraw.
+export function canPatchVisibleResponseDraft(previous, next) {
+  if (!previous?.lesson || !next?.lesson || previous.responseDrafts === next.responseDrafts) return false;
+  return ['lesson','stepIndex','status','writable','progress','error','responses',
+    'responseStatus','responseError','shareStatus','shareError','mentorId']
+    .every(key => previous[key] === next[key]);
+}
+
 export function createLessonRunnerPage({ runner, onBack, onScripture, isContextReady = () => false, subscribeContext }) {
   if (typeof subscribeContext !== 'function') throw new TypeError('Lesson page requires account/congregation invalidation wiring.');
   const t = key => escape(localization.t(key, { dictionaries: COPY }));
@@ -74,9 +83,23 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
       const page = root.querySelector('[data-lesson-runner]'), host = page.querySelector('[data-lesson-content]');
       let disposed = false;
       let lastVisibleStepId = '';
+      let displayedState = null;
       const loadWhenReady = () => { if (!disposed && isContextReady()) void runner.load(); };
       const render = state => {
         if (disposed) return;
+        if (canPatchVisibleResponseDraft(displayedState, state)) {
+          const stepId = state.lesson.steps?.[state.stepIndex]?.id;
+          const editor = host.querySelector?.('[data-lesson-response]');
+          if (editor && editor.getAttribute('data-lesson-response') === stepId) {
+            // Preserve the actual focused DOM node, selection and composition
+            // session. The share control alone depends on whether a draft exists.
+            const shareButton = host.querySelector?.('[data-lesson-share]');
+            if (shareButton) shareButton.disabled = !(state.responses?.[stepId]?.id || String(state.responseDrafts?.[stepId] ?? '').trim());
+            displayedState = state;
+            return;
+          }
+        }
+        displayedState = state;
         if (!state.lesson) {
           lastVisibleStepId = '';
           host.innerHTML = `<div class="bq-lesson-empty"><p role="status">${state.error ? escape(state.error) : t(state.status === 'loading' ? 'loading' : 'idle')}</p><button type="button" class="bq-secondary-button" data-lesson-reload ${state.status === 'loading' ? 'disabled' : ''}>${t('reload')}</button></div>`;
