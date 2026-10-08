@@ -94,9 +94,17 @@ async function verifyV2Wording(record, variant, root) {
 function dimensions(buffer, format) {
   if (format === 'svg') {
     const xml = buffer.toString('utf8');
+    // SVG is served from the app origin. A syntactically valid document may
+    // still import attacker-controlled fonts/images or XML entities. Release
+    // artwork must be self-contained; only local fragment references are safe.
+    const unsafeMarkup = /<!DOCTYPE\b|<!ENTITY\b|<\?xml-stylesheet\b|<script\b|<foreignObject\b|<iframe\b|<object\b|<embed\b|\bon\w+\s*=|javascript:|@import\b|@font-face\b/i;
+    const hrefs = [...xml.matchAll(/\b(?:xlink:)?href\s*=\s*(["'])(.*?)\1/gi)];
+    const urls = [...xml.matchAll(/\burl\s*\(\s*(["']?)(.*?)\1\s*\)/gi)];
+    const internalFragment = target => /^#[A-Za-z_][\w:.-]*$/.test(target.trim());
     if (!/^\s*(?:<\?xml[^>]*>\s*)?<svg\s/i.test(xml)
-      || /<script\b|<foreignObject\b|\bon\w+\s*=|javascript:/i.test(xml)
-      || /(?:href|xlink:href)\s*=\s*["'](?:https?:|\/\/)/i.test(xml))
+      || unsafeMarkup.test(xml)
+      || hrefs.some(([, , target]) => !internalFragment(target))
+      || urls.some(([, , target]) => !internalFragment(target)))
       throw new Error('unsafe or unrecognized SVG');
     const opening = xml.match(/<svg\s[^>]*>/i)?.[0] || '';
     const width = Number(opening.match(/\bwidth=["'](\d+)(?:px)?["']/i)?.[1]);
