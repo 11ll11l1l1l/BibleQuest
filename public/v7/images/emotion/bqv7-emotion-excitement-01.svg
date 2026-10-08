@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#c8e4e6"/><stop offset=".54" stop-color="#f2eee1"/><stop offset="1" stop-color="#e9c7a0"/></linearGradient>
+ <linearGradient id="glass" x2="0" y2="1"><stop stop-color="#ecfcff"/><stop offset="1" stop-color="#b8d9d4"/></linearGradient>
+ <linearGradient id="blue" x2=".2" y2="1"><stop stop-color="#286ca8"/><stop offset="1" stop-color="#153b73"/></linearGradient>
+ <linearGradient id="table" x2="0" y2="1"><stop stop-color="#d7a67d"/><stop offset="1" stop-color="#a96945"/></linearGradient>
+ <linearGradient id="shade" x2="0" y2="1"><stop stop-color="#162b38" stop-opacity="0"/><stop offset="1" stop-color="#142534" stop-opacity=".35"/></linearGradient>
+ <radialGradient id="warm"><stop stop-color="#fff9d9" stop-opacity=".6"/><stop offset="1" stop-color="#fff9d9" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-.5" y="-.5" width="2" height="2"><feGaussianBlur stdDeviation="14"/></filter>
+</defs>
+<rect width="1024" height="1024" fill="url(#bg)"/>
+<!-- airy skylight and workshop structure -->
+<path d="M0 0H1024V324L714 354 564 64 0 78Z" fill="url(#glass)"/>
+<path d="M0 85L1024 20M278 0L428 352M563 0L716 355M845 0L968 320M0 321L1024 318" fill="none" stroke="#9bbdc0" stroke-width="17" opacity=".8"/>
+<path d="M0 366H1024" stroke="#d2d7cc" stroke-width="27"/>
+<path d="M0 380H1024" stroke="#ffffff" stroke-width="8" opacity=".7"/>
+<ellipse cx="835" cy="228" rx="370" ry="280" fill="url(#warm)"/>
+<!-- blurred workshop shelving and plants -->
+<g opacity=".46"><path d="M45 385H325M45 565H325M45 730H325" stroke="#7c8b7c" stroke-width="21"/><path d="M65 385V730M304 385V730" stroke="#7c8b7c" stroke-width="17"/>
+<rect x="85" y="423" width="110" height="125" rx="12" fill="#b58c6c"/><rect x="225" y="425" width="52" height="120" rx="9" fill="#e6c89b"/>
+<rect x="75" y="590" width="92" height="103" rx="9" fill="#c8a68c"/><rect x="206" y="595" width="86" height="100" rx="9" fill="#b8a38e"/>
+<path d="M887 730V492M912 735V430" stroke="#627f66" stroke-width="13"/><ellipse cx="870" cy="550" rx="67" ry="28" transform="rotate(-30 870 550)" fill="#678f70"/><ellipse cx="947" cy="510" rx="72" ry="27" transform="rotate(30 947 510)" fill="#84a782"/><ellipse cx="864" cy="630" rx="61" ry="27" transform="rotate(26 864 630)" fill="#678d71"/></g>
+<!-- left cheering friend -->
+<ellipse cx="170" cy="841" rx="164" ry="48" fill="#5d5c54" opacity=".18" filter="url(#shadow)"/>
+<path d="M-44 733Q-5 561 113 558Q247 563 304 767L285 929H-15Z" fill="#52675b"/>
+<path d="M60 559Q96 605 166 614L210 554" fill="none" stroke="#e2e3d6" stroke-width="29"/>
+<path d="M56 591Q16 660 73 735" stroke="#4d5e51" stroke-width="82" fill="none" stroke-linecap="round"/>
+<ellipse cx="163" cy="429" rx="95" ry="117" fill="#b87858"/>
+<path d="M74 444Q56 324 141 314Q251 289 258 422Q217 362 175 369Q125 370 74 444Z" fill="#2a2b2c"/>
+<circle cx="122" cy="437" r="7" fill="#2a2b2c"/><circle cx="203" cy="439" r="7" fill="#2a2b2c"/>
+<path d="M127 501Q166 545 208 494" fill="none" stroke="#743d36" stroke-width="11" stroke-linecap="round"/>
+<path d="M110 419Q136 400 152 416M182 414Q207 399 226 420" fill="none" stroke="#382a29" stroke-width="9"/>
+<path d="M198 667Q265 645 293 690" fill="none" stroke="#b87957" stroke-width="35" stroke-linecap="round"/>
+<circle cx="291" cy="677" r="31" fill="#b87957"/>
+<!-- right friend applauding -->
+<path d="M762 751Q766 583 876 574Q992 573 1051 758L1046 1024H738Z" fill="#d9a044"/>
+<ellipse cx="896" cy="454" rx="92" ry="113" fill="#764b37"/>
+<path d="M809 460Q774 370 833 337Q877 300 932 340Q1001 334 994 441L980 471Q966 393 939 379Q864 414 809 460Z" fill="#252628"/>
+<path d="M846 473Q863 465 877 475M913 470Q928 465 940 473" stroke="#302323" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M863 529Q900 564 934 520" stroke="#e9b6a0" stroke-width="11" fill="none" stroke-linecap="round"/>
+<path d="M785 669Q829 620 861 680M1014 669Q963 619 925 680" stroke="#d59b42" stroke-width="72" fill="none" stroke-linecap="round"/>
+<ellipse cx="867" cy="686" rx="24" ry="51" transform="rotate(-21 867 686)" fill="#85573f"/><ellipse cx="912" cy="686" rx="24" ry="51" transform="rotate(21 912 686)" fill="#85573f"/>
+<!-- central excited woman, uplifted hands and expressive face -->
+<path d="M414 585Q345 493 303 255" stroke="#255c9c" stroke-width="90" fill="none" stroke-linecap="round"/>
+<path d="M620 585Q705 485 764 233" stroke="#245d9d" stroke-width="91" fill="none" stroke-linecap="round"/>
+<path d="M298 246L276 154" stroke="#c58d6e" stroke-width="38" fill="none" stroke-linecap="round"/>
+<path d="M761 231L785 145" stroke="#c58d6e" stroke-width="38" fill="none" stroke-linecap="round"/>
+<ellipse cx="272" cy="142" rx="30" ry="41" transform="rotate(-12 272 142)" fill="#c58d6e"/>
+<ellipse cx="788" cy="133" rx="30" ry="41" transform="rotate(12 788 133)" fill="#c58d6e"/>
+<path d="M379 559Q422 531 464 548L549 560Q616 524 656 567L687 879H351Z" fill="url(#blue)"/>
+<path d="M454 555L511 636L555 555L601 873H420Z" fill="#f3e7d9"/>
+<path d="M465 551L505 603L465 627L416 561M555 550L516 603L560 626L606 562" fill="#347bb3"/>
+<path d="M512 638V865" stroke="#dfd7c7" stroke-width="5" opacity=".7"/>
+<circle cx="511" cy="720" r="5" fill="#d6d2ca"/><circle cx="511" cy="790" r="5" fill="#d6d2ca"/>
+<ellipse cx="516" cy="413" rx="108" ry="134" fill="#c38a6c"/>
+<path d="M411 420Q388 310 453 282Q517 241 594 296Q626 327 615 422Q587 366 554 345Q487 370 411 420Z" fill="#28272b"/>
+<ellipse cx="550" cy="281" rx="54" ry="54" fill="#29282c"/>
+<path d="M465 438Q485 422 498 437M544 437Q562 422 581 437" stroke="#3d2a28" stroke-width="10" fill="none" stroke-linecap="round"/>
+<path d="M482 499Q514 547 556 494Q536 510 514 512Q497 512 482 499Z" fill="#703f3c"/>
+<path d="M488 503Q514 516 548 501" fill="none" stroke="#f8eee6" stroke-width="8" stroke-linecap="round"/>
+<ellipse cx="420" cy="463" rx="12" ry="20" fill="#bb8063"/><ellipse cx="616" cy="462" rx="12" ry="20" fill="#bb8063"/>
+<!-- workbench, handmade bridge truss as focal context -->
+<path d="M-30 849Q520 799 1052 852V1032H-30Z" fill="url(#table)"/>
+<path d="M0 851Q514 808 1024 851" fill="none" stroke="#f2c59b" stroke-width="23"/>
+<ellipse cx="525" cy="934" rx="325" ry="36" fill="#7b5039" opacity=".23" filter="url(#shadow)"/>
+<g stroke="#e8c9a1" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none">
+<path d="M247 903L760 903M247 981L760 981M260 903L315 981L382 903L449 981L517 903L584 981L651 903L719 981L760 903"/>
+<path d="M260 903L315 824L382 903L449 824L517 903L584 824L651 903L719 824L760 903"/>
+</g>
+<g stroke="#9c734f" stroke-width="3" opacity=".48"><path d="M247 903L760 903M247 981L760 981M315 824L719 824"/></g>
+<rect y="880" width="1024" height="144" fill="url(#shade)" opacity=".22"/>
+</svg>

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-excitement-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-08T22:07:08+09:00",
+  "status": "three_files_created_local_render_pass_browser_qa_pending",
+  "bundleStatus": "partial_pending_built_app_and_font_qa",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "excited",
+  "canonicalEmotionId": "excited",
+  "queueConcept": "excitement",
+  "concept": "Shared maker-space breakthrough: a woman raises both arms as two friends celebrate a successful bridge model",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 6857,
+  "sha256": "8cc019bb13620e60e3381548b4f6bd40f4b2168378e7488e3c67f332e55e10d6",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.45
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 6857,
+      "sha256": "8cc019bb13620e60e3381548b4f6bd40f4b2168378e7488e3c67f332e55e10d6",
+      "altText": "A woman in a blue jacket celebrates with both arms raised while two friends cheer beside a model bridge in a bright workshop.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.45
+      },
+      "cropIntent": "Original square composition",
+      "qa": {
+        "noBakedText": true,
+        "localRendered": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 7493,
+      "sha256": "1bf0692c52c1543d9c588d3fd512509b07206ed7382f0a078e793e23d10b7e68",
+      "locale": "en",
+      "altText": "A woman celebrates with friends in a workshop. Embedded words: Excited; Psalm 126:3.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.36
+      },
+      "cropIntent": "4:5 with lower editorial title region",
+      "embeddedWording": {
+        "label": "Excited",
+        "scriptureReference": "Psalm 126:3",
+        "scriptureTextIncluded": false
+      },
+      "qa": {
+        "spellingCheckedAgainstTaxonomy": true,
+        "localRendered": true,
+        "visualInspected": true,
+        "typeReadableAt320px": true,
+        "builtAppBrowserQA": "pending",
+        "fontLicenseVerified": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 6856,
+      "sha256": "042be046b06995e0e2d371d7bfa828acbd66083fc15c48703f8759be19075e6d",
+      "altText": "A woman celebrates with arms raised as two friends cheer beside a handmade bridge.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.45
+      },
+      "crop": {
+        "x": 105,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "aspect": "4:5"
+      },
+      "qa": {
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "localRendered": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": "pending"
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "excited",
+    "locale": "en",
+    "exactLabel": "Excited",
+    "scriptureReference": "Psalm 126:3",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "original programmatic vector illustration",
+    "method": "Hand-authored SVG geometry/gradients; independent square CLEAN, 4:5 TYPE and focal-cropped THUMB; photographic alternative generated but not used in this committed candidate",
+    "sourceImageModelOutputUsed": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original vector geometry, no third-party artwork",
+    "fontLicense": "Device serif/sans fallback, no font files embedded or distributed; exact target browser font QA pending",
+    "scripture": "Reference only, no Bible text quoted"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young woman celebrates a creative achievement with two friends in a sunlit workshop.",
+    "fallback": "CLEAN with live localized label for languages other than English",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "threeDistinctFiles": true,
+    "localRenderedWithCairoSVG": true,
+    "local320PreviewInspected": true,
+    "thumbnailFocalReviewed": true,
+    "noFakeText": true,
+    "sceneDistinctFromExisting": true,
+    "sourceTaxonomyVerified": true,
+    "bytesAndHashesCalculatedLocally": true,
+    "builtAppBrowserQA": "pending",
+    "fontQA": "pending",
+    "nodeAudit": "not_run_full_checkout_unavailable"
+  }
+}
