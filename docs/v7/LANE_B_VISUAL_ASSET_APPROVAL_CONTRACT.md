@@ -38,6 +38,21 @@ Example reviewed asset:
 
 No `visualAssets` property means no image is declared by this contract, preserving text-only V7 Library publication. The publishing pipeline must declare any attached images explicitly; silently attaching an image outside this manifest bypasses audit and is not supported.
 
+
+## Publication-time evidence immutability
+
+The original automated decision stores the complete declared visual-asset snapshot and
+a deterministically serialized rights declaration, both bound to its exact item revision.
+Publication must recheck **both snapshots** against the candidate at the publish
+boundary. A removed image list (even replacing an approved manifest with no image),
+an altered license/holder/attribution/permitted-use record, or an absent legacy
+rights snapshot invalidates the old decision. The item must return to the automated
+policy for independent re-evaluation; it must not silently inherit `auto_approved`.
+
+This is a metadata identity check, not independent binary/typography inspection.
+The separate Lane A artifact audit and Lane B image-text/font validation remain
+mandatory before enabling the TYPE variant in production.
+
 ## Reviewer UI
 
 Content Review -> Books / Devotionals / Past Teachings -> item -> **Visual assets and accessibility**. Source, rights, alt and fallback are displayed from stored evidence when present. **Automated criteria and evidence** and **Independent second pass** remain separately visible. Only authenticated authorized reviewers can override exact-revision publication decisions.
