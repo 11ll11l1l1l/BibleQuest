@@ -6,7 +6,7 @@ const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'dis
   .map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
 const row = (stepId = 'step-3', response = 'saved') => ({ id: `response-${stepId}`, stepId, lessonRevisionId: 'revision', response, audienceUserIds: [], visibility: 'owner' });
 
-function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse } = {}) {
+function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback } = {}) {
   const auth = { authenticated: true, user: { id: userId } };
   const active = { congregationId: 'church', userId };
   const log = [], responseWrites = [], progressWrites = [];
@@ -21,8 +21,8 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
       return { id: `response-${stepId}` };
     },
     async saveProgress(pairId, revisionId, data) { log.push(['saveProgress', data.currentStepId]); progressWrites.push({ pairId, revisionId, data }); },
-    async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return [{ id: 'share', response_id: responseId }]; },
-    async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return { id: 'share', response_id: responseId }; },
+    async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return shareCallback ? shareCallback({pairId,revisionId,stepId,responseId,options}) : [{ id: 'share', response_id: responseId }]; },
+    async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return revokeCallback ? revokeCallback({pairId,revisionId,stepId,responseId}) : { id: 'share', response_id: responseId }; },
   };
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
@@ -184,4 +184,52 @@ test('mentee share requires explicit confirmation before any persistence or disc
   await assert.rejects(f.runner.shareResponse('step-1'), { code: 'BQ_LESSON_SHARE_CONFIRMATION_REQUIRED' });
   assert.equal(f.responseWrites.length, 0);
   assert.equal(f.log.some(entry => entry[0] === 'shareResponse'), false);
+});
+
+test('overlapping explicit share and revoke taps cannot race or advance lesson while disclosure is pending', async () => {
+  let finishSharing;
+  const f=fixture({
+    loadResponses: async()=>[row('step-1','saved private text')],
+    shareCallback:()=>new Promise(resolve=>{finishSharing=resolve;}),
+  });
+  await f.runner.load();
+  await f.runner.move(1);
+  const first=f.runner.shareResponse('step-1',{confirmed:true});
+  assert.equal(f.runner.getState().shareStatus,'saving');
+  const sameShare=f.runner.shareResponse('step-1',{confirmed:true});
+  const prematureRevoke=f.runner.revokeResponseShare('step-1');
+  const prematureMove=f.runner.move(1);
+  await Promise.all([sameShare,prematureRevoke,prematureMove]);
+  assert.equal(f.runner.getState().stepIndex,1,'A pending disclosure must not advance the lesson.');
+  assert.equal(f.log.filter(entry=>entry[0]==='shareResponse').length,1);
+  assert.equal(f.log.filter(entry=>entry[0]==='revokeResponseShare').length,0);
+  assert.equal(f.progressWrites.length,1,'No extra progress write while sharing.');
+  finishSharing([{id:'share',response_id:'response-step-1'}]);
+  await first;
+  assert.equal(f.runner.getState().responses['step-1'].visibility,'shared');
+  await f.runner.revokeResponseShare('step-1');
+  assert.equal(f.log.filter(entry=>entry[0]==='revokeResponseShare').length,1);
+  assert.equal(f.runner.getState().responses['step-1'].visibility,'owner');
+});
+
+test('an unfinished revoke cannot race a second share or navigation', async () => {
+  let finishRevoke;
+  const f=fixture({
+    loadResponses:async()=>[{...row('step-1','already shared'),visibility:'shared',audienceUserIds:['mentor']}],
+    revokeCallback:()=>new Promise(resolve=>{finishRevoke=resolve;}),
+  });
+  await f.runner.load();await f.runner.move(1);
+  const pending=f.runner.revokeResponseShare('step-1');
+  assert.equal(f.runner.getState().shareStatus,'saving');
+  await Promise.all([
+    f.runner.revokeResponseShare('step-1'),
+    f.runner.shareResponse('step-1',{confirmed:true}),
+    f.runner.move(1),
+  ]);
+  assert.equal(f.log.filter(row=>row[0]==='revokeResponseShare').length,1);
+  assert.equal(f.log.filter(row=>row[0]==='shareResponse').length,0);
+  assert.equal(f.runner.getState().stepIndex,1);
+  finishRevoke({id:'share',response_id:'response-step-1'});
+  await pending;
+  assert.equal(f.runner.getState().responses['step-1'].visibility,'owner');
 });
