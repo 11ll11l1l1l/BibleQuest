@@ -123,33 +123,37 @@
       "format": "svg",
       "width": 384,
       "height": 480,
-      "fileBytes": 87141,
-      "sha256": "517efec9cab1abc39c15a69154d4c4a70953a7e4b7f8f614cb1a0956f2bb4f26",
+      "fileBytes": 87498,
+      "sha256": "b84eff663cd0190569b623b665ccb2b629e96d199bfa716a7182e8c9bd55a334",
       "sourceType": "generated",
       "locale": null,
       "focalPoint": {
-        "x": 0.27,
-        "y": 0.34
+        "x": 0.25,
+        "y": 0.32
       },
       "textSafeRegion": "none",
       "crop": {
         "sourceRegionNormalized": {
-          "x": 0.125,
+          "x": 0.15,
           "y": 0,
           "width": 0.8,
           "height": 1
         },
         "outputAspect": "4:5",
-        "method": "Embedded WebP scaled to 480x480 and clipped to 384x480; left subject and some group preserved"
+        "method": "Self-contained SVG: exact original 1024x1024 WebP embedded at 480x480, shifted -72px into 384x480 clipping window; 0.17 max-opacity edge vignette."
       },
-      "altText": "A young man sits apart from friends on outdoor steps.",
+      "altText": "A young man looks down alone in the foreground while friends talk together behind him.",
       "decorative": false,
       "fallback": "CLEAN",
       "qc": {
         "sourceBlobVerified": true,
         "noEmbeddedText": true,
         "clipGeometryChecked": true,
-        "visualRenderQA": "pending"
+        "sourceVisualInspected": true,
+        "thumbnailAt100px": "pending",
+        "visualRenderQA": "pending",
+        "focalCropBrowserQA": "pending",
+        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run."
       }
     }
   ],
@@ -183,5 +187,20 @@
     "rasterOptimization": "pending",
     "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
   },
-  "createdAt": "2026-10-08T15:06:14+09:00"
+  "createdAt": "2026-10-08T15:06:14+09:00",
+  "bundleStatus": "partial_candidate_not_production_ready",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "rejected",
+    "locale": "en",
+    "exactLabel": "Rejected / unwanted",
+    "reference": "Psalm 27:10",
+    "scriptureTextIncluded": false
+  },
+  "qaStatus": {
+    "localStaticChecks": "passed",
+    "browserRenderedVisualQA": "pending",
+    "reason": "CLEAN image inspected; THUMB SVG crop geometry checked but actual browser-rendered portrait not yet inspected. TYPE font rendering remains pending."
+  }
 }
