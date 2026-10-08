@@ -1,4 +1,3 @@
-import './visual-decks.css';
 import { assertV7PublishedVisualCardItem, normalizeV7DeckLocale, resolveV7LibraryVisual } from './visual-registry.js';
 import { cardReveal, pressFeedback } from '../../ui/motion.js';
 
