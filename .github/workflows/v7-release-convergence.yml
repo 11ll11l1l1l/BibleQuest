@@ -20,6 +20,7 @@ on:
       - 'scripts/v7-content-release-evidence.mjs'
       - 'scripts/v7-release-content-factory-evidence.mjs'
       - 'scripts/v7-release-automated-approval-evidence.mjs'
+      - 'scripts/v7-certify-motion-evidence.mjs'
       - '.github/workflows/v7-*.yml'
       - 'package.json'
       - 'package-lock.json'
@@ -168,6 +169,7 @@ jobs:
           BQ_BASE_URL=http://127.0.0.1:4173/ node tests/v3-accessibility-smoke.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/release-responsive-accessibility-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/motion-built-artifact-browser.mjs
+          node scripts/v7-certify-motion-evidence.mjs
 
       - name: Install pinned Supabase CLI
         uses: supabase/setup-cli@v1
@@ -205,18 +207,19 @@ jobs:
 
           const candidateSha = process.env.BQ_EXACT_SHA;
           const strict = process.env.BQ_STRICT_RELEASE === 'true';
-          const [integrity, content, factory, approval, responsive, motion, apiJourney, browserJourney] = await Promise.all([
+          const [integrity, content, factory, approval, responsive, motion, motionCertification, apiJourney, browserJourney] = await Promise.all([
             readFile('dist-v6/bq-artifact-integrity.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-responsive-accessibility.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/motion-built-artifact.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/motion-certification.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/authenticated-api-journey.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/authenticated-built-browser-journey.json', 'utf8').then(JSON.parse),
           ]);
 
-          for (const [name, evidence] of Object.entries({ content, factory, approval, responsive, motion, apiJourney, browserJourney })) {
+          for (const [name, evidence] of Object.entries({ content, factory, approval, responsive, motion, motionCertification, apiJourney, browserJourney })) {
             if (String(evidence.candidateSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
               throw new Error(`${name} evidence candidate SHA mismatch.`);
             }
@@ -224,7 +227,7 @@ jobs:
           if (String(integrity.sourceSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
             throw new Error('Build integrity source SHA mismatch.');
           }
-          if (responsive.result !== 'PASS' || motion.result !== 'PASS' || apiJourney.result !== 'PASS' || browserJourney.result !== 'PASS') {
+          if (responsive.result !== 'PASS' || motion.result !== 'PASS' || motionCertification.result !== 'PASS' || apiJourney.result !== 'PASS' || browserJourney.result !== 'PASS') {
             throw new Error('One or more V7 integrated automated journeys failed.');
           }
 
@@ -233,6 +236,7 @@ jobs:
             && approval.readyForRelease === true
             && responsive.result === 'PASS'
             && motion.result === 'PASS'
+            && motionCertification.result === 'PASS'
             && apiJourney.result === 'PASS'
             && browserJourney.result === 'PASS';
 
@@ -262,6 +266,8 @@ jobs:
             authenticatedBrowserChecks: browserJourney.checks?.length || 0,
             responsiveAccessibilityChecks: responsive.checks?.length || 0,
             laneDMotionBrowserChecks: motion.checks?.length || 0,
+            laneDMotionScreenshotProofs: motionCertification.screenshotCount || 0,
+            laneDMotionMaxCls: motionCertification.measuredMaxCls,
             inputs: {
               laneAAndBRepresentative: 'artifacts/v7/content-report.json',
               laneAReleaseFactory: 'artifacts/v7/release-content-factory.json',
@@ -271,6 +277,7 @@ jobs:
               laneCAndDPopulatedBrowser: 'artifacts/v7/authenticated-built-browser-journey.json',
               laneDResponsiveAccessibility: 'artifacts/v7/release-responsive-accessibility.json',
               laneDGlobalMotion: 'artifacts/v7/motion-built-artifact.json',
+              laneDMotionCertification: 'artifacts/v7/motion-certification.json',
               buildIntegrity: 'dist-v6/bq-artifact-integrity.json',
             },
             observedAt: new Date().toISOString(),
@@ -279,7 +286,7 @@ jobs:
           await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
           console.log(JSON.stringify(report, null, 2));
           NODE
-          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/motion-built-artifact.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/motion-built-artifact.json artifacts/v7/motion-certification.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
 
       - name: Verify production deployed identity and full artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -401,6 +408,7 @@ jobs:
             artifacts/v7/lane-b-automated-approval.json
             artifacts/v7/release-responsive-accessibility.json
             artifacts/v7/motion-built-artifact.json
+            artifacts/v7/motion-certification.json
             artifacts/v7/motion-*.png
             artifacts/v7/authenticated-api-journey.json
             artifacts/v7/authenticated-built-browser-journey.json

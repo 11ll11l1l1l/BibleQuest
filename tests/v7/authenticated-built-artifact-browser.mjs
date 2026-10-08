@@ -369,7 +369,21 @@ try {
     page.locator('[data-locale-select]').selectOption('tl'),
   ]);
   await page.locator('[data-library-page]').waitFor({ state: 'visible' });
-  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
+  // A locale-triggered full reload can display a ready snapshot just before
+  // session hydration re-mounts the filtered catalog. Observe the restored
+  // search form and its reviewed result together rather than sampling a
+  // transient DOM between the route and session render passes.
+  await page.waitForFunction(itemId => {
+    const library = document.querySelector('[data-library-page]');
+    const routedQuery = new URLSearchParams(location.hash.split('?').slice(1).join('?')).get('query');
+    return Boolean(library
+      && routedQuery === 'concern'
+      && library.querySelector('[data-library-status]')?.dataset.libraryState === 'ready'
+      && library.querySelector('#bq-library-query')?.value === 'concern'
+      && library.querySelector('#bq-library-type')?.value === 'devotional'
+      && Array.from(library.querySelectorAll('[data-library-results] [data-library-item]'))
+        .some(node => node.getAttribute('data-library-item') === itemId));
+  }, approvedPublicItemId, { timeout: 30000 });
   const reloadEvidence = await page.evaluate(() => ({
     route: location.hash,
     language: document.querySelector('[data-locale-select]')?.value,
