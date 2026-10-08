@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-loneliness-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-09T07:02:15+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_present_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "loneliness",
+  "queueConcept": "loneliness",
+  "canonicalEmotionId": "lonely",
+  "concept": "Quiet loneliness in the presence of others: an older man sits separated from a friendly group at a community table.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 119888,
+  "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+  "focalPoint": {
+    "x": 0.3,
+    "y": 0.51
+  },
+  "textSafeRegion": "top",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "lonely",
+    "locale": "en",
+    "exactLabel": "Lonely",
+    "reference": "Psalm 68:6",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "364ac6a2-8c20-4c9c-bc9d-a89bbea05227",
+    "sourceFile": "a_realistic_cinematic_shallow_depth_of_field_ind.png",
+    "description": "Original single-scene cinematic photo, manually cropped and typeset as independent WebP variants",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "Noto Serif Display/Noto Sans system font package copyright, rasterized glyphs only; no font files redistributed",
+    "scriptureTextIncluded": false,
+    "referenceSource": "src/features/library/emotion-taxonomy.js"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An older Filipino man sits alone at one end of a long table while other people chat together in the distance.",
+    "localizedFallback": "CLEAN with live localized accessible text for TL/CEB/ILO and unsupported locales",
+    "essentialTextRemainsLive": true
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 119888,
+      "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+      "gitBlobSha": "4db1a865dbad528df4f3e769ff5b982fd32a1915",
+      "locale": null,
+      "altText": "An older Filipino man sits apart from a group at a community meal, looking quietly toward other people talking at the far end of the table.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "noBakedText": true,
+        "anatomyAcceptable": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-loneliness-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 138206,
+      "sha256": "1a702b4e22103716d6e5a1c66b1ce7b6e698f4896cd7cc66442ff5502843a2b4",
+      "gitBlobSha": "d6231f60abde6a9799ea5ea3ba1238a260b895bc",
+      "locale": "en",
+      "altText": "An older Filipino man sits apart from a group at a community meal, looking quietly toward other people talking at the far end of the table. Embedded English words: Lonely; Psalm 68:6.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "noPseudoText": true
+      },
+      "embeddedWording": {
+        "label": "Lonely",
+        "scriptureReference": "Psalm 68:6",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif Display SemiBold",
+          "Noto Sans Medium"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright",
+        "fontFilesRedistributed": false,
+        "method": "Pillow raster editorial typography over generated photograph"
+      },
+      "fallback": "CLEAN plus localized semantic live text"
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-loneliness-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 29472,
+      "sha256": "0854f9dd7ab7a8649ab10289ee00d17cc99c43b8f1139b84b5609a1d08556cb1",
+      "gitBlobSha": "5d4ad5c19bf1e0f2063c79718b6caba249b6fa9a",
+      "locale": null,
+      "altText": "An older Filipino man sits apart from a group at a community meal, looking quietly toward other people talking at the far end of the table.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 28,
+          "top": 0,
+          "right": 847,
+          "bottom": 1024
+        },
+        "targetAspectRatio": "4:5",
+        "method": "focal-aware Lanczos crop from CLEAN"
+      }
+    }
+  ],
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "builtAppBrowserQA": "pending",
+    "officialNodeAudit": "not_run",
+    "sceneDiversity": "Daytime community meal, elderly male subject, social distance; distinct from anxiety bedroom and fear doorway.",
+    "isolatedChromiumChecks": "9/9_passed_320_390_430px"
+  },
+  "inspectionEvidence": {
+    "localDecoding": "Pillow WebP decode of all three actual files",
+    "builtApp": "not run; isolated HTML only",
+    "officialNodeAudit": "not run; full repo checkout unavailable",
+    "sourceRevision": "Git blob e64366970838d62c11ea602dd606e0acfe5b0cb2; verified current live branch 2026-10-09 JST",
+    "candidateReview": "TYPE exact label Lonely and reference Psalm 68:6 inspected at 320px; THUMB focal safe; CLEAN no baked text",
+    "isolatedChromium": {
+      "passed": true,
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "variants": [
+        "CLEAN",
+        "TYPE",
+        "THUMB"
+      ],
+      "checks": [
+        "decoded",
+        "natural dimensions",
+        "no horizontal overflow",
+        "nonempty alt"
+      ],
+      "screenshots": [
+        "chromium-clean-320.png",
+        "chromium-type-320.png",
+        "chromium-thumb-320.png"
+      ]
+    }
+  }
+}
