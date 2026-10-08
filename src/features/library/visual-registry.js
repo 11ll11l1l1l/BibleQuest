@@ -59,6 +59,17 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
   return fallback;
 }
 
+export function assertV7PublishedVisualCardItem(item) {
+  if (!item || !['book','devotional','past_teaching'].includes(item.contentType)
+    || item.publicationState !== 'published'
+    || item.rights?.status !== 'verified'
+    || !Array.isArray(item.rights.allowedUses)
+    || item.rights.allowedUses.length === 0
+    || !clean(item.id) || !clean(item.title))
+    throw new TypeError('visual Library cards require a rights-verified published item');
+  return item;
+}
+
 export function buildV7LibraryDeckModel({ kind, locale = 'en', registry, selectedIds = [] } = {}) {
   if (kind !== 'emotion' && kind !== 'need') throw new TypeError('deck kind must be emotion or need');
   const resolvedLocale = normalizeV7DeckLocale(locale);
