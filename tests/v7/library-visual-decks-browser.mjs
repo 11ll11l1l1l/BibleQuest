@@ -17,8 +17,8 @@ try {
       const content = document.createElement('div');
       root.append(feeling, need, content);
       document.body.append(root);
-      const { createV7LibraryDiscoveryDeck } = await import('/src/features/library/visual-decks.js');
-      const { createV7LibraryVisualContentCard } = await import('/src/features/library/visual-content-card.js');
+      const { createV7LibraryDiscoveryDeck, createV7LibraryVisualContentCard } =
+        await import('/src/features/library/index.js');
       window.__bqLaneBSelections = [];
       const callback = row => window.__bqLaneBSelections.push(row);
       window.__bqLaneBFeeling = createV7LibraryDiscoveryDeck({
