@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 2,
+  "recordType": "derivative_bundle",
+  "assetId": "bqv7-emotion-anxiety-worry-01-derivatives",
+  "sourceMasterAssetId": "bqv7-emotion-anxiety-worry-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-08T06:08:55.096Z",
+  "status": "three_files_present_visual_qc_partial",
+  "contentType": "emotion",
+  "contentId": "anxiety_worry",
+  "canonicalEmotionId": "anxious",
+  "family": "emotion",
+  "sourceType": "generated",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 50182,
+      "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+      "sourceBlobSha": "f7abc7a92fbdc76dcabbe8bd4f1ad746f8ffc89a",
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.42
+      },
+      "textSafeRegion": "bottom",
+      "altText": "A worried young man sits on his bed at dusk, leaning forward with one hand in his hair as warm lamplight contrasts with a cool window.",
+      "decorative": false,
+      "rights": {
+        "sourceType": "generated",
+        "attributionRequired": false
+      },
+      "qc": {
+        "sourceMasterRecordVerified": true,
+        "sourceBlobFetched": true,
+        "noEmbeddedText": true,
+        "anatomyPreviouslyReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 52276,
+      "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa",
+      "gitBlobSha": "3284e88ee7e6b07e05e938abd5aa29b195baabd8",
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.42
+      },
+      "textSafeRegion": "bottom",
+      "includedWording": "Anxious / worried",
+      "wordingSource": {
+        "path": "src/features/library/emotion-taxonomy.js",
+        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "canonicalId": "anxious",
+        "field": "labels.en",
+        "locale": "en"
+      },
+      "scriptureIncluded": false,
+      "translation": null,
+      "revision": null,
+      "typography": {
+        "method": "rasterized professional editorial lettering",
+        "fontFamilies": [
+          "Noto Serif Display SemiBold",
+          "Noto Serif Display Italic"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontLicenseEvidence": "fonts-noto-core 20201225-2 /usr/share/doc/fonts-noto-core/copyright; no font files redistributed",
+        "layout": "two-line lower-left serif with italic accent and dark gradient scrim"
+      },
+      "altText": "A worried young man sits on his bed at dusk. Embedded English text: Anxious / worried.",
+      "decorative": true,
+      "fallback": "CLEAN with semantic localized live text",
+      "qc": {
+        "wordingVerified": true,
+        "spellingVerified": true,
+        "renderInspectedAt1024": true,
+        "phonePreviewPreviouslyInspected": true,
+        "noPseudoText": true,
+        "noScriptureQuote": true,
+        "contrastVisuallyReviewed": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
+      "format": "svg",
+      "width": 400,
+      "height": 500,
+      "fileBytes": 67178,
+      "sha256": "244f4625563218cef1c4e975b13a65c210cd815c68fae36b16385e30a8dbf64c",
+      "gitBlobSha": "86f4f9b2995d25651bd22d0beb79ed55370676c7",
+      "focalPoint": {
+        "x": 0.5128,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "altText": "A worried young man leans forward on a bed with one hand in his hair.",
+      "decorative": false,
+      "crop": {
+        "sourcePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+        "sourceRectPixels": {
+          "left": 112,
+          "top": 0,
+          "right": 931.2,
+          "bottom": 1024
+        },
+        "targetAspectRatio": "4:5",
+        "method": "self-contained SVG embeds the CLEAN WebP, pre-scaled and clipped to 400x500 viewBox",
+        "offlineSelfContained": true
+      },
+      "fallback": "CLEAN",
+      "qc": {
+        "sourceMasterVerified": true,
+        "geometryChecked": true,
+        "reference400x500WebPVisuallyInspected": true,
+        "exactSvgBrowserRenderQA": "pending",
+        "noEmbeddedText": true
+      }
+    }
+  ],
+  "bundleStatus": "three_files_present_render_qa_pending",
+  "bundleLocaleCoverage": [
+    "en"
+  ],
+  "generation": {
+    "masterPrompt": "Create one original square 1:1 cinematic editorial photograph for BibleQuest V7 anxiety_worry emotion tile. A young Asian man sits hunched on a rumpled bed in a modest contemporary bedroom, one hand resting naturally in his hair, brows drawn and gaze lowered in a recognizable quiet moment of worry. Cool blue twilight from the window balances a soft amber bedside lamp; subdued blue-gray and warm neutral palette, shallow depth of field, believable natural anatomy, skin and fabric textures. Frame a strong central upper-half focal point readable at 100px, keep face and hands safely away from edges, reserve lower area for potential live UI. Emotion must read as anxiety rather than generic sadness. No text, logos, watermark, fake signage, Bible, crosses, mountain sunset, overdramatization, or copied app imagery. Premium cinematic editorial realism with quiet spiritual warmth.",
+    "derivatives": "TYPE programmatic typography from CLEAN; THUMB focal crop from CLEAN with embedded WebP in SVG."
+  },
+  "rights": {
+    "image": "Original AI-generated image",
+    "font": "Noto Serif Display OFL-1.1; glyphs rasterized in TYPE",
+    "scripture": "No Scripture excerpt included",
+    "thirdPartyCover": false
+  },
+  "accessibility": {
+    "localizedFallback": "CLEAN + live localized text for TL/CEB/ILO and unsupported locales",
+    "essentialTextRemainsLive": true
+  },
+  "qc": {
+    "rejectedCandidatesThisRun": 0,
+    "typeBinaryHashMeasured": true,
+    "thumbHashMeasured": true,
+    "thumbSvgBrowserRenderQA": "pending",
+    "note": "Existing 400x500 WebP thumbnail was visually accepted but direct GitHub blob creation was safety-blocked twice. A self-contained SVG focal crop was committed instead; it embeds the original master bytes and has no external runtime dependency."
+  }
+}
