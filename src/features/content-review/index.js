@@ -1,4 +1,52 @@
 const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const REVIEW_PAGE_SIZE=12;
+const safeExternalUrl=value=>{try{const url=new URL(String(value||''));return ['https:','http:'].includes(url.protocol)?url.href:''}catch{return''}};
+const assetField=(asset,...names)=>names.map(name=>asset?.[name]).find(value=>typeof value==='string'&&value.trim())||'';
+// Never render arbitrary uploaded URLs as images or active links in privileged reviewer UI.
+const safeVisualUrl=value=>typeof value==='string' && /^\/v7\/images\/[a-z0-9/_-]+\.(webp|png|jpe?g)$/i.test(value)
+  && !value.includes('..') ? value : '';
+const visualAssetEvidence=item=>{
+  const evidence=item?.reviewEvidence||{},body=item?.body||{};
+  const rows=evidence.visualAssets??evidence.visual_assets??body.visualAssets??body.visual_assets;
+  const assets=Array.isArray(rows)?rows.filter(row=>row&&typeof row==='object').slice(0,12):[];
+  if(!assets.length)return '<details><summary>Visual assets and accessibility</summary><p class="bq-muted">No visual-asset metadata recorded for this revision. Review the automated provenance criteria before reusing imagery.</p></details>';
+  const preview=(asset,label)=>{
+    const src=safeVisualUrl(asset?.imagePath);
+    if(!src)return '<p class="bq-muted">Safe local image preview not available.</p>';
+    const alt=assetField(asset,'altText','alt','alt_text')||asset?.accessibility?.altText||label;
+    return `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" style="display:block;max-width:min(100%,240px);max-height:280px;object-fit:contain;border-radius:12px" />`;
+  };
+  return `<details><summary>Visual assets and accessibility (${assets.length})</summary><ul data-library-visual-evidence>${assets.map(asset=>{
+    const rights=asset.rights&&typeof asset.rights==='object'?asset.rights:{};
+    const source=asset.source&&typeof asset.source==='object'?asset.source:{};
+    const variants=Array.isArray(asset.variants)?asset.variants:[];
+    const variantDetails=asset.variants!==undefined&&!Array.isArray(asset.variants)
+      ?'<p class="bq-form-message">Invalid variant evidence — automated approval must fail closed.</p>'
+      :variants.length?`<details><summary>CLEAN / TYPE / THUMB variants (${variants.length})</summary><ul>${variants.slice(0,16).map(variant=>{
+        const kind=variant.kind==='with_text'?'TYPE':variant.kind==='thumbnail'?'THUMB':'Unknown variant';
+        const variantRights=variant.rights||{},qa=variant.typographyQa||{},integrity=variant.integrity||{};
+        const locale=variant.kind==='with_text'?String(variant.locale||'unknown').toUpperCase():'text-free';
+        return `<li data-library-visual-variant="${esc(variant.kind||'unknown')}">
+          <b>${esc(kind)} · ${esc(locale)}</b>
+          ${preview(variant,kind+' artwork')}
+          <p>Variant rights: ${esc(variantRights.status||'Not recorded')} · source revision: ${esc(variant.sourceRevision||'Not recorded')}</p>
+          <p>Alt text: ${esc(assetField(variant,'altText','alt')||'Not recorded')} · fallback: ${esc(variant.fallback||'Not recorded')}</p>
+          <p>Checksum: ${esc(variant.sha256||'Not recorded')} · ${esc(variant.width||'?')} × ${esc(variant.height||'?')} · binary verified: ${integrity.sha256Verified===true&&integrity.dimensionsVerified===true?'Recorded':'Not recorded'}</p>
+          ${variant.kind==='with_text'?`<p>Approved title/Scripture lettering: ${esc(variant.text||'Not recorded')}</p>
+          <p>Observed embedded lettering: ${esc(qa.observedText||'Not recorded')} · independent QC: ${esc(qa.result||'Not recorded')} · font rights: ${esc(qa.fontLicense?.status||'Not recorded')}</p>`:''}
+        </li>`;
+      }).join('')}</ul></details>`:'<p class="bq-muted">CLEAN only — no derivative metadata recorded; localized live text remains available.</p>';
+    return `<li><b>${esc(assetField(asset,'id','assetId','name')||'Visual asset')}</b>
+      ${preview(asset,'Clean artwork')}
+      <p>Source: ${esc(assetField(asset,'sourceUri','source_uri','sourceUrl')||assetField(source,'uri','url')||'Not recorded')}</p>
+      <p>Rights: ${esc(assetField(asset,'rightsStatus','rights_status','license')||assetField(rights,'status','basis')||'Not recorded')}</p>
+      <p>Alt text: ${esc(assetField(asset,'alt','altText','alt_text')||asset.accessibility?.altText||'Not recorded')}</p>
+      <p>Fallback: ${esc(assetField(asset,'fallback','fallbackUrl','fallback_url')||'Not recorded')}</p>
+      <p>Master SHA-256: ${esc(asset.sha256||'Not recorded')} · source revision: ${esc(item.revisionNumber??item.revisionId??'Not recorded')}</p>
+      ${variantDetails}
+    </li>`;
+  }).join('')}</ul></details>`;
+};
 const decisionValue=item=>item?.decision?.decision||'pending';
 const decisionLabel=value=>({pending:'Pending review',include:'Included',exempt:'Kept quarantined',remove:'Removed'}[value]||value);
 const libraryDecisionValue=item=>item?.latestDecision?.decision||'pending';
@@ -90,7 +138,7 @@ function libraryCard(item){
   const tags=(item.taxonomy||[]).map(row=>`${row.kind}: ${labelsFor(row)[0]||row.id}`);
   const refs=scriptureRefs(item);
   const humanHistory=(item.history||[]).filter(row=>row.reviewerType==='human').slice(0,5);
-  const sourceLink=item.source?.uri?`<a href="${esc(item.source.uri)}" target="_blank" rel="noopener noreferrer">Open source</a>`:'Source URL not recorded';
+  const sourceUrl=safeExternalUrl(item.source?.uri);const sourceLink=sourceUrl?`<a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open source</a>`:'Safe source URL not recorded';
   return `<article class="bq-panel" data-library-review-item="${esc(item.revisionId)}" data-library-review-state="${esc(value)}">
     <p class="bq-eyebrow">${esc(libraryTypeLabel(item.contentType))} · ${esc(libraryDecisionLabel(value))} · ${esc(item.publicationState||item.revisionPublicationState||'unknown state')}</p>
     <h3>${esc(item.title||'Untitled Library item')}</h3>
@@ -103,6 +151,7 @@ function libraryCard(item){
     ${tags.length?`<p><b>Tags:</b> ${tags.map(esc).join(' · ')}</p>`:'<p class="bq-muted">No taxonomy tags recorded.</p>'}
     <p><b>Scripture / references:</b> ${refs.length?refs.map(esc).join(', '):'<span class="bq-muted">No structured Scripture references recorded in review evidence.</span>'}</p>
     ${translationBlock(item)}
+    ${visualAssetEvidence(item)}
     ${automatedEvidence(item)}
     ${humanHistory.length?`<details><summary>Human audit history</summary><ul>${humanHistory.map(row=>`<li>${esc(libraryDecisionLabel(row.decision))} · ${esc(row.decidedAt||'time unavailable')}${row.note?` — ${esc(row.note)}`:''}</li>`).join('')}</ul></details>`:''}
     ${libraryActions(item)}
@@ -111,7 +160,7 @@ function libraryCard(item){
 
 export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
   return {title:'Content Review',html:'<section data-content-review-view></section>',mount(root){
-    const view=root.querySelector('[data-content-review-view]');let disposed=false,busy=false,tab=typeof review?.libraryReviewItems==='function'?'books':'quarantine',filter=typeof review?.libraryReviewItems==='function'?'all':'pending',search='',message='';
+    const view=root.querySelector('[data-content-review-view]');let disposed=false,busy=false,tab=typeof review?.libraryReviewItems==='function'?'books':'quarantine',filter=typeof review?.libraryReviewItems==='function'?'all':'pending',search='',message='',pageIndex=0;
     const libraryTabs=new Set(['books','devotionals','teachings']);
     const intro=()=>`<section class="bq-panel"><p class="bq-eyebrow">LIBRARY AUDIT · RECALL MODERATION</p><h1>Content Review</h1><p>Audit V7 Books, Devotionals and Past Teachings independently from congregation-scoped Recall moderation. Automated approval evidence remains visible and human overrides are preserved as revision-bound history.</p><button type="button" class="bq-secondary-button" data-content-review-back>Back to More</button></section>`;
     const recallMatches=(item,parts)=>{const state=decisionValue(item);if(filter!=='all'&&state!==filter)return false;const needle=search.trim().toLocaleLowerCase();return !needle||parts.join(' ').toLocaleLowerCase().includes(needle)};
@@ -135,9 +184,22 @@ export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
       bindCommon();
       view.querySelector('[data-content-review-refresh]')?.addEventListener('click',load,{once:true});
       view.querySelector('[data-content-review-congregation]')?.addEventListener('change',async event=>{if(busy)return;busy=true;message='';const next=await review.selectCongregation(event.target.value);if(next.status==='ready'&&next.books[0])await review.openQuarantine(next.books[0].code);busy=false;render(review.getState())},{once:true});
-      view.querySelectorAll('[data-content-review-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.contentReviewTab;filter=libraryTabs.has(tab)?'all':'pending';search='';message='';render(review.getState())},{once:true}));
-      view.querySelector('[data-content-review-search]')?.addEventListener('input',event=>{search=event.target.value.slice(0,120);render(review.getState())},{once:true});
-      view.querySelector('[data-content-review-filter]')?.addEventListener('change',event=>{filter=event.target.value;render(review.getState())},{once:true});
+      view.querySelectorAll('[data-content-review-tab]').forEach(button=>button.addEventListener('click',()=>{tab=button.dataset.contentReviewTab;filter=libraryTabs.has(tab)?'all':'pending';search='';message='';pageIndex=0;render(review.getState())},{once:true}));
+      view.querySelector('[data-content-review-search]')?.addEventListener('input',event=>{
+        if(event.isComposing)return;
+        const cursor=event.target.selectionStart;
+        search=event.target.value.slice(0,120);pageIndex=0;render(review.getState());
+        const replacement=view.querySelector('[data-content-review-search]');
+        if(replacement){replacement.focus({preventScroll:true});if(cursor!==null)replacement.setSelectionRange(Math.min(cursor,search.length),Math.min(cursor,search.length))}
+      },{once:true});
+      view.querySelector('[data-content-review-search]')?.addEventListener('compositionend',event=>{
+        search=event.target.value.slice(0,120);pageIndex=0;render(review.getState());
+        view.querySelector('[data-content-review-search]')?.focus({preventScroll:true});
+      },{once:true});
+      view.querySelectorAll('[data-content-review-page]').forEach(button=>button.addEventListener('click',()=>{
+        pageIndex=Math.max(0,pageIndex+(button.dataset.contentReviewPage==='next'?1:-1));render(review.getState());
+      },{once:true}));
+      view.querySelector('[data-content-review-filter]')?.addEventListener('change',event=>{filter=event.target.value;pageIndex=0;render(review.getState())},{once:true});
       view.querySelector('[data-content-review-book]')?.addEventListener('change',async event=>{if(busy)return;busy=true;message='';await review.openQuarantine(event.target.value);busy=false;render(review.getState())},{once:true});
       view.querySelectorAll('[data-content-review-decide]').forEach(button=>button.addEventListener('click',async()=>{
         if(busy)return;
@@ -166,7 +228,10 @@ export function contentReviewPage({review,onBack,onAccount,onCongregation}={}){
       if(libraryTabs.has(tab)){
         const type=tab==='books'?'book':tab==='devotionals'?'devotional':'past_teaching';
         const items=review.libraryReviewItems(type).filter(libraryMatches);
-        view.innerHTML=`${navigation}${libraryFilters(filter,search)}${message?`<p class="bq-form-message" role="status" data-content-review-message>${esc(message)}</p>`:''}<section data-content-review-list>${items.map(libraryCard).join('')||'<div class="bq-panel"><p>No Library items match this audit filter.</p></div>'}</section>`;
+        pageIndex=Math.min(pageIndex,Math.max(0,Math.ceil(items.length/REVIEW_PAGE_SIZE)-1));
+        const start=pageIndex*REVIEW_PAGE_SIZE,visible=items.slice(start,start+REVIEW_PAGE_SIZE);
+        const pageControls=items.length>REVIEW_PAGE_SIZE?`<nav class="bq-panel" aria-label="Library audit pages" data-content-review-pagination><p role="status">Showing ${start+1}–${Math.min(start+REVIEW_PAGE_SIZE,items.length)} of ${items.length}</p><div class="bq-chip-row">${pageIndex>0?'<button type="button" class="bq-secondary-button" data-content-review-page="previous">Previous page</button>':''}${start+REVIEW_PAGE_SIZE<items.length?'<button type="button" class="bq-secondary-button" data-content-review-page="next">Next page</button>':''}</div></nav>`:'';
+        view.innerHTML=`${navigation}${libraryFilters(filter,search)}${message?`<p class="bq-form-message" role="status" data-content-review-message>${esc(message)}</p>`:''}<section data-content-review-list>${visible.map(libraryCard).join('')||'<div class="bq-panel"><p>No Library items match this audit filter.</p></div>'}</section>${pageControls}`;
         view.querySelectorAll('button,select,input,textarea').forEach(control=>control.toggleAttribute('disabled',busy||state.busy));bindReady();return;
       }
 

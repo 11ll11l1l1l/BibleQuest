@@ -1,3 +1,5 @@
+import { evaluateV7VisualAssetGates, visualAssetEvidenceSnapshot } from './visual-asset-review.js';
+
 export const V7_LIBRARY_APPROVAL_POLICY_ID = 'biblequest.v7.library-release';
 export const V7_LIBRARY_APPROVAL_POLICY_VERSION = '1.0.0';
 
@@ -164,6 +166,7 @@ export function evaluateV7LibraryApproval({
   const repairFailures = normalized.filter(row => !row.terminal && row.result === 'fail').map(row => row.id);
   const unknownCriteria = normalized.filter(row => row.result === 'unknown').map(row => row.id);
   const hardBoundary = rightsHardFailure(item);
+  const visualBoundary = evaluateV7VisualAssetGates(item);
   const normalizedSecondPass = normalizeSecondPass(secondPass, revision);
 
   const primaryEvaluators = new Set(normalized.filter(row => row.result !== 'unknown').map(row => row.evaluator));
@@ -174,11 +177,13 @@ export function evaluateV7LibraryApproval({
 
   const rejectionReasons = [
     ...(hardBoundary ? [hardBoundary] : []),
+    ...visualBoundary.rejectionReasons,
     ...terminalFailures,
     ...(secondPassHardFailure ? [secondPassHardFailure] : []),
     ...(staleSecondPass ? ['second_pass_revision_mismatch'] : [])
   ];
   const repairReasons = [
+    ...visualBoundary.repairReasons,
     ...repairFailures,
     ...unknownCriteria,
     ...(!normalizedSecondPass.ready || !independentSecondPass
@@ -203,6 +208,8 @@ export function evaluateV7LibraryApproval({
     policyVersion: clean(policyVersion) || V7_LIBRARY_APPROVAL_POLICY_VERSION,
     decidedAt: new Date(decidedAt).toISOString(),
     rightsStatusSnapshot: clean(item?.rights?.status),
+    visualAssetEvidenceSnapshot: visualAssetEvidenceSnapshot(item),
+    visualAssetEvidence: Object.freeze(visualBoundary.assetEvidence.map(row => Object.freeze(row))),
     criteria: normalized,
     secondPass: normalizedSecondPass,
     rejectionReasons: Object.freeze(rejectionReasons),
@@ -222,6 +229,9 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.itemId === item?.id
     && decision.revision === item?.revision
     && decision.rightsStatusSnapshot === 'verified'
+    && evaluateV7VisualAssetGates(item).rejectionReasons.length === 0
+    && evaluateV7VisualAssetGates(item).repairReasons.length === 0
+    && (visualAssetEvidenceSnapshot(item) === null || decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item))
     && decision.auditable === true
     && Array.isArray(decision.criteria)
     && decision.criteria.length === criteriaFor(item?.type).length
@@ -232,4 +242,45 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
 
 export function requiredV7LibraryApprovalCriteria(contentType) {
   return criteriaFor(contentType);
+}
+
+/**
+ * Deterministic, JSON-serializable Lane B -> Lane D evidence handoff.
+ * Contains exact-revision outcomes and repair codes, never reviewer secrets.
+ * No wall-clock timestamp is inserted: byte-identical input gives identical output.
+ */
+export function createV7LibraryAssetDecisionReport(decisions = []) {
+  if (!Array.isArray(decisions)) throw new TypeError('decisions must be an array');
+  const entries = decisions.map(row => {
+    if (!row || !['auto_approved', 'needs_repair', 'rejected'].includes(row.outcome)
+      || !clean(row.itemId) || !clean(row.revision)
+      || row.policyId !== V7_LIBRARY_APPROVAL_POLICY_ID
+      || row.policyVersion !== V7_LIBRARY_APPROVAL_POLICY_VERSION)
+      throw new TypeError('decision missing versioned Lane B policy or revision');
+    return {
+      itemId: row.itemId,
+      revision: row.revision,
+      contentType: row.contentType,
+      outcome: row.outcome,
+      policyId: row.policyId,
+      policyVersion: row.policyVersion,
+      visualAssetEvidence: row.visualAssetEvidence || [],
+      rejectionReasons: row.rejectionReasons || [],
+      repairReasons: row.repairReasons || []
+    };
+  }).sort((a,b) => (a.itemId + ':' + a.revision).localeCompare(b.itemId + ':' + b.revision));
+  const keys = entries.map(row => row.itemId + ':' + row.revision);
+  if (new Set(keys).size !== keys.length) throw new TypeError('duplicate item revision in Lane B report');
+  return {
+    schemaVersion: 1,
+    reportType: 'biblequest.v7.library.visual-asset-decisions',
+    policyId: V7_LIBRARY_APPROVAL_POLICY_ID,
+    policyVersion: V7_LIBRARY_APPROVAL_POLICY_VERSION,
+    counts: {
+      auto_approved: entries.filter(row => row.outcome === 'auto_approved').length,
+      needs_repair: entries.filter(row => row.outcome === 'needs_repair').length,
+      rejected: entries.filter(row => row.outcome === 'rejected').length
+    },
+    entries
+  };
 }
