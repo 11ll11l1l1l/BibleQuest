@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-temptation-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-08T14:09:31+09:00",
+  "status": "production_ready",
+  "bundleStatus": "complete",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "temptation",
+  "concept": "A commuter wrestles with the temptation to pocket a lost wallet rather than hand it to a nearby train conductor.",
+  "usage": [
+    "feelings_carousel",
+    "needs_deck",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 128668,
+  "sha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+  "focalPoint": {
+    "x": 0.57,
+    "y": 0.33
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "7bf9cbd5-07af-48cc-9e19-74b306a5a2b7",
+    "prompt": null,
+    "description": "A young East Asian woman in a commuter train at dusk reaches hesitantly toward a brown wallet left on the adjacent blue seat while holding her open black handbag; a blurred conductor stands at the far door. Warm cabin lights contrast with blue evening city light.",
+    "notes": "Generation metadata returned an empty prompt. Original prompt unavailable; description is based on the actual generated image. One rejected earlier candidate depicted donuts vs salad, which reduced spiritual temptation to food choices. This second candidate has a concrete integrity choice."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated imagery, no source photo supplied. No real train logo or person identified. TYPE uses Noto Serif Display under SIL OFL-1.1; font glyphs are rasterized only, font files not redistributed.",
+    "fontFamily": "Noto Serif Display",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright (local distribution)"
+  },
+  "wordingEvidence": {
+    "locale": "en",
+    "label": "Temptation",
+    "labelSource": "data/v7/visual-assets/queues/visual-agent-4.json initialQueue: temptation",
+    "reference": "1 Corinthians 10:13",
+    "referenceSource": "canonical Bible book/chapter/verse citation; no Scripture verse wording embedded",
+    "translation": null,
+    "translationRevision": null,
+    "bibleVerseTextEmbedded": false,
+    "accessibilityFallback": "Use CLEAN image plus live localized label when no approved locale-specific TYPE exists."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "On a commuter train, a young woman hesitates before a lost wallet on the next seat while holding open her own handbag.",
+    "typeAltText": "A woman hesitates over a lost wallet on a train, beneath the words Temptation and 1 Corinthians 10:13.",
+    "essentialTextRemainsLive": true
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "rightsClear": true,
+    "typeIntentionallyHasVerifiedEmbeddedText": true,
+    "notes": "Original clean has no embedded lettering. TYPE programmatically typeset (not AI text), reviewed against exact queue label and verse reference. Crop retains wallet, reaching hand, expression. Compared to existing records: no other train/wallet scene. First candidate rejected for shallow dietary temptation framing."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 128668,
+      "sha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.33
+      },
+      "cropIntent": "square canonical master",
+      "textSafeRegion": "none",
+      "embeddedWording": null,
+      "qc": {
+        "noFakeText": true,
+        "noUnlicensedLogos": true,
+        "anatomyAcceptable": true,
+        "conceptAccurate": true,
+        "cropSafe": true,
+        "thumbnailReadable": true,
+        "typeSpellingVerified": null,
+        "fontLicenseVerified": null
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 147202,
+      "sha256": "0d63ef078d6133f00e195cb80a6d8dff1c8bd0fff9d074b26f284fea591f70a5",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.28
+      },
+      "cropIntent": "portrait editorial art with integrated title and reference",
+      "textSafeRegion": "bottom",
+      "embeddedWording": {
+        "label": "Temptation",
+        "scriptureReference": "1 Corinthians 10:13"
+      },
+      "qc": {
+        "noFakeText": true,
+        "noUnlicensedLogos": true,
+        "anatomyAcceptable": true,
+        "conceptAccurate": true,
+        "cropSafe": true,
+        "thumbnailReadable": true,
+        "typeSpellingVerified": true,
+        "fontLicenseVerified": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 32404,
+      "sha256": "96d2c67d3cef5d8b1e1285fa33d976516c5cc6ff9ab9cb0892c2ba93e514234f",
+      "focalPoint": {
+        "x": 0.58,
+        "y": 0.33
+      },
+      "cropIntent": "4:5 portrait crop retaining woman, reaching hand and wallet",
+      "textSafeRegion": "none",
+      "embeddedWording": null,
+      "qc": {
+        "noFakeText": true,
+        "noUnlicensedLogos": true,
+        "anatomyAcceptable": true,
+        "conceptAccurate": true,
+        "cropSafe": true,
+        "thumbnailReadable": true,
+        "typeSpellingVerified": null,
+        "fontLicenseVerified": null
+      }
+    }
+  ]
+}
