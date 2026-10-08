@@ -1,5 +1,5 @@
 import './visual-decks.css';
-import { normalizeV7DeckLocale, resolveV7LibraryVisual } from './visual-registry.js';
+import { assertV7PublishedVisualCardItem, normalizeV7DeckLocale, resolveV7LibraryVisual } from './visual-registry.js';
 
 const typeNames = Object.freeze({
   en: { book: 'Book', devotional: 'Devotional', past_teaching: 'Teaching', action: 'Open' },
@@ -9,10 +9,9 @@ const typeNames = Object.freeze({
 });
 
 export function createV7LibraryVisualContentCard({ document, item, registry, locale = 'en', onOpen } = {}) {
-  if (!document?.createElement || !item?.id || !item?.title || typeof onOpen !== 'function')
+  if (!document?.createElement || typeof onOpen !== 'function')
     throw new TypeError('visual card requires a document, titled item and onOpen callback');
-  if (!['book','devotional','past_teaching'].includes(item.contentType))
-    throw new TypeError('visual card only supports Library content types');
+  assertV7PublishedVisualCardItem(item);
   const lang = normalizeV7DeckLocale(locale);
   const labels = typeNames[lang] || typeNames.en;
   const visual = resolveV7LibraryVisual(registry, item.contentType, item.id);
