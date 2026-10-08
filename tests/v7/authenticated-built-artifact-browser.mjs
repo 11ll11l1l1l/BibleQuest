@@ -15,10 +15,11 @@ const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.2:4173';
 assert.equal(new URL(baseUrl).hostname, '127.0.0.2');
 
 const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
-const scope = '10000000-0000-4000-8000-000000000001';
+const scope = randomUUID(); // Per-run tenant: do not inherit V6 seed ownership or memberships.
 const marker = randomUUID();
 const now = new Date().toISOString();
 const checks = [];
+const backendMembershipReads = []; // Redacted request status only; never persist tokens or response bodies.
 let stage = 'seed-disposable-data';
 
 async function request(path, token, method = 'GET', body, prefer = 'return=representation') {
@@ -42,6 +43,7 @@ async function request(path, token, method = 'GET', body, prefer = 'return=repre
 
 const insert = (table, row) => request(`/rest/v1/${table}`, status.SERVICE_ROLE_KEY, 'POST', row);
 const update = (table, filter, row) => request(`/rest/v1/${table}?${filter}`, status.SERVICE_ROLE_KEY, 'PATCH', row);
+const select = (table, token, filter) => request(`/rest/v1/${table}?${filter}`, token);
 
 async function actor(label, role) {
   const password = `${randomUUID()}!A9`;
@@ -53,18 +55,29 @@ async function actor(label, role) {
   });
   assert.ok(user.id);
   await insert('bible_app_access', { user_id: user.id, role, active: true });
-  await insert('bible_congregation_members', {
-    congregation_id: scope,
-    user_id: user.id,
-    role,
-    display_name: `V7 browser ${label}`,
-    active: true,
-  });
-  return { id: user.id, email, password, congregationId: scope };
+  const session = await request('/auth/v1/token?grant_type=password', status.ANON_KEY, 'POST', { email, password }, null);
+  assert.equal(session.user?.id, user.id, 'Disposable real-password auth must return the intended user.');
+  return { id: user.id, email, password, token: session.access_token, congregationId: scope };
 }
 
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
+// The fixture owns exactly one fresh congregation. Privileged writes establish
+// synthetic membership; real user JWT reads below prove production RLS behavior.
+await insert('bible_congregations', {
+  id: scope, owner_id: mentor.id, name: `V7 integrated browser ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo', active: true,
+});
+for (const [member, role, label] of [[mentor, 'leader', 'mentor'], [mentee, 'member', 'mentee']]) {
+  await insert('bible_congregation_members', {
+    congregation_id: scope, user_id: member.id, role, display_name: `V7 browser ${label}`, active: true,
+  });
+  const memberships = await select('bible_congregation_members', member.token, `congregation_id=eq.${scope}&user_id=eq.${member.id}&active=eq.true`);
+  assert.equal(memberships.length, 1, `${label} must see own authenticated active membership under RLS.`);
+  assert.equal(memberships[0].role, role);
+  const congregations = await select('bible_congregations', member.token, `id=eq.${scope}&active=eq.true`);
+  assert.equal(congregations.length, 1, `${label} must see the active congregation under RLS.`);
+}
+checks.push('isolated-owned-congregation-and-authenticated-mentor-mentee-rls-visibility');
 
 const libraryItemId = randomUUID();
 const libraryRevisionId = randomUUID();
@@ -211,6 +224,14 @@ async function installDisposableBackendRoute(context) {
       postData: requestRecord.postDataBuffer() || undefined,
       timeout: 15000,
     });
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+      let rowCount = null;
+      try { const body = await response.json(); rowCount = Array.isArray(body) ? body.length : null; } catch {}
+      backendMembershipReads.push({
+        resource: source.pathname.split('/').pop(), status: response.status(), rowCount,
+        authMode: /^Bearer\s+eyJ/i.test(headers.authorization || '') ? 'signed-jwt' : 'anonymous-or-publishable',
+      });
+    }
     await route.fulfill({ response });
   });
 }
@@ -224,7 +245,12 @@ async function openRoute(page, route, selector) {
 async function activateCongregation(page, congregationId) {
   await openRoute(page, 'congregation', '[data-congregation-view]');
   const row = page.locator(`[data-congregation-row="${congregationId}"]`);
-  await row.waitFor({ state: 'visible' });
+  try {
+    await row.waitFor({ state: 'visible' });
+  } catch (error) {
+    const state = await page.locator('[data-congregation-list]').innerText().catch(() => 'congregation list unavailable');
+    throw new Error(`Authenticated congregation selection failed: ${state.slice(0, 180)}; reads=${JSON.stringify(backendMembershipReads.slice(-8))}`, { cause: error });
+  }
   const switchButton = row.locator('[data-congregation-switch]');
   if (await switchButton.count()) {
     await switchButton.click();
@@ -273,6 +299,7 @@ async function writeEvidence(result, error = null) {
     viewport: '390x900',
     evidenceClass: 'authenticated-built-browser-disposable-backend',
     checks,
+    backendMembershipReads: backendMembershipReads.slice(-30),
     ...(error ? { error: { name: error.name || 'Error', message: String(error.message || error) } } : {}),
     exclusions: [
       'production-backend',
