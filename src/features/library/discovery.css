@@ -273,3 +273,12 @@
 .bq-panel [data-library-item-retry][hidden] {
   display: none !important;
 }
+
+/* Lane B visual decks remain bounded within the mobile Library grid. */
+.bq-library [data-library-visual-decks] {
+  min-width: 0;
+  width: 100%;
+}
+.bq-library [data-library-results] .bq-library-card--visual {
+  min-width: 0;
+}

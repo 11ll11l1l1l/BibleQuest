@@ -172,3 +172,43 @@ test('full emotion discovery stays gated until a persistent executor is injected
     globalThis.Element = priorElement;
   }
 });
+
+test('filtered public route survives transient authenticated context reset during a locale reload', () => {
+  const previous = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const f = fixture();
+    let contextReady = false;
+    let notifyContext = () => {};
+    const navigations = [];
+    f.service.reset = () => f.service.emit({
+      status: 'idle', items: [], query: '', contentType: '', taxonomyId: '', taxonomy: [],
+    });
+    createLibraryPage({
+      service: f.service,
+      navigate: destination => navigations.push(destination),
+      discoverySearch: options => f.service.list(options),
+      isContextReady: () => contextReady,
+      subscribeContext: callback => { notifyContext = callback; return () => {}; },
+      initialQuery: 'concern',
+      initialContentType: 'devotional',
+      initialDiscoveryQuery: { emotions: ['anxious'] },
+    }).mount(f.root);
+
+    assert.equal(f.requests.length, 0, 'no protected-context read is fired during bootstrap');
+    assert.equal(f.nodes['[name="query"]'].value, 'concern');
+    assert.equal(f.nodes['[name="contentType"]'].value, 'devotional');
+
+    contextReady = true;
+    notifyContext();
+    assert.equal(f.requests.length, 1);
+    assert.deepEqual(f.requests[0], {
+      query: 'concern', contentType: 'devotional', taxonomyId: '',
+      includeTaxonomy: true, emotions: ['anxious'], needs: [],
+      topics: [], lifeSituations: [], locale: 'en',
+    });
+    assert.deepEqual(navigations, []);
+  } finally {
+    globalThis.Element = previous;
+  }
+});

@@ -94,6 +94,21 @@ try {
         const state = document.querySelector('[data-library-status]')?.getAttribute('data-library-state');
         return state && state !== 'loading';
       });
+      // Lane B real Library wiring: these are part of the routed page, not a
+      // disconnected fixture or an imported-but-unmounted component.
+      await page.locator('[data-library-visual-decks] [data-v7-deck="emotion"]').waitFor();
+      assert.equal(await page.locator('[data-v7-deck="emotion"] [data-v7-deck-id]').count(), 30,
+        `${locale}/${width}: Feeling deck must expose all 30 options`);
+      assert.equal(await page.locator('[data-v7-deck="need"] [data-v7-deck-id]').count(), 19,
+        `${locale}/${width}: Need deck must stay distinct with 19 options`);
+      assert.equal(await page.locator('[data-v7-deck="emotion"] .bq-v7-visual-deck__arrow').count(), 2,
+        `${locale}/${width}: Feeling deck has a non-swipe fallback`);
+      assert.equal(await page.locator('[data-v7-deck="need"] .bq-v7-visual-deck__arrow').count(), 2,
+        `${locale}/${width}: Need deck has a non-swipe fallback`);
+      const cardMotion = await page.locator('[data-v7-deck="emotion"] .bq-v7-visual-deck__card').first()
+        .evaluate(el => getComputedStyle(el).transitionDuration);
+      assert.ok(cardMotion.split(',').every(value => parseFloat(value) === 0),
+        `${locale}/${width}: reduced-motion cards must be static`);
       const heading = await page.locator('[data-library-page] h1').textContent();
       assert.equal(heading, localization.t('v7.library.title', { locale }), `${locale}: translated heading`);
       assert.deepEqual(await page.evaluate(() => [document.documentElement.dataset.bqText, document.documentElement.dataset.bqContrast, document.documentElement.dataset.bqEffectiveMotion]), ['xlarge', 'strong', 'reduce']);
@@ -151,6 +166,11 @@ try {
       await query.press('Enter');
       await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'ready');
       assert.ok(await page.locator('[data-library-item]').count() > 0, `${locale}/${width}: reviewed public devotional search returns results`);
+      assert.ok(await page.locator('[data-library-results] .bq-v7-content-card').count() > 0,
+        `${locale}/${width}: result list must render image-led published cards`);
+      const disallowedImages = await page.locator('[data-library-results] .bq-v7-content-card__cover img')
+        .evaluateAll(elements => elements.filter(el => !el.getAttribute('src')?.startsWith('/v7/images/')).length);
+      assert.equal(disallowedImages, 0, `${locale}/${width}: unapproved external images are forbidden`);
       assert.equal(await page.locator('[data-library-retry]').isHidden(), true, `${locale}/${width}: working public catalog does not expose Retry`);
       await query.fill('unsent draft');
       for (const nextLocale of ['en', 'tl', 'ceb', locale]) {

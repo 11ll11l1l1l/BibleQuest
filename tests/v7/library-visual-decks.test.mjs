@@ -50,6 +50,19 @@ test('audited CLEAN master is used even when TYPE lettering exists but is not se
     '/v7/images/emotion/anxiety-thumbnail.webp');
 });
 
+test('Lane D audited Map registry supplies visible CLEAN and THUMB imagery', () => {
+  const raw = assetsManifest();
+  const audited = {
+    assets: new Map(raw.assets.map(asset => [asset.assetId, asset])),
+    byContent: new Map(Object.entries(raw.byContent)),
+  };
+  assert.equal(resolveV7LibraryVisual(audited, 'emotion', 'anxious').src,
+    '/v7/images/emotion/anxiety.webp');
+  assert.equal(resolveV7LibraryVisual(audited, 'emotion', 'anxious', { thumbnail: true }).type,
+    'thumbnail');
+  assert.equal(resolveV7LibraryVisual({ assets: new Map(), byContent: new Map() }, 'emotion', 'anxious').src, '');
+});
+
 test('unsafe, missing and mismatched image records always fall back to readable live text', () => {
   assert.equal(safeV7VisualPath('https://malicious.example/file.webp'), '');
   assert.equal(safeV7VisualPath('/v7/images/../secrets.webp'), '');

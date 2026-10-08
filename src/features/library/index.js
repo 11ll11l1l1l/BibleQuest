@@ -1,4 +1,5 @@
 import './discovery.css';
+import './visual-decks.css';
 export {
   LIBRARY_CONTENT_TYPES,
   LIBRARY_PUBLICATION_STATES,
@@ -42,6 +43,8 @@ export {
 export { createLibraryRepository } from './repository.js';
 export { createLibraryService } from './service.js';
 export { createLibraryPage } from './page.js';
+export { createV7LibraryDiscoveryDeck } from './visual-decks.js';
+export { createV7LibraryVisualContentCard } from './visual-content-card.js';
 
 export { createLibrarySupabaseAdapter, createLibrarySupabaseRepository } from './supabase-adapter.js';
 

@@ -497,7 +497,8 @@ function boot(root){
       explorer:explorerCloudSync,
       'leaderboard-delivery':progressLeaderboardBridge
     }),
-    ()=>router.navigate(router.current()),
+    // Account resume must preserve the deep-link query and discovery filters.
+    ()=>router.navigate(readNavigationTarget().replace(/^#\/?/, '')),
     (owner,error)=>console.warn('Resume unavailable',owner,error)
   );
   let adminAccessSessionKey='';
@@ -541,7 +542,7 @@ function boot(root){
     // the browser route before async session hydration resolves on a full page reload.
     const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(readNavigationTarget());
     if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
-    else if(session.isAuthenticated())router.navigate(router.current());
+    else if(session.isAuthenticated())router.navigate(readNavigationTarget().replace(/^#\/?/, ''));
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
