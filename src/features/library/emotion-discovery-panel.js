@@ -17,10 +17,11 @@ function chip(item, selected, locale) {
 }
 
 function section({ kind, title, items, selected, locale }) {
-  return `<section class="bq-library-discovery__section" data-library-discovery-section="${kind}" aria-labelledby="bq-library-discovery-${kind}-title">
-    <h2 id="bq-library-discovery-${kind}-title" class="bq-library-discovery__title">${escapeHtml(title)}</h2>
+  const expanded = [...selected].some(id => items.some(item => item.id === id));
+  return `<details class="bq-library-discovery__section" data-library-discovery-section="${kind}" ${expanded ? 'open' : ''}>
+    <summary id="bq-library-discovery-${kind}-title" class="bq-library-discovery__title">${escapeHtml(title)}</summary>
     <div class="bq-library-discovery__chips" role="group" aria-labelledby="bq-library-discovery-${kind}-title">${items.map(item => chip(item, selected, locale)).join('')}</div>
-  </section>`;
+  </details>`;
 }
 
 export function renderLibraryEmotionDiscovery(query = {}, locale = 'en') {

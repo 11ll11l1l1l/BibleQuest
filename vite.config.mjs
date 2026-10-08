@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
+import { writeV7PublicLibraryCatalog } from './scripts/v7-generate-public-library-catalog.mjs';
 import { publishV7VisualAssets } from './scripts/v7-publish-visual-assets.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
@@ -93,6 +94,11 @@ function copyLegacyRuntime() {
       generateScripturePackageManifests({
         root,
         outputDirectory: join(outDir, 'data', 'v6-scripture-manifests'),
+      });
+
+      await writeV7PublicLibraryCatalog({
+        candidateSha: buildSha,
+        outputPath: join(outDir, 'data', 'v7', 'library-public-catalog.json'),
       });
 
       writeFileSync(
