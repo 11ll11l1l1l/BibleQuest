@@ -4,21 +4,41 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
+import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
 
 const BASE = (process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const output = process.env.BQ_VISUAL_QA_DIR || 'artifacts/v7/visual-browser';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const audit = await auditV7VisualAssets();
 assert.equal(audit.status, 'PASS', 'Visual master/variants audit must pass before built-browser QA: ' + audit.errors.join('; '));
-const bundles = audit.manifest.assets.filter(asset => asset.bundleStatus === 'complete');
+const publishedBundles = audit.manifest.assets.filter(asset => asset.bundleStatus === 'complete');
+// Draft imagery must be technically checked from three independent local files.
+// It is never inserted into the audited release manifest or published registry.
+const candidateTriage = await triageV7ArtworkCandidates();
+const candidateBundles = candidateTriage.technicallyVerified.map(row => {
+  const kind = key => row.files.find(file => file.kind === key);
+  const clean = kind('CLEAN'), type = kind('TYPE'), thumb = kind('THUMB');
+  return {
+    assetId: row.assetId, contentType: row.contentType, candidate: true,
+    src: clean.path, sha256: clean.sha256, width: clean.width, height: clean.height,
+    variants: [
+      { kind: 'with_text', src: type.path, sha256: type.sha256, width: type.width, height: type.height },
+      { kind: 'thumbnail', src: thumb.path, sha256: thumb.sha256, width: thumb.width, height: thumb.height },
+    ],
+  };
+});
+const bundles = [...publishedBundles, ...candidateBundles];
 const files = new Map();
-for (const asset of audit.manifest.assets) {
+for (const asset of [...audit.manifest.assets, ...candidateBundles]) {
   for (const entry of [{ kind: 'clean', src: asset.src, sha256: asset.sha256, width: asset.width, height: asset.height },
     ...(asset.variants || [])]) {
-    assert.match(entry.src, /^\/v7\/images\/[a-z0-9/_-]+\.(?:png|webp|jpg|jpeg)$/i, 'Local raster path only');
+    assert.match(entry.src, /^\/v7\/images\/[a-z0-9/_-]+\.(?:png|webp|jpg|jpeg|svg)$/i, 'Local raster path only');
     assert.match(entry.sha256, /^[a-f0-9]{64}$/i, 'Every included binary needs a measured hash');
-    if (files.has(entry.src)) assert.equal(files.get(entry.src).sha256, entry.sha256, 'Conflicting asset ownership');
-    files.set(entry.src, entry);
+    if (files.has(entry.src)) {
+      assert.equal(files.get(entry.src).sha256, entry.sha256, 'Conflicting asset ownership');
+      assert.equal(files.get(entry.src).assetId, asset.assetId, 'Cross-asset image path reuse');
+    }
+    files.set(entry.src, { ...entry, assetId: asset.assetId });
   }
 }
 const downloaded = [];
@@ -75,7 +95,7 @@ try {
         assert(geometry.stageScrollWidth <= geometry.stageClientWidth + 1, 'Horizontal overflow: ' + variant.src);
         assert(geometry.renderedHeight > 0, 'Zero-height image: ' + variant.src);
         if (variant.kind !== 'clean') {
-          const screenshot = join(output, asset.assetId + '-' + variant.kind + '-' + width + '.png');
+          const screenshot = join(output, (asset.candidate ? 'draft-' : 'release-') + asset.assetId + '-' + variant.kind + '-' + width + '.png');
           await page.locator('#bq-artwork-browser-qa figure').screenshot({ path: screenshot });
           screenshots.push(screenshot);
         }
@@ -89,7 +109,14 @@ try {
 const report = {
   schemaVersion: 1, candidateSha: process.env.BQ_EXACT_SHA || null,
   sourceAuditStatus: audit.status, sourceAuditProductionReady: audit.counts.productionReady,
-  completeBundles: bundles.map(asset => ({ assetId: asset.assetId, contentType: asset.contentType })),
+  completeBundles: publishedBundles.map(asset => ({ assetId: asset.assetId, contentType: asset.contentType })),
+  draftCandidateTriage: {
+    technicallyVerified: candidateBundles.map(asset => ({ assetId: asset.assetId,
+      contentType: asset.contentType, status: 'technical_browser_pass_only', publicationApproved: false })),
+    rejected: candidateTriage.rejected,
+    threeFileCandidates: candidateTriage.threeFileCandidates,
+    publicationApproved: false,
+  },
   verifiedServedFiles: downloaded, screenshots,
   viewports: [320, 390, 430],
   technicalChecks: ['source-asset-audit', 'actual-served-sha256', 'browser-decode',
@@ -98,4 +125,7 @@ const report = {
 };
 await writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log('PASS visual binary built-browser QA: ' + downloaded.length + ' image files, '
-  + bundles.length + ' complete bundles, ' + screenshots.length + ' TYPE/THUMB screenshots');
+  + publishedBundles.length + ' release bundles, '
+  + candidateBundles.length + ' draft bundles technically tested, '
+  + candidateTriage.rejected.length + ' drafts requiring repair, '
+  + screenshots.length + ' TYPE/THUMB screenshots; draft publication remains blocked');
