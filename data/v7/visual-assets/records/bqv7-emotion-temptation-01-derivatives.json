@@ -2,25 +2,8 @@
   "schemaVersion": 2,
   "sourceMasterAssetId": "bqv7-emotion-temptation-01",
   "agentId": "visual-agent-4",
-  "status": "candidate_qa_pending",
-  "bundleStatus": "partial_existing_webp_bundle_wrong_type_label",
-  "sourceMaster": {
-    "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01.webp",
-    "format": "webp",
-    "width": 1024,
-    "height": 1024,
-    "fileBytes": 128668,
-    "sha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
-    "gitBlobSha": "10fe6e841fbd333244de4ea12645b1fe38f29c68"
-  },
-  "issue": {
-    "existingTypePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
-    "existingTypeLabel": "Temptation",
-    "reviewedTaxonomyLabel": "Tempted",
-    "severity": "blocks_V2_promotion",
-    "existingThumbnailPath": "/v7/images/emotion/bqv7-emotion-temptation-01-thumbnail.webp",
-    "thumbnailAlreadyPresent": true
-  },
+  "status": "candidate_transfer_blocked",
+  "variants": [],
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -30,55 +13,10 @@
     "reference": "1 Corinthians 10:13",
     "scriptureTextIncluded": false
   },
-  "variants": [
-    {
-      "kind": "TYPE",
-      "locale": "en",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en-reviewed.svg",
-      "format": "svg",
-      "width": 1024,
-      "height": 1280,
-      "fileBytes": 172653,
-      "sha256": "2a22ca07b238c860f9728df42a9401976e663eb587c25d1924993bdbcbfcc1cf",
-      "embeddedWording": {
-        "label": "Tempted",
-        "scriptureReference": "1 Corinthians 10:13",
-        "scriptureTextIncluded": false
-      },
-      "altText": "On a commuter train, a woman hesitates before a lost wallet. The image contains the English label Tempted and reference 1 Corinthians 10:13.",
-      "cropIntent": "Editorial 4:5 with original square scene preserved and gradient title area at bottom",
-      "qa": {
-        "wordingCheckedAgainstTaxonomy": true,
-        "svgSyntaxChecked": true,
-        "originalSceneVisuallyInspected": true,
-        "visualInspected": false,
-        "imageDecoded": false,
-        "typeReadableAt320px": false,
-        "needsRasterWebPExport": true
-      }
-    }
-  ],
-  "rights": {
-    "sourceType": "generated",
-    "thirdPartyAsset": false,
-    "attributionRequired": false,
-    "sourceMaster": "OpenAI original generated image from committed record",
-    "fontFamily": "DejaVu Serif",
-    "fontLicense": "Bitstream Vera/DejaVu permissive license",
-    "fontLicenseEvidence": "/usr/share/doc/fonts-dejavu-core/copyright",
-    "fontEmbedded": false,
-    "fontSubstitutionRisk": true,
-    "scripture": "Reference only, no verse quotation"
-  },
-  "accessibility": {
-    "fallback": "Existing CLEAN WebP plus localized live HTML; candidate TYPE not production-ready"
-  },
-  "qc": {
-    "threeRealWebPVariantsPresent": true,
-    "existingTYPEWordingFailsTaxonomy": true,
-    "correctedTYPECandidateStaged": true,
-    "allThreeLocalWebPDecodingAndSHA256Verified": false,
-    "localTypeAndThumbnailInspected": false,
-    "publishAllowed": false
+  "issue": {
+    "existingTypeLabel": "Temptation",
+    "expectedTypeLabel": "Tempted",
+    "correctedTypeCandidateCommitted": false,
+    "reason": "Image binary write rejected. Existing WebP master and thumbnail retained; current TYPE quarantined pending replacement."
   }
 }
