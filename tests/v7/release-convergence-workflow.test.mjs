@@ -8,9 +8,14 @@ test('V7 production convergence waits for the exact promoted SHA before byte ver
     'utf8',
   );
   for (const token of [
+    "pull_request:",
     "push:",
+    "- v7/development",
+    "offline-shell-sw.js",
+    "vite.config.mjs",
+    "scripts/v7-*.mjs",
     "- main",
-    "BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' }}",
+    "BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' || github.event.pull_request.base.ref == 'main' }}",
     "https://mybiblequest.pages.dev/bq-build.json",
     "Production now serves exact candidate",
     "Production did not promote exact candidate",
