@@ -73,6 +73,7 @@ try {
     assert(fullCardHit.widthGap < 2 && fullCardHit.heightGap < 2, 'published image card has a small hit target');
     assert(fullCardHit.accessibleName?.includes('Courage for Today'), 'full-card button lacks accessible title');
     assert(fullCardHit.heading === 'Courage for Today', 'semantic card heading disappeared');
+    await page.locator('.bq-v7-content-card').scrollIntoViewIfNeeded();
     const coverBounds = await page.locator('.bq-v7-content-card__cover').boundingBox();
     assert(coverBounds, 'card image/gradient is not visible');
     await page.mouse.click(coverBounds.x + coverBounds.width/2, coverBounds.y + coverBounds.height/2);
