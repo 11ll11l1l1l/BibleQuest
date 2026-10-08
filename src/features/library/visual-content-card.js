@@ -44,10 +44,14 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   const duration = Number.isFinite(item.readingMinutes) && item.readingMinutes > 0
     ? String(item.readingMinutes) + ' min' : '';
   info.textContent = [author, duration].filter(Boolean).join(' · ');
+  const hint = document.createElement('span');
+  hint.className = 'bq-v7-content-card__cta';
+  hint.setAttribute('aria-hidden', 'true');
+  hint.textContent = labels.action + ' →';
   const open = document.createElement('button');
   open.type = 'button';
   open.className = 'bq-v7-content-card__action';
-  open.textContent = labels.action + ': ' + item.title;
+  open.setAttribute('aria-label', labels.action + ': ' + item.title);
   open.dataset.libraryItem = String(item.id);
   // The Library page also delegates [data-library-item] events for legacy
   // cards; stop bubbling so a visual-card click navigates exactly once.
@@ -56,7 +60,7 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
     pressFeedback(open, { environment: { document } });
     onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
   });
-  details.append(eyebrow, title, description, info, open);
+  details.append(eyebrow, title, description, info, hint, open);
   root.append(cover, details);
   cardReveal(root, { environment: { document } });
   return root;
