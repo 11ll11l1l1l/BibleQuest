@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-grief-loss-01",
+  "agentId": "visual-agent-1",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_files_present_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "grief_loss",
+  "queueConcept": "grief_loss",
+  "canonicalEmotionId": "grieving",
+  "concept": "A woman holds a loved one's jacket at an empty kitchen chair",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 129534,
+  "sha256": "afb27091ab0adafef525d205a32c086d77309f2e50a21155995ba29dbfcdfc0b",
+  "focalPoint": {
+    "x": 0.42,
+    "y": 0.51
+  },
+  "textSafeRegion": "top",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "grieving",
+    "locale": "en",
+    "exactLabel": "Grieving / loss",
+    "reference": "Psalm 147:3",
+    "scriptureTextIncluded": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "Noto Serif Display and Lobster Two installed package copyright notices; rasterized glyphs only",
+    "scriptureTextIncluded": false
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman holds a loved one's denim jacket beside an empty chair in a sunlit kitchen.",
+    "localizedFallback": "CLEAN with live localized accessible text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "builtAppBrowserQA": "pending",
+    "officialNodeAudit": "not_run"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 129534,
+      "sha256": "afb27091ab0adafef525d205a32c086d77309f2e50a21155995ba29dbfcdfc0b",
+      "gitBlobSha": "094e0893cbbfed26b517e7728e13b6f1332bc25d",
+      "locale": null,
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 151428,
+      "sha256": "eb22f957c2d1777d833c95b4a16885953a006b6d5eb24ccc533e156b1dee78ef",
+      "gitBlobSha": "c1dcdd1fe3666c60dc292878bc719e1f86dafccf",
+      "locale": "en",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Grieving / loss",
+        "scriptureReference": "Psalm 147:3",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontLicense": "SIL OFL-1.1",
+        "fontsRedistributed": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 30326,
+      "sha256": "f3ade2b2eae138190ead49444132c6ee2291cf9fae60767cc3e0212ae97ce10d",
+      "gitBlobSha": "cdc656a1008fe0d25d02e06814d1138b896af6af",
+      "locale": null,
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 155,
+          "top": 0,
+          "right": 974,
+          "bottom": 1024
+        },
+        "targetAspectRatio": "4:5",
+        "method": "focal-aware crop from CLEAN"
+      }
+    }
+  ]
+}
