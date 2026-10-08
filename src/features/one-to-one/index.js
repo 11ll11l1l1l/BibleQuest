@@ -13,7 +13,10 @@ function safeHeroAsset(value){
   if(!value||typeof value!=='object')return null;
   const src=String(value.src||''),assetId=String(value.assetId||'');
   if(!VERIFIED_LOCAL_IMAGE.test(src)||!/^bqv7-[a-z0-9-]+$/.test(assetId))return null;
-  return Object.freeze({src,assetId});
+    const rawX=Number(value.focalPoint?.x),rawY=Number(value.focalPoint?.y);
+  const focalX=Number.isFinite(rawX)&&rawX>=0&&rawX<=1?rawX:.5;
+  const focalY=Number.isFinite(rawY)&&rawY>=0&&rawY<=1?rawY:.5;
+  return Object.freeze({src,assetId,focalX,focalY});
 }
 
 async function defaultOneToOneCover(key) {
@@ -32,7 +35,7 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
       // Artwork is decorative and cannot replace the live translated heading.
       // A failed request, revoked image or unapproved URL leaves original CSS art.
       if(typeof coverProvider==='function'&&hero?.querySelector){
-        void Promise.resolve().then(()=>coverProvider('one-to-one:overview')).then(result=>{
+        void Promise.resolve().then(()=>coverProvider('hero:one-to-one-overview')).then(result=>{
           if(disposed)return;
           const asset=safeHeroAsset(result),art=hero.querySelector('[data-one-to-one-art]');
           if(!asset||!art?.ownerDocument?.createElement)return;
@@ -41,6 +44,7 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
           image.alt='';
           image.setAttribute('aria-hidden','true');
           image.decoding='async';
+          if(image.style)image.style.objectPosition=`${Math.round(asset.focalX*100)}% ${Math.round(asset.focalY*100)}%`;
           image.loading='eager';
           image.addEventListener('load',()=>{if(!disposed&&image.isConnected)hero.dataset.coverState='ready'});
           image.addEventListener('error',()=>{image.remove();if(!disposed)hero.dataset.coverState='fallback'});
