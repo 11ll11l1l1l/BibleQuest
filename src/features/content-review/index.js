@@ -2,19 +2,48 @@ const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'
 const REVIEW_PAGE_SIZE=12;
 const safeExternalUrl=value=>{try{const url=new URL(String(value||''));return ['https:','http:'].includes(url.protocol)?url.href:''}catch{return''}};
 const assetField=(asset,...names)=>names.map(name=>asset?.[name]).find(value=>typeof value==='string'&&value.trim())||'';
+// Never render arbitrary uploaded URLs as images or active links in privileged reviewer UI.
+const safeVisualUrl=value=>typeof value==='string' && /^\/v7\/images\/[a-z0-9/_-]+\.(webp|png|jpe?g)$/i.test(value)
+  && !value.includes('..') ? value : '';
 const visualAssetEvidence=item=>{
   const evidence=item?.reviewEvidence||{},body=item?.body||{};
   const rows=evidence.visualAssets??evidence.visual_assets??body.visualAssets??body.visual_assets;
   const assets=Array.isArray(rows)?rows.filter(row=>row&&typeof row==='object').slice(0,12):[];
   if(!assets.length)return '<details><summary>Visual assets and accessibility</summary><p class="bq-muted">No visual-asset metadata recorded for this revision. Review the automated provenance criteria before reusing imagery.</p></details>';
-  return `<details><summary>Visual assets and accessibility (${assets.length})</summary><ul>${assets.map(asset=>{
+  const preview=(asset,label)=>{
+    const src=safeVisualUrl(asset?.imagePath);
+    if(!src)return '<p class="bq-muted">Safe local image preview not available.</p>';
+    const alt=assetField(asset,'altText','alt','alt_text')||asset?.accessibility?.altText||label;
+    return `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" style="display:block;max-width:min(100%,240px);max-height:280px;object-fit:contain;border-radius:12px" />`;
+  };
+  return `<details><summary>Visual assets and accessibility (${assets.length})</summary><ul data-library-visual-evidence>${assets.map(asset=>{
     const rights=asset.rights&&typeof asset.rights==='object'?asset.rights:{};
     const source=asset.source&&typeof asset.source==='object'?asset.source:{};
+    const variants=Array.isArray(asset.variants)?asset.variants:[];
+    const variantDetails=asset.variants!==undefined&&!Array.isArray(asset.variants)
+      ?'<p class="bq-form-message">Invalid variant evidence — automated approval must fail closed.</p>'
+      :variants.length?`<details><summary>CLEAN / TYPE / THUMB variants (${variants.length})</summary><ul>${variants.slice(0,16).map(variant=>{
+        const kind=variant.kind==='with_text'?'TYPE':variant.kind==='thumbnail'?'THUMB':'Unknown variant';
+        const variantRights=variant.rights||{},qa=variant.typographyQa||{},integrity=variant.integrity||{};
+        const locale=variant.kind==='with_text'?String(variant.locale||'unknown').toUpperCase():'text-free';
+        return `<li data-library-visual-variant="${esc(variant.kind||'unknown')}">
+          <b>${esc(kind)} · ${esc(locale)}</b>
+          ${preview(variant,kind+' artwork')}
+          <p>Variant rights: ${esc(variantRights.status||'Not recorded')} · source revision: ${esc(variant.sourceRevision||'Not recorded')}</p>
+          <p>Alt text: ${esc(assetField(variant,'altText','alt')||'Not recorded')} · fallback: ${esc(variant.fallback||'Not recorded')}</p>
+          <p>Checksum: ${esc(variant.sha256||'Not recorded')} · ${esc(variant.width||'?')} × ${esc(variant.height||'?')} · binary verified: ${integrity.sha256Verified===true&&integrity.dimensionsVerified===true?'Recorded':'Not recorded'}</p>
+          ${variant.kind==='with_text'?`<p>Approved title/Scripture lettering: ${esc(variant.text||'Not recorded')}</p>
+          <p>Observed embedded lettering: ${esc(qa.observedText||'Not recorded')} · independent QC: ${esc(qa.result||'Not recorded')} · font rights: ${esc(qa.fontLicense?.status||'Not recorded')}</p>`:''}
+        </li>`;
+      }).join('')}</ul></details>`:'<p class="bq-muted">CLEAN only — no derivative metadata recorded; localized live text remains available.</p>';
     return `<li><b>${esc(assetField(asset,'id','assetId','name')||'Visual asset')}</b>
+      ${preview(asset,'Clean artwork')}
       <p>Source: ${esc(assetField(asset,'sourceUri','source_uri','sourceUrl')||assetField(source,'uri','url')||'Not recorded')}</p>
       <p>Rights: ${esc(assetField(asset,'rightsStatus','rights_status','license')||assetField(rights,'status','basis')||'Not recorded')}</p>
-      <p>Alt text: ${esc(assetField(asset,'alt','altText','alt_text')||'Not recorded')}</p>
+      <p>Alt text: ${esc(assetField(asset,'alt','altText','alt_text')||asset.accessibility?.altText||'Not recorded')}</p>
       <p>Fallback: ${esc(assetField(asset,'fallback','fallbackUrl','fallback_url')||'Not recorded')}</p>
+      <p>Master SHA-256: ${esc(asset.sha256||'Not recorded')} · source revision: ${esc(item.revisionNumber??item.revisionId??'Not recorded')}</p>
+      ${variantDetails}
     </li>`;
   }).join('')}</ul></details>`;
 };
