@@ -347,17 +347,17 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
-  animation: bq-one2one-step-arrive var(--bq-motion-duration-standard, 220ms) var(--bq-motion-easing-standard, ease-out) both;
+  animation: bq-one2one-step-arrive var(--bq-v7-motion-standard, 220ms) var(--bq-v7-ease, ease-out) both;
 }
 .bq-one2one-lesson .bq-lesson-header[data-step-arriving] .bq-lesson-counter {
-  animation-delay: var(--bq-motion-stagger-short, 40ms);
+  animation-delay: 40ms;
 }
 .bq-one2one-home .bq-one2one-home__pair button,
 .bq-one2one-home .bq-one2one-home__primary button {
   transition:
-    background-color var(--bq-motion-duration-micro, 150ms) ease,
-    border-color var(--bq-motion-duration-micro, 150ms) ease,
-    transform var(--bq-motion-duration-micro, 150ms) ease;
+    background-color var(--bq-v7-motion-micro, 150ms) ease,
+    border-color var(--bq-v7-motion-micro, 150ms) ease,
+    transform var(--bq-v7-motion-micro, 150ms) ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .bq-one2one-home .bq-one2one-home__pair button:not(:disabled):hover {
@@ -378,4 +378,18 @@
     transition: none;
     transform: none;
   }
+}
+
+/* The shared app preference has priority even if the OS requests motion.
+   Never animate lesson text, editors, consent, or data-saving status. */
+:root[data-bq-effective-motion="reduce"] .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter),
+:root[data-bq-motion="off"] .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+  animation: none;
+  transform: none;
+  opacity: 1;
+}
+:root[data-bq-effective-motion="reduce"] .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button),
+:root[data-bq-motion="off"] .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button) {
+  transition: none;
+  transform: none;
 }
