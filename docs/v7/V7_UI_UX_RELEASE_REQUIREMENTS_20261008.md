@@ -53,7 +53,7 @@ Acceptance requirements:
 - Standard body text target: **>=16 CSS px** at default scale unless a bounded UI control genuinely requires smaller text.
 - Body line-height target: **1.45–1.7**.
 - Avoid low-contrast gray for important labels, metadata or actions.
-- No essential information may be encoded as text baked into a devotional image; titles and metadata remain live HTML for accessibility and localization.
+- Editorial **TYPE** artwork may have intentionally integrated professional typography (titles, emotion names, short verified Scripture excerpts). All essential information also remains available as semantic localized live HTML for accessibility and localization. The complete Bible reader stays live selectable text.
 - At 200% text scaling, primary flows must remain operable without clipping or loss of content.
 
 ## 5. Color and contrast
@@ -86,6 +86,8 @@ Requirements:
 Devotionals, Books and Past Teachings must support strong visual covers/cards.
 
 ### Devotionals
+
+For the updated image-led layout, prefer prominent near-full-width 4:5 cards and scrolling decks with visible adjacent cards over a uniform grid of tiny thumbnails. Large typography-integrated cover variants are allowed when paired with semantic live text; see the overriding image-first contract.
 
 Default card composition:
 
@@ -228,8 +230,8 @@ Requirements:
 
 - no English-only UI strings introduced by the redesign;
 - layout must tolerate longer translated labels;
-- content-cover text remains live UI text instead of rasterized English text;
-- EN/TL/CEB/ILO content records can share one visual asset when appropriate without baking language into the image.
+- decorative **TYPE** artwork may contain baked-in wording only in its verified language-specific variant; canonical CLEAN art plus live localized cover text is the default fallback and every essential title/verse/reference remains accessible live text;
+- EN/TL/CEB/ILO content records can share one CLEAN visual asset and locale-matched TYPE variants. Never label a rasterized English TYPE image as localized Tagalog/Cebuano/Ilocano content.
 
 ## 15. Lane ownership
 
@@ -279,3 +281,7 @@ V7 may not be declared done while any of these are true:
 - the exact release candidate has not passed the UI/a11y/browser checks defined here.
 
 This document overrides earlier V7 planning language that deferred a whole-app visual redesign to V8.
+
+## 17. Image-first typography and lane-parallelization override (2026-10-08)
+
+**Required companion contract:** `docs/v7/V7_IMAGE_FIRST_AND_PARALLEL_LANES_20261008.md`. It establishes near-full-width image-led tabs/cards, large rolling Feelings/Needs decks, verified short Scripture lettering with selective calligraphic/cursive accents, CLEAN+TYPE+THUMB output bundles, safe multilingual/accessible fallbacks, and non-overlapping A/B/C/D implementation responsibilities. When older sections of this file or the earlier visual-production specification insist every image be entirely text-free or that prominent discovery consists only of 88–132px tiles, this section supersedes those restrictions **for editorial TYPE images and redesigned featured/deck surfaces only**. It does not relax Scripture truth, licensed use, accessibility, performance, or release certification.
