@@ -3,6 +3,7 @@ name: V7 Release Convergence
 on:
   pull_request:
     branches:
+      - main
       - v7/development
     paths:
       - 'src/**'
@@ -12,15 +13,18 @@ on:
       - 'supabase/**'
       - 'tests/v7/**'
       - 'tests/v6/**'
-      - 'tests/v3-accessibility-smoke.mjs'
+      - 'tests/v3-*.mjs'
+      - 'tests/v4-*.mjs'
+      - 'offline-shell-sw.js'
+      - 'vite.config.mjs'
+      - 'index.html'
+      - 'public/**'
+      - 'assets/**'
       - 'scripts/v6-prepare-local-supabase.mjs'
       - 'scripts/v6-build-evidence.mjs'
       - 'scripts/v6-deployment-verify.mjs'
       - 'scripts/v6-live-smoke.mjs'
-      - 'scripts/v7-content-release-evidence.mjs'
-      - 'scripts/v7-release-content-factory-evidence.mjs'
-      - 'scripts/v7-release-automated-approval-evidence.mjs'
-      - 'scripts/v7-certify-motion-evidence.mjs'
+      - 'scripts/v7-*.mjs'
       - '.github/workflows/v7-*.yml'
       - 'package.json'
       - 'package-lock.json'
@@ -44,7 +48,7 @@ concurrency:
 
 env:
   BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
-  BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' }}
+  BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' || github.event.pull_request.base.ref == 'main' }}
   BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-convergence-status.json
   BQ_PREVIEW_URL: http://127.0.0.1:4173
   SUPABASE_TELEMETRY_DISABLED: '1'
