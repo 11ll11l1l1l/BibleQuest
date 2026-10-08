@@ -103,3 +103,41 @@ test('all committed production images pass the live V7 asset audit', async () =>
   assert.equal(result.counts.emotionQueueTotal, 30);
   assert.ok(result.counts.productionReady >= 5);
 });
+
+test('validates and registers typography and thumbnail derivatives without modifying master', async t => {
+  const f = await fixture(t);
+  const textPath = join(f.images, ID + '-with-text-en.png');
+  const thumbPath = join(f.images, ID + '-thumbnail.png');
+  const textBytes = Buffer.concat([PNG, Buffer.from('text')]);
+  const thumbBytes = Buffer.concat([PNG, Buffer.from('thumbnail')]);
+  await Promise.all([writeFile(textPath, textBytes), writeFile(thumbPath, thumbBytes)]);
+  const variant = (kind, bytes, suffix, extra = {}) => ({
+    kind, imagePath: '/v7/images/emotion/' + ID + suffix + '.png',
+    format: 'png', width: 1, height: 1, fileBytes: bytes.length,
+    sha256: createHash('sha256').update(bytes).digest('hex'), ...extra
+  });
+  f.record.variants = [
+    variant('with_text', textBytes, '-with-text-en', { locale: 'en', text: 'Fear and trust' }),
+    variant('thumbnail', thumbBytes, '-thumbnail')
+  ];
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.deepEqual(result.manifest.assets[0].variants.map(row => row.kind), ['with_text', 'thumbnail']);
+  assert.equal(result.manifest.assets[0].variants[0].embeddedText, 'Fear and trust');
+});
+
+test('fails closed on altered with-text artwork or a missing thumbnail', async t => {
+  const f = await fixture(t);
+  const titleBytes = Buffer.concat([PNG, Buffer.from('localized title')]);
+  await writeFile(join(f.images, ID + '-with-text-en.png'), titleBytes);
+  f.record.variants = [{
+    kind: 'with_text', imagePath: '/v7/images/emotion/' + ID + '-with-text-en.png',
+    locale: 'en', text: 'Hope', format: 'png', width: 1, height: 1,
+    fileBytes: titleBytes.length, sha256: '0'.repeat(64)
+  }];
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /variant SHA-256 or bytes mismatch/);
+});
