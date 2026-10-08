@@ -14,7 +14,7 @@ function renderPage(state) {
   };
   const view = createLessonRunnerPage({ runner, onBack() {}, subscribeContext() { return () => {}; } });
   const dispose = view.mount({ querySelector: () => page });
-  return { html: host.innerHTML, dispose };
+  return { html: host.innerHTML, pageHtml: view.html, dispose };
 }
 
 const STEP_TYPES = ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'];
@@ -26,11 +26,11 @@ const STEPS = STEP_TYPES.map((type, index) => ({
 }));
 
 test('ONE 2 ONE reading exposes semantic progress and a single primary next action', () => {
-  const { html, dispose } = renderPage({
+  const { html, pageHtml, dispose } = renderPage({
     status: 'ready', lesson: { steps: STEPS }, stepIndex: 2,
     writable: true, progress: { status: 'active' }, responses: {}, responseDrafts: {},
   });
-  assert.match(html, /class="bq-one2one-lesson"/);
+  assert.match(pageHtml, /class="bq-one2one-lesson"/);
   assert.match(html, /<article class="bq-lesson-reading">/);
   assert.match(html, /<progress class="bq-lesson-progress"[^>]*max="7" value="3"/);
   assert.match(html, /data-step-type="discuss"/);
