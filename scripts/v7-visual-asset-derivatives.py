@@ -122,8 +122,8 @@ def render(master, output_dir, asset_id, family, title, locale, font_path, thumb
 
     # root is the public/ directory so emitted imagePath matches V7 URL paths.
     return [
-        metadata(text_path, output_dir.parent.parent, "with_text", locale=locale.lower(), text=title.strip()),
-        metadata(thumb_path, output_dir.parent.parent, "thumbnail"),
+        metadata(text_path, output_dir.parents[2], "with_text", locale=locale.lower(), text=title.strip()),
+        metadata(thumb_path, output_dir.parents[2], "thumbnail"),
     ]
 
 
