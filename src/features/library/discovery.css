@@ -266,3 +266,10 @@
     padding: 14px;
   }
 }
+
+/* The shared secondary-button display rules must not override hidden retry
+   controls on the item detail surface. A missing published item is terminal,
+   so exposing Retry there is both misleading and inaccessible. */
+.bq-panel [data-library-item-retry][hidden] {
+  display: none !important;
+}
