@@ -8,7 +8,7 @@
   "contentType": "emotion",
   "contentId": "fear",
   "canonicalEmotionId": "afraid",
-  "status": "three_files_present_render_qa_pending",
+  "status": "three_files_present_type_mobile_qa_failed",
   "variants": [
     {
       "kind": "CLEAN",
@@ -111,7 +111,71 @@
     "newCandidates": 0,
     "rejectedCandidates": 0,
     "duplicateSceneAvoidance": "Existing approved master reused",
-    "browserQA": "pending"
+    "browserQA": "pending",
+    "staticSvgSafetyReviewed": true,
+    "svgSourceWebPByteIdentityVerified": true,
+    "typeReferenceMobileReadable": false,
+    "referenceFontSizeAt1024Px": 27,
+    "referenceEquivalentAt320Px": 8.4375,
+    "referenceReadabilityIssue": "SVG TYPE reference is only 8.44px at a 320px card width; requires re-export with larger type before production.",
+    "gitHubEmbeddedSvgWriteAttempt": "blocked_by_connector_safety_check",
+    "productionReady": false
   },
-  "bundleStatus": "three_files_present_render_qa_pending"
+  "bundleStatus": "three_files_present_type_mobile_qa_failed",
+  "inspectionEvidence": {
+    "inspectedAt": "2026-10-08T20:01:47+09:00",
+    "inspectionMethod": "Exact v7/development SVG source retrieved through GitHub; independent JS SHA-256 over UTF-8; embedded WebP base64 compared byte-for-byte with canonical CLEAN; static SVG safety and crop geometry inspected; exact browser raster rendering NOT performed.",
+    "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
+    "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "afraid",
+    "exactLabel": "Afraid",
+    "approvedReference": "Psalm 34:4",
+    "scriptureTextIncluded": false,
+    "clean": {
+      "path": "/v7/images/emotion/bqv7-emotion-fear-01.webp",
+      "gitBlobSha": "54074fde196d30175c25c0ce08b68f43b8f5cd6a",
+      "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "width": 1024,
+      "height": 1024
+    },
+    "type": {
+      "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
+      "gitBlobSha": "4050d517e94bbe8975894015f3443287324d8de5",
+      "sha256": "30a68959fca7345a248898a8e4f8a273543971e1d132f2d7b6022f09accdd8ac",
+      "fileBytes": 104217,
+      "width": 1024,
+      "height": 1280,
+      "staticSafe": true,
+      "embeddedSourceExact": true,
+      "referenceFontPx": 27,
+      "referenceAt320Px": 8.4375,
+      "visualInspected": false,
+      "phoneReadabilityPassed": false
+    },
+    "thumbnail": {
+      "path": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
+      "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+      "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
+      "fileBytes": 100730,
+      "width": 384,
+      "height": 480,
+      "staticSafe": true,
+      "embeddedSourceExact": true,
+      "sourceScaledTo": {
+        "width": 480,
+        "height": 480,
+        "x": -72,
+        "y": 0
+      },
+      "cropRectSourcePixels": {
+        "left": 153.6,
+        "top": 0,
+        "right": 972.8,
+        "bottom": 1024
+      },
+      "visualInspected": false,
+      "browserRendered": false
+    },
+    "nextAction": "Re-export TYPE with exact-case Psalm 34:4 reference at >=44px on 1024px art, render and inspect at 320px; rasterize 4:5 thumbnail, inspect at 80x100; then independently audit and consolidate original schema V2 master. Keep current derivative candidate quarantined."
+  }
 }
