@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
+import { writeV7PublicLibraryCatalog } from './scripts/v7-generate-public-library-catalog.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -64,7 +65,7 @@ function walkFiles(directory) {
 function copyLegacyRuntime() {
   return {
     name: 'biblequest-v5-runtime-compatibility-copy',
-    closeBundle() {
+    async closeBundle() {
       mkdirSync(outDir, { recursive: true });
 
       for (const entry of readdirSync(root, { withFileTypes: true })) {
@@ -92,6 +93,11 @@ function copyLegacyRuntime() {
       generateScripturePackageManifests({
         root,
         outputDirectory: join(outDir, 'data', 'v6-scripture-manifests'),
+      });
+
+      await writeV7PublicLibraryCatalog({
+        candidateSha: buildSha,
+        outputPath: join(outDir, 'data', 'v7', 'library-public-catalog.json'),
       });
 
       writeFileSync(
