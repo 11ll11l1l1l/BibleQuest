@@ -6,6 +6,7 @@ Development branch: `v7/development`
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
 Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
+Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
 ## Command contract
 
@@ -167,3 +168,14 @@ Historical tests/evidence remain valid inputs and should be reused.
 V7 is finished when all four canonical reset issues are complete and one exact deployed candidate satisfies the consolidated automated release gate, including every ship-blocking UI/UX criterion in `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`.
 
 The user's subsequent in-app audit may change, reject or request changes to content through Content Review, but that audit is post-release quality stewardship rather than a prerequisite to finish V7.
+
+## 2026-10-08 active motion addition — apply to every lane continuation
+
+The user approved animation for V7, in parallel with current image-first work. Canonical task issues #1300–#1303 each contain a **motion requirement addendum** and the binding details live in `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`.
+
+- **A:** continue three independently audited still-image variants and optional motion-safe crop hints, no animated-media release dependency.
+- **B:** feature-scoped spring-like Feelings/Needs deck settling/swipes, card feedback, stable Content Review focus and reduced-motion/static fallback.
+- **C:** state-safe ONE 2 ONE lesson/step progress transitions and tenant/privacy-safe rapid Back/Next/resume.
+- **D:** shared motion tokens/primitives, Home/navigation/reader transitions and exact-SHA built-browser normal/reduced-motion/mobile/a11y/offline/perf gates; *never* implement a competing Library deck.
+
+P0 interaction and reduced-motion gates are part of V7 acceptance. Rich multilayer cinematic scenery is P2, not a ship gate. These are newly **assigned** tasks, not evidence that they are implemented or tested. Original content, rights, Scripture fidelity and release safeguards remain unchanged.
