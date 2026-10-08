@@ -8,7 +8,7 @@ const NAV = [
   ['reader', 'nav.bible', 'bible'],
   ['library', 'nav.library', 'library'],
   ['one-to-one', 'nav.groups', 'groups'],
-  ['account', 'nav.you', 'user']
+  ['more', 'nav.you', 'user']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -32,10 +32,10 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
          'private-notes', 'cloud-notes'].includes(route)) return 'library';
     if (route === 'grow' || route.startsWith('one-to-one-')
         || ['community', 'journey-groups'].includes(route)) return 'one-to-one';
-    if (['more', 'my-journey', 'transform', 'personality-profile',
+    if (['account', 'my-journey', 'transform', 'personality-profile',
          'psychometrics', 'avatar-vault', 'accessibility', 'backup',
          'help', 'content-review', 'congregation', 'leader-center',
-         'ministry-hub', 'team-center', 'workspace', 'calendar'].includes(route)) return 'account';
+         'ministry-hub', 'team-center', 'workspace', 'calendar'].includes(route)) return 'more';
     if (['play', 'games'].includes(route)) return 'home';
     return null;
   };

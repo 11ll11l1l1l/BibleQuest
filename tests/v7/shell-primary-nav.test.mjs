@@ -15,11 +15,12 @@ test('V7 shell exposes exactly five routed, content-first destinations', () => {
     {route:'reader',key:'nav.bible',icon:'bible'},
     {route:'library',key:'nav.library',icon:'library'},
     {route:'one-to-one',key:'nav.groups',icon:'groups'},
-    {route:'account',key:'nav.you',icon:'user'}
+    {route:'more',key:'nav.you',icon:'user'}
   ]);
   for (const {icon} of destinations) assert.ok(icons.includes('  ' + icon + ': `'), icon + ' icon missing');
   assert.match(shell, /aria-current', 'page'/);
   assert.match(shell, /<small>\$\{escapeHtml\(text\(labelKey\)\)\}<\/small>/);
+  assert.match(shell, /\['account', 'my-journey'/);
   for (const route of ['library-item','one-to-one-','bible-quest']) assert.ok(shell.includes(route), route+' nested route missing');
 });
 
