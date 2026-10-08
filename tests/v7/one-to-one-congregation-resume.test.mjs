@@ -93,7 +93,7 @@ test('identical membership refreshes do not retrigger tenant consumers or overwr
   assert.equal(service.getActive()?.congregationId, 'church-b');
   assert.equal(invalidations, 2, 'Membership refresh after selection must not restart the route.');
 
-  records = records.map(member => member.congregationId === 'church-b'
+  records = records.map(member => member.congregation_id === 'church-b'
     ? { ...member, role: 'leader', congregation: { ...member.congregation, name: 'Renamed church' } }
     : member);
   await service.load();
