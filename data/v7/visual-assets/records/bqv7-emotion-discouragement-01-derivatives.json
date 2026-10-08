@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-discouragement-01",
+  "agentId": "visual-agent-3",
+  "contentId": "discouragement",
+  "canonicalContentId": "discouraged",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "status": "bundle_complete",
+  "createdAt": "2026-10-08T17:04:00+09:00",
+  "sourceWording": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "locale": "en",
+    "exactLabel": "Discouraged",
+    "reference": "Galatians 6:9",
+    "scriptureTextIncluded": false,
+    "scriptureTranslation": null,
+    "scriptureRevision": null
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "sourceFile": "discouraged_when_it_feels_hard_to_keep_going.png",
+    "sourceDescription": "Clean left panel cropped from previously generated three-panel concept; new standalone master, TYPE and THUMB exported programmatically",
+    "sourceGenerationId": "a8c0f302-c969-4c0a-8775-9eebccd0a138",
+    "sourceRect": {
+      "x": 0,
+      "y": 80,
+      "width": 640,
+      "height": 640
+    },
+    "prompt": "not_available_from_provider"
+  },
+  "rights": {
+    "image": "OpenAI-generated original scene; no third-party imagery used",
+    "thirdPartyCover": false,
+    "fontFamilies": [
+      "EB Garamond",
+      "Lato"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontEvidence": [
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "fallback": "CLEAN with live localized label/reference; English TYPE is not translated artwork",
+  "accessibility": {
+    "essentialLiveTextRequired": true
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 99884,
+      "sha256": "e11f7caf05375dbcceb06f90ffda7b434e8cb293c7ef46e57b72c45a5baa3d43",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.41
+      },
+      "textSafeRegion": "none",
+      "altText": "A discouraged young man sits at his desk, head in hand, beside unfinished notes and crumpled drafts.",
+      "decorative": false,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "noBakedText": true,
+        "sourceCleanPanel": true
+      },
+      "gitBlobSha": "5301b0bae46b1c3cda207cb2c779a94b5221163d"
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 125022,
+      "sha256": "120f8a62f6c0b763bd2e8d92d938a997411fb7ec06cb6c063d5c26b59a635b98",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.52
+      },
+      "textSafeRegion": "top",
+      "altText": "A discouraged young man sits at an unfinished desk. Embedded English title: Discouraged. Reference: Galatians 6:9.",
+      "decorative": true,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": false,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "exactWordingVerifiedAgainstTaxonomy": true,
+        "textComposedProgrammatically": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "smallReferenceRequiresLiveAccessibleUI": true
+      },
+      "crop": {
+        "sourceRect": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1024
+        },
+        "composite": {
+          "sourceImageOffsetY": 256,
+          "titleBandHeight": 256
+        }
+      },
+      "embeddedWording": {
+        "label": "Discouraged",
+        "reference": "Galatians 6:9",
+        "scriptureTextIncluded": false
+      },
+      "fontLicense": "SIL OFL-1.1",
+      "gitBlobSha": "b868bbdddf6aa6041b5648a42d84898d37a7fada"
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 29704,
+      "sha256": "1d5bfccdc0b655b04db426bb0460f611fdb179dd8624bd74e401cd00fafeca8d",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.41
+      },
+      "textSafeRegion": "none",
+      "altText": "A discouraged young man rests his head on his hand beside unfinished work.",
+      "decorative": false,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "focalSafe": true,
+        "noBakedText": true
+      },
+      "crop": {
+        "sourceRect": {
+          "x": 100,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "gitBlobSha": "3a584f01c7ce45c0b411bd52a8607772d1c894be"
+    }
+  ],
+  "qc": {
+    "acceptedCandidates": 1,
+    "rejectedCandidatesThisRun": 0,
+    "sourceFromPreviousGeneratedCandidate": true,
+    "independentVisualInspection": "passed: three separate files inspected at full size and 160px preview; natural anatomy, clear discouraged pose, no fake lettering in CLEAN, exact TYPE label/reference, face and crumpled drafts retained in THUMB",
+    "duplicateSceneComparison": "Compared against nine existing emotion master sidecars on v7/development; distinct from confusion (forked path), anxiety (bedroom), spiritual dryness (kitchen), rejection (steps) and other scenes. Desk-with-crumpled-drafts concept is a separate discouragement signal."
+  },
+  "bundleStatus": "three_files_present_local_visual_QA_passed",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp"
+}

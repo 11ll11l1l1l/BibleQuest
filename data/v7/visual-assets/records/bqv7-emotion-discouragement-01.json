@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-discouragement-01",
+  "agentId": "visual-agent-3",
+  "createdAt": "2026-10-08T17:04:00+09:00",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "discouragement",
+  "canonicalContentId": "discouraged",
+  "concept": "Discouragement after repeated unsuccessful attempts at a desk, with crumpled drafts and unfinished work",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 99884,
+  "sha256": "e11f7caf05375dbcceb06f90ffda7b434e8cb293c7ef46e57b72c45a5baa3d43",
+  "gitBlobSha": "5301b0bae46b1c3cda207cb2c779a94b5221163d",
+  "focalPoint": {
+    "x": 0.55,
+    "y": 0.41
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "sourceFile": "discouraged_when_it_feels_hard_to_keep_going.png",
+    "sourceDescription": "Clean left panel cropped from previously generated three-panel concept; new standalone master, TYPE and THUMB exported programmatically",
+    "sourceGenerationId": "a8c0f302-c969-4c0a-8775-9eebccd0a138",
+    "sourceRect": {
+      "x": 0,
+      "y": 80,
+      "width": 640,
+      "height": 640
+    },
+    "prompt": "not_available_from_provider"
+  },
+  "rights": {
+    "image": "OpenAI-generated original scene; no third-party imagery used",
+    "thirdPartyCover": false,
+    "fontFamilies": [
+      "EB Garamond",
+      "Lato"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontEvidence": [
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A discouraged young man sits at his desk, head in hand, beside unfinished notes and crumpled drafts."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "sourceMasterDerivedFromPreviousOriginalGeneration": true
+  },
+  "derivativeRecord": "data/v7/visual-assets/records/bqv7-emotion-discouragement-01-derivatives.json"
+}
