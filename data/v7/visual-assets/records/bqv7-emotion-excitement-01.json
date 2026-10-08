@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-excitement-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-09T01:10:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "excited",
+  "canonicalEmotionId": "excited",
+  "queueConcept": "excitement",
+  "concept": "Excitement at unexpected good news: a woman opens a letter, delighted, while her friend celebrates beside her outside an arts building",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 142606,
+  "sha256": "186870da189b676d41b08f0d4302cb8e2bfd2abd69d7591a0cc296e9204b67de",
+  "focalPoint": {
+    "x": 0.42,
+    "y": 0.48
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 142606,
+      "sha256": "186870da189b676d41b08f0d4302cb8e2bfd2abd69d7591a0cc296e9204b67de",
+      "altText": "A woman reacts with delighted surprise to good news on a letter while a friend smiles beside her outside a community building.",
+      "focalPoint": {
+        "x": 0.42,
+        "y": 0.48
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRender320390430": true,
+        "builtAppBrowserQA": "pending",
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 151356,
+      "sha256": "2c9ddae6f8488a1776f3c1bb0c916d10963df79dd85752a7e3ad8f321aafd370",
+      "altText": "Two women celebrate a surprising letter outside a community building. Embedded English words: Excited; Psalm 126:3.",
+      "focalPoint": {
+        "x": 0.42,
+        "y": 0.48
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRender320390430": true,
+        "builtAppBrowserQA": "pending",
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "scriptureReferenceVerified": true,
+        "noFakeText": true
+      },
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Excited",
+        "scriptureReference": "Psalm 126:3",
+        "scriptureTextIncluded": false
+      },
+      "fontFamilies": [
+        "Noto Serif Display SemiBold",
+        "EB Garamond 12 Italic"
+      ],
+      "fontLicense": "SIL OFL 1.1",
+      "fontDistribution": "rasterized glyphs only; no font files distributed",
+      "cropIntent": "1024x1024 original scene under 256px dark navy editorial header; faces and letter preserved"
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-excitement-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 36866,
+      "sha256": "91a4f644b1ffb0f477323fc64ccdf37eaeb6b4bc8c652694ef4f77dbb2b6cc2f",
+      "altText": "A woman smiles in surprise at a letter while a friend beams beside her.",
+      "focalPoint": {
+        "x": 0.42,
+        "y": 0.48
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRender320390430": true,
+        "builtAppBrowserQA": "pending",
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      },
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 93,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "excited",
+    "locale": "en",
+    "exactLabel": "Excited",
+    "reference": "Psalm 126:3",
+    "scriptureTextIncluded": false,
+    "translation": null,
+    "translationRevision": null
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "a19bbcfe-262d-45c0-9bb8-5b9d43a4bca9",
+    "prompt": null,
+    "notes": "Original generated square photographic scene, no third-party source supplied; Pillow used for original-source crop, raster typography and thumbnail. No fabricated source prompt."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "image": "Original OpenAI-generated visual; no supplied third-party artwork or brand imitation",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": [
+      "Debian fonts-noto-core copyright",
+      "Debian fonts-ebgaramond-extra copyright"
+    ],
+    "fontDistribution": "No font binaries distributed; title and reference rasterized into TYPE WebP",
+    "scriptureReference": "Psalm 126:3",
+    "scriptureText": null
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman responds with delighted surprise to a letter while her smiling friend shares the moment outside an arts building.",
+    "fallback": "CLEAN plus live localized label for tl, ceb, ilo and any locale without reviewed TYPE",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "isolatedChromium": {
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "variants": [
+        "CLEAN",
+        "TYPE",
+        "THUMB"
+      ],
+      "passCount": 9,
+      "failedCount": 0,
+      "evidence": "local screenshots in QA archive, not part of repository"
+    },
+    "builtAppBrowserQA": "pending",
+    "repositoryAudit": "not_run",
+    "productionReady": false,
+    "sceneDistinctFromJoyGratitudePeaceHope": true,
+    "notes": "Two-person good-news reaction with letter, not gratitude bouquet/hug or scenic joy. No production_ready assertion until built-app QA and repository audit."
+  }
+}
