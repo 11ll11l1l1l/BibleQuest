@@ -78,7 +78,10 @@
         "sha256Measured": true,
         "visualInspected": true,
         "browserRenderedAt320390430": true,
-        "noBakedText": true
+        "noBakedText": true,
+        "anatomyAcceptable": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
       }
     },
     {
@@ -99,7 +102,8 @@
         "visualInspected": true,
         "browserRenderedAt320390430": true,
         "spellingCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": true
+        "typeReadableAt320px": true,
+        "noPseudoText": true
       },
       "embeddedWording": {
         "label": "Lonely",
@@ -136,7 +140,8 @@
         "visualInspected": true,
         "browserRenderedAt320390430": true,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
       },
       "crop": {
         "sourceRectPixels": {
