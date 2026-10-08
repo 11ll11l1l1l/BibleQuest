@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-jealousy-envy-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -52,7 +52,8 @@
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "anatomyAcceptable": true
       }
     },
     {
@@ -114,7 +115,8 @@
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
       }
     }
   ],
@@ -174,8 +176,26 @@
       390,
       430
     ],
-    "builtAppBrowserQA": "pending",
-    "visualAuditScript": "not_run_no_local_repo",
-    "reasonNotProductionReady": "Built-app browser review and official repository Node audit have not run; do not publish TYPE/THUMB to release registry."
+    "builtAppBrowserQA": "draft_exact_source_bytes_qa_browser_pass_pending_published_http_verification",
+    "draftBuiltAppQA": {
+      "candidateSha": "5041d63b5cddaf8fba6c47639830beb78c032ef6",
+      "workflowRunId": 37852498566,
+      "artifactId": 11583106348,
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "result": "pass",
+      "publicationNote": "QA-only isolated exact source bytes; production HTTP verification still required on this promotion PR"
+    },
+    "visualReviewEvidence": {
+      "date": "2026-10-09",
+      "method": "independent exact source TYPE and THUMB image inspection",
+      "typeReadability": "legible in reviewed source",
+      "sceneFit": "emotion recognizable",
+      "locale": "en",
+      "bibleText": "reference only; checked against recorded taxonomy evidence"
+    }
   }
 }
