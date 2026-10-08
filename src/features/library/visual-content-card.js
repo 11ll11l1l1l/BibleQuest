@@ -48,7 +48,13 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   open.type = 'button';
   open.className = 'bq-v7-content-card__action';
   open.textContent = labels.action + ': ' + item.title;
-  open.addEventListener('click', () => onOpen(Object.freeze({ id: item.id, contentType: item.contentType })));
+  open.dataset.libraryItem = String(item.id);
+  // The Library page also delegates [data-library-item] events for legacy
+  // cards; stop bubbling so a visual-card click navigates exactly once.
+  open.addEventListener('click', event => {
+    event.stopPropagation();
+    onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
+  });
   details.append(eyebrow, title, description, info, open);
   root.append(cover, details);
   return root;
