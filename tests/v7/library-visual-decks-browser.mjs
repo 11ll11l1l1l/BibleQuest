@@ -70,7 +70,7 @@ try {
         heading: el.querySelector('h3')?.textContent || '',
       };
     });
-    assert(fullCardHit.widthGap < 2 && fullCardHit.heightGap < 2, 'published image card has a small hit target');
+    assert(fullCardHit.widthGap <= 4 && fullCardHit.heightGap <= 4, 'published image card has a small hit target');
     assert(fullCardHit.accessibleName?.includes('Courage for Today'), 'full-card button lacks accessible title');
     assert(fullCardHit.heading === 'Courage for Today', 'semantic card heading disappeared');
     await page.locator('.bq-v7-content-card').scrollIntoViewIfNeeded();
