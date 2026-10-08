@@ -4,7 +4,7 @@
   "assetId": "bqv7-emotion-rejection-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-rejection-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "quarantined_noncompliant_embedded_raster_svg",
   "productionCertified": false,
   "contentType": "emotion",
   "contentId": "rejection",
@@ -109,12 +109,14 @@
         "referenceVerified": true,
         "noVerseTextIncluded": true,
         "noPseudoText": true,
-        "svgSelfContained": true,
+        "svgSelfContained": false,
         "geometryChecked": true,
         "visualRenderQA": "pending",
         "fontRenderQA": "pending",
         "referenceGeometryReviewed": true,
-        "typeReadableAt320px": "pending"
+        "typeReadableAt320px": "pending",
+        "policyCompliant": false,
+        "quarantined": true
       }
     },
     {
@@ -153,7 +155,9 @@
         "thumbnailAt100px": "pending",
         "visualRenderQA": "pending",
         "focalCropBrowserQA": "pending",
-        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run."
+        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run.",
+        "policyCompliant": false,
+        "quarantined": true
       }
     }
   ],
@@ -185,7 +189,8 @@
     "scriptureQuoteIncluded": false,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
+    "notes": "Both SVG derivatives embed prohibited data:image/webp;base64; independent raster backfill and built-app QA required.",
+    "policyAudit": "failed_embedded_data_image_uris"
   },
   "createdAt": "2026-10-08T15:06:14+09:00",
   "bundleStatus": "partial_candidate_not_production_ready",
@@ -201,7 +206,7 @@
   "qaStatus": {
     "localStaticChecks": "passed",
     "browserRenderedVisualQA": "pending",
-    "reason": "CLEAN image inspected; THUMB SVG crop geometry checked but actual browser-rendered portrait not yet inspected. TYPE font rendering remains pending.",
+    "reason": "SVG TYPE/THUMB each contain a prohibited embedded data:image/webp;base64 URI; no actual built-app browser QA completed.",
     "localReferenceGeometry": "nominal 46/1024*320=14.375px; full 320px browser render still pending",
     "independentRepositoryBinaryAudit": {
       "checkedAt": "2026-10-08T22:58:15+09:00",
@@ -226,6 +231,15 @@
       },
       "embeddedCleanIdentityMatches": true,
       "limitations": "SVG encoded dimensions/geometry checked from markup only. Full TYPE and THUMB browser rendering and 320px visual QA not performed; no production promotion."
+    },
+    "svgPolicyEvidence": {
+      "typeGitBlobSha": "bfc2a1807d2818fb5d8f308eed694b5ae81599ed",
+      "thumbGitBlobSha": "f8d7f2599183f349e0f622c4c7e6f6e63f4029dc",
+      "dataImageUriCount": {
+        "TYPE": 1,
+        "THUMB": 1
+      },
+      "source": "data/v7/visual-assets/README.md"
     }
   }
 }
