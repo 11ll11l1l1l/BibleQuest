@@ -21,7 +21,9 @@ function safeHeroAsset(value){
 
 async function defaultOneToOneCover(key) {
   const registry = await loadV7VisualRegistry();
-  return findV7Visual(registry, [key], localization.getLocale(), 'ONE 2 ONE');
+  // Live heading overlays this hero; explicitly select CLEAN so an embedded
+  // TYPE caption is not rendered a second time or cropped under the scrim.
+  return findV7Visual(registry, [key], localization.getLocale());
 }
 
 export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,onBack,onAuthoring=()=>{},onAssignments=()=>{},onPair=()=>{},onInvite=()=>{},isContextReady=()=>false,coverProvider=defaultOneToOneCover}) {
