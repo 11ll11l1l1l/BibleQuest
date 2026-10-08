@@ -1,5 +1,6 @@
 import './visual-decks.css';
 import { assertV7PublishedVisualCardItem, normalizeV7DeckLocale, resolveV7LibraryVisual } from './visual-registry.js';
+import { cardReveal, pressFeedback } from '../../ui/motion.js';
 
 const typeNames = Object.freeze({
   en: { book: 'Book', devotional: 'Devotional', past_teaching: 'Teaching', action: 'Open' },
@@ -53,9 +54,11 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   // cards; stop bubbling so a visual-card click navigates exactly once.
   open.addEventListener('click', event => {
     event.stopPropagation();
+    pressFeedback(open, { environment: { document } });
     onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
   });
   details.append(eyebrow, title, description, info, open);
   root.append(cover, details);
+  cardReveal(root, { environment: { document } });
   return root;
 }
