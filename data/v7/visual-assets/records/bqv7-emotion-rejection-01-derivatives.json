@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 2,
+  "recordType": "derivative_bundle",
+  "assetId": "bqv7-emotion-rejection-01-derivatives",
+  "sourceMasterAssetId": "bqv7-emotion-rejection-01",
+  "agentId": "visual-agent-2",
+  "status": "three_files_present_render_qa_pending",
+  "productionCertified": false,
+  "contentType": "emotion",
+  "contentId": "rejection",
+  "family": "emotion",
+  "visualRole": "emotion_tile_derivatives",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 88016,
+  "sha256": "49b1e1ce1efa77293b27c76f757f34d9bbd0660f6749b59f18caaab666e39453",
+  "sourceType": "generated",
+  "focalPoint": {
+    "x": 0.3,
+    "y": 0.27
+  },
+  "textSafeRegion": "lower",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "sourceMaster": {
+    "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01.webp",
+    "gitBlobSha": "3ef260dcf1bcb22e421e4cccb02645439233d30c",
+    "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+    "recordedSha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+    "recordHashMatchesActual": true,
+    "format": "webp",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 65046
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 65046,
+      "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+      "sourceType": "generated",
+      "locale": null,
+      "altText": "A young man sits apart from a group of friends on outdoor steps, looking down with one hand resting against his forehead.",
+      "qc": {
+        "noBakedText": true,
+        "noLogo": true,
+        "anatomyAcceptable": true,
+        "subjectReadableAtThumbnail": true,
+        "cropSafe": true,
+        "matchesVisualSystem": true,
+        "duplicateChecked": true,
+        "emotionMatches": true,
+        "notes": "Reviewed 1024px asset and 100px thumbnail. Foreground subject visibly isolated from blurred friends; no legible text or logos, hands plausible, square crop safe. Distinct from existing solitary-woman sunset overlook asset.",
+        "sourceRecordSha256MatchesActual": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 88016,
+      "sha256": "49b1e1ce1efa77293b27c76f757f34d9bbd0660f6749b59f18caaab666e39453",
+      "sourceType": "generated",
+      "locale": "en",
+      "includedWording": "Rejected / unwanted",
+      "includedReference": "Psalm 27:10",
+      "includedScriptureText": null,
+      "wordingSource": {
+        "path": "src/features/library/emotion-taxonomy.js",
+        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "emotionId": "rejected",
+        "locale": "en",
+        "sourceTranslation": null,
+        "sourceRevision": null
+      },
+      "typography": {
+        "method": "SVG embedded live vector text over generated source WebP with editorial scrim",
+        "fontFamily": "Noto Serif Display / Georgia / Noto Sans / Arial",
+        "license": "Noto fonts SIL OFL 1.1 when available; platform Georgia/Arial host provided; no font binaries redistributed or embedded",
+        "fontFilesDistributed": false
+      },
+      "focalPoint": {
+        "x": 0.3,
+        "y": 0.27
+      },
+      "textSafeRegion": "lower",
+      "altText": "A young man sits apart from chatting friends. Embedded English words: Rejected / unwanted; Psalm 27:10.",
+      "decorative": true,
+      "fallback": "CLEAN with localized live text",
+      "qc": {
+        "sourceBlobVerified": true,
+        "wordingVerified": true,
+        "referenceVerified": true,
+        "noVerseTextIncluded": true,
+        "noPseudoText": true,
+        "svgSelfContained": true,
+        "geometryChecked": true,
+        "visualRenderQA": "pending",
+        "fontRenderQA": "pending"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 87141,
+      "sha256": "517efec9cab1abc39c15a69154d4c4a70953a7e4b7f8f614cb1a0956f2bb4f26",
+      "sourceType": "generated",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.27,
+        "y": 0.34
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.125,
+          "y": 0,
+          "width": 0.8,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Embedded WebP scaled to 480x480 and clipped to 384x480; left subject and some group preserved"
+      },
+      "altText": "A young man sits apart from friends on outdoor steps.",
+      "decorative": false,
+      "fallback": "CLEAN",
+      "qc": {
+        "sourceBlobVerified": true,
+        "noEmbeddedText": true,
+        "clipGeometryChecked": true,
+        "visualRenderQA": "pending"
+      }
+    }
+  ],
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Generated source image; no external source or font files embedded. Platform font fallback requires browser QA."
+  },
+  "accessibility": {
+    "decorative": true,
+    "altText": "A young man sits apart from chatting friends. Embedded English words: Rejected / unwanted; Psalm 27:10.",
+    "notes": "Essential title and Scripture reference remain live localized UI; English TYPE is decorative and not translated."
+  },
+  "wordingSource": {
+    "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "reviewedEnglishLabel": "Rejected / unwanted",
+    "referenceOnly": "Psalm 27:10",
+    "translation": null,
+    "revision": null
+  },
+  "qa": {
+    "sourceMasterBlobVerified": true,
+    "sourceRecordHashMismatch": false,
+    "sourceMasterPreserved": true,
+    "variantHashesMeasured": true,
+    "geometryReviewed": true,
+    "spellingVerified": true,
+    "scriptureQuoteIncluded": false,
+    "visualRenderQA": "pending",
+    "rasterOptimization": "pending",
+    "notes": "Two self-contained SVG files embed original WebP. Browser-rendered type and card-size appearance remain uncertified; source master SHA-256 sidecar discrepancy noted explicitly without altering original."
+  },
+  "createdAt": "2026-10-08T15:06:14+09:00"
+}
