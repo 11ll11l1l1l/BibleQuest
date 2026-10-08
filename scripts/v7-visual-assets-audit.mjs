@@ -13,6 +13,46 @@ const REQUIRED_QC = [
 const IMAGE_FORMATS = new Set(['webp', 'png', 'jpg', 'jpeg', 'svg']);
 const REGIONS = new Set(['bottom', 'top', 'left', 'right', 'none']);
 const CONTENT_TYPES = new Set(['emotion', 'devotional', 'book', 'past_teaching', 'hero']);
+// Immutable bridge between the image-agent queues and the app's published 30-feeling taxonomy.
+// Validate every queue assignment against this bridge before publishing any artwork.
+const EMOTION_QUEUE_CANONICAL = Object.freeze({
+  anxiety_worry: 'anxious',
+  fear: 'afraid',
+  sadness: 'sad',
+  grief_loss: 'grieving',
+  loneliness: 'lonely',
+  anger: 'angry',
+  hurt_betrayal: 'hurt',
+  rejection: 'rejected',
+  guilt: 'guilty',
+  shame: 'ashamed',
+  insecurity_unworthiness: 'insecure',
+  doubt: 'doubtful',
+  confusion_uncertainty: 'confused',
+  discouragement: 'discouraged',
+  hopelessness: 'hopeless',
+  overwhelm: 'overwhelmed',
+  stress: 'stressed',
+  tiredness_weariness: 'tired',
+  spiritual_dryness_distance: 'spiritually_dry',
+  temptation: 'tempted',
+  impatience_waiting: 'impatient',
+  jealousy_envy: 'jealous',
+  frustration: 'frustrated',
+  numbness_emptiness: 'numb',
+  joy: 'joyful',
+  gratitude: 'grateful',
+  peace_contentment: 'peaceful',
+  hope: 'hopeful',
+  excitement: 'excited',
+  love_connection: 'connected',
+});
+const EMOTION_BY_CANONICAL = new Map(LIBRARY_EMOTIONS.map(item => [item.id, item]));
+if (Object.keys(EMOTION_QUEUE_CANONICAL).length !== LIBRARY_EMOTIONS.length
+  || new Set(Object.values(EMOTION_QUEUE_CANONICAL)).size !== LIBRARY_EMOTIONS.length
+  || Object.values(EMOTION_QUEUE_CANONICAL).some(id => !EMOTION_BY_CANONICAL.has(id)))
+  throw new Error('V7 visual queue mapping is out of sync with emotion-taxonomy.js');
+
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const gitBlobSha = bytes => createHash('sha1')
   .update(Buffer.from('blob ' + bytes.length)).update(Buffer.from([0])).update(bytes).digest('hex');
@@ -144,6 +184,12 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       owners.set(concept, row.agentId);
     }
   }
+  for (const [queueId, canonicalId] of Object.entries(EMOTION_QUEUE_CANONICAL))
+    if (!owners.has(queueId) || !EMOTION_BY_CANONICAL.has(canonicalId))
+      errors.push('Missing or unrecognized initial emotion queue entry: ' + queueId);
+  for (const queueId of owners.keys())
+    if (!Object.hasOwn(EMOTION_QUEUE_CANONICAL, queueId))
+      errors.push('Unknown initial emotion queue entry: ' + queueId);
   const ids = new Set();
   const seenPaths = new Set();
   const seenHashes = new Map();
@@ -178,10 +224,25 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       if (!record.family || !id.startsWith('bqv7-' + record.family + '-')) throw new Error('family/ID mismatch');
       if (!CONTENT_TYPES.has(record.contentType) || !record.contentId) throw new Error('unknown content type or missing content ID');
       if (!Array.isArray(record.usage) || !record.usage.length) throw new Error('missing usage');
+      let queueConcept = null;
+      let canonicalContentId = record.contentId;
       if (record.contentType === 'emotion') {
-        if (record.family !== 'emotion' || record.visualRole !== 'emotion_tile'
-          || !owners.has(record.contentId) || owners.get(record.contentId) !== record.agentId)
-          throw new Error('emotion assignment does not match initial queue owner');
+        // V1 masters use queue IDs; newer V2 producers may use the app's canonical
+        // ID and provide the original queue concept separately.
+        queueConcept = record.queueConcept || record.contentId;
+        if (!Object.hasOwn(EMOTION_QUEUE_CANONICAL, queueConcept)) {
+          const matches = Object.entries(EMOTION_QUEUE_CANONICAL)
+            .filter(([, id]) => id === record.contentId);
+          if (matches.length === 1) queueConcept = matches[0][0];
+        }
+        canonicalContentId = EMOTION_QUEUE_CANONICAL[queueConcept];
+        if (!canonicalContentId || (record.contentId !== queueConcept
+          && record.contentId !== canonicalContentId)
+          || (record.canonicalEmotionId && record.canonicalEmotionId !== canonicalContentId)
+          || (record.canonicalContentId && record.canonicalContentId !== canonicalContentId)
+          || record.family !== 'emotion' || record.visualRole !== 'emotion_tile'
+          || owners.get(queueConcept) !== record.agentId)
+          throw new Error('emotion queue/canonical ID/agent ownership mismatch');
       }
       const imagePath = record.imagePath;
       const ext = typeof imagePath === 'string' ? imagePath.split('.').pop()?.toLowerCase() : null;
@@ -333,7 +394,7 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
           attribution: record.rights.attributionRequired ? (record.rights.attribution || '') : null
         },
         fallbackKey: record.fallbackKey || record.family,
-        canonicalContentId: record.canonicalEmotionId || record.canonicalContentId || record.contentId,
+        canonicalContentId, ...(queueConcept ? { queueConcept } : {}),
         bundleStatus: completeBundle ? 'complete' : 'partial',
         variants: derivatives
       });
@@ -356,8 +417,13 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
   for (const entry of entries) {
     const key = entry.contentType + ':' + entry.contentId;
     (byContent[key] ||= []).push(entry.assetId);
-    if (entry.contentType === 'emotion' && entry.canonicalContentId !== entry.contentId)
-      (byContent['emotion:' + entry.canonicalContentId] ||= []).push(entry.assetId);
+    if (entry.contentType === 'emotion') {
+      for (const alias of [entry.canonicalContentId, entry.queueConcept])
+        if (alias && alias !== entry.contentId) {
+          const values = (byContent['emotion:' + alias] ||= []);
+          if (!values.includes(entry.assetId)) values.push(entry.assetId);
+        }
+    }
   }
   const queues = queueRows.map(row => {
     const remaining = row.assignments.filter(concept => !byContent['emotion:' + concept]?.length);
