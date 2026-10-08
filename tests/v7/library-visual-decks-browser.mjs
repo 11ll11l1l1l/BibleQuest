@@ -31,7 +31,7 @@ try {
         document, item: { id: 'devotional-test', title: 'Courage for Today',
           contentType: 'devotional', publicationState: 'published', summary: 'An accessible reading card',
           rights: { status: 'verified', allowedUses: ['display'] }, source: { creator: 'BibleQuest' } },
-        locale: 'en', onOpen: row => { window.__bqLaneBOpened = row; },
+        locale: 'en', onOpen: row => { window.__bqLaneBOpened = row; window.__bqLaneBOpenCount = (window.__bqLaneBOpenCount || 0) + 1; },
       }));
     });
     const track = page.locator('[data-v7-deck="emotion"] [role="group"][aria-roledescription="carousel"]');
@@ -59,7 +59,30 @@ try {
       'changing Feeling erased Need selection');
     const call = await page.evaluate(() => window.__bqLaneBSelections.at(-1));
     assert(call.kind === 'emotion' && call.id === 'anxious' && call.selected === false, 'selection callback incorrect');
-    await page.locator('.bq-v7-content-card__action').click();
+    const fullCardHit = await page.locator('.bq-v7-content-card').evaluate(el => {
+      const card = el.getBoundingClientRect();
+      const action = el.querySelector('.bq-v7-content-card__action');
+      const button = action.getBoundingClientRect();
+      return {
+        widthGap: Math.abs(card.width - button.width),
+        heightGap: Math.abs(card.height - button.height),
+        accessibleName: action.getAttribute('aria-label'),
+        heading: el.querySelector('h3')?.textContent || '',
+      };
+    });
+    assert(fullCardHit.widthGap <= 4 && fullCardHit.heightGap <= 4, 'published image card has a small hit target');
+    assert(fullCardHit.accessibleName?.includes('Courage for Today'), 'full-card button lacks accessible title');
+    assert((await page.locator('.bq-v7-content-card__action').textContent())?.includes('Courage for Today'),
+      'full-card action lost localized title needed by authenticated Library regression');
+    assert(fullCardHit.heading === 'Courage for Today', 'semantic card heading disappeared');
+    await page.locator('.bq-v7-content-card').scrollIntoViewIfNeeded();
+    const coverBounds = await page.locator('.bq-v7-content-card__cover').boundingBox();
+    assert(coverBounds, 'card image/gradient is not visible');
+    await page.mouse.click(coverBounds.x + coverBounds.width/2, coverBounds.y + coverBounds.height/2);
+    assert((await page.evaluate(() => window.__bqLaneBOpenCount)) === 1, 'tapping artwork did not open content exactly once');
+    await page.locator('.bq-v7-content-card__action').focus();
+    await page.keyboard.press('Enter');
+    assert((await page.evaluate(() => window.__bqLaneBOpenCount)) === 2, 'keyboard activation did not open content exactly once');
     assert((await page.evaluate(() => window.__bqLaneBOpened?.id)) === 'devotional-test', 'visual card did not call onOpen');
     const empty = await page.locator('.bq-v7-content-card__cover img').count();
     assert(empty === 0, 'no image should create a safe gradient fallback, not a broken image');
