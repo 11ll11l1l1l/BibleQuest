@@ -19,6 +19,7 @@ export function createLibraryPage({
   }
   if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
   const t = (key, values) => localization.t(key, { values });
+  const filterLabel = ({ en: 'Refine results', tl: 'Salain ang resulta', ceb: 'Pinoha ang resulta', ilo: 'Pasayaaten dagiti resulta' }[localization.getLocale()] || 'Refine results');
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
     ? t('v7.library.type.' + type.id) : type.label;
   const typeOptions = () => registry.list().map(type =>
@@ -36,25 +37,38 @@ export function createLibraryPage({
   return Object.freeze({
     title: t('v7.library.title'),
     html: `<main class="bq-panel bq-library" data-library-page>
-      <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
-      <h1>${escapeHtml(t('v7.library.title'))}</h1>
-      <p>${escapeHtml(t('v7.library.intro'))}</p>
-      <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
-      <div data-library-emotion-discovery-host hidden></div>
+      <header class="bq-library__header">
+        <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
+        <h1>${escapeHtml(t('v7.library.title'))}</h1>
+        <p>${escapeHtml(t('v7.library.intro'))}</p>
+      </header>
       <form data-library-search>
-        <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
-        <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
-        <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
-        <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
-        <label for="bq-library-taxonomy">${escapeHtml(t('v7.library.taxonomy'))}</label>
-        <select id="bq-library-taxonomy" name="taxonomyId"><option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option></select>
-        <div class="bq-actions">
-          <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
-          <button type="button" class="bq-secondary-button" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
+        <div class="bq-library__search-row">
+          <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
+          <div class="bq-library__search-control">
+            <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
+            <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
+          </div>
         </div>
+        <div class="bq-library__type-row">
+          <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
+          <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
+        </div>
+        <details class="bq-library-filter-panel" data-library-filter-panel>
+          <summary>${escapeHtml(filterLabel)}</summary>
+          <div class="bq-library-filter-panel__body">
+            <label for="bq-library-taxonomy">${escapeHtml(t('v7.library.taxonomy'))}</label>
+            <select id="bq-library-taxonomy" name="taxonomyId"><option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option></select>
+            <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
+            <div data-library-emotion-discovery-host hidden></div>
+          </div>
+        </details>
+        <button type="button" class="bq-library-clear" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
       </form>
-      <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
-      <button type="button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
+      <div class="bq-library__result-status">
+        <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
+        <button type="button" class="bq-secondary-button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
+      </div>
       <ul data-library-results aria-label="${escapeHtml(t('v7.library.items'))}"></ul>
       <div data-library-discovery-empty-host hidden></div>
       <button type="button" class="bq-secondary-button" data-library-more hidden>${escapeHtml(t('v7.library.more'))}</button>

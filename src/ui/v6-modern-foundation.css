@@ -137,7 +137,7 @@ body {
 /* Global shell: quieter chrome and stronger content focus. */
 .bq-shell {
   min-height: 100dvh;
-  padding-bottom: calc(82px + env(safe-area-inset-bottom));
+  padding-bottom: calc(104px + env(safe-area-inset-bottom));
 }
 
 .bq-topbar {
@@ -347,21 +347,59 @@ body {
 
 @media (max-width: 640px) {
   .bq-topbar,
-  .bq-main { width: calc(100% - 20px); }
-  .bq-topbar { min-height: 58px; padding: 7px 0; }
-  .bq-brand-mark { width: 38px; height: 38px; }
-  .bq-progress-chip { padding-inline: 9px; }
-  .bq-session-chip { padding-inline: 9px; }
-  .bq-main { padding-top: var(--bq-space-2); }
+  .bq-main { width: calc(100% - 16px); }
+  .bq-topbar {
+    min-height: 52px;
+    padding: 5px 0;
+    gap: 8px;
+  }
+  .bq-brand { gap: 7px; min-width: 0; }
+  .bq-brand-mark { width: 34px; height: 34px; border-radius: 10px; }
+  .bq-brand > span:last-child { min-width: 0; }
+  .bq-brand strong { font-size: 15px; white-space: nowrap; }
+  .bq-brand small { display: none; }
+  .bq-top-actions { gap: 4px; }
+  .bq-progress-chip,
+  .bq-session-chip {
+    min-height: 44px;
+    padding-inline: 8px;
+  }
+  .bq-progress-chip small { display: none; }
+  .bq-progress-chip { min-width: 52px; }
+  .bq-locale-select {
+    width: 58px;
+    max-width: 58px;
+    padding-inline: 8px;
+  }
+  .bq-main { padding-top: 6px; }
   .bq-panel,
   .bq-surface { border-radius: 15px; }
-  .bq-nav { width: calc(100% - 12px); bottom: max(6px, env(safe-area-inset-bottom)); }
+  .bq-nav {
+    width: calc(100% - 12px);
+    height: 64px;
+    bottom: max(6px, env(safe-area-inset-bottom));
+  }
 }
 
-@media (max-width: 390px) {
-  .bq-brand strong { font-size: 16px; }
-  .bq-progress-chip { min-width: var(--bq-tap-target); padding-inline: 7px; }
-  .bq-session-chip { max-width: 108px; }
+@media (max-width: 430px) {
+  .bq-topbar { gap: 5px; }
+  .bq-session-chip[data-session-open] {
+    min-width: 68px;
+    max-width: 82px;
+    padding-inline: 7px;
+  }
+  .bq-session-chip [data-session-label] {
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 370px) {
+  .bq-brand strong { display: none; }
+  .bq-progress-chip { min-width: 48px; padding-inline: 6px; }
+  .bq-locale-select { width: 54px; max-width: 54px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
