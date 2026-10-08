@@ -18,6 +18,13 @@ export const V7_EMOTION_VISUAL_IDS = Object.freeze({
   joyful: 'joy', grateful: 'gratitude', peaceful: 'peace_contentment',
   hopeful: 'hope', excited: 'excitement', connected: 'love_connection',
 });
+// A released devotional may share art with its own canonical Feeling theme until
+// a dedicated audited devotional cover exists. Never infer a theme from arbitrary
+// titles, tags, user text, or unreviewed content.
+const DEVOTIONAL_ID = /^devotional\.biblequest\.([a-z]+(?:_[a-z]+)*)\.\d{2}$/;
+const DEVOTIONAL_THEME_EMOTION_IDS = Object.freeze(Object.fromEntries(
+  Object.entries(V7_EMOTION_VISUAL_IDS).map(([canonicalId, queueId]) => [queueId, canonicalId])
+));
 const SHA = /^[a-f0-9]{64}$/i;
 const LOCAL_IMAGE = /^\/v7\/images\/[a-z0-9/_-]+\.(?:webp|png|jpe?g)$/i;
 const clean = value => String(value ?? '').trim();
@@ -38,9 +45,8 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
   const keys = kind === 'emotion'
     ? [...new Set(['emotion:' + clean(V7_EMOTION_VISUAL_IDS[contentId] || contentId), 'emotion:' + clean(contentId)])]
     : [kind + ':' + clean(contentId)];
-  const ids = keys.flatMap(key => Array.isArray(registry.byContent[key]) ? registry.byContent[key] : []);
   const lookup = new Map(registry.assets.map(row => [row?.assetId, row]));
-  for (const id of ids) {
+  for (const id of keys.flatMap(key => Array.isArray(registry.byContent[key]) ? registry.byContent[key] : [])) {
     const asset = lookup.get(id);
     if (!asset || !keys.includes(asset.contentType + ':' + asset.contentId)
       || !SHA.test(clean(asset.sha256))) continue;
@@ -55,6 +61,14 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
       fallback: clean(asset.fallbackKey) || kind || 'library',
       type: thumb ? 'thumbnail' : 'clean', assetId: clean(asset.assetId),
     });
+  }
+  if (kind === 'devotional') {
+    const match = DEVOTIONAL_ID.exec(clean(contentId));
+    const canonicalEmotion = match ? DEVOTIONAL_THEME_EMOTION_IDS[match[1]] : '';
+    if (canonicalEmotion) {
+      const themeArt = resolveV7LibraryVisual(registry, 'emotion', canonicalEmotion, { thumbnail });
+      if (themeArt.src) return Object.freeze({ ...themeArt, type: 'shared_emotion_theme' });
+    }
   }
   return fallback;
 }
