@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
 import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
 
+const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = (process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
 const output = process.env.BQ_VISUAL_QA_DIR || 'artifacts/v7/visual-browser';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -29,10 +31,11 @@ const candidateBundles = candidateTriage.technicallyVerified.map(row => {
 });
 const bundles = [...publishedBundles, ...candidateBundles];
 const files = new Map();
-for (const asset of [...audit.manifest.assets, ...candidateBundles]) {
+// Deployed output must contain ONLY the published audited files.
+for (const asset of audit.manifest.assets) {
   for (const entry of [{ kind: 'clean', src: asset.src, sha256: asset.sha256, width: asset.width, height: asset.height },
     ...(asset.variants || [])]) {
-    assert.match(entry.src, /^\/v7\/images\/[a-z0-9/_-]+\.(?:png|webp|jpg|jpeg|svg)$/i, 'Local raster path only');
+    assert.match(entry.src, /^\/v7\/images\/[a-z0-9/_-]+\.(?:png|webp|jpg|jpeg)$/i, 'Local raster path only');
     assert.match(entry.sha256, /^[a-f0-9]{64}$/i, 'Every included binary needs a measured hash');
     if (files.has(entry.src)) {
       assert.equal(files.get(entry.src).sha256, entry.sha256, 'Conflicting asset ownership');
@@ -50,12 +53,36 @@ for (const file of files.values()) {
   assert.match(response.headers.get('content-type') || '', /^image\//, 'Image path returns non-image: ' + file.src);
   downloaded.push({ path: file.src, sha256: file.sha256, bytes: bytes.length });
 }
+// Candidate bytes are intentionally NOT present in the built production output.
+// Verify their exact working-tree bytes independently, then supply them only
+// to a disposable Playwright browser via request interception. Never copy them
+// into dist-v6 or the published release registry.
+const candidateResponses = new Map();
+for (const row of candidateTriage.technicallyVerified) {
+  for (const file of row.files) {
+    assert(!files.has(file.path), 'Unpublished candidate collides with published image');
+    assert(!candidateResponses.has(file.path), 'Two candidate assets reuse an image path');
+    const bytes = await readFile(join(ROOT, 'public', file.path.slice(1)));
+    assert.equal(sha(bytes), file.sha256, 'Candidate source bytes changed after verification');
+    const type = file.path.toLowerCase().split('.').pop();
+    const contentType = { webp: 'image/webp', png: 'image/png', svg: 'image/svg+xml' }[type];
+    assert(contentType, 'Unsupported browser candidate format');
+    candidateResponses.set(file.path, { bytes, contentType });
+  }
+}
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const screenshots = [];
 try {
   for (const width of [320, 390, 430]) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+    await page.route('**/v7/images/**', route => {
+      const path = new URL(route.request().url()).pathname;
+      const candidate = candidateResponses.get(path);
+      // All released images continue through the immutable built HTTP preview.
+      if (!candidate) return route.continue();
+      return route.fulfill({ status: 200, contentType: candidate.contentType, body: candidate.bytes });
+    });
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
     for (const asset of bundles) {
       assert(asset.variants?.some(v => v.kind === 'with_text'), 'Complete bundle needs TYPE: ' + asset.assetId);
@@ -116,6 +143,8 @@ const report = {
     rejected: candidateTriage.rejected,
     threeFileCandidates: candidateTriage.threeFileCandidates,
     publicationApproved: false,
+    browserDelivery: 'QA-only Playwright fulfillment from independently verified source bytes; excluded from deployable build',
+    verifiedCandidateFilePaths: [...candidateResponses.keys()].sort(),
   },
   verifiedServedFiles: downloaded, screenshots,
   viewports: [320, 390, 430],
