@@ -1,10 +1,96 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { auditV7VisualAssets, EMOTION_QUEUE_CANONICAL } from './v7-visual-assets-audit.mjs';
+import { auditV7VisualAssets, EMOTION_QUEUE_CANONICAL, NEED_VISUAL_ASSIGNMENTS } from './v7-visual-assets-audit.mjs';
+import { LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
 
 const DEFAULT_ROOT = fileURLToPath(new URL('../', import.meta.url));
 const TOKEN = /^[a-z0-9]+(?:_[a-z0-9]+)*$/;
+
+// Need tasks are deliberately separate from the P0 feeling queue. They may be
+// produced in parallel but never displace an unfinished feeling assignment.
+// All production counts come from the fail-closed binary audit registry.
+export function summarizeV7NeedVisualCoverage(audit, recordRows = []) {
+  if (!audit || !Array.isArray(audit.manifest?.assets) || !Array.isArray(recordRows))
+    throw new TypeError('Need coverage requires an audited registry and asset sidecars');
+  const allowed = new Set(LIBRARY_NEEDS.map(item => item.id));
+  if (allowed.size !== LIBRARY_NEEDS.length
+    || allowed.size !== Object.keys(NEED_VISUAL_ASSIGNMENTS).length)
+    throw new Error('Need artwork taxonomy and ownership mapping diverged');
+  const indexed = new Map();
+  for (const asset of audit.manifest.assets) {
+    if (asset.contentType !== 'need') continue;
+    if (!allowed.has(asset.contentId) || asset.canonicalContentId !== asset.contentId)
+      throw new Error('Unrecognized release Need identity: ' + asset.contentId);
+    const values = indexed.get(asset.contentId) || [];
+    values.push(asset);
+    indexed.set(asset.contentId, values);
+  }
+  const candidateCounts = new Map();
+  const pendingMasters = new Map();
+  for (const record of recordRows) {
+    if (record.derivativeFor) {
+      candidateCounts.set(record.derivativeFor, (candidateCounts.get(record.derivativeFor) || 0) + 1);
+    } else if (record.contentType === 'need' && record.status !== 'production_ready'
+      && allowed.has(record.contentId)) {
+      pendingMasters.set(record.contentId, record.status || 'unreviewed');
+    }
+  }
+  const tasks = LIBRARY_NEEDS.map(({ id }) => {
+    const assets = indexed.get(id) || [];
+    const master = assets[0] || null;
+    const full = assets.find(asset => asset.bundleStatus === 'complete') || null;
+    const candidates = assets.reduce((n, asset) => n + (candidateCounts.get(asset.assetId) || 0), 0);
+    const pendingStatus = pendingMasters.get(id) || null;
+    const action = full ? 'complete' : master
+      ? candidates ? 'verify_and_consolidate_derivatives' : 'create_and_verify_derivatives'
+      : pendingStatus ? 'finish_pending_master_qa' : 'create_clean_type_thumb';
+    return {
+      canonicalNeedId: id, agentId: NEED_VISUAL_ASSIGNMENTS[id],
+      state: full ? 'complete_bundle' : master ? 'clean_ready_partial'
+        : pendingStatus ? 'master_qa_pending' : 'missing_master',
+      action, assetIds: assets.map(asset => asset.assetId),
+      verifiedTypographyLocales: [...new Set(assets.flatMap(asset =>
+        (asset.variants || []).filter(variant => variant.kind === 'with_text')
+          .map(variant => variant.locale)))].filter(Boolean).sort(),
+      verifiedThumbnail: assets.some(asset =>
+        (asset.variants || []).some(variant => variant.kind === 'thumbnail')),
+      pendingCandidateSidecars: candidates,
+      masterStatus: master ? 'production_ready' : pendingStatus,
+      fallback: master ? 'clean_master_with_live_localized_label' : 'live_localized_label_only'
+    };
+  });
+  const priority = {verify_and_consolidate_derivatives:0,
+    create_and_verify_derivatives:1, finish_pending_master_qa:2, create_clean_type_thumb:3};
+  const agents = Array.from({length:5}, (_,i) => {
+    const agentId = 'visual-agent-' + (i + 1);
+    const assigned = tasks.filter(task => task.agentId === agentId);
+    const remaining = assigned.filter(task => task.action !== 'complete');
+    const workOrder = remaining.map((task,index) => ({task,index}))
+      .sort((a,b) => priority[a.task.action] - priority[b.task.action] || a.index - b.index)
+      .map(({task}) => task);
+    return {
+      agentId, total:assigned.length,
+      productionReadyMasters:assigned.filter(t => t.state === 'clean_ready_partial'
+        || t.state === 'complete_bundle').length,
+      completeBundles:assigned.filter(t => t.state === 'complete_bundle').length,
+      pendingMasterCount:assigned.filter(t => t.state === 'master_qa_pending').length,
+      missingMasters:assigned.filter(t => t.state === 'missing_master').length,
+      nextWork:workOrder[0] || null, workOrder, tasks:assigned
+    };
+  });
+  return {
+    total: tasks.length,
+    productionReadyMasters:tasks.filter(t => t.state === 'clean_ready_partial'
+      || t.state === 'complete_bundle').length,
+    completeThreeFileBundles:tasks.filter(t => t.state === 'complete_bundle').length,
+    pendingDerivativeBackfills:tasks.filter(t => t.action === 'verify_and_consolidate_derivatives'
+      || t.action === 'create_and_verify_derivatives').length,
+    missingMasters:tasks.filter(t => t.state === 'missing_master').length,
+    pendingMasterQa:tasks.filter(t => t.state === 'master_qa_pending').length,
+    agents, tasks
+  };
+}
 
 export function summarizeV7VisualCoverage(audit, queueRows, recordRows = []) {
   if (!audit || !Array.isArray(audit.manifest?.assets) || !Array.isArray(queueRows))
@@ -116,6 +202,7 @@ export function summarizeV7VisualCoverage(audit, queueRows, recordRows = []) {
       candidateDerivativeSidecars:recordRows.filter(x => x.derivativeFor).length
     },
     agents,
+    needs:summarizeV7NeedVisualCoverage(audit, recordRows),
     warnings:audit.warnings || [],
     errors:audit.errors || []
   };
@@ -132,7 +219,7 @@ export async function buildV7VisualCoverageReport(root=DEFAULT_ROOT) {
     .filter(name=>name.endsWith('.json')).sort().map(async name=>{
       const item=JSON.parse(await readFile(join(recordDir,name),'utf8'));
       return {
-        name, status:item.status, contentId:item.contentId,
+        name, status:item.status, contentType:item.contentType, contentId:item.contentId,
         queueConcept:item.queueConcept,
         derivativeFor:name.endsWith('-derivatives.json')
           ? item.sourceMasterAssetId || item.parentAssetId
