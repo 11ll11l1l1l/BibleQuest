@@ -66,8 +66,8 @@ async function assertTextContrast(locator, label, minimum = 4.5) {
   return sample;
 }
 
-// Real signed-out built routes: no injected service, fabricated publication or
-// authenticated-content claim. Reviewed live content remains separate evidence.
+// Real signed-out built routes consume the exact-SHA reviewed public catalog.
+// Protected review/admin data remains outside the public Library surface.
 try {
   for (const locale of ['en', 'tl', 'ceb']) {
     for (const width of [320, 390, 430]) {
@@ -104,6 +104,9 @@ try {
       assert.equal(await page.locator('#bq-library-type').inputValue(), 'book');
       await query.focus();
       await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('bq-primary-button')), true,
+        `${locale}/${width}: search action follows the query in keyboard order`);
+      await page.keyboard.press('Tab');
       assert.equal(await page.evaluate(() => document.activeElement.id), 'bq-library-type');
       const focus = await page.evaluate(() => {
         const style = getComputedStyle(document.activeElement);
@@ -116,7 +119,7 @@ try {
         `${locale}/${width}: contrast evidence runs with requested accessibility preferences`
       );
       await assertTextContrast(page.locator('[data-library-page] h1'), `${locale}/${width}: Library heading contrast`);
-      await assertTextContrast(page.locator('[data-library-page] > p').nth(1), `${locale}/${width}: Library intro contrast`);
+      await assertTextContrast(page.locator('[data-library-page] .bq-library__header > p:last-child'), `${locale}/${width}: Library intro contrast`);
       await assertTextContrast(page.locator('label[for="bq-library-query"]'), `${locale}/${width}: search label contrast`);
       await assertTextContrast(page.locator('#bq-library-query'), `${locale}/${width}: search control text contrast`);
       await assertTextContrast(page.locator('[data-library-page] .bq-primary-button'), `${locale}/${width}: primary control text contrast`);
@@ -143,10 +146,12 @@ try {
 
       // The real shell language control reloads the app. Submitted discovery
       // must survive that reload, while an unsent search draft must not replace it.
-      await query.fill('abiding');
+      await query.fill('concern');
       await page.locator('#bq-library-type').selectOption('devotional');
       await query.press('Enter');
-      await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
+      await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'ready');
+      assert.ok(await page.locator('[data-library-item]').count() > 0, `${locale}/${width}: reviewed public devotional search returns results`);
+      assert.equal(await page.locator('[data-library-retry]').isHidden(), true, `${locale}/${width}: working public catalog does not expose Retry`);
       await query.fill('unsent draft');
       for (const nextLocale of ['en', 'tl', 'ceb', locale]) {
         if (await page.locator('[data-locale-select]').inputValue() !== nextLocale) {
@@ -158,23 +163,15 @@ try {
           await page.reload({ waitUntil: 'networkidle' });
         }
         await page.locator('[data-library-page]').waitFor();
-        await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
+        await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'ready');
         assert.equal(await page.locator('[data-library-page] h1').textContent(), localization.t('v7.library.title', { locale: nextLocale }));
-        assert.equal(await query.inputValue(), 'abiding', `${nextLocale}/${width}: submitted search survives locale reload`);
+        assert.equal(await query.inputValue(), 'concern', `${nextLocale}/${width}: submitted search survives locale reload`);
         assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
-        assert.equal(await page.locator('[data-library-status]').textContent(), localization.t('v7.library.error', { locale: nextLocale }));
-        assert.equal(await page.locator('[data-library-retry]').textContent(), localization.t('v7.library.retry', { locale: nextLocale }));
+        assert.ok(await page.locator('[data-library-item]').count() > 0, `${nextLocale}/${width}: public catalog remains available after locale reload`);
       }
       const browseStatus = page.locator('[data-library-status]');
-      assert.equal(await browseStatus.getAttribute('role'), 'alert', `${locale}/${width}: browse error uses alert role`);
-      assert.equal(await browseStatus.getAttribute('aria-live'), 'assertive', `${locale}/${width}: browse error is assertive`);
-      const browseRetry = page.locator('[data-library-retry]');
-      await browseRetry.focus();
-      await page.keyboard.press('Enter');
-      await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'error');
-      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-status')), true, `${locale}/${width}: browse Retry returns focus to status`);
-      assert.equal(await query.inputValue(), 'abiding', `${locale}/${width}: browse Retry preserves query`);
-      assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional', `${locale}/${width}: browse Retry preserves type`);
+      assert.equal(await browseStatus.getAttribute('role'), 'status', `${locale}/${width}: successful public browse uses status role`);
+      assert.equal(await browseStatus.getAttribute('aria-live'), 'polite', `${locale}/${width}: successful public browse is polite`);
       await page.locator('[data-library-clear]').click();
       await page.reload({ waitUntil: 'networkidle' });
       await page.locator('[data-library-page]').waitFor();
@@ -192,30 +189,19 @@ try {
       await page.locator('[data-library-page]').waitFor();
       assert.equal(await page.evaluate(() => location.hash.split('?')[0]), '#/library');
 
-      // Warm loaded item module, then exercise genuine browser offline state.
-      // Guest/backend denial remains denial after reconnect; no data is injected.
+      // Once the reviewed public catalog has been loaded, item lookup remains
+      // deterministic offline and an unknown id stays a clear not-found state.
       await context.setOffline(true);
       const failedRoute = '#/library-item?id=33333333-3333-3333-3333-333333333333&query=prayer&contentType=book';
       await page.evaluate(hash => { location.hash = hash; }, failedRoute);
-      const retry = page.locator('[data-library-item-retry]');
-      await retry.waitFor({ state: 'visible' });
       const detail = page.locator('[data-library-detail]');
-      assert.equal(await detail.textContent(), localization.t('v7.library.offline', { locale }));
-      assert.equal(await detail.getAttribute('role'), 'alert', `${locale}/${width}: item offline error uses alert role`);
-      assert.equal(await detail.getAttribute('aria-live'), 'assertive', `${locale}/${width}: item offline error is assertive`);
+      await page.waitForFunction(() => document.querySelector('[data-library-detail]')?.getAttribute('role') === 'alert');
+      assert.equal(await detail.textContent(), localization.t('v7.library.item.unavailable', { locale }));
+      assert.equal(await detail.getAttribute('role'), 'alert', `${locale}/${width}: missing public item uses alert role`);
+      assert.equal(await detail.getAttribute('aria-live'), 'assertive', `${locale}/${width}: missing public item is assertive`);
+      assert.equal(await page.locator('[data-library-item-retry]').isHidden(), true, `${locale}/${width}: not-found public item does not expose a useless Retry`);
       assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: item entry focuses detail status`);
-      await retry.focus();
-      await page.keyboard.press('Enter');
-      await retry.waitFor({ state: 'visible' });
-      assert.equal(await page.evaluate(() => location.hash), failedRoute);
-      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: Retry returns focus to detail status`);
       await context.setOffline(false);
-      await retry.click();
-      await retry.waitFor({ state: 'visible' });
-      assert.equal(await detail.textContent(), localization.t('v7.library.item.error', { locale }));
-      assert.equal(await detail.getAttribute('role'), 'alert', `${locale}/${width}: item backend error uses alert role`);
-      assert.equal(await detail.getAttribute('aria-live'), 'assertive', `${locale}/${width}: item backend error is assertive`);
-      assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-library-detail')), true, `${locale}/${width}: reconnect Retry focus`);
       await page.locator('[data-library-back]').click();
       await page.locator('[data-library-page]').waitFor();
       await page.waitForFunction(() => {

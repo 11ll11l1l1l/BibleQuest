@@ -1,5 +1,6 @@
 import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
+import { createLibraryStaticRepository } from '../features/library/static-adapter.js';
 import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
@@ -302,10 +303,9 @@ function boot(root){
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window,sessionOwner:()=>{const sessionSnapshot=session.getState();return sessionSnapshot?.authenticated&&sessionSnapshot?.user?.id?`account:${sessionSnapshot.user.id}`:'guest'},storage:privateStorage});
-  const library=createLibraryService({repository:{
-    async listPublished(options){return (await api.library.createRepository()).listPublished(options)},
-    async getPublishedById(id){return (await api.library.createRepository()).getPublishedById(id)}
-  }});
+  // Public Library browsing is release-versioned and does not require an account.
+  // Content Review continues to use the protected Supabase repository separately.
+  const library=createLibraryService({repository:createLibraryStaticRepository()});
   const v7ContextListeners=new Set();
   const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
   const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};

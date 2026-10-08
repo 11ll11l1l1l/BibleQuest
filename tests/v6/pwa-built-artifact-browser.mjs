@@ -156,9 +156,24 @@ try {
   assert(duePush.data?.url === `${new URL(baseUrl).origin}/#/assignments`, 'due push lost the assignments deep link');
   assert(duePush.data?.type === 'assignments', 'due push lost the assignments delivery category');
 
-  // Prove the installed-app shell can reopen without network after one online
-  // load. This is browser automation for shell availability only; it does not
-  // claim physical-device install UI or offline Scripture-package acceptance.
+  // The audited public art index and approved devotional catalog must be
+  // prewarmed on a fresh install, not accidentally cached by opening Library.
+  const publicOfflineFiles = [
+    'data/v7/library-public-catalog.json',
+    'data/v7/visual-assets.json',
+  ];
+  await page.waitForFunction(async filenames => {
+    const keys = (await caches.keys()).filter(key => key.startsWith('biblequest-v3-offline-shell-'));
+    if (!keys.length) return false;
+    const cache = await caches.open(keys[keys.length - 1]);
+    for (const file of filenames) {
+      const response = await cache.match(new URL(file, location.href).href, { ignoreVary: true });
+      if (!response?.ok) return false;
+    }
+    return true;
+  }, publicOfflineFiles, { timeout: 30000 });
+  // Prove the installed-app shell *and public reviewed Library* reopen
+  // without network. Private Supabase records are never included in this cache.
   await context.setOffline(true);
   await page.goto(`${baseUrl}/#/home`, { waitUntil: 'domcontentloaded' });
   await page.locator('#app').waitFor({ state: 'attached' });
@@ -168,10 +183,30 @@ try {
   assert(startupFailure === 0, 'offline shell reopen rendered startup failure');
   assert(await page.evaluate(() => location.hash) === '#/home', 'offline shell reopen lost the Home route');
 
+  const publicOffline = await page.evaluate(async files => {
+    const details = [];
+    for (const file of files) {
+      const response = await fetch(file);
+      details.push({ file, ok: response.ok, payload: response.ok ? await response.json() : null });
+    }
+    return details;
+  }, publicOfflineFiles);
+  for (const result of publicOffline) {
+    assert(result.ok && result.payload?.schemaVersion === 1,
+      'public V7 offline artifact missing/invalid: ' + result.file);
+  }
+  assert(publicOffline[0].payload.items?.length >= 300,
+    'reviewed public Library must remain available for a fresh offline install');
+  await page.goto(`${baseUrl}/#/library`, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-library-page]').waitFor({ state: 'visible' });
+  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
+  assert((await page.locator('[data-library-item]').count()) > 0,
+    'approved public Library must be readable from installed offline PWA');
+
   assert(pageErrors.length === 0, `PWA browser errors: ${pageErrors.join(' | ')}`);
   await context.close();
 } finally {
   await browser.close();
 }
 
-console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling, and offline shell reopen verified at 390px.');
+console.log('Built PWA acceptance passed: manifest/install metadata, required icons, four shortcuts/routes, installed service-worker assigned/due push handling, and offline shell plus 300-item public Library/art registry verified at 390px.');
