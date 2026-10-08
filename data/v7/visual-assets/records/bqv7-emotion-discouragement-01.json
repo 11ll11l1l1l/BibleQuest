@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "assetId": "bqv7-emotion-discouragement-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T17:04:00+09:00",
@@ -53,11 +53,35 @@
       "/usr/share/doc/fonts-lato/copyright"
     ],
     "fontFilesDistributed": false,
-    "scriptureQuoteRights": "reference_only_no_quote"
+    "scriptureQuoteRights": "reference_only_no_quote",
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fonts": [
+      {
+        "family": "EB Garamond",
+        "styles": [
+          "Regular",
+          "Italic"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-ebgaramond-extra/copyright"
+      },
+      {
+        "family": "Lato",
+        "styles": [
+          "Regular"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-lato/copyright"
+      }
+    ]
   },
   "accessibility": {
     "decorative": false,
-    "altText": "A discouraged young man sits at his desk, head in hand, beside unfinished notes and crumpled drafts."
+    "altText": "A discouraged young man sits at his desk, head in hand, beside unfinished notes and crumpled drafts.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "CLEAN with localized live title and reference; TYPE English only"
   },
   "qc": {
     "noBakedText": true,
@@ -67,7 +91,189 @@
     "cropSafe": true,
     "matchesVisualSystem": true,
     "duplicateChecked": true,
-    "sourceMasterDerivedFromPreviousOriginalGeneration": true
+    "sourceMasterDerivedFromPreviousOriginalGeneration": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true
   },
-  "derivativeRecord": "data/v7/visual-assets/records/bqv7-emotion-discouragement-01-derivatives.json"
+  "canonicalEmotionId": "discouraged",
+  "bundleStatus": "complete_three_real_files",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "discouraged",
+    "locale": "en",
+    "exactLabel": "Discouraged",
+    "reference": "Galatians 6:9",
+    "scriptureTextIncluded": false
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 99884,
+      "sha256": "e11f7caf05375dbcceb06f90ffda7b434e8cb293c7ef46e57b72c45a5baa3d43",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.41
+      },
+      "textSafeRegion": "none",
+      "altText": "A discouraged young man sits at his desk, head in hand, beside unfinished notes and crumpled drafts.",
+      "decorative": false,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "noBakedText": true,
+        "sourceCleanPanel": true
+      },
+      "gitBlobSha": "5301b0bae46b1c3cda207cb2c779a94b5221163d",
+      "qa": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "noBakedText": true,
+        "sourceCleanPanel": true,
+        "imageDecoded": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 125022,
+      "sha256": "120f8a62f6c0b763bd2e8d92d938a997411fb7ec06cb6c063d5c26b59a635b98",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.52
+      },
+      "textSafeRegion": "top",
+      "altText": "A discouraged young man sits at an unfinished desk. Embedded English title: Discouraged. Reference: Galatians 6:9.",
+      "decorative": true,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": false,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "exactWordingVerifiedAgainstTaxonomy": true,
+        "textComposedProgrammatically": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "smallReferenceRequiresLiveAccessibleUI": true
+      },
+      "crop": {
+        "sourceRect": {
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1024
+        },
+        "composite": {
+          "sourceImageOffsetY": 256,
+          "titleBandHeight": 256
+        }
+      },
+      "embeddedWording": {
+        "label": "Discouraged",
+        "scriptureReference": "Galatians 6:9",
+        "scriptureTextIncluded": false
+      },
+      "fontLicense": "SIL OFL-1.1",
+      "gitBlobSha": "b868bbdddf6aa6041b5648a42d84898d37a7fada",
+      "qa": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": false,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "exactWordingVerifiedAgainstTaxonomy": true,
+        "textComposedProgrammatically": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "smallReferenceRequiresLiveAccessibleUI": true,
+        "imageDecoded": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 29704,
+      "sha256": "1d5bfccdc0b655b04db426bb0460f611fdb179dd8624bd74e401cd00fafeca8d",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.41
+      },
+      "textSafeRegion": "none",
+      "altText": "A discouraged young man rests his head on his hand beside unfinished work.",
+      "decorative": false,
+      "qc": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "focalSafe": true,
+        "noBakedText": true
+      },
+      "crop": {
+        "sourceRect": {
+          "x": 100,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "gitBlobSha": "3a584f01c7ce45c0b411bd52a8607772d1c894be",
+      "qa": {
+        "formatDecoded": true,
+        "dimensionsMeasured": true,
+        "textFree": true,
+        "cropInspected": true,
+        "phoneSizeInspected": true,
+        "anatomyInspected": true,
+        "duplicateSceneReviewed": true,
+        "focalSafe": true,
+        "noBakedText": true,
+        "imageDecoded": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      }
+    }
+  ]
 }
