@@ -44,9 +44,13 @@
   scroll-snap-align: center;
   scroll-snap-stop: always;
   opacity: .84;
+  transform: translateZ(0) scale(.975);
+  transition: opacity var(--bq-v7-motion-standard, 220ms) var(--bq-v7-ease, ease-out),
+    transform var(--bq-v7-motion-card, 280ms) var(--bq-v7-spring-ease, ease-out);
 }
 .bq-v7-visual-deck__card[aria-current="true"] {
   opacity: 1;
+  transform: translateZ(0) scale(1);
   border-color: var(--green, #16735d);
 }
 .bq-v7-visual-deck__card[aria-pressed="true"] .bq-v7-visual-deck__label::after {
@@ -120,7 +124,14 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .bq-v7-visual-deck__track { scroll-behavior: auto !important; }
-  .bq-v7-visual-deck__card { transition: none !important; }
+  .bq-v7-visual-deck__card { transition: none !important; transform: none !important; }
+}
+:root[data-bq-effective-motion="reduce"] .bq-v7-visual-deck__track {
+  scroll-behavior: auto !important;
+}
+:root[data-bq-effective-motion="reduce"] .bq-v7-visual-deck__card {
+  transition: none !important;
+  transform: none !important;
 }
 
 /* Reusable single-column content card; the route/page integration remains separate. */
