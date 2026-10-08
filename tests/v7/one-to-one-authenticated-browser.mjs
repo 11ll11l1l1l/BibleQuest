@@ -194,6 +194,33 @@ try {
   stage = 'mentor-congregation';
   await chooseCongregation(mentorPage);
 
+  stage = 'mentor-one-to-one-visual-entry';
+  await mentorPage.goto(`${baseUrl}/#/one-to-one`, { waitUntil: 'networkidle' });
+  const hero = mentorPage.locator('[data-one-to-one-hero]');
+  await hero.waitFor({ state: 'visible' });
+  assert.equal((await hero.locator('h1').innerText()).trim(), 'ONE 2 ONE');
+  assert.match(await hero.getAttribute('data-cover-state'), /^(fallback|ready)$/);
+  await mentorPage.locator('.bq-one2one-home__primary [data-pair-invite]').waitFor({ state: 'visible' });
+  for (const width of [320, 390, 430]) {
+    await mentorPage.setViewportSize({ width, height: 900 });
+    const metrics = await hero.evaluate(element => {
+      const bounds = element.getBoundingClientRect();
+      const cta = document.querySelector('.bq-one2one-home__primary [data-pair-invite]')?.getBoundingClientRect();
+      const image = element.querySelector('img.bq-one2one-home__cover-image');
+      return { viewport: innerWidth, left: bounds.left, right: bounds.right,
+        documentWidth: document.documentElement.scrollWidth, buttonHeight: cta?.height,
+        imageDecorative: !image || (image.alt === '' && image.getAttribute('aria-hidden') === 'true'),
+      };
+    });
+    assert.equal(metrics.viewport, width);
+    assert.ok(metrics.left >= -1 && metrics.right <= width + 1, `ONE 2 ONE hero clips at ${width}px`);
+    assert.ok(metrics.documentWidth <= width + 1, `ONE 2 ONE home overflows at ${width}px`);
+    assert.ok(metrics.buttonHeight >= 44, `ONE 2 ONE primary invitation is not touch-safe at ${width}px`);
+    assert.equal(metrics.imageDecorative, true);
+  }
+  await mentorPage.setViewportSize({ width: 390, height: 900 });
+  checks.push('authenticated-image-first-one-to-one-hero-and-audited-static-fallback-at-mobile-widths');
+
   stage = 'mentor-invite';
   await mentorPage.goto(`${baseUrl}/#/one-to-one-pair`, { waitUntil: 'networkidle' });
   const invite = mentorPage.locator('[data-pair-invite]');
@@ -470,6 +497,59 @@ try {
   }
   await menteePage.setViewportSize({ width: 390, height: 900 });
   checks.push('authenticated-320-390-430-reading-editor-and-primary-action-layout');
+
+  stage = 'mentee-motion-and-focus-contract';
+  // Exercise the actual built-app styles, not merely a source regex. The
+  // semantic step and saved responses must not depend on animation completion.
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
+  const normalMotion = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    const header = heading.closest('.bq-lesson-header');
+    const root = document.documentElement;
+    const before = root.getAttribute('data-bq-effective-motion');
+    const beforeOff = root.getAttribute('data-bq-motion');
+    root.removeAttribute('data-bq-effective-motion');
+    root.removeAttribute('data-bq-motion');
+    header.setAttribute('data-step-arriving', '');
+    const name = getComputedStyle(heading).animationName;
+    const passage = getComputedStyle(document.querySelector('.bq-lesson-copy')).animationName;
+    const response = getComputedStyle(document.querySelector('[data-lesson-response]')).animationName;
+    header.removeAttribute('data-step-arriving');
+    if (before !== null) root.setAttribute('data-bq-effective-motion', before);
+    if (beforeOff !== null) root.setAttribute('data-bq-motion', beforeOff);
+    return { name, passage, response };
+  });
+  assert.match(normalMotion.name, /bq-one2one-step-arrive/, 'Normal mode should animate only the step heading.');
+  assert.equal(normalMotion.passage, 'none');
+  assert.equal(normalMotion.response, 'none');
+  await menteePage.emulateMedia({ reducedMotion: 'reduce' });
+  const osReduced = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    heading.closest('.bq-lesson-header').setAttribute('data-step-arriving', '');
+    return getComputedStyle(heading).animationName;
+  });
+  assert.equal(osReduced, 'none', 'OS-level reduced motion must stop step animation.');
+  const appReduced = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    const root = document.documentElement;
+    const original = root.getAttribute('data-bq-effective-motion');
+    root.setAttribute('data-bq-effective-motion', 'reduce');
+    const reduced = getComputedStyle(heading).animationName;
+    if (original === null) root.removeAttribute('data-bq-effective-motion');
+    else root.setAttribute('data-bq-effective-motion', original);
+    heading.closest('.bq-lesson-header').removeAttribute('data-step-arriving');
+    return reduced;
+  });
+  assert.equal(appReduced, 'none', 'App-level reduced motion must stop step animation.');
+  await menteePage.locator('[data-lesson-previous]').click();
+  await menteePage.locator('[data-lesson-heading][data-step-type="reflect"]').waitFor({ state: 'visible' });
+  await menteePage.locator('[data-lesson-next]').click();
+  await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
+  const focus = await menteePage.evaluate(() => ({
+    type: document.querySelector('[data-lesson-heading]')?.getAttribute('data-step-type'),
+    active: document.activeElement?.hasAttribute('data-lesson-heading'),
+  }));
+  assert.equal(focus.type, 'apply');
+  assert.equal(focus.active, true, 'Keyboard focus follows a completed step transition.');
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
+  checks.push('authenticated-normal-os-reduced-and-app-reduced-step-motion-with-stable-focus-and-live-text');
 
   stage = 'mentee-complete-seven-step-journey';
   for (const [type, next] of [['apply', true], ['pray', true], ['action', false]]) {
