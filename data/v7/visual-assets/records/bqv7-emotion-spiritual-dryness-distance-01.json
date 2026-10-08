@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-spiritual-dryness-distance-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-08T09:16:29+09:00",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "spiritual_dryness_distance",
+  "concept": "Quiet spiritual distance — a person in a familiar home who feels inwardly disconnected",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 53468,
+  "sha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+  "focalPoint": {
+    "x": 0.44,
+    "y": 0.36
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "2e9ebec9-7a84-4d59-805e-72ea624afd54",
+    "prompt": "A cinematic, intimate interior captures a young East Asian man in his twenties or thirties sitting at a rustic wooden table, quietly gazing through a rain-speckled window with his cheek resting in his hand. Cool, overcast daylight illuminates his dark knit sweater while warm kitchen light, leafy plants, a neutral mug, and a closed notebook add cozy contrast to the blurred city view and reflective, wistful mood.",
+    "notes": "Original generated 1254x1254 PNG resized to 1024x1024 and optimized to WebP quality 80. No third-party source art."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated BibleQuest visual; no third-party source image used."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A contemplative man sits quietly at a kitchen table, looking out through a rain-speckled window toward a cloudy city."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "notes": "Visually reviewed 1024px source and 128px thumbnail; no fake text, watermarks, anatomy errors or cropped focal features. Compared against existing hurt_betrayal sunset image: distinct interior setting and composition. Emotional concept is contemplative disconnection; live UI label supplies precise meaning."
+  }
+}
