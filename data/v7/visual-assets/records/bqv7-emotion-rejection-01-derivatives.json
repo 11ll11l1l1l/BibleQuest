@@ -201,6 +201,7 @@
   "qaStatus": {
     "localStaticChecks": "passed",
     "browserRenderedVisualQA": "pending",
-    "reason": "CLEAN image inspected; THUMB SVG crop geometry checked but actual browser-rendered portrait not yet inspected. TYPE font rendering remains pending."
+    "reason": "CLEAN image inspected; THUMB SVG crop geometry checked but actual browser-rendered portrait not yet inspected. TYPE font rendering remains pending.",
+    "localReferenceGeometry": "nominal 46/1024*320=14.375px; full 320px browser render still pending"
   }
 }
