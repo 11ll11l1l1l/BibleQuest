@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-spiritual-dryness-distance-01-derivatives",
+  "parentAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-08T15:10:57+09:00",
+  "status": "three_files_present_render_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentId": "spiritual_dryness_distance",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 53468,
+      "sha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+      "altText": "A contemplative man sits quietly at a kitchen table, looking out through a rain-speckled window toward a cloudy city.",
+      "qa": {
+        "preserved": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 72957,
+      "sha256": "3637b38ed7ee4e5b948036b907c9dfde08b27f170de063145ea4443f36e98baf",
+      "locale": "en",
+      "exactWording": "Spiritually dry / distant",
+      "referenceOnly": "Psalm 42:1-2",
+      "crop": {
+        "source": {
+          "x": 102,
+          "y": 0,
+          "width": 819,
+          "height": 1024
+        },
+        "output": {
+          "width": 1024,
+          "height": 1280
+        },
+        "mode": "cover"
+      },
+      "focalPoint": {
+        "x": 0.44,
+        "y": 0.36
+      },
+      "altText": "A contemplative man by a rainy window. Embedded words: Spiritually dry / distant; Psalm 42:1-2.",
+      "qa": {
+        "textMatchesTaxonomy": true,
+        "noVerseText": true,
+        "embeddedSource": true,
+        "browserRenderPending": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
+      "format": "svg",
+      "width": 400,
+      "height": 500,
+      "fileBytes": 71566,
+      "sha256": "0f2505e071a19d20896c9b8007afda29e4f7b4f61475b6751dfd5fc075b6c663",
+      "crop": {
+        "source": {
+          "x": 85,
+          "y": 0,
+          "width": 819,
+          "height": 1024
+        },
+        "output": {
+          "width": 400,
+          "height": 500
+        },
+        "mode": "focalAwarePortrait"
+      },
+      "focalPoint": {
+        "x": 0.44,
+        "y": 0.36
+      },
+      "altText": "A contemplative man sits quietly at a kitchen table, looking out through a rain-speckled window toward a cloudy city.",
+      "qa": {
+        "noText": true,
+        "embeddedSource": true,
+        "browserRenderPending": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "spiritually_dry",
+    "locale": "en",
+    "exactLabel": "Spiritually dry / distant",
+    "reference": "Psalm 42:1-2",
+    "scriptureTextIncluded": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "sourceMasterRecord": "data/v7/visual-assets/records/bqv7-emotion-spiritual-dryness-distance-01.json",
+    "font": "No font files distributed or embedded. Uses browser/system serif and sans-serif fonts. Platform font rendering requires final QA.",
+    "scripture": "Reference only, verified against taxonomy; no translation text embedded."
+  },
+  "accessibility": {
+    "fallback": "CLEAN plus localized semantic live UI for TL/CEB/ILO or missing TYPE",
+    "essentialTextRemainsLive": true
+  },
+  "qa": {
+    "sourceMasterPreserved": true,
+    "sourceSceneReviewed": true,
+    "reviewedEnglishWording": true,
+    "exactMetadataMeasured": true,
+    "browserRenderedTypeQA": "pending",
+    "notes": "Two self-contained SVG derivatives embed the real WebP master; visual browser rendering and small-screen inspection still required."
+  }
+}
