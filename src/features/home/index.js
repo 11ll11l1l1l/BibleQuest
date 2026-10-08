@@ -1,5 +1,6 @@
 import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
+import { findV7Visual, loadV7VisualRegistry } from '../../ui/visual-assets.js';
 import { iconSvg } from '../../ui/icons.js';
 import { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summary.js';
 import { homeThisWeekIntroHtml, weeklyJourneyHtml } from './today-this-week.js';
@@ -121,10 +122,19 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
   return {
     title: tx('nav.home'),
     html: `
-      <section class="bq-hero"><div class="bq-home-welcome">
-        <div><p>${escapeHtml(contextualDate)}</p><h1>BibleQuest</h1></div>
-        <span class="bq-home-welcome__mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
-      </div><img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"></section>
+      <section class="bq-hero bq-v7-home-feature" data-home-feature>
+        <div class="bq-home-welcome">
+          <div class="bq-v7-home-feature__copy">
+            <p class="bq-v7-home-feature__date">${escapeHtml(contextualDate)}</p>
+            <h1>BibleQuest</h1>
+            <button type="button" class="bq-v7-home-feature__action bq-primary-button" data-home-hero-reader aria-label="${escapeHtml(tx('nav.bible'))}">
+              ${iconSvg('bible', { size: 20 })}<span>${escapeHtml(tx('nav.bible'))}</span><span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <span class="bq-home-welcome__mark" aria-hidden="true">${iconSvg('bible', { size: 24 })}</span>
+        </div>
+        <img data-home-cover data-art-source="fallback" src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">
+      </section>
       ${quest ? `<section class="bq-hero bq-v6-hero bq-home-journey" data-home-bible-quest>
         <p class="bq-eyebrow">CONTINUE YOUR JOURNEY</p>
         <h2>${escapeHtml(quest.complete ? homeTx('home.quest.complete') : `${quest.next?.book || ''} ${quest.next?.chapter || ''}`)} <small>${escapeHtml(homeTx('home.quest.title'))}</small></h2>
@@ -210,6 +220,8 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       </div>`,
     mount(root) {
       const dailyButton = root.querySelector('[data-open-daily]');
+      const heroReaderButton = root.querySelector('[data-home-hero-reader]');
+      const heroCover = root.querySelector('[data-home-cover]');
       const bibleQuestButton = root.querySelector('[data-open-bible-quest]');
       const bibleQuestContinueButton = root.querySelector('[data-open-bible-quest-continue]');
       const tutorialButton = root.querySelector('[data-open-tutorial]');
@@ -311,6 +323,25 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           } catch { /* retain the current safe unread count */ }
         }
       };
+      // Approved imagery is an enhancement: retain the local static fallback
+      // when offline, when no image passed Lane A/B audit, or after unmount.
+      if (heroCover && typeof Image === 'function') {
+        void loadV7VisualRegistry().then(registry => {
+          const art = findV7Visual(registry, ['emotion:hopeful', 'emotion:gratitude', 'emotion:joy'], locale);
+          if (!art || disposed) return;
+          const image = new Image();
+          image.onload = () => {
+            if (disposed || !root.isConnected) return;
+            heroCover.src = art.src;
+            const x = Math.max(0, Math.min(1, Number(art.focalPoint?.x) || 0.5));
+            const y = Math.max(0, Math.min(1, Number(art.focalPoint?.y) || 0.5));
+            heroCover.style.objectPosition = `${x * 100}% ${y * 100}%`;
+            heroCover.dataset.artSource = 'approved';
+          };
+          image.src = art.src;
+        }).catch(() => { /* retain the original in-app fallback */ });
+      }
+      heroReaderButton?.addEventListener('click', openContinueReading);
       dailyButton?.addEventListener('click', openDaily);
       bibleQuestButton?.addEventListener('click', openBibleQuest);
       bibleQuestContinueButton?.addEventListener('click', continueBibleQuest);
@@ -346,6 +377,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       }
       return () => {
         disposed = true;
+        heroReaderButton?.removeEventListener('click', openContinueReading);
         dailyButton?.removeEventListener('click', openDaily);
         bibleQuestButton?.removeEventListener('click', openBibleQuest);
         bibleQuestContinueButton?.removeEventListener('click', continueBibleQuest);
