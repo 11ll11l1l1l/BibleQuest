@@ -16,7 +16,7 @@ const CONTENT_TYPES = new Set(['emotion', 'need', 'devotional', 'book', 'past_te
 // Keep distinct artwork ownership deterministic without a second mutable queue file.
 // This only allocates Needs AFTER the 30-feeling P0 queue; it does not publish artwork.
 export const NEED_VISUAL_ASSIGNMENTS = Object.freeze(Object.fromEntries(
-  LIBRARY_NEEDS.map((item, i) => [item.id, 'visual-agent-' + (i % 5 + 1)]
+  LIBRARY_NEEDS.map((item, i) => [item.id, 'visual-agent-' + (i % 5 + 1)])
 ));
 // Immutable bridge between the image-agent queues and the app's published 30-feeling taxonomy.
 // Validate every queue assignment against this bridge before publishing any artwork.
