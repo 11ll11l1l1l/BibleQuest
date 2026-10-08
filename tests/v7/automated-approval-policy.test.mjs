@@ -240,3 +240,35 @@ test('an approved decision cannot publish an attached visual asset whose rights 
   const changed = item('book', { visualAssets: [reviewedVisualAsset({ rights: { status: 'unknown', allowedUses: [] } })] });
   assert.equal(canAutoPublishV7LibraryDecision(approval, changed), false);
 });
+
+test('auto-publish fails closed when a previously approved image manifest is removed', () => {
+  const original = item('book', { visualAssets: [reviewedVisualAsset()] });
+  const decision = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass(),
+  });
+  assert.equal(decision.outcome, 'auto_approved');
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, { ...original, visualAssets: undefined }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, { ...original, visualAssets: [] }), false);
+});
+
+test('auto-publish cannot reuse current-revision approval after rights change', () => {
+  const original = item('book');
+  const decision = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass(),
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'unknown', allowedUses: ['display'] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'verified', allowedUses: ['link'] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'verified', allowedUses: [] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision({ ...decision, rightsEvidenceSnapshot: undefined }, original), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { ...original.rights, attribution: 'changed without review' },
+  }), false);
+});

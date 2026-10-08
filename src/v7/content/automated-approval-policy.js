@@ -124,6 +124,22 @@ function normalizeSecondPass(secondPass, revision) {
   });
 }
 
+// Bind the complete approved rights declaration to the exact source revision.
+// Missing snapshots on legacy decisions force a fresh automated evaluation.
+function rightsEvidenceSnapshot(item) {
+  const rights = item?.rights;
+  if (!rights || typeof rights !== 'object' || Array.isArray(rights)) return null;
+  const stable = value => {
+    if (value === undefined) return 'null';
+    if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
+    if (value && typeof value === 'object')
+      return '{' + Object.keys(value).sort()
+        .map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}';
+    return JSON.stringify(value);
+  };
+  return stable(rights);
+}
+
 function rightsHardFailure(item) {
   if (item?.rights?.status !== 'verified') return 'rights_not_verified';
   if (!Array.isArray(item?.rights?.allowedUses) || item.rights.allowedUses.length === 0) return 'no_permitted_use';
@@ -208,6 +224,7 @@ export function evaluateV7LibraryApproval({
     policyVersion: clean(policyVersion) || V7_LIBRARY_APPROVAL_POLICY_VERSION,
     decidedAt: new Date(decidedAt).toISOString(),
     rightsStatusSnapshot: clean(item?.rights?.status),
+    rightsEvidenceSnapshot: rightsEvidenceSnapshot(item),
     visualAssetEvidenceSnapshot: visualAssetEvidenceSnapshot(item),
     visualAssetEvidence: Object.freeze(visualBoundary.assetEvidence.map(row => Object.freeze(row))),
     criteria: normalized,
@@ -229,9 +246,14 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.itemId === item?.id
     && decision.revision === item?.revision
     && decision.rightsStatusSnapshot === 'verified'
+    && item?.rights?.status === 'verified'
+    && Array.isArray(item?.rights?.allowedUses)
+    && item.rights.allowedUses.length > 0
+    && decision.rightsEvidenceSnapshot !== null
+    && decision.rightsEvidenceSnapshot === rightsEvidenceSnapshot(item)
     && evaluateV7VisualAssetGates(item).rejectionReasons.length === 0
     && evaluateV7VisualAssetGates(item).repairReasons.length === 0
-    && (visualAssetEvidenceSnapshot(item) === null || decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item))
+    && decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item)
     && decision.auditable === true
     && Array.isArray(decision.criteria)
     && decision.criteria.length === criteriaFor(item?.type).length
