@@ -33,13 +33,21 @@ export function normalizeV7DeckLocale(value) {
 // user-supplied per-card URL or an unverified asset-record directory.
 export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = false } = {}) {
   const fallback = Object.freeze({ src: '', alt: '', fallback: kind || 'library', type: 'fallback', assetId: '' });
-  if (registry?.schemaVersion !== 1 || !Array.isArray(registry.assets)
-    || !registry.byContent || typeof registry.byContent !== 'object') return fallback;
+  // Lane D's production loader returns validated Maps, while the Lane A
+  // audit and fixture tools provide the equivalent versioned JSON schema.
+  // Accept only those two shapes; never resolve arbitrary item-provided URLs.
+  const mapped = registry?.assets instanceof Map && registry?.byContent instanceof Map;
+  const raw = registry?.schemaVersion === 1 && Array.isArray(registry.assets)
+    && registry.byContent && typeof registry.byContent === 'object';
+  if (!mapped && !raw) return fallback;
   const keys = kind === 'emotion'
     ? [...new Set(['emotion:' + clean(V7_EMOTION_VISUAL_IDS[contentId] || contentId), 'emotion:' + clean(contentId)])]
     : [kind + ':' + clean(contentId)];
-  const ids = keys.flatMap(key => Array.isArray(registry.byContent[key]) ? registry.byContent[key] : []);
-  const lookup = new Map(registry.assets.map(row => [row?.assetId, row]));
+  const ids = keys.flatMap(key => {
+    const row = mapped ? registry.byContent.get(key) : registry.byContent[key];
+    return Array.isArray(row) ? row : [];
+  });
+  const lookup = mapped ? registry.assets : new Map(registry.assets.map(row => [row?.assetId, row]));
   for (const id of ids) {
     const asset = lookup.get(id);
     if (!asset || !keys.includes(asset.contentType + ':' + asset.contentId)
