@@ -50,12 +50,13 @@ function responseEditor(state, step, t) {
   const saved = state.responses?.[step.id];
   const shared = saved?.visibility === 'shared';
   const hasResponse = Boolean(saved?.id || String(value).trim());
+  const sharingBusy = state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status);
   const sharing = shared
-    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" class="bq-secondary-button" data-lesson-unshare="${escape(step.id)}">${t('unshare')}</button>`
-    : `<p data-lesson-share-state="private">${t('private')}</p><label class="bq-lesson-share-consent"><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"> ${t('shareConfirm')}</label><button type="button" class="bq-secondary-button" data-lesson-share="${escape(step.id)}"${hasResponse ? '' : ' disabled'}>${t('share')}</button>`;
+    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" class="bq-secondary-button" data-lesson-unshare="${escape(step.id)}"${sharingBusy ? ' disabled' : ''}>${t('unshare')}</button>`
+    : `<p data-lesson-share-state="private">${t('private')}</p><label class="bq-lesson-share-consent"><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"${sharingBusy ? ' disabled' : ''}> ${t('shareConfirm')}</label><button type="button" class="bq-secondary-button" data-lesson-share="${escape(step.id)}"${hasResponse && !sharingBusy ? '' : ' disabled'}>${t('share')}</button>`;
   return `<div class="bq-lesson-response-editor"><label for="lesson-response-${escape(step.id)}">${t('response')}</label>
     <textarea id="lesson-response-${escape(step.id)}" data-lesson-response="${escape(step.id)}" rows="5">${escape(value)}</textarea>
-    <p class="bq-help">${t('responseHint')}</p><div class="bq-lesson-sharing">${sharing}</div></div>`;
+    <p class="bq-help">${t('responseHint')}</p><div class="bq-lesson-sharing"${sharingBusy ? ' aria-busy="true"' : ''}>${sharing}</div></div>`;
 }
 function mentorSharedResponse(state, step, t) {
   if (state.writable || step.type === 'scripture') return '';
