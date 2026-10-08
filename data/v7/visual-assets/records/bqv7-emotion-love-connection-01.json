@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-love-connection-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-09T02:11:22+09:00",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "connected",
+  "canonicalEmotionId": "connected",
+  "queueConcept": "love_connection",
+  "concept": "Intergenerational companionship: two people repair a ceramic bowl together in a warm studio",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 145562,
+  "sha256": "44aa89412c29931296f101ac4e4bede31d9081eee7ced2e1e7a2a872157bc824",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.46
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 145562,
+      "sha256": "44aa89412c29931296f101ac4e4bede31d9081eee7ced2e1e7a2a872157bc824",
+      "altText": "An older man and younger woman share a warm smile while carefully repairing a ceramic bowl together in a pottery studio.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.46
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "builtAppBrowserQA": "pending",
+        "anatomyAcceptable": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 155126,
+      "sha256": "9e54ce0760b3c2763550bee57578e7b27a89676957cea45e1f17ba5750708397",
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Loving / connected",
+        "scriptureReference": "John 13:34-35",
+        "scriptureTextIncluded": false
+      },
+      "fontFamilies": [
+        "Noto Serif Display SemiBold",
+        "EB Garamond 12 Italic",
+        "Noto Serif Display Regular"
+      ],
+      "fontLicense": "SIL OFL 1.1",
+      "fontDistribution": "glyphs rasterized in WebP, no font files redistributed",
+      "altText": "Two people repair a bowl together. Embedded English title: Loving / connected. Reference: John 13:34-35.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.58
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "builtAppBrowserQA": "pending",
+        "designRevision": "Agent5 run3 revised typography spacing and reference hierarchy, visual review at 320px"
+      },
+      "cropIntent": "1024x960 source artwork beneath 320px original editorial heading; exact serif/italic English label and reference baked into 1024x1280 WebP"
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-love-connection-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 35404,
+      "sha256": "c0a262169aadfbfc4a8c5ce494154fcd0dab2b2f358debc5e83a1f94587eb182",
+      "altText": "An older man and a young woman smile while jointly repairing a bowl.",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.48
+      },
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 102,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "builtAppBrowserQA": "pending",
+        "sourceCleanShaVerified": true,
+        "focalPreserved": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "connected",
+    "locale": "en",
+    "exactLabel": "Loving / connected",
+    "reference": "John 13:34-35",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "311e5b8d-d3a7-45d4-a6ca-7c7c8f28b029",
+    "prompt": null,
+    "notes": "Original generated clean photographic scene; TYPE revised this run with Noto Serif Display and EB Garamond raster lettering; THUMB focal crop from exact CLEAN. No third-party artwork."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "image": "Original generated visual, no supplied third-party source",
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseEvidence": [
+      "Debian fonts-noto-core copyright",
+      "Debian fonts-ebgaramond copyright"
+    ],
+    "fontDistribution": "no font files redistributed",
+    "scriptureReference": "John 13:34-35",
+    "scriptureText": null
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An older man and younger woman smile together while repairing a ceramic bowl in a pottery studio.",
+    "fallback": "CLEAN plus live localized label for tl, ceb, ilo and missing TYPE locales",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "allThreeWebPDecodedAndSHA256Verified": true,
+    "independentBinaryHashes": true,
+    "visualQA": "CLEAN and THUMB reviewed; new TYPE v3 visually inspected at 320px and 1024px; 12 isolated browser checks rerun; built-app QA not run",
+    "builtAppBrowserQA": "source_byte_browser_pass; this PR exact_head release_http_required",
+    "repositoryAudit": "not_run_no_local_repository_checkout",
+    "productionReady": false,
+    "sceneDiversity": "Two-person pottery repair; different from gratitude bouquet hug, joy overlook and excitement letter.",
+    "thumbReexportedFromExactCleanMaster": true,
+    "isolatedBrowserQA": "12/12 rerun after TYPE v3 replacement; fixture only, not built app",
+    "typeRevision": "v3 header spacing; generated and visually reviewed 2026-10-09 04:11 JST",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "publicationEvidence": {
+      "priorTechnicalBrowser": "PR #1414 exact SHA 5fbd222378081ff003903f648cf0269c304dd736; source-byte interception verified all 3 variants at 320/390/430; 12 draft bundles passed 0 rejected",
+      "independentVisualInspection": "2026-10-09: CLEAN, TYPE, THUMB fetched as actual original GitHub blobs; verified visible title/reference, subject, crop, and legibility of three variants",
+      "releaseHttpVerification": "REQUIRED: exact-head PR V7 Visual Asset Built-Browser QA; do not treat metadata claim as independently verified"
+    }
+  },
+  "updatedAt": "2026-10-09T04:11:25+09:00"
+}
