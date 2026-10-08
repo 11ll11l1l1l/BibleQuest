@@ -141,7 +141,9 @@ export function evaluateV7VisualAssetGates(item) {
           rejectionReasons.push(`${keyPrefix}_font_rights_unverified`);
       }
       variants.push({ kind: variant.kind, ...(variant.kind === 'with_text' ? { locale } : {}),
-        sha256: exact(variant.sha256), integrityReady: validMeasurements(variant) && integrity.sha256Verified === true });
+        sha256: exact(variant.sha256), integrityReady: validMeasurements(variant) && integrity.sha256Verified === true
+          && integrity.dimensionsVerified === true && integrity.verifiedSha256 === variant.sha256
+          && refs(integrity.evidenceRefs) });
     }
     assetEvidence.push({ assetId: id || prefix, masterSha256: exact(asset.sha256), variants });
   }
