@@ -1,0 +1,171 @@
+/* V7 Lane C: feature-scoped ONE 2 ONE reading and response presentation. */
+.bq-one2one-lesson {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(16px, 4.5vw, 28px);
+  overflow-wrap: anywhere;
+}
+.bq-one2one-lesson button {
+  min-height: 44px;
+  font: inherit;
+  font-weight: 730;
+}
+.bq-one2one-lesson .bq-lesson-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+.bq-one2one-lesson .bq-lesson-toolbar button { width: auto; }
+.bq-one2one-lesson .bq-lesson-header { margin-bottom: 24px; }
+.bq-one2one-lesson .bq-lesson-overline {
+  margin: 0 0 8px;
+  color: var(--bq-text-secondary);
+  font-size: .875rem;
+  font-weight: 750;
+}
+.bq-one2one-lesson .bq-lesson-header h1 {
+  margin: 0 0 12px;
+  color: var(--bq-text);
+  font-size: var(--bq-type-page);
+  line-height: 1.24;
+}
+.bq-one2one-lesson .bq-lesson-counter {
+  margin: 0 0 8px;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bq-one2one-lesson .bq-lesson-progress {
+  display: block;
+  width: 100%;
+  height: 10px;
+  accent-color: var(--bq-brand);
+}
+.bq-one2one-lesson .bq-lesson-reading {
+  padding: clamp(16px, 4vw, 26px);
+  border: 1px solid var(--bq-border);
+  border-radius: var(--bq-radius-surface);
+  background: var(--bq-surface-muted);
+}
+.bq-one2one-lesson .bq-lesson-copy {
+  margin: 0;
+  color: var(--bq-text);
+  font-family: var(--bq-font-editorial);
+  font-size: clamp(1rem, 3.8vw, 1.2rem);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-lesson .bq-lesson-response-editor,
+.bq-one2one-lesson .bq-lesson-mentor-response {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 24px;
+}
+.bq-one2one-lesson .bq-lesson-response-editor > label {
+  font-size: 1rem;
+  font-weight: 780;
+  color: var(--bq-text);
+}
+.bq-one2one-lesson .bq-lesson-response-editor textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 144px;
+  padding: 12px;
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface);
+  color: var(--bq-text);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+.bq-one2one-lesson .bq-help,
+.bq-one2one-lesson .bq-lesson-sharing > p {
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.bq-one2one-lesson .bq-lesson-sharing {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--bq-border);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+}
+.bq-one2one-lesson .bq-lesson-share-consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--bq-text);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.bq-one2one-lesson .bq-lesson-share-consent input {
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  flex: none;
+  accent-color: var(--bq-brand);
+}
+.bq-one2one-lesson .bq-lesson-readonly { margin-top: 20px; }
+.bq-one2one-lesson .bq-lesson-references {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.bq-one2one-lesson .bq-lesson-references:empty { display: none; }
+.bq-one2one-lesson .bq-lesson-live {
+  min-height: 0;
+  margin: 20px 0;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+}
+.bq-one2one-lesson .bq-lesson-live:empty { display: none; }
+.bq-one2one-lesson .bq-lesson-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-lesson .bq-lesson-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 12px;
+}
+.bq-one2one-lesson .bq-lesson-actions .bq-primary-button {
+  border: 1px solid var(--bq-brand);
+  background: var(--bq-brand);
+  color: var(--bq-surface);
+}
+.bq-one2one-lesson button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.bq-one2one-lesson :is(button, textarea, input):focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 3px;
+}
+.bq-one2one-lesson .bq-lesson-empty {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 24px 0;
+}
+@media (max-width: 390px) {
+  .bq-one2one-lesson .bq-lesson-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bq-one2one-lesson .bq-lesson-actions .bq-primary-button { grid-row: 1; }
+  .bq-one2one-lesson .bq-lesson-actions .bq-secondary-button { grid-row: 2; }
+  .bq-one2one-lesson .bq-lesson-toolbar { margin-bottom: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-one2one-lesson * { scroll-behavior: auto; }
+}
