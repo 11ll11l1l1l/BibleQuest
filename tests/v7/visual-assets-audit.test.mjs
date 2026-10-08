@@ -96,3 +96,10 @@ test('rejects failed visual quality claims even if binary and hash are valid', a
   assert.equal(result.status, 'FAIL');
   assert.match(result.errors.join('\n'), /QC failed: duplicateChecked/);
 });
+
+test('all committed production images pass the live V7 asset audit', async () => {
+  const result = await auditV7VisualAssets();
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.equal(result.counts.emotionQueueTotal, 30);
+  assert.ok(result.counts.productionReady >= 5);
+});
