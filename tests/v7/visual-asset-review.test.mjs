@@ -107,7 +107,6 @@ test('an unapproved Bible excerpt is not eligible for embedded lettering', () =>
 test('missing integrity, typography evidence and alternative text create machine repair reasons', () => {
   for (const edit of [
     variant => { delete variant.integrity; },
-    variant => { delete variant.typographyQa; },
     variant => { variant.altText = ''; },
     variant => { variant.liveTextFallback = false; },
     variant => { variant.derivedFromSha256 = ''; }
@@ -118,6 +117,14 @@ test('missing integrity, typography evidence and alternative text create machine
     assert.equal(decision.outcome, 'needs_repair');
     assert.ok(decision.repairReasons.some(x => x.startsWith('visual_asset_0_variant_0_')));
   }
+});
+
+test('missing independent typography QA cannot be treated as verified font rights', () => {
+  const item = { ...baseItem(), visualAssets: [visual()] };
+  delete item.visualAssets[0].variants[0].typographyQa;
+  const decision = decisionFor(item);
+  assert.equal(decision.outcome, 'rejected');
+  assert.ok(decision.rejectionReasons.includes('visual_asset_0_variant_0_font_rights_unverified'));
 });
 
 test('every declared derivative requires its own verified rights and permitted display', () => {
