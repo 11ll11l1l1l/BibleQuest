@@ -2,12 +2,13 @@ import { iconSvg } from './icons.js';
 import { pressFeedback, pageTransition, cardReveal } from './motion.js';
 import { localization } from '../app/localization.js';
 
+// Routes remain canonical; old feature hub URLs stay routable via the owner map.
 const NAV = [
-  ['home','nav.home','home'],
-  ['learn','nav.learn','learn'],
-  ['play','nav.play','play'],
-  ['grow','nav.grow','grow'],
-  ['more','nav.more','more']
+  ['home', 'nav.home', 'home'],
+  ['reader', 'nav.bible', 'bible'],
+  ['library', 'nav.library', 'library'],
+  ['one-to-one', 'nav.groups', 'groups'],
+  ['account', 'nav.you', 'user']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -23,16 +24,19 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   // nested routes. Older V3/V4 routes remain navigable during V7 redesign.
   const primaryOwner = route => {
     if (NAV.some(([id]) => id === route)) return route;
-    if (['reader', 'bible-quest', 'library', 'library-item', 'study',
-         'deep-questions', 'story-journey', 'wisdom-situations',
-         'bible-world', 'explorer', 'adaptive-learning', 'open-review',
-         'private-notes', 'cloud-notes'].includes(route)) return 'learn';
-    if (route === 'one-to-one' || route.startsWith('one-to-one-')
-        || ['transform', 'my-journey', 'personality-profile',
-            'psychometrics', 'avatar-vault'].includes(route)) return 'grow';
-    if (['account', 'accessibility', 'backup', 'help', 'content-review',
-         'community', 'congregation', 'leader-center', 'ministry-hub',
-         'journey-groups', 'team-center', 'workspace', 'calendar'].includes(route)) return 'more';
+    // A legacy detail route selects its V7 owning destination.
+    if (['bible-quest', 'audio', 'offline-scripture'].includes(route)) return 'reader';
+    if (['library-item', 'learn', 'study', 'deep-questions',
+         'story-journey', 'wisdom-situations', 'bible-world',
+         'explorer', 'adaptive-learning', 'open-review',
+         'private-notes', 'cloud-notes'].includes(route)) return 'library';
+    if (route === 'grow' || route.startsWith('one-to-one-')
+        || ['community', 'journey-groups'].includes(route)) return 'one-to-one';
+    if (['more', 'my-journey', 'transform', 'personality-profile',
+         'psychometrics', 'avatar-vault', 'accessibility', 'backup',
+         'help', 'content-review', 'congregation', 'leader-center',
+         'ministry-hub', 'team-center', 'workspace', 'calendar'].includes(route)) return 'account';
+    if (['play', 'games'].includes(route)) return 'home';
     return null;
   };
 
