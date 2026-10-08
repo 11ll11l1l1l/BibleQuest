@@ -541,7 +541,7 @@ function boot(root){
     // the browser route before async session hydration resolves on a full page reload.
     const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(readNavigationTarget());
     if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
-    else if(session.isAuthenticated())router.navigate(router.current());
+    else if(session.isAuthenticated())router.navigate(readNavigationTarget().replace(/^#\/?/, ''));
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));
