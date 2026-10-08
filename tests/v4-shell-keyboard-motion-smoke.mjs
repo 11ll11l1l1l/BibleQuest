@@ -29,6 +29,29 @@ async function run(){
     assert(info.outlineStyle!=='none'&&parseFloat(info.outlineWidth)>0,`Nav link '${info.routeLink}' has no visible keyboard focus ring.`);
   }
 
+  // Each nested destination has one semantic selected primary item, even
+  // before its asynchronous feature page loads. No second selection survives.
+  const selections=await page.evaluate(async()=>{
+    const {mountShell}=await import('/src/ui/shell.js');
+    const detached=document.createElement('div');
+    const shell=mountShell(detached,{onNavigate:()=>{},onAccountOpen:()=>{}});
+    return ['home','library','reader','one-to-one-lesson','account','play','not-found']
+      .map(route=>{
+        shell.render(route,{title:'Test',html:'<p>Test route</p>'});
+        const selected=[...detached.querySelectorAll('.bq-nav [aria-current]')];
+        return {route,count:selected.length,key:selected[0]?.getAttribute('data-route-link'),
+          value:selected[0]?.getAttribute('aria-current')};
+      });
+  });
+  const owners={home:'home',library:'learn',reader:'learn',
+    'one-to-one-lesson':'grow',account:'more',play:'play'};
+  for(const selection of selections){
+    const expected=owners[selection.route];
+    assert(expected ? selection.count===1&&selection.key===expected&&selection.value==='page'
+      : selection.count===0,
+      `Invalid selected primary navigation for ${selection.route}: ${JSON.stringify(selection)}`);
+  }
+
   // Reduced motion: with the OS preference set, shell transition/animation
   // durations must collapse to effectively zero (Foundation's global override).
   const page2=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
