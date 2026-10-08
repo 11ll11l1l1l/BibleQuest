@@ -37,9 +37,9 @@
       "format": "svg",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 104219,
-      "sha256": "9784268bc916b3d0946e831dd4ddf239a4d93474b4ed5e5819c249ad1a922c71",
-      "gitBlobSha": "859123c070a50f727890d73ea77f2901e9980206",
+      "fileBytes": 107267,
+      "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
+      "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
       "includedWording": "Afraid",
       "includedReference": "Psalm 34:4",
       "wordingSource": {
@@ -53,10 +53,12 @@
       "translation": null,
       "revision": null,
       "typography": {
-        "method": "Existing outlined Noto Serif Display title plus revised Noto Sans reference: 48px at 1024px, 15px geometrical equivalent at 320px; raster/browser legibility not yet checked",
+        "method": "Outlined Noto Serif Display title plus deterministic Noto Sans SemiBold 48px vector reference glyphs, tracking 1.8px; isolated reference raster preview at 320px inspected, full browser QA pending.",
         "fontLicense": "SIL OFL-1.1",
         "fontLicenseEvidence": "fonts-noto-core /usr/share/doc/fonts-noto-core/copyright",
-        "fontBinaryRedistributed": false
+        "fontBinaryRedistributed": false,
+        "referenceFont": "Noto Sans SemiBold",
+        "referenceFontOutlined": true
       },
       "altText": "Frightened woman behind a door. Embedded English words: Afraid; Psalm 34:4.",
       "fallback": "CLEAN plus live localized label",
@@ -68,7 +70,9 @@
         "phoneReadability": "pending",
         "spellingCheckedAgainstTaxonomy": true,
         "typeReadableAt320px": false,
-        "visualInspected": false
+        "visualInspected": false,
+        "referenceOutlineRasterizedAt320": true,
+        "referenceOutlinePreviewSpellingVerified": true
       },
       "wordingEvidence": {
         "sourcePath": "src/features/library/emotion-taxonomy.js",
@@ -137,12 +141,14 @@
     "referenceReadabilityIssue": "Previous 8.44px reference corrected to 15px equivalent by 48px SVG font-size. Exact rendered mobile typography/contrast remains unverified.",
     "gitHubEmbeddedSvgWriteAttempt": "blocked_by_connector_safety_check",
     "productionReady": false,
-    "typeReferenceMobileGeometryPassed": true
+    "typeReferenceMobileGeometryPassed": true,
+    "typeReferenceVectorOutlined": true,
+    "typeReferenceIsolated320RasterPreviewPassed": true
   },
   "bundleStatus": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
   "inspectionEvidence": {
     "inspectedAt": "2026-10-08T12:07:12.064Z",
-    "inspectionMethod": "Exact GitHub SVG source inspected and modified; verified embedded WebP unchanged, reference exact taxonomy wording, static font geometry. No browser screenshot, raster visual QA, or WebP derivative export was performed.",
+    "inspectionMethod": "Existing CLEAN/title unchanged; Noto Sans SemiBold reference converted to glyph outlines, locally rasterized at 320px and inspected in isolation. Full artwork browser/app QA still pending.",
     "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
     "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
     "canonicalEmotionId": "afraid",
@@ -158,9 +164,9 @@
     },
     "type": {
       "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
-      "gitBlobSha": "859123c070a50f727890d73ea77f2901e9980206",
-      "sha256": "9784268bc916b3d0946e831dd4ddf239a4d93474b4ed5e5819c249ad1a922c71",
-      "fileBytes": 104219,
+      "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
+      "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
+      "fileBytes": 107267,
       "width": 1024,
       "height": 1280,
       "staticSafe": true,
@@ -168,7 +174,9 @@
       "referenceFontPx": 48,
       "referenceAt320Px": 15,
       "visualInspected": false,
-      "phoneReadabilityPassed": false
+      "phoneReadabilityPassed": false,
+      "referenceVectorOutlined": true,
+      "isolated320RasterPreviewPassed": true
     },
     "thumbnail": {
       "path": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
@@ -194,6 +202,6 @@
       "visualInspected": false,
       "browserRendered": false
     },
-    "nextAction": "Render corrected TYPE SVG in browser at 320px, independently inspect actual text contrast and glyph rendering; rasterize TYPE and THUMB to separate WebP, inspect thumbnail at 80x100; run Node audit, then consolidate schema V2 original master only if all gates pass."
+    "nextAction": "Render full TYPE and THUMB in browser at 320px, inspect type/crop, run Node audit; then consolidate if all gates pass."
   }
 }
