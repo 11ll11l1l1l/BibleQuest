@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-frustration-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-09T05:08:04+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "family": "emotion",
+  "contentType": "emotion",
+  "contentId": "frustration",
+  "queueConcept": "frustration",
+  "canonicalEmotionId": "frustrated",
+  "visualRole": "emotion_tile",
+  "concept": "Repeated bicycle chain failure: a commuter pauses mid-repair with a grease-stained palm raised in frustration.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 188276,
+  "sha256": "22bd447db3a230b58f9820553a3fbca7363e2e3543884601d809591e42d6b9fa",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.45
+  },
+  "textSafeRegion": "top",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "frustrated",
+    "locale": "en",
+    "exactLabel": "Frustrated",
+    "reference": "Galatians 6:9",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "0f032a05-f198-4b96-90ab-eacfcd31d5a8",
+    "notes": "Original generated scene, no third-party reference or stock image. Local PIL raster exports."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "image": "Original generated for BibleQuest; no third-party image used.",
+    "fontFamilies": [
+      "EB Garamond 12",
+      "Lato"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "fontGlyphsRasterized": true,
+    "scripture": "Approved taxonomy reference only; no Bible prose embedded."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A commuter crouches beside a bicycle with a fallen chain, raising a grease-stained hand in frustration after a failed repair.",
+    "fallback": "Use CLEAN image with live localized text for en/tl/ceb/ilo unless locale-specific TYPE has passed QA.",
+    "essentialTextRemainsLive": true
+  },
+  "qc": {
+    "sourceImageInspected": true,
+    "distinctFromOtherAgent4Scenes": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "builtAppBrowserQA": "pending",
+    "visualAuditScript": "not_run_repo_unavailable",
+    "productionReady": false,
+    "generatedCandidatesThisRun": 2,
+    "rejectedCandidatesThisRun": 1,
+    "notes": "One rejected off-topic waiting-in-church composite; this separate bicycle repair scene was accepted for local QA. Full built-app browser and repository audit pending."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 188276,
+      "sha256": "22bd447db3a230b58f9820553a3fbca7363e2e3543884601d809591e42d6b9fa",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.45
+      },
+      "cropIntent": "square original photo, no text",
+      "embeddedWording": null,
+      "altText": "A frustrated bicycle commuter raises his grease-stained palm while repairing a fallen chain.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 200854,
+      "sha256": "38fa57640a9912482daaf738d612616b4853a7589e4a5fda3cf0bb1ad0aa8521",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.52
+      },
+      "cropIntent": "full source below premium navy header; no crop of main subject",
+      "embeddedWording": {
+        "label": "Frustrated",
+        "scriptureReference": "Galatians 6:9",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A frustrated bicycle commuter with the editorial English title Frustrated and reference Galatians 6:9.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "referenceCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "fontLicenseVerified": true,
+        "builtAppBrowserQA": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 44036,
+      "sha256": "bb9e3cebbfdb43df90e149f63fb954fe27a021c3bce3904cd316b21375abe2b1",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.45
+      },
+      "cropIntent": "focal-safe 4:5 from square source, x=102..922, retains palm, face, bike chain",
+      "embeddedWording": null,
+      "altText": "A commuter raises a greasy hand beside a bicycle with its chain off the gears.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "noBakedText": true,
+        "builtAppBrowserQA": false
+      }
+    }
+  ]
+}
