@@ -3,12 +3,16 @@ const CACHE_NAME=`${CACHE_PREFIX}v7`;
 const SHELL_DESTINATIONS=new Set(['script','style','image','font']);
 const WARM_CONCURRENCY=8;
 const MANIFEST_SHELL_EXTENSIONS=/\.(?:[cm]?js|css)$/i;
+// Reviewed public release files are safe for offline cache; private tenant API
+// responses, user preferences and authenticated records are NEVER pre-warmed.
+const PUBLIC_V7_OFFLINE_ARTIFACTS=['data/v7/library-public-catalog.json','data/v7/visual-assets.json'];
 const PUSH_FALLBACK_ROUTE='/#/notification-center';
 
 const sameOriginInScope=url=>url.origin===self.location.origin&&url.href.startsWith(self.registration.scope);
 const isNetworkProbe=url=>url.searchParams.has('bq-net-probe');
 const isBuildAsset=url=>sameOriginInScope(url)&&url.pathname.includes('/_v6/');
-const isShellRequest=(request,url)=>sameOriginInScope(url)&&!isNetworkProbe(url)&&(request.mode==='navigate'||SHELL_DESTINATIONS.has(request.destination)||isBuildAsset(url));
+const isPublicV7Artifact=url=>sameOriginInScope(url)&&PUBLIC_V7_OFFLINE_ARTIFACTS.some(path=>url.pathname===new URL(path,self.registration.scope).pathname);
+const isShellRequest=(request,url)=>sameOriginInScope(url)&&!isNetworkProbe(url)&&(request.mode==='navigate'||SHELL_DESTINATIONS.has(request.destination)||isBuildAsset(url)||isPublicV7Artifact(url));
 
 function safeNotificationUrl(raw){
   try{
@@ -124,18 +128,24 @@ async function warmShell(urls){
   }
   const manifestUrls=await manifestGraphUrls(seeds);
   for(const raw of manifestUrls)enqueue(raw);
+  // Built-only: public reviewed Library and audited-art registry must survive
+  // a first-launch offline restart, even if those routes were never visited.
+  const reviewedPublicUrls=manifestUrls.length
+    ? PUBLIC_V7_OFFLINE_ARTIFACTS.map(path=>new URL(path,self.registration.scope).href)
+    : [];
+  for(const raw of reviewedPublicUrls)enqueue(raw);
   while(pending.length){
     const batch=pending.splice(0,WARM_CONCURRENCY);
     const discovered=await Promise.all(batch.map(raw=>warmOne(cache,raw)));
     for(const imports of discovered)for(const imported of imports)enqueue(imported);
   }
   const missing=[];
-  for(const raw of manifestUrls){
+  for(const raw of [...manifestUrls,...reviewedPublicUrls]){
     const cached=await cache.match(raw,{ignoreVary:true});
     if(!cached)missing.push(raw);
   }
   if(missing.length)throw new Error(`Offline shell warmup missing ${missing.length} Vite shell assets.`);
-  return{cachedCount:seen.size,manifestCount:manifestUrls.length};
+  return{cachedCount:seen.size,manifestCount:manifestUrls.length,publicArtifactCount:reviewedPublicUrls.length};
 }
 
 self.addEventListener('install',event=>{
