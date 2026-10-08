@@ -59,4 +59,4 @@
 <path d="M0 0H1024V1280H0Z" filter="url(#grain)" opacity=".035"/><rect x="0" y="910" width="1024" height="370" fill="url(#scrim)"/>
  <text x="96" y="1102" fill="#fff9eb" font-size="117" font-family="Georgia, 'Times New Roman', serif" font-weight="normal" letter-spacing="-2">Peace</text>
  <path d="M97 1129H520" stroke="#e4ceab" stroke-width="2" opacity=".70"/>
- <text x="99" y="1191" fill="#f0e8d7" font-size="32" font-family="Georgia, 'Times New Roman', serif" letter-spacing="3">JOHN 14:27</text></svg>
+ <text x="99" y="1191" fill="#f0e8d7" font-size="32" font-family="Georgia, 'Times New Roman', serif" letter-spacing="3">John 14:27</text></svg>
