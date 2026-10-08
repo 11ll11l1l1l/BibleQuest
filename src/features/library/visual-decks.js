@@ -8,6 +8,8 @@ const copy = Object.freeze({
   ilo: ['Napalabas a kard', 'Sumaruno a kard', 'Kard', 'iti', 'Pilien'],
 });
 
+let nextDeckId = 0;
+
 function button(doc, text, className) {
   const node = doc.createElement('button');
   node.type = 'button';
@@ -35,7 +37,7 @@ export function createV7LibraryDiscoveryDeck({
   const title = doc.createElement('h2');
   title.className = 'bq-v7-visual-deck__title';
   title.textContent = model.question;
-  title.id = 'bq-v7-deck-title-' + kind + '-' + Math.random().toString(36).slice(2, 8);
+  title.id = 'bq-v7-deck-title-' + kind + '-' + (++nextDeckId);
   region.setAttribute('aria-labelledby', title.id);
   const viewport = doc.createElement('div');
   viewport.className = 'bq-v7-visual-deck__track';
@@ -49,7 +51,7 @@ export function createV7LibraryDiscoveryDeck({
     card.setAttribute('lang', entry.labelLocale);
     card.setAttribute('aria-label', `${words[4]} ${entry.label}. ${words[2]} ${index+1} ${words[3]} ${model.entries.length}`);
     card.setAttribute('aria-pressed', String(selected.has(entry.id)));
-    card.innerText = ''; // replaced by semantic child elements
+    card.textContent = ''; // replaced by semantic child elements
     const visual = doc.createElement('span');
     visual.className = 'bq-v7-visual-deck__image';
     visual.dataset.fallback = entry.visual.fallback;
