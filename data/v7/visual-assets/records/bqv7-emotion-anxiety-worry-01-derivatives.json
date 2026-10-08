@@ -156,6 +156,68 @@
     "typeBinaryHashMeasured": true,
     "thumbHashMeasured": true,
     "thumbSvgBrowserRenderQA": "pending",
-    "note": "Existing 400x500 WebP thumbnail was visually accepted but direct GitHub blob creation was safety-blocked twice. A self-contained SVG focal crop was committed instead; it embeds the original master bytes and has no external runtime dependency."
+    "note": "Existing 400x500 WebP thumbnail was visually accepted but direct GitHub blob creation was safety-blocked twice. A self-contained SVG focal crop was committed instead; it embeds the original master bytes and has no external runtime dependency.",
+    "independentBinarySHA256Recalculated20261008": true,
+    "cleanAndTypeWebPVisuallyInspected20261008": true,
+    "thumbnailSVGSourceGeometryInspected20261008": true,
+    "exactThumbnailSVGRenderedAtCardSize": false,
+    "releasePromotionBlockedOnThumbnailRender": true
+  },
+  "inspectionEvidence": {
+    "inspectedAt": "2026-10-08T19:03:21+09:00",
+    "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
+    "taxonomyGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "anxious",
+    "exactEnglishLabel": "Anxious / worried",
+    "typeArtworkObservedWording": "Anxious / worried",
+    "scriptureTextIncluded": false,
+    "files": [
+      {
+        "kind": "CLEAN",
+        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+        "format": "webp",
+        "width": 1024,
+        "height": 1024,
+        "fileBytes": 50182,
+        "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+        "gitBlobSha": "f7abc7a92fbdc76dcabbe8bd4f1ad746f8ffc89a",
+        "independentHashRecomputed": true,
+        "visuallyInspected": true
+      },
+      {
+        "kind": "TYPE",
+        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
+        "format": "webp",
+        "width": 1024,
+        "height": 1024,
+        "fileBytes": 52276,
+        "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa",
+        "gitBlobSha": "3284e88ee7e6b07e05e938abd5aa29b195baabd8",
+        "independentHashRecomputed": true,
+        "visuallyInspected": true,
+        "verifiedEnglishTaxonomyLabel": true,
+        "phone320RenderVerified": false
+      },
+      {
+        "kind": "THUMB",
+        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
+        "format": "svg",
+        "width": 400,
+        "height": 500,
+        "fileBytes": 67178,
+        "sha256": "244f4625563218cef1c4e975b13a65c210cd815c68fae36b16385e30a8dbf64c",
+        "gitBlobSha": "86f4f9b2995d25651bd22d0beb79ed55370676c7",
+        "independentHashRecomputed": true,
+        "geometry": {
+          "viewBox": "0 0 400 500",
+          "embeddedSourceWebPWidth": 500,
+          "embeddedSourceWebPHeight": 500,
+          "embeddedSourceX": -54.6875,
+          "embeddedSourceY": 0
+        },
+        "renderedAtCardSize": false
+      }
+    ],
+    "notes": "CLEAN and TYPE were visually examined as exact repository WebP binaries; TYPE shows readable English serif Anxious / worried with no Scripture quote. SVG thumbnail's embedded source and focal crop geometry were examined, but exact browser render and 320px card preview were not available. This is evidence progress only, not a release-ready V2 bundle."
   }
 }
