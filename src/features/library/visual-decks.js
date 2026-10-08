@@ -1,5 +1,6 @@
 import './visual-decks.css';
 import { buildV7LibraryDeckModel } from './visual-registry.js';
+import { cleanupMotion, deckSpring, motionEnabled, pressFeedback } from '../../ui/motion.js';
 
 const copy = Object.freeze({
   en: ['Previous card', 'Next card', 'Card', 'of', 'Select'],
@@ -75,6 +76,7 @@ export function createV7LibraryDiscoveryDeck({
     card.addEventListener('click', () => {
       if (destroyed) return;
       active = index;
+      pressFeedback(card, { environment: { document: doc } });
       if (selected.has(entry.id)) selected.delete(entry.id);
       else selected.add(entry.id);
       update();
@@ -116,9 +118,10 @@ export function createV7LibraryDiscoveryDeck({
     active = Math.max(0, Math.min(index, cards.length-1));
     const left = cards[active].offsetLeft - viewport.offsetLeft
       - (viewport.clientWidth - cards[active].clientWidth)/2;
-    const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+    const reduced = !motionEnabled({ document: doc });
     viewport.scrollTo?.({ left: Math.max(0,left), behavior: reduced ? 'instant' : 'smooth' });
     update();
+    if (focus) deckSpring(cards[active], { delta: index > 0 ? 14 : -14, environment: { document: doc } });
     if (focus) cards[active].focus({ preventScroll: true });
   }
 
@@ -154,6 +157,7 @@ export function createV7LibraryDiscoveryDeck({
     getState: () => Object.freeze({ kind, activeId: model.entries[active]?.id || '', selectedIds: Object.freeze([...selected]) }),
     destroy() {
       destroyed = true;
+      cards.forEach(cleanupMotion);
       if (frame != null) globalThis.cancelAnimationFrame?.(frame);
       viewport.removeEventListener('scroll', onScroll);
       viewport.removeEventListener('keydown', onKeys);
