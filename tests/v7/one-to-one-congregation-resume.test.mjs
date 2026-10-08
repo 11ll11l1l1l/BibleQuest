@@ -114,3 +114,55 @@ test('identical membership refreshes do not retrigger tenant consumers or overwr
   assert.equal(service.getActive(), null);
   assert.equal(service.list()[0].userId, OTHER);
 });
+
+test('concurrent congregation consumers share one authenticated hydration and all see the same rows', async () => {
+  const state = { authenticated: true, user: { id: USER } };
+  let finish;
+  let calls = 0;
+  let invalidations = 0;
+  const deferred = new Promise(resolve => { finish = resolve; });
+  const service = createCongregationMembershipService({
+    api: { congregation: { listMemberships(userId) {
+      assert.equal(userId, USER);
+      calls += 1;
+      return deferred;
+    } } },
+    session: { getState: () => state },
+    onContextChange: () => { invalidations += 1; },
+  });
+
+  const consumers = Array.from({ length: 12 }, () => service.load());
+  assert.equal(calls, 1, 'Identical requests must share a single server call.');
+  finish([row('church-a')]);
+  const results = await Promise.all(consumers);
+  assert.equal(results.length, 12);
+  assert.ok(results.every(rows => rows.length === 1 && rows[0].congregationId === 'church-a'));
+  assert.equal(invalidations, 1, 'Only one authoritative hydration may notify listeners.');
+  assert.equal(service.list()[0].userId, USER);
+});
+
+test('pending previous-account membership never hydrates or overrides a new account', async () => {
+  const state = { authenticated: true, user: { id: USER } };
+  const pending = new Map();
+  const calls = [];
+  const service = createCongregationMembershipService({
+    api: { congregation: { listMemberships(userId) {
+      calls.push(userId);
+      return new Promise(resolve => pending.set(userId, resolve));
+    } } },
+    session: { getState: () => state },
+  });
+
+  const oldFetch = service.load();
+  state.user = { id: OTHER };
+  const newFetch = service.load();
+  assert.deepEqual(calls, [USER, OTHER], 'Different users must never share an in-flight request.');
+  pending.get(USER)([row('previous-account', USER)]);
+  await oldFetch;
+  assert.equal(service.list().length, 0, 'Old-account data must not be visible to the new user.');
+  pending.get(OTHER)([row('new-account', OTHER)]);
+  const current = await newFetch;
+  assert.deepEqual(current.map(member => member.congregationId), ['new-account']);
+  assert.equal(service.getActive(), null);
+  assert.equal(service.list()[0].userId, OTHER);
+});
