@@ -160,3 +160,28 @@ test('typing retains the same editor node and selection while updating share eli
   assert.equal(writes,3,'tenant/context invalidation still removes protected content');
   dispose();
 });
+
+test('share and revoke controls are inert during an in-flight disclosure mutation', () => {
+  function markup(saved, shareStatus) {
+    const state={
+      status:'ready',responseStatus:'ready',shareStatus,stepIndex:1,writable:true,progress:null,error:null,
+      responses:saved?{'step-1':saved}:{},responseDrafts:{'step-1':'private draft'},
+      lesson:{steps:[{id:'step-0',type:'scripture',content:{text:'Read'}},{id:'step-1',type:'understand',content:{text:'Respond'}}]},
+    };
+    const host={innerHTML:'',querySelector(){return null;}};
+    const page={querySelector(){return host;},addEventListener(){},removeEventListener(){}};
+    const runner={getState:()=>state,subscribe(){return()=>{};},load(){},invalidate(){},dispose(){}};
+    const cleanup=createLessonRunnerPage({runner,onBack(){},subscribeContext(){return()=>{};}}).mount({querySelector(){return page;}});
+    const html=host.innerHTML;cleanup();return html;
+  }
+  const privatePending=markup(null,'saving');
+  assert.match(privatePending,/data-lesson-share-confirm="step-1" disabled/);
+  assert.match(privatePending,/data-lesson-share="step-1" disabled/);
+  assert.match(privatePending,/class="bq-lesson-sharing" aria-busy="true"/);
+  const sharedPending=markup({id:'r1',visibility:'shared'},'saving');
+  assert.match(sharedPending,/data-lesson-unshare="step-1" disabled/);
+  assert.match(sharedPending,/aria-busy="true"/);
+  const idle=markup(null,'ready');
+  assert.doesNotMatch(idle,/data-lesson-share-confirm="step-1" disabled/);
+  assert.match(idle,/data-lesson-share="step-1">/);
+});
