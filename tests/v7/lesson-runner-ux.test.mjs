@@ -98,10 +98,15 @@ test('only actual lesson step changes request a short header arrival transition'
 
 test('Lane C motion excludes long Scripture/response text and disables animation when motion is reduced', () => {
   const css = readFileSync(new URL('../../src/ui/v7-one-to-one-lesson.css', import.meta.url), 'utf8');
-  assert.match(css, /--bq-motion-duration-standard/);
-  assert.match(css, /--bq-motion-duration-micro/);
+  assert.match(css, /--bq-v7-motion-standard/);
+  assert.match(css, /--bq-v7-motion-micro/);
   assert.match(css, /\.bq-lesson-header\[data-step-arriving\]/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /:root\\[data-bq-effective-motion="reduce"\\]/, 'App-level reduced-motion preference must override feature animations.');
+  assert.match(css, /:root\\[data-bq-motion="off"\\]/, 'Explicitly disabled app motion must be static.');
+  const shared = readFileSync(new URL('../../src/ui/v7-motion.css', import.meta.url), 'utf8');
+  assert.match(shared, /--bq-v7-motion-standard/);
+  assert.match(shared, /--bq-v7-motion-micro/);
   const keyframe = css.slice(css.indexOf('@keyframes bq-one2one-step-arrive'), css.indexOf('@keyframes bq-one2one-step-arrive') + 170);
   assert.match(keyframe, /opacity/);
   assert.match(keyframe, /transform/);
