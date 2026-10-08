@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-guilt-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-08T18:02:39+09:00",
+  "updatedAt": "2026-10-08T19:00:00+09:00",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "guilt",
+  "queueConcept": "guilt",
+  "canonicalEmotionId": "guilty",
+  "concept": "Responsibility after a concrete mistake: a woman gathers the broken pieces of a mug in her home.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-guilt-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 79092,
+  "sha256": "9f8143244d8a0cbce3a6cb46b2188790c2de498b943b10a41db321b3011ce309",
+  "aspectRatio": "1:1",
+  "focalPoint": {
+    "x": 0.43,
+    "y": 0.42
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "4c7e84bc-3760-401e-9e77-e31bdad50121",
+    "sourceDescription": "Original generated triptych; CLEAN is a text-free crop of the left panel. TYPE was separately rasterized with licensed EB Garamond lettering, and THUMB is a separate focal-aware crop.",
+    "notes": "Original generated imagery, no external photos, logos, celebrities or book covers. Existing accepted source was reused rather than generating a duplicate."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "OpenAI-generated original scene. TYPE lettering rasterized using EB Garamond 12 Regular and Italic (SIL Open Font License 1.1); no font binaries distributed. Bible wording is a taxonomy-approved reference only, not a Bible translation excerpt."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman kneels at home, remorseful as she picks up the broken pieces of a white mug.",
+    "localeFallback": "For tl, ceb, ilo and any unsupported TYPE locale, use CLEAN with semantic localized live text. The English TYPE must not masquerade as translated.",
+    "essentialTextRemainsLive": true
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "guilty",
+    "locale": "en",
+    "exactLabel": "Guilty",
+    "reference": "1 John 1:9",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "sceneDistinguishedFromHurtAndRejection": true,
+    "localInspectionNotes": "CLEAN and TYPE inspected at native dimensions; TYPE checked at 320x400; THUMB checked at 80x100. Broken mug and reaching hand remain recognizable. 4:5 crop best matches source x≈100/1024 to 920/1024. Typography has high contrast against navy header. No fake text or Bible prose.",
+    "repoVisualAudit": "pending_full_checkout",
+    "browserQA": "pending_full_app_preview"
+  },
+  "variants": [
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-guilt-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 79092,
+      "sha256": "9f8143244d8a0cbce3a6cb46b2188790c2de498b943b10a41db321b3011ce309",
+      "kind": "CLEAN",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.42
+      },
+      "altText": "A woman kneels at home, remorseful as she picks up the broken pieces of a white mug.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-guilt-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 91490,
+      "sha256": "1729daf00646f402967ed10874a4abac09264f27826b523a51e2f2f87bbe6c66",
+      "kind": "TYPE",
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Guilty",
+        "scriptureReference": "1 John 1:9",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "method": "rasterized editorial typography in separate WebP",
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL OFL 1.1",
+        "fontFilesDistributed": false,
+        "referenceTextHeightAt320px": "approximately 15 px"
+      },
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.52
+      },
+      "altText": "A woman picks up broken mug pieces. English artwork lettering: Guilty; 1 John 1:9.",
+      "fallback": "CLEAN plus localized live UI",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "referenceVerified": true,
+        "noPseudoText": true,
+        "noBibleVerseText": true,
+        "fontRightsVerified": true
+      }
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-guilt-01-thumbnail.webp",
+      "format": "webp",
+      "width": 400,
+      "height": 500,
+      "fileBytes": 27620,
+      "sha256": "43092031a0fb98070c99db81013b8af734ae465f3d7548dc52e43b29b6dd6dd3",
+      "kind": "THUMB",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.36
+      },
+      "crop": {
+        "sourceRegionNormalizedApprox": {
+          "x": 0.098,
+          "y": 0.0,
+          "width": 0.801,
+          "height": 1.0
+        },
+        "outputAspect": "4:5",
+        "method": "independently exported and visually inspected WebP crop",
+        "cropMatchMAE": 5.74,
+        "cropMatchMAENote": "approximate comparison to 820x1024 source region, lossy WebP re-encoding"
+      },
+      "altText": "A woman kneels at home, remorseful as she picks up the broken pieces of a white mug.",
+      "fallback": "CLEAN",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      }
+    }
+  ]
+}
