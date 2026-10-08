@@ -28,10 +28,18 @@ test('Lane D emits a deployable registry of only approved byte-verified assets',
         assert.equal(createHash('sha256').update(derivative).digest('hex'), variant.sha256);
       }
     }
-    // Draft SVG derivatives and unverified typography composites are excluded.
-    const images = await readdir(join(dir, 'v7/images/emotion'));
-    assert.equal(images.length, paths.length);
-    assert.equal(images.some(name => name.endsWith('.svg')), false);
+    // Only manifest-listed files are copied. Future book/devotional art
+    // families must not accidentally break the count or permit extra files.
+    const imageRoot = join(dir, 'v7/images');
+    const allFiles = [];
+    for (const family of await readdir(imageRoot, { withFileTypes: true })) {
+      if (!family.isDirectory()) continue;
+      for (const file of await readdir(join(imageRoot, family.name), { withFileTypes: true })) {
+        if (file.isFile()) allFiles.push('/v7/images/' + family.name + '/' + file.name);
+      }
+    }
+    assert.deepEqual(allFiles.sort(), [...paths].sort(),
+      'no unapproved derivative or orphan file may enter the deployment');
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
