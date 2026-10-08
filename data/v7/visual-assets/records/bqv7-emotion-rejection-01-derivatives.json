@@ -15,7 +15,7 @@
   "width": 1024,
   "height": 1280,
   "fileBytes": 88016,
-  "sha256": "49b1e1ce1efa77293b27c76f757f34d9bbd0660f6749b59f18caaab666e39453",
+  "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.3,
@@ -69,7 +69,7 @@
       "width": 1024,
       "height": 1280,
       "fileBytes": 88016,
-      "sha256": "49b1e1ce1efa77293b27c76f757f34d9bbd0660f6749b59f18caaab666e39453",
+      "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
       "sourceType": "generated",
       "locale": "en",
       "includedWording": "Rejected / unwanted",
@@ -87,7 +87,13 @@
         "method": "SVG embedded live vector text over generated source WebP with editorial scrim",
         "fontFamily": "Noto Serif Display / Georgia / Noto Sans / Arial",
         "license": "Noto fonts SIL OFL 1.1 when available; platform Georgia/Arial host provided; no font binaries redistributed or embedded",
-        "fontFilesDistributed": false
+        "fontFilesDistributed": false,
+        "referenceFontPxAtNative": 46,
+        "referenceNominalPxAt320": 14.375,
+        "referenceBaselineY": 1235,
+        "referenceLetterSpacingPx": 3,
+        "referenceMobileReadability": "render_qa_pending",
+        "geometryAdjustment": "Raised reference font from 25 to 46 native px and moved baseline 1211 to 1235; nominal height 14.375px at 320px-wide card; actual browser font rendering unverified."
       },
       "focalPoint": {
         "x": 0.3,
@@ -106,7 +112,9 @@
         "svgSelfContained": true,
         "geometryChecked": true,
         "visualRenderQA": "pending",
-        "fontRenderQA": "pending"
+        "fontRenderQA": "pending",
+        "referenceGeometryReviewed": true,
+        "typeReadableAt320px": "pending"
       }
     },
     {
@@ -173,7 +181,7 @@
     "scriptureQuoteIncluded": false,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Two self-contained SVG files embed original WebP. Browser-rendered type and card-size appearance remain uncertified; source master SHA-256 sidecar discrepancy noted explicitly without altering original."
+    "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
   },
   "createdAt": "2026-10-08T15:06:14+09:00"
 }
