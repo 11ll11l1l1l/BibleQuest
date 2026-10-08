@@ -97,6 +97,31 @@ test('wrong-locale, wrong attribution and transcript mismatch reject TYPE artwor
   }
 });
 
+test('canonical release content title and FIL Tagalog translation approve matching TL artwork only', () => {
+  const item = { ...baseItem(), visualAssets: [visual()] };
+  delete item.title;
+  item.sourceContent = { title: 'Courage for Today' };
+  item.translations = [{ locale: 'fil', content: { title: 'Tapang para sa Ngayon' }, translatedFromRevision: 'r1' }];
+  const variant = item.visualAssets[0].variants[0];
+  variant.locale = 'tl';
+  variant.text = 'Tapang para sa Ngayon';
+  variant.typographyQa.locale = 'fil';
+  variant.typographyQa.observedText = 'Tapang para sa Ngayon';
+  variant.imagePath = '/v7/images/devotional/cover-01-with-text-tl.webp';
+  assert.equal(decisionFor(item).outcome, 'auto_approved');
+  item.translations[0].translatedFromRevision = 'r0';
+  assert.equal(decisionFor(item).outcome, 'rejected');
+});
+
+test('variant paths cannot append unreviewed suffixed payloads', () => {
+  const item = { ...baseItem(), visualAssets: [visual()] };
+  item.visualAssets[0].variants[0].imagePath =
+    '/v7/images/devotional/cover-01-with-text-en.extra.webp';
+  const decision = decisionFor(item);
+  assert.equal(decision.outcome, 'rejected');
+  assert.ok(decision.rejectionReasons.includes('visual_asset_0_variant_0_path_mismatch'));
+});
+
 test('an unapproved Bible excerpt is not eligible for embedded lettering', () => {
   const item = { ...baseItem(), visualAssets: [visual()] };
   const typography = item.visualAssets[0].variants[0];
