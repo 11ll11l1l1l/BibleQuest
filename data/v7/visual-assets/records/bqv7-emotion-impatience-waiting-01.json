@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-impatience-waiting-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-08T17:05:00+09:00",
+  "integratedAt": "2026-10-08T18:05:00+09:00",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "impatience_waiting",
+  "canonicalEmotionId": "impatient",
+  "concept": "Impatience during a prolonged clinic reception wait, expressed through tense expression and repeated wristwatch checking",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 107910,
+  "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+  "focalPoint": {
+    "x": 0.47,
+    "y": 0.45
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 107910,
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "focalPoint": {
+        "x": 0.47,
+        "y": 0.45
+      },
+      "cropIntent": "Square source panel, no text; central face, wristwatch and gesture",
+      "embeddedWording": null,
+      "altText": "A young man in a clinic waiting area frowns while checking his wristwatch, his cheek resting on one hand.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-impatience-waiting-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 124412,
+      "sha256": "d810f46ee68ae16706448553ae1b2fac5b0abd44a5089e56a375d1ffc57a9b7c",
+      "focalPoint": {
+        "x": 0.47,
+        "y": 0.56
+      },
+      "cropIntent": "4:5 portrait with separate editorial heading above original scene",
+      "embeddedWording": {
+        "label": "Impatient / waiting",
+        "scriptureReference": "Psalm 27:14",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A young man in a clinic waiting area frowns while checking his wristwatch, his cheek resting on one hand. Embedded English words: Impatient / waiting; Psalm 27:14.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "scriptureReferenceOnly": true,
+        "typeReadableAt320px": true,
+        "browserAppPending": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-impatience-waiting-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 30934,
+      "sha256": "320df5fddfc96fa2d38e4518043a194fabd80483878e8fea8e7f69967f6aca3f",
+      "focalPoint": {
+        "x": 0.47,
+        "y": 0.45
+      },
+      "cropIntent": "4:5 portrait crop of CLEAN retaining face and wristwatch; no text",
+      "embeddedWording": null,
+      "altText": "A young man in a clinic waiting area frowns while checking his wristwatch, his cheek resting on one hand.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "noBakedText": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "impatient",
+    "locale": "en",
+    "exactLabel": "Impatient / waiting",
+    "reference": "Psalm 27:14",
+    "scriptureTextIncluded": false,
+    "translation": null,
+    "translationRevision": null
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "generationId": "de473476-9596-43ea-8159-d91695a32629",
+    "source": "Original three-panel concept sheet; text-free left panel extracted for CLEAN, TYPE separately programmatically typeset, THUMB independently cropped",
+    "originalPrompt": null
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontFamilies": [
+      "EB Garamond 12",
+      "Lato"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "fontGlyphsRasterized": true,
+    "scripture": "Reference only, no Scripture wording embedded"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young man in a clinic waiting area frowns while checking his wristwatch, his cheek resting on one hand.",
+    "essentialTextRemainsLive": true,
+    "fallback": "Use CLEAN plus live localized label for all locales without independently reviewed TYPE (tl, ceb, ilo, etc.)"
+  },
+  "qc": {
+    "sourceImageInspected": true,
+    "distinctFromOtherAgent4Scenes": true,
+    "generatedCandidatesThisRun": 0,
+    "sourceGeneratedPreviousRun": true,
+    "sourceCandidateRejectionsThisRun": 0,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "builtAppBrowserQA": "pending",
+    "visualAuditScript": "not_run"
+  }
+}
