@@ -210,3 +210,33 @@ Every scheduled run:
 8. report asset ID, concept, paths, dimensions/bytes if known, and commit SHA.
 
 Never spend a run only re-planning when an eligible image remains. Never generate a duplicate just to satisfy the schedule. If full coverage is reached, identify the lowest-quality or least-versatile production-ready asset in the agent's partition and create a clearly versioned replacement candidate instead of random filler.
+
+## Failure recovery, concept diversity and task liveness (2026-10-08)
+
+This section is mandatory for all five hourly scheduled agents. Rejecting an image is **not** a reason to pause the agent, disable its automation, or declare the production queue blocked. A successful image-generation call is not the same as an accepted, committed image; count production only after both binary and sidecar exist on the live branch.
+
+### Concept pivot protocol
+
+1. Before generation, compare the selected concept against **all** existing image records, including other agents' outputs, especially location, perspective, subject count, lighting, colors, gesture, metaphor, and emotion. A different label on a similar sunset/overlook is still a near-duplicate.
+2. For each queued emotion, first name the observable emotional **signal** (expression, gesture or relationship) and a distinct everyday **scene**. The primary subject must communicate the concept even at a roughly 100px crop.
+3. If the first image fails QA, reject it without committing and change **at least three** of: setting (indoor/outdoor), number of people, camera distance/angle, interaction/action, time of day and lighting, focal object, composition. Do not merely rephrase the same prompt.
+4. Allow up to **three genuinely different candidates per run**, where the image tool and run budget permit. Prefer expressive human scenes and meaningful interactions to generic scenic landscapes. Avoid cliffside, lake, mountain and gold-sunset compositions for the initial emotion queue unless the assignment distinctly requires them.
+5. If no candidate passes, report the assignment, number of attempts, each QA reason, the concrete distinct next-scene concept, and the exact capability or execution blocker. **Do not commit placeholders or a failed QA asset.** Keep the same assignment for the next scheduled run; there is no human-approval dependency. A provider limit/timeout or unavailable image tool means retry next run.
+6. If generation succeeds but GitHub conversion/commit fails, preserve the asset for a safe retry within the run where possible. Re-fetch live branch, ensure unique asset ID, use binary-safe GitHub operations, and retry; do not claim saved until the binary and matching JSON are verifiably present. If a real external limit prevents committing, report it and continue next hour.
+7. Do not degrade QC, fabricate metadata, or switch to downloading stock imagery to inflate the output count.
+
+### Initial-queue scene guardrails
+
+- Agent 1: anxiety/fear/sadness/grief/loneliness/anger should use recognizable and distinguishable human expressions or situations, not six solitary silhouette landscapes.
+- Agent 2: guilt should show responsibility or regret after a concrete, non-graphic mistake; distinguish it from rejection (exclusion) and shame (self-conscious hiding). Change actor, framing, setting and action between these concepts.
+- Agent 3: confusion should show someone faced with genuinely conflicting choices/information in a realistic context; discouragement and overwhelm must have different actions and focal cues.
+- Agent 4: temptation should depict a meaningful choice with two competing actions/objects, not generalized wistfulness or sunset light. For spiritual dryness, waiting, envy, frustration and numbness, use distinct scenes and signals.
+- Agent 5: gratitude should depict a specific thankful response to a person or helpful act, unlike joy's smile. Peace, hope, excitement and connection should have distinct contexts, compositions and body language.
+
+### Non-stop automation and mutual liveness checks
+
+The authorized recurring schedule is hourly in Asia/Tokyo for Visual Agents 1–5 at minute **00, 02, 04, 06, 08** respectively. All five should remain enabled. Each run should check its own scheduler state and, when available, the other four known visual-agent schedules before doing image work. If a scheduler control is available and a task was unintentionally disabled/changed, restore the authorized schedule; **never override an explicit instruction from the user to pause or stop a task**. If scheduler inspection or repair is unavailable, report the limitation and carry on with image work.
+
+**Do not self-disable, pause, delete, change to one-time, or set COUNT/UNTIL on any visual-agent task** because a generation failed, image was rejected, rate limit/timeout occurred, git write failed, output queue was temporarily empty, or a run budget was exhausted. A skipped/failed run must keep its hourly future schedule. At the start of a later run, resume from the first missing production-ready asset in the deterministic partition.
+
+For auditability every run reports: agent ID, next assignment, generated/rejected candidate count and reasons, production-ready asset ID if any, image and sidecar paths, committed SHA (only if verified), peer/scheduler liveness findings, and next-run recovery instructions. This is a best-effort peer watchdog; scheduler controls may be unavailable inside some runs, and prompts alone cannot guarantee platform liveness.
