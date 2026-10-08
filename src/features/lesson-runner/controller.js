@@ -152,6 +152,9 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       fail('BQ_LESSON_SHARE_DENIED', 'Scripture steps do not contain a personal response to share.');
     }
     if (shared && confirmed !== true) fail('BQ_LESSON_SHARE_CONFIRMATION_REQUIRED', 'Confirm sharing with your paired mentor.');
+    // Claim the disclosure mutation before any await. Duplicate Share, Revoke
+    // and navigation calls cannot run against the same saved response in flight.
+    if (state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status)) return state;
     const baseStatus = state.status === 'completed' ? 'completed' : 'ready';
     const token = generation;
     let key;
@@ -187,7 +190,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
   const shareResponse = (stepId, options) => setResponseSharing(stepId, true, options);
   const revokeResponseShare = stepId => setResponseSharing(stepId, false);
   async function move(direction) {
-    if (!state.lesson || !['ready', 'completed', 'save-error'].includes(state.status)) return state;
+    if (!state.lesson || state.shareStatus === 'saving' || !['ready', 'completed', 'save-error'].includes(state.status)) return state;
     if (![1, -1].includes(direction)) throw new TypeError('Move one lesson step at a time.');
     try {
       if (context() !== loadedContext) fail('BQ_LESSON_CONTEXT_STALE', 'Reload after your account or congregation changes.');
@@ -225,6 +228,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     }
   }
   async function complete() {
+    if (state.shareStatus === 'saving') return state;
     if (!state.lesson || !['ready', 'save-error'].includes(state.status) || state.stepIndex !== state.lesson.steps.length - 1) {
       fail('BQ_LESSON_COMPLETION_DENIED', 'Finish at the Action step before completing this lesson.');
     }
