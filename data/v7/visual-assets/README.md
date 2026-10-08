@@ -11,7 +11,7 @@ There is deliberately no single shared mutable manifest. Five scheduled generato
 Rules:
 - one unique asset ID per image;
 - never overwrite another asset;
-- no baked-in text;
+- no baked-in text on CLEAN or THUMB; reviewed embedded typography is allowed only on locale-specific TYPE;
 - generated assets must say `sourceType: generated`;
 - official third-party book covers are not to be fabricated;
 - every image gets alt/decorative metadata, intended usage, focal point/text-safe region and QC results;
@@ -32,3 +32,7 @@ Run `node --test tests/v7/visual-assets-audit.test.mjs` for focused validation r
 The canonical master remains free of baked text and includes `imagePath`. A production artist can additionally create a rights-checked title artwork (`kind: with_text`, exact `locale` + `text`) and focal-safe cropped tile (`kind: thumbnail`). Record both under the same asset's optional `variants` array; do not maintain separate competing records for the same underlying scene. See the three-output bundle section of `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`.
 
 The visual registry audit verifies every committed derivative's dimensions, bytes, hash and path before exposing it in the deterministic `byContent` registry. The title-art variant is supplemental; in-app content titles, metadata and translations remain live accessible text.
+
+## Variant schemas and release readiness
+
+Both legacy schema V1 clean masters and verified V2 three-file assets are allowed. Some producers store candidate derivatives in `<asset-id>-derivatives.json` while awaiting image and browser QA. Candidate records are not independently publishable masters. Never call a package release-ready merely because three file paths exist: confirm file hash/byte length/dimensions, readable TYPE artwork, canonical label and Scripture reference, actual rights, and approved QA state. Keep incomplete bundles visible in the audit report but outside any TYPE/THUMB release index.
