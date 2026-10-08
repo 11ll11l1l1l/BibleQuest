@@ -79,12 +79,16 @@ export function createLibraryStaticAdapter() {
       const query = String(options.query || '').trim().toLocaleLowerCase();
       const contentType = String(options.contentType || '').trim();
 
+      // Filter against both the reviewed source and the selected translation.
+      // An English search must not lose an item simply because its card is
+      // displayed in Tagalog, Cebuano or another reviewed locale.
       const rows = catalog.items
-        .map(item => translated(item, locale))
         .filter(item => !contentType || item.contentType === contentType)
         .filter(item => !taxonomyId || (item.taxonomyLinks || []).some(link => link.id === taxonomyId))
         .filter(item => itemMatchesDiscovery(item, filters))
-        .filter(item => !query || searchable(item).includes(query));
+        .filter(item => !query || searchable(item).includes(query)
+          || searchable(translated(item, locale)).includes(query))
+        .map(item => translated(item, locale));
 
       return Object.freeze({
         items: Object.freeze(rows.slice(offset, offset + limit)),
