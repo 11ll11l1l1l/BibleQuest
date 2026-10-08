@@ -497,7 +497,8 @@ function boot(root){
       explorer:explorerCloudSync,
       'leaderboard-delivery':progressLeaderboardBridge
     }),
-    ()=>router.navigate(router.current()),
+    // Account resume must preserve the deep-link query and discovery filters.
+    ()=>router.navigate(readNavigationTarget().replace(/^#\/?/, '')),
     (owner,error)=>console.warn('Resume unavailable',owner,error)
   );
   let adminAccessSessionKey='';
