@@ -209,7 +209,15 @@ export function createLibraryPage({
       };
       const render = current => {
         if (disposed) return;
-        if (started && current.status === 'idle') {
+        if (started && current.status === 'idle'
+          && !String(initialQuery || '').trim()
+          && !String(initialContentType || '').trim()
+          && !String(initialTaxonomyId || '').trim()
+          && !Object.values(normalizeLibraryDiscoveryQuery(initialDiscoveryQuery)).some(ids => ids.length)) {
+          // An unfiltered browse may reset after a real account switch.
+          // A filtered route MUST retain its persisted query across a transient
+          // signed-in context reset (notably a locale-reload startup), or the
+          // resumed read silently broadens to unrelated first-page results.
           queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
           discoveryQuery = normalizeLibraryDiscoveryQuery();
           lastDiscoveryRenderKey = '';
