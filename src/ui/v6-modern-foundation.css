@@ -361,7 +361,7 @@ body {
   .bq-top-actions { gap: 4px; }
   .bq-progress-chip,
   .bq-session-chip {
-    min-height: 40px;
+    min-height: 44px;
     padding-inline: 8px;
   }
   .bq-progress-chip small { display: none; }
