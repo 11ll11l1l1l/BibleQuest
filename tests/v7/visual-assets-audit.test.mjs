@@ -89,7 +89,7 @@ test('rejects an image with mismatched emotion queue ownership', async t => {
   await f.save();
   const result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
-  assert.match(result.errors.join('\n'), /queue owner/);
+  assert.match(result.errors.join('\n'), /agent ownership mismatch/);
 });
 
 test('detects untracked image files instead of silently publishing them', async t => {
