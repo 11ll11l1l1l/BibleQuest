@@ -156,6 +156,44 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       if (record.family === 'emotion' && width !== height) throw new Error('emotion art must be square');
       if (seenHashes.has(actualHash)) throw new Error('duplicate image bytes: ' + seenHashes.get(actualHash));
       seenHashes.set(actualHash, id);
+      // Every optional derivative is validated independently; the text-free master remains canonical.
+      const derivatives = [];
+      const variantIds = new Set();
+      if (record.variants !== undefined && !Array.isArray(record.variants))
+        throw new Error('variants must be an array');
+      for (const variant of record.variants || []) {
+        const kind = variant?.kind;
+        const locale = kind === 'with_text' ? variant.locale : null;
+        if (!['with_text', 'thumbnail'].includes(kind)) throw new Error('unknown visual variant kind');
+        if (kind === 'with_text' && (!/^[a-z]{2,3}(?:-[a-z]{2})?$/i.test(String(locale || ''))
+          || !String(variant.text || '').trim())) throw new Error('with_text variant missing locale or embedded text');
+        const key = kind + ':' + (locale || '');
+        if (variantIds.has(key)) throw new Error('duplicate visual variant: ' + key);
+        variantIds.add(key);
+        const path = variant.imagePath;
+        const extension = typeof path === 'string' ? path.split('.').pop()?.toLowerCase() : null;
+        const expectedSuffix = kind === 'thumbnail' ? '-thumbnail' : '-with-text-' + locale.toLowerCase();
+        if (!IMAGE_FORMATS.has(extension) || variant.format !== extension
+          || path !== '/v7/images/' + record.family + '/' + id + expectedSuffix + '.' + extension)
+          throw new Error('variant path/format/ID mismatch');
+        if (seenPaths.has(path)) throw new Error('duplicate variant path');
+        const file = resolve(root, 'public' + path);
+        if (!file.startsWith(imagesDir + sep)) throw new Error('variant escapes image directory');
+        const data = await readFile(file);
+        const hash = sha256(data);
+        if (variant.sha256 !== hash || variant.fileBytes !== data.length)
+          throw new Error('variant SHA-256 or bytes mismatch: ' + kind);
+        const actual = dimensions(data, extension);
+        if (variant.width !== actual.width || variant.height !== actual.height)
+          throw new Error('variant dimensions mismatch: ' + kind);
+        if (kind === 'thumbnail' && (actual.width > width || actual.height > height))
+          throw new Error('thumbnail exceeds master dimensions');
+        if (seenHashes.has(hash)) throw new Error('duplicate variant bytes: ' + seenHashes.get(hash));
+        seenHashes.set(hash, id + ':' + key);
+        seenPaths.add(path);
+        derivatives.push({ kind, src: path, width: actual.width, height: actual.height,
+          sha256: hash, ...(locale ? { locale, embeddedText: variant.text } : {}) });
+      }
       entries.push({
         assetId: id, contentType: record.contentType, contentId: record.contentId,
         family: record.family, visualRole: record.visualRole, src: imagePath,
@@ -168,7 +206,8 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
           sourceType: record.rights.sourceType,
           attribution: record.rights.attributionRequired ? (record.rights.attribution || '') : null
         },
-        fallbackKey: record.fallbackKey || record.family
+        fallbackKey: record.fallbackKey || record.family,
+        variants: derivatives
       });
     } catch (error) { errors.push(name + ': ' + error.message); }
   }
