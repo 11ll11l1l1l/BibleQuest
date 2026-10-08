@@ -26,7 +26,7 @@ function chip(item, selected, locale, registry) {
   const image = visual
     ? `<img loading="lazy" decoding="async" src="${escapeHtml(visual.src)}" alt="${escapeHtml(visual.alt)}" style="object-position:${Math.round(visual.focalPoint.x * 100)}% ${Math.round(visual.focalPoint.y * 100)}%">`
     : '';
-  return `<button type="button" class="bq-library-discovery__chip ${visual ? 'has-approved-art' : 'has-visual-fallback'}" data-library-discovery-kind="${item.kind}" data-library-discovery-id="${escapeHtml(item.id)}" aria-pressed="${String(selected.has(item.id))}" lang="${escapeHtml(labelLocale)}"><span class="bq-library-discovery__chip-art" aria-hidden="true">${image}</span><span class="bq-library-discovery__chip-label">${escapeHtml(label)}</span></button>`;
+  return `<button type="button" class="bq-library-discovery__chip ${visual ? 'has-approved-art' : 'has-visual-fallback'}" data-library-discovery-kind="${item.kind}" data-library-discovery-id="${escapeHtml(item.id)}" aria-pressed="${String(selected.has(item.id))}" lang="${escapeHtml(labelLocale)}"><span class="bq-library-discovery__chip-art">${image}</span><span class="bq-library-discovery__chip-label">${escapeHtml(label)}</span></button>`;
 }
 
 function section({ kind, title, items, selected, locale, registry }) {
