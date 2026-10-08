@@ -443,7 +443,7 @@ async function replaceFixtureWithSvg(f, xml) {
   f.record.imagePath = '/v7/images/emotion/' + ID + '.svg';
   f.record.format = 'svg';
   f.record.width = 800;
-  f.record.height = 512;
+  f.record.height = 800;
   f.record.fileBytes = buffer.length;
   f.record.sha256 = createHash('sha256').update(buffer).digest('hex');
   await f.save();
@@ -451,20 +451,20 @@ async function replaceFixtureWithSvg(f, xml) {
 
 test('allows self-contained SVG artwork with local paint-server fragments', async t => {
   const f = await fixture(t);
-  await replaceFixtureWithSvg(f, '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="512"><defs><linearGradient id="bg"><stop offset="0" stop-color="#fff"/></linearGradient></defs><rect width="800" height="512" fill="url(#bg)"/></svg>');
+  await replaceFixtureWithSvg(f, '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800"><defs><linearGradient id="bg"><stop offset="0" stop-color="#fff"/></linearGradient></defs><rect width="800" height="800" fill="url(#bg)"/></svg>');
   const result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'PASS', result.errors.join('\n'));
 });
 
 test('rejects remotely fetched fonts, CSS, and image references in approved SVG', async t => {
   const f = await fixture(t);
-  const prefix = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="512">';
+  const prefix = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800">';
   for (const payload of [
     '<style>@import url(https://attacker.example/a.css)</style>',
     '<style>@font-face {font-family:custom;src:url(https://attacker.example/a.woff)}</style>',
-    '<rect width="800" height="512" style="fill:url(https://attacker.example/texture.svg)"/>',
-    '<image href="https://attacker.example/photo.png" width="800" height="512"/>',
-    '<image href="data:image/svg+xml;base64,PHN2Zz4=" width="800" height="512"/>',
+    '<rect width="800" height="800" style="fill:url(https://attacker.example/texture.svg)"/>',
+    '<image href="https://attacker.example/photo.png" width="800" height="800"/>',
+    '<image href="data:image/svg+xml;base64,PHN2Zz4=" width="800" height="800"/>',
     '<use xlink:href="//attacker.example/asset.svg#shape"/>'
   ]) {
     await replaceFixtureWithSvg(f, prefix + payload + '</svg>');
@@ -477,8 +477,8 @@ test('rejects remotely fetched fonts, CSS, and image references in approved SVG'
 test('rejects XML stylesheet instructions and entity declarations in SVG art', async t => {
   const f = await fixture(t);
   for (const svg of [
-    '<?xml version="1.0"?><!DOCTYPE svg [ <!ENTITY external SYSTEM "file:///etc/passwd"> ]><svg width="800" height="512"></svg>',
-    '<?xml-stylesheet type="text/css" href="https://attacker.example/skin.css"?><svg width="800" height="512"></svg>'
+    '<?xml version="1.0"?><!DOCTYPE svg [ <!ENTITY external SYSTEM "file:///etc/passwd"> ]><svg width="800" height="800"></svg>',
+    '<?xml-stylesheet type="text/css" href="https://attacker.example/skin.css"?><svg width="800" height="800"></svg>'
   ]) {
     await replaceFixtureWithSvg(f, svg);
     const result = await auditV7VisualAssets(f.root);
