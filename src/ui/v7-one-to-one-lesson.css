@@ -176,6 +176,87 @@
   margin-inline: auto;
   padding: clamp(16px, 4.5vw, 28px);
 }
+/* A purposeful feature-local cover: keeps the invitation reachable, uses
+   source-backed art only when Lane D supplies it, and has a complete offline
+   fallback without confusing decorative visuals with Bible passages. */
+.bq-one2one-home__hero {
+  position: relative;
+  display: grid;
+  align-content: end;
+  isolation: isolate;
+  min-height: clamp(235px, 65vw, 350px);
+  overflow: hidden;
+  border-radius: var(--bq-radius-surface, 22px);
+  background: #173d46;
+  color: #fff;
+}
+.bq-one2one-home__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 82% 25%, rgba(215, 206, 164, .63), transparent 45%),
+    radial-gradient(ellipse at 22% 4%, rgba(87, 150, 153, .92), transparent 50%),
+    linear-gradient(139deg, #27646b 0%, #294b54 43%, #19323f 100%);
+}
+.bq-one2one-home__art-mark {
+  position: absolute;
+  width: min(75%, 345px);
+  aspect-ratio: 1;
+  top: -30%;
+  right: -5%;
+  border: 2px solid rgba(255, 245, 201, .28);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255, 245, 201, .045), 0 0 0 82px rgba(255, 245, 201, .035);
+}
+.bq-one2one-home__cover-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+}
+.bq-one2one-home__hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 4%, rgba(11, 27, 36, .35) 45%, rgba(12, 27, 35, .88) 100%);
+}
+.bq-one2one-home__hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: clamp(20px, 5vw, 35px);
+  max-width: 62ch;
+}
+.bq-one2one-home__eyebrow {
+  margin: 0 0 6px;
+  color: #ffedc2;
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: .085em;
+}
+.bq-one2one-home .bq-one2one-home__hero h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  font-size: clamp(2rem, 8vw, 3.4rem);
+  line-height: 1.1;
+}
+.bq-one2one-home .bq-one2one-home__hero p:not(.bq-one2one-home__eyebrow) {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1rem, 3.7vw, 1.1rem);
+  line-height: 1.52;
+  text-wrap: pretty;
+}
+@media (max-width: 360px) {
+  .bq-one2one-home__hero { min-height: 220px; }
+  .bq-one2one-home__hero-copy { padding: 18px; }
+}
+
 .bq-one2one-home .bq-one2one-home__header h1 {
   margin-bottom: 10px;
   color: var(--bq-text);
