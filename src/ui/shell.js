@@ -1,4 +1,5 @@
 import { iconSvg } from './icons.js';
+import { pressFeedback, pageTransition, cardReveal } from './motion.js';
 import { localization } from '../app/localization.js';
 
 const NAV = [
@@ -64,6 +65,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   root.querySelectorAll('[data-route-link]').forEach(link => {
     link.addEventListener('click', event => {
       event.preventDefault();
+      pressFeedback(link);
       onNavigate(link.dataset.routeLink);
     });
   });
@@ -85,8 +87,11 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const progressXp = root.querySelector('[data-progress-xp]');
   const progressStreak = root.querySelector('[data-progress-streak]');
   let cleanupPage = null;
+  let cleanupVisual = null;
 
   const releasePage = () => {
+    cleanupVisual?.();
+    cleanupVisual = null;
     const cleanup = cleanupPage;
     cleanupPage = null;
     cleanup?.();
@@ -105,6 +110,9 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
       const cleanup = page.mount?.(view);
       if (typeof cleanup === 'function') cleanupPage = cleanup;
       view.focus({ preventScroll: true });
+      const cancelPage = pageTransition(view);
+      const cancelHero = route === 'home' ? cardReveal(view.querySelector('.bq-hero')) : () => {};
+      cleanupVisual = () => { cancelPage(); cancelHero(); };
     },
     updateSession(session) {
       if (!sessionLabel || !sessionChip) return;
@@ -143,6 +151,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
         homeButton?.removeEventListener('click', home);
       };
       view.focus({ preventScroll: true });
+      cleanupVisual = pageTransition(view);
     },
     updateRecoveryDiagnostic(id, diagnostic) {
       const panel=view.querySelector('[data-recovery-id]');
