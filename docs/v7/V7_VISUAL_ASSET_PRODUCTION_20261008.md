@@ -240,3 +240,54 @@ The authorized recurring schedule is hourly in Asia/Tokyo for Visual Agents 1–
 **Do not self-disable, pause, delete, change to one-time, or set COUNT/UNTIL on any visual-agent task** because a generation failed, image was rejected, rate limit/timeout occurred, git write failed, output queue was temporarily empty, or a run budget was exhausted. A skipped/failed run must keep its hourly future schedule. At the start of a later run, resume from the first missing production-ready asset in the deterministic partition.
 
 For auditability every run reports: agent ID, next assignment, generated/rejected candidate count and reasons, production-ready asset ID if any, image and sidecar paths, committed SHA (only if verified), peer/scheduler liveness findings, and next-run recovery instructions. This is a best-effort peer watchdog; scheduler controls may be unavailable inside some runs, and prompts alone cannot guarantee platform liveness.
+
+
+## Three-output visual bundle (2026-10-08 user requirement)
+
+This section supersedes this document's older **"no baked-in titles" rule for the optional typography variant only**. The clean master remains text-free and is the default in-app asset. A completed bundle contains:
+
+1. **Clean master:** \`<asset-id>.webp\` (or the actual source format), linked through the existing top-level \`imagePath\`. No rasterized title or label.
+2. **Typography artwork:** \`<asset-id>-with-text-<locale>.webp\`. A deliberate, editorial title treatment using the exact reviewed text, not invented Scripture or pseudo-letters. Record the actual locale and text. Additional locales may have separate variants; never present a baked-English version as localized content.
+3. **Cropped thumbnail:** \`<asset-id>-thumbnail.webp\`. Clean/no text, focal-aware crop optimized for the swipe carousel. Do not crop off the emotion/subject.
+
+The clean master is the accessible, localized app default with live text. The with-text image is optional for editorial features, social/share artwork and explicitly appropriate branded cards. It **must not replace live localized text or be used as the sole place critical information exists**, consistent with the V7 UI/UX acceptance requirements. Small UI tiles should usually use the clean thumbnail. The original production quality and rights gates apply to **all three** outputs.
+
+A new image record may include a \`variants\` array:
+\`\`\`json
+[
+  {
+    "kind": "with_text",
+    "locale": "en",
+    "text": "Courage for Today",
+    "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.webp",
+    "format": "webp",
+    "width": 1024,
+    "height": 1024,
+    "fileBytes": 0,
+    "sha256": "exact-64-character-sha256"
+  },
+  {
+    "kind": "thumbnail",
+    "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.webp",
+    "format": "webp",
+    "width": 320,
+    "height": 320,
+    "fileBytes": 0,
+    "sha256": "exact-64-character-sha256"
+  }
+]
+\`\`\`
+
+The zeros and hash strings above are schema illustrations, **not valid production measurements**. Record real measured values only. Run \`node scripts/v7-visual-assets-audit.mjs\` before publishing; if a declared derivative is missing, altered, mislabeled, or duplicates an existing binary, the audit fails closed. Existing accepted records without variants remain valid until derivatives can be produced and independently QA'd.
+
+For a master already inside \`public/v7/images/<family>/\`, production workers with Pillow available may produce the two derivatives through:
+\`\`\`bash
+python scripts/v7-visual-asset-derivatives.py \
+  --master public/v7/images/emotion/bqv7-emotion-fear-01.webp \
+  --asset-id bqv7-emotion-fear-01 --family emotion \
+  --locale en --title "Courage for Today"
+\`\`\`
+
+This outputs the two derivative images and a JSON \`variants\` snippet. Add the snippet to the asset's matching sidecar only after reviewing actual typography, font glyphs, crop, localized semantics, readability at card size, and source revision. The script preserves the master. Do not claim a bundle is complete if only the master was committed. Workers should aim for one complete three-output bundle per run when conversion/typography tools are available, rather than three unrelated images. If derivative tooling fails, preserve and commit a **valid clean master and truthful original sidecar**, report partial-bundle status, and retry derivatives in a later run; do not fabricate derivative sidecars.
+
+Do not have parallel workers edit a shared asset manifest. \`scripts/v7-visual-assets-audit.mjs --write <output>\` deterministically emits the combined manifest after validating every present binary. Lane D retains runtime wiring and release gate ownership.
