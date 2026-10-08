@@ -3,6 +3,7 @@
 Updated: 2026-10-08 JST
 Status: ACTIVE — production contract for the five V7 image agents
 Parent UI authority: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
+Creative direction reference for unfilled Feeling/Need scenes: `docs/v7/V7_IMAGE_GENERATION_SCENE_BRIEFS_20261008.md` (source-of-ideas only; check live records and exact taxonomy first; no production artwork implied).
 
 ## Purpose
 
