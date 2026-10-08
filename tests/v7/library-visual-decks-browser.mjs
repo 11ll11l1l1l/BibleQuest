@@ -72,6 +72,8 @@ try {
     });
     assert(fullCardHit.widthGap <= 4 && fullCardHit.heightGap <= 4, 'published image card has a small hit target');
     assert(fullCardHit.accessibleName?.includes('Courage for Today'), 'full-card button lacks accessible title');
+    assert((await page.locator('.bq-v7-content-card__action').textContent())?.includes('Courage for Today'),
+      'full-card action lost localized title needed by authenticated Library regression');
     assert(fullCardHit.heading === 'Courage for Today', 'semantic card heading disappeared');
     await page.locator('.bq-v7-content-card').scrollIntoViewIfNeeded();
     const coverBounds = await page.locator('.bq-v7-content-card__cover').boundingBox();
