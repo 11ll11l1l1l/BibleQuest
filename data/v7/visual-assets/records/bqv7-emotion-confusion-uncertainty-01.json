@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-confusion-uncertainty-01",
+  "agentId": "visual-agent-3",
+  "createdAt": "2026-10-08T04:08:04.086Z",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "confusion_uncertainty",
+  "concept": "A commuter hesitates at two opposing routes, visually expressing uncertainty about which way to go.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 112688,
+  "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2",
+  "focalPoint": {
+    "x": 0.5,
+    "y": 0.42
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "b2deaa5f-0f97-488f-97a9-cab1206e72d6",
+    "prompt": "",
+    "description": "At twilight, a contemplative young adult with a dark backpack stands on an elevated urban walkway, seen from behind with one hand near the chin, facing a signpost and two diverging ramps. The left route curves toward a warm, bustling skyline filled with golden lights and silhouetted commuters, while the cooler, quieter right path leads past trees toward a dimmer city and distant hills beneath a moody, cloud-streaked sky.",
+    "notes": "Generation tool returned an empty prompt field. Third distinct candidate accepted after rejecting a near-duplicate mountain crossroads and a desk scene with fake text/ambiguous emotion. Source 1536x1024 PNG, center crop x=256..1280 to 1024x1024, converted to WebP quality 86."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated visual; no third-party artwork supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A commuter pauses beneath two opposing blank directional signs where an elevated city walkway splits into two different routes at dusk."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "rightsClear": true,
+    "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices."
+  }
+}
