@@ -89,3 +89,7 @@ The five **Visual Agents 1–5 are producers under Lane A**, not substitutes for
 - **D:** deliver component spec and generic runtime resolver ASAP (accept A's versioned registry contract); implement **global** Home/Bible/Reader/navigation/typography and existing #1346 mobile/guest/offline fixes + #1348 strict gate; **B owns the new Library decks**, not D. Run automated screenshot/accessibility/asset/perf preview gates and serialize compatible lane merges.
 
 This is a **work assignment and acceptance contract**, not evidence that its implementation is already finished.
+
+## 9. Added V7 motion ownership and dependencies (2026-10-08)
+
+The user approved polished but restrained animations as part of V7. **Read `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md` alongside this document.** P0: responsive global navigation/card transitions and motion tokens/reduced-motion fallback (**D**); the two independently swipeable/spring-settling Library Feeling/Need decks, focused card reveals and stable Content Review (**B**); state-safe ONE 2 ONE lesson/step transitions (**C**); audited CLEAN/TYPE/THUMB originals and optional static-safe focal hints, without new mandatory motion assets (**A**). B and C work independently against D's interface and static mocks. D certifies normal/reduced-motion interaction, focus, mobile widths, cancellation, PWA/offline and perf against exact release SHA. P1 mild reveal/zoom is conditional; cinematic independently moving scenery is P2/non-blocking. No new overlapping ownership or human pre-release blockers are introduced.
