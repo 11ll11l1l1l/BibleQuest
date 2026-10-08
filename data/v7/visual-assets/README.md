@@ -26,3 +26,9 @@ Run `node scripts/v7-visual-assets-audit.mjs --manifest --write /tmp/bqv7-visual
 The `--write` output is derived; do not have the five visual agents edit it, and do not manually maintain a shared manifest. Lane D should invoke the audit and generate its runtime asset index during its existing build/release job, then wire the registry to cards and the emotion carousel. The runtime should only consume generated output after a passing audit, not raw unvalidated sidecars. Human-facing titles and Scripture remain localized live text, never baked into assets.
 
 Run `node --test tests/v7/visual-assets-audit.test.mjs` for focused validation regression coverage. The visual audit checks **metadata integrity, not subjective aesthetic quality**: the existing image-generation QC still applies, and Lane B retains independent rights/content approval gates.
+
+### Clean / typography / thumbnail variants
+
+The canonical master remains free of baked text and includes `imagePath`. A production artist can additionally create a rights-checked title artwork (`kind: with_text`, exact `locale` + `text`) and focal-safe cropped tile (`kind: thumbnail`). Record both under the same asset's optional `variants` array; do not maintain separate competing records for the same underlying scene. See the three-output bundle section of `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`.
+
+The visual registry audit verifies every committed derivative's dimensions, bytes, hash and path before exposing it in the deterministic `byContent` registry. The title-art variant is supplemental; in-app content titles, metadata and translations remain live accessible text.
