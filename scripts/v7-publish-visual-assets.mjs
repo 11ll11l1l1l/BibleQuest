@@ -25,6 +25,7 @@ export async function publishV7VisualAssets({ root = REPO_ROOT, outDir } = {}) {
   const outputRoot = resolve(outDir);
   const stagingRoot = await mkdtemp(join(tmpdir(), 'bqv7-audited-visual-'));
   const stagedPaths = new Set();
+  const quarantined = [];
   try {
     const records = join(sourceRoot, 'data/v7/visual-assets/records');
     const queues = join(sourceRoot, 'data/v7/visual-assets/queues');
@@ -36,9 +37,14 @@ export async function publishV7VisualAssets({ root = REPO_ROOT, outDir } = {}) {
     for (const name of (await readdir(records)).filter(n => n.endsWith('.json'))) {
       const source = join(records, name);
       const record = JSON.parse(await readFile(source, 'utf8'));
+      // Schema 2 describes image-agent working bundles, even when the agent
+      // marked a draft "production_ready". Only Lane A audited schema 1 may ship.
+      if (record.schemaVersion !== 1) {
+        quarantined.push(name);
+        continue;
+      }
       if (record.status !== 'production_ready') continue;
-      // Other asset-agent derivative bundles are staging-only, not publication records.
-      if (record.schemaVersion !== 1 || name !== record.assetId + '.json') {
+      if (name !== record.assetId + '.json') {
         throw new Error('Malformed V7 production-ready sidecar: ' + name);
       }
       const destination = join(stagingRoot, 'data/v7/visual-assets/records', name);
@@ -74,7 +80,8 @@ export async function publishV7VisualAssets({ root = REPO_ROOT, outDir } = {}) {
     const manifest = join(outputRoot, MANIFEST_PATH);
     await mkdir(dirname(manifest), { recursive: true });
     await writeFile(manifest, JSON.stringify(result.manifest) + '\n');
-    return Object.freeze({ approved: result.manifest.assets.length, files: verifiedPaths.size, manifest: MANIFEST_PATH });
+    return Object.freeze({ approved: result.manifest.assets.length, files: verifiedPaths.size,
+      quarantined: Object.freeze(quarantined.sort()), manifest: MANIFEST_PATH });
   } finally {
     await rm(stagingRoot, { recursive: true, force: true });
   }
