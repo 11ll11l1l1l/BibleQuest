@@ -16,8 +16,16 @@ async function fixture(t) {
   const queues = join(root, 'data/v7/visual-assets/queues');
   const images = join(root, 'public/v7/images/emotion');
   await Promise.all([mkdir(records, { recursive: true }), mkdir(queues, { recursive: true }), mkdir(images, { recursive: true })]);
-  await writeFile(join(queues, 'visual-agent-1.json'),
-    JSON.stringify({ schemaVersion: 1, agentId: 'visual-agent-1', initialQueue: ['anxiety_worry', 'fear'] }));
+  const queuesByAgent = [
+    ['anxiety_worry', 'fear', 'sadness', 'grief_loss', 'loneliness', 'anger'],
+    ['hurt_betrayal', 'rejection', 'guilt', 'shame', 'insecurity_unworthiness', 'doubt'],
+    ['confusion_uncertainty', 'discouragement', 'hopelessness', 'overwhelm', 'stress', 'tiredness_weariness'],
+    ['spiritual_dryness_distance', 'temptation', 'impatience_waiting', 'jealousy_envy', 'frustration', 'numbness_emptiness'],
+    ['joy', 'gratitude', 'peace_contentment', 'hope', 'excitement', 'love_connection']
+  ];
+  await Promise.all(queuesByAgent.map((initialQueue, index) =>
+    writeFile(join(queues, 'visual-agent-' + (index + 1) + '.json'),
+      JSON.stringify({ schemaVersion: 1, agentId: 'visual-agent-' + (index + 1), initialQueue }))));
   const imagePath = join(images, ID + '.png');
   const metadataPath = join(records, ID + '.json');
   const record = {
@@ -49,6 +57,10 @@ test('builds deterministic, rights-aware lookup and next agent assignment', asyn
   assert.equal(first.counts.productionReady, 1);
   assert.equal(first.queues[0].next, 'fear');
   assert.deepEqual(first.manifest.byContent['emotion:anxiety_worry'], [ID]);
+  assert.deepEqual(first.manifest.byContent['emotion:anxious'], [ID]);
+  assert.equal(first.manifest.assets[0].canonicalContentId, 'anxious');
+  assert.equal(first.manifest.assets[0].queueConcept, 'anxiety_worry');
+  assert.equal(first.counts.emotionQueueTotal, 30);
   assert.equal(first.manifest.assets[0].src, '/v7/images/emotion/' + ID + '.png');
   assert.equal(first.manifest.assets[0].rights.sourceType, 'generated');
 });
@@ -212,4 +224,27 @@ test('reported V2 full bundle fails closed when THUMB is absent', async t => {
   const result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
   assert.match(result.errors.join('\n'), /bundleStatus disagrees/);
+});
+
+test('rejects conflicting visual canonical ID instead of publishing a wrongly tagged feeling', async t => {
+  const f = await fixture(t);
+  f.record.canonicalEmotionId = 'afraid';
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /queue\/canonical ID\/agent ownership mismatch/);
+});
+
+test('canonical emotion stored as contentId still resolves its original image-agent queue', async t => {
+  const f = await fixture(t);
+  f.record.contentId = 'anxious';
+  f.record.queueConcept = 'anxiety_worry';
+  f.record.canonicalEmotionId = 'anxious';
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.deepEqual(result.manifest.byContent['emotion:anxious'], [ID]);
+  assert.deepEqual(result.manifest.byContent['emotion:anxiety_worry'], [ID]);
+  assert.equal(result.queues[0].completed, 1);
+  assert.equal(result.queues[0].next, 'fear');
 });
