@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-sadness-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-09T00:55:45+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_files_present_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "sadness",
+  "queueConcept": "sadness",
+  "canonicalEmotionId": "sad",
+  "concept": "Sadness after a difficult day: a woman curled up on a wet park bench above a riverfront city, with overcast light and autumn foliage",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 181120,
+  "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+  "focalPoint": {
+    "x": 0.42,
+    "y": 0.51
+  },
+  "textSafeRegion": "right",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "sad",
+    "locale": "en",
+    "exactLabel": "Sad",
+    "reference": "Psalm 34:18",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "7cc2a17d-d648-4d3e-8742-8e6a325de6f9",
+    "sourceFile": "a_composite_collage_portfolio_style_image_with_thr.png",
+    "description": "Text-free left panel extracted from an original generated collage; all other panels excluded; independent editorial TYPE and THUMB composed with Pillow",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright (Noto Serif Display); raster glyphs only, no font redistributed",
+    "scriptureTextIncluded": false,
+    "referenceSource": "src/features/library/emotion-taxonomy.js"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A sad young woman sits curled up on a rain-darkened park bench beneath autumn leaves, overlooking a city river and bridge."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 181120,
+      "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+      "gitBlobSha": "275339542e52f16debfe608eedb21b1f2e13a56f",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.42,
+        "y": 0.51
+      },
+      "altText": "A sad young woman sits curled up on a rain-darkened park bench beneath autumn leaves, overlooking a city river and bridge.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 212178,
+      "sha256": "38935ff9099d5d8791f3b2ba2941e8a6fae4dd4f360472d81e6cd3edbb0a0d0e",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-sadness-01-with-text-en.webp",
+      "gitBlobSha": "12ee382fd2da8b882ae40973acdc850e7f029854",
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Sad",
+        "scriptureReference": "Psalm 34:18",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif Display SemiBold"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "method": "Rasterized lettering on generated photograph",
+        "decorativeCalligraphicFlourish": true,
+        "fontFilesRedistributed": false
+      },
+      "altText": "A sad young woman sits curled up on a rain-darkened park bench beneath autumn leaves, overlooking a city river and bridge. Embedded English words: Sad; Psalm 34:18.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "browserRenderedAt320390430": true
+      },
+      "fallback": "CLEAN plus accessible localized live text"
+    },
+    {
+      "kind": "THUMB",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 54632,
+      "sha256": "9aaf5d26a11e8263c296c3272ec022a807b6fe31cbd4749dd6e69d273175643a",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-sadness-01-thumbnail.webp",
+      "gitBlobSha": "52b6485e92ad86d5a3c21fdd27f78530af49bfcc",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.42,
+        "y": 0.51
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 36,
+          "top": 0,
+          "right": 855,
+          "bottom": 1024
+        },
+        "targetAspect": "4:5",
+        "method": "Pillow Lanczos focal-safe crop from CLEAN"
+      },
+      "altText": "A sad woman rests her head on folded arms while seated on a park bench.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "browserRenderedAt320390430": true
+      }
+    }
+  ],
+  "qc": {
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "builtAppBrowserQA": "pending",
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "sceneDiversity": "Outdoor rainy autumn park bench, woman, riverfront skyline, overcast daylight; distinct from indoor anxiety bedroom and fear doorway.",
+    "exactFilesChromiumRenderedAt320390430": true
+  },
+  "inspectionEvidence": {
+    "localDecoding": "Pillow WebP decode of all three real files",
+    "actual320Preview": "/mnt/data/bqv7-agent1-sadness-20261009/type-preview-320.png",
+    "actualThumbPreview": "/mnt/data/bqv7-agent1-sadness-20261009/thumb-preview-384.png",
+    "builtApp": "not run",
+    "officialNodeAudit": "not run",
+    "note": "Do not promote to production_ready until independent visual and built-app QA and official Node audit complete.",
+    "localChromium": {
+      "passed": true,
+      "engine": "Chromium via Playwright set_content with original WebP data URI (isolated local, not app)",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "variants": [
+        "CLEAN",
+        "TYPE",
+        "THUMB"
+      ],
+      "checks": [
+        "decoded",
+        "natural dimensions",
+        "no horizontal overflow"
+      ],
+      "screenshotType": "browser-type-320.png",
+      "screenshotThumb": "browser-thumb-320.png"
+    },
+    "actual320TypeVisualInspection": "Sad and Psalm 34:18 are correctly spelled and readable at 320px; no Bible prose.",
+    "actual384ThumbVisualInspection": "Subject face and curled pose visible, no text, crop does not cut head or feet."
+  }
+}
