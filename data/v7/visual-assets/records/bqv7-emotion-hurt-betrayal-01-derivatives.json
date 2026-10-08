@@ -14,7 +14,7 @@
   "width": 1024,
   "height": 1280,
   "fileBytes": 146831,
-  "sha256": "4b4aaf681dda24c3e5f90f9020041d55b12c2b7ddafc682d10980044f1a95564",
+  "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.31,
@@ -63,7 +63,7 @@
       "width": 1024,
       "height": 1280,
       "fileBytes": 146831,
-      "sha256": "4b4aaf681dda24c3e5f90f9020041d55b12c2b7ddafc682d10980044f1a95564",
+      "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
       "sourceType": "generated",
       "locale": "en",
       "includedWording": "Hurt / betrayed",
@@ -79,7 +79,12 @@
         "method": "Self-contained SVG editorial portrait with embedded original WebP",
         "fontFamily": "Georgia / Times New Roman, italic serif accent",
         "fontFilesDistributed": false,
-        "fontLicenseEvidence": "No font files embedded or redistributed; system font rendering requires browser QA"
+        "fontLicenseEvidence": "No font files embedded or redistributed; system font rendering requires browser QA",
+        "referenceFontPxAtNative": 48,
+        "referenceNominalPxAt320": 15,
+        "referenceBaselineY": 342,
+        "referenceMobileReadability": "render_qa_pending",
+        "geometryAdjustment": "Raised reference font from 26 to 48 native px and moved baseline 315 to 342; nominal 15px at 320px-wide card. Actual browser font rendering and visual legibility not certified."
       },
       "focalPoint": {
         "x": 0.31,
@@ -103,7 +108,8 @@
         "sourceEmbeddedWebpBytesVerified": true,
         "svgSafetyInspected": true,
         "typeReadableAt320px": "pending",
-        "fontRenderQA": "pending"
+        "fontRenderQA": "pending",
+        "referenceGeometryReviewed": true
       },
       "embeddedWording": {
         "label": "Hurt / betrayed",
@@ -168,7 +174,7 @@
     "variantHashesMeasured": true,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Revised 4:5 TYPE artwork with verified original WebP embedded. Typography, browser rendering and thumbnail crop remain pending independent QA; no production promotion."
+    "notes": "TYPE Scripture-reference lettering increased for nominal mobile readability. Existing CLEAN master preserved; SVG source image identity previously checked. Exact browser rendering and THUMB crop QA still pending; candidate not production certified."
   },
   "productionCertified": false,
   "wordingEvidence": {
