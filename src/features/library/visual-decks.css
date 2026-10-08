@@ -182,22 +182,41 @@
   color: inherit;
   opacity: .85;
 }
-.bq-v7-content-card__action {
-  min-height: 48px;
-  margin-top: 8px;
-  padding: 10px 16px;
-  border: 2px solid var(--green, #16735d);
-  border-radius: 12px;
-  background: var(--green, #16735d);
-  color: #fff;
-  text-align: center;
+/* One large native button covers the entire published card. The heading and
+   metadata remain semantic siblings rather than invalid block children of a button. */
+.bq-v7-content-card { position: relative; }
+.bq-v7-content-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 44px;
+  margin-top: 6px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 750;
+  color: var(--green, #16735d);
+}
+.bq-v7-content-card__action {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  font-size: 0;
   cursor: pointer;
 }
+.bq-v7-content-card:hover,
+.bq-v7-content-card:focus-within {
+  border-color: var(--green, #16735d);
+}
 .bq-v7-content-card__action:focus-visible {
-  outline: 3px solid var(--ink, #172b2b);
-  outline-offset: 3px;
+  outline: 3px solid var(--green, #16735d);
+  outline-offset: -4px;
 }
 @media (min-width: 720px) {
   .bq-v7-content-card { grid-template-columns: minmax(160px, .85fr) minmax(0, 1fr); }
