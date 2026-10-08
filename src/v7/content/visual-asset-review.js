@@ -6,6 +6,12 @@ const refs = value => Array.isArray(value) && value.length > 0 && value.every(no
 const validDate = value => nonempty(value) && Number.isFinite(Date.parse(value));
 const exact = value => String(value ?? '').normalize('NFC').trim();
 const locales = new Set(['en', 'tl', 'ceb', 'ilo']);
+// The canonical content-import schema uses FIL; the visual display contract uses TL.
+// Both refer to Tagalog and must not be treated as distinct image languages.
+const canonicalLocale = value => {
+  const locale = exact(value).toLowerCase();
+  return locale === 'fil' ? 'tl' : locale;
+};
 const knownKinds = new Set(['with_text', 'thumbnail']);
 const assetsFor = item => item?.visualAssets ?? item?.visual_assets ?? item?.body?.visualAssets ?? item?.body?.visual_assets;
 
@@ -30,14 +36,18 @@ function validRights(rights) {
 }
 
 function expectedTypography(item, variant) {
-  const locale = exact(variant.locale).toLowerCase();
+  const locale = canonicalLocale(variant.locale);
   const kind = variant.textKind || 'title';
   if (kind === 'title') {
-    if (locale === exact(item.sourceLocale || 'en').toLowerCase()) return exact(item.title);
-    return exact((item.translations || []).find(row => exact(row.locale).toLowerCase() === locale)?.title);
+    if (locale === canonicalLocale(item.sourceLocale || 'en'))
+      return exact(item.sourceContent?.title ?? item.title);
+    const translated = (item.translations || []).find(row => canonicalLocale(row.locale) === locale
+      && (row.translatedFromRevision === undefined || row.translatedFromRevision === item.revision));
+    return exact(translated?.content?.title ?? translated?.title);
   }
   if (kind !== 'scripture') return '';
-  const passage = item.reviewEvidence?.approvedScriptureExcerpts?.[locale];
+  const passages = item.reviewEvidence?.approvedScriptureExcerpts || {};
+  const passage = passages[locale] || (locale === 'tl' ? passages.fil : null);
   if (!passage || passage.revision !== item.revision || passage.rightsVerified !== true
     || !refs(passage.evidenceRefs) || !nonempty(passage.reference)
     || !nonempty(passage.translation) || variant.reference !== passage.reference
@@ -66,6 +76,7 @@ export function evaluateV7VisualAssetGates(item) {
       continue;
     }
     const id = exact(asset.assetId || asset.id);
+    if (!id) rejectionReasons.push(`${prefix}_id_missing`);
     if (id && ids.has(id)) rejectionReasons.push(`${prefix}_duplicate_id`);
     if (id) ids.add(id);
     const source = asset.source && typeof asset.source === 'object' ? asset.source : {};
@@ -95,16 +106,19 @@ export function evaluateV7VisualAssetGates(item) {
       if (!variant || typeof variant !== 'object' || Array.isArray(variant) || !knownKinds.has(variant.kind)) {
         rejectionReasons.push(`${keyPrefix}_invalid`);continue;
       }
-      const locale = exact(variant.locale).toLowerCase();
+      const rawLocale = exact(variant.locale).toLowerCase();
+      const locale = canonicalLocale(rawLocale);
       const variantKey = variant.kind + ':' + (variant.kind === 'with_text' ? locale : '');
       if (keys.has(variantKey)) rejectionReasons.push(`${keyPrefix}_duplicate_kind_locale`);
       keys.add(variantKey);
       if (!validMeasurements(variant)) repairReasons.push(`${keyPrefix}_integrity_incomplete`);
       else if (paths.has(variant.imagePath) || variant.imagePath === asset.imagePath) rejectionReasons.push(`${keyPrefix}_duplicate_path`);
       else paths.add(variant.imagePath);
-      const suffix = variant.kind === 'thumbnail' ? '-thumbnail.' : '-with-text-' + locale + '.';
-      if (nonempty(asset.imagePath) && nonempty(variant.imagePath) &&
-        !variant.imagePath.startsWith(asset.imagePath.slice(0,asset.imagePath.lastIndexOf('.')) + suffix))
+      const suffix = variant.kind === 'thumbnail' ? '-thumbnail' : '-with-text-' + rawLocale;
+      const masterStem = asset.imagePath?.slice(0,asset.imagePath.lastIndexOf('.')) || '';
+      const extension = variant.imagePath?.split('.').pop();
+      if (nonempty(masterStem) && nonempty(variant.imagePath) &&
+        variant.imagePath !== `${masterStem}${suffix}.${extension}`)
         rejectionReasons.push(`${keyPrefix}_path_mismatch`);
       if (!sha256(asset.sha256) || variant.derivedFromSha256 !== asset.sha256)
         repairReasons.push(`${keyPrefix}_clean_binding_incomplete`);
@@ -133,7 +147,7 @@ export function evaluateV7VisualAssetGates(item) {
         if (qa.result === 'fail' || (nonempty(qa.observedText) && exact(qa.observedText) !== expected))
           rejectionReasons.push(`${keyPrefix}_rendered_text_mismatch`);
         else if (qa.result !== 'pass' || exact(qa.observedText) !== expected ||
-          qa.locale !== locale || qa.sourceRevision !== item.revision ||
+          canonicalLocale(qa.locale) !== locale || qa.sourceRevision !== item.revision ||
           qa.imageSha256 !== variant.sha256 || !validDate(qa.checkedAt) ||
           !nonempty(qa.evaluator) || !refs(qa.evidenceRefs))
           repairReasons.push(`${keyPrefix}_typography_qa_incomplete`);
