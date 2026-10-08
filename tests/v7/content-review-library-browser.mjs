@@ -22,6 +22,10 @@ async function mountedLibraryReview() {
     document.getElementById('review-test-root')?.remove();
     const root = document.createElement('main');
     root.id = 'review-test-root';
+    // Exercise the protected Content Review surface in an isolated mobile viewport.
+    // The running app shell uses fixed navigation; without an overlay the app can
+    // intercept real Playwright pointer events on review pagination controls.
+    root.style.cssText = 'position:fixed;inset:0;z-index:2147483647;box-sizing:border-box;overflow:auto;padding:8px;background:var(--paper,#fff);color:var(--ink,#172b2b);';
     document.body.append(root);
     const { contentReviewPage } = await import(moduleUrl);
 
