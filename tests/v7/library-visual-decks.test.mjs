@@ -85,3 +85,30 @@ test('cover-led cards cannot expose unapproved or rights-unknown Library content
   assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'unknown', allowedUses: ['display'] } }), /rights-verified published/);
   assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'verified', allowedUses: [] } }), /rights-verified published/);
 });
+
+
+test('only matching BibleQuest devotional emotion themes reuse audited CLEAN artwork', () => {
+  const manifest = assetsManifest();
+  const shared = resolveV7LibraryVisual(manifest, 'devotional', 'devotional.biblequest.anxiety_worry.01');
+  assert.equal(shared.assetId, 'bqv7-emotion-anxiety-worry-01');
+  assert.equal(shared.src, '/v7/images/emotion/anxiety.webp');
+  assert.equal(shared.type, 'shared_emotion_theme');
+  assert.equal(resolveV7LibraryVisual(manifest, 'devotional', 'devotional.biblequest.sadness.01').src, '');
+  assert.equal(resolveV7LibraryVisual(manifest, 'devotional', 'devotional.other.anxiety_worry.01').src, '');
+  assert.equal(resolveV7LibraryVisual(manifest, 'devotional', 'devotional.biblequest.anxiety_worry.01-extra').src, '');
+});
+
+test('an explicitly approved devotional cover takes precedence over shared thematic art', () => {
+  const registry = assetsManifest();
+  const own = {
+    assetId: 'bqv7-devotional-anxiety-worry-01', contentType: 'devotional',
+    contentId: 'devotional.biblequest.anxiety_worry.01',
+    src: '/v7/images/devotional/approved-cover.webp', sha256: SHA,
+    alt: 'Approved original cover',
+  };
+  registry.assets.push(own);
+  registry.byContent['devotional:devotional.biblequest.anxiety_worry.01'] = [own.assetId];
+  const visual = resolveV7LibraryVisual(registry, 'devotional', own.contentId);
+  assert.equal(visual.src, own.src);
+  assert.equal(visual.type, 'clean');
+});
