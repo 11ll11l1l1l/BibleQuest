@@ -438,7 +438,7 @@ test('rejects V2 Need variants falsely claiming reviewed typography or containin
 async function replaceFixtureWithSvg(f, xml) {
   const buffer = Buffer.from(xml, 'utf8');
   const path = join(f.images, ID + '.svg');
-  await rm(f.imagePath);
+  await rm(f.imagePath, { force: true });
   await writeFile(path, buffer);
   f.record.imagePath = '/v7/images/emotion/' + ID + '.svg';
   f.record.format = 'svg';
