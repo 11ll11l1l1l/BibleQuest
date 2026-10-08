@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-hope-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-08T18:12:25+09:00",
+  "status": "three_files_created_pending_browser_QA",
+  "bundleStatus": "complete_three_files_pending_built_app_QA",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "hopeful",
+  "queueConcept": "hope",
+  "concept": "Hope after rain: a young woman tends a new seedling in a greenhouse, symbolizing active renewal rather than passive sunset optimism",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hope-01.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 6067,
+  "sha256": "3bc71e0310a90154892b7017788a9e7e4752402c6e8d91151b5d39ece2b23e58",
+  "focalPoint": {
+    "x": 0.49,
+    "y": 0.55
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "width": 1024,
+      "height": 1024,
+      "focalPoint": {
+        "x": 0.49,
+        "y": 0.55
+      },
+      "cropIntent": "Original square illustration, plant and woman's face retained",
+      "altText": "A hopeful woman tends a young green seedling in a terracotta pot in a greenhouse after rain.",
+      "embeddedWording": null,
+      "fileBytes": 6067,
+      "sha256": "3bc71e0310a90154892b7017788a9e7e4752402c6e8d91151b5d39ece2b23e58",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-01.svg",
+      "format": "svg",
+      "qa": {
+        "svgStructuralValidation": "pending_commit_readback",
+        "visualReview": "source composition reviewed against local analogous vector preview",
+        "wordingVerified": false,
+        "scriptureReferenceOnly": false,
+        "noBakedText": true,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "width": 1024,
+      "height": 1280,
+      "focalPoint": {
+        "x": 0.49,
+        "y": 0.62
+      },
+      "cropIntent": "Full square illustration beneath 256px editorial heading; 4:5 portrait",
+      "altText": "A woman tends a green seedling in a greenhouse. Embedded English words: Hopeful; Romans 15:13.",
+      "embeddedWording": {
+        "label": "Hopeful",
+        "scriptureReference": "Romans 15:13",
+        "scriptureTextIncluded": false
+      },
+      "fileBytes": 6635,
+      "sha256": "efe1c3af826f736d1cdd55825411bcaf830ba779acf8c3adaa832a942bb0fe41",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-01-with-text-en.svg",
+      "format": "svg",
+      "qa": {
+        "svgStructuralValidation": "pending_commit_readback",
+        "visualReview": "source composition reviewed against local analogous vector preview",
+        "wordingVerified": true,
+        "scriptureReferenceOnly": true,
+        "noBakedText": false,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "width": 384,
+      "height": 480,
+      "focalPoint": {
+        "x": 0.48,
+        "y": 0.55
+      },
+      "cropIntent": "4:5 viewBox crop from source x=102..921, y=0..1024, retaining face and seedling",
+      "altText": "A woman smiles gently toward a new seedling in a greenhouse.",
+      "embeddedWording": null,
+      "fileBytes": 6066,
+      "sha256": "2e3ee99ba9f7e01593ab1000fdc337a3ebcb1fd3ee483ea669146649fdf1f053",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-01-thumbnail.svg",
+      "format": "svg",
+      "qa": {
+        "svgStructuralValidation": "pending_commit_readback",
+        "visualReview": "source composition reviewed against local analogous vector preview",
+        "wordingVerified": false,
+        "scriptureReferenceOnly": false,
+        "noBakedText": true,
+        "builtAppBrowserQA": "pending"
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "hopeful",
+    "locale": "en",
+    "exactLabel": "Hopeful",
+    "scriptureReference": "Romans 15:13",
+    "scriptureTextIncluded": false,
+    "translation": null,
+    "translationRevision": null
+  },
+  "generation": {
+    "provider": "original programmatic vector drawing",
+    "method": "Hand-authored SVG geometry/gradients; independent 1:1 CLEAN, 4:5 TYPE, 4:5 focal-cropped THUMB",
+    "imageGenerationAttempts": 3,
+    "imageGenerationRejected": 3,
+    "reasons": [
+      "Generated a gratitude grocery-delivery triptych, not hope",
+      "Repeated gratitude grocery-delivery triptych and invented file metrics within image",
+      "Near-duplicate gratitude grocery-delivery triptych; semantic mismatch"
+    ],
+    "sourceImageModelOutputUsed": false
+  },
+  "rights": {
+    "sourceType": "original_programmatic_vector",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original hand-authored SVG shapes; no third-party artwork",
+    "fontFamilies": [
+      "Georgia or device serif fallback"
+    ],
+    "fontFilesDistributed": false,
+    "fontRights": "No fonts embedded or redistributed; browser/system serif is selected",
+    "scripture": "Reference only; no quoted Scripture wording"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A hopeful woman tends a new seedling in a greenhouse after rain.",
+    "fallback": "CLEAN with live localized label for tl, ceb, ilo and other locales without independent TYPE; English TYPE only for en",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "duplicateSceneChecked": true,
+    "distinctFromJoyGratitudePeace": true,
+    "sourceVectorRenderedAnalogousPreview": true,
+    "realSvgDimensions": true,
+    "sha256CalculatedFromExactUtf8": true,
+    "threeSeparateFiles": true,
+    "anatomy": "stylized illustration, not photorealistic anatomy",
+    "fontNotEmbedded": true,
+    "builtAppBrowserQA": "pending",
+    "visualAuditScript": "not_run"
+  }
+}
