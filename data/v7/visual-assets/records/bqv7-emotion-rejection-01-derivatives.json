@@ -202,6 +202,30 @@
     "localStaticChecks": "passed",
     "browserRenderedVisualQA": "pending",
     "reason": "CLEAN image inspected; THUMB SVG crop geometry checked but actual browser-rendered portrait not yet inspected. TYPE font rendering remains pending.",
-    "localReferenceGeometry": "nominal 46/1024*320=14.375px; full 320px browser render still pending"
+    "localReferenceGeometry": "nominal 46/1024*320=14.375px; full 320px browser render still pending",
+    "independentRepositoryBinaryAudit": {
+      "checkedAt": "2026-10-08T22:58:15+09:00",
+      "source": "live v7/development GitHub blob readback; independent JavaScript SHA-256 and UTF-8/base64 byte counts",
+      "CLEAN": {
+        "fileBytes": 65046,
+        "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+        "gitBlobSha": "3ef260dcf1bcb22e421e4cccb02645439233d30c",
+        "matchesRecord": true
+      },
+      "TYPE": {
+        "fileBytes": 88016,
+        "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+        "gitBlobSha": "bfc2a1807d2818fb5d8f308eed694b5ae81599ed",
+        "matchesRecord": true
+      },
+      "THUMB": {
+        "fileBytes": 87498,
+        "sha256": "b84eff663cd0190569b623b665ccb2b629e96d199bfa716a7182e8c9bd55a334",
+        "gitBlobSha": "f8d7f2599183f349e0f622c4c7e6f6e63f4029dc",
+        "matchesRecord": true
+      },
+      "embeddedCleanIdentityMatches": true,
+      "limitations": "SVG encoded dimensions/geometry checked from markup only. Full TYPE and THUMB browser rendering and 320px visual QA not performed; no production promotion."
+    }
   }
 }
