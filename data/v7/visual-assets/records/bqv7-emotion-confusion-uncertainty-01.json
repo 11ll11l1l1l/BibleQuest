@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "assetId": "bqv7-emotion-confusion-uncertainty-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T04:08:04.086Z",
@@ -36,11 +36,34 @@
     "sourceType": "generated",
     "thirdPartyAsset": false,
     "attributionRequired": false,
-    "notes": "Original AI-generated visual; no third-party artwork supplied."
+    "notes": "Original AI-generated visual; no third-party artwork supplied.",
+    "fonts": [
+      {
+        "family": "EB Garamond",
+        "styles": [
+          "Regular",
+          "Italic"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-ebgaramond-extra/copyright"
+      },
+      {
+        "family": "Lato",
+        "styles": [
+          "Regular"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-lato/copyright"
+      }
+    ],
+    "fontFilesDistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
   },
   "accessibility": {
     "decorative": false,
-    "altText": "A commuter pauses beneath two opposing blank directional signs where an elevated city walkway splits into two different routes at dusk."
+    "altText": "A commuter pauses beneath two opposing blank directional signs where an elevated city walkway splits into two different routes at dusk.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "CLEAN with localized live title and reference; TYPE English only"
   },
   "qc": {
     "noBakedText": true,
@@ -52,6 +75,162 @@
     "duplicateChecked": true,
     "conceptAccurate": true,
     "rightsClear": true,
-    "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices."
-  }
+    "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices.",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true
+  },
+  "canonicalEmotionId": "confused",
+  "bundleStatus": "complete_three_real_files",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "confused",
+    "locale": "en",
+    "exactLabel": "Confused / uncertain",
+    "reference": "James 1:5",
+    "scriptureTextIncluded": false
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 112688,
+      "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "altText": "A commuter stands between two opposite city walkways beneath blank directional signs at dusk.",
+      "decorative": false,
+      "qc": {
+        "verifiedAgainstExistingMasterRecord": true,
+        "noText": true,
+        "sourceIntegrityVerified": true
+      },
+      "qa": {
+        "verifiedAgainstExistingMasterRecord": true,
+        "noText": true,
+        "sourceIntegrityVerified": true,
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01-with-text-en.webp",
+      "format": "webp",
+      "width": 960,
+      "height": 1200,
+      "fileBytes": 111034,
+      "sha256": "4cf085ed61be03a186e409da2a6f05c91e9dc3859d8c22da1ded029d02151be5",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.37
+      },
+      "textSafeRegion": "bottom",
+      "crop": {
+        "sourceRect": {
+          "x": 102,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "embeddedWording": {
+        "label": "Confused / uncertain",
+        "scriptureReference": "James 1:5",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A commuter hesitates at a fork in an urban walkway. Embedded English label: Confused / uncertain; reference: James 1:5.",
+      "decorative": true,
+      "qc": {
+        "textComposedProgrammatically": true,
+        "exactWordingFromTaxonomy": true,
+        "noGeneratedPseudoText": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "contrastReviewed": true,
+        "cropSafe": true,
+        "noLogos": true,
+        "visualInspection": "passed 960x1200 render; label/reference spelling, contrast, anatomy and crop inspected",
+        "phoneWidthReadability": "reviewed at nominal 320px: large label legible; small reference supplemental and semantic live UI required"
+      },
+      "qa": {
+        "textComposedProgrammatically": true,
+        "exactWordingFromTaxonomy": true,
+        "noGeneratedPseudoText": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "contrastReviewed": true,
+        "cropSafe": true,
+        "noLogos": true,
+        "visualInspection": "passed 960x1200 render; label/reference spelling, contrast, anatomy and crop inspected",
+        "phoneWidthReadability": "reviewed at nominal 320px: large label legible; small reference supplemental and semantic live UI required",
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 34634,
+      "sha256": "b33b098f9b21c4a77cba87e37e978d7a331c5f40537ea647d302e69ec51d7e26",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceRect": {
+          "x": 102,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "altText": "A commuter stands at two diverging city walkways, uncertain which way to go.",
+      "decorative": false,
+      "qc": {
+        "focalCropVerified": true,
+        "noBakedText": true,
+        "thumbnailPreviouslyInspected": true,
+        "noLogos": true,
+        "visualInspection": "passed 384x480 render and 100px subject/sign readability"
+      },
+      "qa": {
+        "focalCropVerified": true,
+        "noBakedText": true,
+        "thumbnailPreviouslyInspected": true,
+        "noLogos": true,
+        "visualInspection": "passed 384x480 render and 100px subject/sign readability",
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      }
+    }
+  ]
 }
