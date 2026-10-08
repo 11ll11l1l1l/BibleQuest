@@ -29,7 +29,8 @@ try {
       });
       content.append(createV7LibraryVisualContentCard({
         document, item: { id: 'devotional-test', title: 'Courage for Today',
-          contentType: 'devotional', summary: 'An accessible reading card', source: { creator: 'BibleQuest' } },
+          contentType: 'devotional', publicationState: 'published', summary: 'An accessible reading card',
+          rights: { status: 'verified', allowedUses: ['display'] }, source: { creator: 'BibleQuest' } },
         locale: 'en', onOpen: row => { window.__bqLaneBOpened = row; },
       }));
     });
