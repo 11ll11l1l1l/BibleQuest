@@ -527,6 +527,7 @@ try {
     return getComputedStyle(heading).animationName;
   });
   assert.equal(osReduced, 'none', 'OS-level reduced motion must stop step animation.');
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
   const appReduced = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
     const root = document.documentElement;
     const original = root.getAttribute('data-bq-effective-motion');
@@ -538,10 +539,12 @@ try {
     return reduced;
   });
   assert.equal(appReduced, 'none', 'App-level reduced motion must stop step animation.');
+  await menteePage.emulateMedia({ reducedMotion: 'reduce' });
   await menteePage.locator('[data-lesson-previous]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="reflect"]').waitFor({ state: 'visible' });
   await menteePage.locator('[data-lesson-next]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
+  await menteePage.waitForFunction(() => document.activeElement?.hasAttribute('data-lesson-heading') === true);
   const focus = await menteePage.evaluate(() => ({
     type: document.querySelector('[data-lesson-heading]')?.getAttribute('data-step-type'),
     active: document.activeElement?.hasAttribute('data-lesson-heading'),
