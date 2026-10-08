@@ -73,19 +73,24 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
     mount(root) {
       const page = root.querySelector('[data-lesson-runner]'), host = page.querySelector('[data-lesson-content]');
       let disposed = false;
+      let lastVisibleStepId = '';
       const loadWhenReady = () => { if (!disposed && isContextReady()) void runner.load(); };
       const render = state => {
         if (disposed) return;
         if (!state.lesson) {
+          lastVisibleStepId = '';
           host.innerHTML = `<div class="bq-lesson-empty"><p role="status">${state.error ? escape(state.error) : t(state.status === 'loading' ? 'loading' : 'idle')}</p><button type="button" class="bq-secondary-button" data-lesson-reload ${state.status === 'loading' ? 'disabled' : ''}>${t('reload')}</button></div>`;
           return;
         }
-        const step = state.lesson.steps[state.stepIndex], busy = ['saving','saving-response'].includes(state.status) || state.shareStatus === 'saving';
+        const step = state.lesson.steps[state.stepIndex];
+        const stepArriving = lastVisibleStepId !== step.id;
+        lastVisibleStepId = step.id;
+        const busy = ['saving','saving-response'].includes(state.status) || state.shareStatus === 'saving';
         const responseStatus = state.shareError ? escape(state.shareError)
           : state.shareStatus === 'saving' ? t('shareSaving')
           : state.responseError ? escape(state.responseError)
           : state.responseStatus === 'loading' ? t('responseLoading') : '';
-        host.innerHTML = `<header class="bq-lesson-header"><p class="bq-lesson-overline">${t('title')}</p><h1 tabindex="-1" data-lesson-heading data-step-type="${escape(step.type)}">${stepLabel(step.type)}</h1><p class="bq-lesson-counter">${state.stepIndex + 1} / ${state.lesson.steps.length}</p><progress class="bq-lesson-progress" aria-label="${t('progress')}" max="${state.lesson.steps.length}" value="${state.stepIndex + 1}"></progress></header><article class="bq-lesson-reading">
+        host.innerHTML = `<header class="bq-lesson-header"${stepArriving ? ' data-step-arriving' : ''}><p class="bq-lesson-overline">${t('title')}</p><h1 tabindex="-1" data-lesson-heading data-step-type="${escape(step.type)}">${stepLabel(step.type)}</h1><p class="bq-lesson-counter">${state.stepIndex + 1} / ${state.lesson.steps.length}</p><progress class="bq-lesson-progress" aria-label="${t('progress')}" max="${state.lesson.steps.length}" value="${state.stepIndex + 1}"></progress></header><article class="bq-lesson-reading">
           <p class="bq-lesson-copy">${escape(stepText(step.content) || localization.t('unavailable', { dictionaries: COPY })).replace(/\n/g, '<br>')}</p></article>
           ${responseEditor(state, step, t)}
           ${mentorSharedResponse(state, step, t)}

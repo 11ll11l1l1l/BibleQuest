@@ -254,3 +254,47 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/*
+ * Lane C feature-owned motion. D remains the authority for shared timing tokens;
+ * these fallbacks permit independent shipping while D finalizes the shared API.
+ * Only short headings, counters and actionable cards move. Reading passages,
+ * response drafts, consent controls and shared/private text remain stationary.
+ */
+@keyframes bq-one2one-step-arrive {
+  from { opacity: .65; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+  animation: bq-one2one-step-arrive var(--bq-motion-duration-standard, 220ms) var(--bq-motion-easing-standard, ease-out) both;
+}
+.bq-one2one-lesson .bq-lesson-header[data-step-arriving] .bq-lesson-counter {
+  animation-delay: var(--bq-motion-stagger-short, 40ms);
+}
+.bq-one2one-home .bq-one2one-home__pair button,
+.bq-one2one-home .bq-one2one-home__primary button {
+  transition:
+    background-color var(--bq-motion-duration-micro, 150ms) ease,
+    border-color var(--bq-motion-duration-micro, 150ms) ease,
+    transform var(--bq-motion-duration-micro, 150ms) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bq-one2one-home .bq-one2one-home__pair button:not(:disabled):hover {
+    transform: translateY(-2px);
+    border-color: var(--bq-brand);
+  }
+}
+.bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button):not(:disabled):active {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button) {
+    transition: none;
+    transform: none;
+  }
+}
