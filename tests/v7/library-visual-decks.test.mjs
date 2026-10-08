@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../../src/features/library/emotion-taxonomy.js';
 import {
-  V7_EMOTION_VISUAL_IDS, buildV7LibraryDeckModel,
+  V7_EMOTION_VISUAL_IDS, assertV7PublishedVisualCardItem, buildV7LibraryDeckModel,
   normalizeV7DeckLocale, resolveV7LibraryVisual, safeV7VisualPath
 } from '../../src/features/library/visual-registry.js';
 
@@ -73,4 +73,15 @@ test('asset-free locale decks provide deterministic visual fallbacks without bor
   const entries = buildV7LibraryDeckModel({ kind: 'need', locale: 'ilo', registry: null }).entries;
   assert.equal(entries.every(row => row.visual.type === 'fallback' && row.visual.src === ''), true);
   assert.ok(entries[0].label);
+});
+
+test('cover-led cards cannot expose unapproved or rights-unknown Library content', () => {
+  const item = {
+    id: 'book-1', title: 'Approved Book', contentType: 'book',
+    publicationState: 'published', rights: { status: 'verified', allowedUses: ['external_link'] },
+  };
+  assert.equal(assertV7PublishedVisualCardItem(item), item);
+  assert.throws(() => assertV7PublishedVisualCardItem({ ...item, publicationState: 'pending_review' }), /rights-verified published/);
+  assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'unknown', allowedUses: ['display'] } }), /rights-verified published/);
+  assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'verified', allowedUses: [] } }), /rights-verified published/);
 });
