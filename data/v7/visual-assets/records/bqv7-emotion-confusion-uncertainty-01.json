@@ -3,7 +3,7 @@
   "assetId": "bqv7-emotion-confusion-uncertainty-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T04:08:04.086Z",
-  "status": "production_ready",
+  "status": "candidate_built_app_qa_pending",
   "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
   "family": "emotion",
   "visualRole": "emotion_tile",
@@ -75,7 +75,7 @@
     "duplicateChecked": true,
     "conceptAccurate": true,
     "rightsClear": true,
-    "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices.",
+    "notes": "Inspected 1024px square crop and 100px thumbnail. Two contrasting directional arrows and diverging paths remain readable; no text, logos or obvious anatomical defects. Compared with all existing sidecar scenes: unlike mountain overlook portraits, indoor worry, exclusion, or rainy-window solitude. Earlier attempts rejected: (1) mountain sunset scene repeated existing composition; (2) indoor desk scene contained apparent pseudo-writing and conveyed general stress rather than competing choices. 2026-10-09: production_ready demoted because built-app browser QA and official Node audit remain unperformed; retain verified CLEAN/TYPE/THUMB binaries as candidate only.",
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
     "independentGitHubBinaryVerification20261009": {
@@ -110,10 +110,12 @@
       "builtAppBrowserQA": "not_performed",
       "officialNodeAudit": "not_run",
       "releaseCertification": "not_claimed"
-    }
+    },
+    "productionCertification": "not_claimed",
+    "builtAppBrowserQA": "not_performed"
   },
   "canonicalEmotionId": "confused",
-  "bundleStatus": "complete_three_real_files",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
