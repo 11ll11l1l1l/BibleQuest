@@ -37,6 +37,15 @@ export function createCongregationMembershipService({api,session,onContextChange
   let activeCongregationId='';
   let loadedUserId='';
   let loadRequest=0;
+  // Context listeners drive tenant-scoped route invalidation. Repeated identical
+  // fetches must not restart a mounted page (and another membership fetch).
+  const membershipFingerprint=()=>JSON.stringify({
+    userId:loadedUserId,activeCongregationId,
+    memberships:memberships.map(row=>[
+      row.congregationId,row.userId,row.role,row.roleKnown,row.displayName,row.joinedAt,
+      row.congregation.id,row.congregation.name,row.congregation.timezone,row.congregation.ownerId
+    ]).sort((a,b)=>a[0].localeCompare(b[0]))
+  });
 
   const currentUserId=()=>{
     const state=session.getState();
@@ -60,6 +69,7 @@ export function createCongregationMembershipService({api,session,onContextChange
   async function load(){
     const user=requireUser();
     const userId=String(user.id);
+    const before=membershipFingerprint();
     const request=++loadRequest;
     if(loadedUserId&&loadedUserId!==userId){
       memberships=[];
@@ -78,7 +88,7 @@ export function createCongregationMembershipService({api,session,onContextChange
       if(remembered&&get(remembered))activeCongregationId=remembered;
       else if(remembered)forgetRemembered(userId);
     }
-    onContextChange();
+    if(membershipFingerprint()!==before)onContextChange();
     return list();
   }
 
