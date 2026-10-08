@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LIBRARY_EMOTIONS } from '../src/features/library/emotion-taxonomy.js';
+import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const REQUIRED_QC = [
@@ -12,7 +12,12 @@ const REQUIRED_QC = [
 ];
 const IMAGE_FORMATS = new Set(['webp', 'png', 'jpg', 'jpeg', 'svg']);
 const REGIONS = new Set(['bottom', 'top', 'left', 'right', 'none']);
-const CONTENT_TYPES = new Set(['emotion', 'devotional', 'book', 'past_teaching', 'hero']);
+const CONTENT_TYPES = new Set(['emotion', 'need', 'devotional', 'book', 'past_teaching', 'hero']);
+// Keep distinct artwork ownership deterministic without a second mutable queue file.
+// This only allocates Needs AFTER the 30-feeling P0 queue; it does not publish artwork.
+export const NEED_VISUAL_ASSIGNMENTS = Object.freeze(Object.fromEntries(
+  LIBRARY_NEEDS.map((item, i) => [item.id, 'visual-agent-' + (i % 5 + 1)]
+));
 // Immutable bridge between the image-agent queues and the app's published 30-feeling taxonomy.
 // Validate every queue assignment against this bridge before publishing any artwork.
 const EMOTION_QUEUE_CANONICAL = Object.freeze({
@@ -58,16 +63,20 @@ const gitBlobSha = bytes => createHash('sha1')
   .update(Buffer.from('blob ' + bytes.length)).update(Buffer.from([0])).update(bytes).digest('hex');
 
 async function verifyV2Wording(record, variant, root) {
-  if (record.contentType !== 'emotion') throw new Error('V2 TYPE needs a verified content-specific title source');
+  if (!['emotion', 'need'].includes(record.contentType))
+    throw new Error('V2 TYPE needs a verified content-specific title source');
   const proof = record.wordingEvidence;
   if (!proof || proof.sourcePath !== 'src/features/library/emotion-taxonomy.js')
     throw new Error('TYPE wording source missing or unsupported');
   const bytes = await readFile(join(root, proof.sourcePath));
   if (gitBlobSha(bytes) !== proof.sourceBlobSha)
     throw new Error('TYPE taxonomy source revision changed');
-  const item = LIBRARY_EMOTIONS.find(row => row.id === record.canonicalEmotionId);
-  if (!item || proof.canonicalEmotionId !== item.id || !item.labels[variant.locale])
-    throw new Error('TYPE emotion or locale cannot be resolved');
+  const isNeed = record.contentType === 'need';
+  const key = isNeed ? 'canonicalNeedId' : 'canonicalEmotionId';
+  const item = (isNeed ? LIBRARY_NEEDS : LIBRARY_EMOTIONS)
+    .find(row => row.id === record[key]);
+  if (!item || proof[key] !== item.id || !item.labels[variant.locale])
+    throw new Error('TYPE content ID or locale cannot be resolved');
   const words = variant.embeddedWording;
   if (!words || proof.locale !== variant.locale || proof.exactLabel !== item.labels[variant.locale]
     || words.label !== proof.exactLabel || words.scriptureReference !== proof.reference)
@@ -243,6 +252,15 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
           || record.family !== 'emotion' || record.visualRole !== 'emotion_tile'
           || owners.get(queueConcept) !== record.agentId)
           throw new Error('emotion queue/canonical ID/agent ownership mismatch');
+      } else if (record.contentType === 'need') {
+        // Needs use their own canonical IDs, not visual-agent emotion queue aliases.
+        canonicalContentId = record.contentId;
+        if (!Object.hasOwn(NEED_VISUAL_ASSIGNMENTS, canonicalContentId)
+          || record.family !== 'need' || record.visualRole !== 'need_tile'
+          || (record.canonicalNeedId && record.canonicalNeedId !== canonicalContentId)
+          || (record.canonicalContentId && record.canonicalContentId !== canonicalContentId)
+          || NEED_VISUAL_ASSIGNMENTS[canonicalContentId] !== record.agentId)
+          throw new Error('need taxonomy ID/agent ownership mismatch');
       }
       const imagePath = record.imagePath;
       const ext = typeof imagePath === 'string' ? imagePath.split('.').pop()?.toLowerCase() : null;
