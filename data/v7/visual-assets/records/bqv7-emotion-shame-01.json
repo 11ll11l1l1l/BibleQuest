@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-shame-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-08T20:11:34+00:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "shame",
+  "queueConcept": "shame",
+  "canonicalEmotionId": "ashamed",
+  "concept": "Self-conscious withdrawal after a pottery demonstration fails: a woman shields her face beside the collapsed vessel.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-shame-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 135372,
+  "sha256": "dd16b66e5f3bd0ae9afaac0e7e60a2e20329b7887061ac41f167c50978294c62",
+  "aspectRatio": "1:1",
+  "focalPoint": {
+    "x": 0.43,
+    "y": 0.4
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "c9d9b948-fcfd-44c9-81eb-38bdc1565738",
+    "sourceDescription": "Original text-free pottery studio image from prior Agent 2 attempt, not an existing GitHub master; source image 1254x1254 PNG.",
+    "notes": "No third-party imagery supplied; generated source reused without duplicate generation."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene. TYPE lettering rendered with EB Garamond 12 Regular and Italic, SIL OFL 1.1; no font binaries redistributed. Bible reference only; no Scripture prose."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman in a pottery studio lowers her gaze, one clay-stained hand supporting her face as she looks at a collapsed bowl on a pottery wheel.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "English TYPE is only for en; other locales must use CLEAN plus accessible localized live text."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "ashamed",
+    "locale": "en",
+    "exactLabel": "Ashamed",
+    "reference": "Romans 10:11",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "repoVisualAudit": "not_run_no_checkout",
+    "browserQA": "not_run_chromium_blocked_by_administrator",
+    "conceptAccurate": true,
+    "duplicateChecked": "scene-level comparison against live Hurt, Rejection, Guilt sidecars and rejection source preview; full pixel corpus unavailable",
+    "visualInspectionEvidence": "review-sheet.jpg and fixture screenshot preview generated at exact 320px width; human-visible image inspected",
+    "productionReady": false
+  },
+  "variants": [
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-shame-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 135372,
+      "sha256": "dd16b66e5f3bd0ae9afaac0e7e60a2e20329b7887061ac41f167c50978294c62",
+      "kind": "CLEAN",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.41
+      },
+      "altText": "A woman in a pottery studio rests her clay-stained cheek on her hand while looking down at a collapsed bowl on the wheel.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-shame-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 156696,
+      "sha256": "533872dfe5a33fca5a4fef4b481b9153730d412ee06f19bd2b17cca643b423be",
+      "kind": "TYPE",
+      "locale": "en",
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.51
+      },
+      "altText": "A woman in a pottery studio rests her clay-stained cheek on her hand while looking down at a collapsed bowl on the wheel. English lettering: Ashamed; Romans 10:11.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "noBibleVerseText": true,
+        "fontRightsVerified": true
+      },
+      "embeddedWording": {
+        "label": "Ashamed",
+        "scriptureReference": "Romans 10:11",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "method": "Pillow rasterized into separate WebP",
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL OFL 1.1",
+        "fontFilesDistributed": false,
+        "titleNativeFontPx": 126,
+        "referenceNativeFontPx": 52,
+        "referenceNominalPxAt320": 16.25
+      }
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-shame-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 37066,
+      "sha256": "bb41ed0a5fec2093a518df9472e7f91980670b3a7fa6bd0d87b28b254483d626",
+      "kind": "THUMB",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.43,
+        "y": 0.43
+      },
+      "altText": "A woman in a pottery studio rests her clay-stained cheek on her hand while looking down at a collapsed bowl on the wheel.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.08203125,
+          "y": 0,
+          "width": 0.7998046875,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS independent WebP export from CLEAN"
+      }
+    }
+  ]
+}
