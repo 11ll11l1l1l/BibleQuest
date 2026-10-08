@@ -9,6 +9,8 @@ on:
       - "public/v7/images/**"
       - "scripts/v7-visual-assets-audit.mjs"
       - "scripts/v7-visual-coverage-report.mjs"
+      - "scripts/v7-manual-candidate-integrity.mjs"
+      - "tests/v7/manual-candidate-integrity.test.mjs"
       - "tests/v7/visual-assets-built-browser.mjs"
       - ".github/workflows/v7-visual-assets-browser.yml"
   workflow_dispatch:
@@ -63,7 +65,7 @@ jobs:
       - name: Fail-closed image masters and localized text audit
         run: |
           node scripts/v7-visual-assets-audit.mjs
-          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs
+          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs
 
       - name: Build exact candidate
         env:
