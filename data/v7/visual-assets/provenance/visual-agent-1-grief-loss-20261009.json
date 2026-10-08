@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-grief-loss-01",
+  "agentId": "visual-agent-1",
+  "status": "provenance_unverified",
+  "originalSourceCommit": "31668586126ca63cdf8a61254ca0d2e1abdff3f9",
+  "modelIdentity": "not_recorded",
+  "replacementLocalOnly": "bqv7-emotion-grief-loss-02",
+  "replacementGenerationId": "a1b8771f-c55d-4588-835f-05bf05bf07dc",
+  "binaryUpload": "pending",
+  "builtAppQA": "pending"
+}
