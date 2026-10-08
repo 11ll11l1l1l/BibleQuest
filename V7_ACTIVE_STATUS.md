@@ -1,7 +1,7 @@
 # BibleQuest V7 Active Status
 
 Updated: **2026-10-08 JST**  
-State: **Release-convergence reset active**  
+State: **V7 initial release on main; four parallel image-first closure lanes active**  
 Development branch: `v7/development`  
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
 Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
@@ -19,26 +19,32 @@ Resolve the live issue below and continue immediately. Do not ask which phase or
 
 The old **A1/A2/A3/A4** subdivision is retired. The old phase-specific A–D map is historical only for remaining V7 work.
 
-## Current factual baseline
+## Current factual baseline — verified 2026-10-08
 
-Core Library browse/detail/discovery, emotion/need discovery, tenant-safe query plumbing, provenance/rights boundaries and major accessibility hardening are integrated.
+- **V7 initial release merged into `main`** through PR #1335. This is the already-shipped foundation, not proof the newer image-first requirements have passed.
+- **Lane A core content complete:** 300 original audited devotionals with EN/TL/CEB/ILO, 30 canonical emotions, 8 launch books and 5 first-party Past Teachings (#1334 plus earlier integrated batches).
+- **Lane B core approval complete:** exact-revision fail-closed automatic approvals, immutable review evidence, in-app Books/Devotionals/Past Teachings Content Review and reviewer overrides (#1306).
+- **Lane C core ONE 2 ONE complete:** pairing/curriculum/lesson/privacy/progress journey integrated (#1308). The later mobile polish PR #1349 has an authenticated mentor-congregation test failure; do not treat it as complete.
+- **Lane D first release merged:** remaining work is new whole-app visual design, public Library/mobile usability, PWA/offline polish and strict re-certification; PRs #1346 and #1348 remain integration inputs.
+- **New visual scope remains outstanding:** A's #1351 validates real CLEAN/TYPE/THUMB artwork; several image records are on development, but do not call P0 visual coverage complete until the registry/variant audit passes. The image-first requirements themselves are integrated through #1352.
+- The original lane A/B/C issues were closed for their earlier scope; they are **reopened for 2026-10-08 image-first follow-up**. All **four lanes are active concurrently**. The current allocation below overrides older phase descriptions, including D's earlier claim to own all Library deck UI.
 
-Structured ONE 2 ONE pairing/curriculum/lesson/progress/security is substantially integrated and has extensive automated backend/tenant coverage.
+## Speed-track ownership and active work (2026-10-08)
 
-The largest remaining release gap is content completion:
-- 173 devotional candidate pointers exist in the A2 research pool;
-- only 6 actual in-app devotional records are currently materialized;
-- the requested launch target is now **at least 150 release-ready devotionals**, continuing toward **300**;
-- every selected English devotional requires Tagalog, Cebuano and Ilocano translation plus QA;
-- 8 launch books exist but need the new automated publication policy;
-- Past Teachings needs a rights-clear launch set;
-- Content Review exists, but V7 Library audit/review still needs to be integrated into it.
+| Lane | Current independent assignment | Owned surface / integration handoff |
+| --- | --- | --- |
+| **A — #1300** | Visual asset factory, 30 feeling concepts, Needs and featured art; audited 3-binary variants, rights/locale/text metadata and catalog coverage. Complete #1351. | Own `content/v7/**`, `data/v7/visual-assets/**`, `public/v7/images/**`, visual scripts/tests. Output versioned `byContent` registry, actual hashes and QA. No Library/runtime changes. |
+| **B — #1301** | Close #1350 visual approval/review pagination; build **Library-specific image cards and the Feelings/Needs decks** with swipe/tap/keyboard/localization/fallback. | Own `src/features/content-review/**`, approval modules, **Library feature presentation** `src/features/library/**` and their tests. Implement *new isolated deck modules now*, but do not edit files currently in D's #1346 until D's hotfix integrates. B owns final Library feature wiring; D only owns generic art resolver. |
+| **C — #1302** | Repair #1349 authenticated mentor congregation fixture, finish 7-step readable mobile ONE 2 ONE + private sharing/resume and exact tenant-denial E2E. | Own `src/features/one-to-one/**`, `src/features/lesson-runner/**`, feature-scoped styles/tests. Can use mocked shared asset interface, CLEAN/live-text fallback. |
+| **D — #1303** | Close #1348 strict main CI and #1346 guest Library/offline hotfix, then **global Home/Bible/Reader, shell/nav, design tokens, generic visual resolver, PWA/a11y/perf and release integration**. | Own `src/ui/**` global shell/design, V7 release workflows, CI and deploy. Give Library-specific deck implementation to B; do not build a competing Library deck. D serializes merges/evidence and preview/production certification, not feature development. |
 
-Useful unmerged automation exists in PR #1257 (authenticated ONE 2 ONE) and PR #1265 (authenticated populated Library/build browser). They are inputs to the reset lanes, not separate old-lane obligations.
+**Parallel execution contract:** Each lane branches from the current `v7/development` head, owns non-overlapping files, ships a bounded PR with affected tests, then continues its next task. Use stable versioned interfaces and fixture/mock inputs for incomplete dependencies. Finish #1346/#1348 main-target hotfixes with exact-head evidence; synchronize their changes into `v7/development` before B wires Library UI. Never overwrite A/B/C work from D or re-run every integrated suite for each isolated edit. D alone assembles the exact-SHA release candidate once affected slices pass.
 
-A 2026-10-08 owner scope override adds a **whole-app UI/UX release overhaul** to V7. Typography, color/contrast, primary navigation, iconography, image-led content cards, Library/Home/reader presentation and designed loading/empty/offline/error states are release-blocking requirements under `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`.
+**Acceptance:** visual files proven by actual hash/dimensions/rights and exact text; localized CLEAN fallback; guest Library usable; rolling 80–90% Feelings and Needs decks; accessible mobile 320/390/430px; ONE 2 ONE auth/tenant pass; responsive/Home/Reader tests; offline/PWA, security, approvals, performance, exact SHA and deployed smoke all pass. Remaining unproved work is OPEN, not PASS; the user's post-release app audit is not a pre-release gate.
 
-## New parallel lanes
+See `docs/v7/V7_IMAGE_FIRST_AND_PARALLEL_LANES_20261008.md` and live issues #1300–#1303 for scope. This status file is the single progress authority.
+
+## Prior baseline lane reference (superseded by speed-track allocation above)
 
 | Lane | Canonical issue | Mission | Primary owned surface |
 |---|---|---|---|
