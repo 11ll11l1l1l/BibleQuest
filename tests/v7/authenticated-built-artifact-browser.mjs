@@ -300,26 +300,37 @@ try {
   await login(page, mentor);
   checks.push('mentor-real-password-browser-sign-in');
 
-  stage = 'mentor-populated-library';
-  await openRoute(page, 'library', '[data-library-page]');
+  stage = 'mentor-public-library-and-backend-isolation';
+  // V7 intentionally browses the signed-out approved static catalog even
+  // after authentication. Disposable Supabase fixtures must remain protected,
+  // never leak into the public reader to make this journey superficially pass.
+  const seededLibraryRows = await request(
+    `/rest/v1/v7_library_items?select=id,current_revision_id&id=eq.${libraryItemId}`,
+    status.SERVICE_ROLE_KEY,
+  );
+  assert.equal(seededLibraryRows.length, 1, 'synthetic protected record was not seeded');
+  assert.equal(seededLibraryRows[0].current_revision_id, libraryRevisionId);
+
+  const approvedPublicItemId = 'devotional.biblequest.anxiety_worry.01';
+  await openRoute(page, 'library?query=concern&contentType=devotional&emotion=anxious', '[data-library-page]');
   await page.waitForFunction(() => ['ready', 'empty', 'error'].includes(document.querySelector('[data-library-status]')?.dataset.libraryState || ''));
   const libraryState = await page.locator('[data-library-status]').evaluate(node => ({
     state: node.dataset.libraryState || '',
     text: node.textContent || '',
   }));
-  assert.equal(libraryState.state, 'ready', `Populated Library did not become ready: ${libraryState.state} — ${libraryState.text}`);
-  const libraryCard = page.locator(`[data-library-item="${libraryItemId}"]`);
+  assert.equal(libraryState.state, 'ready', `Reviewed public Library did not become ready: ${libraryState.state} — ${libraryState.text}`);
+  const libraryCard = page.locator(`[data-library-item="${approvedPublicItemId}"]`);
   await libraryCard.waitFor({ state: 'visible' });
-  assert.ok((await libraryCard.textContent()).includes('V7 CI Populated Library Book'));
-  await page.locator('#bq-library-taxonomy').selectOption(taxonomyId);
-  await page.locator('[data-library-search]').evaluate(form => form.requestSubmit());
-  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
-  await libraryCard.waitFor({ state: 'visible' });
+  assert.ok((await libraryCard.textContent()).includes('One concern at a time'));
+  assert.equal(await page.locator(`[data-library-item="${libraryItemId}"]`).count(), 0,
+    'private disposable tenant fixture leaked into the approved public catalog');
+  assert.equal(await page.locator('#bq-library-query').inputValue(), 'concern');
+  assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
   await page.locator('#bq-library-query').focus();
   await page.keyboard.press('Tab');
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-type');
-  await assertNoHorizontalOverflow(page, 'mentor populated Library');
-  checks.push('authenticated-populated-library-filter-keyboard-mobile');
+  await assertNoHorizontalOverflow(page, 'mentor public Library');
+  checks.push('authenticated-reviewed-public-library-isolation-search-keyboard-mobile');
 
   stage = 'library-locale-reload';
   await Promise.all([
@@ -330,7 +341,9 @@ try {
   await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
   await libraryCard.waitFor({ state: 'visible' });
   assert.equal(await page.locator('[data-locale-select]').inputValue(), 'tl');
-  checks.push('authenticated-library-locale-reload');
+  assert.notEqual((await libraryCard.textContent()).includes('One concern at a time'), true,
+    'reviewed Tagalog localization must update the public catalog after reload');
+  checks.push('authenticated-public-library-reviewed-translation-reload');
 
   stage = 'mentor-one-to-one-surfaces';
   await openRoute(page, 'one-to-one', '[data-pair-results]');
