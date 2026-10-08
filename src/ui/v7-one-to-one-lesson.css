@@ -193,7 +193,7 @@
 .bq-one2one-home__art {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
   background:
     radial-gradient(ellipse at 82% 25%, rgba(215, 206, 164, .63), transparent 45%),
@@ -221,11 +221,13 @@
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
   background: linear-gradient(180deg, transparent 4%, rgba(11, 27, 36, .35) 45%, rgba(12, 27, 35, .88) 100%);
 }
 .bq-one2one-home__hero-copy {
+  position: relative;
+  z-index: 1;
   padding: clamp(20px, 5vw, 35px);
   max-width: 62ch;
 }
