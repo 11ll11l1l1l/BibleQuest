@@ -18,6 +18,22 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const locale = localization.getLocale();
   const text = (key, values) => localization.t(key, { locale, values });
   const optionSelected = value => value === locale ? ' selected' : '';
+  // Keep five stable destinations while marking the owning destination of
+  // nested routes. Older V3/V4 routes remain navigable during V7 redesign.
+  const primaryOwner = route => {
+    if (NAV.some(([id]) => id === route)) return route;
+    if (['reader', 'bible-quest', 'library', 'library-item', 'study',
+         'deep-questions', 'story-journey', 'wisdom-situations',
+         'bible-world', 'explorer', 'adaptive-learning', 'open-review',
+         'private-notes', 'cloud-notes'].includes(route)) return 'learn';
+    if (route === 'one-to-one' || route.startsWith('one-to-one-')
+        || ['transform', 'my-journey', 'personality-profile',
+            'psychometrics', 'avatar-vault'].includes(route)) return 'grow';
+    if (['account', 'accessibility', 'backup', 'help', 'content-review',
+         'community', 'congregation', 'leader-center', 'ministry-hub',
+         'journey-groups', 'team-center', 'workspace', 'calendar'].includes(route)) return 'more';
+    return null;
+  };
 
   root.innerHTML = `
     <div class="bq-shell" data-bq-shell="v3" data-ui-version="4" data-locale="${escapeHtml(locale)}">
@@ -79,7 +95,11 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   return Object.freeze({
     render(route, page) {
       releasePage();
-      root.querySelectorAll('.bq-nav [data-route-link]').forEach(link => link.toggleAttribute('aria-current', link.dataset.routeLink === route));
+      const activePrimary = primaryOwner(route);
+      root.querySelectorAll('.bq-nav [data-route-link]').forEach(link => {
+        if (link.dataset.routeLink === activePrimary) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
       view.innerHTML = page.html;
       document.title = page.title ? `${page.title} · BibleQuest` : 'BibleQuest';
       const cleanup = page.mount?.(view);
