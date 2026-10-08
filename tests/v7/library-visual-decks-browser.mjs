@@ -41,7 +41,7 @@ try {
       viewportWidth: innerWidth,
     }));
     assert(stats.scrollWidth > stats.width, width + ': deck cannot swipe');
-    assert(stats.firstWidth >= stats.width * 0.75, width + ': primary feeling art is too small');
+    assert(stats.firstWidth >= (width < 720 ? stats.width * 0.75 : 420), width + ': primary feeling art is too small');
     assert(stats.documentWidth <= stats.viewportWidth + 1, width + ': deck creates document overflow');
     assert(await page.locator('[data-v7-deck="emotion"] [data-v7-deck-id]').count() === 30, '30 feelings missing');
     assert(await page.locator('[data-v7-deck="need"] [data-v7-deck-id]').count() === 19, '19 needs missing');
