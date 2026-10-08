@@ -2,7 +2,7 @@ import { localization } from '../../app/localization.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const COPY = Object.freeze({
   en: Object.freeze({
-    title: 'Lesson', back: 'Back', previous: 'Previous', next: 'Save and continue', previewNext: 'Next step',
+    title: 'Lesson', progress: 'Lesson progress', back: 'Back', previous: 'Previous', next: 'Save and continue', previewNext: 'Next step',
     complete: 'Complete lesson', reload: 'Reload lesson', loading: 'Loading lesson…', saving: 'Saving…',
     completed: 'Lesson completed', readonly: 'Mentor preview — progress is read only.', scripture: 'Open Scripture',
     unavailable: 'No lesson text is available for this step.', idle: 'Reload this lesson after selecting your account and congregation.',
@@ -13,7 +13,7 @@ const COPY = Object.freeze({
     mentorShared: 'Shared by your mentee', shareSaving: 'Updating response sharing…',
   }),
   tl: Object.freeze({
-    title: 'Aralin', back: 'Bumalik', previous: 'Nakaraan', next: 'I-save at magpatuloy', previewNext: 'Susunod na hakbang',
+    title: 'Aralin', progress: 'Pag-usad sa aralin', back: 'Bumalik', previous: 'Nakaraan', next: 'I-save at magpatuloy', previewNext: 'Susunod na hakbang',
     complete: 'Tapusin ang aralin', reload: 'I-load muli ang aralin', loading: 'Naglo-load ang aralin…', saving: 'Sine-save…',
     completed: 'Tapos na ang aralin', readonly: 'Preview ng mentor — read only ang progreso.', scripture: 'Buksan ang Kasulatan',
     unavailable: 'Walang teksto ng aralin para sa hakbang na ito.', idle: 'I-load muli ang aralin pagkatapos pumili ng account at kongregasyon.',
@@ -24,7 +24,7 @@ const COPY = Object.freeze({
     mentorShared: 'Ibinahagi ng mentee mo', shareSaving: 'Ina-update ang pagbabahagi ng sagot…',
   }),
   ceb: Object.freeze({
-    title: 'Leksiyon', back: 'Balik', previous: 'Miaging lakang', next: 'Tipigi ug padayon', previewNext: 'Sunod nga lakang',
+    title: 'Leksiyon', progress: 'Pag-uswag sa leksiyon', back: 'Balik', previous: 'Miaging lakang', next: 'Tipigi ug padayon', previewNext: 'Sunod nga lakang',
     complete: 'Kompletoha ang leksiyon', reload: 'Ikarga pag-usab ang leksiyon', loading: 'Gikarga ang leksiyon…', saving: 'Gitipigan…',
     completed: 'Kompleto na ang leksiyon', readonly: 'Preview sa mentor — read only ang progreso.', scripture: 'Ablihi ang Kasulatan',
     unavailable: 'Walay teksto sa leksiyon alang niini nga lakang.', idle: 'Ikarga pag-usab human pagpili sa account ug kongregasyon.',
@@ -51,17 +51,17 @@ function responseEditor(state, step, t) {
   const shared = saved?.visibility === 'shared';
   const hasResponse = Boolean(saved?.id || String(value).trim());
   const sharing = shared
-    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" data-lesson-unshare="${escape(step.id)}">${t('unshare')}</button>`
-    : `<p data-lesson-share-state="private">${t('private')}</p><label><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"> ${t('shareConfirm')}</label><button type="button" data-lesson-share="${escape(step.id)}"${hasResponse ? '' : ' disabled'}>${t('share')}</button>`;
-  return `<label for="lesson-response-${escape(step.id)}">${t('response')}</label>
+    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" class="bq-secondary-button" data-lesson-unshare="${escape(step.id)}">${t('unshare')}</button>`
+    : `<p data-lesson-share-state="private">${t('private')}</p><label class="bq-lesson-share-consent"><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"> ${t('shareConfirm')}</label><button type="button" class="bq-secondary-button" data-lesson-share="${escape(step.id)}"${hasResponse ? '' : ' disabled'}>${t('share')}</button>`;
+  return `<div class="bq-lesson-response-editor"><label for="lesson-response-${escape(step.id)}">${t('response')}</label>
     <textarea id="lesson-response-${escape(step.id)}" data-lesson-response="${escape(step.id)}" rows="5">${escape(value)}</textarea>
-    <p class="bq-help">${t('responseHint')}</p>${sharing}`;
+    <p class="bq-help">${t('responseHint')}</p><div class="bq-lesson-sharing">${sharing}</div></div>`;
 }
 function mentorSharedResponse(state, step, t) {
   if (state.writable || step.type === 'scripture') return '';
   const response = state.responses?.[step.id];
   if (!response || response.visibility !== 'shared') return '';
-  return `<section data-lesson-shared-response="${escape(step.id)}"><h2>${t('mentorShared')}</h2><p>${escape(responseText(response)).replace(/\n/g, '<br>')}</p></section>`;
+  return `<section class="bq-lesson-mentor-response" data-lesson-shared-response="${escape(step.id)}"><h2>${t('mentorShared')}</h2><p>${escape(responseText(response)).replace(/\n/g, '<br>')}</p></section>`;
 }
 export function createLessonRunnerPage({ runner, onBack, onScripture, isContextReady = () => false, subscribeContext }) {
   if (typeof subscribeContext !== 'function') throw new TypeError('Lesson page requires account/congregation invalidation wiring.');
@@ -69,7 +69,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
   const stepLabel = type => escape(localization.t(`v7.authoring.step.${type}`));
   return {
     title: localization.t('title', { dictionaries: COPY }),
-    html: `<section class="bq-panel" data-lesson-runner><button type="button" data-lesson-back>${t('back')}</button><div data-lesson-content></div></section>`,
+    html: `<section class="bq-panel bq-one2one-lesson" data-lesson-runner><div class="bq-lesson-toolbar"><button type="button" class="bq-secondary-button" data-lesson-back>${t('back')}</button></div><div data-lesson-content></div></section>`,
     mount(root) {
       const page = root.querySelector('[data-lesson-runner]'), host = page.querySelector('[data-lesson-content]');
       let disposed = false;
@@ -77,7 +77,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
       const render = state => {
         if (disposed) return;
         if (!state.lesson) {
-          host.innerHTML = `<p role="status">${state.error ? escape(state.error) : t(state.status === 'loading' ? 'loading' : 'idle')}</p><button type="button" data-lesson-reload ${state.status === 'loading' ? 'disabled' : ''}>${t('reload')}</button>`;
+          host.innerHTML = `<div class="bq-lesson-empty"><p role="status">${state.error ? escape(state.error) : t(state.status === 'loading' ? 'loading' : 'idle')}</p><button type="button" class="bq-secondary-button" data-lesson-reload ${state.status === 'loading' ? 'disabled' : ''}>${t('reload')}</button></div>`;
           return;
         }
         const step = state.lesson.steps[state.stepIndex], busy = ['saving','saving-response'].includes(state.status) || state.shareStatus === 'saving';
@@ -85,14 +85,14 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
           : state.shareStatus === 'saving' ? t('shareSaving')
           : state.responseError ? escape(state.responseError)
           : state.responseStatus === 'loading' ? t('responseLoading') : '';
-        host.innerHTML = `<h1 tabindex="-1" data-lesson-heading data-step-type="${escape(step.type)}">${stepLabel(step.type)}</h1><p>${state.stepIndex + 1} / ${state.lesson.steps.length}</p>
-          <p>${escape(stepText(step.content) || localization.t('unavailable', { dictionaries: COPY })).replace(/\n/g, '<br>')}</p>
+        host.innerHTML = `<header class="bq-lesson-header"><p class="bq-lesson-overline">${t('title')}</p><h1 tabindex="-1" data-lesson-heading data-step-type="${escape(step.type)}">${stepLabel(step.type)}</h1><p class="bq-lesson-counter">${state.stepIndex + 1} / ${state.lesson.steps.length}</p><progress class="bq-lesson-progress" aria-label="${t('progress')}" max="${state.lesson.steps.length}" value="${state.stepIndex + 1}"></progress></header><article class="bq-lesson-reading">
+          <p class="bq-lesson-copy">${escape(stepText(step.content) || localization.t('unavailable', { dictionaries: COPY })).replace(/\n/g, '<br>')}</p></article>
           ${responseEditor(state, step, t)}
           ${mentorSharedResponse(state, step, t)}
-          ${state.writable ? '' : `<p>${t('readonly')}</p>`}<p role="status">${state.error ? escape(state.error) : busy ? t('saving') : state.status === 'completed' ? t('completed') : responseStatus}</p>
-          ${(step.scriptureRefs ?? []).map((ref, index) => `<button type="button" data-lesson-scripture="${index}">${t('scripture')} ${escape(typeof ref === 'string' ? ref : ref.label || `${ref.book || ''} ${ref.chapter || ''}`)}</button>`).join('')}
-          <button type="button" data-lesson-previous ${busy || state.stepIndex === 0 ? 'disabled' : ''}>${t('previous')}</button>
-          ${state.stepIndex < state.lesson.steps.length - 1 ? `<button type="button" data-lesson-next ${busy ? 'disabled' : ''}>${t(state.writable && state.progress?.status !== 'completed' ? 'next' : 'previewNext')}</button>` : state.writable && state.progress?.status !== 'completed' ? `<button type="button" data-lesson-complete ${busy ? 'disabled' : ''}>${t('complete')}</button>` : ''}`;
+          ${state.writable ? '' : `<p class="bq-lesson-readonly">${t('readonly')}</p>`}<p class="bq-lesson-live" role="status" aria-live="polite">${state.error ? escape(state.error) : busy ? t('saving') : state.status === 'completed' ? t('completed') : responseStatus}</p>
+          <div class="bq-lesson-references">${(step.scriptureRefs ?? []).map((ref, index) => `<button type="button" class="bq-secondary-button" data-lesson-scripture="${index}">${t('scripture')} ${escape(typeof ref === 'string' ? ref : ref.label || `${ref.book || ''} ${ref.chapter || ''}`)}</button>`).join('')}</div>
+          <footer class="bq-lesson-footer"><div class="bq-lesson-actions"><button type="button" class="bq-secondary-button" data-lesson-previous ${busy || state.stepIndex === 0 ? 'disabled' : ''}>${t('previous')}</button>
+          ${state.stepIndex < state.lesson.steps.length - 1 ? `<button type="button" class="bq-primary-button" data-lesson-next ${busy ? 'disabled' : ''}>${t(state.writable && state.progress?.status !== 'completed' ? 'next' : 'previewNext')}</button>` : state.writable && state.progress?.status !== 'completed' ? `<button type="button" class="bq-primary-button" data-lesson-complete ${busy ? 'disabled' : ''}>${t('complete')}</button>` : ''}</div></footer>`;
       };
       const click = event => {
         const target = event.target.closest?.('button');
