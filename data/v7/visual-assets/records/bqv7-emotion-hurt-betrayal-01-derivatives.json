@@ -76,10 +76,10 @@
         "locale": "en"
       },
       "typography": {
-        "method": "SVG embedded text",
-        "fonts": "Georgia/serif + Arial/sans-serif platform fallback",
+        "method": "Self-contained SVG editorial portrait with embedded original WebP",
+        "fontFamily": "Georgia / Times New Roman, italic serif accent",
         "fontFilesDistributed": false,
-        "notes": "No font files bundled; final glyph rendering uses client-installed fonts."
+        "fontLicenseEvidence": "No font files embedded or redistributed; system font rendering requires browser QA"
       },
       "focalPoint": {
         "x": 0.31,
@@ -98,7 +98,17 @@
         "svgEmbeddedImage": true,
         "svgTextEditable": true,
         "visualRenderQA": "pending",
-        "noScriptureQuote": true
+        "noScriptureQuote": true,
+        "sourceEmbeddedWebpSha256Verified": true,
+        "sourceEmbeddedWebpBytesVerified": true,
+        "svgSafetyInspected": true,
+        "typeReadableAt320px": "pending",
+        "fontRenderQA": "pending"
+      },
+      "embeddedWording": {
+        "label": "Hurt / betrayed",
+        "scriptureReference": "Psalm 55:12-14",
+        "scriptureTextIncluded": false
       }
     },
     {
@@ -158,6 +168,16 @@
     "variantHashesMeasured": true,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Self-contained SVG derivative files embed the verified existing WebP master; pending built-browser render QA. English TYPE must fall back to CLEAN/live localized text for non-English locales."
+    "notes": "Revised 4:5 TYPE artwork with verified original WebP embedded. Typography, browser rendering and thumbnail crop remain pending independent QA; no production promotion."
+  },
+  "productionCertified": false,
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "hurt",
+    "locale": "en",
+    "exactLabel": "Hurt / betrayed",
+    "reference": "Psalm 55:12-14",
+    "scriptureTextIncluded": false
   }
 }
