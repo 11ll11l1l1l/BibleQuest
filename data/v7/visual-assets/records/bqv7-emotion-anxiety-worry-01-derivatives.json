@@ -99,13 +99,13 @@
       "locale": null,
       "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
       "format": "svg",
-      "width": 400,
-      "height": 500,
-      "fileBytes": 67178,
-      "sha256": "244f4625563218cef1c4e975b13a65c210cd815c68fae36b16385e30a8dbf64c",
-      "gitBlobSha": "86f4f9b2995d25651bd22d0beb79ed55370676c7",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 67330,
+      "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
+      "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
       "focalPoint": {
-        "x": 0.5128,
+        "x": 0.56,
         "y": 0.42
       },
       "textSafeRegion": "none",
@@ -114,20 +114,20 @@
       "crop": {
         "sourcePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
         "sourceRectPixels": {
-          "left": 112,
+          "left": 140,
           "top": 0,
-          "right": 931.2,
+          "right": 959.2,
           "bottom": 1024
         },
         "targetAspectRatio": "4:5",
-        "method": "self-contained SVG embeds the CLEAN WebP, pre-scaled and clipped to 400x500 viewBox",
+        "method": "Self-contained SVG with exact CLEAN WebP bytes, 384x480 viewport clip and focal-aware horizontal crop",
         "offlineSelfContained": true
       },
       "fallback": "CLEAN",
       "qc": {
         "sourceMasterVerified": true,
         "geometryChecked": true,
-        "reference400x500WebPVisuallyInspected": true,
+        "reference400x500WebPVisuallyInspected": false,
         "exactSvgBrowserRenderQA": "pending",
         "noEmbeddedText": true
       }
@@ -161,10 +161,11 @@
     "cleanAndTypeWebPVisuallyInspected20261008": true,
     "thumbnailSVGSourceGeometryInspected20261008": true,
     "exactThumbnailSVGRenderedAtCardSize": false,
-    "releasePromotionBlockedOnThumbnailRender": true
+    "releasePromotionBlockedOnThumbnailRender": true,
+    "thumbnailFocalCropRecomposed20261008": true
   },
   "inspectionEvidence": {
-    "inspectedAt": "2026-10-08T19:03:21+09:00",
+    "inspectedAt": "2026-10-08T23:00:18+09:00",
     "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
     "taxonomyGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
     "canonicalEmotionId": "anxious",
@@ -218,6 +219,29 @@
         "renderedAtCardSize": false
       }
     ],
-    "notes": "CLEAN and TYPE were visually examined as exact repository WebP binaries; TYPE shows readable English serif Anxious / worried with no Scripture quote. SVG thumbnail's embedded source and focal crop geometry were examined, but exact browser render and 320px card preview were not available. This is evidence progress only, not a release-ready V2 bundle."
+    "notes": "Focal crop re-composed using verified original CLEAN WebP. 384x480 geometry and embedded source identity verified; exact SVG browser render and app screenshots not performed.",
+    "thumbnail": {
+      "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
+      "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
+      "fileBytes": 67330,
+      "width": 384,
+      "height": 480,
+      "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
+      "geometry": {
+        "viewBox": "0 0 384 480",
+        "embeddedSourceWebPWidth": 480,
+        "embeddedSourceWebPHeight": 480,
+        "embeddedSourceX": -65.625,
+        "embeddedSourceY": 0
+      },
+      "cropRectSourcePixels": {
+        "left": 140,
+        "top": 0,
+        "right": 959.2,
+        "bottom": 1024
+      },
+      "visualInspected": false,
+      "browserRendered": false
+    }
   }
 }
