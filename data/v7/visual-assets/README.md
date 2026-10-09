@@ -41,13 +41,13 @@ Both legacy schema V1 clean masters and verified V2 three-file assets are allowe
 
 ### Per-locale TYPE wording evidence (V2)
 
-A reviewed image may include separate \`-with-text-en\`, \`-with-text-tl\`,
-\`-with-text-ceb\`, and \`-with-text-ilo\` artwork, each as an independently
-rendered, measured and audited file. A single \`wordingEvidence\` still works
+A reviewed image may include separate `-with-text-en`, `-with-text-tl`,
+`-with-text-ceb`, and `-with-text-ilo` artwork, each as an independently
+rendered, measured and audited file. A single `wordingEvidence` still works
 for existing one-locale records. New multilingual records use
-\`wordingEvidenceByLocale\`, keyed by the exact TYPE variant locale:
+`wordingEvidenceByLocale`, keyed by the exact TYPE variant locale:
 
-\`\`\`json
+```json
 {
   "wordingEvidenceByLocale": {
     "en": {
@@ -70,13 +70,13 @@ for existing one-locale records. New multilingual records use
     }
   }
 }
-\`\`\`
+```
 
 Every TYPE variant still needs its own binary SHA-256, dimensions, byte count,
-exact embedded \`label\` and \`scriptureReference\`, typography inspection,
+exact embedded `label` and `scriptureReference`, typography inspection,
 approved Scripture binding and immutable taxonomy revision. A locale map is
 **authoritative**: a missing or stale entry fails audit, even when a legacy
-\`wordingEvidence\` is also present. Do not use EN baked text for TL, CEB or
+`wordingEvidence` is also present. Do not use EN baked text for TL, CEB or
 ILO. If a localized TYPE is not independently reviewed, omit it and display
 CLEAN art with accurate live localized text. The presence of a proof does
 not constitute independent artistic or browser approval.
