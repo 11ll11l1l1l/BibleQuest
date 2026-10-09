@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-jealousy-envy-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
-  "status": "production_ready",
-  "bundleStatus": "complete_three_real_files",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -73,13 +73,13 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 2285908,
-      "sha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
+      "fileBytes": 127564,
+      "sha256": "e2715fa86b6b13454a5207301a7e0d1edd211fc18c28b81be6d9d6ee9f32f630",
       "focalPoint": {
         "x": 0.31,
         "y": 0.29
       },
-      "cropIntent": "Exact original CLEAN photo composition with corrected original licensed editorial serif title; gold flourish removed from title glyph zone and relocated to a separate reference divider.",
+      "cropIntent": "Same original CLEAN photograph with newly rebuilt separate 256px title panel; gold rule is 23px below the exact serif title glyph bounding box.",
       "embeddedWording": {
         "label": "Jealous / envious",
         "scriptureReference": "Proverbs 14:30",
@@ -91,24 +91,24 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "visualInspected": true,
-        "isolatedChromiumRendered": true,
-        "builtAppBrowserQA": true,
+        "isolatedChromiumRendered": false,
+        "builtAppBrowserQA": false,
         "noBakedText": false,
         "cropReviewed": true,
         "spellingCheckedAgainstTaxonomy": true,
         "referenceCheckedAgainstTaxonomy": true,
         "typeReadableAt320px": true,
         "fontLicenseVerified": true,
-        "builtAppQaEvidence": {
-          "sourceHeadSha": "6319ea1d73697c3c916cf93ba8a5a09ea51be68a",
-          "runId": 37887331032,
-          "mode": "exact_source_head_staged_build_HTTP_served_byte_SHA256_and_Chromium",
-          "viewports": [
-            320,
-            390,
-            430
-          ]
-        }
+        "localResizedPreviewsInspected": [
+          320,
+          390,
+          430
+        ],
+        "titleReferenceExactlyTypesetFromTaxonomy": true,
+        "goldRuleClearOfTitleGlyphs": true,
+        "goldRuleClearancePx": 23,
+        "originalCleanPhotoUsed": true,
+        "newTypeEncoding": "Pillow WEBP lossy quality=90 method=6"
       }
     },
     {
@@ -200,72 +200,64 @@
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
     "type320pxVisualInspected": true,
-    "isolatedChromiumAllVariantsDecoded": true,
-    "isolatedChromiumWidths": [
-      320,
-      390,
-      430
-    ],
-    "builtAppBrowserQA": "PASS_staged_exact_head_6319ea1d73697c3c916cf93ba8a5a09ea51be68a",
-    "visualAuditScript": "PASS_staged_exact_head_6319ea1d73697c3c916cf93ba8a5a09ea51be68a",
+    "isolatedChromiumAllVariantsDecoded": false,
+    "isolatedChromiumWidths": [],
+    "builtAppBrowserQA": "PENDING_new_TYPE_exact_head",
+    "visualAuditScript": "PENDING_new_TYPE_exact_head",
     "typeRepairCandidate": {
-      "state": "staged_http_served_byte_qa_passed_awaiting_PR_integration",
+      "state": "new_full_type_from_verified_clean_local_qa_passed_git_commit_pending",
       "sourceCleanGitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
       "sourceCleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
       "preservedThumbSha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
       "originalRejectedTypeGitBlobSha": "2b0d40d3fb2f0d8ed60fc3f69d5d35fe4acd9163",
-      "newTypeSha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
-      "newTypeBytes": 2285908,
+      "newTypeSha256": "e2715fa86b6b13454a5207301a7e0d1edd211fc18c28b81be6d9d6ee9f32f630",
+      "newTypeBytes": 127564,
       "dimensions": {
         "width": 1024,
         "height": 1280
       },
-      "goldPixelsRemoved": 1295,
-      "goldPixelsRemainingInTitleZone": 0,
       "reference": "Proverbs 14:30",
       "scriptureTextIncluded": false,
       "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
-      "encoding": "VP8L color-quantized lossless container quality55",
+      "encoding": "Pillow WebP quality=90 method=6",
       "fullType320390430Qa": true,
-      "builtAppExactHeadQa": true,
-      "officialAuditRun": true,
+      "builtAppExactHeadQa": false,
+      "officialAuditRun": false,
       "publicationAllowed": false,
-      "isolatedFooterFlecksCleared": 33832,
-      "candidateExactHeadChromiumQA": {
-        "status": "PASS_candidate_intercepted_bytes_only",
-        "runId": 37883359251,
-        "artifactId": 11594359362,
-        "exactSha": "acd1e744bf05153e3d40e9d9ae4f12a4bad33333",
-        "viewports": [
-          320,
-          390,
-          430
+      "geometryEvidence": {
+        "titleInkBoundsY": [
+          1064,
+          1153
         ],
-        "screenshotsVisuallyInspected": true,
-        "sourceBinarySha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
-        "servedByteMode": "candidate source bytes fulfilled by Playwright route; not published HTTP bytes",
-        "sourceAudit": "PASS",
-        "browserDecode": "PASS",
-        "responsiveGeometry": "PASS",
-        "releaseServedByteQa": "PASS_staged_HTTP_at_6319ea1d73697c3c916cf93ba8a5a09ea51be68a"
+        "goldRuleBoundsY": [
+          1177,
+          1181
+        ],
+        "referenceInkBoundsY": [
+          1207,
+          1248
+        ],
+        "titleToRuleClearancePx": 23,
+        "ruleToReferenceClearancePx": 26,
+        "typeFace": "Noto Serif Display SemiBold 90px",
+        "referenceFace": "Lato Medium 56px",
+        "label": "Jealous / envious",
+        "reference": "Proverbs 14:30",
+        "scriptureTextIncluded": false,
+        "320390430PillowPreviewInspected": true,
+        "browserExactHead": "PENDING",
+        "servedByteQa": "PENDING",
+        "independentVisualQa": "PENDING"
       },
-      "stagedHttpEvidence": {
-        "headSha": "6319ea1d73697c3c916cf93ba8a5a09ea51be68a",
-        "visualBrowserRunId": 37887331032,
-        "visualBrowserArtifactId": 11596519796,
-        "visualBrowserArtifactSha256": "32e56634864dc89ed693d25f810b8735997f13cb2cd39ce4964f36833f1262fa",
-        "httpServedImages": 35,
-        "releaseBundles": 9,
-        "draftBundles": 5,
-        "screenshots": 84,
-        "visualBrowserResult": "PASS",
-        "nodeAuditResult": "PASS",
-        "focusedTestsPassed": 41,
-        "buildPwaRunId": 37887331031,
-        "releaseConvergenceRunId": 37887331569,
-        "prSerializationRunId": 37887331056,
-        "releaseProductionDeployedIdentity": "NOT_CHECKED",
-        "newMetadataCommitRequiresOwnExactHeadRerun": true
+      "priorTypeStagedHttpEvidence": {
+        "typeSha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
+        "runId": 37887331032,
+        "notEvidenceForNewType": true
+      },
+      "priorTypeInterceptedChromiumEvidence": {
+        "typeSha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
+        "runId": 37883359251,
+        "notEvidenceForNewType": true
       }
     },
     "productionDeploymentQA": "NOT_CHECKED"
