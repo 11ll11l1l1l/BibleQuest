@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "asOfJST": "2026-10-10T05:04:00+09:00",
+  "integrationHead": "ac4b6c1568931272698b8823522f558c1375b102",
+  "statuses": [
+    "READY",
+    "QA_PENDING",
+    "REPAIR_NEEDED",
+    "NOT_CREATED"
+  ],
+  "items": [
+    {
+      "assetId": "bqv7-emotion-jealousy-envy-01",
+      "owner": "visual-agent-4",
+      "pr": 1436,
+      "head": "73690d3871f808f972486417de5bdebbf8bcec3d",
+      "status": "QA_PENDING",
+      "evidence": "source TYPE independently inspected and verified 2026-10-10 05:04 JST",
+      "typeSha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+      "nextTask": "Lane D exact-head published-manifest inclusion, non-intercepted HTTP SHA and 320/390/430 browser; do not merge #1410"
+    },
+    {
+      "assetId": "bqv7-emotion-numbness-emptiness-01",
+      "owner": "visual-agent-4",
+      "pr": 1452,
+      "head": "1451cfaadc8181fd4addbada25ab776e4c4f5eab",
+      "status": "QA_PENDING",
+      "evidence": "QA_V7_NUMB_PR1452_INDEPENDENT_20261010_0504.json",
+      "nextTask": "original generation chain, independent duplicate scan, official audit, non-intercepted release HTTP/Chromium and accessibility/locales"
+    },
+    {
+      "assetId": "bqv7-emotion-frustration-01",
+      "owner": "visual-agent-4",
+      "pr": 1398,
+      "head": "dec3e0995e1a4206350ff39b3709f6b75230820b",
+      "status": "REPAIR_NEEDED",
+      "evidence": "existing sidecar confirms triptych-extracted CLEAN; prior visual QA found white reference contrast over lamp; local run17 repair ZIP not mounted",
+      "nextTask": "Producer4 commit genuine standalone CLEAN, corrected TYPE/THUMB and provenance; independent QA on new immutable PR SHA"
+    }
+  ],
+  "unverifiedCounts": true,
+  "releaseCertified": false
+}
