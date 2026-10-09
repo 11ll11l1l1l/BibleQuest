@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-jealousy-envy-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "status": "candidate_type_visual_repair_required",
+  "bundleStatus": "three_real_files_type_visual_qa_rejected",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -79,14 +79,14 @@
         "imageDecoded": true,
         "dimensionsMeasured": true,
         "sha256Measured": true,
-        "visualInspected": true,
+        "visualInspected": false,
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": false,
         "cropReviewed": true,
         "spellingCheckedAgainstTaxonomy": true,
         "referenceCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": true,
+        "typeReadableAt320px": false,
         "fontLicenseVerified": true
       }
     },
@@ -166,16 +166,16 @@
     "matchesVisualSystem": true,
     "duplicateChecked": true,
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
-    "localTypeAndThumbnailInspected": true,
-    "type320pxVisualInspected": true,
+    "localTypeAndThumbnailInspected": false,
+    "type320pxVisualInspected": false,
     "isolatedChromiumAllVariantsDecoded": true,
     "isolatedChromiumWidths": [
       320,
       390,
       430
     ],
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "blocked_type_flourish_overlaps_title",
     "visualAuditScript": "not_run_no_local_repo",
-    "reasonNotProductionReady": "Built-app browser review and official repository Node audit have not run; do not publish TYPE/THUMB to release registry."
+    "reasonNotProductionReady": "Jealous TYPE gold flourish overlaps the title glyphs. Regenerate from original CLEAN and verify at 320/390/430px."
   }
 }
