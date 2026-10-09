@@ -3,7 +3,7 @@
   "assetId": "bqv7-emotion-discouragement-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T17:04:00+09:00",
-  "status": "production_ready",
+  "status": "candidate_built_app_qa_pending",
   "imagePath": "/v7/images/emotion/bqv7-emotion-discouragement-01.webp",
   "family": "emotion",
   "visualRole": "emotion_tile",
@@ -90,10 +90,30 @@
       "phone320pxQA": "not_performed",
       "builtAppBrowserQA": "not_performed",
       "officialNodeAudit": "not_run"
+    },
+    "independentImageCertification": {
+      "status": "QA_PENDING",
+      "basisHead": "39e25e0916b46c7170c71d4790ea96c4073a542e",
+      "decision": "quarantined_unverified_release_claim",
+      "evidence": {
+        "metadataRecordBlobSha": "125c8c701f8687bec2fbd9a282ade85638323934",
+        "recordedBuiltAppBrowserQA": "not_performed",
+        "recordedPhone320pxQA": "not_performed",
+        "recordedOfficialNodeAudit": "not_run",
+        "binaryRevalidationThisRun": "not_performed",
+        "HTTPServedSHA": "not_performed"
+      },
+      "nextRequired": [
+        "Run exact-HEAD canonical Node audit and focused visual asset tests",
+        "Inspect 320/390/430px actual built-app Chromium screenshots and HTTP-served SHA256",
+        "Verify generated source/rights and independent font license evidence",
+        "Only then reconsider production_ready"
+      ],
+      "releaseCertified": false
     }
   },
   "canonicalEmotionId": "discouraged",
-  "bundleStatus": "complete_three_real_files",
+  "bundleStatus": "three_real_files_local_qa_only_built_app_pending",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
