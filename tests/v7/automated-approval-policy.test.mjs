@@ -305,3 +305,49 @@ test('stored approval cannot be replayed after criteria or second-pass evidence 
     assert.equal(canAutoPublishV7LibraryDecision(replay, target), false, label);
   }
 });
+
+test('reusing approval after reviewed content changes fails closed even with same ID and revision', () => {
+  const original = item('devotional', {
+    source: { kind: 'first_party', checksum: 'sha256:original', creator: 'BibleQuest' },
+    sourceContent: { title: 'Anchored in Hope', body: 'A source devotional with context.' },
+    translations: [{
+      locale: 'fil', translatedFromRevision: 'r1',
+      content: { title: 'Pag-asang Matatag', body: 'Isang debosyonal sa Tagalog.' }
+    }],
+    taxonomyLinks: [{ kind: 'emotion', id: 'emotion.hopeful' }],
+    bsbReferences: ['Romans 15:13'],
+  });
+  const decision = evaluateV7LibraryApproval({
+    item: original,
+    evaluations: passingEvaluations('devotional'),
+    secondPass: secondPass(),
+    decidedAt: EVALUATED_AT,
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, Object.fromEntries(
+    Object.entries(original).reverse()
+  )), true, 'ordinary JSON object key order must not change the review identity');
+
+  const mutations = [
+    ['fixture substitution', i => { i.source.kind = 'fixture'; }],
+    ['changed source checksum', i => { i.source.checksum = 'sha256:changed'; }],
+    ['modified devotional body', i => { i.sourceContent.body += ' Unauthorized change.'; }],
+    ['modified devotional title', i => { i.sourceContent.title = 'Edited without review'; }],
+    ['modified translation', i => { i.translations[0].content.body += ' Changed.'; }],
+    ['changed Scripture reference', i => { i.bsbReferences = ['Romans 15:12']; }],
+    ['changed taxonomy', i => { i.taxonomyLinks[0].id = 'emotion.afraid'; }],
+    ['changed content type', i => { i.type = 'book'; }],
+  ];
+  for (const [label, mutate] of mutations) {
+    const itemCopy = structuredClone(original);
+    mutate(itemCopy);
+    assert.equal(canAutoPublishV7LibraryDecision(decision, itemCopy), false, label);
+  }
+
+  assert.equal(canAutoPublishV7LibraryDecision({
+    ...decision, reviewedContentEvidenceSnapshot: undefined,
+  }, original), false, 'legacy decision without complete source evidence needs fresh review');
+  assert.equal(canAutoPublishV7LibraryDecision({
+    ...decision, reviewedContentEvidenceSnapshot: 'forged',
+  }, original), false, 'forged source evidence cannot publish');
+});
