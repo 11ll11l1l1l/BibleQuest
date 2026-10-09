@@ -5,7 +5,7 @@
   "sourceMasterAssetId": "bqv7-emotion-anxiety-worry-01",
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-08T06:08:55.096Z",
-  "status": "three_files_present_visual_qc_partial",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "contentType": "emotion",
   "contentId": "anxiety_worry",
   "canonicalEmotionId": "anxious",
@@ -129,11 +129,14 @@
         "geometryChecked": true,
         "reference400x500WebPVisuallyInspected": false,
         "exactSvgBrowserRenderQA": "pending",
-        "noEmbeddedText": true
+        "noEmbeddedText": true,
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     }
   ],
-  "bundleStatus": "three_files_present_render_qa_pending",
+  "bundleStatus": "partial_candidate_requires_policy_compliant_derivatives",
   "bundleLocaleCoverage": [
     "en"
   ],
@@ -162,7 +165,23 @@
     "thumbnailSVGSourceGeometryInspected20261008": true,
     "exactThumbnailSVGRenderedAtCardSize": false,
     "releasePromotionBlockedOnThumbnailRender": true,
-    "thumbnailFocalCropRecomposed20261008": true
+    "thumbnailFocalCropRecomposed20261008": true,
+    "svgDataUriPolicyCompliant": false,
+    "staticSvgSafetyReviewed": false,
+    "productionReady": false,
+    "laneYPolicyReview": {
+      "reviewedOn": "2026-10-09",
+      "policy": "data/v7/visual-assets/README.md",
+      "reason": "Embedded <image> href=data:image/webp;base64 is not an allowed internal #id SVG reference; candidate must remain excluded until independently reviewed compliant raster/vector exports replace flagged variants.",
+      "affectedVariants": [
+        {
+          "kind": "THUMB",
+          "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
+          "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477"
+        }
+      ],
+      "action": "Preserve CLEAN and already valid WebP artwork. Export affected variants to real WebP (or data-free fully vector SVG), measure bytes/dimensions/SHA-256 and verify mobile/browser crop, typography and Scripture source before promotion."
+    }
   },
   "inspectionEvidence": {
     "inspectedAt": "2026-10-08T23:00:18+09:00",
