@@ -3,7 +3,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
-import { candidateQuarantineReason } from './v7-visual-candidate-policy.mjs';
+import { knownRejectedVisualReason } from './v7-visual-candidate-policy.mjs';
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const REQUIRED_QC = [
@@ -253,7 +253,7 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       }
       // Image producers may mark a record ready only after the editorial denylist
       // is cleared by replacing rejected bytes, not by flipping QA booleans.
-      const quarantined = candidateQuarantineReason(record);
+      const quarantined = knownRejectedVisualReason(record);
       if (quarantined) throw new Error('production visual quarantined: ' + quarantined);
       if (!record.family || !id.startsWith('bqv7-' + record.family + '-')) throw new Error('family/ID mismatch');
       if (!CONTENT_TYPES.has(record.contentType) || !record.contentId) throw new Error('unknown content type or missing content ID');
