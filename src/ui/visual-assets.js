@@ -2,7 +2,6 @@
 // B and C may import it directly; do not import raw image-agent sidecars.
 const REGISTRY_URL = 'data/v7/visual-assets.json';
 const APPROVED_IMAGE = /^\/v7\/images\/[a-z0-9-]+\/[a-z0-9-]+\.(?:webp|png|jpe?g)$/i;
-let pending;
 
 export function normalizeV7VisualRegistry(data) {
   if (data?.schemaVersion !== 1 || !Array.isArray(data.assets)
@@ -51,15 +50,32 @@ export function findV7Visual(registry, contentKeys = [], locale = 'en', title = 
   return null;
 }
 
-export function loadV7VisualRegistry() {
-  // The production registry is generated in the Vite closeBundle audit, not
-  // served by the source-mode dev server (publicDir is deliberately disabled).
-  if (!import.meta.env?.PROD || typeof fetch !== 'function') return Promise.resolve(null);
-  if (!pending) {
-    pending = fetch(REGISTRY_URL, { cache: 'force-cache' }).then(async response => {
-      if (!response.ok) throw new Error('V7 visual registry is not available.');
-      return normalizeV7VisualRegistry(await response.json());
-    }).catch(() => null);
-  }
-  return pending;
+// Share one in-flight read, retain verified successful data, but never
+// permanently cache a transient offline/HTTP/invalid-manifest failure.
+export function createV7VisualRegistryLoader({ production = false, fetcher } = {}) {
+  let pending;
+  return function loadRegistry() {
+    if (!production || typeof fetcher !== 'function') return Promise.resolve(null);
+    if (!pending) {
+      pending = Promise.resolve().then(() => fetcher(REGISTRY_URL, { cache: 'force-cache' }))
+        .then(async response => {
+          if (!response?.ok) throw new Error('V7 visual registry is not available.');
+          return normalizeV7VisualRegistry(await response.json());
+        })
+        .catch(() => {
+          // A later online/retry interaction must be able to recover the art.
+          // Until then, callers receive null and render safe live-text fallback.
+          pending = undefined;
+          return null;
+        });
+    }
+    return pending;
+  };
 }
+
+// The production registry is generated in Vite closeBundle; source-mode
+// development intentionally does not request a registry.
+export const loadV7VisualRegistry = createV7VisualRegistryLoader({
+  production: import.meta.env?.PROD,
+  fetcher: (...args) => globalThis.fetch?.(...args),
+});
