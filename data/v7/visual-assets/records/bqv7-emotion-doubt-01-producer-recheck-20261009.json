@@ -1,0 +1,16 @@
+{
+  "assetId": "bqv7-emotion-doubt-01",
+  "reviewType": "producer_candidate_recheck",
+  "baseSha": "d061418560e524429f33979efa0a0b269a1d0b44",
+  "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "canonicalLabel": "Doubtful",
+  "reference": "Mark 9:24",
+  "productionReady": false,
+  "checks": {
+    "fileSHA256": "local_only",
+    "builtAppBrowser": "pending",
+    "publishedHttpBytes": "pending",
+    "independentQA": "pending"
+  },
+  "notes": "No binary regeneration. Three original WebPs remain unchanged. Never include this auxiliary recheck in production manifest."
+}
