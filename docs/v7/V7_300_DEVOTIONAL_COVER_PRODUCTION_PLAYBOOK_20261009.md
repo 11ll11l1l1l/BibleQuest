@@ -199,3 +199,33 @@ The numbered roster below follows **source batch order** (the ten devotional wri
 | 118 | `devotional.biblequest.stress.04` | Make room for prayer and wisdom | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
 | 119 | `devotional.biblequest.temptation.04` | Make room for prayer and wisdom | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
 | 120 | `devotional.biblequest.tiredness_weariness.04` | Make room for prayer and wisdom | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 121 | `devotional.biblequest.anger.05` | Return the next hour to God | `emotion.anger` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 122 | `devotional.biblequest.anxiety_worry.05` | Return the next hour to God | `emotion.anxiety_worry` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 123 | `devotional.biblequest.confusion_uncertainty.05` | Return the next hour to God | `emotion.confusion_uncertainty` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 124 | `devotional.biblequest.discouragement.05` | Return the next hour to God | `emotion.discouragement` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 125 | `devotional.biblequest.doubt.05` | Return the next hour to God | `emotion.doubt` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 126 | `devotional.biblequest.excitement.11` | Obey: Let joy become gratitude, not self-importance | `emotion.excitement` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 127 | `devotional.biblequest.fear.05` | Return the next hour to God | `emotion.fear` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 128 | `devotional.biblequest.frustration.05` | Return the next hour to God | `emotion.frustration` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 129 | `devotional.biblequest.gratitude.05` | Return the next hour to God | `emotion.gratitude` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 130 | `devotional.biblequest.grief_loss.05` | Return the next hour to God | `emotion.grief_loss` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 131 | `devotional.biblequest.guilt.11` | Obey: Bring the wrong into the light | `emotion.guilt` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 132 | `devotional.biblequest.hope.05` | Return the next hour to God | `emotion.hope` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 133 | `devotional.biblequest.hopelessness.05` | Return the next hour to God | `emotion.hopelessness` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 134 | `devotional.biblequest.hurt_betrayal.05` | Return the next hour to God | `emotion.hurt_betrayal` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 135 | `devotional.biblequest.impatience_waiting.05` | Return the next hour to God | `emotion.impatience_waiting` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 136 | `devotional.biblequest.insecurity_unworthiness.05` | Return the next hour to God | `emotion.insecurity_unworthiness` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 137 | `devotional.biblequest.jealousy_envy.05` | Return the next hour to God | `emotion.jealousy_envy` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 138 | `devotional.biblequest.joy.05` | Return the next hour to God | `emotion.joy` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 139 | `devotional.biblequest.loneliness.05` | Return the next hour to God | `emotion.loneliness` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 140 | `devotional.biblequest.love_connection.11` | Obey: Make love concrete in one relationship | `emotion.love_connection` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 141 | `devotional.biblequest.numbness_emptiness.05` | Return the next hour to God | `emotion.numbness_emptiness` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 142 | `devotional.biblequest.overwhelm.05` | Return the next hour to God | `emotion.overwhelm` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 143 | `devotional.biblequest.peace_contentment.05` | Return the next hour to God | `emotion.peace_contentment` | `content/v7/devotionals/biblequest-original-emotions-05c.json @ r1` |
+| 144 | `devotional.biblequest.rejection.05` | Return the next hour to God | `emotion.rejection` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 145 | `devotional.biblequest.sadness.05` | Return the next hour to God | `emotion.sadness` | `content/v7/devotionals/biblequest-original-emotions-05a.json @ r1` |
+| 146 | `devotional.biblequest.shame.11` | Obey: Reject the label that shame assigns | `emotion.shame` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 147 | `devotional.biblequest.spiritual_dryness_distance.11` | Obey: Stay when you feel nothing | `emotion.spiritual_dryness_distance` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 148 | `devotional.biblequest.stress.05` | Return the next hour to God | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
+| 149 | `devotional.biblequest.temptation.11` | Obey: Change the conditions before temptation returns | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-11-backfill.json @ r1` |
+| 150 | `devotional.biblequest.tiredness_weariness.05` | Return the next hour to God | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-05b.json @ r1` |
