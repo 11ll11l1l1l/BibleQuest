@@ -69,8 +69,36 @@
     "conceptAccurate": true,
     "sceneDistinguishedFromHurtAndRejection": true,
     "localInspectionNotes": "CLEAN and TYPE inspected at native dimensions; TYPE checked at 320x400; THUMB checked at 80x100. Broken mug and reaching hand remain recognizable. 4:5 crop best matches source x≈100/1024 to 920/1024. Typography has high contrast against navy header. No fake text or Bible prose.",
-    "repoVisualAudit": "pending_full_checkout",
-    "browserQA": "pending_full_app_preview"
+    "repoVisualAudit": {
+      "status": "PASS",
+      "classification": "automated_image_hash_schema_and_metadata_integrity_only",
+      "evidenceHeadSha": "916cee086575f46627942e2e228a37c19a91d51a",
+      "githubActionsRunId": 37912482104,
+      "source": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37912482104",
+      "auditedMasterSha256": "9f8143244d8a0cbce3a6cb46b2188790c2de498b943b10a41db321b3011ce309",
+      "completePublishedBundlesInRun": 8,
+      "warning": "Exact audited QA run on another metadata-only Lane Y PR head includes the same published Guilt image and derived binary fingerprints. This is not current production-deployment or independent artwork/context signoff."
+    },
+    "browserQA": {
+      "status": "PASS_TECHNICAL",
+      "source": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37912482104",
+      "exactTestedSha": "916cee086575f46627942e2e228a37c19a91d51a",
+      "candidateRevalidationRequired": true,
+      "proof": "The exact-run built preview served all 32 manifest-listed image files with matching SHA-256 and validated 8 complete release bundles at 320/390/430 CSS-pixel viewports in Chromium; 84 TYPE/THUMB screenshots across release and draft bundles were captured.",
+      "scope": "automated_binary_serving_dimensions_responsive_no_overflow",
+      "excludes": "font aesthetic, full editorial/visual artwork approval, independent Scripture contextual signoff, exact deployed production SHA"
+    },
+    "laneYContextReview": {
+      "canonLabel": "Guilty",
+      "canonReference": "1 John 1:9",
+      "taxonomySourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "referenceSource": "https://ebible.org/engbsb/1JN01.htm",
+      "passageScope": "1 John 1:5-10",
+      "context": "The apostle addresses walking in the light, acknowledging sin and confessing sins before God's forgiveness and cleansing; 1 John 1:9 is conditional on confession. The illustrated broken mug is an ordinary tangible mistake and must NOT itself be presented as necessarily moral sin.",
+      "copyPolicy": "No Bible prose in the raster artwork. Future devotionals using this image must distinguish subjective guilt or an accident from moral wrongdoing and must not claim automatic pardon without the verse's confession condition.",
+      "verified": "Reference only; context documented, not final independent doctrinal certification",
+      "sourceImageAndAllVariantBytesUnmodified": true
+    }
   },
   "variants": [
     {
@@ -154,9 +182,9 @@
       "crop": {
         "sourceRegionNormalizedApprox": {
           "x": 0.098,
-          "y": 0.0,
+          "y": 0,
           "width": 0.801,
-          "height": 1.0
+          "height": 1
         },
         "outputAspect": "4:5",
         "method": "independently exported and visually inspected WebP crop",
