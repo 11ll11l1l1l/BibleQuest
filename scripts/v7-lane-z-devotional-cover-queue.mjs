@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const DEVOTIONAL_DIR = 'content/v7/devotionals';
 const RECORD_DIR = 'data/v7/visual-assets/records';
-const INITIAL_SCENES = 'data/v7/visual-assets/lane-z-initial-30-source-briefs.json';
+const SOURCE_SCENES = ['data/v7/visual-assets/lane-z-initial-30-source-briefs.json',
+  'data/v7/visual-assets/lane-z-second-30-source-briefs.json'];
 const VALID_ID = /^devotional\.[a-z0-9._-]+$/;
 const OWNED = ['display', 'modify'];
 
@@ -176,10 +177,11 @@ export async function readLaneZCoverQueue(root = ROOT) {
   const recordNames = (await readdir(join(root,RECORD_DIR))).filter(n=>n.endsWith('.json')&&!n.endsWith('-derivatives.json'));
   const records = await Promise.all(recordNames.map(async n=>
     JSON.parse(await readFile(join(root,RECORD_DIR,n),'utf8'))));
-  const briefFile=JSON.parse(await readFile(join(root,INITIAL_SCENES),'utf8'));
-  if (briefFile.schemaVersion!==1 || !Array.isArray(briefFile.entries))
+  const catalogs=await Promise.all(SOURCE_SCENES.map(async file =>
+    JSON.parse(await readFile(join(root,file),'utf8'))));
+  if (catalogs.some(c=>c.schemaVersion!==1 || !Array.isArray(c.entries)))
     throw new Error('Invalid source-bound Lane Z scene brief catalog');
-  return buildLaneZCoverQueue(files,records,briefFile.entries);
+  return buildLaneZCoverQueue(files,records,catalogs.flatMap(c=>c.entries));
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const result = await readLaneZCoverQueue();
