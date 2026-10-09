@@ -185,7 +185,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const result = await readLaneZCoverQueue();
   const all = process.argv.includes('--all');
   const limitArg = process.argv.find(a=>a.startsWith('--limit='));
-  const limit = limitArg ? Number(limitArg.split('=')[1]) : 10;
+  const idArg = process.argv.find(a=>a.startsWith('--id='));
+  const limit = limitArg ? Number(limitArg.split('=')[1]) : 1;
   if (!all && (!Number.isInteger(limit) || limit < 1 || limit > 300)) throw new Error('Invalid --limit');
-  console.log(JSON.stringify({...result,queue:all?result.queue:result.queue.slice(0,limit)},null,2));
+  if (idArg && (all || limitArg)) throw new Error('Select one devotional ID or a batch, not both');
+  const selected = idArg
+    ? result.queue.filter(x=>x.devotionalId === idArg.slice('--id='.length) && x.rightsEligible)
+    : all ? result.queue : result.queue.filter(x=>x.rightsEligible && x.state!=='hold_rights').slice(0,limit);
+  if (idArg && selected.length !== 1) throw new Error('Unknown or rights-ineligible devotional ID');
+  // The default is ONE source-bound image, not a 10-panel contact sheet.
+  console.log(JSON.stringify({...result,queue:selected},null,2));
 }
