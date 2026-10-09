@@ -109,3 +109,33 @@ The numbered roster below follows **source batch order** (the ten devotional wri
 | 028 | `devotional.biblequest.stress.01` | Receive the invitation to rest | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-01d.json @ r1` |
 | 029 | `devotional.biblequest.temptation.01` | Make the faithful choice easier | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-01d.json @ r1` |
 | 030 | `devotional.biblequest.tiredness_weariness.01` | Rest is part of faithfulness | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-01d.json @ r1` |
+| 031 | `devotional.biblequest.anger.02` | Lower the temperature | `emotion.anger` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 032 | `devotional.biblequest.anxiety_worry.02` | Return to what is true | `emotion.anxiety_worry` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 033 | `devotional.biblequest.confusion_uncertainty.02` | Do the clear next thing | `emotion.confusion_uncertainty` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 034 | `devotional.biblequest.discouragement.02` | Keep sowing before you see fruit | `emotion.discouragement` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 035 | `devotional.biblequest.doubt.02` | Keep the question in the room | `emotion.doubt` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 036 | `devotional.biblequest.excitement.02` | Steward the energy | `emotion.excitement` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 037 | `devotional.biblequest.fear.02` | Remember who is with you | `emotion.fear` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 038 | `devotional.biblequest.frustration.02` | Try another faithful way | `emotion.frustration` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 039 | `devotional.biblequest.gratitude.02` | Trace the gift to the Giver | `emotion.gratitude` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 040 | `devotional.biblequest.grief_loss.02` | Remember with hope | `emotion.grief_loss` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 041 | `devotional.biblequest.guilt.02` | Repair what you can | `emotion.guilt` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 042 | `devotional.biblequest.hope.02` | Hope has a horizon | `emotion.hope` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 043 | `devotional.biblequest.hopelessness.02` | Call to mind what remains true | `emotion.hopelessness` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 044 | `devotional.biblequest.hurt_betrayal.02` | Tell the truth without becoming cruel | `emotion.hurt_betrayal` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 045 | `devotional.biblequest.impatience_waiting.02` | Let waiting deepen trust | `emotion.impatience_waiting` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 046 | `devotional.biblequest.insecurity_unworthiness.02` | You are not an audition | `emotion.insecurity_unworthiness` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 047 | `devotional.biblequest.jealousy_envy.02` | Celebrate without comparison | `emotion.jealousy_envy` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 048 | `devotional.biblequest.joy.02` | Share the good | `emotion.joy` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 049 | `devotional.biblequest.loneliness.02` | Send the first message | `emotion.loneliness` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 050 | `devotional.biblequest.love_connection.02` | Make room to listen | `emotion.love_connection` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 051 | `devotional.biblequest.numbness_emptiness.02` | Stay connected to simple practices | `emotion.numbness_emptiness` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 052 | `devotional.biblequest.overwhelm.02` | Carry today's load | `emotion.overwhelm` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 053 | `devotional.biblequest.peace_contentment.02` | Practice enough | `emotion.peace_contentment` | `content/v7/devotionals/biblequest-original-emotions-02c.json @ r1` |
+| 054 | `devotional.biblequest.rejection.02` | Approval is not your foundation | `emotion.rejection` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 055 | `devotional.biblequest.sadness.02` | Let sorrow become prayer | `emotion.sadness` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 056 | `devotional.biblequest.shame.02` | Approach grace instead of hiding | `emotion.shame` | `content/v7/devotionals/biblequest-original-emotions-02a.json @ r1` |
+| 057 | `devotional.biblequest.spiritual_dryness_distance.02` | Pray the small prayer | `emotion.spiritual_dryness_distance` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 058 | `devotional.biblequest.stress.02` | Release borrowed pressure | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 059 | `devotional.biblequest.temptation.02` | Leave before you negotiate | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
+| 060 | `devotional.biblequest.tiredness_weariness.02` | Limits are not laziness | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-02b.json @ r1` |
