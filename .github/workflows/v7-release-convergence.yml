@@ -48,7 +48,7 @@ concurrency:
 
 env:
   BQ_EXACT_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'workflow_dispatch' && inputs.candidate_sha || github.sha }}
-  BQ_STRICT_RELEASE: ${{ github.event_name != 'pull_request' || github.event.pull_request.base.ref == 'main' }}
+  BQ_STRICT_RELEASE: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main') }}
   BQ_LOCAL_STATUS_FILE: /tmp/bq-v7-convergence-status.json
   BQ_PREVIEW_URL: http://127.0.0.1:4173
   SUPABASE_TELEMETRY_DISABLED: '1'
