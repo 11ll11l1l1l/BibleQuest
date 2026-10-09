@@ -64,9 +64,29 @@
     "localBrowserQA": "passed_isolated_data_uri_320_390_430",
     "typeVisualQA": "passed_isolated_320_390_430",
     "thumbnailVisualQA": "passed_isolated_320_390_430",
-    "httpServedBytes": "verified_all_three_exact_sha256",
-    "browserEvidence": "isolated-qa-evidence.json",
-    "httpEvidence": "browser-qa-evidence.json"
+    "httpServedBytes": "local_fixture_only_verified_3_of_3_not_published",
+    "browserEvidence": "producer_local_isolated_320_390_430_only_not_built_app",
+    "httpEvidence": "producer_local_http_3_of_3_only_not_published",
+    "latestProducerVerification": {
+      "dateJst": "2026-10-09",
+      "branchBaseSha": "d061418560e524429f33979efa0a0b269a1d0b44",
+      "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "originalBinaryGitBlobs": {
+        "CLEAN": "4f57fc6f24d55aa4f8828cc5f161a19f922d9563",
+        "TYPE": "b77075c45b59b39ced3094a909abcc6d14f37849",
+        "THUMB": "bd56b1d566b506bbf7c0e8c8923a80c2eb49600f"
+      },
+      "imageChecks": "3/3 decoded; exact dimensions, byte counts, SHA256 and Git blob SHA1 independently matched local originals",
+      "isolatedChromium": "320/390/430px data-URI fixture rendered; no overflow; title visible; NOT BibleQuest built app",
+      "localeFallback": "TL/CEB/ILO localized live labels tested in isolated fixture with CLEAN source at 320/390/430; NOT application integration proof",
+      "localHttp": "3/3 exact served-byte hashes from localhost Python HTTP server, NOT production or preview published URLs",
+      "builtAppChromium": "unperformed; navigation to localhost blocked by ERR_BLOCKED_BY_ADMINISTRATOR",
+      "publishedServedBytes": "unperformed",
+      "canonicalAudit": "unperformed; no complete repository checkout",
+      "independentVisualQa": "pending QA Agent",
+      "scriptureReferenceContext": "Mark 9:24 is the father's appeal for help with unbelief during Jesus's encounter; artwork is an analogy for hesitating trust, not a claim that the verse promises physical bridge safety",
+      "productionReady": false
+    }
   },
   "variants": [
     {
