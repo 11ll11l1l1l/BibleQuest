@@ -175,10 +175,41 @@
     "duplicateChecked": true,
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "candidate_ci_passed_release_http_unverified",
     "visualAuditScript": "not_run_no_local_repo",
     "productionReady": false,
     "type320pxVisualInspected": true,
     "isolatedChromiumRendering": "timed_out"
+  },
+  "candidateExactHeadCiEvidence": {
+    "commitSha": "1451cfaadc8181fd4addbada25ab776e4c4f5eab",
+    "checks": [
+      {
+        "name": "V7 Visual Asset Built-Browser QA",
+        "runId": 37970850606,
+        "conclusion": "success"
+      },
+      {
+        "name": "V6 PR Serialization Guard",
+        "runId": 37970850602,
+        "conclusion": "success"
+      },
+      {
+        "name": "V7 Build PWA Performance Gate",
+        "runId": 37970850598,
+        "conclusion": "success"
+      },
+      {
+        "name": "V7 Release Convergence",
+        "runId": 37970850599,
+        "conclusion": "success"
+      }
+    ],
+    "visualBrowserArtifactId": 11634819117,
+    "buildArtifactId": 11634719682,
+    "meaning": "CI passed for candidate. Browser tests may intercept draft images; not independent visual QA or release-served HTTP byte certification.",
+    "independentVisualQA": "pending",
+    "releaseServedHttpSha256": "not_verified",
+    "productionPublicationAllowed": false
   }
 }
