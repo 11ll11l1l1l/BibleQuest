@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assessV7VisualRelease } from '../../scripts/v7-release-visual-evidence.mjs';
+import { assessV7VisualRelease, attestV7ReleaseScreenshots } from '../../scripts/v7-release-visual-evidence.mjs';
 
 const sha = 'a'.repeat(40);
 const binary = 'b'.repeat(64);
@@ -79,4 +79,48 @@ test('missing one viewport or missing decode proof prevents an image-first relea
   const report2=assessV7VisualRelease({candidateSha:sha,...fixture,
     browserReport:{...fixture.browserReport,technicalChecks:['actual-served-sha256']}});
   assert.equal(report2.status,'OPEN');
+});
+
+const png = Buffer.concat([Buffer.from('89504e470d0a1a0a', 'hex'), Buffer.alloc(32)]);
+const withShots = () => {
+  const fixture = make(1, 1, 1);
+  const screenshots = fixture.audit.manifest.assets.flatMap(asset =>
+    ['with_text', 'thumbnail'].flatMap(kind =>
+      [320, 390, 430].map(width =>
+        `artifacts/v7/visual-browser/release-${asset.assetId}-${kind}-${width}.png`)));
+  fixture.browserReport.screenshots = [
+    ...screenshots,
+    'artifacts/v7/visual-browser/draft-not-published-thumbnail-320.png'
+  ];
+  return fixture;
+};
+
+test('real PNG bytes of every published mobile TYPE/THUMB screenshot receive immutable SHA-256', async () => {
+  const fixture = withShots();
+  const sealed = await attestV7ReleaseScreenshots(fixture.browserReport, fixture.audit.manifest.assets, {
+    loadScreenshot: async () => png
+  });
+  assert.equal(sealed.count, 18);
+  assert.equal(sealed.images.length, 18);
+  assert(sealed.images.every(row => /^[0-9a-f]{64}$/.test(row.sha256)));
+  assert.equal(sealed.images.some(row => row.path.includes('/draft-')), false);
+  assert.match(sealed.sha256, /^[0-9a-f]{64}$/);
+});
+
+test('missing, duplicate or altered browser release screenshot evidence fails closed', async () => {
+  const fixture = withShots();
+  const loadScreenshot = async () => png;
+  const screenshots = fixture.browserReport.screenshots;
+  await assert.rejects(attestV7ReleaseScreenshots(
+    {...fixture.browserReport, screenshots:screenshots.slice(1)}, fixture.audit.manifest.assets,
+    { loadScreenshot }), /missing, duplicated, or unexpected/);
+  await assert.rejects(attestV7ReleaseScreenshots(
+    {...fixture.browserReport, screenshots:[...screenshots, screenshots[0]]}, fixture.audit.manifest.assets,
+    { loadScreenshot }), /missing, duplicated, or unexpected/);
+  await assert.rejects(attestV7ReleaseScreenshots(
+    fixture.browserReport, fixture.audit.manifest.assets,
+    { loadScreenshot:async () => Buffer.from('not-a-png') }), /not a PNG/);
+  await assert.rejects(attestV7ReleaseScreenshots(
+    fixture.browserReport, [...fixture.audit.manifest.assets, {assetId:'../escape',bundleStatus:'complete'}],
+    { loadScreenshot }), /Unsafe visual asset ID/);
 });

@@ -104,6 +104,37 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
   };
 }
 
+
+/** Seal actual Chromium TYPE/THUMB screenshots, not merely declared browser checks.
+ * Draft candidate screenshots remain outside the published release attestation.
+ */
+export async function attestV7ReleaseScreenshots(browserReport, assets, { loadScreenshot = readFile } = {}) {
+  if (!Array.isArray(browserReport?.screenshots) || !Array.isArray(assets))
+    throw new Error('Strict visual release requires a browser screenshot manifest.');
+  const expected = [];
+  for (const asset of assets.filter(item => item.bundleStatus === 'complete')) {
+    if (!/^[a-z0-9][a-z0-9_-]*$/i.test(asset.assetId || ''))
+      throw new Error('Unsafe visual asset ID for screenshot attestation.');
+    for (const kind of ['with_text', 'thumbnail'])
+      for (const width of [320, 390, 430])
+        expected.push(`artifacts/v7/visual-browser/release-${asset.assetId}-${kind}-${width}.png`);
+  }
+  const recorded = browserReport.screenshots.filter(path =>
+    typeof path === 'string' && path.startsWith('artifacts/v7/visual-browser/release-'));
+  if (new Set(recorded).size !== recorded.length
+    || JSON.stringify(sorted(recorded)) !== JSON.stringify(sorted(expected)))
+    throw new Error('Chromium release screenshots are missing, duplicated, or unexpected.');
+  const pngHeader = Buffer.from('89504e470d0a1a0a', 'hex');
+  const images = [];
+  for (const path of sorted(expected)) {
+    const bytes = await loadScreenshot(path);
+    if (!Buffer.isBuffer(bytes) || bytes.length < 24 || !bytes.subarray(0, 8).equals(pngHeader))
+      throw new Error('Chromium screenshot is absent or not a PNG: ' + path);
+    images.push({ path, sha256: digest(bytes), bytes: bytes.length });
+  }
+  return { count: images.length, sha256: digest(JSON.stringify(images)), images };
+}
+
 export async function produceV7VisualReleaseEvidence(candidateSha, { requireBrowser = false } = {}) {
   const [audit, coverage] = await Promise.all([
     auditV7VisualAssets(), buildV7VisualCoverageReport(),
@@ -112,7 +143,10 @@ export async function produceV7VisualReleaseEvidence(candidateSha, { requireBrow
   if (requireBrowser) {
     browserReport = JSON.parse(await readFile('artifacts/v7/visual-browser/report.json','utf8'));
   }
-  return assessV7VisualRelease({ candidateSha, audit, coverage, browserReport });
+  const result = assessV7VisualRelease({ candidateSha, audit, coverage, browserReport });
+  if (!requireBrowser) return { ...result, screenshotEvidenceVerified: false };
+  const screenshots = await attestV7ReleaseScreenshots(browserReport, audit.manifest.assets);
+  return { ...result, screenshotEvidenceVerified: true, screenshotEvidence: screenshots };
 }
 
 const invokedAsScript = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
