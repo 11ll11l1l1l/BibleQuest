@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "sourceMasterAssetId": "bqv7-emotion-temptation-01",
   "agentId": "visual-agent-4",
-  "status": "candidate_corrected_type_svg_static_verified_browser_qa_pending",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "variants": [
     {
       "kind": "TYPE",
@@ -35,7 +35,10 @@
         "svgSourceDimensionsDeclared": true,
         "referenceFontPx": 48,
         "referenceEquivalentAt320Px": 15,
-        "referenceMobileGeometryChecked": true
+        "referenceMobileGeometryChecked": true,
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       },
       "gitBlobSha": "c3a4a7e91ca981d7deb57749068fc32f7c7ebf67"
     }
@@ -72,5 +75,24 @@
     "productionReady": false,
     "visualAuditScript": "not_run",
     "note": "Source SVG inspected and independently SHA-256 measured. No local browser screenshot or decoded SVG raster; keep quarantined."
+  },
+  "bundleStatus": "partial_candidate_requires_policy_compliant_derivatives",
+  "qc": {
+    "svgDataUriPolicyCompliant": false,
+    "staticSvgSafetyReviewed": false,
+    "productionReady": false,
+    "laneYPolicyReview": {
+      "reviewedOn": "2026-10-09",
+      "policy": "data/v7/visual-assets/README.md",
+      "reason": "Embedded <image> href=data:image/webp;base64 is not an allowed internal #id SVG reference; candidate must remain excluded until independently reviewed compliant raster/vector exports replace flagged variants.",
+      "affectedVariants": [
+        {
+          "kind": "TYPE",
+          "path": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en-corrected.svg",
+          "gitBlobSha": "c3a4a7e91ca981d7deb57749068fc32f7c7ebf67"
+        }
+      ],
+      "action": "Preserve CLEAN and already valid WebP artwork. Export affected variants to real WebP (or data-free fully vector SVG), measure bytes/dimensions/SHA-256 and verify mobile/browser crop, typography and Scripture source before promotion."
+    }
   }
 }
