@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent_visual_qa",
+  "integrationHead": "d061418560e524429f33979efa0a0b269a1d0b44",
+  "scope": "six current Feeling records",
+  "verified": {
+    "uniqueAssets": 6,
+    "variantBinaries": 18,
+    "sha256Matched": 18,
+    "bytesMatched": 18,
+    "dimensionsMatched": 18,
+    "releaseCertified": 0
+  },
+  "findings": [
+    {
+      "asset": "bqv7-emotion-jealousy-envy-01",
+      "decision": "repair_needed",
+      "reason": "Gold underline crosses TYPE title glyphs",
+      "owner": "visual-agent-4"
+    },
+    {
+      "asset": "bqv7-emotion-impatience-waiting-01",
+      "decision": "repair_needed",
+      "reason": "TYPE top title near upper edge",
+      "owner": "manual-lane-Y"
+    },
+    {
+      "asset": "bqv7-emotion-hope-01",
+      "decision": "repair_needed",
+      "reason": "SVG TYPE uses runtime Georgia font; new photo assigned",
+      "owner": "visual-agent-5"
+    },
+    {
+      "asset": "bqv7-emotion-peace-contentment-01",
+      "decision": "repair_needed",
+      "reason": "Photo-style replacement assigned",
+      "owner": "visual-agent-5"
+    },
+    {
+      "asset": "bqv7-emotion-grief-loss-01",
+      "decision": "qa_pending",
+      "reason": "provenance and built-app HTTP QA missing",
+      "owner": "visual-agent-1"
+    },
+    {
+      "asset": "bqv7-emotion-sadness-01",
+      "decision": "qa_pending",
+      "reason": "built-app HTTP QA missing",
+      "owner": "visual-agent-1"
+    }
+  ],
+  "limits": "Official Node audit and built-app 320/390/430 HTTP SHA not run; no production approval."
+}
