@@ -2,7 +2,7 @@
 
 Created 2026-10-09 22:00 JST from exact `v7/development` `ac4b6c1568931272698b8823522f558c1375b102`. Owner: Visual Producer 1. This is evidence ONLY, not a complete production submission; no manifest changes.
 
-Scene: original standalone indoor editorial photo, young person places distracting smartphone face-down and turns to a sketchbook by a window. OpenAI image generation ID `4d415523-9fcb-4b81-b1b9-92baf6fe8c8d`; specific model unexposed. Source `a_cozy_realistic_softly_lit_indoor_study_creativ.png` 1122×1402. No third-party source supplied. The source and all variants are held in the run's candidate ZIP, not yet in this Git branch.
+Scene: original standalone indoor editorial photo, young person places distracting smartphone face-down and turns to a sketchbook by a window. OpenAI image generation ID `4d415523-9fcb-4b81-b1b9-92baf6fe8c8d`; specific model unexposed. Source `turning_away_to_create.png` 1122×1402, 2,115,556 bytes, SHA256 `5d7436de2e998b306391879da517f12ef2356313fb66522c6a3c05ff0bc72d25`, verified against the original generation output. The candidate sidecar's earlier source filename was incorrect and must be corrected before GitHub binary publication. No third-party source supplied. The source and all variants are held in the run's candidate ZIP, not yet in this Git branch.
 
 Physical candidate binaries independently decoded and measured locally:
 
