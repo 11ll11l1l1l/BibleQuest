@@ -65,7 +65,15 @@ const gitBlobSha = bytes => createHash('sha1')
 async function verifyV2Wording(record, variant, root) {
   if (!['emotion', 'need'].includes(record.contentType))
     throw new Error('V2 TYPE needs a verified content-specific title source');
-  const proof = record.wordingEvidence;
+  // V2 TYPE can have independently reviewed lettering for each locale.
+  // A locale map, when present, is authoritative: never borrow EN evidence for
+  // missing TL/CEB/ILO art. Older single-locale sidecars remain compatible.
+  const byLocale = record.wordingEvidenceByLocale;
+  if (byLocale !== undefined && (!byLocale || typeof byLocale !== 'object'
+    || Array.isArray(byLocale)))
+    throw new Error('TYPE per-locale wording evidence must be an object');
+  const proof = byLocale === undefined
+    ? record.wordingEvidence : byLocale[variant.locale];
   if (!proof || proof.sourcePath !== 'src/features/library/emotion-taxonomy.js')
     throw new Error('TYPE wording source missing or unsupported');
   const bytes = await readFile(join(root, proof.sourcePath));
