@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "assetId": "bqv7-need-rest-01",
   "agentId": "visual-agent-1",
-  "status": "candidate_visual_qa_pending",
-  "bundleStatus": "three_svg_files_created_pending_rendered_and_exact_app_QA",
+  "status": "candidate_visual_quality_repair_required",
+  "bundleStatus": "complete_three_file_svg_bundle_technical_browser_pass_visual_quality_rejected",
   "family": "need",
   "visualRole": "need_tile",
   "contentType": "need",
@@ -98,9 +98,10 @@
         "svgStructuralReview": true,
         "spellingCheckedAgainstTaxonomy": true,
         "scriptureReferenceOnly": true,
-        "visualInspected": "pending",
-        "typeReadableAt320px": "pending",
-        "builtAppBrowserQA": "pending"
+        "visualInspected": true,
+        "typeReadableAt320px": false,
+        "builtAppBrowserQA": "pending",
+        "visualReviewResult": "Needs stronger mobile reference lettering as well as overall photographic-quality scene."
       }
     }
   ],
@@ -141,11 +142,32 @@
     "builtAppBrowserQA": "pending",
     "officialNodeAudit": "not_run",
     "productionReady": false,
-    "unverifiedAestheticQuality": true,
+    "unverifiedAestheticQuality": false,
     "assetSpecificSha256MeasureMethod": "Source-ASCII exact UTF-8 bytes; independent pure-JS SHA-256 with abc vector self-test and GitHub readback",
     "typeEmbeddedWordsSourceVerified": true,
     "threeDistinctRealFiles": true,
-    "allThreeLocalWebPDecodingAndSHA256Verified": false
+    "allThreeLocalWebPDecodingAndSHA256Verified": false,
+    "aestheticReview": "FAIL: exact-head Chromium 320px screenshots show a flat, simple vector interior, not the required cinematic editorial/photographic treatment for production V7",
+    "matchesVisualSystem": false,
+    "exactHeadCandidateBrowserQA": {
+      "candidateSha": "f4b7f387325da779cd5376e12fc9fe574643c2bd",
+      "runId": 37996649857,
+      "artifactId": 11647880331,
+      "result": "technical_browser_pass_only",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "screenshotEvidence": [
+        "draft-bqv7-need-rest-01-with_text-320.png",
+        "draft-bqv7-need-rest-01-thumbnail-320.png"
+      ],
+      "publishedHttpConfirmed": false,
+      "visuallyApproved": false
+    },
+    "visualQaDecision": "REJECT_AS_RELEASE_ART; replace with original premium single-scene photographic artwork while preserving canonical Need title/reference/metadata",
+    "independentPixelReview": "completed_rejected_2026-10-10"
   },
   "publicationBlockers": [
     "independent rendered image inspection",
@@ -153,6 +175,7 @@
     "320/390/430 CSS px built-app browser QA",
     "official V7 visual audit",
     "Lane D production index certification",
-    "TYPE visual typography legibility at 320/390/430 CSS px"
+    "TYPE visual typography legibility at 320/390/430 CSS px",
+    "Independent visual QA REJECTED existing flat-vector art direction; generate a new standalone photoreal master instead of promoting SVG."
   ]
 }
