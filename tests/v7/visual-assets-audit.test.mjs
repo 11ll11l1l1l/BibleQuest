@@ -486,3 +486,67 @@ test('rejects XML stylesheet instructions and entity declarations in SVG art', a
     assert.match(result.errors.join('\n'), /unsafe or unrecognized SVG/);
   }
 });
+
+
+test('V2 Need accepts independently sourced EN/TL/CEB/ILO TYPE files without mixing locale proof', async t => {
+  const f = await needV2BundleFixture(t);
+  const oldProof = f.record.wordingEvidence;
+  const proofByLocale = { en: oldProof };
+  const labels = { tl: 'Kapayapaan', ceb: 'Kalinaw', ilo: 'Talna' };
+  const id = f.record.assetId;
+  const dir = join(f.root, 'public/v7/images/need');
+  for (const [locale, label] of Object.entries(labels)) {
+    // Independently measured binary for each translation, never a renamed EN file.
+    const bytes = Buffer.concat([PNG, Buffer.from('verified-' + locale)]);
+    const path = '/v7/images/need/' + id + '-with-text-' + locale + '.png';
+    await writeFile(join(dir, id + '-with-text-' + locale + '.png'), bytes);
+    f.record.variants.push({
+      ...f.record.variants[1], locale, imagePath: path, fileBytes: bytes.length,
+      sha256: createHash('sha256').update(bytes).digest('hex'),
+      embeddedWording: { label, scriptureReference: 'John 14:27',
+        scriptureTextIncluded: false }
+    });
+    proofByLocale[locale] = { ...oldProof, locale, exactLabel: label };
+  }
+  delete f.record.wordingEvidence;
+  f.record.wordingEvidenceByLocale = proofByLocale;
+  await f.saveNeed();
+  let result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.equal(result.counts.completeBundles, 1);
+  assert.deepEqual(
+    result.manifest.assets[0].variants.filter(v => v.kind === 'with_text')
+      .map(v => [v.locale, v.embeddedText]).sort((a, b) => a[0].localeCompare(b[0])),
+    [['ceb', 'Kalinaw'], ['en', 'Peace'], ['ilo', 'Talna'], ['tl', 'Kapayapaan']]
+  );
+  // The locale map is fail-closed even if a legacy EN-only proof is supplied.
+  f.record.wordingEvidence = oldProof;
+  delete f.record.wordingEvidenceByLocale.ilo;
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /TYPE wording source missing or unsupported/);
+  f.record.wordingEvidenceByLocale.ilo = proofByLocale.ilo;
+  f.record.wordingEvidenceByLocale.ceb.exactLabel = 'Wrong label';
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /TYPE embedded wording does not match reviewed taxonomy/);
+  f.record.wordingEvidenceByLocale.ceb.exactLabel = 'Kalinaw';
+  f.record.wordingEvidenceByLocale.tl.sourceBlobSha = '0'.repeat(40);
+  await f.saveNeed();
+  result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\n'), /TYPE taxonomy source revision changed/);
+});
+
+test('V2 Need rejects malformed locale proof maps instead of borrowing legacy EN evidence', async t => {
+  const f = await needV2BundleFixture(t);
+  for (const malformed of [null, [], 'reviewed']) {
+    f.record.wordingEvidenceByLocale = malformed;
+    await f.saveNeed();
+    const result = await auditV7VisualAssets(f.root);
+    assert.equal(result.status, 'FAIL');
+    assert.match(result.errors.join('\n'), /TYPE per-locale wording evidence must be an object/);
+  }
+});
