@@ -15,21 +15,18 @@ const image = async kind => readFile(join(root, 'public/v7/images/need',
 const meta = async () => JSON.parse(await readFile(
   join(root, 'data/v7/visual-assets/records', id + '.json'), 'utf8'));
 
-test('Lane X Rest is a real, 3-file candidate with measured integrity, never published', async () => {
-  const [source, record] = await Promise.all([
-    verifyV7ManualCandidate(root, id), meta()
-  ]);
-  assert.equal(source.technicalIntegrity, 'PASS');
-  assert.equal(source.files.length, 3);
-  assert.equal(source.publicationApproval,
-    'NOT APPROVED: manual candidate remains excluded from release manifest');
-  assert.notEqual(record.status, 'production_ready');
+test('Lane X Rest is quarantined after real pixel QA despite intact source bytes', async () => {
+  const record = await meta();
+  await assert.rejects(verifyV7ManualCandidate(root, id), /candidate quarantined/i);
+  assert.equal(record.status, 'candidate_visual_quality_repair_required');
   assert.equal(record.contentType, 'need');
   assert.equal(record.contentId, 'rest');
   assert.equal(record.qc.productionReady, false);
-  for (const item of source.files) {
-    assert.equal(item.sha256, record.variants.find(v => v.kind === item.kind).sha256);
-  }
+  assert.equal(record.qc.matchesVisualSystem, false);
+  assert.equal(record.qc.exactHeadCandidateBrowserQA.result, 'technical_browser_pass_only');
+  assert.equal(record.qc.exactHeadCandidateBrowserQA.visuallyApproved, false);
+  assert.equal(record.qc.exactHeadCandidateBrowserQA.publishedHttpConfirmed, false);
+  assert.equal(record.variants.length, 3);
 });
 
 test('CLEAN and THUMB are standalone self-contained text-free SVG; TYPE contains ONLY approved words', async () => {
