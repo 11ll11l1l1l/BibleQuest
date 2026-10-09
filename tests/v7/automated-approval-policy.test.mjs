@@ -272,3 +272,36 @@ test('auto-publish cannot reuse current-revision approval after rights change', 
     ...original, rights: { ...original.rights, attribution: 'changed without review' },
   }), false);
 });
+
+test('stored approval cannot be replayed after criteria or second-pass evidence is corrupted', () => {
+  const target = item('devotional');
+  const original = evaluateV7LibraryApproval({
+    item: target, evaluations: passingEvaluations('devotional'),
+    secondPass: secondPass(), decidedAt: EVALUATED_AT,
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(original, target), true);
+  const invalidMutations = [
+    ['wrong criterion ID', d => { d.criteria[0].id = 'invented_rule'; }],
+    ['duplicate criterion ID', d => { d.criteria[1].id = d.criteria[0].id; }],
+    ['altered hard gate', d => { d.criteria[0].hard = false; }],
+    ['altered terminal gate', d => { d.criteria[0].terminal = true; }],
+    ['missing primary evidence', d => { d.criteria[0].evidenceRefs = []; }],
+    ['duplicate primary evidence', d => { d.criteria[0].evidenceRefs = ['same', 'same']; }],
+    ['missing primary evaluator', d => { d.criteria[0].evaluator = ''; }],
+    ['stale criterion time', d => { d.criteria[0].evaluatedAt = 'invalid'; }],
+    ['forged second-pass result', d => { d.secondPass.result = 'fail'; d.secondPass.ready = true; }],
+    ['wrong second-pass revision', d => { d.secondPass.revision = 'r0'; }],
+    ['non-independent second-pass evaluator', d => { d.secondPass.evaluator = 'policy-primary'; }],
+    ['missing independent QA evidence', d => { d.secondPass.evidenceRefs = []; }],
+    ['duplicate independent QA evidence', d => { d.secondPass.evidenceRefs = ['same','same']; }],
+    ['invalid second-pass time', d => { d.secondPass.evaluatedAt = 'invalid'; }],
+    ['contradictory rejection reason', d => { d.rejectionReasons = ['rights_not_verified']; }],
+    ['contradictory repair reason', d => { d.repairReasons = ['translation_completeness']; }],
+    ['invalid decision time', d => { d.decidedAt = 'invalid'; }],
+  ];
+  for (const [label, mutate] of invalidMutations) {
+    const replay = structuredClone(original);
+    mutate(replay);
+    assert.equal(canAutoPublishV7LibraryDecision(replay, target), false, label);
+  }
+});
