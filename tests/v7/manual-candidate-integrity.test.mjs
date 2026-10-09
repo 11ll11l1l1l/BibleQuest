@@ -66,3 +66,21 @@ test('manual image audit rejects aliases and unverified third-party artwork', as
   await f.save(f.record);
   await assert.rejects(verifyV7ManualCandidate(f.root, ASSET), /Unverified third-party art/);
 });
+
+test('manual candidate verification rejects known TYPE safe-area defect despite unchanged real image hashes', async t => {
+  const f = await isolatedCandidate(t);
+  f.record.variants.find(v => v.kind === 'TYPE').qa.topSafeAreaAcceptable = false;
+  await f.save(f.record);
+  await assert.rejects(verifyV7ManualCandidate(f.root, ASSET), /TYPE failed the text safe-area/);
+});
+
+test('manual candidate verification rejects explicit repair status and SVG policy violations', async t => {
+  const f = await isolatedCandidate(t);
+  f.record.status = 'candidate_type_top_safe_area_repair_required';
+  await f.save(f.record);
+  await assert.rejects(verifyV7ManualCandidate(f.root, ASSET), /status explicitly requires repair/);
+  f.record.status = 'candidate_built_app_qa_pending';
+  f.record.qc.svgDataUriPolicyCompliant = false;
+  await f.save(f.record);
+  await assert.rejects(verifyV7ManualCandidate(f.root, ASSET), /failed static SVG safety/);
+});
