@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-doubt-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T11:09:57+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "doubt",
+  "queueConcept": "doubt",
+  "canonicalEmotionId": "doubtful",
+  "concept": "Cautious trust: a woman tests a rain-slick wooden footbridge before crossing, expressing doubt rather than decision overload.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 180808,
+  "sha256": "14e9bd1edce76cb160900780e1160b225ebd026bc5033eeab2565e1623bd7cab",
+  "focalPoint": {
+    "x": 0.46,
+    "y": 0.32
+  },
+  "textSafeRegion": "lower",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "ebf2ab90-8779-4589-83cb-d15d92f867c3",
+    "sourceDescription": "Single generated photographic scene, square 1254x1254 original; original image was resized to CLEAN and separately rasterized into TYPE and THUMB."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "notes": "Original AI-generated image with no external supplied source art; EB Garamond font used for raster lettering only; no font files distributed."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "For tl, ceb, ilo use CLEAN with localized semantic live label/reference. English TYPE must not be served as translated."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "doubtful",
+    "locale": "en",
+    "exactLabel": "Doubtful",
+    "reference": "Mark 9:24",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "repoVisualAudit": "not_run_no_checkout",
+    "builtAppBrowserQA": "not_run_no_repo_checkout",
+    "productionReady": false,
+    "localBrowserQA": "passed_isolated_data_uri_320_390_430",
+    "typeVisualQA": "passed_isolated_320_390_430",
+    "thumbnailVisualQA": "passed_isolated_320_390_430",
+    "httpServedBytes": "verified_all_three_exact_sha256",
+    "browserEvidence": "isolated-qa-evidence.json",
+    "httpEvidence": "browser-qa-evidence.json"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 180808,
+      "sha256": "14e9bd1edce76cb160900780e1160b225ebd026bc5033eeab2565e1623bd7cab",
+      "locale": null,
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.32
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noBakedText": true,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 179640,
+      "sha256": "1fd0f996fe2c655718f15da581069141de2ad345a63529b7caeaa571964e55ca",
+      "locale": "en",
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing. English lettering: Doubtful; Mark 9:24.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.32
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "noBibleVerseText": true,
+        "fontRightsVerified": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Doubtful",
+        "scriptureReference": "Mark 9:24",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 54358,
+      "sha256": "19c4d135ae3121b45381fd97fd61254a84aaa469722c6b4692866f06d82a7948",
+      "locale": null,
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.34
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.109375,
+          "y": 0,
+          "width": 0.7998046875,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
