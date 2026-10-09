@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-insecurity-unworthiness-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T08:00:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "insecurity_unworthiness",
+  "queueConcept": "insecurity_unworthiness",
+  "canonicalEmotionId": "insecure",
+  "concept": "Self-worth uncertainty before speaking: a young woman checks her reflection and adjusts her blazer in a community event backstage area.",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 77160,
+  "sha256": "a6d5283d91074db3fc893e00c33e8d93caeed55bb5451a5015ab9bfb68ed61d5",
+  "focalPoint": {
+    "x": 0.57,
+    "y": 0.38
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "4d0816d9-3556-47d6-b447-db881df55ce6",
+    "sourceDescription": "Single generated cinematic editorial photo, 1254x1254 PNG; no source photos supplied."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL 1.1 for EB Garamond",
+    "notes": "Original generated artwork, no external copyrighted input. Font files are not included. Rights are based on original-generation provenance; publication review pending."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman backstage at a community gathering studies her reflection in a mirror while adjusting her blazer, looking uncertain about herself.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "For tl, ceb, ilo use CLEAN with accessible live localized label and reference."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "insecure",
+    "locale": "en",
+    "exactLabel": "Insecure / unworthy",
+    "reference": "Ephesians 2:10",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "typeVisualQA": "passed_local_320_390_430_isolated",
+    "thumbnailVisualQA": "passed_local_320_390_430_isolated",
+    "repoVisualAudit": "not_run_no_checkout",
+    "builtAppBrowserQA": "not_run_chromium_admin_blocked_local_http_navigation",
+    "httpServedBytes": "verified_by_urllib_local_http_server_all_three_exact_hashes",
+    "productionReady": false,
+    "localBrowserQA": "3_width_isolated_data_uri_pass"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 77160,
+      "sha256": "a6d5283d91074db3fc893e00c33e8d93caeed55bb5451a5015ab9bfb68ed61d5",
+      "locale": null,
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": false,
+        "noBakedText": true,
+        "noLogo": true,
+        "anatomyAcceptable": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 106978,
+      "sha256": "3b8332b6c81b659b54082f49a3796a5b9204c96794f42a042aa174c245be3055",
+      "locale": "en",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": false,
+        "typeReadableAt320px": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "fontRightsVerified": true,
+        "noBibleVerseText": true
+      },
+      "embeddedWording": {
+        "label": "Insecure / unworthy",
+        "scriptureReference": "Ephesians 2:10",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 24138,
+      "sha256": "d0a580fd4b30e5f7904cae96c2b4f0366b5ec2462f2d0f2e320b1c71d7745d77",
+      "locale": null,
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": false,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.1513671875,
+          "y": 0,
+          "width": 0.7998046875,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
