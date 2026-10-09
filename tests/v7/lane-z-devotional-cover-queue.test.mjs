@@ -80,7 +80,7 @@ test('source-grounded scene briefs override cyclic fallback only at matching sou
  textSafeRegion:'bottom',altText:'An adult concentrates on one blank paper while setting others aside.',
  visualFingerprint:'kitchen-one-paper-person-pauses'};
  const result=buildLaneZCoverQueue([{path:'x',items:[item]}],[],[brief]);
- assert.equal(result.queue[0].artDirectionSource,'human_source_bound_first30');
+ assert.equal(result.queue[0].artDirectionSource,'human_source_bound_editorial_brief');
  assert.equal(result.queue[0].scene,brief.scene);
  assert.equal(result.queue[0].textSafeRegion,'bottom');
  assert.match(result.queue[0].prompt,/At a kitchen table/);
@@ -102,12 +102,12 @@ test('briefs cannot invent unknown content or duplicate visual fingerprints', ()
  assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[{...base,devotionalId:'devotional.biblequest.unknown.01'}]),/missing\/rights-ineligible/);
 });
 
-test('live initial 30 briefs are distinct and tied to canonical source IDs', async () => {
+test('60 curated briefs are distinct and tied to canonical source IDs', async () => {
  const result=await readLaneZCoverQueue();
- const first30=result.queue.filter(x=>x.artDirectionSource==='human_source_bound_first30');
- assert.equal(first30.length,30,'First 30 first-party devotional stories require individual scene briefs');
- assert.equal(new Set(first30.map(x=>x.devotionalId)).size,30);
- assert.equal(new Set(first30.map(x=>x.visualIdentity)).size,30);
+ const first30=result.queue.filter(x=>x.artDirectionSource==='human_source_bound_editorial_brief');
+ assert.equal(first30.length,60,'First 60 original devotional stories require individual scene briefs');
+ assert.equal(new Set(first30.map(x=>x.devotionalId)).size,60);
+ assert.equal(new Set(first30.map(x=>x.visualIdentity)).size,60);
  assert.ok(first30.every(x=>x.altTextDraft && x.sourceBodyAnchor && x.scene.length>=80));
  assert.ok(first30.every(x=>x.state==='not_generated' || x.state==='existing_asset_requires_independent_audit'));
 });
@@ -117,7 +117,7 @@ test('CLI defaults to exactly one original portrait brief and supports explicit 
  const base=[cmd.pathname];
  const first=JSON.parse(execFileSync(process.execPath,base,{encoding:'utf8'}));
  assert.equal(first.queue.length,1,'Default must never invite contact-sheet generation');
- assert.equal(first.queue[0].artDirectionSource,'human_source_bound_first30');
+ assert.equal(first.queue[0].artDirectionSource,'human_source_bound_editorial_brief');
  const target='devotional.biblequest.anxiety_worry.01';
  const specific=JSON.parse(execFileSync(process.execPath,[...base,'--id='+target],{encoding:'utf8'}));
  assert.equal(specific.queue.length,1);
