@@ -145,18 +145,21 @@ export function createLessonRunner({ service, session, membership, pairId, revis
         ...priorShare, visibility: 'owner', audienceUserIds: Object.freeze([]),
       }) }) });
     }
-    const text = state.responseDrafts[stepId] ?? '';
+    while (dirtyResponseSteps.has(stepId)) {
+      const editVersion = responseEditVersions.get(stepId) ?? 0;
+      const text = state.responseDrafts[stepId] ?? '';
     const prior = state.responses[stepId];
     const payload = prior?.response && typeof prior.response === 'object' && !Array.isArray(prior.response)
       ? { ...prior.response, text } : text;
     publish({ status: 'saving-response', error: null });
     current(token, key);
     const result = await service.savePrivateResponse(pairId, revisionId, stepId, payload); current(token, key);
-    dirtyResponseSteps.delete(stepId);
+    if ((responseEditVersions.get(stepId) ?? 0) === editVersion) dirtyResponseSteps.delete(stepId);
     const responses = { ...state.responses, [stepId]: Object.freeze({ ...(prior ?? {}), ...(result && typeof result === 'object' ? result : {}),
       stepId, lessonRevisionId: revisionId, response: payload, visibility: 'owner',
       audienceUserIds: Object.freeze([]) }) };
     publish({ responses: snapshot(responses), responseStatus: 'ready', responseError: null });
+    }
   }
   async function setResponseSharing(stepId, shared, { confirmed = false } = {}) {
     if (!state.lesson || !stepId || !state.lesson.steps.some(step => step.id === stepId)) {
