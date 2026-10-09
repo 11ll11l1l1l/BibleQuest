@@ -86,9 +86,9 @@ test('manual candidate verification rejects explicit repair status and SVG polic
 });
 
 
-test('Wisdom Need candidate has three measured independent binaries but remains unapproved', async () => {
+test('Wisdom Need production proposal needs canonical audit and exact-head release verification', async () => {
   const result = await verifyV7ManualCandidate(ROOT, 'bqv7-need-wisdom-01');
-  assert.equal(result.status, 'candidate_built_app_qa_pending');
+  assert.equal(result.status, 'production_ready');
   assert.equal(result.technicalIntegrity, 'PASS');
   assert.deepEqual(result.files.map(v => v.kind), ['CLEAN', 'TYPE', 'THUMB']);
   assert.deepEqual(result.files.map(v => v.sha256), [
@@ -96,6 +96,6 @@ test('Wisdom Need candidate has three measured independent binaries but remains 
     '29bedc484e83ba06b165733d1f47f6ed25ffc87cee903052853fedc4dc59c055',
     '098f157bb0241abae11650d7a7422e06f1420e2aeab75db1a746ab872e9a7bd4'
   ]);
-  assert.match(result.publicationApproval, /NOT APPROVED/);
+  assert.match(result.publicationApproval, /requires independent release-registry audit/);
   assert.notEqual(result.builtAppBrowserQA, true);
 });
