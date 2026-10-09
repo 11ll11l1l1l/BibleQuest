@@ -73,9 +73,10 @@
         "sha256Measured": true,
         "visualInspected": true,
         "spellingCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": true,
+        "typeReadableAt320px": false,
         "builtAppBrowserQA": "pending",
-        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app"
+        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app",
+        "independentLegibilityReview": "FAIL on PR #1437 screenshot at 320px: Romans 15:13 reference too small and gold flourish crowds reference; revised candidate not committed"
       },
       "locale": "en",
       "embeddedWording": {
@@ -184,19 +185,28 @@
     "thumbnailFocalAware": true,
     "typeSpellingAgainstTaxonomy": true,
     "typeReferenceOnly": true,
-    "localVisualInspection": "pass: independent visual readback of CLEAN, TYPE, THUMB and 320px Chromium screenshot; not independent production approval",
+    "localVisualInspection": "partial: CLEAN and THUMB accepted locally; original TYPE rejected at 320px, corrected candidate uncommitted",
     "isolatedChromiumQA": "12/12 source-byte data-URI fixture checks at 320/390/430 EN/TL/CEB/ILO; browser blocked local HTTP/file navigation; not built app",
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "old_type_only; corrected TYPE not tested",
     "publishedHttpHashQA": "pending",
-    "officialRepositoryAudit": "not_run",
-    "exactHeadCI": "not_run",
-    "independentQA": "pending",
+    "officialRepositoryAudit": "old_type_only_not_applicable_to_revised_candidate",
+    "exactHeadCI": "old_type_only_not_applicable_to_revised_candidate",
+    "independentQA": "pending_type_legibility_repair",
     "productionReady": false,
     "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification",
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "localReviewEvidence": "Producer reviewed actual original CLEAN/TYPE/THUMB preview at mobile scale: recognizable seedling, plausible anatomy, legible Hopeful and Romans 15:13, no embedded Scripture prose. Local-only; independent and built-app QA still pending.",
-    "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed."
+    "localReviewEvidence": "Original TYPE has legibility defect at 320px despite earlier automated checks; DO NOT RELEASE until corrected TYPE binary and independent QA",
+    "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed.",
+    "correctedTypeCandidate": {
+      "sha256": "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
+      "fileBytes": 155764,
+      "width": 1024,
+      "height": 1280,
+      "committed": false,
+      "source": "local QA handoff only",
+      "note": "No publication or exact-head CI; original TYPE in PR remains rejected"
+    }
   },
   "supersedesCandidateAssetId": "bqv7-emotion-hope-01"
 }
