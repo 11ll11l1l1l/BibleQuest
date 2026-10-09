@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "generatedAtJst": "2026-10-10T00:04:00+09:00",
+  "qaRole": "independent_visual_qa",
+  "decision": "QA_PENDING",
+  "productionReady": false,
+  "integration": {
+    "ref": "v7/development",
+    "sha": "ac4b6c1568931272698b8823522f558c1375b102"
+  },
+  "candidate": {
+    "pr": 1436,
+    "head": "73690d3871f808f972486417de5bdebbf8bcec3d",
+    "base": "d061418560e524429f33979efa0a0b269a1d0b44",
+    "assetId": "bqv7-emotion-jealousy-envy-01",
+    "status": "candidate_built_app_qa_pending",
+    "owner": "visual-agent-4"
+  },
+  "method": {
+    "byteSource": "GitHub fetch_file exact PR head base64; independently decoded and SHA256 recomputed in V8 JS; SHA256 implementation tested against abc vector",
+    "dimensions": "parsed actual WebP VP8 header",
+    "pixelSource": "original exact-head WebP decoded and visually inspected; not screenshots or intercepted browser output",
+    "taxonomy": "src/features/library/emotion-taxonomy.js blob e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "nodeAuditExecuted": false,
+    "chromiumExecutedIndependently": false,
+    "httpServedByteChecked": false,
+    "buildArtifactZipInspected": false
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01.webp",
+      "bytes": 108318,
+      "width": 1024,
+      "height": 1024,
+      "sha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "gitBlob": "27e58738d70727bee2a469e119d74e2870ae8297",
+      "pixelFinding": "text-free original photographic scene; no obvious anatomy defect"
+    },
+    {
+      "kind": "TYPE",
+      "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01-with-text-en.webp",
+      "bytes": 127576,
+      "width": 1024,
+      "height": 1280,
+      "sha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+      "gitBlob": "db78c08db70338b5fbe451b3642aff74e3dc3466",
+      "pixelFinding": "title Jealous / envious and reference Proverbs 14:30 correct; gold rule visually separate from title and reference; no embedded Bible prose"
+    },
+    {
+      "kind": "THUMB",
+      "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01-thumbnail.webp",
+      "bytes": 30986,
+      "width": 384,
+      "height": 480,
+      "sha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+      "gitBlob": "32f457efca1049edfa7939dd11f6d59fb96f2cac",
+      "pixelFinding": "4:5 composition preserves foreground artist and admired colleague"
+    }
+  ],
+  "metadata": {
+    "label": "Jealous / envious",
+    "reference": "Proverbs 14:30",
+    "context": "Proverbs 14:30 contrasts a tranquil heart with envy; suitable for feeling label; no Bible text embedded",
+    "altText": "record describes an artist in a sage cardigan watching a colleague praised for sculpture",
+    "localePolicy": "TL/CEB/ILO CLEAN plus live localized text unless independent TYPE verified",
+    "rights": "record declares original generated art, no third-party photo, Noto Serif Display SemiBold and Lato Medium under SIL OFL 1.1; independently verifying generator provenance and font license artifacts remains pending",
+    "duplicateProof": "CLEAN and THUMB blob and hashes unchanged from integration; complete cross-library perceptual duplicate audit not run"
+  },
+  "workflow": {
+    "buildPwa": {
+      "runId": 37934711061,
+      "conclusion": "success",
+      "artifactId": 11617895969,
+      "artifactInspected": false
+    },
+    "visualBrowser": {
+      "runId": 37934711056,
+      "conclusion": "success",
+      "artifactId": 11618200522,
+      "transportOfCandidate": "not independently established from artifact"
+    },
+    "historical": {
+      "runId": 37903498833,
+      "transport": "Playwright route fulfillment; not actual release-served HTTP",
+      "runIdMissingJealous": 37903499115
+    }
+  },
+  "releaseBlocker": "Canonical audit excludes status != production_ready; neither green CI nor intercepted candidate browser proves candidate in dist-v6 or HTTP-served release bytes. No independent exact SHA staged-publication proof.",
+  "backlog": [
+    {
+      "assetId": "bqv7-emotion-jealousy-envy-01",
+      "status": "QA_PENDING",
+      "owner": "visual-agent-4 / independent QA / Lane D #1303",
+      "evidence": "this file; PR #1436",
+      "nextTask": "Reconcile PR with integration; independent actual staged publication HTTP SHA at 320/390/430 without route fulfillment; inspect browser screenshots, reduced motion/accessibility; verify font/source rights; Lane D release certification only"
+    }
+  ],
+  "restrictions": [
+    "No producer image edits",
+    "No status promotion",
+    "No merge",
+    "No deployment"
+  ]
+}
