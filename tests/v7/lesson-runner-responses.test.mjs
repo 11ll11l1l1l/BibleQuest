@@ -233,3 +233,36 @@ test('an unfinished revoke cannot race a second share or navigation', async () =
   await pending;
   assert.equal(f.runner.getState().responses['step-1'].visibility,'owner');
 });
+
+test('editing a shared answer revokes mentor access before updating the response row', async () => {
+  const shared = { ...row('step-1', 'previous shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared] });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('new private text', 'step-1');
+  await f.runner.move(1);
+  const operations = f.log.map(item => item[0]);
+  const revocation = operations.indexOf('revokeResponseShare');
+  const responseSave = operations.indexOf('savePrivateResponse');
+  const progressSave = operations.lastIndexOf('saveProgress');
+  assert.ok(revocation >= 0 && revocation < responseSave && responseSave < progressSave);
+  assert.equal(f.responseWrites[0].response, 'new private text');
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.deepEqual(f.runner.getState().responses['step-1'].audienceUserIds, []);
+});
+
+test('a failed revocation leaves a shared old answer intact and blocks the new draft', async () => {
+  const shared = { ...row('step-1', 'old shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared],
+    revokeCallback: async () => { throw new Error('revoke unavailable'); } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('never shared new draft', 'step-1');
+  const progressBefore = f.progressWrites.length;
+  await f.runner.move(1);
+  const state = f.runner.getState();
+  assert.equal(state.status, 'save-error');
+  assert.equal(state.stepIndex, 1);
+  assert.equal(state.responseDrafts['step-1'], 'never shared new draft');
+  assert.equal(state.responses['step-1'].response, 'old shared text');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
+});
