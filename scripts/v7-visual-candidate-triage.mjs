@@ -7,6 +7,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verifyV7ManualCandidate } from './v7-manual-candidate-integrity.mjs';
+import { candidateQuarantineReason } from './v7-visual-candidate-policy.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const recordName = /^bqv7-(?:emotion|need)-[a-z0-9-]+-[0-9]{2,}\.json$/;
@@ -33,6 +34,10 @@ export async function triageV7ArtworkCandidates(root = ROOT, verify = verifyV7Ma
       || record.variants.length !== 3
       || !['emotion', 'need'].includes(record.contentType)) continue;
     try {
+      // Do not trust a hash-only PASS when the record already documents a
+      // known unsafe or visually defective candidate.
+      const quarantine = candidateQuarantineReason(record);
+      if (quarantine) throw new Error('candidate quarantined: ' + quarantine);
       // The verifier reads three distinct real file bytes, SHA-256, dimensions,
       // source taxonomy/wording, permitted provenance, and safe image paths.
       const measured = await verify(root, assetId);

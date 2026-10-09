@@ -65,7 +65,15 @@ const gitBlobSha = bytes => createHash('sha1')
 async function verifyV2Wording(record, variant, root) {
   if (!['emotion', 'need'].includes(record.contentType))
     throw new Error('V2 TYPE needs a verified content-specific title source');
-  const proof = record.wordingEvidence;
+  // V2 TYPE can have independently reviewed lettering for each locale.
+  // A locale map, when present, is authoritative: never borrow EN evidence for
+  // missing TL/CEB/ILO art. Older single-locale sidecars remain compatible.
+  const byLocale = record.wordingEvidenceByLocale;
+  if (byLocale !== undefined && (!byLocale || typeof byLocale !== 'object'
+    || Array.isArray(byLocale)))
+    throw new Error('TYPE per-locale wording evidence must be an object');
+  const proof = byLocale === undefined
+    ? record.wordingEvidence : byLocale[variant.locale];
   if (!proof || proof.sourcePath !== 'src/features/library/emotion-taxonomy.js')
     throw new Error('TYPE wording source missing or unsupported');
   const bytes = await readFile(join(root, proof.sourcePath));
@@ -178,6 +186,8 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
   const entries = [];
   const queueRows = [];
   const candidatePaths = new Set();
+  const nonProductionRecords = [];
+  const derivativeCandidateRecords = [];
   const recordNames = (await readdir(recordsDir)).filter(name => name.endsWith('.json')).sort();
   const masterNames = new Set(recordNames.filter(name => !name.endsWith('-derivatives.json')));
   const candidatePath = path => {
@@ -223,6 +233,7 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
           if (variant.kind !== 'CLEAN')
             candidatePath(String(variant.imagePath || '').replace(/^\/public(?=\/v7\/images\/)/, ''));
         }
+        derivativeCandidateRecords.push(name);
         warnings.push(name + ': candidate derivatives await independent release QA');
         continue;
       }
@@ -233,6 +244,7 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       if (ids.has(id)) throw new Error('duplicate asset ID');
       ids.add(id);
       if (record.status !== 'production_ready') {
+        nonProductionRecords.push({ assetId: id, status: String(record.status || 'unknown') });
         candidatePath(record.imagePath);
         for (const variant of record.variants || []) candidatePath(variant.imagePath);
         warnings.push(name + ': excluded non-production status ' + record.status);
@@ -451,12 +463,48 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
         }
     }
   }
+  // Count concepts, not image files. A verified CLEAN master is useful for
+  // live localized fallback but is NOT a verified three-file bundle.
+  // Candidate records are declared-only: their referenced bytes are excluded.
+  const emotionMasters = new Set(entries.filter(e => e.contentType === 'emotion')
+    .map(e => e.canonicalContentId));
+  const emotionBundles = new Set(entries.filter(e => e.contentType === 'emotion'
+    && e.bundleStatus === 'complete').map(e => e.canonicalContentId));
+  const needMasters = new Set(entries.filter(e => e.contentType === 'need')
+    .map(e => e.canonicalContentId));
+  const needBundles = new Set(entries.filter(e => e.contentType === 'need'
+    && e.bundleStatus === 'complete').map(e => e.canonicalContentId));
+  const queueConceptBundles = new Set(entries.filter(e => e.contentType === 'emotion'
+    && e.bundleStatus === 'complete').map(e => e.queueConcept));
+  const coverage = {
+    emotions: {
+      total: LIBRARY_EMOTIONS.length,
+      verifiedCleanMasterConcepts: emotionMasters.size,
+      verifiedCompleteBundleConcepts: emotionBundles.size,
+      missingCleanMasters: LIBRARY_EMOTIONS.map(e => e.id).filter(id => !emotionMasters.has(id)),
+      missingCompleteBundles: LIBRARY_EMOTIONS.map(e => e.id).filter(id => !emotionBundles.has(id))
+    },
+    needs: {
+      total: LIBRARY_NEEDS.length,
+      verifiedCleanMasterConcepts: needMasters.size,
+      verifiedCompleteBundleConcepts: needBundles.size,
+      missingCleanMasters: LIBRARY_NEEDS.map(e => e.id).filter(id => !needMasters.has(id)),
+      missingCompleteBundles: LIBRARY_NEEDS.map(e => e.id).filter(id => !needBundles.has(id))
+    },
+    // Neither group is a production-ready count, even when asset paths exist.
+    unapprovedRecordClaims: nonProductionRecords,
+    candidateDerivativeSidecars: derivativeCandidateRecords
+  };
   const queues = queueRows.map(row => {
     const remaining = row.assignments.filter(concept => !byContent['emotion:' + concept]?.length);
+    const bundleRemaining = row.assignments.filter(concept => !queueConceptBundles.has(concept));
     return {
       agentId: row.agentId, total: row.assignments.length,
       completed: row.assignments.length - remaining.length,
-      next: remaining[0] || null, remaining
+      next: remaining[0] || null, remaining,
+      completeBundles: row.assignments.length - bundleRemaining.length,
+      nextIncompleteBundle: bundleRemaining[0] || null,
+      incompleteBundles: bundleRemaining
     };
   });
   const manifest = { schemaVersion: 1, assets: entries, byContent };
@@ -466,8 +514,14 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
       completeBundles: entries.filter(entry => entry.bundleStatus === 'complete').length,
       partialBundles: entries.filter(entry => entry.bundleStatus === 'partial').length,
       emotionQueueTotal: owners.size,
-      emotionQueueCompleted: owners.size - queues.reduce((n, q) => n + q.remaining.length, 0) },
-    queues, warnings, errors, manifest
+      emotionQueueCompleted: owners.size - queues.reduce((n, q) => n + q.remaining.length, 0),
+      emotionCompleteBundleConcepts: emotionBundles.size,
+      needQueueTotal: LIBRARY_NEEDS.length,
+      needMastersVerified: needMasters.size,
+      needCompleteBundleConcepts: needBundles.size,
+      unapprovedRecordClaims: nonProductionRecords.length,
+      candidateDerivativeSidecars: derivativeCandidateRecords.length },
+    coverage, queues, warnings, errors, manifest
   };
 }
 
@@ -486,7 +540,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       await writeFile(resolve(output), JSON.stringify(result.manifest, null, 2) + '\n');
     }
     process.stdout.write(JSON.stringify(args.includes('--manifest') ? result : {
-      status: result.status, counts: result.counts, queues: result.queues,
+      status: result.status, counts: result.counts, coverage: result.coverage, queues: result.queues,
       warnings: result.warnings, errors: result.errors,
       output: result.status === 'PASS' ? (output || null) : null
     }, null, 2) + '\n');

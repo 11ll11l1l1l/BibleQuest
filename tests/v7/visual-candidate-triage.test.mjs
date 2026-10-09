@@ -70,3 +70,26 @@ test('candidate scanner rejects malformed sidecars instead of silently approving
   assert.equal(result.rejected.length, 1);
   assert.match(result.rejected[0].reason, /unreadable candidate sidecar/);
 });
+
+test('repair-required, unsafe SVG and failed TYPE safe-area candidates cannot pass mocked technical verification', async t => {
+  const badSafeArea = row('candidate_built_app_qa_pending');
+  badSafeArea.variants[1].qa = { topSafeAreaAcceptable: false };
+  const badSvg = row('candidate_built_app_qa_pending');
+  badSvg.qc = { svgDataUriPolicyCompliant: false };
+  const root = await fixture(t, {
+    'bqv7-emotion-top-edge-01': badSafeArea,
+    'bqv7-emotion-svg-unsafe-01': badSvg,
+    'bqv7-emotion-repair-01': row('candidate_type_top_safe_area_repair_required'),
+    'bqv7-emotion-valid-01': row('candidate_built_app_qa_pending')
+  });
+  const visited = [];
+  const result = await triageV7ArtworkCandidates(root, async (_, assetId) => {
+    visited.push(assetId);
+    return { assetId, technicalIntegrity: 'PASS', files: makeFiles() };
+  });
+  assert.deepEqual(visited, ['bqv7-emotion-valid-01']);
+  assert.deepEqual(result.technicallyVerified.map(x => x.assetId), visited);
+  assert.equal(result.rejected.length, 3);
+  assert(result.rejected.every(row => /quarantined/.test(row.reason)));
+  assert.equal(result.publicationApproved, false);
+});

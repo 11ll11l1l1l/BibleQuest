@@ -8,7 +8,7 @@
   "contentType": "emotion",
   "contentId": "fear",
   "canonicalEmotionId": "afraid",
-  "status": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "variants": [
     {
       "kind": "CLEAN",
@@ -87,6 +87,11 @@
         "label": "Afraid",
         "scriptureReference": "Psalm 34:4",
         "scriptureTextIncluded": false
+      },
+      "qa": {
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsFormatReExport": true
       }
     },
     {
@@ -119,6 +124,11 @@
         "noBakedText": true,
         "browserRender": "pending",
         "thumbnailVisualQA": "pending"
+      },
+      "qa": {
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsFormatReExport": true
       }
     }
   ],
@@ -133,7 +143,7 @@
     "rejectedCandidates": 0,
     "duplicateSceneAvoidance": "Existing approved master reused",
     "browserQA": "pending",
-    "staticSvgSafetyReviewed": true,
+    "staticSvgSafetyReviewed": false,
     "svgSourceWebPByteIdentityVerified": true,
     "typeReferenceMobileReadable": null,
     "referenceFontSizeAt1024Px": 48,
@@ -143,7 +153,20 @@
     "productionReady": false,
     "typeReferenceMobileGeometryPassed": true,
     "typeReferenceVectorOutlined": true,
-    "typeReferenceIsolated320RasterPreviewPassed": true
+    "typeReferenceIsolated320RasterPreviewPassed": true,
+    "svgDataUriPolicyCompliant": false,
+    "policyQaReason": "Both TYPE and THUMB SVGs use <image> with an embedded data:image/webp;base64 href, prohibited by the repo's data/v7/visual-assets/README.md (only internal SVG #id references permitted). Keep the original compliant CLEAN WebP unchanged. Replace TYPE and THUMB with actual raster WebP derivatives or policy-compliant fully vector SVG, with new exact hashes and pixel QA. Do not weaken the global SVG audit.",
+    "exactArtifactInspection": {
+      "sourceTree": "v7/development@144bbd9883c0e208873022a2268bad1eff999dd7",
+      "typeSvgGitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
+      "thumbSvgGitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+      "typeEmbeddedImageDataUri": true,
+      "thumbEmbeddedImageDataUri": true,
+      "noRemoteResourceReferenceObserved": true,
+      "svgPolicyPass": false,
+      "browserQa": "still pending",
+      "fontAndScriptureContextReview": "not asserted by this static check"
+    }
   },
   "bundleStatus": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
   "inspectionEvidence": {
