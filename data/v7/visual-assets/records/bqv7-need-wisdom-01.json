@@ -3,7 +3,7 @@
   "assetId": "bqv7-need-wisdom-01",
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-09T18:00:00+09:00",
-  "status": "candidate_built_app_qa_pending",
+  "status": "production_ready",
   "bundleStatus": "complete_three_real_files",
   "family": "need",
   "visualRole": "need_tile",
@@ -96,7 +96,8 @@
         "visualInspected": true,
         "browserRenderedAt320390430": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "anatomyAcceptable": true
       }
     },
     {
@@ -117,7 +118,9 @@
         "visualInspected": true,
         "browserRenderedAt320390430": false,
         "noBakedText": false,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
       },
       "embeddedWording": {
         "label": "Wisdom",
@@ -151,7 +154,8 @@
         "visualInspected": true,
         "browserRenderedAt320390430": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
       },
       "crop": {
         "sourceRectPixels": {
@@ -171,10 +175,9 @@
     "typeOnlyEnglishLabelAndReference": true,
     "threePhysicalFilesMeasured": true,
     "localPillowDecodeAndHashesVerified": true,
-    "independentVisualQA": "pending",
-    "builtAppHttpSha": "not_run",
-    "officialNodeAudit": "not_run",
-    "productionReady": false,
+    "independentVisualQA": "independent_exact_three_blob_visual_inspection_2026-10-10",
+    "builtAppHttpSha": "pending_exact_head_ci",
+    "officialNodeAudit": "pending_exact_head_ci",
     "localChromiumHttpFixture": {
       "engine": "Chromium via Playwright",
       "viewports": [
@@ -197,6 +200,16 @@
     "matchesVisualSystem": true,
     "duplicateChecked": true,
     "conceptAccurate": true,
-    "localPillowType320390430PreviewOnly": true
+    "localPillowType320390430PreviewOnly": true,
+    "visualReviewEvidence": {
+      "source": "exact 3 Git-blob images visually inspected; measured hashes/dimensions must still pass branch audit",
+      "imageConcept": "young man considering an open book at home; authentic everyday wisdom metaphor",
+      "clean": "no visible baked title or Bible quotation, single scene and believable hands",
+      "type": "exact rendered words Wisdom; James 1:5, high-contrast lower type-safe band; no Bible text quoted",
+      "thumb": "distinct focal crop with face, hand and open book intact, no baked text",
+      "scriptureContext": "James 1:2-8 discusses asking God for wisdom amid trials, not guaranteed worldly outcomes",
+      "otherLocales": "CLEAN plus live localized labels for tl/ceb/ilo",
+      "remainingGate": "exact-head GitHub Actions canonical SHA/HTTP/browser/PWA/release checks before PR merge"
+    }
   }
 }
