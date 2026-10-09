@@ -58,10 +58,12 @@ test('duplicate and unknown art references fail closed', () => {
  }]),/Unknown devotional/);
 });
 
-test('actual V7 catalog supplies at least 300 owned source assignments', async () => {
+test('actual V7 catalog supplies exactly 300 owned source assignments', async () => {
  const result=await readLaneZCoverQueue();
- assert.ok(result.counts.eligible>=300,
-   'Missing one or more of the 300 original source devotionals');
+ assert.equal(result.counts.eligible,300,
+   'Must map exactly the 300 original first-party devotionals');
+ assert.equal(result.counts.devotionalRecords,306);
+ assert.equal(result.counts.rightsHold,6);
  assert.equal(new Set(result.queue.map(x=>x.devotionalId)).size,result.queue.length);
  assert.equal(new Set(result.queue.map(x=>x.expectedCleanPath)).size,result.queue.length);
  assert.equal(result.counts.verifiedComplete,0,
