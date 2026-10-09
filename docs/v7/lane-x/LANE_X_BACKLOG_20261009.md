@@ -62,3 +62,11 @@ The new Lane X Rest asset records agent ownership as visual-agent-1 to match the
 5. Keep metadata as candidate until exact-head visual audit, rights/content review and Lane D release certification pass. Production metrics must count only approved, physically present and app-consumed assets.
 
 No claim of completion, merge or deployment follows from this snapshot.
+
+## October 10, 2026 — verified delta (supersedes counts above; source inventory only)
+
+- `v7/development` master-record inventory as independently checked today: **22 / 30 Feelings**, **1 / 19 Needs (Wisdom)**, **0 Home**. PR #1454 landed Wisdom's original three-WebP artwork; this does not imply deployed-browser approval of every card. Other Needs have active draft producer PRs and must not be independently duplicated.
+- The manually produced Rest candidate in PR #1445 now contains **three separate real SVG files**, not two: CLEAN 1024×1280, TYPE 1024×1280 with exact EN-only `Rest` and `Matthew 11:28-30`, THUMB 384×480. SHA-256 and byte counts are bound in the metadata on the draft branch.
+- `tests/v7/lane-x-rest-candidate.test.mjs` adds three targeted Node regression cases: the canonical manual-candidate integrity verifier, standalone SVG/TYPE source policy, and sizes/hashes/portrait crop. The tests are committed but their actual CI results must be inspected; source-level assertions are not evidence of rendered pixels.
+- The Rest PR was reconstructed on the then-current `v7/development` base via a compare-and-swap ref update without editing integrated assets or other lanes. It remains intentionally **draft and unpublished**, pending rendered aesthetic inspection, 320/390/430 mobile app proof, exact-head canonical audit and release checks.
+- Do not update the prior date-stamped baseline to count pending PR candidates as approved production assets. Always re-run the live registry audit when reporting published coverage.
