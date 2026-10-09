@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-grief-loss-02",
+  "agentId": "visual-agent-1",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "complete_three_real_files",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "grief_loss",
+  "canonicalEmotionId": "grieving",
+  "concept": "An older woman folds a loved one’s patterned scarf beside an empty coat hook in a modest lived-in apartment",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-02.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 114008,
+  "sha256": "24550e7768f9b7697f052727402e50ad8d3e75b9d4f50f285bd177922fe79394",
+  "focalPoint": {
+    "x": 0.56,
+    "y": 0.53
+  },
+  "textSafeRegion": "none",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "grieving",
+    "locale": "en",
+    "exactLabel": "Grieving / loss",
+    "reference": "Psalm 147:3",
+    "scriptureTextIncluded": false,
+    "contextNote": "Psalm 147 describes the LORD restoring Jerusalem, gathering Israel, healing broken hearts and binding wounds. The verse is referenced as comfort imagery, not an unconditional promise of immediate recovery."
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "generationId": "050d0d49-2965-41ec-a7ee-571c21868be9",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "interior_intimate_softly_lit_domestic_scene_an.png",
+    "sourceSha256": "9521b45ef8b88245a84cce3fa908371d6c0d50ec501bb91f98abb07364cf1f15",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceBytes": 2078664,
+    "sourceRevision": "v7/development d061418560e524429f33979efa0a0b269a1d0b44"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "licenseEvidence": "OpenAI-generated output; applicable OpenAI terms must be confirmed by independent QA",
+    "fontFamily": "Noto Serif",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": "local /usr/share/doc/fonts-noto/copyright; no font binaries distributed"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An older woman thoughtfully folds a patterned scarf near an empty coat hook in a warm lived-in room.",
+    "localizedFallback": "CLEAN plus live labels for TL/CEB/ILO"
+  },
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": true,
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "independentTypeAt320390430": "blocked_by_chromium_admin_policy",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "localPillowTypeReadableAt320390430": true,
+    "builtAppBrowserQA": "blocked_local_admin_policy"
+  },
+  "variants": [
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-02.webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 114008,
+      "sha256": "24550e7768f9b7697f052727402e50ad8d3e75b9d4f50f285bd177922fe79394",
+      "format": "webp",
+      "kind": "CLEAN",
+      "locale": null,
+      "altText": "An older woman thoughtfully folds a patterned scarf near an empty coat hook in a warm lived-in room.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      },
+      "gitBlobSha": "81f4df3cb9867038f6a1a12de016ef9f60a62f70"
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-02-with-text-en.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 123590,
+      "sha256": "1f7d0dca5d955f29b9d0e5c32ecefabde69e53273f6455e8db7dc61728132fed",
+      "format": "webp",
+      "kind": "TYPE",
+      "locale": "en",
+      "altText": "An older woman folds a patterned scarf beside an empty coat hook. Text reads Grieving / loss and Psalm 147:3.",
+      "embeddedWording": {
+        "label": "Grieving / loss",
+        "scriptureReference": "Psalm 147:3",
+        "scriptureTextIncluded": false
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "browserQA320390430": "blocked_by_admin_policy"
+      },
+      "gitBlobSha": "814cc290b0e59847a3cf3e677ab110c652e98ace"
+    },
+    {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-grief-loss-02-thumbnail.webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 25862,
+      "sha256": "9e3a9648ed1471f0a482b584948d959a4b5a47611c6734a9b515af7939588953",
+      "format": "webp",
+      "kind": "THUMB",
+      "locale": null,
+      "altText": "Close view of an older woman folding a patterned scarf by an empty coat hook.",
+      "crop": {
+        "targetAspectRatio": "4:5",
+        "method": "focal-aware from original generated source"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      },
+      "gitBlobSha": "4824e3f890c7d2c51f1a8a5943dd4205f847b81d"
+    }
+  ],
+  "queueConcept": "grief_loss"
+}
