@@ -4,8 +4,8 @@
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T17:05:00+09:00",
   "integratedAt": "2026-10-08T18:05:00+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "status": "candidate_type_top_safe_area_repair_required",
+  "bundleStatus": "three_real_files_type_layout_repair_required",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -83,7 +83,11 @@
         "spellingCheckedAgainstTaxonomy": true,
         "scriptureReferenceOnly": true,
         "typeReadableAt320px": true,
-        "browserAppPending": true
+        "browserAppPending": true,
+        "topSafeAreaReviewed": true,
+        "topSafeAreaAcceptable": false,
+        "topMarginRepairRequired": true,
+        "nativeBinaryVisualReview": "Original 1024x1280 TYPE WebP inspected from exact repository binary. Capital I and upper letterforms of the first-line 'Impatient /' heading sit close to the top edge, contrary to the 10% meaningful-content safe-margin art rule. The rest of the art, the second-line 'waiting', and the Psalm 27:14 reference remain readable. Do not certify as approved TYPE until margin is corrected and mobile/browser QA is repeated."
       }
     },
     {
@@ -165,6 +169,23 @@
     "visualAuditScript": "not_run",
     "productionReady": false,
     "builtAppBrowserQAEvidence": null,
-    "notes": "All three local binaries and isolated TYPE/THUMB QA were previously reported, but real BibleQuest built-app browser evidence is absent. This bundle is not production certified."
+    "notes": "CLEAN and THUMB remain intact and preliminarily inspected. Three genuine WebP files exist, but TYPE's heading has insufficient top-edge breathing room; mark candidate as repair-required, not production-complete. Previous local decode/hash claims unchanged. Exact built-app browser QA and independent acceptance remain pending.",
+    "manualLaneYReview": {
+      "sourceBranchHead": "144bbd9883c0e208873022a2268bad1eff999dd7",
+      "reviewedAssetIds": [
+        "bqv7-emotion-impatience-waiting-01"
+      ],
+      "typeFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-with-text-en.webp",
+      "typeGitBlobSha": "32956b5ec6e52ac79a2f7097b5bd6f277366893b",
+      "thumbnailFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-thumbnail.webp",
+      "thumbnailGitBlobSha": "3e56658025293ec6529eb1bf956f136c4630169b",
+      "cleanFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "originalSceneRetained": true,
+      "typeSafeArea": "fail_top_heading_too_close_to_edge",
+      "referenceCheck": "Psalm 27:14 is the taxonomy-approved reference; no verse prose embedded",
+      "cropReview": "CLEAN and THUMB retain seated waiting-room subject, wristwatch, and readable human gesture; no baked text on THUMB",
+      "decision": "do_not_promote_until_type_top_margin_repaired_and_independent_browser_qa",
+      "additionalEvidenceStillRequired": "corrected TYPE exact file SHA/dimensions; typography pixel review at 320/390/430; independent QA agent; served-byte browser report"
+    }
   }
 }
