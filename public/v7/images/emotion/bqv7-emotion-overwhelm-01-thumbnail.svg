@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="480" viewBox="102 0 820 1024" role="img" aria-label="Parent briefly resting on the floor among ordinary household responsibilities"><defs>
+<linearGradient id="room" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#1a2935"/><stop offset=".45" stop-color="#344754"/><stop offset="1" stop-color="#17252d"/></linearGradient>
+<linearGradient id="window" x1="0%" y1="0%" x2="80%" y2="100%"><stop stop-color="#ffe2b8"/><stop offset=".5" stop-color="#acb4a4"/><stop offset="1" stop-color="#5a8790"/></linearGradient>
+<linearGradient id="wallLight" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#f8d39e" stop-opacity=".42"/><stop offset="1" stop-color="#dfa574" stop-opacity="0"/></linearGradient>
+<linearGradient id="floor" x1="0%" y1="0%" x2="0%" y2="100%"><stop stop-color="#6e6261"/><stop offset=".4" stop-color="#373e44"/><stop offset="1" stop-color="#141e27"/></linearGradient>
+<linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#cb9472"/><stop offset=".5" stop-color="#9c634f"/><stop offset="1" stop-color="#6d433c"/></linearGradient>
+<linearGradient id="sweater" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#59736d"/><stop offset=".5" stop-color="#2c464b"/><stop offset="1" stop-color="#192e38"/></linearGradient>
+<linearGradient id="sleeve" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#536766"/><stop offset="1" stop-color="#233741"/></linearGradient>
+<linearGradient id="hair" x1="0%" y1="0%" x2="100%" y2="100%"><stop stop-color="#272225"/><stop offset="1" stop-color="#100f15"/></linearGradient>
+<radialGradient id="vignette"><stop offset=".4" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".58"/></radialGradient>
+<radialGradient id="bounce"><stop stop-color="#e0ae86" stop-opacity=".37"/><stop offset="1" stop-color="#e0ae86" stop-opacity="0"/></radialGradient>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".57" numOctaves="3" seed="29" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".075"/></feComponentTransfer></filter>
+<filter id="blur"><feGaussianBlur stdDeviation="19"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+<filter id="ambient"><feGaussianBlur stdDeviation="42"/></filter>
+<clipPath id="windowCut"><rect x="155" y="95" width="420" height="395" rx="4"/></clipPath>
+</defs>
+<rect width="1024" height="1024" fill="url(#room)"/>
+<!-- A real lived-in apartment interior, not a collage or product UI -->
+<path d="M0 0H1024V665L0 758Z" fill="#41515a" opacity=".55"/>
+<ellipse cx="370" cy="353" rx="415" ry="570" fill="url(#wallLight)"/>
+<rect x="132" y="71" width="465" height="447" rx="10" fill="#1a232c" opacity=".65" filter="url(#blur)"/>
+<rect x="137" y="72" width="456" height="438" rx="9" fill="#bca487"/>
+<rect x="151" y="87" width="426" height="409" fill="url(#window)"/>
+<g clip-path="url(#windowCut)">
+<ellipse cx="311" cy="203" rx="211" ry="196" fill="#fff0c8" opacity=".24" filter="url(#ambient)"/>
+<path d="M125 433Q267 337 385 386Q499 318 601 371L603 518H125Z" fill="#6d8f8b" opacity=".45" filter="url(#soft)"/>
+<path d="M130 456Q262 375 378 410Q508 374 611 401V519H131Z" fill="#497678" opacity=".68"/>
+<path d="M123 478Q265 419 374 439Q503 417 601 444V510H123Z" fill="#325961" opacity=".78"/>
+<g stroke="#31595b" stroke-width="5" opacity=".6" fill="none"><path d="M171 485Q186 363 209 309M485 483Q471 373 452 330"/></g>
+</g>
+<path d="M356 89V495" stroke="#987b66" stroke-width="18"/><path d="M143 293H587" stroke="#ad9481" stroke-width="14"/><path d="M151 495H593" stroke="#82665c" stroke-width="28"/>
+<path d="M117 47Q160 218 107 513L30 532V5H157Z" fill="#273846"/><path d="M590 40Q542 260 598 516L652 543V0H573Z" fill="#253845"/>
+<path d="M0 632Q505 562 1024 640V1024H0Z" fill="url(#floor)"/>
+<ellipse cx="548" cy="859" rx="360" ry="99" fill="#0e171c" opacity=".7" filter="url(#blur)"/>
+<g opacity=".7" stroke="#1c282e" stroke-width="4"><path d="M49 827L1024 733 M0 959L1024 864 M260 605V1024 M816 624V1024" fill="none"/></g>
+<!-- Sofa -->
+<path d="M674 386Q690 319 731 323L966 336Q1003 348 1004 426L1004 704L659 733Z" fill="#242e37"/>
+<path d="M689 389Q739 362 966 376Q987 377 991 440L983 634L679 634Z" fill="#596060"/>
+<path d="M712 411Q802 400 877 429L863 617Q807 628 696 610Z" fill="#6f7370" opacity=".82"/>
+<path d="M862 416Q915 404 977 413L974 613Q916 613 866 619Z" fill="#5b6466"/>
+<path d="M672 612Q826 581 988 615L997 732Q810 717 670 751Z" fill="#394149"/>
+<path d="M687 736L679 820M968 735L992 828" stroke="#1a252b" stroke-width="23"/>
+<!-- Laundry basket left foreground, blankets texture -->
+<ellipse cx="186" cy="781" rx="155" ry="51" fill="#b6a398"/>
+<path d="M48 780L78 929Q184 976 304 924L328 776Z" fill="#756e68"/>
+<path d="M67 827Q175 858 307 820M71 869Q184 900 300 864M84 911Q185 934 285 897" fill="none" stroke="#b4a69a" stroke-width="7" opacity=".55"/>
+<path d="M84 753Q122 698 170 746Q219 690 257 747Q310 732 331 786Q280 805 257 770Q204 810 164 768Q115 799 84 753Z" fill="#e0cfb7"/>
+<path d="M113 752Q143 723 189 777Q218 735 250 763" fill="none" stroke="#9aab9f" stroke-width="16" opacity=".5"/>
+<!-- Pile of small blank papers and closed lunchbox, no labels -->
+<g transform="translate(797 825) rotate(-10)"><path d="M0 4L161 1L170 98L6 105Z" fill="#c3b8a4"/><path d="M18 -13L155 -12L152 89L22 92Z" fill="#d6c5ad"/><path d="M25 -22L168 -13L153 77L16 72Z" fill="#e3d4bc"/></g>
+<g transform="translate(810 721)"><ellipse cx="100" cy="100" rx="134" ry="31" fill="#121c23" opacity=".6" filter="url(#soft)"/><rect x="-3" y="-3" width="174" height="71" rx="21" fill="#4d646b"/><rect x="11" y="5" width="148" height="34" rx="13" fill="#8aaca9"/><path d="M52 7H120" stroke="#d0b7a0" stroke-width="8" stroke-linecap="round"/></g>
+<!-- Main subject: seated parent with body posture illustrating burden -->
+<path d="M340 873Q407 779 508 791Q616 773 690 845L715 926Q529 983 321 937Z" fill="#202e3a"/>
+<path d="M421 855Q435 740 523 726Q648 704 665 855L650 899Q554 955 410 896Z" fill="url(#sweater)"/>
+<path d="M456 731Q429 698 447 644L489 584Q545 540 589 603L607 673Q594 724 570 737Z" fill="url(#skin)"/>
+<path d="M447 627Q421 585 445 544Q476 503 546 511Q622 528 607 610L582 629Q566 587 526 588Q493 603 477 645Z" fill="url(#hair)"/>
+<path d="M462 544Q501 508 564 542" stroke="#75685b" stroke-width="6" fill="none" opacity=".22"/>
+<path d="M493 618Q523 631 551 624M527 629L523 646" stroke="#623e3c" stroke-width="3" fill="none" opacity=".32"/>
+<path d="M486 717Q467 687 478 662Q508 652 537 672Q573 646 596 662L579 715" fill="#8f6556" opacity=".6"/>
+<!-- head inclined in hands; no ambiguous limbs -->
+<path d="M472 738Q425 726 407 774L363 860Q346 894 378 911Q402 925 430 898L499 811Z" fill="url(#sleeve)"/>
+<path d="M582 740Q644 721 664 766L717 858Q738 886 710 917Q683 938 664 903L568 811Z" fill="url(#sleeve)"/>
+<path d="M458 653Q426 639 418 673L431 717Q445 740 470 726L486 702Z" fill="url(#skin)"/>
+<path d="M576 656Q612 639 623 665L605 716Q596 740 573 725L550 692Z" fill="url(#skin)"/>
+<g stroke="#d3a07b" stroke-width="7" opacity=".56" fill="none" stroke-linecap="round"><path d="M435 680L457 706 M596 674L582 703"/></g>
+<path d="M375 914Q418 926 473 936M662 906Q704 920 735 930" stroke="#546769" stroke-width="15" fill="none" opacity=".55"/>
+<!-- unmade breakfast and a small clock without numerals -->
+<rect x="683" y="527" width="88" height="81" rx="9" fill="#263a43"/><circle cx="723" cy="562" r="28" fill="#9bafa5"/><circle cx="723" cy="562" r="23" fill="#e7d1b4"/><path d="M723 545V562L734 569" stroke="#5c645e" stroke-width="4" fill="none"/>
+<!-- golden cinematic bounce -->
+<ellipse cx="473" cy="558" rx="357" ry="385" fill="url(#bounce)" opacity=".47"/>
+<rect width="1024" height="1024" fill="url(#vignette)"/>
+<rect width="1024" height="1024" filter="url(#grain)" opacity=".62"/>
+</svg>

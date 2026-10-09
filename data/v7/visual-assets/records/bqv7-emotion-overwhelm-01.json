@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-overwhelm-01",
+  "agentId": "manual-lane-x",
+  "createdAt": "2026-10-09T13:10:00+09:00",
+  "status": "qa_pending",
+  "bundleStatus": "draft_three_real_files_unverified_published_http",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-overwhelm-01.svg",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "overwhelm",
+  "queueConcept": "overwhelm",
+  "canonicalEmotionId": "overwhelmed",
+  "concept": "A parent sits on their apartment floor under the weight of ordinary responsibilities, surrounded by a laundry basket, untidy sofa, lunchbox and blank papers as the morning light arrives.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "svg",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 7920,
+  "sha256": "dc3e798d9228f71fd68d5624c1fe2bf0536d6902b7c9e41bba76836695ef7cfc",
+  "gitBlobSha": "c49a5bf615c2b7115fff6a0f731035b39f14ea66",
+  "focalPoint": {
+    "x": 0.52,
+    "y": 0.6
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "sourceType": "owned",
+    "method": "original hand-authored standalone cinematic vector scene, not an AI contact sheet or stock image",
+    "description": "One single self-contained interior illustration with subdued light, film grain, subject gestures and ordinary household clutter; not a photographic generation",
+    "thirdPartyImagery": false
+  },
+  "rights": {
+    "sourceType": "owned",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontFilesDistributed": false,
+    "fonts": [
+      "Georgia",
+      "Times New Roman",
+      "generic serif"
+    ],
+    "fontEvidence": "system/browser font fallbacks only; compatibility and licensing must be independently checked before production",
+    "scriptureQuoteRights": "reference_only_no_verse_text"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A weary parent sits on a small apartment floor, head lowered into their hands among household chores, with morning light coming through a window.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "English TYPE must never substitute for TL/CEB/ILO; all other locales use CLEAN and live localized label/reference"
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "overwhelmed",
+    "locale": "en",
+    "exactLabel": "Overwhelmed",
+    "reference": "Matthew 11:28",
+    "scriptureTextIncluded": false,
+    "biblicalContextNote": "Jesus invites weary and burdened people to come to Him and learn from Him (Matthew 11:28-30); the reference does not promise household chores or duties will disappear.",
+    "contextReferences": [
+      "https://www.biblehub.com/matthew/11-28.htm",
+      "https://www.biblegateway.com/resources/nivac-sample/Matt.11.28-Matt.11.30"
+    ]
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "sourceNotFromContactSheet": true,
+    "actualGithubSourceBytesMeasured": true,
+    "staticXmlWellFormed": true,
+    "externalSvgResourcesAbsent": true,
+    "visibleTextExactTaxonomy": true,
+    "sourceWordingReviewed": true,
+    "scriptureQuoteAbsent": true,
+    "anatomyAcceptable": false,
+    "subjectReadableAtThumbnail": false,
+    "cropSafe": false,
+    "matchesVisualSystem": false,
+    "duplicateChecked": false,
+    "sourceArtisticApproval": false,
+    "independentPixelReview": false,
+    "localPhotoQualityRequirement": "requires independent rejection or approval as vector rather than photorealistic",
+    "builtAppBrowserQA": "not_performed",
+    "actualServedHttpBinaryIdentity": "not_performed",
+    "productionCertification": "not_claimed"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-overwhelm-01.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 7920,
+      "sha256": "dc3e798d9228f71fd68d5624c1fe2bf0536d6902b7c9e41bba76836695ef7cfc",
+      "gitBlobSha": "c49a5bf615c2b7115fff6a0f731035b39f14ea66",
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.6
+      },
+      "textSafeRegion": "none",
+      "altText": "A tired parent sits on an apartment floor among unfinished chores.",
+      "decorative": false,
+      "qa": {
+        "actualGithubBytesVerified": true,
+        "dimensionsFromSvgAttributesVerified": true,
+        "staticSvgSyntaxVerified": true,
+        "noExternalResources": true,
+        "visualInspected": false,
+        "publishedHttpHashMatched": false,
+        "mobile320Rendered": false
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-overwhelm-01-with-text-en.svg",
+      "format": "svg",
+      "width": 960,
+      "height": 1200,
+      "fileBytes": 8374,
+      "sha256": "d0601fa8607b93309ab5cd451ff7d5858bfb4c523f1917ecc7ce381a19334e00",
+      "gitBlobSha": "389ec571c70d0d12ff79e6cbc98f3d0aaaa2975e",
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.6
+      },
+      "textSafeRegion": "top",
+      "embeddedWording": {
+        "label": "Overwhelmed",
+        "scriptureReference": "Matthew 11:28",
+        "scriptureTextIncluded": false
+      },
+      "altText": "Overwhelmed: a burdened parent sitting among unfinished household tasks. English artwork reference: Matthew 11:28.",
+      "decorative": true,
+      "qa": {
+        "actualGithubBytesVerified": true,
+        "dimensionsFromSvgAttributesVerified": true,
+        "staticSvgSyntaxVerified": true,
+        "noExternalResources": true,
+        "visualInspected": false,
+        "publishedHttpHashMatched": false,
+        "mobile320Rendered": false,
+        "exactRenderedSourceText": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-overwhelm-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 7919,
+      "sha256": "0edd7a7a41bb922ac4805c24be74b31723db944d65ca2a49fdd5ccb48c8e64fa",
+      "gitBlobSha": "e06f49b70d429b7b0eafa76638ce8aa2b7dbe009",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceRect": {
+          "x": 102,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "altText": "A tired parent sits on an apartment floor among unfinished chores.",
+      "decorative": false,
+      "qa": {
+        "actualGithubBytesVerified": true,
+        "dimensionsFromSvgAttributesVerified": true,
+        "staticSvgSyntaxVerified": true,
+        "noExternalResources": true,
+        "visualInspected": false,
+        "publishedHttpHashMatched": false,
+        "mobile320Rendered": false,
+        "focalCropVerified": false
+      }
+    }
+  ],
+  "remainingGates": [
+    "Manual visual pixel review 1024/960x1200/384x480 and anatomy",
+    "Photographic-quality requirement: original is stylized cinematic vector; independent art director must approve or reject",
+    "Fonts rights and exact phone rendered TYPE readability",
+    "Built-app Chromium screenshots at 320/390/430 plus relevant tablet/light/dark/locale tests",
+    "HTTP-served original exact bytes and hashes",
+    "Official exact-HEAD audit, independent Visual QA and Lane D release certification"
+  ],
+  "excludedGenerationNote": "Two fresh attempts to request a standalone AI scene instead returned UI contact sheets. Both were rejected and no crops imported. This custom single-scene original vector is a separate, explicitly quarantined alternative."
+}
