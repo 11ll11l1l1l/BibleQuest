@@ -4,7 +4,7 @@
   "assetId": "bqv7-emotion-rejection-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-rejection-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "productionCertified": false,
   "contentType": "emotion",
   "contentId": "rejection",
@@ -114,7 +114,10 @@
         "visualRenderQA": "pending",
         "fontRenderQA": "pending",
         "referenceGeometryReviewed": true,
-        "typeReadableAt320px": "pending"
+        "typeReadableAt320px": "pending",
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     },
     {
@@ -153,7 +156,10 @@
         "thumbnailAt100px": "pending",
         "visualRenderQA": "pending",
         "focalCropBrowserQA": "pending",
-        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run."
+        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run.",
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     }
   ],
@@ -188,7 +194,7 @@
     "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
   },
   "createdAt": "2026-10-08T15:06:14+09:00",
-  "bundleStatus": "partial_candidate_not_production_ready",
+  "bundleStatus": "partial_candidate_requires_policy_compliant_derivatives",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -226,6 +232,29 @@
       },
       "embeddedCleanIdentityMatches": true,
       "limitations": "SVG encoded dimensions/geometry checked from markup only. Full TYPE and THUMB browser rendering and 320px visual QA not performed; no production promotion."
+    }
+  },
+  "qc": {
+    "svgDataUriPolicyCompliant": false,
+    "staticSvgSafetyReviewed": false,
+    "productionReady": false,
+    "laneYPolicyReview": {
+      "reviewedOn": "2026-10-09",
+      "policy": "data/v7/visual-assets/README.md",
+      "reason": "Embedded <image> href=data:image/webp;base64 is not an allowed internal #id SVG reference; candidate must remain excluded until independently reviewed compliant raster/vector exports replace flagged variants.",
+      "affectedVariants": [
+        {
+          "kind": "TYPE",
+          "path": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+          "gitBlobSha": "bfc2a1807d2818fb5d8f308eed694b5ae81599ed"
+        },
+        {
+          "kind": "THUMB",
+          "path": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg",
+          "gitBlobSha": "f8d7f2599183f349e0f622c4c7e6f6e63f4029dc"
+        }
+      ],
+      "action": "Preserve CLEAN and already valid WebP artwork. Export affected variants to real WebP (or data-free fully vector SVG), measure bytes/dimensions/SHA-256 and verify mobile/browser crop, typography and Scripture source before promotion."
     }
   }
 }
