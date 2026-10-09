@@ -38,3 +38,10 @@ New proposed asset ID: `bqv7-emotion-grief-loss-02`. This is a replacement candi
 - Next: upload exact three binaries and matching sidecar without changing SHA, run canonical audit, independent Chromium/HTTP QA on actual branch preview, reconcile branch to live integration, request independent QA. Only Lane D may certify release.
 
 Collision check: Sad #1417 open; Loneliness #1418 merged; Need Peace #1421 open/draft. Manual Lane Y retains Anxiety/Fear. No other owned concept modified.
+
+
+## 16:00 JST reconciliation (supersedes local-only status above)
+
+Three real Grief-02 WebP files and the matching sidecar are now present in draft PR #1435. Git directory listing confirmed blobs 81f4df3cb9867038f6a1a12de016ef9f60a62f70 (CLEAN, 114008 bytes), 814cc290b0e59847a3cf3e677ab110c652e98ace (TYPE, 123590 bytes), and 4824e3f890c7d2c51f1a8a5943dd4205f847b81d (THUMB, 25862 bytes). Local file Git-object hashes match these IDs. The original source filename was corrected to quiet_ritual_by_the_empty_hook.png; source SHA256 is unchanged.
+
+Visual browser workflow run 37891552439 succeeded on PR head 3df2a654bd38bbb605dc3a46aa9d930f63ee92f4, including official audit, 41 tests, built app and Chromium checks. The log reports 7 draft bundles passed browser QA; Grief-02 is still excluded from production. Local Chromium attempts did not produce valid screenshots; Pillow 320/390/430 review is not browser evidence. New PR commits require fresh exact-head CI. Independent visual/rights review and Lane D release certification remain pending.
