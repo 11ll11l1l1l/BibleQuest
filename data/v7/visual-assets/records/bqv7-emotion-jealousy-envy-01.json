@@ -4,7 +4,7 @@
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
   "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "bundleStatus": "three_real_files_local_integrity_passed_browser_qa_pending",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -62,13 +62,13 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 138500,
-      "sha256": "e8d458e8ed806265875b2a58914b39daa5f10dbd4fd7e714665888b92365b1d0",
+      "fileBytes": 2286808,
+      "sha256": "11d0d2ac48917adceff0a4ca44eef8fb7eb9dd3998a8ac876841bf54e8c0eb19",
       "focalPoint": {
         "x": 0.31,
         "y": 0.29
       },
-      "cropIntent": "4:5 editorial card; complete scene above separate lower title scrim",
+      "cropIntent": "Exact original CLEAN photo composition with corrected original licensed editorial serif title; gold flourish removed from title glyph zone and relocated to a separate reference divider.",
       "embeddedWording": {
         "label": "Jealous / envious",
         "scriptureReference": "Proverbs 14:30",
@@ -80,13 +80,13 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "visualInspected": true,
-        "isolatedChromiumRendered": true,
+        "isolatedChromiumRendered": false,
         "builtAppBrowserQA": false,
         "noBakedText": false,
         "cropReviewed": true,
         "spellingCheckedAgainstTaxonomy": true,
         "referenceCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": true,
+        "typeReadableAt320px": false,
         "fontLicenseVerified": true
       }
     },
@@ -167,15 +167,38 @@
     "duplicateChecked": true,
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "type320pxVisualInspected": true,
-    "isolatedChromiumAllVariantsDecoded": true,
+    "type320pxVisualInspected": false,
+    "isolatedChromiumAllVariantsDecoded": false,
     "isolatedChromiumWidths": [
       320,
       390,
       430
     ],
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "pending_exact_head_browser_and_served_byte_QA",
     "visualAuditScript": "not_run_no_local_repo",
-    "reasonNotProductionReady": "Built-app browser review and official repository Node audit have not run; do not publish TYPE/THUMB to release registry."
+    "reasonNotProductionReady": "Repaired full TYPE WebP is persisted, but exact-head Chromium/served-byte QA and official audit remain unperformed. Do not publish TYPE to release registry.",
+    "typeRepairCandidate": {
+      "state": "full_type_webp_reconstructed_candidate_pending_browser_qa",
+      "sourceCleanGitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
+      "sourceCleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "preservedThumbSha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+      "originalRejectedTypeGitBlobSha": "2b0d40d3fb2f0d8ed60fc3f69d5d35fe4acd9163",
+      "newTypeSha256": "11d0d2ac48917adceff0a4ca44eef8fb7eb9dd3998a8ac876841bf54e8c0eb19",
+      "newTypeBytes": 2286808,
+      "dimensions": {
+        "width": 1024,
+        "height": 1280
+      },
+      "goldPixelsRemoved": 1295,
+      "goldPixelsRemainingInTitleZone": 0,
+      "reference": "Proverbs 14:30",
+      "scriptureTextIncluded": false,
+      "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "encoding": "VP8L color-quantized lossless container quality55",
+      "fullType320390430Qa": false,
+      "builtAppExactHeadQa": false,
+      "officialAuditRun": false,
+      "publicationAllowed": false
+    }
   }
 }
