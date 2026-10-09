@@ -76,7 +76,8 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "visualInspected": true
-      }
+      },
+      "altText": "A woman holds a loved one's denim jacket beside an empty chair in a sunlit kitchen."
     },
     {
       "kind": "TYPE",
@@ -104,7 +105,8 @@
       "typography": {
         "fontLicense": "SIL OFL-1.1",
         "fontsRedistributed": false
-      }
+      },
+      "altText": "A woman holds a loved one's jacket next to an empty kitchen chair. Embedded English label: Grieving / loss. Reference: Psalm 147:3."
     },
     {
       "kind": "THUMB",
@@ -134,7 +136,14 @@
         },
         "targetAspectRatio": "4:5",
         "method": "focal-aware crop from CLEAN"
-      }
+      },
+      "altText": "A woman holds a loved one's denim jacket beside an empty chair in a quiet sunlit kitchen."
     }
-  ]
+  ],
+  "generation": {
+    "provider": "BibleQuest Visual Agent 1 (underlying generation model not recorded)",
+    "sourceEvidenceCommit": "31668586126ca63cdf8a61254ca0d2e1abdff3f9",
+    "sourceEvidenceUrl": "https://github.com/11ll11l1l1l/BibleQuest/commit/31668586126ca63cdf8a61254ca0d2e1abdff3f9",
+    "provenanceLimit": "Original agent commit and generated-source rights claim verified as repository history; originating image-model identity remains unverified. Draft only; not a rights or publication approval."
+  }
 }

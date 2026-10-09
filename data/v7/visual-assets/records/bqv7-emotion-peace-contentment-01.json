@@ -94,6 +94,11 @@
         "renderedWithCairoSVG": true,
         "visualReviewed": true,
         "browserRenderPending": true
+      },
+      "embeddedWording": {
+        "label": "Peaceful / content",
+        "scriptureReference": "John 14:27",
+        "scriptureTextIncluded": false
       }
     },
     {
@@ -180,5 +185,14 @@
     "visualQA": "Local PNG previews of all SVG outputs inspected; no built-app browser/mobile screenshot or CI run",
     "browserRenderPending": true,
     "auditRun": "not available in local container because repository clone/network unavailable"
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "peaceful",
+    "locale": "en",
+    "exactLabel": "Peaceful / content",
+    "reference": "John 14:27",
+    "scriptureTextIncluded": false
   }
 }

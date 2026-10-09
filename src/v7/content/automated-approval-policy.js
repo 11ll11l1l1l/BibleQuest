@@ -126,18 +126,32 @@ function normalizeSecondPass(secondPass, revision) {
 
 // Bind the complete approved rights declaration to the exact source revision.
 // Missing snapshots on legacy decisions force a fresh automated evaluation.
+// The approval is for an exact content revision, not just matching item ID.
+// Keep the full reviewed content bound to the decision, including translations,
+// Scripture mappings, source/provenance and taxonomy. Rights and visual assets
+// have separate snapshots and independent publication gates below.
+function stableEvidenceSnapshot(value) {
+  if (value === undefined) return 'null';
+  if (Array.isArray(value)) return '[' + value.map(stableEvidenceSnapshot).join(',') + ']';
+  if (value && typeof value === 'object') {
+    return '{' + Object.keys(value).sort()
+      .map(key => JSON.stringify(key) + ':' + stableEvidenceSnapshot(value[key])).join(',') + '}';
+  }
+  return JSON.stringify(value);
+}
+
+function reviewedContentEvidenceSnapshot(item) {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+  // Extract only the two independently checked top-level declarations. All
+  // other fields are part of what was actually reviewed for publication.
+  const { rights, visualAssets, visual_assets, ...reviewedContent } = item;
+  return stableEvidenceSnapshot(reviewedContent);
+}
+
 function rightsEvidenceSnapshot(item) {
   const rights = item?.rights;
   if (!rights || typeof rights !== 'object' || Array.isArray(rights)) return null;
-  const stable = value => {
-    if (value === undefined) return 'null';
-    if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
-    if (value && typeof value === 'object')
-      return '{' + Object.keys(value).sort()
-        .map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}';
-    return JSON.stringify(value);
-  };
-  return stable(rights);
+  return stableEvidenceSnapshot(rights);
 }
 
 function rightsHardFailure(item) {
@@ -225,6 +239,7 @@ export function evaluateV7LibraryApproval({
     decidedAt: new Date(decidedAt).toISOString(),
     rightsStatusSnapshot: clean(item?.rights?.status),
     rightsEvidenceSnapshot: rightsEvidenceSnapshot(item),
+    reviewedContentEvidenceSnapshot: reviewedContentEvidenceSnapshot(item),
     visualAssetEvidenceSnapshot: visualAssetEvidenceSnapshot(item),
     visualAssetEvidence: Object.freeze(visualBoundary.assetEvidence.map(row => Object.freeze(row))),
     criteria: normalized,
@@ -236,6 +251,37 @@ export function evaluateV7LibraryApproval({
   });
 }
 
+// A persisted approval is not trustworthy merely because the outcome and number
+// of criteria say "pass". Recheck the exact policy shape and independent evidence
+// at the publication boundary, including after deserialization or history replay.
+function completeRecordedRefs(value) {
+  return Array.isArray(value) && value.length > 0
+    && value.every(ref => typeof ref === 'string' && ref.trim().length > 0)
+    && new Set(value.map(clean)).size === value.length;
+}
+
+function completeRecordedApproval(decision, contentType, revision) {
+  if (!CONTENT_TYPES.has(contentType) || !Array.isArray(decision.criteria)) return false;
+  const required = criteriaFor(contentType);
+  if (decision.criteria.length !== required.length) return false;
+  const primaryEvaluators = new Set();
+  for (const [index, expected] of required.entries()) {
+    const row = decision.criteria[index];
+    if (!row || row.id !== expected.id || row.result !== 'pass'
+      || row.hard !== expected.hard || row.terminal !== (expected.terminal === true)
+      || !clean(row.evaluator) || !validTimestamp(row.evaluatedAt)
+      || !completeRecordedRefs(row.evidenceRefs)) return false;
+    primaryEvaluators.add(clean(row.evaluator));
+  }
+  const second = decision.secondPass;
+  return second?.ready === true && second.result === 'pass'
+    && second.revision === revision && !primaryEvaluators.has(clean(second.evaluator))
+    && Boolean(clean(second.evaluator)) && validTimestamp(second.evaluatedAt)
+    && completeRecordedRefs(second.evidenceRefs)
+    && Array.isArray(decision.rejectionReasons) && decision.rejectionReasons.length === 0
+    && Array.isArray(decision.repairReasons) && decision.repairReasons.length === 0;
+}
+
 export function canAutoPublishV7LibraryDecision(decision, item) {
   if (!decision || typeof decision !== 'object' || Array.isArray(decision)) return false;
   return decision.schemaVersion === 1
@@ -245,21 +291,22 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.policyVersion === V7_LIBRARY_APPROVAL_POLICY_VERSION
     && decision.itemId === item?.id
     && decision.revision === item?.revision
+    && decision.contentType === item?.type
+    && rightsHardFailure(item) === ''
     && decision.rightsStatusSnapshot === 'verified'
     && item?.rights?.status === 'verified'
     && Array.isArray(item?.rights?.allowedUses)
     && item.rights.allowedUses.length > 0
     && decision.rightsEvidenceSnapshot !== null
     && decision.rightsEvidenceSnapshot === rightsEvidenceSnapshot(item)
+    && decision.reviewedContentEvidenceSnapshot !== null
+    && decision.reviewedContentEvidenceSnapshot === reviewedContentEvidenceSnapshot(item)
     && evaluateV7VisualAssetGates(item).rejectionReasons.length === 0
     && evaluateV7VisualAssetGates(item).repairReasons.length === 0
     && decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item)
     && decision.auditable === true
-    && Array.isArray(decision.criteria)
-    && decision.criteria.length === criteriaFor(item?.type).length
-    && decision.criteria.every(row => row.result === 'pass' && validTimestamp(row.evaluatedAt))
-    && decision.secondPass?.ready === true
-    && validTimestamp(decision.secondPass?.evaluatedAt);
+    && validTimestamp(decision.decidedAt)
+    && completeRecordedApproval(decision, item?.type, item?.revision);
 }
 
 export function requiredV7LibraryApprovalCriteria(contentType) {

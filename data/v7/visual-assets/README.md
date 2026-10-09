@@ -37,3 +37,66 @@ The visual registry audit verifies every committed derivative's dimensions, byte
 ## Variant schemas and release readiness
 
 Both legacy schema V1 clean masters and verified V2 three-file assets are allowed. Some producers store candidate derivatives in `<asset-id>-derivatives.json` while awaiting image and browser QA. Candidate records are not independently publishable masters. Never call a package release-ready merely because three file paths exist: confirm file hash/byte length/dimensions, readable TYPE artwork, canonical label and Scripture reference, actual rights, and approved QA state. Keep incomplete bundles visible in the audit report but outside any TYPE/THUMB release index.
+
+
+### Per-locale TYPE wording evidence (V2)
+
+A reviewed image may include separate `-with-text-en`, `-with-text-tl`,
+`-with-text-ceb`, and `-with-text-ilo` artwork, each as an independently
+rendered, measured and audited file. A single `wordingEvidence` still works
+for existing one-locale records. New multilingual records use
+`wordingEvidenceByLocale`, keyed by the exact TYPE variant locale:
+
+```json
+{
+  "wordingEvidenceByLocale": {
+    "en": {
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "<actual Git blob SHA>",
+      "canonicalNeedId": "peace",
+      "locale": "en",
+      "exactLabel": "Peace",
+      "reference": "John 14:27",
+      "scriptureTextIncluded": false
+    },
+    "tl": {
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "<same actual Git blob SHA>",
+      "canonicalNeedId": "peace",
+      "locale": "tl",
+      "exactLabel": "Kapayapaan",
+      "reference": "John 14:27",
+      "scriptureTextIncluded": false
+    }
+  }
+}
+```
+
+Every TYPE variant still needs its own binary SHA-256, dimensions, byte count,
+exact embedded `label` and `scriptureReference`, typography inspection,
+approved Scripture binding and immutable taxonomy revision. A locale map is
+**authoritative**: a missing or stale entry fails audit, even when a legacy
+`wordingEvidence` is also present. Do not use EN baked text for TL, CEB or
+ILO. If a localized TYPE is not independently reviewed, omit it and display
+CLEAN art with accurate live localized text. The presence of a proof does
+not constitute independent artistic or browser approval.
+
+
+### Measured P0 image coverage
+
+The audit's `coverage.emotions` and `coverage.needs` report distinct canonical
+concepts with **verified CLEAN masters** separately from those with verified
+**complete CLEAN+TYPE+THUMB bundles**. Both include deterministic missing-ID
+lists. Emotion agent queues now also expose `completeBundles`,
+`nextIncompleteBundle` and `incompleteBundles`; the legacy `completed`
+counter continues to mean a verified CLEAN master, **not** a full bundle.
+`counts.needQueueTotal` is the entire 19-Need taxonomy, not a proxy for
+production artwork coverage.
+
+`coverage.unapprovedRecordClaims` and
+`coverage.candidateDerivativeSidecars` are metadata-only inventories
+from the checked-out revision. They are **not** binary, visual, editorial,
+translation or release QA approvals. Files only present in separate
+draft pull requests are not part of these numbers. If the audit reports
+`status: FAIL`, do not publish the manifest, regardless of intermediate
+coverage statistics. The release remains gated by independent visual QA.

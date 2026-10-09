@@ -117,7 +117,8 @@
     "scriptureReference": "Romans 15:13",
     "scriptureTextIncluded": false,
     "translation": null,
-    "translationRevision": null
+    "translationRevision": null,
+    "reference": "Romans 15:13"
   },
   "generation": {
     "provider": "original programmatic vector drawing",

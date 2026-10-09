@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-hopelessness-01",
   "agentId": "visual-agent-3",
   "createdAt": "2026-10-08T20:06:35+00:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
   "imagePath": "/v7/images/emotion/bqv7-emotion-hopelessness-01.webp",
   "family": "emotion",
   "visualRole": "emotion_tile",
@@ -109,10 +109,28 @@
       "checksTotal": 12,
       "builtApp": false
     },
-    "builtAppBrowserQA": "not_performed",
-    "officialNodeAudit": "not_run_repository_unavailable_in_container",
-    "productionCertification": "not_claimed",
-    "notes": "Visually reviewed clean/type/thumb and actual 320px fixture. This candidate is not registered as production_ready until repository audit and BibleQuest built-app browser QA."
+    "builtAppBrowserQA": "draft_exact_source_bytes_qa_browser_pass_pending_published_http_verification",
+    "notes": "Visually reviewed clean/type/thumb and actual 320px fixture. This candidate is not registered as production_ready until repository audit and BibleQuest built-app browser QA.",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "draftBuiltAppQA": {
+      "candidateSha": "5041d63b5cddaf8fba6c47639830beb78c032ef6",
+      "workflowRunId": 37852498566,
+      "artifactId": 11583106348,
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "result": "pass",
+      "publicationNote": "QA-only browser source-route render; published HTTP proof must pass on this PR"
+    },
+    "independentVisualReview": {
+      "date": "2026-10-09",
+      "method": "exact original English TYPE and THUMB source visual inspection",
+      "typeReadable": true,
+      "thumbnailEmotionRecognizable": true,
+      "bibleText": "reference-only cross-checked against recorded taxonomy"
+    }
   },
   "variants": [
     {

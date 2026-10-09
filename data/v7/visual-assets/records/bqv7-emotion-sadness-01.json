@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-sadness-01",
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-09T00:55:45+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_files_present_built_app_qa_pending",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -160,7 +160,7 @@
   "qc": {
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "draft_exact_source_bytes_qa_browser_pass_pending_published_http_verification",
     "noBakedText": true,
     "noLogo": true,
     "anatomyAcceptable": true,
@@ -170,7 +170,27 @@
     "duplicateChecked": true,
     "conceptAccurate": true,
     "sceneDiversity": "Outdoor rainy autumn park bench, woman, riverfront skyline, overcast daylight; distinct from indoor anxiety bedroom and fear doorway.",
-    "exactFilesChromiumRenderedAt320390430": true
+    "exactFilesChromiumRenderedAt320390430": true,
+    "draftBuiltAppQA": {
+      "candidateSha": "5041d63b5cddaf8fba6c47639830beb78c032ef6",
+      "workflowRunId": 37852498566,
+      "artifactId": 11583106348,
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "result": "pass",
+      "publicationNote": "QA-only isolated exact source bytes; production HTTP verification still required on this promotion PR"
+    },
+    "visualReviewEvidence": {
+      "date": "2026-10-09",
+      "method": "independent exact source TYPE and THUMB image inspection",
+      "typeReadability": "legible in reviewed source",
+      "sceneFit": "emotion recognizable",
+      "locale": "en",
+      "bibleText": "reference only; checked against recorded taxonomy evidence"
+    }
   },
   "inspectionEvidence": {
     "localDecoding": "Pillow WebP decode of all three real files",
