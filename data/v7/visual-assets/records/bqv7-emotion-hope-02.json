@@ -60,8 +60,8 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 149758,
-      "sha256": "3d2ef9e9dcaf6e4601da27bb6a72b9deb0e20ef6fd4718b6a6cef37d953d2827",
+      "fileBytes": 155764,
+      "sha256": "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
       "altText": "A woman plants a seedling in a greenhouse. Embedded English title Hopeful and reference Romans 15:13.",
       "focalPoint": {
         "x": 0.53,
@@ -74,9 +74,9 @@
         "visualInspected": true,
         "spellingCheckedAgainstTaxonomy": true,
         "typeReadableAt320px": false,
-        "builtAppBrowserQA": "pending",
-        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app",
-        "independentLegibilityReview": "FAIL on PR #1437 screenshot at 320px: Romans 15:13 reference too small and gold flourish crowds reference; revised candidate not committed"
+        "builtAppBrowserQA": "pending_corrected_type_exact_head",
+        "isolatedChromiumQA": "Producer static responsive previews at 292/320/356/390/392/430; not built-app QA",
+        "independentLegibilityReview": "PENDING independent review: original TYPE failed at 320px; replacement producer-inspected at 292/320/356/390/392/430; not certified"
       },
       "locale": "en",
       "embeddedWording": {
@@ -86,7 +86,6 @@
       },
       "fontFamilies": [
         "Noto Serif Display SemiBold",
-        "EB Garamond 12 Regular",
         "EB Garamond 12 Italic"
       ],
       "fontLicense": "SIL OFL 1.1",
@@ -185,27 +184,27 @@
     "thumbnailFocalAware": true,
     "typeSpellingAgainstTaxonomy": true,
     "typeReferenceOnly": true,
-    "localVisualInspection": "partial: CLEAN and THUMB accepted locally; original TYPE rejected at 320px, corrected candidate uncommitted",
+    "localVisualInspection": "CLEAN and THUMB accepted locally; corrected TYPE producer-inspected at 292/320/356/390/392/430, independent review pending",
     "isolatedChromiumQA": "12/12 source-byte data-URI fixture checks at 320/390/430 EN/TL/CEB/ILO; browser blocked local HTTP/file navigation; not built app",
-    "builtAppBrowserQA": "old_type_only; corrected TYPE not tested",
+    "builtAppBrowserQA": "pending_corrected_type_exact_head",
     "publishedHttpHashQA": "pending",
-    "officialRepositoryAudit": "old_type_only_not_applicable_to_revised_candidate",
-    "exactHeadCI": "old_type_only_not_applicable_to_revised_candidate",
-    "independentQA": "pending_type_legibility_repair",
+    "officialRepositoryAudit": "pending_corrected_type_new_head",
+    "exactHeadCI": "pending_corrected_type_new_head",
+    "independentQA": "pending_corrected_type_legibility",
     "productionReady": false,
     "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification",
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "localReviewEvidence": "Original TYPE has legibility defect at 320px despite earlier automated checks; DO NOT RELEASE until corrected TYPE binary and independent QA",
+    "localReviewEvidence": "Corrected TYPE replaces previously rejected 320px typography; producer visual previews only, no independent approval",
     "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed.",
     "correctedTypeCandidate": {
       "sha256": "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
       "fileBytes": 155764,
       "width": 1024,
       "height": 1280,
-      "committed": false,
-      "source": "local QA handoff only",
-      "note": "No publication or exact-head CI; original TYPE in PR remains rejected"
+      "committed": true,
+      "source": "own PR #1437 branch TYPE path",
+      "note": "Binary and record updated together; independent QA, exact-head CI, deployed HTTP hash and Lane D signoff pending"
     }
   },
   "supersedesCandidateAssetId": "bqv7-emotion-hope-01"
