@@ -4,7 +4,7 @@
   "assetId": "bqv7-emotion-hurt-betrayal-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-hurt-betrayal-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "contentType": "emotion",
   "contentId": "hurt_betrayal",
   "family": "emotion",
@@ -109,7 +109,10 @@
         "svgSafetyInspected": true,
         "typeReadableAt320px": "pending",
         "fontRenderQA": "pending",
-        "referenceGeometryReviewed": true
+        "referenceGeometryReviewed": true,
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       },
       "embeddedWording": {
         "label": "Hurt / betrayed",
@@ -149,7 +152,10 @@
         "masterSourceVerified": true,
         "noEmbeddedText": true,
         "clipGeometryVerified": true,
-        "visualRenderQA": "pending"
+        "visualRenderQA": "pending",
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     }
   ],
@@ -185,5 +191,29 @@
     "exactLabel": "Hurt / betrayed",
     "reference": "Psalm 55:12-14",
     "scriptureTextIncluded": false
+  },
+  "bundleStatus": "partial_candidate_requires_policy_compliant_derivatives",
+  "qc": {
+    "svgDataUriPolicyCompliant": false,
+    "staticSvgSafetyReviewed": false,
+    "productionReady": false,
+    "laneYPolicyReview": {
+      "reviewedOn": "2026-10-09",
+      "policy": "data/v7/visual-assets/README.md",
+      "reason": "Embedded <image> href=data:image/webp;base64 is not an allowed internal #id SVG reference; candidate must remain excluded until independently reviewed compliant raster/vector exports replace flagged variants.",
+      "affectedVariants": [
+        {
+          "kind": "TYPE",
+          "path": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
+          "gitBlobSha": "43023c9f8d2f700498627cd8c7b648176e7a2b5c"
+        },
+        {
+          "kind": "THUMB",
+          "path": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-thumbnail.svg",
+          "gitBlobSha": "271f735a2e610b305df250cf49d1c19d25733820"
+        }
+      ],
+      "action": "Preserve CLEAN and already valid WebP artwork. Export affected variants to real WebP (or data-free fully vector SVG), measure bytes/dimensions/SHA-256 and verify mobile/browser crop, typography and Scripture source before promotion."
+    }
   }
 }
