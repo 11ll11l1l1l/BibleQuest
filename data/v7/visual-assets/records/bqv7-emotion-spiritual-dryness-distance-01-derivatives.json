@@ -4,7 +4,7 @@
   "parentAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T15:10:57+09:00",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_svg_embedded_data_uri_repair_required",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentId": "spiritual_dryness_distance",
@@ -68,7 +68,10 @@
           "/ distant",
           "PSALM 42:1-2"
         ],
-        "originalRasterBytesUnchanged": true
+        "originalRasterBytesUnchanged": true,
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     },
     {
@@ -100,7 +103,10 @@
       "qa": {
         "noText": true,
         "embeddedSource": true,
-        "browserRenderPending": true
+        "browserRenderPending": true,
+        "allowedSvgReferencesOnly": false,
+        "embeddedDataImageSourceViolation": true,
+        "needsPolicyCompliantRasterExport": true
       }
     }
   ],
@@ -132,5 +138,29 @@
     "notes": "Removed an unapproved embedded English UI heading from the TYPE SVG; only canonical English emotion label and Psalm 42:1-2 reference remain. Original WebP/CLEAN and THUMB unchanged. TYPE SHA-256 and byte size independently recalculated from the exact committed SVG. Actual built-app raster/render, font appearance, phone legibility and crop remain pending; candidate is NOT production-ready.",
     "referenceGeometryAt320Px": "16.25px equivalent, not visually certified",
     "typeUnboundHeadingRemoved": true
+  },
+  "bundleStatus": "partial_candidate_requires_policy_compliant_derivatives",
+  "qc": {
+    "svgDataUriPolicyCompliant": false,
+    "staticSvgSafetyReviewed": false,
+    "productionReady": false,
+    "laneYPolicyReview": {
+      "reviewedOn": "2026-10-09",
+      "policy": "data/v7/visual-assets/README.md",
+      "reason": "Embedded <image> href=data:image/webp;base64 is not an allowed internal #id SVG reference; candidate must remain excluded until independently reviewed compliant raster/vector exports replace flagged variants.",
+      "affectedVariants": [
+        {
+          "kind": "TYPE",
+          "path": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
+          "gitBlobSha": "15b3240ab94f0b94818d59b5d48509ef75c4a121"
+        },
+        {
+          "kind": "THUMB",
+          "path": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
+          "gitBlobSha": "a70488b317e130ac3fb724a45f5509ac6a96669c"
+        }
+      ],
+      "action": "Preserve CLEAN and already valid WebP artwork. Export affected variants to real WebP (or data-free fully vector SVG), measure bytes/dimensions/SHA-256 and verify mobile/browser crop, typography and Scripture source before promotion."
+    }
   }
 }
