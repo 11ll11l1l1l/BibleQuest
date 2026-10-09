@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-jealousy-envy-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_integrity_passed_browser_qa_pending",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -52,7 +52,8 @@
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "anatomyAcceptable": true
       }
     },
     {
@@ -114,7 +115,8 @@
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": true,
-        "cropReviewed": true
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
       }
     }
   ],
@@ -174,11 +176,11 @@
       390,
       430
     ],
-    "builtAppBrowserQA": "candidate_chromium_pass_source_byte_interception_only_not_published_served_byte",
-    "visualAuditScript": "PASS: exact-head GitHub Actions run 37883359251 at acd1e744bf05153e3d40e9d9ae4f12a4bad33333",
-    "reasonNotProductionReady": "Real 320/390/430 Chromium candidate screenshots passed artistic inspection and source audit passed. Candidate source bytes were intercepted into an isolated browser, not published/served from immutable build; release served-byte certification and promotion remain pending.",
+    "builtAppBrowserQA": "PENDING_exact_head_HTTP_served_byte_qa_on_staged_PR",
+    "visualAuditScript": "PENDING_new_head; prior source audit passed at 305601085e1027c6b25194dab19e687b9ec5ac79",
+    "reasonNotProductionReady": "Staged publication candidate in draft PR only. Do not merge until new exact-head CI confirms real built HTTP-served bytes, browser decode, 320/390/430 readability, build/PWA and release convergence; production deployed identity is separate.",
     "typeRepairCandidate": {
-      "state": "full_type_webp_reconstructed_candidate_pending_browser_qa",
+      "state": "staged_release_candidate_requires_exact_head_served_byte_ci",
       "sourceCleanGitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
       "sourceCleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
       "preservedThumbSha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
@@ -201,7 +203,7 @@
       "publicationAllowed": false,
       "isolatedFooterFlecksCleared": 33832,
       "candidateExactHeadChromiumQA": {
-        "status": "PASS_candidate_only",
+        "status": "PASS_candidate_intercepted_bytes_only",
         "runId": 37883359251,
         "artifactId": 11594359362,
         "exactSha": "acd1e744bf05153e3d40e9d9ae4f12a4bad33333",
@@ -215,7 +217,8 @@
         "servedByteMode": "candidate source bytes fulfilled by Playwright route; not published HTTP bytes",
         "sourceAudit": "PASS",
         "browserDecode": "PASS",
-        "responsiveGeometry": "PASS"
+        "responsiveGeometry": "PASS",
+        "releaseServedByteQa": "PENDING_on_new_exact_head"
       }
     }
   }
