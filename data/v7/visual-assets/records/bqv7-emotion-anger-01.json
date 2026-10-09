@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-anger-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-09T17:00:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "complete_three_real_files",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "anger",
+  "canonicalEmotionId": "angry",
+  "concept": "After an argument, a woman stands beside two mugs in a real kitchen, one fist held tight as she chooses how to respond; another person turned away in the background.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-anger-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 115614,
+  "sha256": "822445b73345e5cd280608933ce3d001e61d62d8691c5015ab14b4c1b2e6f0e9",
+  "gitBlobSha": "dc6c43986802de1167737e90b0cf12cc85d04383",
+  "focalPoint": {
+    "x": 0.59,
+    "y": 0.46
+  },
+  "textSafeRegion": "none",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "angry",
+    "locale": "en",
+    "exactLabel": "Angry",
+    "reference": "James 1:19-20",
+    "scriptureTextIncluded": false,
+    "contextReview": "James 1:19-20 addresses the audience as beloved brothers and sisters, urging listening and restraint in anger; human anger does not produce the righteousness God desires. No unconditional promise or invented Bible quotation."
+  },
+  "generation": {
+    "sourceOriginalName": "a_realistic_cinematic_indoor_scene_in_a_kitchen.png",
+    "sourceBytes": 2191849,
+    "sourceSha256": "47a1b320ab852dc25214a1aac174d9b13028186a107905af38e946307012134a",
+    "sourceWidth": 1402,
+    "sourceHeight": 1122,
+    "sourceCropRect": {
+      "left": 210,
+      "top": 0,
+      "right": 1332,
+      "bottom": 1122
+    },
+    "generationId": "b70e2c0f-77b5-4ad5-9182-beedf48c9ccd",
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "prompt": "not exposed by tool; prompt metadata empty",
+    "sourceRevision": "v7/development d061418560e524429f33979efa0a0b269a1d0b44",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source supplied",
+    "fontFamilies": [
+      "Noto Serif Display"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright",
+    "fontFilesRedistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "In a sunlit kitchen after a difficult conversation, a woman looks down with one fist clenched near two mugs while another adult faces away at the sink.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "For TL, CEB, ILO: CLEAN image and live translated taxonomy label/reference; English TYPE is not localized."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 115614,
+      "sha256": "822445b73345e5cd280608933ce3d001e61d62d8691c5015ab14b4c1b2e6f0e9",
+      "gitBlobSha": "dc6c43986802de1167737e90b0cf12cc85d04383",
+      "altText": "In a sunlit kitchen after a difficult conversation, a woman looks down with one fist clenched near two mugs while another adult faces away at the sink.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 120508,
+      "sha256": "9eb2382869256dbdb845b2f93fb921892e6153ed6edf64316a747eb330bd9323",
+      "gitBlobSha": "c468d97c4fb713c37b6fec1650c4346a700a6ddb",
+      "altText": "In a sunlit kitchen after a tense conversation, a woman pauses beside two mugs. Embedded English title: Angry. Reference: James 1:19-20.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Angry",
+        "scriptureReference": "James 1:19-20",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif Display"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontFilesRedistributed": false,
+        "method": "Pillow rasterized type on a matte 256px title band; no verse quotation"
+      },
+      "fallback": "CLEAN plus live localized accessible text"
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 29558,
+      "sha256": "a22e460acef7049e0e2a4fcacc6e249b6ea31c0c6b2d7291bdfb577952c03797",
+      "gitBlobSha": "cec8a18917d327aacd2ddb936a89c3af9e1999a1",
+      "altText": "Close view of a woman in a green sweater, looking down at her clenched fist beside a kitchen counter.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true,
+        "noBakedText": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 190,
+          "top": 0,
+          "right": 1009,
+          "bottom": 1024
+        },
+        "targetAspectRatio": "4:5",
+        "method": "Pillow Lanczos crop from CLEAN"
+      }
+    }
+  ],
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": true,
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "localPillowDecodeAndHashesVerified": true,
+    "independentVisualQA": "pending",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "pending GitHub CI exact-head",
+    "productionReady": false,
+    "localChromiumHttpFixture": {
+      "engine": "Chromium via Playwright",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "allNineVariantViewportChecksPassed": true,
+      "servedHttpHashesMatchedLocalSource": true,
+      "scope": "Standalone local HTTP image fixture only, not BibleQuest built-app or deployed HTTP hash",
+      "screenshotType320": "local browser screenshot inspected; not committed",
+      "actualBuiltAppQa": "pending exact-head GitHub CI"
+    },
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true
+  }
+}
