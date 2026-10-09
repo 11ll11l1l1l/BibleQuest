@@ -259,3 +259,33 @@ The numbered roster below follows **source batch order** (the ten devotional wri
 | 178 | `devotional.biblequest.stress.06` | Take the next step without carrying tomorrow | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-06b.json @ r1` |
 | 179 | `devotional.biblequest.temptation.06` | Make one choice that agrees with hope | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-06b.json @ r1` |
 | 180 | `devotional.biblequest.tiredness_weariness.06` | Turn attention toward what God has given | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-06b.json @ r1` |
+| 181 | `devotional.biblequest.anger.07` | Practice: Ask what faithfulness looks like now | `emotion.anger` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 182 | `devotional.biblequest.anxiety_worry.07` | Practice: Ask what faithfulness looks like now | `emotion.anxiety_worry` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 183 | `devotional.biblequest.confusion_uncertainty.07` | Practice: Turn attention toward what God has given | `emotion.confusion_uncertainty` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 184 | `devotional.biblequest.discouragement.07` | Practice: Let prayer interrupt the spiral | `emotion.discouragement` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 185 | `devotional.biblequest.doubt.07` | Practice: Take the next step without carrying tomorrow | `emotion.doubt` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 186 | `devotional.biblequest.excitement.07` | Practice: Let prayer interrupt the spiral | `emotion.excitement` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 187 | `devotional.biblequest.fear.07` | Practice: Take the next step without carrying tomorrow | `emotion.fear` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 188 | `devotional.biblequest.frustration.07` | Practice: Turn attention toward what God has given | `emotion.frustration` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 189 | `devotional.biblequest.gratitude.07` | Practice: Ask what faithfulness looks like now | `emotion.gratitude` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 190 | `devotional.biblequest.grief_loss.07` | Practice: Let prayer interrupt the spiral | `emotion.grief_loss` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 191 | `devotional.biblequest.guilt.07` | Practice: Let prayer interrupt the spiral | `emotion.guilt` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 192 | `devotional.biblequest.hope.07` | Practice: Turn attention toward what God has given | `emotion.hope` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 193 | `devotional.biblequest.hopelessness.07` | Practice: Make one choice that agrees with hope | `emotion.hopelessness` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 194 | `devotional.biblequest.hurt_betrayal.07` | Practice: Take the next step without carrying tomorrow | `emotion.hurt_betrayal` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 195 | `devotional.biblequest.impatience_waiting.07` | Practice: Ask what faithfulness looks like now | `emotion.impatience_waiting` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 196 | `devotional.biblequest.insecurity_unworthiness.07` | Practice: Ask what faithfulness looks like now | `emotion.insecurity_unworthiness` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 197 | `devotional.biblequest.jealousy_envy.07` | Practice: Take the next step without carrying tomorrow | `emotion.jealousy_envy` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 198 | `devotional.biblequest.joy.07` | Practice: Make one choice that agrees with hope | `emotion.joy` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 199 | `devotional.biblequest.loneliness.07` | Practice: Make one choice that agrees with hope | `emotion.loneliness` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 200 | `devotional.biblequest.love_connection.07` | Practice: Make one choice that agrees with hope | `emotion.love_connection` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 201 | `devotional.biblequest.numbness_emptiness.07` | Practice: Let prayer interrupt the spiral | `emotion.numbness_emptiness` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 202 | `devotional.biblequest.overwhelm.07` | Practice: Ask what faithfulness looks like now | `emotion.overwhelm` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 203 | `devotional.biblequest.peace_contentment.07` | Practice: Take the next step without carrying tomorrow | `emotion.peace_contentment` | `content/v7/devotionals/biblequest-original-emotions-07c.json @ r1` |
+| 204 | `devotional.biblequest.rejection.07` | Practice: Turn attention toward what God has given | `emotion.rejection` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 205 | `devotional.biblequest.sadness.07` | Practice: Turn attention toward what God has given | `emotion.sadness` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 206 | `devotional.biblequest.shame.07` | Practice: Make one choice that agrees with hope | `emotion.shame` | `content/v7/devotionals/biblequest-original-emotions-07a.json @ r1` |
+| 207 | `devotional.biblequest.spiritual_dryness_distance.07` | Practice: Let prayer interrupt the spiral | `emotion.spiritual_dryness_distance` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 208 | `devotional.biblequest.stress.07` | Practice: Take the next step without carrying tomorrow | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 209 | `devotional.biblequest.temptation.07` | Practice: Make one choice that agrees with hope | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
+| 210 | `devotional.biblequest.tiredness_weariness.07` | Practice: Turn attention toward what God has given | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-07b.json @ r1` |
