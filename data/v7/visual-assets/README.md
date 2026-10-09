@@ -80,3 +80,23 @@ approved Scripture binding and immutable taxonomy revision. A locale map is
 ILO. If a localized TYPE is not independently reviewed, omit it and display
 CLEAN art with accurate live localized text. The presence of a proof does
 not constitute independent artistic or browser approval.
+
+
+### Measured P0 image coverage
+
+The audit's `coverage.emotions` and `coverage.needs` report distinct canonical
+concepts with **verified CLEAN masters** separately from those with verified
+**complete CLEAN+TYPE+THUMB bundles**. Both include deterministic missing-ID
+lists. Emotion agent queues now also expose `completeBundles`,
+`nextIncompleteBundle` and `incompleteBundles`; the legacy `completed`
+counter continues to mean a verified CLEAN master, **not** a full bundle.
+`counts.needQueueTotal` is the entire 19-Need taxonomy, not a proxy for
+production artwork coverage.
+
+`coverage.unapprovedRecordClaims` and
+`coverage.candidateDerivativeSidecars` are metadata-only inventories
+from the checked-out revision. They are **not** binary, visual, editorial,
+translation or release QA approvals. Files only present in separate
+draft pull requests are not part of these numbers. If the audit reports
+`status: FAIL`, do not publish the manifest, regardless of intermediate
+coverage statistics. The release remains gated by independent visual QA.
