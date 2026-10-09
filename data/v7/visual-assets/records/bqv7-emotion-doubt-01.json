@@ -3,7 +3,7 @@
   "assetId": "bqv7-emotion-doubt-01",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-09T11:09:57+09:00",
-  "status": "candidate_built_app_qa_pending",
+  "status": "candidate_independent_qa_pending",
   "bundleStatus": "three_real_files_built_app_qa_pending",
   "family": "emotion",
   "visualRole": "emotion_tile",
@@ -87,7 +87,9 @@
       "scriptureReferenceContext": "Mark 9:24 is the father's appeal for help with unbelief during Jesus's encounter; artwork is an analogy for hesitating trust, not a claim that the verse promises physical bridge safety",
       "productionReady": false,
       "metadataSafeRegionCorrection": "Changed unsupported 'lower' to canonical 'bottom' per audit REGIONS enum; artwork binaries untouched."
-    }
+    },
+    "independentQaApproved": false,
+    "qaHoldReason": "Independent Lane A bottom-margin defect repaired locally; independent re-review required."
   },
   "variants": [
     {
@@ -120,8 +122,8 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 179640,
-      "sha256": "1fd0f996fe2c655718f15da581069141de2ad345a63529b7caeaa571964e55ca",
+      "fileBytes": 97132,
+      "sha256": "1a59f04d9801f5a3e0199a05a0bcf4672fd0934434a00e9858cc251fb924b027",
       "locale": "en",
       "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing. English lettering: Doubtful; Mark 9:24.",
       "focalPoint": {
@@ -133,7 +135,7 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "builtAppBrowserQA": false,
-        "visualInspected": true,
+        "visualInspected": false,
         "spellingCheckedAgainstTaxonomy": true,
         "noBibleVerseText": true,
         "fontRightsVerified": true,
@@ -149,7 +151,24 @@
         "accentFont": "EB Garamond 12 Italic",
         "license": "SIL Open Font License 1.1",
         "fontFilesDistributed": false,
-        "fontSource": "https://github.com/georgd/EB-Garamond"
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Original CLEAN unchanged; feathered bottom extension; EN text within 10% safe area",
+        "safeTextBoundingBoxes": [
+          [
+            264,
+            884,
+            761,
+            982
+          ],
+          [
+            375,
+            1062,
+            647,
+            1122
+          ]
+        ],
+        "safeMarginPx": 128,
+        "priorTypeSha256": "1fd0f996fe2c655718f15da581069141de2ad345a63529b7caeaa571964e55ca"
       }
     },
     {
