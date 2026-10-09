@@ -140,7 +140,7 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = [], sourceBri
       order: index + 1, devotionalId: item.id, sourcePath, revision: item.revision || null,
       title, topicTags: themeFor(item), rightsEligible: ownable, sourceBodyExcerpt: body.slice(0,260),
       visualIdentity: brief?.visualFingerprint || 'lane-z:' + String(index+1).padStart(3,'0') + ':' + token(title),
-      artDirectionSource: brief ? 'human_source_bound_first30' : 'deterministic_fallback_needs_editorial_review',
+      artDirectionSource: brief ? 'human_source_bound_editorial_brief' : 'deterministic_fallback_needs_editorial_review',
       sourceBodyAnchor: brief?.sourceBodyAnchor || null,
       textSafeRegion: brief?.textSafeRegion || 'bottom',
       altTextDraft: brief?.altText || null,
