@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-hero-home-01",
+  "agentId": "manual-lane-x",
+  "createdAt": "2026-10-09T12:45:00+09:00",
+  "status": "qa_pending",
+  "bundleStatus": "clean_and_thumbnail_draft_type_intentionally_omitted",
+  "family": "hero",
+  "visualRole": "home_hero",
+  "contentType": "hero",
+  "contentId": "home",
+  "concept": "Quiet morning reading nook, an open blank book and a ceramic tea cup beside a garden-facing window; atmospheric original layered vector artwork.",
+  "imagePath": "/v7/images/hero/bqv7-hero-home-01.svg",
+  "format": "svg",
+  "width": 1600,
+  "height": 900,
+  "aspectRatio": "16:9",
+  "usage": [
+    "home_hero"
+  ],
+  "focalPoint": {
+    "x": 0.5,
+    "y": 0.6
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "method": "self-contained original hand-authored SVG scene; no external images, external fonts, imported symbols, or composited concept-board sources",
+    "draftRationale": "candidate for independent artistic approval only; not a claim of photographic quality or deployment-readiness",
+    "sourceType": "original_procedural_vector"
+  },
+  "rights": {
+    "sourceType": "owned",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontFilesDistributed": false,
+    "scriptureQuoteRights": "no_scripture_embedded"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An open book and warm tea rest on a wooden table beside a window overlooking a garden in gentle morning light.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "Use CLEAN and correctly localized live Home heading/action text; no embedded English TYPE variant"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "sourceNotFromContactSheet": true,
+    "sourceVisuallyInspected": false,
+    "artisticDirectionApproved": false,
+    "builtAppBrowserQA": "not_performed",
+    "publishedHttpByteIdentity": "not_performed",
+    "releaseCertification": "not_claimed",
+    "sourceSyntaxSafe": true,
+    "githubSourceBytesMeasured": true,
+    "sha256IndependentlyComputedAgainstExactGithubFile": true,
+    "xmlWellFormed": true,
+    "noExternalSvgResources": true
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/hero/bqv7-hero-home-01.svg",
+      "format": "svg",
+      "width": 1600,
+      "height": 900,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "altText": "An open book and warm tea beside a garden-facing window at dawn.",
+      "decorative": false,
+      "qa": {
+        "actualGithubBytesVerified": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": false,
+        "dimensionsFromSvgAttributesVerified": true,
+        "svgWellFormed": true,
+        "noExternalReferences": true
+      },
+      "fileBytes": 7171,
+      "sha256": "227699c35a976295f71508483aaf769641a3a31b279148de01086148fc8a6e79",
+      "gitBlobSha": "34139cc812d58cc0a20cd258fb09f623f1bfecc4"
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/hero/bqv7-hero-home-01-thumbnail.svg",
+      "format": "svg",
+      "width": 800,
+      "height": 1000,
+      "crop": {
+        "sourceRect": {
+          "x": 440,
+          "y": 0,
+          "width": 720,
+          "height": 900
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "altText": "An open book and tea in a quiet sunlit garden-side room.",
+      "decorative": false,
+      "qa": {
+        "actualGithubBytesVerified": true,
+        "cropReviewed": false,
+        "builtAppBrowserQA": false,
+        "dimensionsFromSvgAttributesVerified": true,
+        "svgWellFormed": true,
+        "noExternalReferences": true
+      },
+      "fileBytes": 7172,
+      "sha256": "ea731b395e8c0001c549a253a49c5889a48223a43102012fb8cadabe6802a35e",
+      "gitBlobSha": "8cb1d8eeeb45411afdb2c826d4ed643a52dfc6e1"
+    }
+  ],
+  "remainingGates": [
+    "Independent scene/photographic quality review",
+    "Exact GitHub-served binary SHA-256 and byte/dimension verification",
+    "App built-browser inspection 320/390/430 plus tablet and dark/light modes",
+    "Exact-HEAD official visual audit and locale fallback",
+    "Independent Visual QA certification",
+    "Lane D release identity check"
+  ],
+  "rejectedGenerationNotes": "Earlier image-generation calls produced UI contact-sheet boards rather than standalone art. Those outputs were explicitly excluded; this draft is a new single-scene source, not a crop of the rejected boards.",
+  "fileBytes": 7171,
+  "sha256": "227699c35a976295f71508483aaf769641a3a31b279148de01086148fc8a6e79",
+  "gitBlobSha": "34139cc812d58cc0a20cd258fb09f623f1bfecc4"
+}
