@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "qaRole": "independent",
+  "checkedAtJST": "2026-10-10T05:04:00+09:00",
+  "integrationHead": "ac4b6c1568931272698b8823522f558c1375b102",
+  "pr": 1452,
+  "prHead": "1451cfaadc8181fd4addbada25ab776e4c4f5eab",
+  "assetId": "bqv7-emotion-numbness-emptiness-01",
+  "status": "QA_PENDING",
+  "sourceVisual": "PASS",
+  "releaseHttp": "NOT_CERTIFIED",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "wording": [
+    "Numb / empty",
+    "Psalm 42:5"
+  ],
+  "variants": [
+    [
+      "CLEAN",
+      91154,
+      1024,
+      1024,
+      "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+      "695b89a427141790cdefea44cb8bacdaf763b69e"
+    ],
+    [
+      "TYPE",
+      102710,
+      1024,
+      1280,
+      "c73c8ed4d12014329e905aac9efd88677e931f647b7d1957677a603b0272b7b0",
+      "4c3322f2913a6aac865e7fa9065aa29a3bac5fa1"
+    ],
+    [
+      "THUMB",
+      23966,
+      384,
+      480,
+      "9d2597b031dacfa59a2e4112b77ff5f6134388f9af39c0ccdd641efe5bb5f0d1",
+      "b2a491a28d91684d6aabed3104befa1606dbad00"
+    ]
+  ],
+  "inspected": [
+    "original source pixels CLEAN TYPE THUMB",
+    "focal-aware 4:5 THUMB",
+    "English typography and reference",
+    "font family license files"
+  ],
+  "missing": [
+    "independent original generation provenance",
+    "actual published HTTP-served SHA",
+    "nonintercepted 320/390/430 Chromium",
+    "runtime locale fallback and accessibility",
+    "official Node audit",
+    "complete duplicate comparison"
+  ],
+  "noProductionApproval": true
+}
