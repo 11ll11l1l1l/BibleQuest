@@ -266,3 +266,37 @@ test('a failed revocation leaves a shared old answer intact and blocks the new d
   assert.equal(f.responseWrites.length, 0);
   assert.equal(f.progressWrites.length, progressBefore);
 });
+
+test('an edit during a pending response save is flushed before advancing progress', async () => {
+  let releaseFirstSave;
+  let calls = 0;
+  const f = fixture({ saveResponse: async ({ stepId }) => {
+    calls += 1;
+    if (calls === 1) await new Promise(resolve => { releaseFirstSave = resolve; });
+    return { id: `response-${stepId}` };
+  } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('initial draft', 'step-1');
+  const move = f.runner.move(1);
+  await tick();
+  assert.equal(f.responseWrites.length, 1);
+  f.runner.updateResponse('latest draft', 'step-1');
+  releaseFirstSave();
+  await move;
+  assert.deepEqual(f.responseWrites.map(item => item.response), ['initial draft', 'latest draft']);
+  assert.equal(f.runner.getState().responses['step-1'].response, 'latest draft');
+  assert.equal(f.runner.getState().stepIndex, 2);
+  assert.ok(f.log.findLastIndex(item => item[0] === 'saveProgress') >
+    f.log.findLastIndex(item => item[0] === 'savePrivateResponse'));
+});
+
+test('explicit privacy action after editing a shared answer revokes exactly once', async () => {
+  const shared = { ...row('step-1', 'shared answer'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared] });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('private edit', 'step-1');
+  await f.runner.revokeResponseShare('step-1');
+  assert.equal(f.log.filter(item => item[0] === 'revokeResponseShare').length, 1);
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.equal(f.runner.getState().shareStatus, 'ready');
+});
