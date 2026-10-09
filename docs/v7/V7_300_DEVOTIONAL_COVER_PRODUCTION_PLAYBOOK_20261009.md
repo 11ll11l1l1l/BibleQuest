@@ -169,3 +169,33 @@ The numbered roster below follows **source batch order** (the ten devotional wri
 | 088 | `devotional.biblequest.stress.03` | Be still before solving | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-03b.json @ r1` |
 | 089 | `devotional.biblequest.temptation.03` | Watch before the test arrives | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-03b.json @ r1` |
 | 090 | `devotional.biblequest.tiredness_weariness.03` | Receive strength instead of manufacturing it | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-03b.json @ r1` |
+| 091 | `devotional.biblequest.anger.04` | Make room for prayer and wisdom | `emotion.anger` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 092 | `devotional.biblequest.anxiety_worry.04` | Make room for prayer and wisdom | `emotion.anxiety_worry` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 093 | `devotional.biblequest.confusion_uncertainty.04` | Make room for prayer and wisdom | `emotion.confusion_uncertainty` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 094 | `devotional.biblequest.discouragement.04` | Make room for prayer and wisdom | `emotion.discouragement` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 095 | `devotional.biblequest.doubt.04` | Make room for prayer and wisdom | `emotion.doubt` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 096 | `devotional.biblequest.excitement.04` | Make room for prayer and wisdom | `emotion.excitement` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 097 | `devotional.biblequest.fear.04` | Make room for prayer and wisdom | `emotion.fear` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 098 | `devotional.biblequest.frustration.04` | Make room for prayer and wisdom | `emotion.frustration` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 099 | `devotional.biblequest.gratitude.04` | Make room for prayer and wisdom | `emotion.gratitude` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 100 | `devotional.biblequest.grief_loss.04` | Make room for prayer and wisdom | `emotion.grief_loss` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 101 | `devotional.biblequest.guilt.04` | Make room for prayer and wisdom | `emotion.guilt` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 102 | `devotional.biblequest.hope.04` | Make room for prayer and wisdom | `emotion.hope` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 103 | `devotional.biblequest.hopelessness.04` | Make room for prayer and wisdom | `emotion.hopelessness` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 104 | `devotional.biblequest.hurt_betrayal.04` | Make room for prayer and wisdom | `emotion.hurt_betrayal` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 105 | `devotional.biblequest.impatience_waiting.04` | Make room for prayer and wisdom | `emotion.impatience_waiting` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 106 | `devotional.biblequest.insecurity_unworthiness.04` | Make room for prayer and wisdom | `emotion.insecurity_unworthiness` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 107 | `devotional.biblequest.jealousy_envy.04` | Make room for prayer and wisdom | `emotion.jealousy_envy` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 108 | `devotional.biblequest.joy.04` | Make room for prayer and wisdom | `emotion.joy` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 109 | `devotional.biblequest.loneliness.04` | Make room for prayer and wisdom | `emotion.loneliness` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 110 | `devotional.biblequest.love_connection.04` | Make room for prayer and wisdom | `emotion.love_connection` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 111 | `devotional.biblequest.numbness_emptiness.04` | Make room for prayer and wisdom | `emotion.numbness_emptiness` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 112 | `devotional.biblequest.overwhelm.04` | Make room for prayer and wisdom | `emotion.overwhelm` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 113 | `devotional.biblequest.peace_contentment.04` | Make room for prayer and wisdom | `emotion.peace_contentment` | `content/v7/devotionals/biblequest-original-emotions-04c.json @ r1` |
+| 114 | `devotional.biblequest.rejection.04` | Make room for prayer and wisdom | `emotion.rejection` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 115 | `devotional.biblequest.sadness.04` | Make room for prayer and wisdom | `emotion.sadness` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 116 | `devotional.biblequest.shame.04` | Make room for prayer and wisdom | `emotion.shame` | `content/v7/devotionals/biblequest-original-emotions-04a.json @ r1` |
+| 117 | `devotional.biblequest.spiritual_dryness_distance.04` | Make room for prayer and wisdom | `emotion.spiritual_dryness_distance` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 118 | `devotional.biblequest.stress.04` | Make room for prayer and wisdom | `emotion.stress` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 119 | `devotional.biblequest.temptation.04` | Make room for prayer and wisdom | `emotion.temptation` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
+| 120 | `devotional.biblequest.tiredness_weariness.04` | Make room for prayer and wisdom | `emotion.tiredness_weariness` | `content/v7/devotionals/biblequest-original-emotions-04b.json @ r1` |
