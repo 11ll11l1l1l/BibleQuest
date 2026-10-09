@@ -29,3 +29,11 @@ The second command must show the apartment kitchen-paper scene for “One concer
 The other 270 entries retain deterministic *fallback* prompts; their `artDirectionSource` is explicitly `deterministic_fallback_needs_editorial_review`. A fallback is an assignment placeholder, not approved creative direction. Before generating a future ID, inspect its entire devotional and replace that fallback with a distinct story-specific brief using the same source-binding guard.
 
 Image intake requires matching bytes, format, dimensions, SHA256 and source identity in addition to **independent visual inspection**. Neither the queue nor the integrity checker can certify that image pixels match the devotional or contain no fake Scripture text. Maintain accurate `0/300` accepted coverage until genuine source-bound portrait binaries pass these independent steps.
+
+
+## 2026-10-10 second source-bound tranche (60 total)
+
+The 30 `*.02` BibleQuest original emotion entries in source files `02a`, `02b`, `02c` now have a separate full-body-grounded editorial catalog, `data/v7/visual-assets/lane-z-second-30-source-briefs.json`. All 30 were checked against matching source IDs, `r1` revisions, titles and body anchors, with different settings, meaningful human actions, lighting/crops and alt-text drafts. The queue loads both catalogs, exposing **60 source-bound briefs** and **240 editorial fallbacks** for the remaining 300 eligible original devotional IDs.
+
+Use `node scripts/v7-lane-z-devotional-cover-queue.mjs --id=devotional.biblequest.anxiety_worry.02` for “Return to what is true,” which must depict a commuter grounding attention in the ordinary carriage rather than another mountain sunset. Do not credit these briefs as actual images; source-only direction remains 0/300 accepted cover masters until individual image binaries pass source, pixel and browser QA.
+
