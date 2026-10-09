@@ -75,15 +75,32 @@
     "localDecodeAndHashMeasured": true,
     "sourceImageStandaloneOriginal": true,
     "originalGeneratedOutputWasCollage": false,
-    "repoVisualAudit": "not_run",
-    "builtAppBrowserQA": "not_run",
+    "repoVisualAudit": "not_run_for_repaired_type",
+    "builtAppBrowserQA": "not_run_for_repaired_type",
     "publishedServedBytes": "not_run",
     "independentVisualQA": "pending",
     "productionReady": false,
     "candidateOnly": true,
     "localHttpExactBytes": true,
     "localIsolatedChromium320390430": true,
-    "localQaReport": "qa-report.json"
+    "localQaReport": "qa-repair-report.json",
+    "typeRepair": {
+      "reason": "Producer visual inspection of 320px isolated Chromium screenshot found the English Scripture reference too small for comfortable reading; independently enlarged it and retypeset on unchanged CLEAN.",
+      "priorTypeSha256": "01633f23596ce7178d123b65669035b6b62e83ad2e3287eeba8e6d87a555e518",
+      "priorTypeBytes": 170078,
+      "repairedTypeSha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+      "repairedTypeBytes": 180798,
+      "browserWidths": [
+        320,
+        390,
+        430
+      ],
+      "producerVisualInspected320": true,
+      "independentQa": "pending",
+      "publishedServedBytes": "not_run",
+      "actualBuiltApp": "not_run",
+      "method": "Pillow exact-text annotation from original CLEAN, feathered translucent upper-left veil; no hard seam, no Scripture prose"
+    }
   },
   "variants": [
     {
@@ -115,8 +132,8 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 170078,
-      "sha256": "01633f23596ce7178d123b65669035b6b62e83ad2e3287eeba8e6d87a555e518",
+      "fileBytes": 180798,
+      "sha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
       "locale": "en",
       "altText": "After a community run, one friend offers a steady hand to another seated on the path; both share an encouraging smile. Embedded English text: Encouragement; 1 Thessalonians 5:11.",
       "focalPoint": {
@@ -128,7 +145,7 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "builtAppBrowserQA": false,
-        "visualInspected": false,
+        "visualInspected": true,
         "noLogo": true
       },
       "embeddedWording": {
@@ -142,8 +159,12 @@
         "license": "SIL Open Font License 1.1",
         "fontFilesDistributed": false,
         "fontSource": "https://github.com/georgd/EB-Garamond",
-        "compositingMethod": "Pillow independently typeset on original CLEAN with feathered upper-left warm veil, no hard panel boundaries",
-        "sourceCleanSha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c"
+        "compositingMethod": "Independently typeset EB Garamond on unchanged original CLEAN with feathered upper-left veil; enlarged italic reference and title, no hard rectangular seam",
+        "sourceCleanSha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+        "priorTypeVariant": {
+          "sha256": "01633f23596ce7178d123b65669035b6b62e83ad2e3287eeba8e6d87a555e518",
+          "bytes": 170078
+        }
       }
     },
     {
