@@ -126,6 +126,12 @@ jobs:
           console.log(`V7 representative content: ${report.ready ? 'PASS' : 'OPEN'}; Lane A factory: ${factory.status}; Lane B approvals: ${approval.status}`);
           NODE
 
+      - name: Audit exact-commit published image binaries, rights and draft isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/v7-visual-assets-audit.mjs > artifacts/v7/source-visual-audit.json
+
       - name: Build exact candidate
         env:
           BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
@@ -175,6 +181,13 @@ jobs:
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/motion-built-artifact-browser.mjs
           node scripts/v7-certify-motion-evidence.mjs
 
+      - name: Built visual binary, Chromium decode and mobile proof for strict release
+        if: env.BQ_STRICT_RELEASE == 'true'
+        run: node tests/v7/visual-assets-built-browser.mjs
+
+      - name: Bind source visual coverage and optional browser proof to exact candidate
+        run: node scripts/v7-release-visual-evidence.mjs "${BQ_EXACT_SHA}"
+
       - name: Install pinned Supabase CLI
         uses: supabase/setup-cli@v1
         with:
@@ -211,11 +224,12 @@ jobs:
 
           const candidateSha = process.env.BQ_EXACT_SHA;
           const strict = process.env.BQ_STRICT_RELEASE === 'true';
-          const [integrity, content, factory, approval, responsive, motion, motionCertification, apiJourney, browserJourney] = await Promise.all([
+          const [integrity, content, factory, approval, visuals, responsive, motion, motionCertification, apiJourney, browserJourney] = await Promise.all([
             readFile('dist-v6/bq-artifact-integrity.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/content-report.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-content-factory.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/lane-b-automated-approval.json', 'utf8').then(JSON.parse),
+            readFile('artifacts/v7/release-visual-evidence.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/release-responsive-accessibility.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/motion-built-artifact.json', 'utf8').then(JSON.parse),
             readFile('artifacts/v7/motion-certification.json', 'utf8').then(JSON.parse),
@@ -223,7 +237,7 @@ jobs:
             readFile('artifacts/v7/authenticated-built-browser-journey.json', 'utf8').then(JSON.parse),
           ]);
 
-          for (const [name, evidence] of Object.entries({ content, factory, approval, responsive, motion, motionCertification, apiJourney, browserJourney })) {
+          for (const [name, evidence] of Object.entries({ content, factory, approval, visuals, responsive, motion, motionCertification, apiJourney, browserJourney })) {
             if (String(evidence.candidateSha || '').toLowerCase() !== candidateSha.toLowerCase()) {
               throw new Error(`${name} evidence candidate SHA mismatch.`);
             }
@@ -238,6 +252,7 @@ jobs:
           const releaseReady = Boolean(content.ready)
             && factory.readyForAutomatedPolicyReview === true
             && approval.readyForRelease === true
+            && visuals.releaseReady === true
             && responsive.result === 'PASS'
             && motion.result === 'PASS'
             && motionCertification.result === 'PASS'
@@ -259,6 +274,12 @@ jobs:
             contentReady: Boolean(content.ready),
             laneAFactoryReady: factory.readyForAutomatedPolicyReview === true,
             laneBAutomatedApprovalReady: approval.readyForRelease === true,
+            laneAVisualReady: visuals.releaseReady === true,
+            laneAVisualAuditSha256: visuals.auditedManifestSha256,
+            laneACompleteFeelingBundles: visuals.coverage.emotionComplete,
+            laneACompleteNeedBundles: visuals.coverage.needComplete,
+            laneACompleteHeroBundles: visuals.coverage.heroComplete,
+            laneABuiltVisualProof: visuals.builtBrowserVerified,
             laneBAutoApprovedItems: approval.counts?.autoApproved || 0,
             laneBMissingApprovalDecisions: approval.counts?.missingDecisions || 0,
             laneACatalogDeficit: approval.counts?.catalogDeficit || 0,
@@ -276,6 +297,9 @@ jobs:
               laneAAndBRepresentative: 'artifacts/v7/content-report.json',
               laneAReleaseFactory: 'artifacts/v7/release-content-factory.json',
               laneBAutomatedApproval: 'artifacts/v7/lane-b-automated-approval.json',
+              laneAVisuals: 'artifacts/v7/release-visual-evidence.json',
+              laneAVisualAudit: 'artifacts/v7/source-visual-audit.json',
+              laneABrowserVisuals: strict ? 'artifacts/v7/visual-browser/report.json' : null,
               laneBAutomatedApprovalLedger: 'artifacts/v7/release-automated-approval-decisions.json',
               laneCBackend: 'artifacts/v7/authenticated-api-journey.json',
               laneCAndDPopulatedBrowser: 'artifacts/v7/authenticated-built-browser-journey.json',
@@ -290,7 +314,7 @@ jobs:
           await writeFile('artifacts/v7/release-convergence.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
           console.log(JSON.stringify(report, null, 2));
           NODE
-          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/motion-built-artifact.json artifacts/v7/motion-certification.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
+          sha256sum artifacts/v7/build-report.json artifacts/v7/content-report.json artifacts/v7/source-visual-audit.json artifacts/v7/release-visual-evidence.json artifacts/v7/release-content-factory.json artifacts/v7/release-automated-approval-decisions.json artifacts/v7/lane-b-automated-approval.json artifacts/v7/release-responsive-accessibility.json artifacts/v7/motion-built-artifact.json artifacts/v7/motion-certification.json artifacts/v7/authenticated-api-journey.json artifacts/v7/authenticated-built-browser-journey.json artifacts/v7/release-convergence.json dist-v6/bq-artifact-integrity.json > artifacts/v7/release-evidence.sha256
 
       - name: Verify production deployed identity and full artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -407,6 +431,9 @@ jobs:
           path: |
             artifacts/v7/build-report.json
             artifacts/v7/content-report.json
+            artifacts/v7/source-visual-audit.json
+            artifacts/v7/release-visual-evidence.json
+            artifacts/v7/visual-browser/
             artifacts/v7/release-content-factory.json
             artifacts/v7/release-automated-approval-decisions.json
             artifacts/v7/lane-b-automated-approval.json

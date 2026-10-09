@@ -28,9 +28,12 @@ export function cleanupMotion(element) {
   if (typeof stop === 'function') stop();
 }
 function run(element, frames, duration, easing, options = {}) {
-  if (!element || typeof element.animate !== 'function' ||
-    !motionEnabled(options.environment)) return noop;
+  if (!element) return noop;
+  // Cancel an in-flight effect even when a new request is disabled by a
+  // reduced-motion preference or lost WAAPI support.
   cleanupMotion(element);
+  if (typeof element.animate !== 'function' ||
+    !motionEnabled(options.environment)) return noop;
   let animation;
   try {
     animation = element.animate(frames, { duration, easing, fill: 'none' });
