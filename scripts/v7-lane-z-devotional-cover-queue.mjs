@@ -82,7 +82,7 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = [], sourceBri
     if (briefs.has(brief.devotionalId) || !VALID_ID.test(brief.devotionalId))
       throw new Error('Duplicate/invalid source-bound scene brief: ' + brief.devotionalId);
     for (const key of ['sourceRevision','sourceTitle','sourceBodyAnchor','scene','composition','lighting','visualFingerprint','textSafeRegion','altText']) {
-      if (typeof brief[key] !== 'string' || brief[key].trim().length < (key==='scene'?80:3))
+      if (typeof brief[key] !== 'string' || brief[key].trim().length < (key==='scene'?80:key==='sourceRevision'?2:3))
         throw new Error('Incomplete scene brief '+brief.devotionalId+': '+key);
     }
     if (identities.has(brief.visualFingerprint)) throw new Error('Duplicate source-bound visual fingerprint: '+brief.visualFingerprint);
