@@ -1,0 +1,15 @@
+# Manual BibleQuest V7 Lane Y — legacy/partial bundle completion factory
+**Trigger in a separate chat:** `Continue BibleQuest V7 Lane Y`.
+Read `docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md`, current #1300/#1303, `data/v7/visual-assets/records/`, open image PRs and active `v7/development`. Only modify an asset that is explicitly delegated below **and not already claimed by a current PR**.
+
+## Exclusive existing-asset repair queue
+`anxiety_worry`, `fear`, `hurt_betrayal`, `rejection`, `guilt`, `gratitude`, `joy`, `spiritual_dryness_distance`, `temptation`, `impatience_waiting`.
+These ten names were partial/legacy at the planning snapshot, **not** a claim all still require work today. One canonical asset per listed ID; use existing CLEAN source if valid. The old scheduled producer queues delegate *derivative/backfill* of these specific IDs to Lane Y. Scheduled producers own all other designated Feeling art and new Need art.
+**Explicit exclusions:** `grief_loss` and `anger` (Agent 1); `insecurity_unworthiness` and `doubt` (Agent 2); `jealousy_envy`, `frustration`, `numbness_emptiness` (Agent 4); `hope`, `peace_contentment` (Agent 5); `sadness` (existing PR #1417); all Lane X Agent-3 slots; ALL Needs, Home and devotional-cover work. A failed/closed PR does not authorize overwriting without refreshed ownership check.
+
+## Every invocation
+1. Recompute actual live accepted/partial records and active open PRs; select **highest-impact unclaimed older partial**. Never treat a derivative sidecar as a second distinct source.
+2. Keep safe CLEAN image; reuse existing independently verified candidate TYPE/THUMB when rights, spelling, font, crop and hashes pass. If missing, compose exact text TYPE from actual source plus reviewed reference; export real 4:5 THUMB. No new CLEAN scene unless independent failure evidence proves necessary. Reconcile schema-v1 master with schema-v2 variants only from actual bytes.
+3. Validate taxonomy canonical ID, exact source blob/revision and Bible reference/context, English-only TYPE / TL-CEB-ILO CLEAN+live fallback, original rights and font proof, alt text, focal crop, SHA-256, sizes, dimensions, duplicate avoidance, actual pixels at 320/390/430 and published served-byte SHA. Reject clipped or pseudo-Scripture lettering. Never label a locally previewed candidate release-ready.
+4. Stage a bounded asset-ID-specific PR into `v7/development`; run canonical `scripts/v7-visual-assets-audit.mjs` and targeted tests, plus exact-head built-browser checks. Link all evidence and independently hand off to QA Agent. Do not edit audit to excuse invalid records. If source provenance cannot be proven, quarantine and seek an original replacement in the SAME owned slot without making false rights claims.
+5. After completing one, take the next **unclaimed** Y slot; subsequent `Continue Lane Y` resumes from live truth. Once these slots are clean, provide independent metadata/technical repair for historical artwork only if specifically unclaimed; never touch another lane's asset.
