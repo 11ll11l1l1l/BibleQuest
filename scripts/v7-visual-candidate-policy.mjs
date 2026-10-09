@@ -34,20 +34,27 @@ export const KNOWN_REJECTED_V7_VARIANTS = Object.freeze({
   ])
 });
 
+// Narrow exact-pixel rejection shared by candidate triage and release audit.
+// The latter already has its own detailed variant QA error messages.
+export function knownRejectedVisualReason(record) {
+  for (const variant of record?.variants || []) {
+    const rejected = KNOWN_REJECTED_V7_VARIANTS[record?.assetId]?.find(item =>
+      item.kind === variant.kind && item.sha256 === variant.sha256);
+    if (rejected) return 'known-bad visual variant: ' + rejected.reason;
+  }
+  return null;
+}
+
 export function candidateQuarantineReason(record) {
   if (REPAIR_STATUS.test(String(record?.status || '')))
     return 'record status explicitly requires repair or quarantine';
+  const rejected = knownRejectedVisualReason(record);
+  if (rejected) return rejected;
   if (record?.qc?.svgDataUriPolicyCompliant === false
     || record?.qc?.staticSvgSafetyReviewed === false)
     return 'record has a failed static SVG safety review';
 
   for (const variant of record?.variants || []) {
-    // Detect rejected pixels by measured digest, not mutable QA claims. This is
-    // only an editorial denylist; unchanged images are never automatically
-    // approved by the absence of a matching reject.
-    const rejected = KNOWN_REJECTED_V7_VARIANTS[record?.assetId]?.find(item =>
-      item.kind === variant.kind && item.sha256 === variant.sha256);
-    if (rejected) return 'known-bad visual variant: ' + rejected.reason;
     const qa = variant.qa || variant.qc || {};
     if (qa.allowedSvgReferencesOnly === false
       || qa.embeddedDataImageSourceViolation === true)
