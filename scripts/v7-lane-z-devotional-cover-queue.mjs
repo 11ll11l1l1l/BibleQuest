@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const DEVOTIONAL_DIR = 'content/v7/devotionals';
 const RECORD_DIR = 'data/v7/visual-assets/records';
+const INITIAL_SCENES = 'data/v7/visual-assets/lane-z-initial-30-source-briefs.json';
 const VALID_ID = /^devotional\.[a-z0-9._-]+$/;
 const OWNED = ['display', 'modify'];
 
@@ -75,8 +76,19 @@ function themeFor(item) {
   return (item.taxonomyLinks || []).filter(t => ['emotion','need','topic'].includes(t.kind))
     .slice(0,4).map(t => t.id).join(', ');
 }
-export function buildLaneZCoverQueue(contentFiles, visualRecords = []) {
-  const items = new Map(), records = new Map();
+export function buildLaneZCoverQueue(contentFiles, visualRecords = [], sourceBriefs = []) {
+  const items = new Map(), records = new Map(), briefs = new Map(), identities = new Set();
+  for (const brief of sourceBriefs) {
+    if (briefs.has(brief.devotionalId) || !VALID_ID.test(brief.devotionalId))
+      throw new Error('Duplicate/invalid source-bound scene brief: ' + brief.devotionalId);
+    for (const key of ['sourceRevision','sourceTitle','sourceBodyAnchor','scene','composition','lighting','visualFingerprint','textSafeRegion','altText']) {
+      if (typeof brief[key] !== 'string' || brief[key].trim().length < (key==='scene'?80:key==='sourceRevision'?2:3))
+        throw new Error('Incomplete scene brief '+brief.devotionalId+': '+key);
+    }
+    if (identities.has(brief.visualFingerprint)) throw new Error('Duplicate source-bound visual fingerprint: '+brief.visualFingerprint);
+    identities.add(brief.visualFingerprint);
+    briefs.set(brief.devotionalId,brief);
+  }
   for (const source of contentFiles) {
     if (!Array.isArray(source.items)) throw new Error('Missing devotional items: ' + source.path);
     for (const item of source.items) {
@@ -92,6 +104,15 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = []) {
     matches.push(record);
     records.set(record.contentId, matches);
   }
+  for (const id of briefs.keys()) {
+    const source=items.get(id)?.item;
+    if (!source || !eligible(source)) throw new Error('Brief references missing/rights-ineligible devotional: '+id);
+    const brief=briefs.get(id);
+    const title=String(source.sourceContent?.title||'').trim();
+    const body=String(source.sourceContent?.body||'');
+    if (brief.sourceRevision!==source.revision || brief.sourceTitle!==title || !body.includes(brief.sourceBodyAnchor))
+      throw new Error('Stale source-bound scene brief for '+id);
+  }
   const sorted = [...items.values()].sort((a,b) => a.item.id.localeCompare(b.item.id,'en'));
   const queue = sorted.map(({item,sourcePath},index) => {
     const art = records.get(item.id) || [];
@@ -99,9 +120,10 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = []) {
     const title = String(item.sourceContent?.title || '').trim();
     if (!title) throw new Error('Missing source devotional title: ' + item.id);
     const ownable = eligible(item);
-    const scene = SCENES[index % SCENES.length];
-    const view = VIEWS[Math.floor(index / SCENES.length) % VIEWS.length];
-    const light = LIGHT[Math.floor(index / (SCENES.length * VIEWS.length)) % LIGHT.length];
+    const brief = briefs.get(item.id);
+    const scene = brief?.scene || SCENES[index % SCENES.length];
+    const view = brief?.composition || VIEWS[Math.floor(index / SCENES.length) % VIEWS.length];
+    const light = brief?.lighting || LIGHT[Math.floor(index / (SCENES.length * VIEWS.length)) % LIGHT.length];
     const palette = PALETTE[(index + Math.floor(index / SCENES.length)) % PALETTE.length];
     const body = String(item.sourceContent?.body || '').replace(/\s+/g,' ').trim();
     const prompt = [
@@ -110,13 +132,17 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = []) {
       'Devotional message for narrative guidance only: ' + body.slice(0,550),
       'Scene direction: ' + scene + '; ' + view + '; ' + light + '; ' + palette + '.',
       'Premium cinematic editorial realism, psychologically specific, purposeful storytelling, natural anatomy, diverse contemporary life, restrained color, focal safe for phone crop.',
-      'Keep lower quarter subtly uncluttered for accessible live title overlay; NO rendered text, letters, books with legible printing, verse quotations, numbers, watermark, UI, logo, celebrity or copied stock photograph.',
+      'Reserve a naturally low-detail '+(brief?.textSafeRegion||'bottom')+' region for a live localized title overlay. NO rendered text, letters, books with legible printing, verse quotations, numbers, watermark, UI, logo, celebrity or copied stock photograph.',
       'Use source meaning; do not assume the scene itself verifies any Scripture. Avoid generic mountains, sunsets, stock prayer hands and repetitive crosses.'
     ].join(' ');
     return {
       order: index + 1, devotionalId: item.id, sourcePath, revision: item.revision || null,
       title, topicTags: themeFor(item), rightsEligible: ownable, sourceBodyExcerpt: body.slice(0,260),
-      visualIdentity: 'lane-z:' + String(index+1).padStart(3,'0') + ':' + token(title),
+      visualIdentity: brief?.visualFingerprint || 'lane-z:' + String(index+1).padStart(3,'0') + ':' + token(title),
+      artDirectionSource: brief ? 'human_source_bound_first30' : 'deterministic_fallback_needs_editorial_review',
+      sourceBodyAnchor: brief?.sourceBodyAnchor || null,
+      textSafeRegion: brief?.textSafeRegion || 'bottom',
+      altTextDraft: brief?.altText || null,
       scene, view, light, palette, prompt, expectedCleanPath: coverPath(item.id),
       existingAssetIds: art.map(x => x.assetId).sort(),
       // Neither 'production_ready' sidecar claims nor prompt generation establish
@@ -150,13 +176,23 @@ export async function readLaneZCoverQueue(root = ROOT) {
   const recordNames = (await readdir(join(root,RECORD_DIR))).filter(n=>n.endsWith('.json')&&!n.endsWith('-derivatives.json'));
   const records = await Promise.all(recordNames.map(async n=>
     JSON.parse(await readFile(join(root,RECORD_DIR,n),'utf8'))));
-  return buildLaneZCoverQueue(files,records);
+  const briefFile=JSON.parse(await readFile(join(root,INITIAL_SCENES),'utf8'));
+  if (briefFile.schemaVersion!==1 || !Array.isArray(briefFile.entries))
+    throw new Error('Invalid source-bound Lane Z scene brief catalog');
+  return buildLaneZCoverQueue(files,records,briefFile.entries);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const result = await readLaneZCoverQueue();
   const all = process.argv.includes('--all');
   const limitArg = process.argv.find(a=>a.startsWith('--limit='));
-  const limit = limitArg ? Number(limitArg.split('=')[1]) : 10;
+  const idArg = process.argv.find(a=>a.startsWith('--id='));
+  const limit = limitArg ? Number(limitArg.split('=')[1]) : 1;
   if (!all && (!Number.isInteger(limit) || limit < 1 || limit > 300)) throw new Error('Invalid --limit');
-  console.log(JSON.stringify({...result,queue:all?result.queue:result.queue.slice(0,limit)},null,2));
+  if (idArg && (all || limitArg)) throw new Error('Select one devotional ID or a batch, not both');
+  const selected = idArg
+    ? result.queue.filter(x=>x.devotionalId === idArg.slice('--id='.length) && x.rightsEligible)
+    : all ? result.queue : result.queue.filter(x=>x.rightsEligible && x.state!=='hold_rights').slice(0,limit);
+  if (idArg && selected.length !== 1) throw new Error('Unknown or rights-ineligible devotional ID');
+  // The default is ONE source-bound image, not a 10-panel contact sheet.
+  console.log(JSON.stringify({...result,queue:selected},null,2));
 }
