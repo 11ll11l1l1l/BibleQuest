@@ -127,9 +127,12 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     return publish({ responseDrafts: snapshot({ ...state.responseDrafts, [stepId]: String(value ?? '') }), responseError: null });
   }
   async function persistResponse(stepIndex, token, key) {
-    if (!state.writable || typeof service.savePrivateResponse !== 'function') return;
+    if (!state.writable) return;
     const stepId = state.lesson?.steps?.[stepIndex]?.id;
     if (!stepId || !dirtyResponseSteps.has(stepId)) return;
+    if (typeof service.savePrivateResponse !== 'function') {
+      fail('BQ_LESSON_RESPONSE_UNAVAILABLE', 'Private response saving is unavailable. Your draft was not discarded.');
+    }
     // A shared response is a mutable row. Revoke its old share before writing
     // newly edited text, or a mentor could see changes without fresh consent.
     const priorShare = state.responses[stepId];
@@ -148,17 +151,17 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     while (dirtyResponseSteps.has(stepId)) {
       const editVersion = responseEditVersions.get(stepId) ?? 0;
       const text = state.responseDrafts[stepId] ?? '';
-    const prior = state.responses[stepId];
-    const payload = prior?.response && typeof prior.response === 'object' && !Array.isArray(prior.response)
-      ? { ...prior.response, text } : text;
-    publish({ status: 'saving-response', error: null });
-    current(token, key);
-    const result = await service.savePrivateResponse(pairId, revisionId, stepId, payload); current(token, key);
-    if ((responseEditVersions.get(stepId) ?? 0) === editVersion) dirtyResponseSteps.delete(stepId);
-    const responses = { ...state.responses, [stepId]: Object.freeze({ ...(prior ?? {}), ...(result && typeof result === 'object' ? result : {}),
-      stepId, lessonRevisionId: revisionId, response: payload, visibility: 'owner',
-      audienceUserIds: Object.freeze([]) }) };
-    publish({ responses: snapshot(responses), responseStatus: 'ready', responseError: null });
+      const prior = state.responses[stepId];
+      const payload = prior?.response && typeof prior.response === 'object' && !Array.isArray(prior.response)
+        ? { ...prior.response, text } : text;
+      publish({ status: 'saving-response', error: null });
+      current(token, key);
+      const result = await service.savePrivateResponse(pairId, revisionId, stepId, payload); current(token, key);
+      if ((responseEditVersions.get(stepId) ?? 0) === editVersion) dirtyResponseSteps.delete(stepId);
+      const responses = { ...state.responses, [stepId]: Object.freeze({ ...(prior ?? {}), ...(result && typeof result === 'object' ? result : {}),
+        stepId, lessonRevisionId: revisionId, response: payload, visibility: 'owner',
+        audienceUserIds: Object.freeze([]) }) };
+      publish({ responses: snapshot(responses), responseStatus: 'ready', responseError: null });
     }
   }
   async function setResponseSharing(stepId, shared, { confirmed = false } = {}) {
