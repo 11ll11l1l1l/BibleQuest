@@ -26,7 +26,7 @@
     "x": 0.46,
     "y": 0.32
   },
-  "textSafeRegion": "lower",
+  "textSafeRegion": "bottom",
   "generation": {
     "provider": "OpenAI image generation",
     "genId": "ebf2ab90-8779-4589-83cb-d15d92f867c3",
@@ -85,7 +85,8 @@
       "canonicalAudit": "unperformed; no complete repository checkout",
       "independentVisualQa": "pending QA Agent",
       "scriptureReferenceContext": "Mark 9:24 is the father's appeal for help with unbelief during Jesus's encounter; artwork is an analogy for hesitating trust, not a claim that the verse promises physical bridge safety",
-      "productionReady": false
+      "productionReady": false,
+      "metadataSafeRegionCorrection": "Changed unsupported 'lower' to canonical 'bottom' per audit REGIONS enum; artwork binaries untouched."
     }
   },
   "variants": [
