@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "agentId": "visual-agent-1",
+  "baseSha": "39e25e0916b46c7170c71d4790ea96c4073a542e",
+  "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "concept": "grief_loss",
+  "englishLabel": "Grieving / loss",
+  "reference": "Psalm 147:3",
+  "existing": {
+    "assetId": "bqv7-emotion-grief-loss-01",
+    "status": "candidate_built_app_qa_pending",
+    "originalCommit": "31668586126ca63cdf8a61254ca0d2e1abdff3f9",
+    "sourceModelVerified": false,
+    "metadataRepairPR": 1413
+  },
+  "newGeneration": {
+    "generationId": "5b7c5fff-d85b-40db-8350-202b0b722f2c",
+    "imageSha256": "433b6509d087f6a78675f50b4ab64cec294daebda79232821e11c74eec6455a0",
+    "disposition": "rejected",
+    "reason": "Presentation composite repeats lake sunset motif and contains typography in CLEAN and THUMB panels."
+  },
+  "localDraft": {
+    "disposition": "rejected_not_uploaded",
+    "cleanSha256": "987c7577c46c8f0a78912b24ab0725e358ec2d1fba6d9a839c6b036cb5693dce",
+    "typeSha256": "1d7a8f4d32950ea8531a01fd9fc9712e0ac86e223d6c0fa5876f4978b7a0461b",
+    "thumbSha256": "6df31bd31f6aba733fda82b1ab7a1a8e226994ee4cbcc02c985a3e96c9a4dc8c",
+    "actualSizesBytes": [
+      163982,
+      169088,
+      47522
+    ],
+    "dimensions": [
+      [
+        1024,
+        1280
+      ],
+      [
+        1024,
+        1280
+      ],
+      [
+        384,
+        480
+      ]
+    ],
+    "chromiumQA": "not_run",
+    "httpShaQA": "not_run"
+  },
+  "otherPRs": {
+    "sadOpen": 1417,
+    "lonelinessMerged": 1418
+  },
+  "next": "Generate one standalone indoor grief photograph without any text or sunset, then derive separate verified WebPs and run exact-head browser checks.",
+  "productionReady": false
+}
