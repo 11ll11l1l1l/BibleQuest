@@ -1,0 +1,82 @@
+{
+  "schema": "bq-v7-independent-image-qa-evidence-v1",
+  "reviewedAtJst": "2026-10-09",
+  "repository": "11ll11l1l1l/BibleQuest",
+  "integration": {
+    "branch": "v7/development",
+    "exactHead": "d061418560e524429f33979efa0a0b269a1d0b44"
+  },
+  "scope": {
+    "assetId": "bqv7-emotion-jealousy-envy-01",
+    "canonicalEmotionId": "jealous",
+    "repairOwner": "visual-agent-4",
+    "producerPr": 1436,
+    "conflictingPr": 1410
+  },
+  "sourceReview": {
+    "producerPrHead": "f1b7ba8ca4422c6e68ae1073949a889908a8375a",
+    "producerPrBase": "d061418560e524429f33979efa0a0b269a1d0b44",
+    "changedPaths": [
+      "data/v7/visual-assets/records/bqv7-emotion-jealousy-envy-01.json",
+      "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01-with-text-en.webp"
+    ],
+    "originalRejectedTypeSha256": "e8d458e8ed806265875b2a58914b39daa5f10dbd4fd7e714665888b92365b1d0",
+    "replacementTypeSha256FromProducerRecord": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
+    "replacementTypeDeclaredBytes": 2285908,
+    "reference": "Proverbs 14:30",
+    "englishLabel": "Jealous / envious",
+    "scriptureProseIncluded": false
+  },
+  "independentlyVerifiedCi": {
+    "source": "GitHub Actions live job metadata and decoded log; not producer status assertion",
+    "headSha": "f1b7ba8ca4422c6e68ae1073949a889908a8375a",
+    "visualWorkflowRun": 37892102032,
+    "visualJob": 113695096057,
+    "visualConclusion": "success",
+    "officialAuditStep": "success",
+    "focusedNodeTestsPassed": 41,
+    "builtHttpChromiumStep": "success",
+    "logSummary": "PASS visual binary built-browser QA: 35 image files, 9 release bundles, 5 draft bundles passed browser QA, 0 drafts requiring repair, 84 TYPE/THUMB screenshots; draft publication remains blocked",
+    "browserArtifactId": 11597629965,
+    "browserArtifactSha256": "9299b1056bb27f63885a207a7d2760785b9d22934d2d9d04a39b3815da7a8b50",
+    "releaseWorkflowRun": 37892102069,
+    "releaseWorkflowConclusion": "success",
+    "productionDeployedIdentityStep": "skipped",
+    "finalProductionReleaseCertificationStep": "skipped"
+  },
+  "qaDecision": {
+    "classification": "QA_PENDING_INDEPENDENT_PIXEL_REVIEW",
+    "releaseCertified": false,
+    "productionDeploymentVerified": false,
+    "independentImageByteRehash": false,
+    "independentRenderedPixelInspection": false,
+    "reason": "CI exact-PR-head technical verification succeeded, but this independent reviewer could not retrieve raw binary pixels or 84 screenshots through the available GitHub connector. Producer record's staged evidence is bound to earlier 6319ea1d, though new head f1b7 has its own passing CI. No authority to approve final release; do not conflate staged HTTP with deployed identity.",
+    "nextActions": [
+      "Independently inspect replacement TYPE at 320/390/430 against exact SHA and compare with old rejected flourish",
+      "Verify published HTTP served SHA after merge if integrated; never merge conflicting PR #1410",
+      "Provide Lane D #1303 exact-merged-head evidence for release certification"
+    ],
+    "unmergedProducerPrNotCountedAsIntegration": true
+  },
+  "crossPrFindings": [
+    {
+      "pr": 1410,
+      "status": "REPAIR_NEEDED",
+      "action": "close/supersede; still promotes rejected old Jealous TYPE and overlaps #1436 and Sad #1417"
+    },
+    {
+      "pr": 1436,
+      "status": "QA_PENDING",
+      "action": "technical CI passed at exact PR head; independent pixel QA and integrated identity remain pending"
+    }
+  ],
+  "limitations": [
+    "No local repository checkout or direct GitHub binary download available to this run; cannot truthfully execute local canonical Node audit, direct source binary SHA-256 recomputation, or independent pixel inspection.",
+    "35 image files / 9 release bundles / 5 drafts are workflow counts for PR head f1b7, not recomputed integration-wide counts.",
+    "No new production_ready status set by this QA review."
+  ],
+  "reviewSubmission": {
+    "pr1410BlockingReview": "blocked by connector safety checks",
+    "pr1436CommentReview": "blocked by connector safety checks"
+  }
+}
