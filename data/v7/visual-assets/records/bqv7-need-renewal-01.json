@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-renewal-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T16:08:00.128644+00:00",
+  "status": "candidate_independent_qa_pending",
+  "bundleStatus": "three_real_files_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "renewal",
+  "canonicalNeedId": "renewal",
+  "concept": "Woman repaints weathered windowsill and opens a window to spring air.",
+  "usage": [
+    "needs_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-renewal-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 119328,
+  "sha256": "ffdfa9d0fb948c1a3b3631f494009791529694a5b010809b9ebb3302a9f23cfc",
+  "focalPoint": {
+    "x": 0.65,
+    "y": 0.61
+  },
+  "textSafeRegion": "upper left",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "68741d2d-aee8-4f36-a0a7-10835db37c64",
+    "sourceImageWasComposite": true,
+    "sourceOriginalFile": "renewal_window_painting_triptych.png",
+    "sourceOriginalSha256": "396ed74d535eea38f41302ae0c2fc6fa228ff277021f5eff3a6befb8813810ef",
+    "isolatedSingleScenePanelCropPixels": [
+      36,
+      107,
+      620,
+      837
+    ],
+    "sourceDescription": "The generated source is a three-panel collage. CLEAN was reconstructed from the original unlettered left panel, not an original standalone source. QA must reject if single-scene original is mandatory. Earlier local derivatives were not mounted in this run, so these reconstructed binaries have newly measured hashes.",
+    "cleanSceneOriginalToThisGeneration": true,
+    "noThirdPartyPhotosSupplied": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Generated image composite; isolated left photo panel, no external stock. Candidate only until independent rights and source review.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "fontFilesDistributed": false,
+    "scripture": "Reference only, no Scripture prose"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman carefully repaints a worn wooden windowsill beside an open spring window, surrounded by potted plants.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "CLEAN with live TL Pagpapanibago / CEB Pagbag-o / ILO Pannakapabaro and accessible live reference; EN TYPE only."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "renewal",
+    "locale": "en",
+    "exactLabel": "Renewal",
+    "reference": "Isaiah 40:31",
+    "scriptureTextIncluded": false,
+    "contextReview": "Isaiah 40:31 speaks of those who hope/wait on the LORD renewing their strength; repainting is a metaphor for a fresh start, not a literal promise that repairs or energy are guaranteed."
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "imageSceneStandaloneAfterCrop": true,
+    "originalGeneratedOutputWasCollage": true,
+    "repoVisualAudit": "not_run",
+    "builtAppBrowserQA": "not_run",
+    "publishedServedBytes": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "candidateOnly": true,
+    "localHttpExactBytes": true,
+    "localIsolatedChromium320390430": true
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-renewal-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 119328,
+      "sha256": "ffdfa9d0fb948c1a3b3631f494009791529694a5b010809b9ebb3302a9f23cfc",
+      "locale": null,
+      "altText": "A woman carefully repaints a worn wooden windowsill beside an open spring window, surrounded by potted plants.",
+      "focalPoint": {
+        "x": 0.65,
+        "y": 0.61
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-renewal-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 123314,
+      "sha256": "1035a43b50e560d95d44f93b4e089a9f0937358d100f63b59f9dcfece1d3d491",
+      "locale": "en",
+      "altText": "A woman carefully repaints a worn wooden windowsill beside an open spring window, surrounded by potted plants.",
+      "focalPoint": {
+        "x": 0.65,
+        "y": 0.61
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      },
+      "embeddedWording": {
+        "label": "Renewal",
+        "scriptureReference": "Isaiah 40:31",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 08 Regular",
+        "accentFont": "EB Garamond 08 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Pillow on CLEAN with continuous feathered warm top veil",
+        "sourceCleanSha256": "ffdfa9d0fb948c1a3b3631f494009791529694a5b010809b9ebb3302a9f23cfc"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-renewal-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 38732,
+      "sha256": "c4949e67d061afa78c50bf2953337e0ed9ffc731adf55e2ae04a7707cc4b2578",
+      "locale": null,
+      "altText": "A woman carefully repaints a worn wooden windowsill beside an open spring window, surrounded by potted plants.",
+      "focalPoint": {
+        "x": 0.65,
+        "y": 0.61
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.005859375,
+          "y": 0,
+          "width": 0.98828125,
+          "height": 0.98828125
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
