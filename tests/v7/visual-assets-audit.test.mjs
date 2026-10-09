@@ -521,12 +521,13 @@ test('V2 Need accepts independently sourced EN/TL/CEB/ILO TYPE files without mix
   );
   // The locale map is fail-closed even if a legacy EN-only proof is supplied.
   f.record.wordingEvidence = oldProof;
+  const savedIloProof = f.record.wordingEvidenceByLocale.ilo;
   delete f.record.wordingEvidenceByLocale.ilo;
   await f.saveNeed();
   result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
   assert.match(result.errors.join('\n'), /TYPE wording source missing or unsupported/);
-  f.record.wordingEvidenceByLocale.ilo = proofByLocale.ilo;
+  f.record.wordingEvidenceByLocale.ilo = savedIloProof;
   f.record.wordingEvidenceByLocale.ceb.exactLabel = 'Wrong label';
   await f.saveNeed();
   result = await auditV7VisualAssets(f.root);
