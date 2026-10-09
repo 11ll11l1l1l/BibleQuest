@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent_image_qa_snapshot",
+  "observedAt": "2026-10-09 JST",
+  "integrationHead": "39e25e0916b46c7170c71d4790ea96c4073a542e",
+  "readOnlySnapshot": true,
+  "noProductionPromotion": true,
+  "verificationMethod": "Exact-HEAD GitHub Contents API base64 retrieval, independent JS SHA-256 computation, binary header/metadata dimensions and byte length, Git blob identity; TYPE/THUMB visual inspection only where explicitly noted. No local repository checkout or full built-app Chromium/HTTP test was performed.",
+  "counts": {
+    "feelingTaxonomyConcepts": 30,
+    "uniqueCommittedFeelingMasters": 22,
+    "masterRecords": 22,
+    "derivativeSidecarsExcluded": 9,
+    "publicImageFiles": 67,
+    "distinctPublicImageGitBlobShas": 67,
+    "duplicateGitBlobGroups": 0,
+    "schemaV1MasterRecords": 8,
+    "schemaV2MasterRecords": 14,
+    "declaredProductionReadyMasters": 16,
+    "declaredProductionReadyV2": 8,
+    "declaredProductionReadyV1": 8,
+    "pendingV2TripleConcepts": 6,
+    "pendingV2TripleFilesIndependentlyHashChecked": 18,
+    "independentlyReleaseCertifiedAtThisHead": 0,
+    "ready": 0,
+    "qaPending": 19,
+    "repairNeeded": 3,
+    "notCreatedFeelingConcepts": 8,
+    "notCreatedNeedConcepts": 19
+  },
+  "backlog": {
+    "READY": [],
+    "QA_PENDING": [
+      "bqv7-emotion-anxiety-worry-01",
+      "bqv7-emotion-confusion-uncertainty-01",
+      "bqv7-emotion-discouragement-01",
+      "bqv7-emotion-excitement-01",
+      "bqv7-emotion-fear-01",
+      "bqv7-emotion-gratitude-01",
+      "bqv7-emotion-grief-loss-01",
+      "bqv7-emotion-guilt-01",
+      "bqv7-emotion-hopelessness-01",
+      "bqv7-emotion-hurt-betrayal-01",
+      "bqv7-emotion-impatience-waiting-01",
+      "bqv7-emotion-joy-01",
+      "bqv7-emotion-loneliness-01",
+      "bqv7-emotion-love-connection-01",
+      "bqv7-emotion-rejection-01",
+      "bqv7-emotion-sadness-01",
+      "bqv7-emotion-shame-01",
+      "bqv7-emotion-spiritual-dryness-distance-01",
+      "bqv7-emotion-temptation-01"
+    ],
+    "REJECTED_REPAIR_NEEDED": [
+      "bqv7-emotion-hope-01",
+      "bqv7-emotion-jealousy-envy-01",
+      "bqv7-emotion-peace-contentment-01"
+    ],
+    "NOT_CREATED_FEELINGS": [
+      "anger",
+      "insecurity_unworthiness",
+      "doubt",
+      "overwhelm",
+      "stress",
+      "tiredness_weariness",
+      "frustration",
+      "numbness_emptiness"
+    ],
+    "NOT_CREATED_NEEDS": [
+      "peace",
+      "hope",
+      "comfort",
+      "courage",
+      "strength",
+      "wisdom",
+      "guidance",
+      "forgiveness",
+      "grace_identity",
+      "healing",
+      "patience",
+      "perseverance",
+      "trust",
+      "rest",
+      "renewal",
+      "self_control",
+      "encouragement",
+      "celebration",
+      "connection"
+    ]
+  },
+  "sixPrioritySets": [
+    {
+      "assetId": "bqv7-emotion-grief-loss-01",
+      "canonicalEmotionId": "grieving",
+      "owner": "visual-agent-1",
+      "decision": "QA_PENDING",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Grieving / loss",
+        "reference": "Psalm 147:3",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-grief-loss-01.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 129534,
+          "sha256": "afb27091ab0adafef525d205a32c086d77309f2e50a21155995ba29dbfcdfc0b",
+          "gitBlobSha": "094e0893cbbfed26b517e7728e13b6f1332bc25d",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-grief-loss-01-with-text-en.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 151428,
+          "sha256": "eb22f957c2d1777d833c95b4a16885953a006b6d5eb24ccc533e156b1dee78ef",
+          "gitBlobSha": "c1dcdd1fe3666c60dc292878bc719e1f86dafccf",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-grief-loss-01-thumbnail.webp",
+          "format": "webp",
+          "width": 384,
+          "height": 480,
+          "bytes": 30326,
+          "sha256": "f3ade2b2eae138190ead49444132c6ee2291cf9fae60767cc3e0212ae97ce10d",
+          "gitBlobSha": "cdc656a1008fe0d25d02e06814d1138b896af6af",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "TYPE_and_THUMB_source_pixels_reviewed",
+      "notes": "TYPE and THUMB source pixels independently viewed: readable exact label and reference, focal-safe THUMB; underlying image-model identity not independently substantiated. Exact built-app HTTP and CI absent."
+    },
+    {
+      "assetId": "bqv7-emotion-hope-01",
+      "canonicalEmotionId": "hopeful",
+      "owner": "visual-agent-5",
+      "decision": "REPAIR_NEEDED",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Hopeful",
+        "reference": "Romans 15:13",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-01.svg",
+          "format": "svg",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 6067,
+          "sha256": "3bc71e0310a90154892b7017788a9e7e4752402c6e8d91151b5d39ece2b23e58",
+          "gitBlobSha": "33b7d5a756d631469c08c5637168f9cfff9b9a5e",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-01-with-text-en.svg",
+          "format": "svg",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 6635,
+          "sha256": "efe1c3af826f736d1cdd55825411bcaf830ba779acf8c3adaa832a942bb0fe41",
+          "gitBlobSha": "00a128fcbeabb1c8c8aa66bb7e2e6eae030197f7",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-01-thumbnail.svg",
+          "format": "svg",
+          "width": 384,
+          "height": 480,
+          "bytes": 6066,
+          "sha256": "2e3ee99ba9f7e01593ab1000fdc337a3ebcb1fd3ee483ea669146649fdf1f053",
+          "gitBlobSha": "ab659c423293b48e640026e2600c59a7b8d1b648",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "source_svg_structure_only",
+      "notes": "Three SVG binaries byte-verified; independent raster/phone visual review not performed; flat vector art quarantined by producer-5's replacement assignment. Do not treat source SVG text node as proof of rendered typography."
+    },
+    {
+      "assetId": "bqv7-emotion-impatience-waiting-01",
+      "canonicalEmotionId": "impatient",
+      "owner": "visual-agent-4",
+      "decision": "QA_PENDING",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Impatient / waiting",
+        "reference": "Psalm 27:14",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 107910,
+          "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+          "gitBlobSha": "f419aa9e88e1b0b45189e60c6e8d8baef8861afa",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-with-text-en.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 124412,
+          "sha256": "d810f46ee68ae16706448553ae1b2fac5b0abd44a5089e56a375d1ffc57a9b7c",
+          "gitBlobSha": "32956b5ec6e52ac79a2f7097b5bd6f277366893b",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-thumbnail.webp",
+          "format": "webp",
+          "width": 384,
+          "height": 480,
+          "bytes": 30934,
+          "sha256": "320df5fddfc96fa2d38e4518043a194fabd80483878e8fea8e7f69967f6aca3f",
+          "gitBlobSha": "3e56658025293ec6529eb1bf956f136c4630169b",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "TYPE_and_THUMB_source_pixels_reviewed",
+      "notes": "TYPE and THUMB independently viewed: watch-checking clinic scene, readable exact label/reference, focal-safe crop. Built-app HTTP identity, responsive/fallback and rights review pending."
+    },
+    {
+      "assetId": "bqv7-emotion-jealousy-envy-01",
+      "canonicalEmotionId": "jealous",
+      "owner": "visual-agent-4",
+      "decision": "REPAIR_NEEDED",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Jealous / envious",
+        "reference": "Proverbs 14:30",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 108318,
+          "sha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+          "gitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01-with-text-en.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 138500,
+          "sha256": "e8d458e8ed806265875b2a58914b39daa5f10dbd4fd7e714665888b92365b1d0",
+          "gitBlobSha": "2b0d40d3fb2f0d8ed60fc3f69d5d35fe4acd9163",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-jealousy-envy-01-thumbnail.webp",
+          "format": "webp",
+          "width": 384,
+          "height": 480,
+          "bytes": 30986,
+          "sha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+          "gitBlobSha": "32f457efca1049edfa7939dd11f6d59fb96f2cac",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "TYPE_rejected_overlap",
+      "notes": "TYPE pixels independently viewed: gold decorative underline/flourish crosses title glyphs. Fail TYPE editorial typography. Preserve CLEAN/THUMB; producer-4 repair PR #1424 already quarantines this variant."
+    },
+    {
+      "assetId": "bqv7-emotion-peace-contentment-01",
+      "canonicalEmotionId": "peaceful",
+      "owner": "visual-agent-5",
+      "decision": "REPAIR_NEEDED",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Peaceful / content",
+        "reference": "John 14:27",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-peace-contentment-01.svg",
+          "format": "svg",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 8295,
+          "sha256": "f1a536927535fc8f97e7efa8e1a21f93c2d4edafb24d16928c7677753efb7b51",
+          "gitBlobSha": "78540ca3efc430583522a20527cb0dd0897866ce",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-peace-contentment-01-with-text-en.svg",
+          "format": "svg",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 20433,
+          "sha256": "9f94ccf69b4b39078f004bbee677a47876421dcacc5489a46d7fbbd8a4704255",
+          "gitBlobSha": "2e80854a14b91566dad1500cdd416f2587d9017a",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-peace-contentment-01-thumbnail.svg",
+          "format": "svg",
+          "width": 384,
+          "height": 480,
+          "bytes": 8400,
+          "sha256": "84f9c4a7d09fd080be93ca386272b90168021976f9f4665003e0cc697915f07c",
+          "gitBlobSha": "f27c947f2c94bf638b7a06f9829226fb92bebe08",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "source_svg_structure_only",
+      "notes": "Three SVG binaries byte-verified; independent raster/phone visual review not performed; vector aesthetic inconsistent with requested premium photo deck, producer-5 assigned photo replacement."
+    },
+    {
+      "assetId": "bqv7-emotion-sadness-01",
+      "canonicalEmotionId": "sad",
+      "owner": "visual-agent-1",
+      "decision": "QA_PENDING",
+      "wording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "locale": "en",
+        "label": "Sad",
+        "reference": "Psalm 34:18",
+        "scriptureTextIncluded": false,
+        "taxonomyReferenceMatched": true,
+        "bibleProseReviewed": false,
+        "contextReview": "pending"
+      },
+      "variantMeasurements": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 181120,
+          "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+          "gitBlobSha": "275339542e52f16debfe608eedb21b1f2e13a56f",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-sadness-01-with-text-en.webp",
+          "format": "webp",
+          "width": 1024,
+          "height": 1280,
+          "bytes": 212178,
+          "sha256": "38935ff9099d5d8791f3b2ba2941e8a6fae4dd4f360472d81e6cd3edbb0a0d0e",
+          "gitBlobSha": "12ee382fd2da8b882ae40973acdc850e7f029854",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-sadness-01-thumbnail.webp",
+          "format": "webp",
+          "width": 384,
+          "height": 480,
+          "bytes": 54632,
+          "sha256": "9aaf5d26a11e8263c296c3272ec022a807b6fe31cbd4749dd6e69d273175643a",
+          "gitBlobSha": "52b6485e92ad86d5a3c21fdd27f78530af49bfcc",
+          "metadataSha256Match": true,
+          "metadataBytesMatch": true,
+          "metadataDimensionsMatch": true,
+          "independentlyFetchedFromExactGitHead": true
+        }
+      ],
+      "threeDistinctGitBlobs": true,
+      "fullBrowserQA": "not_performed_at_integration_head",
+      "httpServedHashQA": "not_performed",
+      "independentImageRights": "not_fully_proven",
+      "independentFontRights": "not_fully_proven",
+      "visualInspection": "TYPE_and_THUMB_source_pixels_reviewed",
+      "notes": "TYPE and THUMB independently viewed: exact Sad / Psalm 34:18, legible and focal-safe. PR #1417 claims draft browser checks; no exact-current-HEAD served HTTP SHA evidence observed."
+    }
+  ],
+  "legacySchemaV1Reconciliation": [
+    "bqv7-emotion-anxiety-worry-01",
+    "bqv7-emotion-fear-01",
+    "bqv7-emotion-gratitude-01",
+    "bqv7-emotion-hurt-betrayal-01",
+    "bqv7-emotion-joy-01",
+    "bqv7-emotion-rejection-01",
+    "bqv7-emotion-spiritual-dryness-distance-01",
+    "bqv7-emotion-temptation-01"
+  ],
+  "declaredProductionReadyV2NeedsExactHeadBrowser": [
+    "bqv7-emotion-confusion-uncertainty-01",
+    "bqv7-emotion-discouragement-01",
+    "bqv7-emotion-excitement-01",
+    "bqv7-emotion-guilt-01",
+    "bqv7-emotion-hopelessness-01",
+    "bqv7-emotion-loneliness-01",
+    "bqv7-emotion-love-connection-01",
+    "bqv7-emotion-shame-01"
+  ],
+  "specificFinding": {
+    "assetId": "bqv7-emotion-discouragement-01",
+    "status": "production_ready",
+    "recordContradiction": "qc.independentRepositoryVerification.builtAppBrowserQA=not_performed and officialNodeAudit=not_run",
+    "action": "independent exact-SHA built browser and canonical audit; do not infer release certification from metadata status"
+  },
+  "ci": {
+    "integrationHeadReleaseConvergence": {
+      "runId": 37856107936,
+      "conclusion": "failure",
+      "failedStep": "Start and reset disposable Supabase stack",
+      "imageQAInference": "none; unrelated failure does not prove image QA passed or failed"
+    },
+    "exactHeadVisualBrowserRunFound": false,
+    "canonicalAuditExecutedInThisAgentRun": false,
+    "builtChromiumExecutedInThisAgentRun": false
+  },
+  "handoff": {
+    "status": "proposed_nonconflicting_not_claimed",
+    "doNotEditImmutableQueueOrProducerOwnedImages": true,
+    "order": "Only after each producer's existing P0 and already-assigned Need work; verify producer acceptance and live PR ownership before implementation",
+    "agent3RemainingFeelings": [
+      {
+        "concept": "discouragement",
+        "action": "QA agent independently certifies existing 3 binaries; if art repair required, offer to visual-agent-1",
+        "current": "existing production_ready record with browser evidence gap"
+      },
+      {
+        "concept": "overwhelm",
+        "proposedProducer": "visual-agent-2",
+        "current": "no committed master"
+      },
+      {
+        "concept": "stress",
+        "proposedProducer": "visual-agent-4",
+        "current": "no committed master"
+      },
+      {
+        "concept": "tiredness_weariness",
+        "proposedProducer": "visual-agent-5",
+        "current": "no committed master"
+      }
+    ],
+    "agent3Needs": [
+      {
+        "canonicalNeedId": "comfort",
+        "proposedProducer": "visual-agent-1"
+      },
+      {
+        "canonicalNeedId": "forgiveness",
+        "proposedProducer": "visual-agent-2"
+      },
+      {
+        "canonicalNeedId": "patience",
+        "proposedProducer": "visual-agent-4"
+      },
+      {
+        "canonicalNeedId": "trust",
+        "proposedProducer": "visual-agent-5"
+      }
+    ]
+  },
+  "nextQA": [
+    "Review #1417 Sad against its exact PR head built browser/HTTP evidence, without confusing draft intercepted source-byte tests with served output",
+    "Review #1424 corrected Jealous TYPE pixels at 320/390/430 and remeasure SHA",
+    "Reconcile 8 schema-v1 records against current V2 gates",
+    "Re-audit newly submitted producer PRs and report independent evidence to Lane D #1303"
+  ]
+}
