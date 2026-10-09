@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent_v7_visual_qa",
+  "checkedAtJst": "2026-10-10T08:04:00+09:00",
+  "repository": "11ll11l1l1l/BibleQuest",
+  "integrationHead": "52e3dce70a68f70b334e0b7ddc60d55be9009809",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "methods": {
+    "source": "GitHub fetch_file exact immutable PR HEAD, base64 decoded",
+    "hash": "independent JS SHA-256 implementation self-tested with abc vector",
+    "dimensions": "direct WebP VP8 headers",
+    "pixels": "original CLEAN/TYPE/THUMB visually inspected, plus Hopeful route-injected 320/390/430 screenshot artifact",
+    "font": "local Debian Noto/EB Garamond/Lato package copyright notices show OFL-1.1; actual producer font files not verified",
+    "notPerformed": [
+      "official Node visual audit",
+      "non-intercepted release-served HTTP SHA",
+      "new independent Chromium browser",
+      "original generated PNG independent source provenance",
+      "runtime TL/CEB/ILO and screen reader accessibility",
+      "complete near-duplicate scan"
+    ]
+  },
+  "backlog": [
+    {
+      "assetId": "bqv7-emotion-jealousy-envy-01",
+      "owner": "visual-agent-4",
+      "pr": 1436,
+      "prHead": "5782f3a51f26cd9cafdd92dbe129ccd1d181f63e",
+      "state": "QA_PENDING",
+      "visualVerdict": "VISUAL_APPROVED_SOURCE_ONLY",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "variants": [
+        [
+          "CLEAN",
+          108318,
+          1024,
+          1024,
+          "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+          "27e58738d70727bee2a469e119d74e2870ae8297"
+        ],
+        [
+          "TYPE",
+          127576,
+          1024,
+          1280,
+          "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+          "db78c08db70338b5fbe451b3642aff74e3dc3466"
+        ],
+        [
+          "THUMB",
+          30986,
+          384,
+          480,
+          "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+          "32f457efca1049edfa7939dd11f6d59fb96f2cac"
+        ]
+      ],
+      "visual": "TYPE shows Jealous / envious, separated gold divider, Proverbs 14:30 only. Original pixel inspected; no overlap. CLEAN/THUMB previously inspected.",
+      "scripture": "Proverbs 14:30 warns that envy damages the inner life; appropriate as reference, not promise.",
+      "ciAtCheck": {
+        "visual": "success",
+        "serialization": "success",
+        "buildPwa": "in_progress",
+        "convergence": "in_progress"
+      },
+      "nextTask": "Lane D actual published-manifest and non-intercepted HTTP-served 3 SHA plus browser/accessibility/locale; do not merge overlapping old #1410"
+    },
+    {
+      "assetId": "bqv7-emotion-hope-02",
+      "owner": "visual-agent-5",
+      "pr": 1437,
+      "prHead": "fb9fadbea652dd8314ced13fc62365e0e47d3c1c",
+      "state": "QA_PENDING",
+      "visualVerdict": "VISUAL_ONLY_PASS",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "variants": [
+        [
+          "CLEAN",
+          143934,
+          1024,
+          1024,
+          "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+          "d69a3844987677b2ea317e41b3b377ffd6f8fe83"
+        ],
+        [
+          "TYPE",
+          155764,
+          1024,
+          1280,
+          "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
+          "2a6eb1c0c6f474dd7a35db720c796fc3e9b8cdc9"
+        ],
+        [
+          "THUMB",
+          42358,
+          384,
+          480,
+          "4f60530aefb863439905cd80d02f657567788f386ec7e538e7446d9038e51e1f",
+          "179cfdd1f5bf4291621b3112f0aad54d990a8f33"
+        ]
+      ],
+      "visual": "Independently inspected source TYPE and CLEAN/THUMB, plus existing candidate route-fulfilled screenshots at 320/390/430 viewports (card widths 292/362/402). Hopeful / Romans 15:13 legible without overlap. No baked text in CLEAN; seedling and woman retained in THUMB.",
+      "scripture": "Romans 15:13 is a prayer for hope through the Holy Spirit; contextually appropriate reference, not a guaranteed instant result.",
+      "metadataDefect": "TYPE qa.typeReadableAt320px=false stale despite corrected image; independentLegibilityReview still pending",
+      "ci": {
+        "visual": 37941589860,
+        "buildPwa": 37941589916,
+        "convergence": 37941589950,
+        "serialization": 37941590195,
+        "all": "success"
+      },
+      "nextTask": "Producer5 reconcile stale TYPE metadata; independent original source and exact font file provenance; official audit and Lane D release HTTP/browser certification"
+    },
+    {
+      "assetId": "bqv7-emotion-numbness-emptiness-01",
+      "owner": "visual-agent-4",
+      "pr": 1452,
+      "prHead": "e9289a5baf13e6bf4d35867212cd312e2006db18",
+      "state": "QA_PENDING",
+      "visualVerdict": "SOURCE_PIXEL_PASS_MOBILE_UNVERIFIED",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "variants": [
+        [
+          "CLEAN",
+          91154,
+          1024,
+          1024,
+          "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+          "695b89a427141790cdefea44cb8bacdaf763b69e"
+        ],
+        [
+          "TYPE",
+          102710,
+          1024,
+          1280,
+          "c73c8ed4d12014329e905aac9efd88677e931f647b7d1957677a603b0272b7b0",
+          "4c3322f2913a6aac865e7fa9065aa29a3bac5fa1"
+        ],
+        [
+          "THUMB",
+          23966,
+          384,
+          480,
+          "9d2597b031dacfa59a2e4112b77ff5f6134388f9af39c0ccdd641efe5bb5f0d1",
+          "b2a491a28d91684d6aabed3104befa1606dbad00"
+        ]
+      ],
+      "visual": "Direct source TYPE/THUMB pixels: exact Numb / empty and Psalm 42:5, clear text; man remains focal in birthday-scene THUMB.",
+      "scripture": "Psalm 42:5 addresses downcast soul and hope in God; appropriate reflection, not instant cure.",
+      "metadataDefect": "candidateExactHeadCiEvidence.commitSha remains prior 1451cfa rather than current e9289a5",
+      "ci": {
+        "visual": 37985317338,
+        "buildPwa": 37985317989,
+        "convergence": 37985317715,
+        "serialization": 37985317894,
+        "all": "success"
+      },
+      "nextTask": "Correct stale CI provenance; independent 320/390/430 browser, rights/source, locale/accessibility and actual release-served HTTP"
+    },
+    {
+      "assetId": "bqv7-emotion-frustration-01",
+      "owner": "visual-agent-4",
+      "pr": 1398,
+      "prHead": "dec3e0995e1a4206350ff39b3709f6b75230820b",
+      "state": "REPAIR_NEEDED",
+      "visualVerdict": "FAIL",
+      "recordBlob": "53304ed46b18216981529f69040630b4214966f7",
+      "typeGitBlob": "ff5eaf667b4581d4c1ed9579eb8d1216c5dde518",
+      "typeSha256Claim": "65d4318ea67fb6772cc607c18d40e8c4acac61a14a5c9907ffbd244e786aec64",
+      "observedDefects": [
+        "Galatians 6:9 white text over bright lamp low contrast",
+        "sidecar generation.source explicitly says CLEAN extracted from triptych panel",
+        "qc.duplicateChecked=false"
+      ],
+      "nextTask": "Producer4 commit truly standalone single-scene CLEAN and high-contrast TYPE plus THUMB; independent recheck; local run17 ZIP absent"
+    }
+  ],
+  "releaseCertified": false,
+  "artworkModified": false,
+  "mergePerformed": false,
+  "deployed": false
+}
