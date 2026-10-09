@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "qaRole": "independent_v7_visual_qa",
+  "checkedAtJst": "2026-10-09T22:04:00+09:00",
+  "integrationHead": "ac4b6c1568931272698b8823522f558c1375b102",
+  "scope": "legacy_schema_v1_master_records_and_registry_gate",
+  "sources": {
+    "recordsDirectory": "data/v7/visual-assets/records",
+    "recordsDirectoryEntries": 31,
+    "masterRecords": 22,
+    "derivativeSidecars": 9,
+    "physicalEmotionImageFiles": 66,
+    "physicalWebp": 48,
+    "physicalSvg": 18,
+    "auditScript": "scripts/v7-visual-assets-audit.mjs",
+    "auditScriptGitBlob": "5b9e06758c665196e88c07a89f3db256f083f568",
+    "taxonomyGitBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "finding": {
+    "id": "QA-V7-LEGACY-V1-PARTIAL-PRODUCTION-STATUS",
+    "severity": "release_coverage_risk",
+    "description": "Eight schema-v1 Feeling master records say status=production_ready despite having no independently certified full CLEAN/TYPE/THUMB bundle. The canonical audit accepts schema-v1 production_ready masters into manifest and reports partial bundle when TYPE or THUMB absent; this is not full P0 artwork completion.",
+    "auditLogic": "record.status === 'production_ready' enters validation; completeBundle requires with_text and thumbnail; manifest entry bundleStatus is complete or partial; do not equate manifest inclusion or productionReady count with three-file certified readiness",
+    "observed": {
+      "schemaV1ProductionReadyMasters": 8,
+      "withNoMasterVariants": 7,
+      "withTwoMasterVariants": 1,
+      "fullV1BundlesIndependentlyCertified": 0
+    },
+    "nextAction": "Lane D #1303: gate release coverage on exact audited bundleStatus=complete plus independent TYPE/THUMB evidence; Lane Y #1443 and #1432: repair derivative sidecars without modifying approved CLEAN; re-run canonical Node audit and served-byte browser checks.",
+    "notClaimed": [
+      "full exact-byte rehash of all 66 images this run",
+      "official Node audit execution",
+      "pixel inspection",
+      "HTTP-served browser certification",
+      "final release certification"
+    ]
+  },
+  "assets": [
+    {
+      "assetId": "bqv7-emotion-anxiety-worry-01",
+      "contentId": "anxiety_worry",
+      "recordGitBlob": "b4db13fab4f0dffcdcecc47b8e318f780dc346cd",
+      "recordedCleanSha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-fear-01",
+      "contentId": "fear",
+      "recordGitBlob": "0353ab08dda2d670c3b4b600cf257928652414eb",
+      "recordedCleanSha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-gratitude-01",
+      "contentId": "gratitude",
+      "recordGitBlob": "4652b76c94ac2f735696157b465b2f50561956d4",
+      "recordedCleanSha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-hurt-betrayal-01",
+      "contentId": "hurt_betrayal",
+      "recordGitBlob": "2691f008f104fab718dcf455cda9078d3c31aace",
+      "recordedCleanSha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-joy-01",
+      "contentId": "joy",
+      "recordGitBlob": "7da9501ea279cd8bf5351afb9919f5c458c47ee6",
+      "recordedCleanSha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-rejection-01",
+      "contentId": "rejection",
+      "recordGitBlob": "46be222cc7f9494e5a9b034387104fcd25a5d303",
+      "recordedCleanSha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-spiritual-dryness-distance-01",
+      "contentId": "spiritual_dryness_distance",
+      "recordGitBlob": "7d72c81bf2b2132bdec263ec459a77ce9ce19daf",
+      "recordedCleanSha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 0,
+      "masterVariantKinds": [],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    },
+    {
+      "assetId": "bqv7-emotion-temptation-01",
+      "contentId": "temptation",
+      "recordGitBlob": "2c01015e4a4fd6fcefa8c674c9bd3302d77d8930",
+      "recordedCleanSha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+      "masterSchemaVersion": 1,
+      "masterStatus": "production_ready",
+      "masterVariantCount": 2,
+      "masterVariantKinds": [
+        "CLEAN",
+        "THUMB"
+      ],
+      "qaState": "REPAIR_NEEDED",
+      "owner": "manual_lane_Y",
+      "nextTask": "Do not count as complete; verify compliant English TYPE, focal-safe THUMB, canonical text/reference, rights, hashes, built-app before promotion."
+    }
+  ],
+  "notes": [
+    "This evidence is independent metadata and audit-source review, not binary/pixel certification.",
+    "The 66 physical files include derivative candidates; existence does not mean certified or registry included.",
+    "No producer-owned files changed."
+  ]
+}
