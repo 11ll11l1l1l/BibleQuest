@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { readLaneZCoverQueue, buildLaneZCoverQueue } from '../../scripts/v7-lane-z-devotional-cover-queue.mjs';
 
 function devotional(id,title='Faithful next step') {
@@ -109,4 +110,18 @@ test('live initial 30 briefs are distinct and tied to canonical source IDs', asy
  assert.equal(new Set(first30.map(x=>x.visualIdentity)).size,30);
  assert.ok(first30.every(x=>x.altTextDraft && x.sourceBodyAnchor && x.scene.length>=80));
  assert.ok(first30.every(x=>x.state==='not_generated' || x.state==='existing_asset_requires_independent_audit'));
+});
+
+test('CLI defaults to exactly one original portrait brief and supports explicit source ID', () => {
+ const cmd=new URL('../../scripts/v7-lane-z-devotional-cover-queue.mjs',import.meta.url);
+ const base=[cmd.pathname];
+ const first=JSON.parse(execFileSync(process.execPath,base,{encoding:'utf8'}));
+ assert.equal(first.queue.length,1,'Default must never invite contact-sheet generation');
+ assert.equal(first.queue[0].artDirectionSource,'human_source_bound_first30');
+ const target='devotional.biblequest.anxiety_worry.01';
+ const specific=JSON.parse(execFileSync(process.execPath,[...base,'--id='+target],{encoding:'utf8'}));
+ assert.equal(specific.queue.length,1);
+ assert.equal(specific.queue[0].devotionalId,target);
+ assert.match(specific.queue[0].prompt,/apartment kitchen table/);
+ assert.doesNotMatch(specific.queue[0].prompt,/Create ten covers/i);
 });
