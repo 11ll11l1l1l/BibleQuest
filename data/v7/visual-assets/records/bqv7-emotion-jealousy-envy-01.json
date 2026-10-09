@@ -80,13 +80,13 @@
         "dimensionsMeasured": true,
         "sha256Measured": true,
         "visualInspected": true,
-        "isolatedChromiumRendered": false,
+        "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": false,
         "cropReviewed": true,
         "spellingCheckedAgainstTaxonomy": true,
         "referenceCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": false,
+        "typeReadableAt320px": true,
         "fontLicenseVerified": true
       }
     },
@@ -167,16 +167,16 @@
     "duplicateChecked": true,
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
-    "type320pxVisualInspected": false,
-    "isolatedChromiumAllVariantsDecoded": false,
+    "type320pxVisualInspected": true,
+    "isolatedChromiumAllVariantsDecoded": true,
     "isolatedChromiumWidths": [
       320,
       390,
       430
     ],
-    "builtAppBrowserQA": "pending_new_exact_sha_chromium_QA",
-    "visualAuditScript": "not_run_no_local_repo",
-    "reasonNotProductionReady": "Refined full TYPE raster is committed as a candidate. Exact-head 320/390/430 browser screenshots and independent visual review must be rerun; no published served-byte claim.",
+    "builtAppBrowserQA": "candidate_chromium_pass_source_byte_interception_only_not_published_served_byte",
+    "visualAuditScript": "PASS: exact-head GitHub Actions run 37883359251 at acd1e744bf05153e3d40e9d9ae4f12a4bad33333",
+    "reasonNotProductionReady": "Real 320/390/430 Chromium candidate screenshots passed artistic inspection and source audit passed. Candidate source bytes were intercepted into an isolated browser, not published/served from immutable build; release served-byte certification and promotion remain pending.",
     "typeRepairCandidate": {
       "state": "full_type_webp_reconstructed_candidate_pending_browser_qa",
       "sourceCleanGitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
@@ -195,11 +195,28 @@
       "scriptureTextIncluded": false,
       "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
       "encoding": "VP8L color-quantized lossless container quality55",
-      "fullType320390430Qa": false,
+      "fullType320390430Qa": true,
       "builtAppExactHeadQa": false,
-      "officialAuditRun": false,
+      "officialAuditRun": true,
       "publicationAllowed": false,
-      "isolatedFooterFlecksCleared": 33832
+      "isolatedFooterFlecksCleared": 33832,
+      "candidateExactHeadChromiumQA": {
+        "status": "PASS_candidate_only",
+        "runId": 37883359251,
+        "artifactId": 11594359362,
+        "exactSha": "acd1e744bf05153e3d40e9d9ae4f12a4bad33333",
+        "viewports": [
+          320,
+          390,
+          430
+        ],
+        "screenshotsVisuallyInspected": true,
+        "sourceBinarySha256": "a03d3832ba54d6265e620ff906d6659c50a87dd00dae3ef3f57ba3be5382a4c9",
+        "servedByteMode": "candidate source bytes fulfilled by Playwright route; not published HTTP bytes",
+        "sourceAudit": "PASS",
+        "browserDecode": "PASS",
+        "responsiveGeometry": "PASS"
+      }
     }
   }
 }
