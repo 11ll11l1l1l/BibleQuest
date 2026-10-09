@@ -50,7 +50,8 @@
         "noBakedText": true,
         "cropReviewed": true,
         "builtAppBrowserQA": "pending",
-        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app"
+        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app",
+        "anatomyAcceptable": true
       }
     },
     {
@@ -191,7 +192,11 @@
     "exactHeadCI": "not_run",
     "independentQA": "pending",
     "productionReady": false,
-    "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification"
+    "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "localReviewEvidence": "Producer reviewed actual original CLEAN/TYPE/THUMB preview at mobile scale: recognizable seedling, plausible anatomy, legible Hopeful and Romans 15:13, no embedded Scripture prose. Local-only; independent and built-app QA still pending.",
+    "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed."
   },
   "supersedesCandidateAssetId": "bqv7-emotion-hope-01"
 }
