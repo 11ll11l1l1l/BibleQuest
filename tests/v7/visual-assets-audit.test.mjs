@@ -551,3 +551,46 @@ test('V2 Need rejects malformed locale proof maps instead of borrowing legacy EN
     assert.match(result.errors.join('\n'), /TYPE per-locale wording evidence must be an object/);
   }
 });
+
+
+test('reports distinct verified masters and complete bundles separately from missing P0 concepts', async t => {
+  const f = await fixture(t);
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.equal(result.coverage.emotions.total, 30);
+  assert.equal(result.coverage.emotions.verifiedCleanMasterConcepts, 1);
+  assert.equal(result.coverage.emotions.verifiedCompleteBundleConcepts, 0);
+  assert.ok(result.coverage.emotions.missingCleanMasters.includes('afraid'));
+  assert.ok(result.coverage.emotions.missingCompleteBundles.includes('anxious'));
+  assert.equal(result.coverage.needs.total, 19);
+  assert.equal(result.coverage.needs.verifiedCleanMasterConcepts, 0);
+  assert.equal(result.coverage.needs.verifiedCompleteBundleConcepts, 0);
+  assert.equal(result.queues[0].completed, 1);
+  assert.equal(result.queues[0].completeBundles, 0);
+  assert.equal(result.queues[0].nextIncompleteBundle, 'anxiety_worry');
+});
+
+test('counts verified full Need bundles once per canonical Need, not per variant file', async t => {
+  const f = await needV2BundleFixture(t);
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.equal(result.coverage.needs.verifiedCleanMasterConcepts, 1);
+  assert.equal(result.coverage.needs.verifiedCompleteBundleConcepts, 1);
+  assert.ok(!result.coverage.needs.missingCompleteBundles.includes('peace'));
+  assert.equal(result.counts.needCompleteBundleConcepts, 1);
+  assert.equal(result.counts.needQueueTotal, 19);
+});
+
+test('reports candidate claims without crediting any missing CLEAN or complete bundle', async t => {
+  const f = await fixture(t);
+  f.record.status = 'qa_pending';
+  await f.save();
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'PASS', result.errors.join('\n'));
+  assert.equal(result.counts.productionReady, 0);
+  assert.equal(result.coverage.emotions.verifiedCleanMasterConcepts, 0);
+  assert.equal(result.coverage.emotions.verifiedCompleteBundleConcepts, 0);
+  assert.deepEqual(result.coverage.unapprovedRecordClaims, [{ assetId: ID, status: 'qa_pending' }]);
+  assert.equal(result.queues[0].completed, 0);
+  assert.equal(result.queues[0].completeBundles, 0);
+});
