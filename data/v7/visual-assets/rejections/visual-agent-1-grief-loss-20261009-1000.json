@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "agentId": "visual-agent-1",
+  "runLocalTime": "2026-10-09T10:00:09+09:00",
+  "sourceBranch": "v7/development",
+  "sourceCommit": "39e25e0916b46c7170c71d4790ea96c4073a542e",
+  "assignment": "grief_loss",
+  "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "label": "Grieving / loss",
+  "reference": "Psalm 147:3",
+  "sourceCommitForOldArtwork": "31668586126ca63cdf8a61254ca0d2e1abdff3f9",
+  "oldModelVerified": false,
+  "oldStatus": "candidate_built_app_qa_pending",
+  "sadPR1417": "open",
+  "lonelinessPR1418": "merged",
+  "attempts": [
+    {
+      "genId": "335a1a70-1db1-4956-a905-ba6e125e0cad",
+      "sha256": "4ae2ada6e415cb9df7b7d7285f9ef8c18ad4c1e2801b7503c8d7429b5f19ab79",
+      "bytes": 2058481,
+      "width": 1402,
+      "height": 1122,
+      "format": "png",
+      "accepted": false,
+      "reasons": [
+        "Collage rather than independent variants",
+        "Sunset/lake duplicate motif",
+        "Unverified QA and metadata depicted within generated artwork"
+      ]
+    },
+    {
+      "genId": "8ee9a972-6fb3-49c8-a57a-9761c1a6e72f",
+      "sha256": "2d3c5271d351a8a4d74f0b90d9575f692640234262b0160a399b87a31ec20874",
+      "bytes": 2068426,
+      "width": 1402,
+      "height": 1122,
+      "format": "png",
+      "accepted": false,
+      "reasons": [
+        "Collage rather than standalone photograph",
+        "Sunset/lake motif",
+        "Unverified QA claims depicted within generated artwork"
+      ]
+    }
+  ],
+  "result": "NO_ACCEPTED_BUNDLE",
+  "productionReady": false,
+  "chromiumQA": "not_run",
+  "httpShaQA": "not_run",
+  "nextConcept": "Quiet indoor flower shop, older grieving person holding a white chrysanthemum, overcast daylight; standalone CLEAN only before independent typography and thumb exports",
+  "note": "All original files remain unchanged; rejected new candidates were not published."
+}
