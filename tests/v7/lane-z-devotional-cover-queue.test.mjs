@@ -69,3 +69,44 @@ test('actual V7 catalog supplies exactly 300 owned source assignments', async ()
  assert.equal(result.counts.verifiedComplete,0,
    'Sidecar metadata alone must never certify artwork');
 });
+
+test('source-grounded scene briefs override cyclic fallback only at matching source revision', () => {
+ const item=devotional('devotional.biblequest.anxiety_worry.01','One concern at a time');
+ item.sourceContent.body='When your mind keeps rehearsing worries, place one concern before God.';
+ const brief={devotionalId:item.id,sourceRevision:'r1',sourceTitle:'One concern at a time',
+ sourceBodyAnchor:'When your mind keeps',scene:'At a kitchen table a worried person puts aside a stack of blank papers and holds only one at a time.',
+ composition:'Quiet medium portrait beside a dim kitchen window',lighting:'warm lamp and cool window',
+ textSafeRegion:'bottom',altText:'An adult concentrates on one blank paper while setting others aside.',
+ visualFingerprint:'kitchen-one-paper-person-pauses'};
+ const result=buildLaneZCoverQueue([{path:'x',items:[item]}],[],[brief]);
+ assert.equal(result.queue[0].artDirectionSource,'human_source_bound_first30');
+ assert.equal(result.queue[0].scene,brief.scene);
+ assert.equal(result.queue[0].textSafeRegion,'bottom');
+ assert.match(result.queue[0].prompt,/At a kitchen table/);
+ assert.match(result.queue[0].prompt,/NO rendered text/);
+ assert.equal(result.counts.verifiedComplete,0);
+ item.revision='r2';
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[brief]),/Stale source-bound/);
+});
+
+test('briefs cannot invent unknown content or duplicate visual fingerprints', () => {
+ const item=devotional('devotional.biblequest.anxiety_worry.01','One concern at a time');
+ item.sourceContent.body='When your mind keeps rehearsing worries and doubt.';
+ const base={devotionalId:item.id,sourceRevision:'r1',sourceTitle:item.sourceContent.title,
+ sourceBodyAnchor:'When your mind keeps',scene:'One human in a realistic kitchen removes one sheet from a small stack of unmarked papers on a table.',
+ composition:'Quiet eye-level side profile',lighting:'blue hour and warm kitchen light',
+ textSafeRegion:'bottom',altText:'One person holding one paper.',
+ visualFingerprint:'single-kitchen-paper'};
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[base,{...base,devotionalId:'devotional.biblequest.unknown.01'}]),/Duplicate source-bound visual fingerprint/);
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[{...base,devotionalId:'devotional.biblequest.unknown.01'}]),/missing\/rights-ineligible/);
+});
+
+test('live initial 30 briefs are distinct and tied to canonical source IDs', async () => {
+ const result=await readLaneZCoverQueue();
+ const first30=result.queue.filter(x=>x.artDirectionSource==='human_source_bound_first30');
+ assert.equal(first30.length,30,'First 30 first-party devotional stories require individual scene briefs');
+ assert.equal(new Set(first30.map(x=>x.devotionalId)).size,30);
+ assert.equal(new Set(first30.map(x=>x.visualIdentity)).size,30);
+ assert.ok(first30.every(x=>x.altTextDraft && x.sourceBodyAnchor && x.scene.length>=80));
+ assert.ok(first30.every(x=>x.state==='not_generated' || x.state==='existing_asset_requires_independent_audit'));
+});
