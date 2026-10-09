@@ -55,11 +55,18 @@
     "localDecodeAndHashMeasured": true,
     "typeVisualQA": "passed_local_320_390_430_isolated",
     "thumbnailVisualQA": "passed_local_320_390_430_isolated",
-    "repoVisualAudit": "not_run_no_checkout",
-    "builtAppBrowserQA": "not_run_chromium_admin_blocked_local_http_navigation",
+    "repoVisualAudit": "passed_on_PR1423_exact_head_f575aac; candidate excluded from production registry",
+    "builtAppBrowserQA": "pending_retest_after_variant_altText_fix; previous exact-head workflow rejected candidate before Chromium: Variant missing alt text CLEAN",
     "httpServedBytes": "verified_by_urllib_local_http_server_all_three_exact_hashes",
     "productionReady": false,
-    "localBrowserQA": "3_width_isolated_data_uri_pass"
+    "localBrowserQA": "3_width_isolated_data_uri_pass",
+    "technicalBrowserEvidence": {
+      "workflowJobUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37862907442/job/113602662219",
+      "priorHead": "f575aac40f45266332ad6d478cb01ca0ef7ccea5",
+      "priorCandidateTriage": "rejected_missing_CLEAN_altText",
+      "priorReleaseBrowserResult": "8 release bundles passed, but candidate excluded; no candidate screenshots",
+      "publicationApproved": false
+    }
   },
   "variants": [
     {
@@ -80,7 +87,13 @@
         "noBakedText": true,
         "noLogo": true,
         "anatomyAcceptable": true
-      }
+      },
+      "altText": "A woman backstage at a community gathering studies her reflection in a mirror while adjusting her blazer, looking uncertain about herself.",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.38
+      },
+      "decorative": false
     },
     {
       "kind": "TYPE",
@@ -112,7 +125,14 @@
         "accentFont": "EB Garamond 12 Italic",
         "license": "SIL Open Font License 1.1",
         "fontFilesDistributed": false
-      }
+      },
+      "altText": "A woman studies her reflection before a community event. Embedded English lettering: Insecure / unworthy; Ephesians 2:10.",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.52
+      },
+      "decorative": true,
+      "fallback": "CLEAN plus live localized text for tl, ceb, ilo"
     },
     {
       "kind": "THUMB",
@@ -141,7 +161,13 @@
         },
         "outputAspect": "4:5",
         "method": "Pillow LANCZOS focal-aware crop"
-      }
+      },
+      "altText": "A woman backstage at a community gathering studies her reflection in a mirror while adjusting her blazer, looking uncertain about herself.",
+      "focalPoint": {
+        "x": 0.53,
+        "y": 0.4
+      },
+      "decorative": false
     }
   ]
 }
