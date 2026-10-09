@@ -126,18 +126,32 @@ function normalizeSecondPass(secondPass, revision) {
 
 // Bind the complete approved rights declaration to the exact source revision.
 // Missing snapshots on legacy decisions force a fresh automated evaluation.
+// The approval is for an exact content revision, not just matching item ID.
+// Keep the full reviewed content bound to the decision, including translations,
+// Scripture mappings, source/provenance and taxonomy. Rights and visual assets
+// have separate snapshots and independent publication gates below.
+function stableEvidenceSnapshot(value) {
+  if (value === undefined) return 'null';
+  if (Array.isArray(value)) return '[' + value.map(stableEvidenceSnapshot).join(',') + ']';
+  if (value && typeof value === 'object') {
+    return '{' + Object.keys(value).sort()
+      .map(key => JSON.stringify(key) + ':' + stableEvidenceSnapshot(value[key])).join(',') + '}';
+  }
+  return JSON.stringify(value);
+}
+
+function reviewedContentEvidenceSnapshot(item) {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) return null;
+  // Extract only the two independently checked top-level declarations. All
+  // other fields are part of what was actually reviewed for publication.
+  const { rights, visualAssets, visual_assets, ...reviewedContent } = item;
+  return stableEvidenceSnapshot(reviewedContent);
+}
+
 function rightsEvidenceSnapshot(item) {
   const rights = item?.rights;
   if (!rights || typeof rights !== 'object' || Array.isArray(rights)) return null;
-  const stable = value => {
-    if (value === undefined) return 'null';
-    if (Array.isArray(value)) return '[' + value.map(stable).join(',') + ']';
-    if (value && typeof value === 'object')
-      return '{' + Object.keys(value).sort()
-        .map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}';
-    return JSON.stringify(value);
-  };
-  return stable(rights);
+  return stableEvidenceSnapshot(rights);
 }
 
 function rightsHardFailure(item) {
@@ -225,6 +239,7 @@ export function evaluateV7LibraryApproval({
     decidedAt: new Date(decidedAt).toISOString(),
     rightsStatusSnapshot: clean(item?.rights?.status),
     rightsEvidenceSnapshot: rightsEvidenceSnapshot(item),
+    reviewedContentEvidenceSnapshot: reviewedContentEvidenceSnapshot(item),
     visualAssetEvidenceSnapshot: visualAssetEvidenceSnapshot(item),
     visualAssetEvidence: Object.freeze(visualBoundary.assetEvidence.map(row => Object.freeze(row))),
     criteria: normalized,
@@ -276,12 +291,16 @@ export function canAutoPublishV7LibraryDecision(decision, item) {
     && decision.policyVersion === V7_LIBRARY_APPROVAL_POLICY_VERSION
     && decision.itemId === item?.id
     && decision.revision === item?.revision
+    && decision.contentType === item?.type
+    && rightsHardFailure(item) === ''
     && decision.rightsStatusSnapshot === 'verified'
     && item?.rights?.status === 'verified'
     && Array.isArray(item?.rights?.allowedUses)
     && item.rights.allowedUses.length > 0
     && decision.rightsEvidenceSnapshot !== null
     && decision.rightsEvidenceSnapshot === rightsEvidenceSnapshot(item)
+    && decision.reviewedContentEvidenceSnapshot !== null
+    && decision.reviewedContentEvidenceSnapshot === reviewedContentEvidenceSnapshot(item)
     && evaluateV7VisualAssetGates(item).rejectionReasons.length === 0
     && evaluateV7VisualAssetGates(item).repairReasons.length === 0
     && decision.visualAssetEvidenceSnapshot === visualAssetEvidenceSnapshot(item)
