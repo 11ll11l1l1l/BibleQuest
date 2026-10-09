@@ -6,7 +6,7 @@ const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'dis
   .map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
 const row = (stepId = 'step-3', response = 'saved') => ({ id: `response-${stepId}`, stepId, lessonRevisionId: 'revision', response, audienceUserIds: [], visibility: 'owner' });
 
-function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback } = {}) {
+function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false } = {}) {
   const auth = { authenticated: true, user: { id: userId } };
   const active = { congregationId: 'church', userId };
   const log = [], responseWrites = [], progressWrites = [];
@@ -24,6 +24,7 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
     async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return shareCallback ? shareCallback({pairId,revisionId,stepId,responseId,options}) : [{ id: 'share', response_id: responseId }]; },
     async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return revokeCallback ? revokeCallback({pairId,revisionId,stepId,responseId}) : { id: 'share', response_id: responseId }; },
   };
+  if (omitResponseSave) delete service.savePrivateResponse;
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
   return { runner, auth, active, log, responseWrites, progressWrites };
@@ -299,4 +300,16 @@ test('explicit privacy action after editing a shared answer revokes exactly once
   assert.equal(f.log.filter(item => item[0] === 'revokeResponseShare').length, 1);
   assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
   assert.equal(f.runner.getState().shareStatus, 'ready');
+});
+
+test('unavailable response persistence cannot silently advance lesson progress', async () => {
+  const f = fixture({ omitResponseSave: true });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('must remain in draft', 'step-1');
+  const before = f.progressWrites.length;
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 1);
+  assert.equal(f.runner.getState().responseDrafts['step-1'], 'must remain in draft');
+  assert.equal(f.progressWrites.length, before);
 });
