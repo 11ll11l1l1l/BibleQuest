@@ -1,0 +1,162 @@
+/**
+ * Manual Lane Z: read-only source-bound devotional cover queue.
+ * This is not the visual-assets publication audit; it deliberately does not
+ * count unverified sidecars or generation attempts as completed cover art.
+ */
+import { readFile, readdir } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
+const DEVOTIONAL_DIR = 'content/v7/devotionals';
+const RECORD_DIR = 'data/v7/visual-assets/records';
+const VALID_ID = /^devotional\.[a-z0-9._-]+$/;
+const OWNED = ['display', 'modify'];
+
+const SCENES = Object.freeze([
+  'a kitchen table with a folded letter and one softly lit window',
+  'an urban commuter standing on a rain-washed station platform',
+  'a parent quietly preparing breakfast before the household wakes',
+  'an apprentice tending a single green shoot on a small balcony',
+  'two friends talking face to face on a public park bench',
+  'a nurse leaving a busy hospital after an evening shift',
+  'a lone cyclist stopping beneath trees beside a village road',
+  'hands repairing a cracked ceramic bowl at a wooden workbench',
+  'a student organizing scattered notes at a sunlit library desk',
+  'a family setting an extra place at the dinner table',
+  'a traveler looking down a winding alley from a market entrance',
+  'a neighbor helping carry groceries through a quiet courtyard',
+  'an artist washing brushes after completing a small canvas',
+  'a gardener lifting a fragile sapling into fresh soil',
+  'a person pausing beside a footbridge after a long walk',
+  'a small fishing boat tied safely to its mooring after rain',
+  'a baker opening the shutters before sunrise',
+  'an old friend writing a thoughtful note at a café',
+  'a child and grandparent caring for plants by a garden wall',
+  'a mechanic checking a repaired bicycle wheel in soft daylight',
+  'a worker taking a reflective pause on a rooftop terrace',
+  'two siblings sharing a warm drink beside an open doorway',
+  'a person placing one stone at a time along a garden path',
+  'a teacher erasing a chalkboard at the end of the school day',
+  'a volunteer arranging clean blankets in a community center',
+  'a musician carefully restringing an acoustic guitar',
+  'a coastal pedestrian sheltering under a simple blue umbrella',
+  'a person reopening a long-closed notebook at home',
+  'an elderly couple walking together through a local garden',
+  'a young adult planting herbs in recycled pottery by a window',
+]);
+const VIEWS = ['wide establishing scene with an intimate focal gesture',
+  'eye-level environmental portrait with natural negative space',
+  'close tactile detail anchored by a human presence',
+  'quiet over-the-shoulder view with believable depth',
+  'cinematic 3/4 portrait with contextual architecture',
+  'medium distance observational frame with expressive posture'];
+const LIGHT = ['overcast morning daylight', 'soft side-lit golden morning',
+  'muted late-afternoon sunlight', 'blue-hour ambient window light',
+  'gentle diffused daylight after rain', 'warm domestic lamp and cool exterior'];
+const PALETTE = ['stone blue and warm linen', 'earth brown and pale sage',
+  'dusty teal and neutral cream', 'muted slate and amber', 'forest green and soft clay',
+  'indigo shadows and pale gold'];
+
+function token(value) {
+  return String(value || '').trim().toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+function eligible(item) {
+  return item.source?.kind === 'first_party'
+    && item.rights?.status === 'verified'
+    && OWNED.every(use => item.rights.allowedUses?.includes(use));
+}
+function coverPath(id) {
+  const suffix = token(id.replace(/^devotional\./, ''));
+  return '/v7/images/devotional/bqv7-devotional-' + suffix + '-01.webp';
+}
+function themeFor(item) {
+  return (item.taxonomyLinks || []).filter(t => ['emotion','need','topic'].includes(t.kind))
+    .slice(0,4).map(t => t.id).join(', ');
+}
+export function buildLaneZCoverQueue(contentFiles, visualRecords = []) {
+  const items = new Map(), records = new Map();
+  for (const source of contentFiles) {
+    if (!Array.isArray(source.items)) throw new Error('Missing devotional items: ' + source.path);
+    for (const item of source.items) {
+      if (item.type !== 'devotional') continue;
+      if (!VALID_ID.test(item.id) || items.has(item.id)) throw new Error('Duplicate/invalid devotional ID: ' + item.id);
+      items.set(item.id, { item, sourcePath: source.path });
+    }
+  }
+  for (const record of visualRecords) {
+    if (record.contentType !== 'devotional' || record.visualRole !== 'devotional_cover') continue;
+    if (!items.has(record.contentId)) throw new Error('Unknown devotional cover contentId: ' + record.contentId);
+    const matches = records.get(record.contentId) || [];
+    matches.push(record);
+    records.set(record.contentId, matches);
+  }
+  const sorted = [...items.values()].sort((a,b) => a.item.id.localeCompare(b.item.id,'en'));
+  const queue = sorted.map(({item,sourcePath},index) => {
+    const art = records.get(item.id) || [];
+    const candidate = art.length > 0;
+    const title = String(item.sourceContent?.title || '').trim();
+    if (!title) throw new Error('Missing source devotional title: ' + item.id);
+    const ownable = eligible(item);
+    const scene = SCENES[index % SCENES.length];
+    const view = VIEWS[Math.floor(index / SCENES.length) % VIEWS.length];
+    const light = LIGHT[Math.floor(index / (SCENES.length * VIEWS.length)) % LIGHT.length];
+    const palette = PALETTE[(index + Math.floor(index / SCENES.length)) % PALETTE.length];
+    const body = String(item.sourceContent?.body || '').replace(/\s+/g,' ').trim();
+    const prompt = [
+      'Create exactly ONE standalone original 4:5 portrait devotional cover image (not a grid, collage, UI mockup or poster).',
+      'BibleQuest content ID: ' + item.id + '. Editorial subject: ' + title + '.',
+      'Devotional message for narrative guidance only: ' + body.slice(0,550),
+      'Scene direction: ' + scene + '; ' + view + '; ' + light + '; ' + palette + '.',
+      'Premium cinematic editorial realism, psychologically specific, purposeful storytelling, natural anatomy, diverse contemporary life, restrained color, focal safe for phone crop.',
+      'Keep lower quarter subtly uncluttered for accessible live title overlay; NO rendered text, letters, books with legible printing, verse quotations, numbers, watermark, UI, logo, celebrity or copied stock photograph.',
+      'Use source meaning; do not assume the scene itself verifies any Scripture. Avoid generic mountains, sunsets, stock prayer hands and repetitive crosses.'
+    ].join(' ');
+    return {
+      order: index + 1, devotionalId: item.id, sourcePath, revision: item.revision || null,
+      title, topicTags: themeFor(item), rightsEligible: ownable, sourceBodyExcerpt: body.slice(0,260),
+      visualIdentity: 'lane-z:' + String(index+1).padStart(3,'0') + ':' + token(title),
+      scene, view, light, palette, prompt, expectedCleanPath: coverPath(item.id),
+      existingAssetIds: art.map(x => x.assetId).sort(),
+      // Neither 'production_ready' sidecar claims nor prompt generation establish
+      // byte-level and visual certification; separate audit evidence required.
+      verifiedComplete: false,
+      state: !ownable ? 'hold_rights' : candidate ? 'existing_asset_requires_independent_audit' : 'not_generated'
+    };
+  });
+  return {
+    schemaVersion: 1, lane: 'Z', runMode: 'manual_only',
+    provenance: 'content/v7/devotionals plus current visual sidecars',
+    status: 'planning_only_no_visual_approval',
+    counts: {
+      devotionalRecords: queue.length,
+      eligible: queue.filter(r=>r.rightsEligible).length,
+      existingCoverRecords: queue.filter(r=>r.existingAssetIds.length>0).length,
+      verifiedComplete: 0, // deliberately not inferred from metadata claims
+      notGenerated: queue.filter(r=>r.state==='not_generated').length,
+      requiresAudit: queue.filter(r=>r.state==='existing_asset_requires_independent_audit').length,
+      rightsHold: queue.filter(r=>r.state==='hold_rights').length
+    },
+    queue
+  };
+}
+export async function readLaneZCoverQueue(root = ROOT) {
+  const names = (await readdir(join(root,DEVOTIONAL_DIR))).filter(x=>x.endsWith('.json')).sort();
+  const files = await Promise.all(names.map(async name => ({
+    path: DEVOTIONAL_DIR+'/'+name,
+    items: JSON.parse(await readFile(join(root,DEVOTIONAL_DIR,name),'utf8')).items
+  })));
+  const recordNames = (await readdir(join(root,RECORD_DIR))).filter(n=>n.endsWith('.json')&&!n.endsWith('-derivatives.json'));
+  const records = await Promise.all(recordNames.map(async n=>
+    JSON.parse(await readFile(join(root,RECORD_DIR,n),'utf8'))));
+  return buildLaneZCoverQueue(files,records);
+}
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const result = await readLaneZCoverQueue();
+  const all = process.argv.includes('--all');
+  const limitArg = process.argv.find(a=>a.startsWith('--limit='));
+  const limit = limitArg ? Number(limitArg.split('=')[1]) : 10;
+  if (!all && (!Number.isInteger(limit) || limit < 1 || limit > 300)) throw new Error('Invalid --limit');
+  console.log(JSON.stringify({...result,queue:all?result.queue:result.queue.slice(0,limit)},null,2));
+}
