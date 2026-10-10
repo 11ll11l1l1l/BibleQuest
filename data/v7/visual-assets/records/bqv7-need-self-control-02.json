@@ -55,7 +55,7 @@
     "provider": "OpenAI image generation",
     "model": "not exposed by tool; unverified",
     "prompt": "not exposed by tool; prompt metadata empty",
-    "sourceRevision": "v7/development 1bec7acade37e5330079f964baa3c97b1e7716f1",
+    "sourceRevision": "v7/development 1bec7acade37e5330079f964baa3c97b1e7716f1 (generation baseline); candidate branch later synced to bfbd5256b8c3277ded1711dd4b804dabef23bb41",
     "noExternalSourceArt": true
   },
   "rights": {
@@ -105,9 +105,9 @@
       "imagePath": "/v7/images/need/bqv7-need-self-control-02-with-text-en.webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 259426,
-      "sha256": "415a6260bc3b5610d46023ea683ac924d41e10924977e9372e0cef6ff80452f8",
-      "gitBlobSha": "073031f8df8000e00bfddaf28b80de319dfc8ea0",
+      "fileBytes": 249608,
+      "sha256": "1a076e77e9edaa789fb78f4d68006548073a4eab9ff509973b8dc23cc046c2f6",
+      "gitBlobSha": "f40400c8ad67f55a4d7d49078b53b05c0586f409",
       "format": "webp",
       "altText": "A father listens to his daughter at a playground, with English text Self-control and Galatians 5:22-23.",
       "qa": {
@@ -130,7 +130,7 @@
         ],
         "fontLicense": "SIL OFL-1.1",
         "fontFilesRedistributed": false,
-        "method": "Pillow rasterized English label and reference on top dark gradient; measured first text pixels 161px from top of 1280px (>=128px)."
+        "method": "Pillow Noto Serif Bold 77px English title, Noto Serif Regular 43px reference; text glyph tops 154px/249px on 1280px canvas; top dark translucent scrim; no Scripture quotation. Locally reviewed at 320/390/430/800."
       }
     },
     {
