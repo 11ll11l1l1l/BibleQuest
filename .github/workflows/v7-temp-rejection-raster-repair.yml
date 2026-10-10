@@ -1,0 +1,42 @@
+name: TEMP V7 Rejection WebP Repair
+on:
+  push:
+    branches:
+      - v7/lane-y-rejection-raster-repair-20261010
+    paths:
+      - .github/workflows/v7-temp-rejection-raster-repair.yml
+permissions:
+  contents: write
+jobs:
+  raster-derivatives:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v7/lane-y-rejection-raster-repair-20261010
+          persist-credentials: true
+      - name: Install locked raster tool and OFL font
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --user Pillow==11.3.0
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core
+          test -f /usr/share/fonts/truetype/noto/NotoSerif-Regular.ttf
+      - name: Generate and SHA-verify true WebP derivatives
+        run: python3 scripts/v7-temp-rejection-raster-repair.py
+      - name: Commit only actual repaired binaries and candidate sidecar
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "BibleQuest V7 Visual Repair"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f --ignore-unmatch public/v7/images/emotion/bqv7-emotion-rejection-worry-01-thumbnail.svg
+          git add public/v7/images/emotion/bqv7-emotion-rejection-worry-01-with-text-en.webp
+          git add public/v7/images/emotion/bqv7-emotion-rejection-worry-01-thumbnail.webp
+          git add data/v7/visual-assets/records/bqv7-emotion-rejection-worry-01-derivatives.json
+          git diff --cached --check
+          git diff --cached --quiet && { echo 'No changes'; exit 1; }
+          git commit -m "fix(v7): replace Rejection THUMB SVG and add reference-safe TYPE WebP"
+          git push origin HEAD:v7/lane-y-rejection-raster-repair-20261010
