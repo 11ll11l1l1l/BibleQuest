@@ -11,7 +11,7 @@ const id = 'bqv7-emotion-hurt-betrayal-01';
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const expected = Object.freeze({
   CLEAN: ['a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c', 108974, 1024, 1024],
-  TYPE: ['530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987', 165908, 1024, 1280],
+  TYPE: ['a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c', 158944, 1024, 1280],
   THUMB: ['d55a743c0d295a1b46b1072f422325ba2f4e3becee220c0a4599dd034b29b5d4', 67402, 512, 640],
 });
 

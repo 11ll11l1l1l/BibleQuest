@@ -13,8 +13,8 @@
   "format": "webp",
   "width": 1024,
   "height": 1280,
-  "fileBytes": 165908,
-  "sha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
+  "fileBytes": 158944,
+  "sha256": "a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.31,
@@ -62,8 +62,8 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 165908,
-      "sha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
+      "fileBytes": 158944,
+      "sha256": "a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c",
       "sourceType": "generated",
       "locale": "en",
       "includedWording": "Hurt / betrayed",
@@ -76,7 +76,7 @@
         "locale": "en"
       },
       "typography": {
-        "method": "Rasterized from original source-locked SVG composition using CairoSVG/Pillow; final TYPE is a standalone WebP, not an SVG or a data URI",
+        "method": "Native WebP source-image translation (+27 x, +85 y) with mirrored 27px left bleed to honor 10% title safe margin; original rasterized wording retained without re-generation",
         "fontFamily": "Georgia / Times New Roman, italic serif accent",
         "fontFilesDistributed": false,
         "fontLicenseEvidence": "No font files redistributed; independent original font/rendering-rights review remains pending",
@@ -91,7 +91,7 @@
         "y": 0.63
       },
       "textSafeRegion": "top",
-      "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed. Psalm 55:12–14.",
+      "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed. Psalm 55:12\u201314.",
       "decorative": true,
       "fallback": "CLEAN with localized live text",
       "qc": {
@@ -104,7 +104,7 @@
         "noScriptureQuote": true,
         "sourceEmbeddedWebpSha256Verified": true,
         "sourceEmbeddedWebpBytesVerified": true,
-        "typeReadableAt320px": "pending_independent_visual_mobile_review",
+        "typeReadableAt320px": "source-pixel-reviewed_mobile_browser_and_independent_qa_pending",
         "fontRenderQA": "pending",
         "referenceGeometryReviewed": true,
         "legacyDataUriSvgCandidateRetired": true,
@@ -122,7 +122,8 @@
         "scriptureReferenceOnly": true,
         "noGeneratedVerseText": true,
         "legacyRasterInsideSvgSource": true,
-        "standaloneWebpSource": true
+        "standaloneWebpSource": true,
+        "typeSafeArea10pctPixels": "SOURCE_PIXEL_PASS_NATIVE_BBOX_X110_Y138"
       },
       "embeddedWording": {
         "label": "Hurt / betrayed",
@@ -136,7 +137,7 @@
         "gitBlobSha": null,
         "bytes": 146831
       },
-      "gitBlobSha": "0d9336780f93ec7408e9f31edea96780e71c5a71"
+      "gitBlobSha": "e2b1998352470996b04a7aa6131997b0bb10a72f"
     },
     {
       "kind": "THUMB",
@@ -203,7 +204,7 @@
   },
   "accessibility": {
     "decorative": true,
-    "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed; Psalm 55:12–14."
+    "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed; Psalm 55:12\u201314."
   },
   "wordingSource": {
     "recordOriginalBlobSha": "2691f008f104fab718dcf455cda9078d3c31aace",
@@ -216,7 +217,7 @@
     "variantHashesMeasured": true,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Scoped Hurt / betrayed TYPE + THUMB re-export from original source-locked assets, preserving CLEAN; split from overlapping #1492 so other independent Lane Y PRs may be reviewed without conflicting writes. Technical identity gates have a focused regression test. Native/built browser pixels, originality, rights, context and release approval remain pending.",
+    "notes": "Hurt TYPE safe-area correction (10% numeric pixel bounds) applied to existing standalone WebP; original export SHA retained as source genealogy; independent visual, rights, contextual review and served built-app acceptance remain pending.",
     "productionReady": false,
     "svgDataUriPolicyCompliant": null,
     "realWebpDerivatives": true,
@@ -260,6 +261,23 @@
     "sourceThumbGitBlob": "a9ffac1caa153b61a325dc2e9d9d93af87b5a776",
     "verifiedIndependentVisualApproval": false,
     "servedByteAudit": "pending",
-    "integration": "candidate_only"
+    "integration": "candidate_only",
+    "revisedTypeGitBlob": "e2b1998352470996b04a7aa6131997b0bb10a72f"
+  },
+  "laneYSafeAreaRevision": {
+    "parentWebpSha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
+    "nativeHorizontalShiftPx": 27,
+    "nativeVerticalShiftPx": 85,
+    "visibleHeadingMinX": 110,
+    "visibleHeadingMinY": 138,
+    "requiredMinX10Percent": 102.4,
+    "requiredMinY10Percent": 128,
+    "verifiedBy": "source raster color-bound measurement, pending independent visual/editorial review",
+    "newTypeSha256": "a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c",
+    "newTypeBytes": 158944,
+    "newTypeGitBlobSha": "e2b1998352470996b04a7aa6131997b0bb10a72f",
+    "thumbUntouched": true,
+    "cleanUntouched": true,
+    "productionReady": false
   }
 }
