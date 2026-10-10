@@ -7,7 +7,7 @@ const COPY = Object.freeze({
     completed: 'Lesson completed', readonly: 'Mentor preview — progress is read only.', scripture: 'Open Scripture',
     unavailable: 'No lesson text is available for this step.', idle: 'Reload this lesson after selecting your account and congregation.',
     response: 'Your private response', responseHint: 'Private to you unless you explicitly share it with your mentor.',
-    responseLoading: 'Restoring lesson responses…', shareConfirm: 'Share this response with my paired mentor',
+    responseLoading: 'Restoring lesson responses…', responseRetry: 'Retry response loading', shareConfirm: 'Share this response with my paired mentor',
     shareConfirmRequired: 'Confirm the named mentor share before continuing.', share: 'Share with mentor',
     unshare: 'Make private again', shared: 'Shared with your paired mentor.', private: 'Private to you.',
     mentorShared: 'Shared by your mentee', shareSaving: 'Updating response sharing…',
@@ -18,7 +18,7 @@ const COPY = Object.freeze({
     completed: 'Tapos na ang aralin', readonly: 'Preview ng mentor — read only ang progreso.', scripture: 'Buksan ang Kasulatan',
     unavailable: 'Walang teksto ng aralin para sa hakbang na ito.', idle: 'I-load muli ang aralin pagkatapos pumili ng account at kongregasyon.',
     response: 'Pribado mong sagot', responseHint: 'Pribado ito sa iyo maliban kung malinaw mo itong ibabahagi sa mentor mo.',
-    responseLoading: 'Ibinabalik ang mga sagot sa aralin…', shareConfirm: 'Ibahagi ang sagot na ito sa nakaparis kong mentor',
+    responseLoading: 'Ibinabalik ang mga sagot sa aralin…', responseRetry: 'Subukang i-load muli ang mga sagot', shareConfirm: 'Ibahagi ang sagot na ito sa nakaparis kong mentor',
     shareConfirmRequired: 'Kumpirmahin muna ang pagbabahagi sa nakapangalan na mentor.', share: 'Ibahagi sa mentor',
     unshare: 'Gawing pribado muli', shared: 'Ibinahagi sa nakaparis mong mentor.', private: 'Pribado sa iyo.',
     mentorShared: 'Ibinahagi ng mentee mo', shareSaving: 'Ina-update ang pagbabahagi ng sagot…',
@@ -29,7 +29,7 @@ const COPY = Object.freeze({
     completed: 'Kompleto na ang leksiyon', readonly: 'Preview sa mentor — read only ang progreso.', scripture: 'Ablihi ang Kasulatan',
     unavailable: 'Walay teksto sa leksiyon alang niini nga lakang.', idle: 'Ikarga pag-usab human pagpili sa account ug kongregasyon.',
     response: 'Pribado nimong tubag', responseHint: 'Pribado kini kanimo gawas kon tin-aw nimo kining ipaambit sa imong mentor.',
-    responseLoading: 'Gipahiuli ang mga tubag sa leksiyon…', shareConfirm: 'Ipaambit kini nga tubag sa akong kaparis nga mentor',
+    responseLoading: 'Gipahiuli ang mga tubag sa leksiyon…', responseRetry: 'Sulayi pag-usab ang pagkarga sa mga tubag', shareConfirm: 'Ipaambit kini nga tubag sa akong kaparis nga mentor',
     shareConfirmRequired: 'Kumpirmaha una ang pagpaambit ngadto sa ginganlang mentor.', share: 'Ipaambit sa mentor',
     unshare: 'Himoang pribado pag-usab', shared: 'Gipaambit sa imong kaparis nga mentor.', private: 'Pribado kanimo.',
     mentorShared: 'Gipaambit sa imong mentee', shareSaving: 'Gi-update ang pagpaambit sa tubag…',
@@ -51,15 +51,16 @@ function responseEditor(state, step, t) {
   const shared = saved?.visibility === 'shared';
   const hasResponse = Boolean(saved?.id || String(value).trim());
   const sharingBusy = state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status);
+  const sharingDisabled = sharingBusy || state.responseStatus !== 'ready';
   const sharing = shared
-    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" class="bq-secondary-button" data-lesson-unshare="${escape(step.id)}"${sharingBusy ? ' disabled' : ''}>${t('unshare')}</button>`
-    : `<p data-lesson-share-state="private">${t('private')}</p><label class="bq-lesson-share-consent"><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"${sharingBusy ? ' disabled' : ''}> ${t('shareConfirm')}</label><button type="button" class="bq-secondary-button" data-lesson-share="${escape(step.id)}"${hasResponse && !sharingBusy ? '' : ' disabled'}>${t('share')}</button>`;
+    ? `<p data-lesson-share-state="shared">${t('shared')}</p><button type="button" class="bq-secondary-button" data-lesson-unshare="${escape(step.id)}"${sharingDisabled ? ' disabled' : ''}>${t('unshare')}</button>`
+    : `<p data-lesson-share-state="private">${t('private')}</p><label class="bq-lesson-share-consent"><input type="checkbox" data-lesson-share-confirm="${escape(step.id)}"${sharingDisabled ? ' disabled' : ''}> ${t('shareConfirm')}</label><button type="button" class="bq-secondary-button" data-lesson-share="${escape(step.id)}"${hasResponse && !sharingDisabled ? '' : ' disabled'}>${t('share')}</button>`;
   return `<div class="bq-lesson-response-editor"><label for="lesson-response-${escape(step.id)}">${t('response')}</label>
     <textarea id="lesson-response-${escape(step.id)}" data-lesson-response="${escape(step.id)}" rows="5">${escape(value)}</textarea>
     <p class="bq-help">${t('responseHint')}</p><div class="bq-lesson-sharing"${sharingBusy ? ' aria-busy="true"' : ''}>${sharing}</div></div>`;
 }
 function mentorSharedResponse(state, step, t) {
-  if (state.writable || step.type === 'scripture') return '';
+  if (state.writable || step.type === 'scripture' || state.responseStatus !== 'ready') return '';
   const response = state.responses?.[step.id];
   if (!response || response.visibility !== 'shared') return '';
   return `<section class="bq-lesson-mentor-response" data-lesson-shared-response="${escape(step.id)}"><h2>${t('mentorShared')}</h2><p>${escape(responseText(response)).replace(/\n/g, '<br>')}</p></section>`;
@@ -95,7 +96,8 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
             // Preserve the actual focused DOM node, selection and composition
             // session. The share control alone depends on whether a draft exists.
             const shareButton = host.querySelector?.('[data-lesson-share]');
-            if (shareButton) shareButton.disabled = !(state.responses?.[stepId]?.id || String(state.responseDrafts?.[stepId] ?? '').trim());
+            if (shareButton) shareButton.disabled = state.responseStatus !== 'ready'
+              || !(state.responses?.[stepId]?.id || String(state.responseDrafts?.[stepId] ?? '').trim());
             displayedState = state;
             return;
           }
@@ -119,6 +121,7 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
           ${responseEditor(state, step, t)}
           ${mentorSharedResponse(state, step, t)}
           ${state.writable ? '' : `<p class="bq-lesson-readonly">${t('readonly')}</p>`}<p class="bq-lesson-live" role="status" aria-live="polite">${state.error ? escape(state.error) : busy ? t('saving') : state.status === 'completed' ? t('completed') : responseStatus}</p>
+          ${state.responseStatus === 'error' ? `<button type="button" class="bq-secondary-button" data-lesson-response-retry>${t('responseRetry')}</button>` : ''}
           <div class="bq-lesson-references">${(step.scriptureRefs ?? []).map((ref, index) => `<button type="button" class="bq-secondary-button" data-lesson-scripture="${index}">${t('scripture')} ${escape(typeof ref === 'string' ? ref : ref.label || `${ref.book || ''} ${ref.chapter || ''}`)}</button>`).join('')}</div>
           <footer class="bq-lesson-footer"><div class="bq-lesson-actions"><button type="button" class="bq-secondary-button" data-lesson-previous ${busy || state.stepIndex === 0 ? 'disabled' : ''}>${t('previous')}</button>
           ${state.stepIndex < state.lesson.steps.length - 1 ? `<button type="button" class="bq-primary-button" data-lesson-next ${busy ? 'disabled' : ''}>${t(state.writable && state.progress?.status !== 'completed' ? 'next' : 'previewNext')}</button>` : state.writable && state.progress?.status !== 'completed' ? `<button type="button" class="bq-primary-button" data-lesson-complete ${busy ? 'disabled' : ''}>${t('complete')}</button>` : ''}</div></footer>`;
@@ -128,6 +131,14 @@ export function createLessonRunnerPage({ runner, onBack, onScripture, isContextR
         if (!target || target.disabled || disposed) return;
         if (target.hasAttribute('data-lesson-back')) { onBack(); return; }
         if (target.hasAttribute('data-lesson-reload')) { loadWhenReady(); return; }
+        if (target.hasAttribute('data-lesson-response-retry')) {
+          const action = runner.retryResponses?.();
+          if (action) void Promise.resolve(action).catch(error => {
+            const status = host.querySelector('[role="status"]');
+            if (status) status.textContent = error?.message || String(error);
+          });
+          return;
+        }
         const shareStep = target.hasAttribute('data-lesson-share') ? target.getAttribute('data-lesson-share') : null;
         if (shareStep) {
           const confirmation = page.querySelector('[data-lesson-share-confirm]');
