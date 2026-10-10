@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
 import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { triageV7DerivativeCandidates } from '../../scripts/v7-derivative-candidate-triage.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = (process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
@@ -17,7 +18,8 @@ const publishedBundles = audit.manifest.assets.filter(asset => asset.bundleStatu
 // Draft imagery must be technically checked from three independent local files.
 // It is never inserted into the audited release manifest or published registry.
 const candidateTriage = await triageV7ArtworkCandidates();
-const candidateBundles = candidateTriage.technicallyVerified.map(row => {
+const derivativeTriage = await triageV7DerivativeCandidates();
+const candidateBundles = [...candidateTriage.technicallyVerified, ...derivativeTriage.technicallyVerified].map(row => {
   const kind = key => row.files.find(file => file.kind === key);
   const clean = kind('CLEAN'), type = kind('TYPE'), thumb = kind('THUMB');
   return {
@@ -58,9 +60,15 @@ for (const file of files.values()) {
 // to a disposable Playwright browser via request interception. Never copy them
 // into dist-v6 or the published release registry.
 const candidateResponses = new Map();
-for (const row of candidateTriage.technicallyVerified) {
+for (const row of [...candidateTriage.technicallyVerified, ...derivativeTriage.technicallyVerified]) {
   for (const file of row.files) {
-    assert(!files.has(file.path), 'Unpublished candidate collides with published image');
+    if (files.has(file.path)) {
+      assert.equal(file.kind, 'CLEAN', 'Candidate TYPE/THUMB must never be released already');
+      assert.equal(files.get(file.path).sha256, file.sha256, 'Published CLEAN master changed under derivative');
+      assert.equal(files.get(file.path).assetId, row.sourceMasterAssetId,
+        'Candidate borrowed another concept CLEAN image');
+      continue;
+    }
     assert(!candidateResponses.has(file.path), 'Two candidate assets reuse an image path');
     const bytes = await readFile(join(ROOT, 'public', file.path.slice(1)));
     assert.equal(sha(bytes), file.sha256, 'Candidate source bytes changed after verification');
@@ -122,7 +130,7 @@ try {
             viewportWidth: window.innerWidth
           };
         }, { src: variant.src, kind: variant.kind, label: asset.assetId });
-        if (asset.candidate) assert(routedCandidatePaths.has(variant.src),
+        if (asset.candidate && !files.has(variant.src)) assert(routedCandidatePaths.has(variant.src),
           'Candidate byte route was bypassed: ' + variant.src);
         assert.equal(geometry.naturalWidth, variant.width, 'Chromium width mismatch: ' + variant.src);
         assert.equal(geometry.naturalHeight, variant.height, 'Chromium height mismatch: ' + variant.src);
@@ -164,17 +172,20 @@ const report = {
         status: 'technical_browser_pass_only', publicationApproved: false })),
     locallyVerifiedButBrowserFailed: [...candidateBrowserFailures.entries()]
       .map(([assetId, failures]) => ({ assetId, failures })),
-    rejected: [...candidateTriage.rejected, ...[...candidateBrowserFailures.entries()]
+    rejected: [...candidateTriage.rejected, ...derivativeTriage.rejected, ...[...candidateBrowserFailures.entries()]
       .map(([assetId, failures]) => ({ assetId,
         reason: 'Chromium decode, geometry or screenshot failed', failures }))],
     threeFileCandidates: candidateTriage.threeFileCandidates,
+    derivativeCandidates: derivativeTriage.technicallyVerified.map(row => ({ assetId: row.assetId,
+      sourceMasterAssetId: row.sourceMasterAssetId, publicationApproved: false })),
+    derivativeQuarantined: derivativeTriage.rejected,
     publicationApproved: false,
     browserDelivery: 'QA-only Playwright fulfillment from independently verified source bytes; excluded from deployable build',
     verifiedCandidateFilePaths: [...candidateResponses.keys()].sort(),
   },
   verifiedServedFiles: downloaded, screenshots,
   viewports: [320, 390, 430],
-  technicalChecks: ['source-asset-audit', 'actual-served-sha256', 'browser-decode',
+  technicalChecks: ['source-asset-audit', 'candidate-derivative-source-sha', 'actual-served-sha256', 'browser-decode',
     'intrinsic-image-dimensions', 'mobile-width-no-overflow', 'recorded-type-and-thumb-screenshots'],
   visualApproval: 'NOT_AUTOMATIC: artistic legibility, crop intent, and reviewed text in pixels require genuine image inspection'
 };

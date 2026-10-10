@@ -16,6 +16,8 @@ on:
       - "scripts/v7-visual-coverage-report.mjs"
       - "scripts/v7-manual-candidate-integrity.mjs"
       - "scripts/v7-visual-candidate-triage.mjs"
+      - "scripts/v7-derivative-candidate-triage.mjs"
+      - "tests/v7/derivative-candidate-triage.test.mjs"
       - "tests/v7/manual-candidate-integrity.test.mjs"
       - "tests/v7/visual-candidate-triage.test.mjs"
       - "tests/v7/visual-assets-built-browser.mjs"
@@ -90,7 +92,7 @@ jobs:
       - name: Fail-closed image masters and localized text audit
         run: |
           node scripts/v7-visual-assets-audit.mjs
-          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs tests/v7/visual-candidate-triage.test.mjs
+          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs tests/v7/visual-candidate-triage.test.mjs tests/v7/derivative-candidate-triage.test.mjs
 
       - name: Build exact candidate
         env:
