@@ -32,9 +32,9 @@ async function lockedSourceBoundBriefs(root, contentFiles, initialBriefs) {
     const sections = text.split(/(?=^### devotional\.biblequest\.)/m).slice(1);
     if (!sections.length) throw new Error('Empty mandatory artwork guide chapter: '+chapter);
     for (const block of sections) {
-      const match = block.match(/^### (devotional\.biblequest\.[a-z0-9_]+\.\d+)\s+—\s+(.+)$/m);
+      const match = block.match(/^### (devotional\.biblequest\.[a-z0-9_]+\.\d+)(?:\s+—\s+(.+))?$/m);
       if (!match) throw new Error('Malformed guidebook content-ID heading in '+chapter);
-      const id = match[1], title = match[2].trim(), item = catalog.get(id);
+      const id = match[1], title = String(match[2] || block.match(/^\*\*Title:\*\* ([^\n]+)$/m)?.[1] || '').trim(), item = catalog.get(id);
       if (guideIds.has(id)) throw new Error('Duplicate guidebook scene ID: '+id);
       guideIds.add(id);
       if (!item || item.source?.kind !== 'first_party' || !eligible(item)) throw new Error('Guidebook content missing/rights-ineligible: '+id);
