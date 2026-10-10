@@ -69,6 +69,75 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Enforce high-resolution raster-only new V7 artwork
+        if: github.event_name == 'pull_request'
+        env:
+          BQ_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BQ_BASE_SHA"
+          bad_svg="$(git diff --name-only --diff-filter=ACMR "$BQ_BASE_SHA" "$BQ_EXACT_SHA" -- public/v7/images/ | grep -E '\.svg
+        run: node scripts/v7-unfinished-image-guidebook-audit.mjs
+
+      - name: Fail-closed image masters and localized text audit
+        run: |
+          node scripts/v7-visual-assets-audit.mjs
+          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs tests/v7/visual-candidate-triage.test.mjs
+
+      - name: Build exact candidate
+        env:
+          BQ_BUILD_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: npm run build
+
+      - name: Install isolated Chromium harness
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Start immutable built preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/bq-v7-image-preview.log 2>&1 &
+          echo $! > /tmp/bq-v7-image-preview.pid
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/bq-v7-image-preview.log
+          exit 1
+
+      - name: Verify actual shipped image bytes, Chromium decode and phone layouts
+        run: node tests/v7/visual-assets-built-browser.mjs
+
+      - name: Preserve exact-SHA image QA screenshots and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v7-visual-browser-${{ env.BQ_EXACT_SHA }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            artifacts/v7/visual-browser/
+
+      - name: Preview diagnostics
+        if: failure()
+        run: cat /tmp/bq-v7-image-preview.log || true
+
+      - name: Stop ephemeral preview
+        if: always()
+        run: |
+          if test -f /tmp/bq-v7-image-preview.pid; then
+            kill "$(cat /tmp/bq-v7-image-preview.pid)" || true
+          fi
+ || true)"
+          if test -n "$bad_svg"; then
+            echo "V7 guidebook requires real high-resolution raster art; newly added/modified SVG images are forbidden:"
+            printf '%s\n' "$bad_svg"
+            exit 1
+          fi
+
       - name: Verify mandatory source-bound V7 image construction guide
         run: node scripts/v7-unfinished-image-guidebook-audit.mjs
 
