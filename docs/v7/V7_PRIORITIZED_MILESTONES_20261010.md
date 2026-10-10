@@ -1,3 +1,5 @@
+> **Artwork operations update — 2026-10-11:** All five existing scheduled agents now provide **QA only**. Image creation exclusively in interactive ChatGPT chats. Automatic five-role QA requires no human image approval. Use [tracked image attempt ledger and corrected resolution/cleanup rules](V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md). Prior producer allocations below are historical, not permission to generate.
+
 # V7 prioritized milestone execution — 2026-10-10
 
 **Purpose:** one actionable ordering for the *remaining* image-first V7 redesign and release work. This is a scheduling/triage view, **not** a new acceptance authority, relaxation of gates, authorization to deploy production, or a replacement for `V7_ACTIVE_STATUS.md`, `work/RULEBOOK.md` or the binding V7 UI, image, motion and release contracts. Those sources and live exact-head code/CI win if a snapshot below is stale.
