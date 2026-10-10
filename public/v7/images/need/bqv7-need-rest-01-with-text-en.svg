@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1280" viewBox="0 0 1024 1280" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c5c4bd"/><stop offset=".47" stop-color="#e2d3c2"/><stop offset="1" stop-color="#a2afa9"/></linearGradient>
+ <linearGradient id="light" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fff5d5" stop-opacity=".84"/><stop offset="1" stop-color="#ffb987" stop-opacity="0"/></linearGradient>
+ <linearGradient id="window" x1=".1" y1="0" x2=".7" y2="1"><stop stop-color="#aac3c3"/><stop offset=".6" stop-color="#f9e2bd"/><stop offset="1" stop-color="#f7c591"/></linearGradient>
+ <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7f736c"/><stop offset="1" stop-color="#413e40"/></linearGradient>
+ <linearGradient id="chair" x1=".1" y1="0" x2=".95" y2="1"><stop stop-color="#b97553"/><stop offset=".54" stop-color="#915c46"/><stop offset="1" stop-color="#5d443f"/></linearGradient>
+ <linearGradient id="fabric" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#efe0c9"/><stop offset=".53" stop-color="#c6bfaa"/><stop offset="1" stop-color="#8e9790"/></linearGradient>
+ <linearGradient id="shadow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#293943" stop-opacity=".42"/><stop offset="1" stop-color="#293943" stop-opacity="0"/></linearGradient>
+ <radialGradient id="halo" cx=".77" cy=".29" r=".7"><stop stop-color="#fff4da" stop-opacity=".46"/><stop offset="1" stop-color="#fff4da" stop-opacity="0"/></radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="17"/></filter>
+ <filter id="shade"><feGaussianBlur stdDeviation="9"/></filter>
+</defs>
+<rect width="1024" height="1280" fill="url(#wall)"/>
+<path d="M0 0H1024V776Q580 837 0 790Z" fill="#e4d4bf" opacity=".46"/>
+<rect x="608" y="95" width="346" height="628" rx="5" fill="#665e57" opacity=".8"/>
+<rect x="627" y="116" width="307" height="586" fill="url(#window)"/>
+<path d="M635 472L930 358V698H635Z" fill="#eabe91" opacity=".25"/>
+<g fill="#77927f" opacity=".47"><path d="M628 645q73-194 150-151t158-128v337H628Z"/><path d="M632 674q82-120 163-94t143-72v191H632Z" fill="#9a987d"/></g>
+<path d="M783 110v590M627 412h310" stroke="#e4d8c9" stroke-width="14" opacity=".9"/>
+<path d="M566 78q41 219 21 360t4 321q37 19 74 0q-49-345-2-684" fill="#d6c1ae" opacity=".82"/>
+<path d="M961 88q-26 260-7 414t7 249l63-17V66Z" fill="#d4bba0" opacity=".84"/>
+<path d="M0 739Q550 755 1024 723V1280H0Z" fill="url(#floor)"/>
+<path d="M0 800q454-51 1024-25" fill="none" stroke="#b1a292" opacity=".35" stroke-width="7"/>
+<path d="M686 282L1008 834L781 1077L414 687Z" fill="url(#light)" opacity=".62" filter="url(#soft)"/>
+<rect width="1024" height="1280" fill="url(#halo)"/>
+<ellipse cx="533" cy="1080" rx="395" ry="94" fill="#252e32" opacity=".38" filter="url(#soft)"/>
+<!-- substantial, inviting armchair with wooden frame and upholstered cushions -->
+<path d="M235 482q-11-80 59-103q154-37 334 0q96 18 94 100l-18 391-470 3Z" fill="#5e433c"/>
+<path d="M260 483q-3-63 52-84q145-32 303 1q77 19 71 87l-11 298H263Z" fill="url(#chair)"/>
+<path d="M284 468q18-52 93-57l207 3q65 8 76 64l-19 206-349 5Z" fill="#b8805f" opacity=".68"/>
+<path d="M266 690q-78-12-99 69l-7 166q-2 52 52 62l65-18 53-232Z" fill="#715045"/>
+<path d="M660 687q73-16 109 63l16 151q7 53-59 79l-71-18-49-224Z" fill="#6f4a3e"/>
+<path d="M241 770Q433 712 691 765l-11 173q-12 67-66 68H289q-62 1-71-62Z" fill="#a16c50"/>
+<path d="M250 806q196-45 415-9l-10 109q-7 44-45 47H293q-38-5-42-55Z" fill="#b77b59"/>
+<path d="M292 987l-16 115m385-116 17 114" stroke="#433832" stroke-linecap="round" stroke-width="25"/>
+<!-- folded wool blanket, tactile seams and soft folds -->
+<path d="M344 522q103 20 199-11q79 58 78 177l-71 197q-79 62-231-4q35-177-2-278Z" fill="url(#fabric)"/>
+<path d="M351 524q114 40 194-10 22 42 33 92-116 45-240-11Z" fill="#d5c8b1" opacity=".88"/>
+<path d="M349 598q63 28 128 13t108-3M337 731q94 24 217-19M328 854q122 34 221-19" stroke="#fff0d7" stroke-opacity=".35" stroke-width="11" fill="none"/>
+<path d="M392 526q-2 166-34 311m154-308q36 95 20 225" fill="none" stroke="#756f65" opacity=".2" stroke-width="8"/>
+<g stroke="#e5d5c1" stroke-width="5" opacity=".8"><path d="M346 877l-4 27m21-26-2 25m23-19-3 25m24-22-1 25m20-18v26m23-14v24m24-17-1 22m23-21-1 20m23-24-1 19m21-22v18"/></g>
+<!-- unbranded low wooden bedside table, ceramics and reading glasses -->
+<ellipse cx="824" cy="963" rx="137" ry="31" fill="#292e2f" opacity=".38" filter="url(#shade)"/>
+<path d="M730 773h199l-22 46H744Z" fill="#695248"/>
+<path d="M749 816l-18 171m153-171 26 169" stroke="#54433c" stroke-width="20" stroke-linecap="round"/>
+<ellipse cx="829" cy="775" rx="109" ry="19" fill="#a17a5c"/>
+<path d="M781 711q-3-31 32-36h19q39 7 33 40l-9 48q-38 11-67-2Z" fill="#ddd1bb"/>
+<path d="M862 697q48-5 34 38-12 17-32 16" fill="none" stroke="#d7c9b3" stroke-width="12"/>
+<ellipse cx="823" cy="709" rx="40" ry="9" fill="#9d8c74"/>
+<path d="M742 764q21-7 50 0t50-2" fill="none" stroke="#443d3c" opacity=".65" stroke-width="5"/>
+<!-- unlaced walking shoes: tangible transition from duty into rest -->
+<ellipse cx="302" cy="1105" rx="154" ry="39" fill="#212a2e" opacity=".38" filter="url(#shade)"/>
+<path d="M170 1075q17-58 74-68l52 29 34 59q-75 34-160-1Z" fill="#746f67"/>
+<path d="M290 1074q43-41 88-34l50 48q-58 36-136 17Z" fill="#655d57"/>
+<path d="M192 1080q54 19 106 4m19 6q45 9 92-2" fill="none" stroke="#d1c3b1" stroke-width="9"/>
+<path d="M218 1041q36-9 64 20m-14-24q-22 19-36 36" fill="none" stroke="#ddd1c1" stroke-width="5"/>
+<!-- leafy floor plant as quiet secondary detail -->
+<path d="M63 913h112l-16 180H80Z" fill="#847361"/>
+<path d="M121 921q-13-166 7-338" fill="none" stroke="#687765" stroke-width="8"/>
+<g fill="#657b68" opacity=".85"><path d="M118 673q-107-57-100-127 86 3 100 127Z"/><path d="M127 639q92-81 74-156-88 35-74 156Z"/><path d="M120 760q-88-42-87-101 68 10 87 101Z"/><path d="M123 754q77-72 61-128-69 29-61 128Z"/></g>
+<path d="M33 1087q136 35 245 14m460 7q127-20 247-2" stroke="#c1a98a" opacity=".21" stroke-width="7" fill="none"/>
+<rect width="1024" height="1280" fill="url(#shadow)" opacity=".12"/>
+
+<!-- English-only editorial title artwork; no Scripture quotation.
+     Essential localized title and reference must remain live in the app. -->
+<defs><linearGradient id="typeScrim" x1="0" y1="0" x2="1" y2="0">
+<stop stop-color="#f5eee1" stop-opacity=".89"/><stop offset=".68" stop-color="#f5eee1" stop-opacity=".54"/><stop offset="1" stop-color="#f5eee1" stop-opacity="0"/>
+</linearGradient></defs>
+<rect x="64" y="75" width="660" height="253" rx="8" fill="url(#typeScrim)"/>
+<text x="111" y="199" fill="#283d3d" font-family="Georgia, 'Times New Roman', serif" font-size="112" font-weight="700" letter-spacing="-2">Rest</text>
+<path d="M113 227h145" stroke="#8a705e" stroke-width="5"/>
+<text x="111" y="288" fill="#354947" font-family="Georgia, 'Times New Roman', serif" font-size="41" font-weight="500" letter-spacing=".5">Matthew 11:28-30</text>
+</svg>
