@@ -3,7 +3,7 @@
   "assetId": "bqv7-need-renewal-01",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-09T16:08:00.128644+00:00",
-  "status": "candidate_independent_qa_pending",
+  "status": "candidate_scene_revision_required",
   "bundleStatus": "three_real_files_qa_pending",
   "family": "need",
   "visualRole": "need_tile",
@@ -80,7 +80,15 @@
     "productionReady": false,
     "candidateOnly": true,
     "localHttpExactBytes": true,
-    "localIsolatedChromium320390430": true
+    "localIsolatedChromium320390430": true,
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Composite-origin triptych crop depicts repainting a windowsill. Mandatory guidebook §6 demands standalone original renter restoring a hallway bench. Composite-derived source is not compliant. Its source and derivative pixels must not be promoted.",
+    "rejectedSourceCleanSha256": "ffdfa9d0fb948c1a3b3631f494009791529694a5b010809b9ebb3302a9f23cfc",
+    "rejectedTypeSha256": "1035a43b50e560d95d44f93b4e089a9f0937358d100f63b59f9dcfece1d3d491",
+    "rejectedThumbSha256": "c4949e67d061afa78c50bf2953337e0ed9ffc731adf55e2ae04a7707cc4b2578",
+    "requiredScene": "A renter restores a worn wooden hallway bench using sandpaper and fresh natural oil in a small breezy workspace; new function, not repainted windowsill.",
+    "requiredNextAction": "Create ONE genuinely standalone source matching mandatory guidebook §6, document >=3 novelty axes from the rejected scene and source revision, replace only owned CLEAN/TYPE/THUMB+sidecar after producer QA; submit to independent Visual QA; do not merge current candidate.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
   },
   "variants": [
     {
