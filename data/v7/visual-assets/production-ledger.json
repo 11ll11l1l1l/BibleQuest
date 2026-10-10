@@ -76,6 +76,81 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-01",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v1",
+      "shotFingerprint": {
+        "narrativeAction": "Adult arrives to begin first safe craft workshop task",
+        "setting": "modest neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety gear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "eye-level over-shoulder toward entry work area",
+        "light": "soft natural side-window light",
+        "palette": "neutral workshop with muted earth colors",
+        "metaphor": "concrete first step"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:07:02.025Z",
+      "qa": {},
+      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-strength-clean-01",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-strength-door-hinges-v1",
+      "shotFingerprint": {
+        "narrativeAction": "Three people stabilize heavy wooden door while fourth aligns hinges",
+        "setting": "community repair workshop with solid door repair jig",
+        "focalObject": "wooden door and properly aligned hinges",
+        "peopleCount": 4,
+        "perspective": "slightly elevated 3/4 view at workstation",
+        "light": "diffuse natural skylight",
+        "palette": "warm wood, neutral blue workwear",
+        "metaphor": "shared grounded support"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:07:02.025Z",
+      "qa": {},
+      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-hero-home-clean-01",
+      "sourceRevision": "guide-1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sceneRevision": "guide20261011-s7-home-community-hall-v1",
+      "shotFingerprint": {
+        "narrativeAction": "Adult and school-age child enter community hall while two adults read and work together",
+        "setting": "real contemporary neighborhood learning community hall",
+        "focalObject": "entry pair with bags and collaborative table",
+        "peopleCount": 4,
+        "perspective": "waist-height wide 35mm interior view with left 40 percent quiet",
+        "light": "late-afternoon natural amber-neutral light",
+        "palette": "quiet warm neutral",
+        "metaphor": "continuing together"
+      },
+      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#7-exactly-one-home-hero--fixed-hero-direction",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:07:02.025Z",
+      "qa": {},
+      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
     }
   ]
 }
