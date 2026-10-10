@@ -49,5 +49,5 @@ test('failed, held and already-reviewed slots do not block the next item',()=>{
   second.qa.scene={verdict:'HOLD',evidence:'no actual pixels'};
   assert.equal(selectNext([first,second,third],'scene').attemptId,'try-c');
   assert.equal(selectNext([first,second,third],'rights').attemptId,'try-b');
-  assert.equal(selectNext([first,second,third],'coordinator').attemptId,'b');
+  assert.equal(selectNext([first,second,third],'coordinator').attemptId,'try-b');
 });
