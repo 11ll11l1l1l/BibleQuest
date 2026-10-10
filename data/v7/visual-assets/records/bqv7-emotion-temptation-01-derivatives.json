@@ -67,14 +67,15 @@
   },
   "qa": {
     "sourceWebPEmbeddedIdenticalToClean": true,
-    "svgStaticSafetyChecked": true,
+    "svgStaticSafetyChecked": "legacy_svg_evidence_only_new_art_webp",
     "typographyExactTaxonomy": true,
     "referenceEquivalentAt320Px": 15,
     "browserRendered": false,
-    "webpTypeExported": false,
+    "webpTypeExported": true,
     "productionReady": false,
     "visualAuditScript": "not_run",
-    "note": "Source SVG inspected and independently SHA-256 measured. No local browser screenshot or decoded SVG raster; keep quarantined."
+    "note": "Previous legacy SVG notes superseded by true standalone 1024x1280 WebP TYPE. PR-head source-locked raster screenshot review and SHA passed. No built-app served-byte Chromium, independent rights/context/originality or final production approval established.",
+    "sourcePixelWebpDecoded": true
   },
   "assetId": "bqv7-emotion-temptation-01-derivatives",
   "generation": {
@@ -91,5 +92,25 @@
     "builtAppBrowserQA": "pending",
     "servedByteSHA": "pending",
     "productionReady": false
+  },
+  "laneYBatchSourcePixelEvidence": {
+    "sourceReviewRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38065359391",
+    "candidateSha": "d276ab2ddc0201c60e146548bf33c6e114fa3940",
+    "formatDecoded": "WEBP",
+    "sourcePixelsRenderedWidths": [
+      320,
+      390,
+      430,
+      800
+    ],
+    "sourceNativeChecksumMatchedSidecar": true,
+    "publicationAuthorization": false,
+    "sourcePixelReviewStatus": "reviewed_for_technical_identification_only",
+    "requiredStill": [
+      "independent visual originality and context",
+      "Scripture context and source rights",
+      "built-app served-byte and responsive browser QA",
+      "Lane D release certification"
+    ]
   }
 }
