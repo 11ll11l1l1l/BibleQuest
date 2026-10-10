@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-home-hero-source-scene-rejected",
   "entries": [
     {
       "family": "devotional",
@@ -330,6 +330,40 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-home-hero-81lvzjx",
+      "producer": "interactive-chat-20261011",
+      "sourceRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceChecksum": "git-blob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "sceneRevision": "guide-s7-modern-community-hall-81lvzjx",
+      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "shotFingerprint": {
+        "action": "adult and school-age child entering neighborhood learning hall with own bags; two adults jointly working at shared reading/project table",
+        "setting": "contemporary local community learning hall with accessibility",
+        "peopleCount": 4,
+        "view": "waist-high 35mm documentary wide shot",
+        "lighting": "late afternoon natural warm-neutral",
+        "safeRegion": "left 36-40 percent clear",
+        "geometry": "16:9"
+      },
+      "status": "rejected",
+      "claimedAt": "2026-10-10T23:18:37.383Z",
+      "qa": {},
+      "note": "Rejected local producer preflight; one attempt, zero valid images, no QA submission; Home hero slot released for other attempts.",
+      "failure": "Producer inspected actual PNG pixels: solitary young adult seated in a bedroom by nighttime window, NOT neighborhood learning hall adult+child entering and two helpers at shared table; portrait 1122x1402 instead of required landscape 16:9 >=1536x864. Controlled single-scene render produced unrelated request; generator-control failure. File deleted locally; never uploaded.",
+      "failedMeasuredBytesSha256": "431b767fd842cdc4474ba78ae94b29aeb95629cc28f730916561662850a2ce79",
+      "failedMeasuredBytes": 2017163,
+      "failedMeasuredWidth": 1122,
+      "failedMeasuredHeight": 1402,
+      "failedMeasuredFormat": "PNG",
+      "generatorId": "2930129d-c67c-4d2d-be4f-f7126ce26a69",
+      "candidatePath": null,
+      "closedAt": "2026-10-10T23:19:51.904Z"
     }
   ]
 }
