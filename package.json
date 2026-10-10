@@ -29,7 +29,8 @@
     "inventory:v6-bsb-hays": "node scripts/v6-hays-source-inventory.mjs",
     "field:v6-init": "node scripts/v6-field-certification-package.mjs init",
     "field:v6-validate": "node scripts/v6-field-certification-package.mjs validate",
-    "unit:v7": "node --test tests/v7/*.test.mjs"
+    "unit:v7": "node --test tests/v7/*.test.mjs && npm run check:v7-image-ledger",
+    "check:v7-image-ledger": "node scripts/v7-image-work-ledger.mjs audit"
   },
   "devDependencies": {
     "typescript": "7.0.2",

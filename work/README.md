@@ -21,6 +21,10 @@ Canonical entry point for development, maintenance and production release work. 
 | [templates/TASK.md](templates/TASK.md) | Task scope and final handoff |
 | [START_HERE.txt](START_HERE.txt) | Short plain-text entry point |
 
+## V7 image work — mandatory for all chats and agents
+
+Before ANY artwork task, read [automatic five-agent QA, central attempt ledger, achievable raster sizes and fail-delete policy](../docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md), [construction guidebook](../docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md), actual image records and current open PRs. All five scheduled agents are QA-only; humans do not have to approve each image. Continue QA with another candidate immediately after failed/held checks. Use `node scripts/v7-image-work-ledger.mjs status` and `next <role>`; merge claims before image generation to avoid repeated production.
+
 ## Sources of truth
 
 | Subject | Authority |

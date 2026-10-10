@@ -8,6 +8,12 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
+## Image-production and QA operating-policy update — 2026-10-11 JST
+
+- New mandatory [automated image-QA and persisted work ledger contract](docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md): manual ChatGPT-instance image generation only; five hourly agents now **QA-only**, one role each (scene, rights, technical, uniqueness, coordinator); no human per-image approval blocker. Realistic native output minima are 1024² square, 768×960 portraits and 1536×864 Home hero; no false upscale or SVG substitutes.
+- [Committed attempt ledger](data/v7/visual-assets/production-ledger.json) reserves the five merged PR #1476 Lane Z candidate cover IDs to prevent fresh instances from recreating them. `scripts/v7-image-work-ledger.mjs` implements exact-ID attempt claims, verifiable PNG/WebP size/SHA checks, five independent role statuses, immediate FAIL/deletion of unapproved candidate-only bytes, next-candidate queue and HOLD requeue with new evidence. Existing image/PR/record inventory still must be consulted; the ledger is not a complete historical backfill.
+- This is **policy + pipeline tooling only**, not a claim that existing images passed pixel QA or that V7 is releasable. Stronger P0/Scripture/rights/immutable-approval/exact-SHA certification gates remain open until proved.
+
 ## P0 safety update — 2026-10-10 JST
 
 - P0 remains **OPEN**. Rejected-art bytes are SHA-quarantined after #1461 merged at `43e25819f4472245c44aeffffce53f08d76e5c41`. ONE 2 ONE now revokes prior mentor sharing before edited response text is saved; #1464 merged at `d79c105c23cc61b10eaa60bf8d0a063b788641d1` after all four exact-head workflows passed on refreshed head `44a491aa8cf967f8cbfec2b9f253b9a0288df585`.
