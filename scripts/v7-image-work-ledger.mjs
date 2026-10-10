@@ -21,7 +21,7 @@ import { dimensionsOfImage } from './v7-lane-z-cover-integrity.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const LEDGER = join(ROOT, 'data/v7/visual-assets/production-ledger.json');
-const STAGING = 'public/v7/images/qa-candidates/';
+const STAGING = 'data/v7/visual-assets/qa-candidates/';
 const ROLES = Object.freeze(['scene', 'rights', 'technical', 'uniqueness', 'coordinator']);
 const TYPES = new Set(['emotion', 'need', 'hero', 'devotional', 'book', 'past_teaching']);
 const VARIANTS = new Set(['CLEAN', 'TYPE', 'THUMB']);
@@ -55,8 +55,8 @@ export function verifyGeometry(bytes, family, variant) {
 }
 
 function safeStagedPath(attemptId, path) {
-  const expected = new RegExp('^' + STAGING.replaceAll('/', '\\/') + attemptId + '\\.(png|webp)$');
-  if (!expected.test(path)) throw new Error('candidate must be a unique file under ' + STAGING + attemptId);
+  const ext = path.endsWith('.png') ? 'png' : path.endsWith('.webp') ? 'webp' : '';
+  if (!ext || path !== STAGING + attemptId + '.' + ext) throw new Error('candidate must be a unique file under ' + STAGING + attemptId);
   const full = resolve(ROOT, path);
   if (!full.startsWith(ROOT + sep) || relative(ROOT, full).startsWith('..'))
     throw new Error('candidate path traversal');
@@ -106,18 +106,47 @@ async function saveLedger(ledger) {
   validateLedger(ledger);
   await writeFile(LEDGER, JSON.stringify(ledger, null, 2) + '\n');
 }
-async function approvedRecordExists(family, contentId, variant) {
+async function recordedCandidateExists(family, contentId, variant) {
   const path = join(ROOT, 'data/v7/visual-assets/records');
   for (const name of await readdir(path)) {
     if (!name.endsWith('.json')) continue;
     const r = JSON.parse(await readFile(join(path,name),'utf8'));
-    if (r.contentType !== family || r.contentId !== contentId || r.status !== 'production_ready') continue;
+    if (r.contentType !== family || r.contentId !== contentId || !['production_ready','candidate_qa_pending'].includes(r.status)) continue;
     if (variant === 'CLEAN' || (r.variants || []).some(v => (v.kind || '').toUpperCase() ===
       ({TYPE:'WITH_TEXT',THUMB:'THUMBNAIL'}[variant] || variant))) return true;
   }
   return false;
 }
 async function rejectAndDelete(row, reason, status='rejected') {
+  // Pre-2026-10-11 merged Lane-Z candidates live outside the new staging
+  // area. Delete those exact unapproved binaries and their own sidecars,
+  // never any shared or approved variant.
+  if (row.externalRecordPath) {
+    const recordFile=resolve(ROOT,row.externalRecordPath);
+    const expected='data/v7/visual-assets/records/';
+    if (!row.externalRecordPath.startsWith(expected) ||
+      !/^data\/v7\/visual-assets\/records\/[a-z0-9-]+\.json$/.test(row.externalRecordPath))
+      throw new Error('unsafe legacy candidate record path');
+    const record=JSON.parse(await readFile(recordFile,'utf8'));
+    if (record.status!=='candidate_qa_pending' ||
+      record.contentId!==row.contentId || record.contentType!==row.family ||
+      !/^\/v7\/images\/devotional\/bqv7-devotional-[a-z0-9-]+\.png$/.test(record.imagePath))
+      throw new Error('legacy candidate no longer independently deletable');
+    const src=join(ROOT,'public',record.imagePath.slice(1));
+    const bytes=await readFile(src);
+    if (sha(bytes)!==record.sha256) throw new Error('legacy candidate bytes differ from sidecar');
+    for (const name of await readdir(join(ROOT,expected))) {
+      if (name===row.externalRecordPath.split('/').at(-1) || !name.endsWith('.json')) continue;
+      const other=JSON.parse(await readFile(join(ROOT,expected,name),'utf8'));
+      if (other.imagePath===record.imagePath ||
+        (other.status==='production_ready' && other.sha256===record.sha256))
+        throw new Error('legacy candidate binary is referenced by another asset; quarantine, do not delete');
+    }
+    await unlink(src);
+    await unlink(recordFile);
+    row.failedMeasuredBytesSha256=record.sha256;
+    row.externalRecordPath=null;
+  }
   if (row.candidatePath) {
     const full = safeStagedPath(row.attemptId, row.candidatePath);
     await unlink(full); // Fail closed: do not claim deletion if it failed.
@@ -167,8 +196,8 @@ export async function runLedger(command, args, root=ROOT) {
       throw new Error('existing active/approved attempt: '+key);
     if (rows.some(r=>keyOf(r)===key && r.sceneRevision===sceneRevision))
       throw new Error('rejected scene cannot be retried without new sceneRevision');
-    if (await approvedRecordExists(family,contentId,variant))
-      throw new Error('published production-ready record exists; repair only missing variant');
+    if (await recordedCandidateExists(family,contentId,variant))
+      throw new Error('existing production/pending record; QA or repair the existing candidate before creating more');
     rows.push({family,contentId,variant,attemptId,producer,sourceRevision,sceneRevision,
       status:'claimed',claimedAt:new Date().toISOString(),qa:{}});
   } else if (command === 'submit') {
@@ -189,6 +218,14 @@ export async function runLedger(command, args, root=ROOT) {
       r.failedMeasuredBytesSha256=sha(bytes);
       await rejectAndDelete(r, 'automatic geometry/format QA: '+err.message,'failed_technical');
     }
+  } else if (command === 'requeue') {
+    const [attemptId,role,proof]=args;
+    const r=rows.find(x=>x.attemptId===attemptId);
+    if (!r || !ROLES.includes(role) || r.qa?.[role]?.verdict!=='HOLD' ||
+      !SAFE_URL.test(proof || '')) throw new Error('only HOLD can requeue with new GitHub evidence');
+    r.reviewHistory ??= [];
+    r.reviewHistory.push({role,...r.qa[role],reopenedByEvidence:proof});
+    delete r.qa[role];
   } else if (command === 'qa') {
     const [attemptId,role,verdict,evidence]=args;
     const r=rows.find(x=>x.attemptId===attemptId);
@@ -203,7 +240,7 @@ export async function runLedger(command, args, root=ROOT) {
     if (verdict==='FAIL') await rejectAndDelete(r,role+': '+evidence);
     else if (ROLES.every(k=>r.qa[k]?.verdict==='PASS')) r.status='qa_passed';
     // HOLD does not block other submissions: next(role) advances to the next candidate.
-  } else throw new Error('commands: status | next role | claim ... | submit ... | qa ... | audit');
+  } else throw new Error('commands: status | next role | claim ... | submit ... | qa ... | requeue ... | audit');
   await saveLedger(ledger);
   return command==='qa' ? {attemptId:args[0],status:rows.find(r=>r.attemptId===args[0])?.status,
     next:selectNext(rows,args[1])?.attemptId||null} : {status:'saved',command};
