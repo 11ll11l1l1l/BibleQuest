@@ -99,7 +99,8 @@
       "failedMeasuredBytesSha256": "794b871404830a4d9a73cd63334c273e5a2e9dc20f7c5d8a9c4f5542f05602ca",
       "failure": "Output unrelated ancient hilltop prayer image; does not depict care worker preparing for sleep; source wrong; 1536x1024 aspect wrong for 4:5. Unapproved PNG deleted from workspace, never pushed to GitHub.",
       "closedAt": "2026-10-10T16:12:34.440Z",
-      "imageGenerated": false
+      "generationAttempted": true,
+      "candidateUploaded": false
     },
     {
       "family": "devotional",
@@ -123,7 +124,8 @@
       "failedMeasuredBytesSha256": "cbf373eb8d49dd12ad9d8da5d1581c9ee363e03dcfb49a94a4c53a13b9c0a333",
       "failure": "Second independent generator output depicts workshop entrant carrying toolbox, not home sleep routine; wrong source, wrong aspect 1536x1024; unapproved PNG deleted from workspace, never pushed to GitHub.",
       "closedAt": "2026-10-10T16:12:34.441Z",
-      "imageGenerated": false
+      "generationAttempted": true,
+      "candidateUploaded": false
     }
   ]
 }
