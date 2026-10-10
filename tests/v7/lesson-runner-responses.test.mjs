@@ -52,21 +52,34 @@ test('late hydration never overwrites or injects a response edited after the rea
   resolveResponses([row('step-3', 'stale database text')]);
   await pending;
   assert.equal(f.runner.getState().responseDrafts['step-3'], 'fresh local edit');
-  assert.equal(f.runner.getState().responses['step-3'], undefined);
+  assert.equal(f.runner.getState().responses['step-3'].response, 'stale database text',
+    'Saved identity/consent must hydrate, but the local edit remains the draft.');
 });
 
-test('stale hydration cannot win even after the newer local edit has already been saved', async () => {
+test('pending hydration blocks writes until existing sharing is known, then revokes before edit', async () => {
   let resolveResponses;
+  const shared = { ...row('step-0', 'old shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
   const f = fixture({ loadResponses: () => new Promise(resolve => { resolveResponses = resolve; }) });
   const pending = f.runner.load();
   await tick();
-  f.runner.updateResponse('newer saved text', 'step-0');
+  f.runner.updateResponse('new private draft', 'step-0');
   await f.runner.move(1);
-  assert.equal(f.responseWrites[0].response, 'newer saved text');
-  resolveResponses([row('step-0', 'older database text')]);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 0);
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, 0);
+  assert.equal(f.runner.getState().responseDrafts['step-0'], 'new private draft');
+  resolveResponses([shared]);
   await pending;
-  assert.equal(f.runner.getState().responseDrafts['step-0'], 'newer saved text');
-  assert.equal(f.runner.getState().responses['step-0'].response, 'newer saved text');
+  assert.equal(f.runner.getState().responseStatus, 'ready');
+  assert.equal(f.runner.getState().responseDrafts['step-0'], 'new private draft');
+  assert.equal(f.runner.getState().responses['step-0'].visibility, 'shared');
+  await f.runner.move(1);
+  const operations = f.log.map(item => item[0]);
+  assert.ok(operations.indexOf('revokeResponseShare') < operations.indexOf('savePrivateResponse'));
+  assert.ok(operations.indexOf('savePrivateResponse') < operations.indexOf('saveProgress'));
+  assert.equal(f.runner.getState().responses['step-0'].visibility, 'owner');
+  assert.equal(f.responseWrites.at(-1).response, 'new private draft');
 });
 
 test('a previous hydration request cannot inject data after a reload supersedes it', async () => {
@@ -153,6 +166,14 @@ test('private-response read failure is non-destructive and navigation can still 
   assert.equal(f.runner.getState().responseStatus, 'error');
   await f.runner.move(1);
   assert.equal(f.runner.getState().stepIndex, 1);
+  f.runner.updateResponse('do not overwrite a possibly shared response', 'step-1');
+  const previousProgress = f.progressWrites.length;
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 1);
+  assert.equal(f.runner.getState().responseDrafts['step-1'], 'do not overwrite a possibly shared response');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, previousProgress);
 });
 
 
