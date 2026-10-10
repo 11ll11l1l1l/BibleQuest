@@ -28,26 +28,75 @@ export function cleanupMotion(element) {
   if (typeof stop === 'function') stop();
 }
 function run(element, frames, duration, easing, options = {}) {
-  if (!element || typeof element.animate !== 'function' ||
-    !motionEnabled(options.environment)) return noop;
+  if (!element) return noop;
   cleanupMotion(element);
+  const environment = options.environment || {};
+  if (typeof element.animate !== 'function' ||
+    !motionEnabled(environment)) return noop;
   let animation;
   try {
     animation = element.animate(frames, { duration, easing, fill: 'none' });
   } catch { return noop; }
   if (!animation || typeof animation.cancel !== 'function') return noop;
+
+  const doc = environment.document ?? globalThis.document;
+  const teardown = [];
+  const detach = () => {
+    for (const dispose of teardown.splice(0)) {
+      try { dispose(); } catch { /* Passive cleanup never blocks navigation. */ }
+    }
+  };
   let stopped = false;
   const stop = () => {
     if (stopped) return;
     stopped = true;
+    detach();
     if (running.get(element) === stop) running.delete(element);
     try { animation.cancel(); } catch {}
   };
-  running.set(element, stop);
-  // Never let an animation own visibility, focus, navigation or completion.
-  Promise.resolve(animation.finished).then(() => {
+  const settled = () => {
+    detach();
     if (running.get(element) === stop) running.delete(element);
-  }, () => {});
+  };
+  running.set(element, stop);
+
+  // Motion preference may change while an effect is in progress (including
+  // the in-app accessibility selector). Do not retain an animation until
+  // the next click, and detach every observer on cancellation/completion.
+  const onPreference = () => {
+    if (doc?.hidden || !motionEnabled(environment)) stop();
+  };
+  try {
+    const query = environment.matchMedia ?? globalThis.matchMedia;
+    const media = typeof query === 'function'
+      ? query('(prefers-reduced-motion: reduce)') : null;
+    if (typeof media?.addEventListener === 'function') {
+      media.addEventListener('change', onPreference);
+      teardown.push(() => media.removeEventListener('change', onPreference));
+    } else if (typeof media?.addListener === 'function') {
+      media.addListener(onPreference);
+      teardown.push(() => media.removeListener(onPreference));
+    }
+    const Observer = environment.MutationObserver
+      ?? doc?.defaultView?.MutationObserver ?? globalThis.MutationObserver;
+    if (typeof Observer === 'function' && doc?.documentElement) {
+      const observer = new Observer(onPreference);
+      observer.observe(doc.documentElement, {
+        attributes: true, attributeFilter: ['data-bq-effective-motion', 'data-bq-motion'],
+      });
+      teardown.push(() => observer.disconnect());
+    }
+    if (typeof doc?.addEventListener === 'function') {
+      doc.addEventListener('visibilitychange', onPreference);
+      teardown.push(() => doc.removeEventListener('visibilitychange', onPreference));
+    }
+  } catch {
+    // A failing optional observer does not disable the primary control.
+    detach();
+  }
+  // Never let WAAPI control visibility, focus, route changes or action timing.
+  Promise.resolve(animation.finished).then(settled, settled);
+  onPreference();
   return stop;
 }
 export function pressFeedback(element, options) {

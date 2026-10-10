@@ -4,8 +4,8 @@
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T17:05:00+09:00",
   "integratedAt": "2026-10-08T18:05:00+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "status": "candidate_revised_type_independent_browser_qa_pending",
+  "bundleStatus": "three_real_files_type_safe_margin_repaired_browser_qa_pending",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -62,8 +62,8 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 124412,
-      "sha256": "d810f46ee68ae16706448553ae1b2fac5b0abd44a5089e56a375d1ffc57a9b7c",
+      "fileBytes": 129648,
+      "sha256": "24706cb1a4e97c323256f30f428af6c0acfa8e7cc4cc0b1674a6d9f380be21fb",
       "focalPoint": {
         "x": 0.47,
         "y": 0.56
@@ -82,8 +82,23 @@
         "visualInspected": true,
         "spellingCheckedAgainstTaxonomy": true,
         "scriptureReferenceOnly": true,
-        "typeReadableAt320px": true,
-        "browserAppPending": true
+        "typeReadableAt320px": null,
+        "browserAppPending": true,
+        "topSafeAreaReviewed": true,
+        "topSafeAreaAcceptable": true,
+        "topMarginRepairRequired": false,
+        "nativeBinaryVisualReview": "Observed exact 1024x1280 rewritten WebP: 'Impatient /' occupies pixels x75–553 y142–234 (>10% top clearance); 'waiting' x90–465 y239–343; 'Psalm 27:14' x642–891 y275–308, no overlapping title/reference glyph boxes; 37 px clearance below lowest title word before photo at y380. Person, waiting-room clock, wristwatch and side subjects remain legible.",
+        "independentVisualReviewerPending": true
+      },
+      "typography": {
+        "method": "Deterministically drawn independent WebP TYPE using Pillow 11.3.0 and Noto Serif Regular/Italic; legacy CLEAN photographic asset unchanged",
+        "titleFont": "Noto Serif Regular and Italic",
+        "fontLicense": "SIL OFL 1.1 (fonts-noto-core)",
+        "sourceImageSha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+        "locale": "en",
+        "embeddedTitle": "Impatient / waiting",
+        "scriptureReferenceOnly": "Psalm 27:14",
+        "shaAndDimensionsMeasured": true
       }
     },
     {
@@ -162,9 +177,47 @@
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
     "localTypeAndThumbnailInspected": true,
     "builtAppBrowserQA": "pending",
-    "visualAuditScript": "not_run",
+    "visualAuditScript": "to_be_run_by_exact_pr_CI",
     "productionReady": false,
     "builtAppBrowserQAEvidence": null,
-    "notes": "All three local binaries and isolated TYPE/THUMB QA were previously reported, but real BibleQuest built-app browser evidence is absent. This bundle is not production certified."
+    "notes": "Actual replacement TYPE WebP has corrected meaningful-content top margin and internal lettering spacing; CLEAN and THUMB remain byte-identical to validated originals. Native pixels and exact file measurements inspected; independent 320/390/430 browser QA remains pending. Three files exist but bundle is not release-certified.",
+    "manualLaneYReview": {
+      "sourceBranchHead": "144bbd9883c0e208873022a2268bad1eff999dd7",
+      "reviewedAssetIds": [
+        "bqv7-emotion-impatience-waiting-01"
+      ],
+      "typeFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-with-text-en.webp",
+      "typeGitBlobSha": "32956b5ec6e52ac79a2f7097b5bd6f277366893b",
+      "thumbnailFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01-thumbnail.webp",
+      "thumbnailGitBlobSha": "3e56658025293ec6529eb1bf956f136c4630169b",
+      "cleanFile": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "originalSceneRetained": true,
+      "typeSafeArea": "fail_top_heading_too_close_to_edge",
+      "referenceCheck": "Psalm 27:14 is the taxonomy-approved reference; no verse prose embedded",
+      "cropReview": "CLEAN and THUMB retain seated waiting-room subject, wristwatch, and readable human gesture; no baked text on THUMB",
+      "decision": "do_not_promote_until_type_top_margin_repaired_and_independent_browser_qa",
+      "additionalEvidenceStillRequired": "corrected TYPE exact file SHA/dimensions; typography pixel review at 320/390/430; independent QA agent; served-byte browser report"
+    },
+    "laneYPriorTopSafeAreaIssue": {
+      "priorTypeSha256": "d810f46ee68ae16706448553ae1b2fac5b0abd44a5089e56a375d1ffc57a9b7c",
+      "priorTypeGitBlobSha": "32956b5ec6e52ac79a2f7097b5bd6f277366893b",
+      "reason": "Large first-line heading too close to top; repaired from unchanged CLEAN scene with controlled photo crop and independently rasterized license-compliant type."
+    },
+    "repairedTypeEvidence": {
+      "temporaryCI": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37997203272",
+      "correctedSha256": "24706cb1a4e97c323256f30f428af6c0acfa8e7cc4cc0b1674a6d9f380be21fb",
+      "correctedBytes": 129648,
+      "correctedGitBlobSha": "048dab8a7f7890055240f187dbe485d48cb77c01",
+      "widths": [
+        320,
+        390,
+        430
+      ],
+      "widthsQARun": false,
+      "sourceImageAndThumbnailUntouched": true,
+      "nativeVisualInspection": "PASS_PRELIMINARY",
+      "sourceReference": "Psalm 27:14 is the taxonomy-approved wait-for-the-Lord verse; reference only, no Scripture quotation",
+      "finalEditorialApproval": false
+    }
   }
 }

@@ -37,3 +37,88 @@ The visual registry audit verifies every committed derivative's dimensions, byte
 ## Variant schemas and release readiness
 
 Both legacy schema V1 clean masters and verified V2 three-file assets are allowed. Some producers store candidate derivatives in `<asset-id>-derivatives.json` while awaiting image and browser QA. Candidate records are not independently publishable masters. Never call a package release-ready merely because three file paths exist: confirm file hash/byte length/dimensions, readable TYPE artwork, canonical label and Scripture reference, actual rights, and approved QA state. Keep incomplete bundles visible in the audit report but outside any TYPE/THUMB release index.
+
+
+### Per-locale TYPE wording evidence (V2)
+
+A reviewed image may include separate `-with-text-en`, `-with-text-tl`,
+`-with-text-ceb`, and `-with-text-ilo` artwork, each as an independently
+rendered, measured and audited file. A single `wordingEvidence` still works
+for existing one-locale records. New multilingual records use
+`wordingEvidenceByLocale`, keyed by the exact TYPE variant locale:
+
+```json
+{
+  "wordingEvidenceByLocale": {
+    "en": {
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "<actual Git blob SHA>",
+      "canonicalNeedId": "peace",
+      "locale": "en",
+      "exactLabel": "Peace",
+      "reference": "John 14:27",
+      "scriptureTextIncluded": false
+    },
+    "tl": {
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "<same actual Git blob SHA>",
+      "canonicalNeedId": "peace",
+      "locale": "tl",
+      "exactLabel": "Kapayapaan",
+      "reference": "John 14:27",
+      "scriptureTextIncluded": false
+    }
+  }
+}
+```
+
+Every TYPE variant still needs its own binary SHA-256, dimensions, byte count,
+exact embedded `label` and `scriptureReference`, typography inspection,
+approved Scripture binding and immutable taxonomy revision. A locale map is
+**authoritative**: a missing or stale entry fails audit, even when a legacy
+`wordingEvidence` is also present. Do not use EN baked text for TL, CEB or
+ILO. If a localized TYPE is not independently reviewed, omit it and display
+CLEAN art with accurate live localized text. The presence of a proof does
+not constitute independent artistic or browser approval.
+
+
+### Measured P0 image coverage
+
+The audit's `coverage.emotions` and `coverage.needs` report distinct canonical
+concepts with **verified CLEAN masters** separately from those with verified
+**complete CLEAN+TYPE+THUMB bundles**. Both include deterministic missing-ID
+lists. Emotion agent queues now also expose `completeBundles`,
+`nextIncompleteBundle` and `incompleteBundles`; the legacy `completed`
+counter continues to mean a verified CLEAN master, **not** a full bundle.
+`counts.needQueueTotal` is the entire 19-Need taxonomy, not a proxy for
+production artwork coverage.
+
+`coverage.unapprovedRecordClaims` and
+`coverage.candidateDerivativeSidecars` are metadata-only inventories
+from the checked-out revision. They are **not** binary, visual, editorial,
+translation or release QA approvals. Files only present in separate
+draft pull requests are not part of these numbers. If the audit reports
+`status: FAIL`, do not publish the manifest, regardless of intermediate
+coverage statistics. The release remains gated by independent visual QA.
+
+
+### Source-pixel reject ledger (Lane A)
+
+`scripts/v7-visual-candidate-policy.mjs` contains a **SHA-256-bound visual
+reject list** for exact rejected TYPE/CLEAN files from visual-agent drafts,
+including PRs #1423, #1437, #1438, #1439, and #1448. This list records
+documented source-pixel safe-area or near-duplicate findings. These are
+**specific rejected binary hashes, not whole concepts or agents**.
+
+Both candidate triage and the production registry reject those exact bytes
+even if a draft simply changes `qa` fields or sets `production_ready`.
+After the producer repairs a composition, the corrected source must be
+independently rendered and measured (new SHA-256, actual byte count/dimensions)
+and pass source-art inspection, Scripture/translation review, canonical image
+audit, browser and release gates. A new SHA is **not automatically an approval**.
+Keep CLEAN with live translated text as a fallback when TYPE is rejected;
+do not publish a visually rejected three-file bundle.
+
+## Mandatory construction source for all chats and agents
+
+Every V7 visual generation, variant repair, approval and release step MUST first read `docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md`, its exact-ID scene chapter and `AGENTS.md`. The new guide defines the required human action, location, framing, lighting, original high-resolution raster medium, QA rejection criteria, and checks against accepted, draft and rejected art. It supersedes older generic scene prompts, but not release/rights/Scripture gates or exclusive lane ownership. Until PR #1481 integrates, obtain it from `docs/v7-complete-artwork-construction-guide-20261010`. Preserve an existing verified CLEAN master when correcting only TYPE/THUMB, and do not publish any image solely because a sidecar or structural check claims success.

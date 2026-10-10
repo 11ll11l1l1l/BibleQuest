@@ -1,5 +1,7 @@
 # V7 image-generation scene briefs — independent Lane A handoff
 
+**SUPERSEDED FOR ALL NEW IMAGE WORK (2026-10-10):** The exact-ID directions in [`unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md`](unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md) and its 11 chapters are now mandatory. This historical scene-exploration list is reference only; no scheduled or manual agent may choose one of these older generic ideas over the user-approved per-ID construction brief. Preserve genuinely valid existing CLEAN scenes when only derivatives need repair. Use original high-resolution photographic raster art, not SVG.
+
 Date: 2026-10-08 JST. Status: CREATIVE BRIEFS ONLY, **zero image assets delivered by this document**. These are concepts for actual image production; never count a brief, contact sheet, extracted low-resolution sample, or pending PR as a generated/approved production image.
 
 Read alongside `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`, `docs/v7/V7_NEEDS_VISUAL_PIPELINE.md`, the exact taxonomy at `src/features/library/emotion-taxonomy.js`, and the current `data/v7/visual-assets/records/**` before choosing work. The inventory changes frequently. Skip any scene whose asset is already complete or actively being produced in a newer agent branch; use the next unfilled owned concept instead. Never overwrite other agent's output.

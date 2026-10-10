@@ -8,6 +8,11 @@ on:
       - "data/v7/visual-assets/**"
       - "public/v7/images/**"
       - "scripts/v7-visual-assets-audit.mjs"
+      - "scripts/v7-unfinished-image-guidebook-audit.mjs"
+      - "docs/v7/unfinished-artwork-guide/**"
+      - "AGENTS.md"
+      - "work/RULEBOOK.md"
+      - "docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md"
       - "scripts/v7-visual-coverage-report.mjs"
       - "scripts/v7-manual-candidate-integrity.mjs"
       - "scripts/v7-visual-candidate-triage.mjs"
@@ -63,6 +68,24 @@ jobs:
 
       - name: Install locked dependencies
         run: npm ci
+
+      - name: Reject new or modified SVG V7 artwork
+        if: github.event_name == 'pull_request'
+        env:
+          BQ_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BQ_BASE_SHA"
+          bad_svg="$(git diff --name-only --diff-filter=ACMR "$BQ_BASE_SHA" "$BQ_EXACT_SHA" -- public/v7/images/ | grep -E '\.svg$' || true)"
+          if test -n "$bad_svg"; then
+            echo "New or modified SVG image files violate the V7 high-resolution raster artwork rule:"
+            printf '%s\n' "$bad_svg"
+            exit 1
+          fi
+
+      - name: Verify mandatory source-bound V7 image construction guide
+        run: node scripts/v7-unfinished-image-guidebook-audit.mjs
 
       - name: Fail-closed image masters and localized text audit
         run: |

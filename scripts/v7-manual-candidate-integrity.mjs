@@ -8,6 +8,7 @@ import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
+import { candidateQuarantineReason } from './v7-visual-candidate-policy.mjs';
 
 const DEFAULT_ROOT = fileURLToPath(new URL('../', import.meta.url));
 const digest = data => createHash('sha256').update(data).digest('hex');
@@ -65,6 +66,8 @@ export async function verifyV7ManualCandidate(root = DEFAULT_ROOT, assetId) {
   const metadata = JSON.parse(await readFile(
     join(root, 'data/v7/visual-assets/records', assetId + '.json'), 'utf8'));
   assert.equal(metadata.assetId, assetId);
+  const quarantine = candidateQuarantineReason(metadata);
+  assert(!quarantine, 'Manual candidate quarantined: ' + quarantine);
   assert.equal(metadata.schemaVersion, 2, 'Three-variant candidates use schema V2');
   assert(['emotion', 'need'].includes(metadata.contentType), 'Unsupported candidate category');
   assert.equal(metadata.family, metadata.contentType);
