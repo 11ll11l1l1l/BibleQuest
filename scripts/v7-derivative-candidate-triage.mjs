@@ -60,7 +60,16 @@ export async function triageV7DerivativeCandidates(root=ROOT){
       if(record.contentId!==master.contentId||master.status!=='production_ready')throw Error('CLEAN source not a valid production master');
       const canonical=EMOTION_QUEUE_CANONICAL[record.contentId];
       const taxonomy=LIBRARY_EMOTIONS.find(x=>x.id===canonical);
-      const proof=record.wordingEvidence;
+      const historical=record.inspectionEvidence;
+      const proof=record.wordingEvidence || (historical ? {
+        sourcePath: historical.taxonomySourcePath,
+        sourceBlobSha: historical.taxonomyBlobSha,
+        canonicalEmotionId: historical.canonicalEmotionId,
+        locale:'en',
+        exactLabel:historical.exactLabel,
+        reference:historical.approvedReference,
+        scriptureTextIncluded:historical.scriptureTextIncluded
+      } : null);
       if(!taxonomy||proof?.sourcePath!=='src/features/library/emotion-taxonomy.js'
         ||proof.sourceBlobSha!==blobSHA(await readFile(join(root,proof.sourcePath)))
         ||proof.canonicalEmotionId!==canonical||proof.locale!=='en'
