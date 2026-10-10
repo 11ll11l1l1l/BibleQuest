@@ -4,7 +4,7 @@
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-10T16:00:00+09:00",
   "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "complete_three_real_files_local_only",
+  "bundleStatus": "complete_three_real_files_candidate_branch",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -162,7 +162,7 @@
     "builtAppHttpSha": "not_run",
     "officialNodeAudit": "not_run",
     "productionReady": false,
-    "browserViewportQA": "not_run; Pillow image previews only",
+    "browserViewportQA": "local Chromium inline-data image tests passed 13/13 at 100/320/390/430/800; built-app HTTP SHA and independent QA pending",
     "sceneEditorialConcern": "Towel loosening is subtle; independent reviewer must decide whether guidebook action is unambiguous. Do not self-approve."
   },
   "productionReady": false,
