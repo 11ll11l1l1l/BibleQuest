@@ -11,7 +11,7 @@ function webpHeader(width,height) {
 }
 function row(id,status='qa_pending') {
   return {family:'devotional',contentId:'devotional.biblequest.anger.01',
-    variant:'CLEAN',attemptId:id,producer:'manual-chat-z',
+    variant:'CLEAN',attemptId:'try-'+id,producer:'manual-chat-z',
     sourceRevision:'r1',sceneRevision:'scene-'+id,status,qa:{}};
 }
 test('realistic release raster minimums for all visual families', () => {
@@ -47,7 +47,7 @@ test('QA passes need five distinct roles and GitHub evidence', () => {
 test('failed, held and already-reviewed slots do not block the next item',()=>{
   const first=row('a','rejected'), second=row('b'), third=row('c');
   second.qa.scene={verdict:'HOLD',evidence:'no actual pixels'};
-  assert.equal(selectNext([first,second,third],'scene').attemptId,'c');
-  assert.equal(selectNext([first,second,third],'rights').attemptId,'b');
+  assert.equal(selectNext([first,second,third],'scene').attemptId,'try-c');
+  assert.equal(selectNext([first,second,third],'rights').attemptId,'try-b');
   assert.equal(selectNext([first,second,third],'coordinator').attemptId,'b');
 });
