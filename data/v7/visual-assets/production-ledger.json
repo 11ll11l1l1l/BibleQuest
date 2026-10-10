@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-20261011-fail-closed",
   "entries": [
     {
       "family": "devotional",
@@ -91,48 +91,39 @@
       "sceneRevision": "guide20261011-twmvk-tiredness_weariness-05-shot1",
       "shotFingerprint": "one care worker, modest home sleeping area, jacket and water glass, low eye-level, warm practical evening, right-side text quiet",
       "scene": "tired care worker hangs up jacket pours water and closes curtains for sleep",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:09:36.099Z",
       "qa": {},
-      "note": "Pre-generation claim; no image bytes yet. Must not auto-approve, release or duplicate."
+      "note": "Pre-generation claim; no image bytes yet. Must not auto-approve, release or duplicate.",
+      "candidatePath": null,
+      "failedMeasuredBytesSha256": "794b871404830a4d9a73cd63334c273e5a2e9dc20f7c5d8a9c4f5542f05602ca",
+      "failure": "Output unrelated ancient hilltop prayer image; does not depict care worker preparing for sleep; source wrong; 1536x1024 aspect wrong for 4:5. Unapproved PNG deleted from workspace, never pushed to GitHub.",
+      "closedAt": "2026-10-10T16:12:34.440Z",
+      "imageGenerated": false
     },
     {
       "family": "devotional",
-      "contentId": "devotional.biblequest.rejection.07",
+      "contentId": "devotional.biblequest.tiredness_weariness.05",
       "variant": "CLEAN",
-      "attemptId": "manual-20261011-twmvk-rejection-07",
+      "attemptId": "manual-20261011-twmvk-tiredness_weariness-05-retry2",
       "producer": "user-invoked-interactive-chat-20261011",
       "sourceRevision": "r1",
-      "sourceChecksum": "sha256:83e61c0b00292e0316cd89f40f0f4d52d88597ad49abb40e1fafff1cd69a45e7",
-      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-07a.json",
-      "guidePath": "docs/v7/unfinished-artwork-guide/07-reflection-practice-shots.md",
+      "sourceChecksum": "sha256:c6cfab8fdf80b4a01b6ad3279adc54d7f1878d18664a40090dd0916298cc9ad8",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-05b.json",
+      "guidePath": "docs/v7/unfinished-artwork-guide/05-next-hour-action-shots.md",
       "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
-      "sceneRevision": "guide20261011-twmvk-rejection-07-shot1",
-      "shotFingerprint": "one runner, municipal gym, blank training card near water bottle, 3/4 documentary view, warm indirect afternoon, right quiet",
-      "scene": "overlooked runner at municipal gym sets down blank training card and begins gentle solo warmup",
-      "status": "claimed",
+      "sceneRevision": "guide20261011-twmvk-tiredness_weariness-05-shot1-retry2",
+      "shotFingerprint": "one care worker, modest home sleeping area, jacket and water glass, low eye-level, warm practical evening, right-side text quiet",
+      "scene": "tired care worker hangs up jacket pours water and closes curtains for sleep",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:09:36.099Z",
       "qa": {},
-      "note": "Pre-generation claim; no image bytes yet. Must not auto-approve, release or duplicate."
-    },
-    {
-      "family": "devotional",
-      "contentId": "devotional.biblequest.frustration.09",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-twmvk-frustration-09",
-      "producer": "user-invoked-interactive-chat-20261011",
-      "sourceRevision": "r1",
-      "sourceChecksum": "sha256:8a5c8d4fc6cc3515e93d569f8a4f116b17c05ead2d8fa2f9ec4a829f3159a246",
-      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-09c.json",
-      "guidePath": "docs/v7/unfinished-artwork-guide/09-trustworthy-sharing-shots.md",
-      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
-      "sceneRevision": "guide20261011-twmvk-frustration-09-shot1",
-      "shotFingerprint": "two adult makers, youth STEM worktable, plain wood bridge model, wide intimate viewpoint, neutral morning, right quiet",
-      "scene": "two makers review a failed plain wooden bridge model at youth STEM club; one explains obstacle, other proposes safer method",
-      "status": "claimed",
-      "claimedAt": "2026-10-10T16:09:36.099Z",
-      "qa": {},
-      "note": "Pre-generation claim; no image bytes yet. Must not auto-approve, release or duplicate."
+      "note": "Pre-generation claim; no image bytes yet. Must not auto-approve, release or duplicate.",
+      "candidatePath": null,
+      "failedMeasuredBytesSha256": "cbf373eb8d49dd12ad9d8da5d1581c9ee363e03dcfb49a94a4c53a13b9c0a333",
+      "failure": "Second independent generator output depicts workshop entrant carrying toolbox, not home sleep routine; wrong source, wrong aspect 1536x1024; unapproved PNG deleted from workspace, never pushed to GitHub.",
+      "closedAt": "2026-10-10T16:12:34.441Z",
+      "imageGenerated": false
     }
   ]
 }
