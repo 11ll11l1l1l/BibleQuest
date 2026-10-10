@@ -55,9 +55,9 @@ async function lockedSourceBoundBriefs(root, contentFiles, initialBriefs) {
         throw new Error('Guidebook source checksum/body stale: '+id);
       }
       const lines=block.split('\n');
-      const framing=lines.find(line=>/^\*\*(?:Framing|Camera\/light|Frame\/lighting|Visual geometry|Scene craft|Photography|Composition):\*\*/.test(line))
+      const framing=lines.find(line=>/^(?:-\s*)?\*\*(?:Framing|Camera\/light|Frame\/lighting|Visual geometry|Scene craft|Photography|Composition):\*\*/.test(line))
         || 'Eye-level natural editorial composition preserving the guidebook scene';
-      const light=lines.find(line=>/^\*\*(?:Light|Lighting|Camera\/light|Frame\/lighting|Scene craft):\*\*/.test(line))
+      const light=lines.find(line=>/^(?:-\s*)?\*\*(?:Light|Lighting|Camera\/light|Frame\/lighting|Scene craft):\*\*/.test(line))
         || 'Naturalistic soft light as described by the exact per-ID construction guide';
       const safeLine=lines.find(line=>/(?:safe|quiet|overlay|title)/i.test(line) && /\b(?:bottom|left|right)\b/i.test(line));
       const safe=safeLine?.match(/\b(bottom|left|right)\b/i)?.[1]?.toLowerCase() || 'bottom';
