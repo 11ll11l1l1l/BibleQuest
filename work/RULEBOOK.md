@@ -2,6 +2,8 @@
 
 Canonical operational policy for development, maintenance, multi-agent work and production releases. Updated 2026-10-04 JST. Applies from V7 onward; preserves V1–V6 lessons without importing obsolete workflow machinery.
 
+> **V7 image scope override (2026-10-11):** Read [central automated image QA and ledger contract](../docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md) before new image generation or QA. It supersedes historical scheduled visual producer instructions: five agents do *only independent QA*, human QA approval is not a gate, ChatGPT interactive manual generation only, persistent unique claims, reject-and-delete candidate bytes, and continue immediately to the next review. Preserve non-waivable Scripture, privacy, rights and exact-build release gates.
+
 ## 1. Authority and fast start
 
 1. Follow the current user's scope and authorization. Do not restart permission checks for already authorized work.
