@@ -360,50 +360,6 @@
     },
     {
       "family": "devotional",
-      "contentId": "devotional.biblequest.frustration.08",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-modern-frustration-08-a1",
-      "producer": "manual-chat-modern-20261011",
-      "sourceRevision": "r1",
-      "sceneRevision": "shot-frustration.08-modern-20261011-a1",
-      "status": "claimed",
-      "claimedAt": "2026-10-11T08:08:00+09:00",
-      "qa": {},
-      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08c.json",
-      "sourceChecksum": "sha256:21ed60fa75ddeddb6912424ec9c108272a628d55be55016670f154e63e19071b",
-      "sceneGuide": "docs/v7/unfinished-artwork-guide/08-prayer-moments-shots.md",
-      "shotFingerprint": {
-        "narrativeAction": "irritated urban bicycle commuter sitting safely on step before calm repair",
-        "setting": "modern apartment stairwell",
-        "focalObject": "disabled bicycle",
-        "cameraLightSafeZone": "three-quarter profile neutral late afternoon, lower-left title safe"
-      },
-      "note": "Manual chat CLEAN only, native original 4:5 modern realism; reject biblical era or multi-panel; QA pending"
-    },
-    {
-      "family": "devotional",
-      "contentId": "devotional.biblequest.gratitude.10",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-modern-gratitude-10-a1",
-      "producer": "manual-chat-modern-20261011",
-      "sourceRevision": "r1",
-      "sceneRevision": "shot-gratitude.10-modern-20261011-a1",
-      "status": "claimed",
-      "claimedAt": "2026-10-11T08:08:00+09:00",
-      "qa": {},
-      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10c.json",
-      "sourceChecksum": "sha256:11bb2183583d4e158ba764779e3a929754b598d2539623aa36ffdeab1a6d86a7",
-      "sceneGuide": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
-      "shotFingerprint": {
-        "narrativeAction": "grateful traveler putting a hand-carved wooden bead beside plain train-ticket holder",
-        "setting": "present-day small apartment windowside tabletop",
-        "focalObject": "wooden bead and ticket holder",
-        "cameraLightSafeZone": "low tabletop diffused daylight, right title safe"
-      },
-      "note": "Manual chat CLEAN only, native original 4:5 modern realism; reject biblical era or multi-panel; QA pending"
-    },
-    {
-      "family": "devotional",
       "contentId": "devotional.biblequest.loneliness.06",
       "variant": "CLEAN",
       "attemptId": "manual-20261011-modern-loneliness-06-a2",
@@ -437,7 +393,7 @@
       "producer": "manual-chat-modern-20261011",
       "sourceRevision": "r1",
       "sceneRevision": "shot-loneliness.06-modern-20261011-a3-forced-portrait",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:16:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
@@ -449,7 +405,12 @@
         "focalObject": "chairs",
         "cameraLightSafeZone": "side-profile warm dusk, bottom title safe"
       },
-      "note": "Final producer retry with explicit supported portrait size, one scene only"
+      "note": "Final producer retry with explicit supported portrait size, one scene only",
+      "failedMeasuredBytesSha256": "eb741393915f52772cc3c861662b70f302e0dbf4b2f75abc7cd76c3ec6be3947",
+      "failure": "Third explicit portrait retry still emitted a forbidden 3-panel modern composite (church chairs, road bicycle, outdoor person), not one required community reading room scene. PNG 1402x1122, 2242357 bytes; deleted locally and never staged.",
+      "generatorId": "d8fa2165-f23b-414b-beaf-7535e4a67db0",
+      "localFileDeleted": true,
+      "closedAt": "2026-10-11T08:20:00+09:00"
     }
   ]
 }
