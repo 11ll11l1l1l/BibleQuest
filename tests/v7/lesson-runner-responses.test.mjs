@@ -340,12 +340,14 @@ test('missing response-read API cannot be interpreted as no existing shares', as
   const f = fixture({ omitResponseLoad: true });
   await f.runner.load();
   assert.equal(f.runner.getState().responseStatus, 'error');
+  await f.runner.move(1); // No private draft yet; safe navigation remains available.
+  const progressBefore = f.progressWrites.length;
   f.runner.updateResponse('private until consent is known', 'step-1');
   await f.runner.move(1);
-  assert.equal(f.runner.getState().stepIndex, 0);
+  assert.equal(f.runner.getState().stepIndex, 1);
   assert.equal(f.runner.getState().status, 'save-error');
   assert.equal(f.responseWrites.length, 0);
-  assert.equal(f.progressWrites.length, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
   await assert.rejects(f.runner.shareResponse('step-1', { confirmed: true }),
     { code: 'BQ_LESSON_RESPONSE_HYDRATION_REQUIRED' });
   assert.equal(f.log.some(entry => entry[0] === 'shareResponse'), false);
@@ -360,10 +362,13 @@ test('duplicated response rows fail closed before an edit may persist', async ()
   assert.equal(f.runner.getState().responseStatus, 'error');
   assert.match(f.runner.getState().responseError, /Conflicting saved responses/);
   assert.deepEqual(f.runner.getState().responses, {});
+  await f.runner.move(1);
+  const progressBefore = f.progressWrites.length;
   f.runner.updateResponse('would be unsafe', 'step-1');
   await f.runner.move(1);
   assert.equal(f.responseWrites.length, 0);
-  assert.equal(f.runner.getState().stepIndex, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
+  assert.equal(f.runner.getState().stepIndex, 1);
 });
 
 test('a response from another lesson revision cannot grant stale sharing', async () => {
