@@ -1,3 +1,5 @@
+> **SUPERSEDED for agent staffing, image generation and human image approval (2026-10-11).** Read [current image QA/ledger policy](V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md) first. The timetable below is historical, NOT authorization for agents 1/2/4/5 to generate. **All five hourly agents are QA-only**, all pixels originate in explicitly invoked interactive ChatGPT chats; no human image QA gate, immediate next-candidate after FAIL/HOLD, rejection deletes staging bytes; ledger claims and PR deduplication are mandatory. Source/rights/Scripture/release gates remain.
+
 # BibleQuest V7 — five scheduled agents plus three manual chat lanes
 Effective: 2026-10-09 JST. Canonical operations plan for image production. Repository: `11ll11l1l1l/BibleQuest`; integration: `v7/development`.
 This plan allocates WORK; it does not certify any image or change V7 release criteria. Keep Lane A #1300 owning art, Lane D #1303 owning the final certified release.
