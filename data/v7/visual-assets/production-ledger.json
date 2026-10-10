@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-single-courage-rejection",
   "entries": [
     {
       "family": "devotional",
@@ -330,6 +330,30 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-04",
+      "producer": "manual-chat-one-image",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v4",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T23:18:20.673Z",
+      "qa": {},
+      "note": "Only one image, modern adults; neighborhood adult-learning workshop, protective goggles and apron, first workshop task; original text-free single-scene 4:5 CLEAN. Prior 3 Courage attempts rejected, do not reuse their scenes.",
+      "rejectedAt": "2026-10-11T07:43:00+09:00",
+      "generationId": "82ecb1dc-6640-4ba1-97ae-4351995e64d2",
+      "failedMeasuredBytesSha256": "944008fa6f9f9ff21e5fe349ce2b53fc7963858cae8d760639bff2d1c46e3409",
+      "failedMeasured": {
+        "format": "png",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 1882291
+      },
+      "rejectionReason": "PRODUCER PREFLIGHT FAIL: one single-scene modern portrait, but subject is an adult man studying with notebook and laptop at home after dark; does NOT show anxious learner stepping into modest adult-learning workshop wearing safety equipment ready for first hands-on task. Generator ignored locked source scene. Original image file removed locally. NO candidate submitted, no five-agent QA.",
+      "fileDeletionVerified": true
     }
   ]
 }
