@@ -1,4 +1,6 @@
 # Manual BibleQuest V7 Lane Z — distinct original devotional-cover factory
+
+**2026-10-10 OVERRIDE:** The statement below about “other 270” using deterministic fallback is historical. All 300 first-party devotional IDs now have unique, source-grounded mandatory scenes in `docs/v7/unfinished-artwork-guide/01-*.md` through `11-*.md`; `scripts/v7-lane-z-devotional-cover-queue.mjs` reads the locked scenes and fails closed if any source-bound direction is missing or stale. **Do not** generate from an old cyclic fallback or regard draft #1471 as art approval. This applies in every Lane Z chat instance.
 **Trigger in a separate chat:** `Continue BibleQuest V7 Lane Z`.
 Read `docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md`, current launch content, `scripts/v7-devotional-visual-queue.mjs`, live art audit, and open PRs before each batch. Lane Z **exclusively owns all first-party devotional-cover assets**; scheduled agents and X/Y must not create or edit `contentType: devotional` visual covers.
 
