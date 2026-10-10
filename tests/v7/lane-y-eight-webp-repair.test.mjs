@@ -75,7 +75,7 @@ test('eight Lane Y derivatives are real hash-pinned WebPs, old SVG is absent and
 });
 
 test('Lane Y hash verification fails on altered or spoofed payloads',()=>{
-  const data=Buffer.from('RIFF\\x00\\x00\\x00\\x00WEBP');
+  const data=Buffer.from('RIFF0000WEBP','ascii');
   assert.throws(()=>verifyWebP(data,'0'.repeat(64),data.length),/actual WebP bytes/);
   assert.throws(()=>verifyWebP(data,'0'.repeat(64),data.length+1));
 });
