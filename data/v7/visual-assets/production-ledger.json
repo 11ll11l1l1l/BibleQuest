@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-home-hero-source-scene-rejected",
   "entries": [
     {
       "family": "devotional",
@@ -351,10 +351,19 @@
         "safeRegion": "left 36-40 percent clear",
         "geometry": "16:9"
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:18:37.383Z",
       "qa": {},
-      "note": "ONE IMAGE ONLY. Nonproduction claim. Render original photorealistic contemporary single-scene CLEAN hero before submitting. No QA pass, no release."
+      "note": "Rejected local producer preflight; one attempt, zero valid images, no QA submission; Home hero slot released for other attempts.",
+      "failure": "Producer inspected actual PNG pixels: solitary young adult seated in a bedroom by nighttime window, NOT neighborhood learning hall adult+child entering and two helpers at shared table; portrait 1122x1402 instead of required landscape 16:9 >=1536x864. Controlled single-scene render produced unrelated request; generator-control failure. File deleted locally; never uploaded.",
+      "failedMeasuredBytesSha256": "431b767fd842cdc4474ba78ae94b29aeb95629cc28f730916561662850a2ce79",
+      "failedMeasuredBytes": 2017163,
+      "failedMeasuredWidth": 1122,
+      "failedMeasuredHeight": 1402,
+      "failedMeasuredFormat": "PNG",
+      "generatorId": "2930129d-c67c-4d2d-be4f-f7126ce26a69",
+      "candidatePath": null,
+      "closedAt": "2026-10-10T23:19:51.904Z"
     }
   ]
 }
