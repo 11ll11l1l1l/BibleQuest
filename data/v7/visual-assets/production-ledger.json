@@ -111,10 +111,15 @@
       "sceneRevision": "20261011-locked-guide-frustration-09-shot01",
       "guideChapter": "09-trustworthy-sharing-shots.md",
       "shotFingerprint": "two-makers-discuss-failed-wood-bridge-model-stem-club | wide dialogue; neutral morning; right overlay space",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:09:48.936Z",
       "qa": {},
-      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only.",
+      "failedMeasuredBytesSha256": "df802c87a2907cdf85d3bc7df9fc258ff3877d7a19662d8458968128b1634949",
+      "failedAt": "2026-10-10T16:14:57.554Z",
+      "failureEvidence": "generator gen_id 537cead4-6fa2-4fc4-99b3-16f80cfe500c",
+      "failureReason": "Producer preflight failure: Ancient scene comforting grieving woman, no STEM bridge-model discussion; 1536x1024 landscape not 4:5; wrong canonical scene. Candidate bytes deleted locally, never uploaded to GitHub.",
+      "localCandidateDeleted": true
     },
     {
       "family": "devotional",
@@ -128,10 +133,15 @@
       "sceneRevision": "20261011-locked-guide-temptation-11-shot01",
       "guideChapter": "11-original-backfill-shots.md",
       "shotFingerprint": "student-moves-blank-tablet-from-bedroom-into-shared-charging-drawer | three-quarter view; realistic warm neutral; left overlay space",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:09:48.936Z",
       "qa": {},
-      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only.",
+      "failedMeasuredBytesSha256": "db5845ce323ebab1bf01250d611ab8f281a45826148879afbc41dbdfb02ad4fc",
+      "failedAt": "2026-10-10T16:14:57.554Z",
+      "failureEvidence": "generator gen_id 21b299de-29ff-46e5-b7e8-fe1f8f581743",
+      "failureReason": "Producer preflight failure: Ancient hillside aid scene, no student moving blank-screen tablet to shared drawer; 1536x1024 landscape not 4:5; wrong canonical scene. Candidate bytes deleted locally, never uploaded to GitHub.",
+      "localCandidateDeleted": true
     },
     {
       "family": "devotional",
@@ -145,10 +155,15 @@
       "sceneRevision": "20261011-locked-guide-gratitude-06-shot02",
       "guideChapter": "06-faithful-action-shots.md",
       "shotFingerprint": "explicit tool-library borrower cleans unpowered cordless drill on counter and hands it back, camera profile at waist level, true 4:5, left blank vertical wall for title",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:11:02.314Z",
       "qa": {},
-      "note": "Retry after producer-side failure; G1 mandatory tool-library return scene unchanged, shot02 better-specific crop"
+      "note": "Retry after producer-side failure; G1 mandatory tool-library return scene unchanged, shot02 better-specific crop",
+      "failedMeasuredBytesSha256": "cb1e4ced9b1a1b82e9c3703db285d905b0aae915e6ac2183199452e62a10dc84",
+      "failedAt": "2026-10-10T16:14:57.554Z",
+      "failureEvidence": "generator gen_id 11552018-eac9-4f95-9d64-1a75b6855fbd",
+      "failureReason": "Producer preflight failure: Ancient biblical triptych collage, no tool library or drill; 1536x1024 landscape not 4:5; wrong canonical scene. Candidate bytes deleted locally, never uploaded to GitHub.",
+      "localCandidateDeleted": true
     }
   ]
 }
