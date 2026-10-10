@@ -68,7 +68,8 @@ def make():
         assert im.size == (768,960)
 
     rec = json.loads(RECORD.read_text(encoding="utf-8"))
-    assert rec["sourceMasterAssetId"] == "bqv7-emotion-spiritual-dryness-distance-01"
+    assert rec.get("assetId") == "bqv7-emotion-spiritual-dryness-distance-01-derivatives"
+    rec["sourceMasterAssetId"] = "bqv7-emotion-spiritual-dryness-distance-01"
     cleanv = next(x for x in rec["variants"] if x["kind"] == "CLEAN")
     assert cleanv["sha256"] == SRC_SHA
     typev = {
