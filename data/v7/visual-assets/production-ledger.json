@@ -410,7 +410,7 @@
       "producer": "manual-chat-modern-20261011",
       "sourceRevision": "r1",
       "sceneRevision": "shot-loneliness.06-modern-20261011-a2-singleframe",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:13:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
@@ -422,7 +422,34 @@
         "focalObject": "chairs",
         "cameraLightSafeZone": "side-profile warm dusk, bottom title safe"
       },
-      "note": "Independent retry; strictly one modern reading room scene; 4:5 portrait, no multiple panels"
+      "note": "Independent retry; strictly one modern reading room scene; 4:5 portrait, no multiple panels",
+      "failedMeasuredBytesSha256": "eaaa603b56a7836415732634058d7d6bb365d24b2ed38c03278b74be7f54cb4e",
+      "failure": "Second render again produced modern three-panel collage rather than standalone Loneliness source scene; 1374x1145 PNG 2238770 bytes; deleted locally.",
+      "generatorId": "8232e8e0-ff41-4ef4-9e60-49e14016c921",
+      "localFileDeleted": true,
+      "closedAt": "2026-10-11T08:16:00+09:00"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-modern-loneliness-06-a3",
+      "producer": "manual-chat-modern-20261011",
+      "sourceRevision": "r1",
+      "sceneRevision": "shot-loneliness.06-modern-20261011-a3-forced-portrait",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T08:16:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
+      "sourceChecksum": "sha256:940e8097c349316c158fb3680cbb98b3ca10339fd8efbee7206941921996028c",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "contemporary newcomer arranging folding chairs before evening neighborhood reading group",
+        "setting": "modern multipurpose community reading room",
+        "focalObject": "chairs",
+        "cameraLightSafeZone": "side-profile warm dusk, bottom title safe"
+      },
+      "note": "Final producer retry with explicit supported portrait size, one scene only"
     }
   ]
 }
