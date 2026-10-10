@@ -46,7 +46,10 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       return publish({ responseStatus: 'error', responseError: 'Saved response permissions are unavailable. Reload before saving or sharing.' });
     }
     const hydrationVersions = new Map(responseEditVersions);
-    publish({ responseStatus: 'loading', responseError: null });
+    // A mentor's earlier shared-response cache is not fresh permission
+    // evidence. Hide it throughout re-hydration, even if a read later fails.
+    publish({ responseStatus: 'loading', responseError: null,
+      ...(!state.writable ? { responses: snapshot() } : {}) });
     try {
       const rows = await service.loadPrivateResponses(pairId, revisionId); current(token, key);
       if (!Array.isArray(rows)) fail('BQ_LESSON_RESPONSE_INVALID', 'Saved lesson responses were unavailable.');
@@ -77,7 +80,8 @@ export function createLessonRunner({ service, session, membership, pairId, revis
         generation += 1;
         return clearLesson({ status: 'error', error: error.message });
       }
-      return publish({ responseStatus: 'error', responseError: error.message });
+      return publish({ responseStatus: 'error', responseError: error.message,
+        ...(!state.writable ? { responses: snapshot() } : {}) });
     }
   }
   async function retryResponses() {
