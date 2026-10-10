@@ -28,7 +28,7 @@ Header-level native-size and encoded-format checks (not a full decoded-pixel vis
 
 ## Central ledger and collision contract
 
-Repository-owned machine-readable record: `data/v7/visual-assets/production-ledger.json`. Operational CLI: `scripts/v7-image-work-ledger.mjs`. Source-of-truth evidence is a **union** of this ledger, existing production + pending sidecars, open PRs, published assets, and SHA-bound rejected history. A newly opened chat must **first** read the union, not trust that the ledger has yet backfilled every historical candidate. The ledger initially reserves the five real merged `candidate_qa_pending` Lane-Z covers from PR #1476; older Feeling/Need PRs must be reconciled by canonical ID/variant before a new claim. Successful existing CLEAN images remain frozen if only TYPE/THUMB is bad.
+Repository-owned machine-readable record: `data/v7/visual-assets/production-ledger.json`. Operational CLI: `scripts/v7-image-work-ledger.mjs`. Source-of-truth evidence is a **union** of this ledger, existing production + pending sidecars, open PRs, published assets, and SHA-bound rejected history. A newly opened chat must **first** read the union, not trust that the ledger has yet backfilled every historical candidate. Use `inventory` to list all merged record sidecars; use the GitHub PR list to include all unmerged candidates. The ledger initially reserves the five real merged `candidate_qa_pending` Lane-Z covers from PR #1476; older Feeling/Need PRs must be reconciled by canonical ID/variant before a new claim. Successful existing CLEAN images remain frozen if only TYPE/THUMB is bad.
 
 Slot key: `family:canonicalContentId:variant`. Each attempt has an immutable unique ID, manual-chat producer identity, exact source/scene revisions, claim timestamp, per-role verdicts/evidence, optional candidate path, SHA and measured pixels. A failed attempt becomes a **tombstone** with a bounded reason; never reuse the same sceneRevision for its slot. Tombstones persist for dedupe/forensics without keeping rejected pixels.
 
@@ -36,6 +36,7 @@ Usage from a checked-out current `v7/development` branch:
 
 ```bash
 node scripts/v7-image-work-ledger.mjs status
+node scripts/v7-image-work-ledger.mjs inventory  # All merged candidate/production sidecars
 node scripts/v7-image-work-ledger.mjs next scene
 node scripts/v7-image-work-ledger.mjs claim devotional devotional.biblequest.anger.01 CLEAN bq7-anger01-r1 manual-chat-z r1 shot-v2
 # In the interactive image chat, create a single original PNG/WebP:
@@ -47,7 +48,7 @@ node scripts/v7-image-work-ledger.mjs next technical
 node scripts/v7-image-work-ledger.mjs audit
 ```
 
-These are command examples, **not evidence** that the sample devotional ID, PR, file or image exists. Actual commands must use verified live IDs, provenance and evidence URLs. A successful `claim`, `submit` or `qa` changes a file locally. **Commit/PR the ledger state and run its audit; it is not persisted on GitHub until integrated.** Use one serialization owner or Git conflicts/compare-and-swap against the current branch head for concurrent writes. Before generation, ensure the claim is already discoverable in the canonical GitHub branch or registered intake PR: local-only claims do not prevent parallel chats from duplicating work. If a live PR already has a claim, skip it and choose another unique ID.
+These are command examples, **not evidence** that the sample devotional ID, PR, file or image exists. Actual commands must use verified live IDs, provenance and evidence URLs. A successful `claim`, `submit`, `qa` or `requeue` changes a file locally. **Commit/PR the ledger state and run its audit; it is not persisted on GitHub until integrated.** Use one serialization owner or Git conflicts/compare-and-swap against the current branch head for concurrent writes. Before generation, ensure the claim is already discoverable in the canonical GitHub branch or registered intake PR: local-only claims do not prevent parallel chats from duplicating work. If a live PR already has a claim, skip it and choose another unique ID.
 
 ## QA loop — no single-image blocking
 
