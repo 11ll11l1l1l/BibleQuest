@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-anger-02",
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-10T16:00:00+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "complete_three_real_files_candidate_branch",
+  "status": "candidate_local_type_repair_pending_remote_publish",
+  "bundleStatus": "local_repaired_type_not_yet_on_github",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -53,7 +53,8 @@
     "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
     "guidebookSection": "5 / anger",
     "noExternalSourceArt": true,
-    "capNonverbalStitchRetouch": "OpenCV Telea inpaint, polygon in source coordinates; crop is otherwise unchanged"
+    "capNonverbalStitchRetouch": "OpenCV Telea inpaint, polygon in source coordinates; crop is otherwise unchanged",
+    "typeRepairNote": "Source CLEAN and THUMB unchanged; this TYPE recomposed from the unchanged CLEAN with more spacious matte typography."
   },
   "rights": {
     "sourceType": "generated",
@@ -93,9 +94,9 @@
       "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 185364,
-      "sha256": "c5116cbe358e8e0f6fc1d970f407fe9088893bd4bf3823cd1925d8c7d352d7df",
-      "gitBlobSha": "6c5f4496582aa6f3d7bfd259a78588872eeef395",
+      "fileBytes": 152170,
+      "sha256": "09a13e3e8ac4aef3f6513a04e46f1f461bcfaf5b5bbce3927d4f44a1657416df",
+      "gitBlobSha": "07759906831fbc8368704cad60ff39489f2d4f16",
       "altText": "At a community sports equipment shed, one neighbor loosens a white towel while listening to another adult speak after a disagreement. English title: Angry; reference James 1:19-20.",
       "embeddedWording": {
         "label": "Angry",
@@ -107,24 +108,24 @@
           "Noto Serif"
         ],
         "fontLicense": "SIL OFL-1.1",
-        "method": "Pillow independently composited text on 288px matte; no verse prose",
+        "method": "Pillow independent CLEAN-to-TYPE composite; 320px charcoal matte; licensed Noto Serif; reference only",
         "measuredBounds": [
           {
             "text": "Angry",
             "bounds": [
-              376,
-              137,
-              647,
-              220
+              373,
+              132,
+              651,
+              219
             ]
           },
           {
             "text": "James 1:19-20",
             "bounds": [
-              348,
-              214,
-              674,
-              262
+              349,
+              241,
+              675,
+              289
             ]
           }
         ]
@@ -162,8 +163,9 @@
     "builtAppHttpSha": "not_run",
     "officialNodeAudit": "not_run",
     "productionReady": false,
-    "browserViewportQA": "local Chromium inline-data image tests passed 13/13 at 100/320/390/430/800; built-app HTTP SHA and independent QA pending",
-    "sceneEditorialConcern": "Towel loosening is subtle; independent reviewer must decide whether guidebook action is unambiguous. Do not self-approve."
+    "browserViewportQA": "Repaired TYPE local-only. Source candidate local Chromium 13/13; repaired TYPE needs independent exact-head built-app browser and HTTP SHA.",
+    "sceneEditorialConcern": "Towel loosening is subtle; independent reviewer must decide whether guidebook action is unambiguous. Do not self-approve.",
+    "typeTypographySpacingRepair": "TYPE original title/ref bbox overlap 6px; replacement has measured >=16px gap, top >=128px; CLEAN and THUMB unchanged."
   },
   "productionReady": false,
   "sceneRevision": "guide-20261010-anger-sports-shed-02",
