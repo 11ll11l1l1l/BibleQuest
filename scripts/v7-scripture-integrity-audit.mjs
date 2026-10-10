@@ -71,7 +71,7 @@ export async function auditScriptureReviews(root = ROOT) {
           const match = matches.find(v => v.sha256 === row.imageSha256);
           if (!match) errors.push(name + ': image hash is stale');
           else {
-            const imagePath = String(match.imagePath || '').replace(/^\\/+/, '');
+            const imagePath = String(match.imagePath || '').replace(/^\x2f+/, '');
             const imageBytes = await readFile(join(root, 'public', imagePath));
             if (createHash('sha256').update(imageBytes).digest('hex') !== row.imageSha256) errors.push(name + ': image bytes do not match the reviewed SHA-256');
           }
