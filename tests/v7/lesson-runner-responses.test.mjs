@@ -6,7 +6,7 @@ const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'dis
   .map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
 const row = (stepId = 'step-3', response = 'saved') => ({ id: `response-${stepId}`, stepId, lessonRevisionId: 'revision', response, audienceUserIds: [], visibility: 'owner' });
 
-function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback } = {}) {
+function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false } = {}) {
   const auth = { authenticated: true, user: { id: userId } };
   const active = { congregationId: 'church', userId };
   const log = [], responseWrites = [], progressWrites = [];
@@ -24,6 +24,7 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
     async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return shareCallback ? shareCallback({pairId,revisionId,stepId,responseId,options}) : [{ id: 'share', response_id: responseId }]; },
     async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return revokeCallback ? revokeCallback({pairId,revisionId,stepId,responseId}) : { id: 'share', response_id: responseId }; },
   };
+  if (omitResponseSave) delete service.savePrivateResponse;
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
   return { runner, auth, active, log, responseWrites, progressWrites };
@@ -232,4 +233,83 @@ test('an unfinished revoke cannot race a second share or navigation', async () =
   finishRevoke({id:'share',response_id:'response-step-1'});
   await pending;
   assert.equal(f.runner.getState().responses['step-1'].visibility,'owner');
+});
+
+test('editing a shared answer revokes mentor access before updating the response row', async () => {
+  const shared = { ...row('step-1', 'previous shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared] });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('new private text', 'step-1');
+  await f.runner.move(1);
+  const operations = f.log.map(item => item[0]);
+  const revocation = operations.indexOf('revokeResponseShare');
+  const responseSave = operations.indexOf('savePrivateResponse');
+  const progressSave = operations.lastIndexOf('saveProgress');
+  assert.ok(revocation >= 0 && revocation < responseSave && responseSave < progressSave);
+  assert.equal(f.responseWrites[0].response, 'new private text');
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.deepEqual(f.runner.getState().responses['step-1'].audienceUserIds, []);
+});
+
+test('a failed revocation leaves a shared old answer intact and blocks the new draft', async () => {
+  const shared = { ...row('step-1', 'old shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared],
+    revokeCallback: async () => { throw new Error('revoke unavailable'); } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('never shared new draft', 'step-1');
+  const progressBefore = f.progressWrites.length;
+  await f.runner.move(1);
+  const state = f.runner.getState();
+  assert.equal(state.status, 'save-error');
+  assert.equal(state.stepIndex, 1);
+  assert.equal(state.responseDrafts['step-1'], 'never shared new draft');
+  assert.equal(state.responses['step-1'].response, 'old shared text');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
+});
+
+test('an edit during a pending response save is flushed before advancing progress', async () => {
+  let releaseFirstSave;
+  let calls = 0;
+  const f = fixture({ saveResponse: async ({ stepId }) => {
+    calls += 1;
+    if (calls === 1) await new Promise(resolve => { releaseFirstSave = resolve; });
+    return { id: `response-${stepId}` };
+  } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('initial draft', 'step-1');
+  const move = f.runner.move(1);
+  await tick();
+  assert.equal(f.responseWrites.length, 1);
+  f.runner.updateResponse('latest draft', 'step-1');
+  releaseFirstSave();
+  await move;
+  assert.deepEqual(f.responseWrites.map(item => item.response), ['initial draft', 'latest draft']);
+  assert.equal(f.runner.getState().responses['step-1'].response, 'latest draft');
+  assert.equal(f.runner.getState().stepIndex, 2);
+  assert.ok(f.log.findLastIndex(item => item[0] === 'saveProgress') >
+    f.log.findLastIndex(item => item[0] === 'savePrivateResponse'));
+});
+
+test('explicit privacy action after editing a shared answer revokes exactly once', async () => {
+  const shared = { ...row('step-1', 'shared answer'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => [shared] });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('private edit', 'step-1');
+  await f.runner.revokeResponseShare('step-1');
+  assert.equal(f.log.filter(item => item[0] === 'revokeResponseShare').length, 1);
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.equal(f.runner.getState().shareStatus, 'ready');
+});
+
+test('unavailable response persistence cannot silently advance lesson progress', async () => {
+  const f = fixture({ omitResponseSave: true });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('must remain in draft', 'step-1');
+  const before = f.progressWrites.length;
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 1);
+  assert.equal(f.runner.getState().responseDrafts['step-1'], 'must remain in draft');
+  assert.equal(f.progressWrites.length, before);
 });

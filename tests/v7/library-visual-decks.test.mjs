@@ -6,6 +6,8 @@ import {
   normalizeV7DeckLocale, resolveV7LibraryVisual, safeV7VisualPath
 } from '../../src/features/library/visual-registry.js';
 
+import { normalizeV7VisualRegistry } from '../../src/ui/visual-assets.js';
+
 const SHA = 'a'.repeat(64);
 function assetsManifest({ src = '/v7/images/emotion/anxiety.webp', thumb = '/v7/images/emotion/anxiety-thumbnail.webp' } = {}) {
   const asset = {
@@ -48,6 +50,29 @@ test('audited CLEAN master is used even when TYPE lettering exists but is not se
   assert.equal(resolveV7LibraryVisual(registry, 'emotion', 'anxious', { thumbnail: true }).type, 'thumbnail');
   assert.equal(resolveV7LibraryVisual(registry, 'emotion', 'anxious', { thumbnail: true }).src,
     '/v7/images/emotion/anxiety-thumbnail.webp');
+});
+
+test('approved TYPE artwork is shown only for its exact locale and live title', () => {
+  const raw = assetsManifest();
+  raw.assets[0].variants[0].embeddedText = 'Anxious / worried';
+  const registry = normalizeV7VisualRegistry(raw);
+  const english = resolveV7LibraryVisual(registry, 'emotion', 'anxious', {
+    locale: 'en', title: 'Anxious / worried',
+  });
+  assert.equal(english.type, 'with_text');
+  assert.equal(english.src, '/v7/images/emotion/anxiety-with-text-en.webp');
+  assert.equal(english.alt, '', 'embedded lettering remains decorative; live title stays semantic');
+  const untranslated = resolveV7LibraryVisual(registry, 'emotion', 'anxious', {
+    locale: 'tl', title: 'Balisa / nag-aalala',
+  });
+  assert.equal(untranslated.type, 'clean');
+  assert.equal(untranslated.src, '/v7/images/emotion/anxiety.webp');
+  const wrongText = resolveV7LibraryVisual(registry, 'emotion', 'anxious', {
+    locale: 'en', title: 'Anxiety',
+  });
+  assert.equal(wrongText.type, 'clean');
+  const model = buildV7LibraryDeckModel({ kind: 'emotion', locale: 'en', registry });
+  assert.equal(model.entries.find(row => row.id === 'anxious').visual.type, 'with_text');
 });
 
 test('Lane D audited Map registry supplies visible CLEAN and THUMB imagery', () => {

@@ -62,7 +62,6 @@
   "accessibility": {
     "decorative": false,
     "altText": "On a commuter train, a young woman hesitates before a lost wallet on the next seat while holding open her own handbag.",
-    "typeAltText": "A woman hesitates over a lost wallet on a train, beneath the words Temptation and 1 Corinthians 10:13.",
     "essentialTextRemainsLive": true
   },
   "qc": {
@@ -76,8 +75,25 @@
     "conceptAccurate": true,
     "rightsClear": true,
     "typeIntentionallyHasVerifiedEmbeddedText": false,
-    "notes": "Verified CLEAN and THUMB imagery/bytes/dimensions/SHA256; existing TYPE WebP contains TEMPTATION, not taxonomy labels.en Tempted. V1 derivatives are quarantined by audit; do not promote until exact-label replacement is independently rendered and verified.",
-    "typeWordingRequiresReplacement": true
+    "notes": "Retain the QA-accepted CLEAN image and existing text-free THUMB unchanged. The old TYPE WebP reads Temptation, not canonical Tempted; removed its variant pointer and end-user alt text while preserving exact historical hash/metadata under excludedNoncanonicalType. The corrected self-contained TYPE SVG in the derivative sidecar is only a candidate until independent built-browser pixel/locale/source verification. Do not restore the invalid TYPE pointer or call the bundle complete.",
+    "typeWordingRequiresReplacement": true,
+    "excludedNoncanonicalType": {
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 147202,
+      "sha256": "0d63ef078d6133f00e195cb80a6d8dff1c8bd0fff9d074b26f284fea591f70a5",
+      "embeddedWording": {
+        "label": "Temptation",
+        "scriptureReference": "1 Corinthians 10:13"
+      },
+      "originalTypeAltText": "A woman hesitates over a lost wallet on a train, beneath the words Temptation and 1 Corinthians 10:13.",
+      "reason": "TYPE says Temptation; immutable canonical emotion label is Tempted. Retained as historical unapproved binary, removed from consumer-facing variants while corrected SVG awaits independent rendered QA.",
+      "correctedCandidateRecord": "data/v7/visual-assets/records/bqv7-emotion-temptation-01-derivatives.json",
+      "reviewedTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+    },
+    "nonCanonicalTypeRemovedFromActiveVariants": true
   },
   "variants": [
     {
@@ -105,36 +121,6 @@
         "thumbnailReadable": true,
         "typeSpellingVerified": null,
         "fontLicenseVerified": null
-      }
-    },
-    {
-      "kind": "TYPE",
-      "locale": "en",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
-      "format": "webp",
-      "width": 1024,
-      "height": 1280,
-      "fileBytes": 147202,
-      "sha256": "0d63ef078d6133f00e195cb80a6d8dff1c8bd0fff9d074b26f284fea591f70a5",
-      "focalPoint": {
-        "x": 0.57,
-        "y": 0.28
-      },
-      "cropIntent": "portrait editorial art with integrated title and reference",
-      "textSafeRegion": "bottom",
-      "embeddedWording": {
-        "label": "Temptation",
-        "scriptureReference": "1 Corinthians 10:13"
-      },
-      "qc": {
-        "noFakeText": true,
-        "noUnlicensedLogos": true,
-        "anatomyAcceptable": true,
-        "conceptAccurate": true,
-        "cropSafe": true,
-        "thumbnailReadable": true,
-        "typeSpellingVerified": true,
-        "fontLicenseVerified": true
       }
     },
     {

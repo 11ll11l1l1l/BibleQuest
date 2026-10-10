@@ -14,7 +14,9 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   assertV7PublishedVisualCardItem(item);
   const lang = normalizeV7DeckLocale(locale);
   const labels = typeNames[lang] || typeNames.en;
-  const visual = resolveV7LibraryVisual(registry, item.contentType, item.id);
+  const visual = resolveV7LibraryVisual(registry, item.contentType, item.id, {
+    locale: lang, title: String(item.title),
+  });
   const root = document.createElement('article');
   root.className = 'bq-v7-content-card';
   root.dataset.v7ContentId = String(item.id);
