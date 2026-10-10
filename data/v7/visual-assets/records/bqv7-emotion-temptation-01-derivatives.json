@@ -2,42 +2,45 @@
   "schemaVersion": 2,
   "sourceMasterAssetId": "bqv7-emotion-temptation-01",
   "agentId": "visual-agent-4",
-  "status": "candidate_corrected_type_svg_static_verified_browser_qa_pending",
+  "status": "candidate_real_webp_type_independent_browser_qa_pending",
   "variants": [
     {
       "kind": "TYPE",
       "locale": "en",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en-corrected.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 172975,
-      "sha256": "9e674f53c1b36d671320194b10651382a50f85c99218028ac930ba169337d32f",
+      "fileBytes": 163612,
+      "sha256": "0ace3ccd561e94133cab14fe1b29326b42c67ef6e72f65cd7c2364625b278aeb",
       "embeddedWording": {
         "label": "Tempted",
         "scriptureReference": "1 Corinthians 10:13",
         "scriptureTextIncluded": false
       },
-      "cropIntent": "4:5 portrait, original CLEAN source displayed below independent dark title band",
-      "altText": "A commuter hesitates over a lost wallet on a train; editorial heading Tempted and reference 1 Corinthians 10:13.",
-      "qa": {
-        "structuralMarkupChecked": true,
-        "spellingCheckedAgainstTaxonomy": true,
-        "referenceCheckedAgainstTaxonomy": true,
-        "sourceWebPEmbedded": true,
-        "visualInspected": false,
-        "typeReadableAt320px": false,
-        "imageDecoded": false,
-        "dimensionsMeasured": false,
-        "sha256Measured": true,
-        "renderPending": true,
-        "sourceCleanBlobIdentityVerified": true,
-        "svgSourceDimensionsDeclared": true,
-        "referenceFontPx": 48,
-        "referenceEquivalentAt320Px": 15,
-        "referenceMobileGeometryChecked": true
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.56
       },
-      "gitBlobSha": "c3a4a7e91ca981d7deb57749068fc32f7c7ebf67"
+      "cropIntent": "4:5 text-safe top heading and original CLEAN below",
+      "altText": "A commuter hesitates over a found wallet on a train. English title: Tempted. Reference: 1 Corinthians 10:13.",
+      "typography": {
+        "method": "Pillow true WebP export from immutable CLEAN",
+        "fontFamily": "Noto Serif Regular",
+        "fontLicense": "SIL OFL 1.1",
+        "fontFilesDistributed": false,
+        "sourceCleanSha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "wordingFromTaxonomy": true,
+        "referenceOnly": true,
+        "independentVisualQA": "pending",
+        "actualBuiltAppBrowserQA": "pending",
+        "productionReady": false
+      }
     }
   ],
   "wordingEvidence": {
@@ -72,5 +75,21 @@
     "productionReady": false,
     "visualAuditScript": "not_run",
     "note": "Source SVG inspected and independently SHA-256 measured. No local browser screenshot or decoded SVG raster; keep quarantined."
+  },
+  "assetId": "bqv7-emotion-temptation-01-derivatives",
+  "generation": {
+    "derivativeMethod": "One new WebP English TYPE composited from existing generated CLEAN using licensed rasterized Noto Serif glyphs",
+    "sourceCleanSha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+    "existingThumbSha256": "96d2c67d3cef5d8b1e1285fa33d976516c5cc6ff9ab9cb0892c2ba93e514234f"
+  },
+  "qc": {
+    "realWebP": true,
+    "typeLabelCorrected": true,
+    "sourceCleanSHAUnchanged": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+    "sourceThumbSHAUnchanged": "96d2c67d3cef5d8b1e1285fa33d976516c5cc6ff9ab9cb0892c2ba93e514234f",
+    "independentVisualQA": "pending",
+    "builtAppBrowserQA": "pending",
+    "servedByteSHA": "pending",
+    "productionReady": false
   }
 }
