@@ -417,3 +417,24 @@ test('retry response hydration fails closed after a congregation switch', async 
   assert.deepEqual(f.runner.getState().responseDrafts, {});
   assert.equal(f.responseWrites.length, 0);
 });
+
+test('mentor response cache disappears immediately when share permissions are revalidated', async () => {
+  let rejectRead;
+  let calls = 0;
+  const shared = { ...row('step-3', 'formerly shared'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ userId: 'mentor', loadResponses: () => {
+    calls += 1;
+    if (calls === 1) return Promise.resolve([shared]);
+    return new Promise((resolve, reject) => { rejectRead = reject; });
+  } });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responses['step-3'].response, 'formerly shared');
+  const pending = f.runner.retryResponses();
+  assert.equal(f.runner.getState().responseStatus, 'loading');
+  assert.deepEqual(f.runner.getState().responses, {});
+  rejectRead(new Error('response scope unavailable'));
+  await pending;
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.deepEqual(f.runner.getState().responses, {});
+  assert.deepEqual(f.runner.getState().responseDrafts, {});
+});
