@@ -104,7 +104,7 @@ def make():
         "sourceBlobSha": TAX_SHA, "canonicalEmotionId": "rejected",
         "locale": "en", "exactLabel": LABEL, "reference": REF,
         "scriptureTextIncluded": False}
-    rec["generation"]["derivatives"] = (
+    rec.setdefault("generation", {})["derivatives"] = (
         "TYPE: separate licensed Noto Serif Pillow compositing from unchanged CLEAN; "
         "THUMB: actual 4:5 raster crop of unchanged CLEAN; no SVG/data URI.")
     rec["qc"] = {"sourceImageSha256Untouched": SRC_SHA,
