@@ -1,4 +1,4 @@
-name: TEMP V7 Rejection WebP Repair
+name: TEMP V7 Rejection WebP Repair Retry
 on:
   push:
     branches:
