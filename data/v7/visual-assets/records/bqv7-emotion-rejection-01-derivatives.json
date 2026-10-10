@@ -10,12 +10,12 @@
   "contentId": "rejection",
   "family": "emotion",
   "visualRole": "emotion_tile_derivatives",
-  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
-  "format": "svg",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp",
+  "format": "webp",
   "width": 1024,
   "height": 1280,
-  "fileBytes": 88016,
-  "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+  "fileBytes": 90722,
+  "sha256": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.3,
@@ -164,7 +164,8 @@
     "scriptureQuoteIncluded": false,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
+    "notes": "Corrected primary pointer after independently rendering true TYPE WebP; all original CLEAN/TYPE/THUMB binary hashes validated at pinned PR head. Legacy data-URI SVG deleted in this candidate; remains historical SHA. Exact built-app served-byte and independent originality/context/rights QA pending.",
+    "primaryPathMatchesStandaloneWebp": true
   },
   "createdAt": "2026-10-08T15:06:14+09:00",
   "bundleStatus": "real_clean_type_thumb_candidate_browser_qa_pending",
@@ -219,5 +220,32 @@
     "actualBuiltAppBrowserQA": "pending",
     "servedByteSHA": "pending",
     "productionReady": false
+  },
+  "legacyPrimarySvg": {
+    "path": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+    "format": "svg",
+    "bytes": 88016,
+    "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+    "retired": true
+  },
+  "laneYBatchSourcePixelEvidence": {
+    "sourceReviewRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38065359391",
+    "candidateSha": "d9b672bc575234d83128ca6164b052f5bd629a62",
+    "formatDecoded": "WEBP",
+    "sourcePixelsRenderedWidths": [
+      320,
+      390,
+      430,
+      800
+    ],
+    "sourceNativeChecksumMatchedSidecar": true,
+    "publicationAuthorization": false,
+    "sourcePixelReviewStatus": "reviewed_for_technical_identification_only",
+    "requiredStill": [
+      "independent visual originality and context",
+      "Scripture context and source rights",
+      "built-app served-byte and responsive browser QA",
+      "Lane D release certification"
+    ]
   }
 }
