@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-self-control-02",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-10T09:55:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "complete_three_real_files",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "self_control",
+  "canonicalNeedId": "self_control",
+  "concept": "At an outdoor playground, a father leaves his phone on a bench and listens patiently to his young daughter, choosing attentive presence over distraction. Materially different from Wisdom home desk.",
+  "usage": [
+    "needs_deck",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-self-control-02.webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 247636,
+  "sha256": "57cd8ff51081213751e52a53438cf664beb0b07e0258402bc6b6ab7dc95dd202",
+  "gitBlobSha": "a6b236311adff766d134a56fe62183f6d1640a64",
+  "format": "webp",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.5
+  },
+  "textSafeRegion": "top",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "self_control",
+    "locale": "en",
+    "exactLabel": "Self-control",
+    "reference": "Galatians 5:22-23",
+    "scriptureTextIncluded": false,
+    "contextReview": "Galatians 5:22-23 places self-control among the fruit of the Spirit within Galatians 5:16-26; the image is an illustrative choice of attentive care, not a promise of rewards or independent willpower."
+  },
+  "generation": {
+    "sourceOriginalName": "a_vertical_cinematic_shallow_depth_of_field_outd.png",
+    "sourceBytes": 2531329,
+    "sourceSha256": "7d8d6bb409be066c6adfc428f59f08c836494244f18a15e750f46029d3d33a01",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceCropRect": {
+      "left": 1,
+      "top": 1,
+      "right": 1121,
+      "bottom": 1401
+    },
+    "generationId": "f8489ac2-e057-4dc9-83f7-1f73fec3840f",
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "prompt": "not exposed by tool; prompt metadata empty",
+    "sourceRevision": "v7/development 1bec7acade37e5330079f964baa3c97b1e7716f1",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source supplied",
+    "fontFamilies": [
+      "Noto Serif"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright",
+    "fontFilesRedistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A father puts his phone aside and listens attentively to his young daughter on a playground bench.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "TL Pagpipigil sa sarili, CEB Pagpugong sa kaugalingon, ILO Panagtengngel iti bagi: CLEAN image plus live localized label/reference; English TYPE excluded from non-English locales."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-self-control-02.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 247636,
+      "sha256": "57cd8ff51081213751e52a53438cf664beb0b07e0258402bc6b6ab7dc95dd202",
+      "gitBlobSha": "a6b236311adff766d134a56fe62183f6d1640a64",
+      "format": "webp",
+      "altText": "A father puts his phone aside and listens attentively to his young daughter on a playground bench.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/need/bqv7-need-self-control-02-with-text-en.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 259426,
+      "sha256": "415a6260bc3b5610d46023ea683ac924d41e10924977e9372e0cef6ff80452f8",
+      "gitBlobSha": "073031f8df8000e00bfddaf28b80de319dfc8ea0",
+      "format": "webp",
+      "altText": "A father listens to his daughter at a playground, with English text Self-control and Galatians 5:22-23.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": false,
+        "cropReviewed": true
+      },
+      "embeddedWording": {
+        "label": "Self-control",
+        "scriptureReference": "Galatians 5:22-23",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontFilesRedistributed": false,
+        "method": "Pillow rasterized English label and reference on top dark gradient; measured first text pixels 161px from top of 1280px (>=128px)."
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-self-control-02-thumbnail.webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 53662,
+      "sha256": "8b0308f84831e77281bb895fcd52fd1cf26629a9f071342c0de6eb3503e0b9c3",
+      "gitBlobSha": "0787ee4f5e712394d7f791b57a0eaa559e77e6cd",
+      "format": "webp",
+      "altText": "A father puts his phone aside and listens attentively to his young daughter on a playground bench.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 0,
+          "top": 0,
+          "right": 1024,
+          "bottom": 1280
+        },
+        "targetAspectRatio": "4:5",
+        "method": "full-frame Lanczos resize from CLEAN; phone and both faces remain visible"
+      }
+    }
+  ],
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": true,
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "localPillowDecodeAndHashesVerified": true,
+    "independentVisualQA": "pending",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "not_run",
+    "productionReady": false,
+    "localChromiumHttpFixture": {
+      "engine": "not_run",
+      "viewports": [
+        320,
+        390,
+        430,
+        800
+      ],
+      "allNineVariantViewportChecksPassed": false,
+      "servedHttpHashesMatchedLocalSource": false,
+      "scope": "static local Pillow previews only; not browser or built app"
+    },
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "editorialDiversity": "distinct from Wisdom desk; outdoor parent-child listening; independent comparison pending"
+  }
+}
