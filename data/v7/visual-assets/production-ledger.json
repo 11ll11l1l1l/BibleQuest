@@ -14,7 +14,8 @@
       "claimedAt": "2026-10-10T11:10:00+09:00",
       "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
       "qa": {},
-      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-one-concern-at-a-time-01.json"
     },
     {
       "family": "devotional",
@@ -28,7 +29,8 @@
       "claimedAt": "2026-10-10T11:10:00+09:00",
       "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
       "qa": {},
-      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-courage-next-step-01.json"
     },
     {
       "family": "devotional",
@@ -42,7 +44,8 @@
       "claimedAt": "2026-10-10T11:10:00+09:00",
       "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
       "qa": {},
-      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-make-room-for-sorrow-01.json"
     },
     {
       "family": "devotional",
@@ -56,7 +59,8 @@
       "claimedAt": "2026-10-10T11:10:00+09:00",
       "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
       "qa": {},
-      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-love-remembers-01.json"
     },
     {
       "family": "devotional",
@@ -70,7 +74,8 @@
       "claimedAt": "2026-10-10T11:10:00+09:00",
       "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
       "qa": {},
-      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
     }
   ]
 }
