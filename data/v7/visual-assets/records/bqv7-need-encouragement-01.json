@@ -3,7 +3,7 @@
   "assetId": "bqv7-need-encouragement-01",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-10T05:12:01+09:00",
-  "status": "candidate_independent_qa_pending",
+  "status": "candidate_scene_revision_required",
   "bundleStatus": "three_real_files_local_qa_pass_independent_qa_pending",
   "family": "need",
   "visualRole": "need_tile",
@@ -100,7 +100,15 @@
       "publishedServedBytes": "not_run",
       "actualBuiltApp": "not_run",
       "method": "Pillow exact-text annotation from original CLEAN, feathered translucent upper-left veil; no hard seam, no Scripture prose"
-    }
+    },
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Standalone original 5K runners scene conflicts with mandatory guidebook §6 chess-club scene. TYPE also has reported sub-10% top inset; replacing TYPE alone would not correct narrative mismatch. Existing source and all derivatives require scene revision.",
+    "rejectedSourceCleanSha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+    "rejectedTypeSha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+    "rejectedThumbSha256": "d61b924ee552ea4e1502f7c97c3dcf79f2940ee223f2cce19a04aaaafc6579b1",
+    "requiredScene": "An experienced chess-club volunteer calmly reassures a beginner after a lost match, pointing to a blank wooden board; not a repeat 5K finish line.",
+    "requiredNextAction": "Create ONE genuinely standalone source matching mandatory guidebook §6, document >=3 novelty axes from the rejected scene and source revision, replace only owned CLEAN/TYPE/THUMB+sidecar after producer QA; submit to independent Visual QA; do not merge current candidate.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
   },
   "variants": [
     {
