@@ -13,7 +13,7 @@ const RECORD_DIR = 'data/v7/visual-assets/records';
 const INITIAL_SCENES = 'data/v7/visual-assets/lane-z-initial-30-source-briefs.json';
 
 const GUIDEBOOK_DIR = 'docs/v7/unfinished-artwork-guide';
-const SCENE_FIELD = /^\*\*(?:Mandatory scene|Generate this exact story|Visual action \(mandatory\)|Unique scene|Required unique scene|Required scene|Generate only this moment|Distinct human interaction|Unique remembrance cue):\*\* (.+)$/m;
+const SCENE_FIELD = /^\s*(?:-\s*)?\*\*(?:Mandatory scene|Generate this exact story|Visual action \(mandatory\)|Unique scene|Required unique scene|Required scene|Generate only this moment|Distinct human interaction|Unique remembrance cue):\*\* (.+)$/m;
 const GUIDE_FILES = Object.freeze([
   '01-first-story-shots.md', '02-second-story-shots.md', '03-third-narrative-shots.md',
   '04-prayer-wisdom-shots.md', '05-next-hour-action-shots.md', '06-faithful-action-shots.md',
