@@ -339,7 +339,7 @@
       "producer": "manual-chat-modern-20261011",
       "sourceRevision": "r1",
       "sceneRevision": "shot-loneliness.06-modern-20261011-a1",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:08:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
@@ -351,7 +351,12 @@
         "focalObject": "chairs",
         "cameraLightSafeZone": "side-profile warm dusk, bottom title safe"
       },
-      "note": "Manual chat CLEAN only, native original 4:5 modern realism; reject biblical era or multi-panel; QA pending"
+      "note": "Manual chat CLEAN only, native original 4:5 modern realism; reject biblical era or multi-panel; QA pending",
+      "failedMeasuredBytesSha256": "9a3b640529e07fbcbbf2a3719ed485e10718ca648eee559da08e855ce1b8ecd4",
+      "failure": "Modern subjects but forbidden triptych combining chair-arranging, bicycle commuter, and traveler gratitude into a single image; 1374x1145 landscape, not standalone 4:5; PNG 2267200 bytes; discarded locally.",
+      "generatorId": "5340e0fb-5870-4242-a49a-ca612d1485fa",
+      "localFileDeleted": true,
+      "closedAt": "2026-10-11T08:13:00+09:00"
     },
     {
       "family": "devotional",
@@ -396,6 +401,28 @@
         "cameraLightSafeZone": "low tabletop diffused daylight, right title safe"
       },
       "note": "Manual chat CLEAN only, native original 4:5 modern realism; reject biblical era or multi-panel; QA pending"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-modern-loneliness-06-a2",
+      "producer": "manual-chat-modern-20261011",
+      "sourceRevision": "r1",
+      "sceneRevision": "shot-loneliness.06-modern-20261011-a2-singleframe",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T08:13:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
+      "sourceChecksum": "sha256:940e8097c349316c158fb3680cbb98b3ca10339fd8efbee7206941921996028c",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "contemporary newcomer arranging folding chairs before evening neighborhood reading group",
+        "setting": "modern multipurpose community reading room",
+        "focalObject": "chairs",
+        "cameraLightSafeZone": "side-profile warm dusk, bottom title safe"
+      },
+      "note": "Independent retry; strictly one modern reading room scene; 4:5 portrait, no multiple panels"
     }
   ]
 }
