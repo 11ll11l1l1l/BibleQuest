@@ -85,3 +85,94 @@ test('Home/card and deck effects transform or fade only, with bounded displaceme
 test('lack of WAAPI is a safe immediately-visible no-op',()=>{
   assert.doesNotThrow(()=>pageTransition({}, {environment:normal})());
 });
+
+function changingPreferencesFixture() {
+  const f = elementFixture();
+  let observer;
+  const listeners = new Map();
+  const media = {
+    matches:false, callbacks:new Set(),
+    addEventListener(name,fn) { if(name==='change')this.callbacks.add(fn); },
+    removeEventListener(name,fn) { if(name==='change')this.callbacks.delete(fn); },
+    fire() { for(const fn of this.callbacks)fn(); }
+  };
+  const document = {
+    hidden:false, documentElement:{ dataset:{} },
+    addEventListener(name,fn) { listeners.set(name,fn); },
+    removeEventListener(name,fn) { if(listeners.get(name)===fn)listeners.delete(name); }
+  };
+  class Observer {
+    constructor(callback) { this.callback=callback;this.active=false;observer=this; }
+    observe(node,opts) {
+      assert.equal(node,document.documentElement);
+      assert.deepEqual(opts.attributeFilter,['data-bq-effective-motion','data-bq-motion']);
+      this.active=true;
+    }
+    disconnect() {this.active=false;}
+    fire() {if(this.active)this.callback();}
+  }
+  return { ...f, media, document, listeners, get observer(){return observer;},
+    environment:{document,matchMedia:()=>media,MutationObserver:Observer} };
+}
+
+test('switching OS preference to reduced motion cancels an in-flight animation immediately',()=>{
+  const f=changingPreferencesFixture();
+  pageTransition(f.element,{environment:f.environment});
+  assert.equal(f.records.length,1);
+  assert.equal(f.media.callbacks.size,1);
+  assert.equal(f.observer.active,true);
+  f.media.matches=true;
+  f.media.fire();
+  assert.equal(f.records[0].cancelled,1);
+  assert.equal(f.media.callbacks.size,0,'cancel detaches media listener');
+  assert.equal(f.observer.active,false,'cancel disconnects DOM observer');
+  assert.equal(f.listeners.size,0,'cancel detaches visibility listener');
+  f.media.fire();
+  assert.equal(f.records[0].cancelled,1,'stale preference event never double-cancels');
+});
+
+test('changing in-app reduce/off preference cancels current effect without another tap',()=>{
+  const f=changingPreferencesFixture();
+  cardReveal(f.element,{environment:f.environment});
+  f.document.documentElement.dataset.bqEffectiveMotion='reduce';
+  f.observer.fire();
+  assert.equal(f.records[0].cancelled,1);
+  f.document.documentElement.dataset.bqEffectiveMotion='';
+  deckSpring(f.element,{delta:10,environment:f.environment});
+  assert.equal(f.records.length,2);
+  f.document.documentElement.dataset.bqMotion='off';
+  f.observer.fire();
+  assert.equal(f.records[1].cancelled,1);
+});
+
+test('backgrounding app cancels motion and detaches visibility observer',()=>{
+  const f=changingPreferencesFixture();
+  const stop=pressFeedback(f.element,{environment:f.environment});
+  assert.equal(f.listeners.has('visibilitychange'),true);
+  f.document.hidden=true;
+  f.listeners.get('visibilitychange')();
+  assert.equal(f.records[0].cancelled,1);
+  stop();
+  assert.equal(f.records[0].cancelled,1);
+  assert.equal(f.listeners.size,0);
+});
+
+test('finishing current WAAPI animation removes listeners without cancelling completed effect',async()=>{
+  const f=changingPreferencesFixture();
+  let resolveFinished;
+  f.element.animate=(frames,options)=>{
+    const item={frames,options,cancelled:0,cancel(){this.cancelled++;},
+      finished:new Promise(resolve=>{resolveFinished=resolve;})};
+    f.records.push(item);return item;
+  };
+  const stop=pageTransition(f.element,{environment:f.environment});
+  assert.equal(f.media.callbacks.size,1);
+  resolveFinished();
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(f.media.callbacks.size,0,'completed effect detaches media listener');
+  assert.equal(f.observer.active,false,'completed effect disconnects observer');
+  assert.equal(f.listeners.size,0);
+  stop();
+  assert.equal(f.records[0].cancelled,1,'returned cleanup remains idempotent');
+});
