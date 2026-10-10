@@ -6,7 +6,7 @@ const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'dis
   .map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
 const row = (stepId = 'step-3', response = 'saved') => ({ id: `response-${stepId}`, stepId, lessonRevisionId: 'revision', response, audienceUserIds: [], visibility: 'owner' });
 
-function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false } = {}) {
+function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false, omitResponseLoad = false } = {}) {
   const auth = { authenticated: true, user: { id: userId } };
   const active = { congregationId: 'church', userId };
   const log = [], responseWrites = [], progressWrites = [];
@@ -24,6 +24,7 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
     async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return shareCallback ? shareCallback({pairId,revisionId,stepId,responseId,options}) : [{ id: 'share', response_id: responseId }]; },
     async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return revokeCallback ? revokeCallback({pairId,revisionId,stepId,responseId}) : { id: 'share', response_id: responseId }; },
   };
+  if (omitResponseLoad) delete service.loadPrivateResponses;
   if (omitResponseSave) delete service.savePrivateResponse;
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
@@ -333,4 +334,44 @@ test('unavailable response persistence cannot silently advance lesson progress',
   assert.equal(f.runner.getState().stepIndex, 1);
   assert.equal(f.runner.getState().responseDrafts['step-1'], 'must remain in draft');
   assert.equal(f.progressWrites.length, before);
+});
+
+test('missing response-read API cannot be interpreted as no existing shares', async () => {
+  const f = fixture({ omitResponseLoad: true });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  f.runner.updateResponse('private until consent is known', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().stepIndex, 0);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, 0);
+  await assert.rejects(f.runner.shareResponse('step-1', { confirmed: true }),
+    { code: 'BQ_LESSON_RESPONSE_HYDRATION_REQUIRED' });
+  assert.equal(f.log.some(entry => entry[0] === 'shareResponse'), false);
+});
+
+test('duplicated response rows fail closed before an edit may persist', async () => {
+  const f = fixture({ loadResponses: async () => [
+    row('step-1', 'owner version'),
+    { ...row('step-1', 'conflicting version'), visibility: 'shared', audienceUserIds: ['mentor'] },
+  ] });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.match(f.runner.getState().responseError, /Conflicting saved responses/);
+  assert.deepEqual(f.runner.getState().responses, {});
+  f.runner.updateResponse('would be unsafe', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.runner.getState().stepIndex, 0);
+});
+
+test('a response from another lesson revision cannot grant stale sharing', async () => {
+  const f = fixture({ loadResponses: async () => [
+    { ...row('step-1', 'untrusted'), lessonRevisionId: 'other-revision', visibility: 'shared', audienceUserIds: ['mentor'] },
+  ] });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.match(f.runner.getState().responseError, /did not belong/);
+  assert.deepEqual(f.runner.getState().responses, {});
 });
