@@ -255,6 +255,54 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-10T16:13:00.353Z",
       "generatorId": "2d65d2ee-74f6-43ca-b2a8-45c58de3ac15"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "bq7-doubt03-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-doubt03-iigauc",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "notes": "New manual-chat-only CLEAN artwork; claim visible in PR before creating pixels; independent five-role QA required."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.06",
+      "variant": "CLEAN",
+      "attemptId": "bq7-peace06-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-peace06-iigauc",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06c.json",
+      "sourceChecksum": "sha256:bba7a81eb97df154aed7ac33fdb9bd2ecad6ebbb92fa0c29988f6471baf9ee0e",
+      "guidePath": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "notes": "New manual-chat-only CLEAN artwork; claim visible in PR before creating pixels; independent five-role QA required."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.shame.11",
+      "variant": "CLEAN",
+      "attemptId": "bq7-shame11-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-shame11-iigauc",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-11-backfill.json",
+      "sourceChecksum": "sha256:36db3b9a6b63fc5e0c72a3110bfb93be39932605cd3134aeecf221a3ceefe733",
+      "guidePath": "docs/v7/unfinished-artwork-guide/11-original-backfill-shots.md",
+      "notes": "New manual-chat-only CLEAN artwork; claim visible in PR before creating pixels; independent five-role QA required."
     }
   ]
 }
