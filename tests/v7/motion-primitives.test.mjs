@@ -34,6 +34,31 @@ test('reduced-motion and media preference disable all nonessential animation', (
   deckSpring(f.element,{ delta: 20, environment: reduced })();
   assert.equal(f.records.length,0);
 });
+test('reduced/off motion preference cancels an in-flight effect without replay', () => {
+  const f = elementFixture();
+  const previous = cardReveal(f.element, { environment: normal });
+  assert.equal(f.records.length, 1);
+  pressFeedback(f.element, { environment: reduced })();
+  assert.equal(f.records[0].cancelled, 1);
+  assert.equal(f.records.length, 1, 'no new animation may run in reduced mode');
+  previous();
+  assert.equal(f.records[0].cancelled, 1, 'stale disposer cannot double-cancel');
+
+  pageTransition(f.element, { environment: normal });
+  const off = { ...normal, document: { documentElement: { dataset: { bqMotion: 'off' } } } };
+  deckSpring(f.element, { delta: 30, environment: off })();
+  assert.equal(f.records[1].cancelled, 1);
+  assert.equal(f.records.length, 2, 'off mode must not enqueue effects');
+});
+
+test('loss of animation support still cancels the previous effect', () => {
+  const f = elementFixture();
+  pageTransition(f.element, { environment: normal });
+  delete f.element.animate;
+  cardReveal(f.element, { environment: normal })();
+  assert.equal(f.records[0].cancelled, 1);
+});
+
 test('fast interaction cancels stale motion while never delaying state changes', () => {
   const f=elementFixture();
   const old=pageTransition(f.element,{environment:normal});

@@ -100,3 +100,21 @@ translation or release QA approvals. Files only present in separate
 draft pull requests are not part of these numbers. If the audit reports
 `status: FAIL`, do not publish the manifest, regardless of intermediate
 coverage statistics. The release remains gated by independent visual QA.
+
+
+### Source-pixel reject ledger (Lane A)
+
+`scripts/v7-visual-candidate-policy.mjs` contains a **SHA-256-bound visual
+reject list** for exact rejected TYPE/CLEAN files from visual-agent drafts,
+including PRs #1423, #1437, #1438, #1439, and #1448. This list records
+documented source-pixel safe-area or near-duplicate findings. These are
+**specific rejected binary hashes, not whole concepts or agents**.
+
+Both candidate triage and the production registry reject those exact bytes
+even if a draft simply changes `qa` fields or sets `production_ready`.
+After the producer repairs a composition, the corrected source must be
+independently rendered and measured (new SHA-256, actual byte count/dimensions)
+and pass source-art inspection, Scripture/translation review, canonical image
+audit, browser and release gates. A new SHA is **not automatically an approval**.
+Keep CLEAN with live translated text as a fallback when TYPE is rejected;
+do not publish a visually rejected three-file bundle.
