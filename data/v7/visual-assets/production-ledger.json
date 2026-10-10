@@ -440,10 +440,31 @@
         "palette": "warm wood and muted neutral clothing",
         "textSafeRegion": "top-left"
       },
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-10T23:31:43.554Z",
       "qa": {},
-      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 371634,
+        "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4"
+      },
+      "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-10T23:59:50.116Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single scene; four contemporary adults repairing a wooden door on a jig",
+          "three stabilize the door while the fourth aligns a hinge",
+          "no legible text or religious imagery",
+          "native 1122x1402 WebP meets portrait minimum and ratio tolerance"
+        ]
+      }
     },
     {
       "family": "hero",
