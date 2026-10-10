@@ -216,3 +216,31 @@ test('response hydration error provides an in-place retry without clearing the d
   assert.equal(state.responseDrafts['step-1'], 'preserve my draft');
   cleanup();
 });
+
+test('share controls remain disabled until saved consent has been hydrated', () => {
+  function display(responseStatus) {
+    const state = {
+      status: 'ready', responseStatus, shareStatus: 'idle', stepIndex: 1, writable: true,
+      progress: null, error: null, responses: {}, responseDrafts: { 'step-1': 'draft text' },
+      lesson: { steps: [
+        { id: 'step-0', type: 'scripture', content: { text: 'Read' } },
+        { id: 'step-1', type: 'understand', content: { text: 'Discuss' } },
+      ] },
+    };
+    const host = { innerHTML: '', querySelector() { return null; } };
+    const page = { querySelector: () => host, addEventListener() {}, removeEventListener() {} };
+    const runner = { getState: () => state, subscribe() { return () => {}; },
+      load() {}, invalidate() {}, dispose() {} };
+    const dispose = createLessonRunnerPage({ runner, onBack() {}, subscribeContext() { return () => {}; } })
+      .mount({ querySelector: () => page });
+    const html = host.innerHTML;
+    dispose();
+    return html;
+  }
+  for (const status of ['loading', 'error']) {
+    const html = display(status);
+    assert.match(html, /data-lesson-share-confirm="step-1" disabled/);
+    assert.match(html, /data-lesson-share="step-1" disabled/);
+  }
+  assert.match(display('ready'), /data-lesson-share="step-1">/);
+});
