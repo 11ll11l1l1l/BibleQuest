@@ -1,7 +1,9 @@
 # BibleQuest V7 — Complete Unfinished Image Construction Guidebook
-**Edition:** 2026-10-10 JST | **Branch scope:** `v7/development` | **Classification:** production art direction / QA prevention, **not** artwork approval.
+**Edition:** updated 2026-10-11 JST | **Branch scope:** `v7/development` | **Classification:** production art direction / QA prevention, **not** artwork approval.
 
 > **Purpose.** Replace open-ended image prompts with an exact-ID, explicitly composed shot list. The producer chooses and creates the assigned scene, not its own generic metaphor. The QA reviewer checks produced pixels against this brief, against all existing approved and candidate files, and against Scripture/source rights before any production promotion. This book neither creates nor approves images.
+
+> **2026-10-11 production/QA override:** [Mandatory five-agent automated QA and work ledger](../V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md) supersedes the earlier producer-agent allocation, routine human image-approval step and aspirational resolution demands. Image pixels originate only in expressly invoked interactive ChatGPT chats. All five scheduled agents do QA only. Read the central ledger and open PRs before any new shot; QA FAIL deletes unapproved staged pixels, records a tombstone, and advances to the next candidate immediately. All stricter Scripture, rights, originality and exact-build gates remain mandatory.
 
 ## 1. Scope, current evidence and accounting
 
@@ -22,7 +24,7 @@ Authoritative sources: `docs/v7/V7_PRIORITIZED_MILESTONES_20261010.md`, `V7_EIGH
 
 **Technical medium:** Final art MUST be true high-resolution raster **WebP or PNG**, not SVG, raster-inside-SVG wrappers, tiny contact-sheet crops, renamed extensions, rendered UI screenshots, or a generated collection grid. Keep an editable high-resolution intermediate internally if needed; only hash and publish the actual independently retrievable output images. No external fonts/scripts/network references in image payloads.
 
-**Image families and geometry:** Feeling CLEAN aims 1:1 at approximately 1536×1536; Need and devotional CLEAN 4:5 at **at least 1024×1280**, prefer approximately 1536×1920; Home hero CLEAN 16:9 aiming 1920×1080 or greater with enough detail for responsive 2:1 crop; teaching thematic art 16:9; any rights-clear book *thematic* art 2:3. Target ratios are design targets; actual app geometry must determine exported TYPE/THUMB aspect and the verified source dimensions. Never stretch or rescale a flat tiny render as supposed high-resolution art. Legacy valid raster assets can remain and be backfilled rather than discarded solely for being smaller.
+**Image families and geometry:** Feeling CLEAN 1:1 **at least 1024×1024**; Need and devotional CLEAN 4:5 **at least 768×960**, preferably 1024×1280 when natively available; Home hero CLEAN 16:9 aiming 1920×1080 or greater with enough detail for responsive 2:1 crop; teaching thematic art 16:9; any rights-clear book *thematic* art 2:3. Target ratios are design targets; actual app geometry must determine exported TYPE/THUMB aspect and the verified source dimensions. Never stretch or rescale a flat tiny render as supposed high-resolution art. Legacy valid raster assets can remain and be backfilled rather than discarded solely for being smaller.
 
 **Every required three-file concept has:** (a) **CLEAN**, original fully text-free scene; (b) **TYPE**, independently raster-composited typography on the approved scene, using exact canonical EN taxonomy title and a **context-reviewed reference-only** Bible reference unless a separately licensed exact quote is explicitly cleared; (c) **THUMB**, separately exported, intentionally focused **text-free** crop. All 3 have distinct *real files*, not three URLs to one source; actual SHA-256, byte count, format, geometry, rights, provenance, alt/decorative state, local title-safe region, and crop focal points.
 
@@ -163,7 +165,7 @@ Each chapter's `### devotional.biblequest.<emotion>.<sequence>` section is an **
 | 11 — source-specific backfills | 6 | [11-original-backfill-shots.md](11-original-backfill-shots.md) |
 | **Total** | **300** | **300 different content-ID slots, not 300 approved binaries** |
 
-**Cover output:** each P4 target needs at minimum one standalone, original **4:5, `>=800×1000`** encoded portrait CLEAN with verified source ID/revision, SHA-256, bytes and rights. Prefer at least 1024×1280, ideally ~1536×1920. TYPE/THUMB are optional enhancements **for the base P4 300-CLEAN count**, counted separately and never faked. Do not register a Feeling illustration repurposed for a devotional as a distinct P4 cover.
+**Cover output:** each P4 target needs at minimum one standalone, original **4:5, `>=768×960`** encoded portrait CLEAN with verified source ID/revision, SHA-256, bytes and rights. Prefer native 1024×1280 when available; do not reject good 768×960 source solely because the generator cannot yield 1536×1920. TYPE/THUMB are optional enhancements **for the base P4 300-CLEAN count**, counted separately and never faked. Do not register a Feeling illustration repurposed for a devotional as a distinct P4 cover.
 
 **Existing source-bound candidates** from #1476: `devotional.biblequest.anxiety_worry.01`, `fear.01`, `sadness.01`, `grief_loss.01`, `loneliness.01`. Their PNGs and sidecars are **candidate_qa_pending**; compare actual pixels to chapter 01 before any acceptance or regeneration. A failed source means a new explicitly differentiated scene revision, not just re-exporting the same crop.
 
@@ -175,7 +177,7 @@ The five first-party Past Teachings can receive **one original 16:9 thematic** s
 
 ## 11. Per-asset record and approval checklist
 
-No producer can claim QA by filling checkboxes. Capture evidence links and independent signer identity through the existing governed review process.
+No producer can claim QA by filling checkboxes. Five distinct scheduled QA roles record independently observable evidence in the central ledger; human image approval is not required. The existing strict rights/Scripture and release evidence gates remain enforced.
 
 ```text
 assetId / contentType / canonicalContentId / owner / sourcePath / sourceRevision / sourceChecksum
@@ -192,7 +194,7 @@ Independent decision: accept / correct specified variant / reject source / hold 
 Release: exact integrated SHA, Cloudflare deployed identity and rollback readiness
 ```
 
-**One failed rule = no promotion.** The guide’s descriptions are **preflight controls**, not absolute guarantees that a nondeterministic image-generation model will comply. Final independent pixel-level/contextual review stays mandatory. Preserve original approved CLEANs and mark all drafted, incomplete or rejected images accurately.
+**One failed rule = no promotion.** The guide’s descriptions are **preflight controls**, not absolute guarantees that a nondeterministic image-generation model will comply. Final independent agent pixel-level/contextual review stays mandatory; HOLD inaccessible pixels rather than guessing, and immediately review the next asset. Preserve original approved CLEANs and mark all drafted, incomplete or rejected images accurately.
 
 ## 12. Routing and sequence to minimize wasted renders
 
@@ -202,4 +204,4 @@ Release: exact integrated SHA, Cloudflare deployed identity and rollback readine
 4. Independently certify core launch image/UX/Scripture/privacy gates before Lane D release; P4 covers continue separately and cannot falsify the P3 release barrier.
 5. Lane Z works through [chapters 01–11](01-first-story-shots.md) by unique content ID, first checking existing five QA-pending candidates. Generate one real CLEAN per eligible ID, collect hashes and pixel evidence, then consider variants. Needs 6–19 and optional teaching/book thematic scenes remain P5 and must not displace critical path.
 
-**Guarded authority:** Lane A image records and assets; X missing special slots; Y exact older variants; Z dedicated devotional covers; scheduled producers handle their own disjoint Feeling/Need sets; independent visual QA can reject but cannot self-approve a generated image; B checks Scripture/rights/publication; D verifies and releases exact built artifact. Draft docs may be merged into `v7/development` without granting themselves asset publication authority.
+**Guarded authority:** Lane A image records and assets; X missing special slots; Y exact older variants; Z dedicated devotional covers; scheduled producers handle their own disjoint Feeling/Need sets; five independent QA-only agents own visual QA and may each PASS their own check (all five required); no QA agent generates imagery; B checks Scripture/rights/publication; D verifies and releases exact built artifact. Draft docs may be merged into `v7/development` without granting themselves asset publication authority.
