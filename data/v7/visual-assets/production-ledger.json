@@ -97,10 +97,18 @@
       "sourcePath": "src/features/library/emotion-taxonomy.js",
       "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
       "producer": "user-invoked-interactive-chat-20261011",
-      "status": "claimed",
+      "status": "failed",
       "claimedAt": "2026-10-10T16:07:02.025Z",
-      "qa": {},
-      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Generator produced a three-panel biblical-era collage instead of the locked modern neighborhood workshop scene; prohibited triptych and missing target action."
+        }
+      },
+      "note": "Producer-side fail before GitHub upload; local file deleted; no accepted bytes.",
+      "failedSha256": "b45c3abd0d299b960e64920f10c6fc1ff685350543fee7975997e3925fd702b2",
+      "localFileDeleted": true,
+      "failedAt": "2026-10-10T16:08:36.260Z"
     },
     {
       "family": "need",
@@ -151,6 +159,31 @@
       "claimedAt": "2026-10-10T16:07:02.025Z",
       "qa": {},
       "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-02",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v2",
+      "shotFingerprint": {
+        "narrativeAction": "Adult arrives to begin first safe craft workshop task",
+        "setting": "modest neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety gear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "one continuous frame eye-level at door threshold, adult in protective eyewear and work apron at nearby first practical craft task",
+        "light": "neutral daylight from workshop windows",
+        "palette": "neutral workshop with muted earth colors",
+        "metaphor": "concrete first step"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:08:36.260Z",
+      "qa": {},
+      "note": "New revision after wrong three-panel biblical collage. Single contemporary workshop scene, portrait 4:5 CLEAN only."
     }
   ]
 }
