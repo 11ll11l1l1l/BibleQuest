@@ -34,9 +34,27 @@ export const KNOWN_REJECTED_V7_VARIANTS = Object.freeze({
   ])
 });
 
+// Standalone Lane Z generation rejects. Store only digest/reason, never the
+// rejected PNG: failed generations must not clutter the repository. A valid
+// 4:5 size and a new asset ID cannot rehabilitate these exact pixels.
+export const KNOWN_REJECTED_LANE_Z_CLEAN_SHA256 = Object.freeze({
+  'd2614b2bae7e88a36d35a4af2f96fdfc3002c398f5bafe30c41c9603d8598ea5':
+    '2026-10-10 Lane Z anger.01: 20-panel generic devotional collage, not one source-bound bicycle repair scene',
+  '9b75957118f7596d4b504d6503b80fdc1a32f804ec5903ec46513c66f997d474':
+    '2026-10-10 Lane Z anger.01: mountain prayer/sunset/cross, unrelated to the required pause-and-listen workshop scene'
+});
+
+export function knownRejectedLaneZCoverReason(sha) {
+  return typeof sha === 'string' ? (KNOWN_REJECTED_LANE_Z_CLEAN_SHA256[sha] || null) : null;
+}
+
 // Narrow exact-pixel rejection shared by candidate triage and release audit.
 // The latter already has its own detailed variant QA error messages.
 export function knownRejectedVisualReason(record) {
+  if (record?.contentType === 'devotional') {
+    const rejectedCover = knownRejectedLaneZCoverReason(record.sha256);
+    if (rejectedCover) return 'known-bad devotional CLEAN pixels: ' + rejectedCover;
+  }
   for (const variant of record?.variants || []) {
     const rejected = KNOWN_REJECTED_V7_VARIANTS[record?.assetId]?.find(item =>
       item.kind === variant.kind && item.sha256 === variant.sha256);
