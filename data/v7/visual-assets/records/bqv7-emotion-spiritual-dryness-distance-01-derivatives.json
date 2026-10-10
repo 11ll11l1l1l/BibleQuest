@@ -4,7 +4,7 @@
   "parentAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T15:10:57+09:00",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_real_webp_derivatives_independent_qa_pending",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentId": "spiritual_dryness_distance",
@@ -24,12 +24,12 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 72801,
-      "sha256": "218413ed523d3bdb5613401ba36600c0356aedf0e21b78609e69f31b18b55d6b",
+      "fileBytes": 116420,
+      "sha256": "2447467ec045954618fdb71c87d721371c9cdd28e53831c7e025ce969bd48107",
       "locale": "en",
       "exactWording": "Spiritually dry / distant",
       "referenceOnly": "Psalm 42:1-2",
@@ -59,7 +59,7 @@
         "referenceFontPx": 52,
         "referenceEquivalentAt320Px": 16.25,
         "referenceMobileGeometryChecked": true,
-        "typeReadableAt320px": false,
+        "typeReadableAt320px": "pending_independent_visual_mobile_review",
         "visualInspected": false,
         "imageDecoded": false,
         "unreviewedEnglishCopyRemoved": true,
@@ -68,17 +68,39 @@
           "/ distant",
           "PSALM 42:1-2"
         ],
-        "originalRasterBytesUnchanged": true
-      }
+        "originalRasterBytesUnchanged": true,
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "exactEnglishWordingPresentInRaster": true,
+        "scriptureReferenceOnly": true,
+        "noGeneratedVerseText": true
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
+        "format": "svg",
+        "sha256": "218413ed523d3bdb5613401ba36600c0356aedf0e21b78609e69f31b18b55d6b",
+        "gitBlobSha": null,
+        "bytes": 72801
+      },
+      "gitBlobSha": "1d3fd75eb88edf16e248abc504059b0c80acdb49"
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.webp",
+      "format": "webp",
       "width": 400,
       "height": 500,
-      "fileBytes": 71566,
-      "sha256": "0f2505e071a19d20896c9b8007afda29e4f7b4f61475b6751dfd5fc075b6c663",
+      "fileBytes": 34316,
+      "sha256": "c607f6d7a593605b3cf2b6fde0365c5a60d33b90fd1a6f2d6e34889ef73821c9",
       "crop": {
         "source": {
           "x": 85,
@@ -100,8 +122,29 @@
       "qa": {
         "noText": true,
         "embeddedSource": true,
-        "browserRenderPending": true
-      }
+        "browserRenderPending": true,
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": "native_preview_pass_independent_review_pending"
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
+        "format": "svg",
+        "sha256": "0f2505e071a19d20896c9b8007afda29e4f7b4f61475b6751dfd5fc075b6c663",
+        "gitBlobSha": null,
+        "bytes": 71566
+      },
+      "gitBlobSha": "ae52df9ef4865e703711b1cc7f412264b1655ebf"
     }
   ],
   "wordingEvidence": {
@@ -128,9 +171,33 @@
     "sourceSceneReviewed": true,
     "reviewedEnglishWording": true,
     "exactMetadataMeasured": true,
-    "browserRenderedTypeQA": "pending",
-    "notes": "Removed an unapproved embedded English UI heading from the TYPE SVG; only canonical English emotion label and Psalm 42:1-2 reference remain. Original WebP/CLEAN and THUMB unchanged. TYPE SHA-256 and byte size independently recalculated from the exact committed SVG. Actual built-app raster/render, font appearance, phone legibility and crop remain pending; candidate is NOT production-ready.",
+    "browserRenderedTypeQA": "pending_exact_head",
+    "notes": "Lane Y produced 2 independently stored WebP derivative(s) from byte-pinned legacy data-URI SVG(s) via https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38045007143. Source CLEAN bytes were not modified. Native WebP pixels inspected and copy/reference preliminarily checked; full 320/390/430 built-app verification, independent content/rights/typographic review and release certification remain pending.",
     "referenceGeometryAt320Px": "16.25px equivalent, not visually certified",
-    "typeUnboundHeadingRemoved": true
+    "typeUnboundHeadingRemoved": true,
+    "productionReady": false,
+    "svgDataUriPolicyCompliant": null,
+    "realWebpDerivatives": true,
+    "nativeWebpReviewByLaneY": true
+  },
+  "laneYRasterExportEvidence": {
+    "runId": 38045007143,
+    "runUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38045007143",
+    "shaPinnedSources": true,
+    "exportedVariants": [
+      {
+        "kind": "TYPE",
+        "sha256": "2447467ec045954618fdb71c87d721371c9cdd28e53831c7e025ce969bd48107",
+        "bytes": 116420,
+        "gitBlobSha": "1d3fd75eb88edf16e248abc504059b0c80acdb49"
+      },
+      {
+        "kind": "THUMB",
+        "sha256": "c607f6d7a593605b3cf2b6fde0365c5a60d33b90fd1a6f2d6e34889ef73821c9",
+        "bytes": 34316,
+        "gitBlobSha": "ae52df9ef4865e703711b1cc7f412264b1655ebf"
+      }
+    ],
+    "productionReady": false
   }
 }
