@@ -7,6 +7,7 @@ const candidateSha = String(process.env.BQ_EXACT_SHA || process.env.GITHUB_SHA |
 const browser = await chromium.launch({ headless: true });
 const checks = [];
 const observations = [];
+const deckObservations = [];
 const files = [];
 const testedLocales = new Set();
 let stage = 'setup';
@@ -156,6 +157,71 @@ try {
       await context.close();
     }
   }
+
+  // Release-convergence evidence for the *routed, built* Library decks.
+  // Lane B owns the component; Lane D independently verifies behavior on
+  // the exact release binary, rather than a source-mode mock.
+  for (const reducedMotion of ['no-preference', 'reduce']) {
+    stage = 'library-decks/390/' + reducedMotion;
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 900 }, reducedMotion, hasTouch: true,
+    });
+    const page = await context.newPage();
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto(baseUrl + '/#/library', { waitUntil: 'networkidle' });
+    await page.locator('[data-library-visual-decks] [data-v7-deck="emotion"]').waitFor({ state: 'visible' });
+    for (const [kind, count] of [['emotion', 30], ['need', 19]]) {
+      stage = 'library-decks/390/' + reducedMotion + '/' + kind;
+      const deck = page.locator('[data-library-visual-decks] [data-v7-deck="' + kind + '"]');
+      const cards = deck.locator('.bq-v7-visual-deck__card');
+      const track = deck.locator('.bq-v7-visual-deck__track');
+      const arrows = deck.locator('.bq-v7-visual-deck__arrow');
+      assert.equal(await cards.count(), count, 'real ' + kind + ' deck must retain canonical card count');
+      assert.equal(await arrows.count(), 2, 'real ' + kind + ' deck needs non-swipe controls');
+      const firstId = await cards.first().getAttribute('data-v7-deck-id');
+      const secondId = await cards.nth(1).getAttribute('data-v7-deck-id');
+      const transitionMs = await cards.first().evaluate(element =>
+        Math.max(...getComputedStyle(element).transitionDuration.split(',').map(value =>
+          Number.parseFloat(value) * (value.trim().endsWith('ms') ? 1 : 1000))));
+      if (reducedMotion === 'reduce') assert.equal(transitionMs, 0,
+        kind + ': reduced-motion deck cannot animate');
+      else assert.ok(transitionMs > 0 && transitionMs <= 400,
+        kind + ': normal deck transition must be brief and perceptible');
+      assert.equal(await deck.locator('[aria-current="true"]').count(), 1,
+        kind + ': one current card before navigation');
+      const beforeSelected = await deck.locator('[aria-pressed="true"]').count();
+      await arrows.nth(1).click();
+      await page.waitForTimeout(550);
+      const activeAfterNext = await deck.locator('[aria-current="true"]').getAttribute('data-v7-deck-id');
+      assert.equal(activeAfterNext, secondId,
+        kind + ': Next must settle on the second real card');
+      assert.equal(await deck.locator('[aria-pressed="true"]').count(), beforeSelected,
+        kind + ': navigation must not select or deselect a card');
+      await track.focus();
+      await page.keyboard.press('Home');
+      await page.waitForTimeout(550);
+      const activeAfterHome = await deck.locator('[aria-current="true"]').getAttribute('data-v7-deck-id');
+      assert.equal(activeAfterHome, firstId, kind + ': keyboard Home must restore first card');
+      const layout = await track.evaluate(element => ({
+        scrollWidth: element.scrollWidth, clientWidth: element.clientWidth,
+        viewport: window.innerWidth,
+        widest: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+        focusedCard: document.activeElement?.getAttribute('data-v7-deck-id') || '',
+      }));
+      assert.equal(layout.focusedCard, firstId, kind + ': keyboard navigation must restore focus');
+      assert.ok(layout.scrollWidth > layout.clientWidth, kind + ': track must be scrollable');
+      assert.ok(layout.widest <= layout.viewport + 1, kind + ': deck caused horizontal overflow');
+      deckObservations.push({
+        width: 390, locale: 'en', reducedMotion, kind, firstId, secondId,
+        activeAfterNext, activeAfterHome, transitionMs, selectedUnchanged: true,
+        keyboardFocusRestored: true, scrollable: true, noOverflow: true,
+      });
+      checks.push('390/' + reducedMotion + '/en:built-library-' + kind + '-deck-motion-and-focus');
+    }
+    assert.deepEqual(pageErrors, [], 'built Library deck browser errors');
+    await context.close();
+  }
   await mkdir('artifacts/v7', { recursive: true });
   await writeFile('artifacts/v7/motion-built-artifact.json', JSON.stringify({
     schemaVersion: 1, result: 'PASS', candidateSha,
@@ -163,10 +229,9 @@ try {
     testedLocales: [...testedLocales],
     localeLimitations: ['Ilocano UI selection is not yet exposed in the global shell'],
     capturedStates: ['rest','interacting','settled','reduced-motion'],
-    checks, observations, screenshots: files,
+    checks, observations, deckObservations, screenshots: files,
     evidenceClass: 'built-browser-automated-viewport-keyboard-and-preference',
-    exclusions: ['physical-device-fps', 'lane-b-deck-functional-certification',
-      'lane-c-lesson-step-animation-certification'],
+    exclusions: ['physical-device-fps', 'lane-c-lesson-step-animation-certification'],
   }, null, 2) + '\n');
   console.log('PASS V7 built motion browser gate: ' + checks.length + ' viewport/preference combinations');
 } catch (error) {
