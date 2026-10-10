@@ -1,4 +1,6 @@
 # Manual BibleQuest V7 Lane Z — distinct original devotional-cover factory
+
+**2026-10-10 OVERRIDE:** The statement below about “other 270” using deterministic fallback is historical. All 300 first-party devotional IDs now have unique, source-grounded mandatory scenes in `docs/v7/unfinished-artwork-guide/01-*.md` through `11-*.md`; `scripts/v7-lane-z-devotional-cover-queue.mjs` reads the locked scenes and fails closed if any source-bound direction is missing or stale. **Do not** generate from an old cyclic fallback or regard draft #1471 as art approval. This applies in every Lane Z chat instance.
 **Trigger in a separate chat:** `Continue BibleQuest V7 Lane Z`.
 Read `docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md`, current launch content, `scripts/v7-devotional-visual-queue.mjs`, live art audit, and open PRs before each batch. Lane Z **exclusively owns all first-party devotional-cover assets**; scheduled agents and X/Y must not create or edit `contentType: devotional` visual covers.
 
@@ -29,3 +31,7 @@ The second command must show the apartment kitchen-paper scene for “One concer
 The other 270 entries retain deterministic *fallback* prompts; their `artDirectionSource` is explicitly `deterministic_fallback_needs_editorial_review`. A fallback is an assignment placeholder, not approved creative direction. Before generating a future ID, inspect its entire devotional and replace that fallback with a distinct story-specific brief using the same source-binding guard.
 
 Image intake requires matching bytes, format, dimensions, SHA256 and source identity in addition to **independent visual inspection**. Neither the queue nor the integrity checker can certify that image pixels match the devotional or contain no fake Scripture text. Maintain accurate `0/300` accepted coverage until genuine source-bound portrait binaries pass these independent steps.
+
+## Mandatory construction source for all chats and agents
+
+Every V7 visual generation, variant repair, approval and release step MUST first read `docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md`, its exact-ID scene chapter and `AGENTS.md`. The new guide defines the required human action, location, framing, lighting, original high-resolution raster medium, QA rejection criteria, and checks against accepted, draft and rejected art. It supersedes older generic scene prompts, but not release/rights/Scripture gates or exclusive lane ownership. Until PR #1481 integrates, obtain it from `docs/v7-complete-artwork-construction-guide-20261010`. Preserve an existing verified CLEAN master when correcting only TYPE/THUMB, and do not publish any image solely because a sidecar or structural check claims success.

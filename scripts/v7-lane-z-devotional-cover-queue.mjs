@@ -11,6 +11,72 @@ const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const DEVOTIONAL_DIR = 'content/v7/devotionals';
 const RECORD_DIR = 'data/v7/visual-assets/records';
 const INITIAL_SCENES = 'data/v7/visual-assets/lane-z-initial-30-source-briefs.json';
+
+const GUIDEBOOK_DIR = 'docs/v7/unfinished-artwork-guide';
+const SCENE_FIELD = /^\s*(?:-\s*)?\*\*(?:Mandatory scene|Generate this exact story|Visual action \(mandatory\)|Unique scene|Required unique scene|Required scene|Generate only this moment|Distinct human interaction|Unique remembrance cue):\*\* (.+)$/m;
+const GUIDE_FILES = Object.freeze([
+  '01-first-story-shots.md', '02-second-story-shots.md', '03-third-narrative-shots.md',
+  '04-prayer-wisdom-shots.md', '05-next-hour-action-shots.md', '06-faithful-action-shots.md',
+  '07-reflection-practice-shots.md', '08-prayer-moments-shots.md', '09-trustworthy-sharing-shots.md',
+  '10-remembrance-cue-shots.md', '11-original-backfill-shots.md'
+]);
+
+/** The source-specific construction guide, not the older cyclic fallback, owns every V7 original cover. */
+async function lockedSourceBoundBriefs(root, contentFiles, initialBriefs) {
+  const catalog = new Map(contentFiles.flatMap(f => f.items || []).map(item => [item.id, item]));
+  const initial = new Map(initialBriefs.map(brief => [brief.devotionalId, brief]));
+  const guideIds = new Set();
+  const selected = [...initialBriefs];
+  for (const chapter of GUIDE_FILES) {
+    const text = await readFile(join(root, GUIDEBOOK_DIR, chapter), 'utf8');
+    const sections = text.split(/(?=^### devotional\.biblequest\.)/m).slice(1);
+    if (!sections.length) throw new Error('Empty mandatory artwork guide chapter: '+chapter);
+    for (const block of sections) {
+      const match = block.match(/^### (devotional\.biblequest\.[a-z0-9_]+\.\d+)(?:\s+—\s+(.+))?$/m);
+      if (!match) throw new Error('Malformed guidebook content-ID heading in '+chapter);
+      const id = match[1], title = String(match[2] || block.match(/^\*\*Title:\*\* ([^\n]+)$/m)?.[1] || '').trim(), item = catalog.get(id);
+      if (guideIds.has(id)) throw new Error('Duplicate guidebook scene ID: '+id);
+      guideIds.add(id);
+      if (!item || item.source?.kind !== 'first_party' || !eligible(item)) throw new Error('Guidebook content missing/rights-ineligible: '+id);
+      if (title !== item.sourceContent?.title) throw new Error('Stale guidebook title: '+id);
+      if (!block.includes(item.revision)) throw new Error('Stale guidebook revision: '+id);
+      const scene = block.match(SCENE_FIELD)?.[1]?.trim();
+      if (!scene || scene.length < 80) throw new Error('Guidebook scene missing or insufficient: '+id);
+      // Initial 30 remain exactly bound to their independently maintained source JSON.
+      if (initial.has(id)) {
+        if (initial.get(id).scene !== scene) throw new Error('First-30 scene drift: '+id);
+        continue;
+      }
+      if (chapter.startsWith('02-')) {
+        const anchor = block.match(/\*\*Source body anchor:\*\* ([^\n]+)/)?.[1]?.trim();
+        if (!anchor || !item.sourceContent.body.startsWith(anchor))
+          throw new Error('Second-story guidebook source-body anchor stale: '+id);
+      } else if (!block.includes(item.source.checksum) || !block.includes(item.sourceContent.body)) {
+        throw new Error('Guidebook source checksum/body stale: '+id);
+      }
+      const lines=block.split('\n');
+      const framing=lines.find(line=>/^(?:-\s*)?\*\*(?:Framing|Camera\/light|Frame\/lighting|Visual geometry|Scene craft|Photography|Composition):\*\*/.test(line))
+        || 'Eye-level natural editorial composition preserving the guidebook scene';
+      const light=lines.find(line=>/^(?:-\s*)?\*\*(?:Light|Lighting|Camera\/light|Frame\/lighting|Scene craft):\*\*/.test(line))
+        || 'Naturalistic soft light as described by the exact per-ID construction guide';
+      const safeLine=lines.find(line=>/(?:safe|quiet|overlay|title)/i.test(line) && /\b(?:bottom|left|right)\b/i.test(line));
+      const safe=safeLine?.match(/\b(bottom|left|right)\b/i)?.[1]?.toLowerCase() || 'bottom';
+      selected.push({
+        devotionalId:id, sourceRevision:item.revision, sourceTitle:title,
+        sourceBodyAnchor:item.sourceContent.body.slice(0,40),
+        scene, composition:framing.replace(/\*\*/g,'').trim(), lighting:light.replace(/\*\*/g,'').trim(),
+        textSafeRegion:safe, altText:'Documentary-style original scene: '+scene,
+        visualFingerprint:'locked-v7-guide:'+id
+      });
+    }
+  }
+  for (const [id,item] of catalog) if (eligible(item) && item.source?.kind === 'first_party' && !guideIds.has(id))
+    throw new Error('Missing mandatory V7 image guidebook shot: '+id);
+  if (guideIds.size !== 300 || selected.length !== 300)
+    throw new Error('Expected exactly 300 locked source-bound guide shots, got '+guideIds.size+'/' + selected.length);
+  return selected;
+}
+
 const VALID_ID = /^devotional\.[a-z0-9._-]+$/;
 const OWNED = ['display', 'modify'];
 
@@ -139,7 +205,7 @@ export function buildLaneZCoverQueue(contentFiles, visualRecords = [], sourceBri
       order: index + 1, devotionalId: item.id, sourcePath, revision: item.revision || null,
       title, topicTags: themeFor(item), rightsEligible: ownable, sourceBodyExcerpt: body.slice(0,260),
       visualIdentity: brief?.visualFingerprint || 'lane-z:' + String(index+1).padStart(3,'0') + ':' + token(title),
-      artDirectionSource: brief ? 'human_source_bound_first30' : 'deterministic_fallback_needs_editorial_review',
+      artDirectionSource: brief ? (brief.visualFingerprint.startsWith('locked-v7-guide:') ? 'locked_construction_guidebook' : 'human_source_bound_first30') : 'deterministic_fallback_needs_editorial_review',
       sourceBodyAnchor: brief?.sourceBodyAnchor || null,
       textSafeRegion: brief?.textSafeRegion || 'bottom',
       altTextDraft: brief?.altText || null,
@@ -179,7 +245,8 @@ export async function readLaneZCoverQueue(root = ROOT) {
   const briefFile=JSON.parse(await readFile(join(root,INITIAL_SCENES),'utf8'));
   if (briefFile.schemaVersion!==1 || !Array.isArray(briefFile.entries))
     throw new Error('Invalid source-bound Lane Z scene brief catalog');
-  return buildLaneZCoverQueue(files,records,briefFile.entries);
+  const sourceBoundBriefs = await lockedSourceBoundBriefs(root,files,briefFile.entries);
+  return buildLaneZCoverQueue(files,records,sourceBoundBriefs);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const result = await readLaneZCoverQueue();
