@@ -1,5 +1,7 @@
 # V7 Visual Assets
 
+> **New prospective production model (2026-10-11):** see [single CLEAN master and deterministic presentation QA](../../../docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md). Generate only one original CLEAN raster per canonical ID; draw localized titles live and crop thumbnails reproducibly with verified focal metadata. The historical triple-raster bundle/agent-generator prose below documents still-running legacy V2 validators and existing production records; it is **not** new generation guidance. Continue fail-closed with `HOLD_POLICY_MIGRATION` for Feeling/Need CLEAN-only until the audit/registry/UI/CI migration genuinely lands. Five scheduled agents are QA-only. Do not remove accepted legacy TYPE/THUMB automatically.
+
 This folder contains machine-readable sidecar records for generated/owned/licensed V7 visual assets.
 
 Canonical production contract: `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`.

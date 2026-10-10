@@ -2,6 +2,8 @@
 
 Canonical entry point for development, maintenance and production release work. Updated 2026-10-04 JST.
 
+> **Artwork V7 update (2026-10-11):** [single master, live localized text, deterministic crop and evidence-backed five-agent QA](../docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md) governs new image work. Existing V2 three-file release validators stay enforceable until a tested compatibility migration lands.
+
 ## Start here
 
 1. Read the fast-start section of the [rulebook](RULEBOOK.md) and task-relevant sections only.
