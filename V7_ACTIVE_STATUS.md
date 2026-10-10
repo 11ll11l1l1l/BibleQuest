@@ -8,6 +8,12 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
+## P0 safety update — 2026-10-10 JST
+
+- P0 remains **OPEN**. Rejected-art bytes are SHA-quarantined after #1461 merged at `43e25819f4472245c44aeffffce53f08d76e5c41`. ONE 2 ONE now revokes prior mentor sharing before edited response text is saved; #1464 merged at `d79c105c23cc61b10eaa60bf8d0a063b788641d1` after all four exact-head workflows passed on refreshed head `44a491aa8cf967f8cbfec2b9f253b9a0288df585`.
+- Scripture integrity PR #1415 remains a draft. Its exact-source revision and actual-image-byte checks pass the 7 focused tests, while its release audit correctly reports **23 visual records unreviewed** and no review inventory. No Scripture/context/right approval is inferred from metadata or CI.
+- Remaining P0 evidence: complete review entries bound to exact source and image revisions, verified quote/reference/context and applicable licenses, plus exact integrated account/congregation/pair privacy denials. Do not promote on partial P0 evidence.
+
 ## Integration update — 2026-10-10 JST (development-only)
 
 - **Lane D #1303 remains open.** Merged #1440 (visual source integrity + reduced-motion cancellation) at `77e32e3f7e684963dfacf48770529bc15bb1acc1`; #1463 (actual Chromium PNG screenshot SHA256 attestation) at `3ca0072dbde5033e402b33bc9235c9bd4d13eace`; #1472 (development push is non-strict while `main` and manual certification remain strict) at `52e3dce70a68f70b334e0b7ddc60d55be9009809`. All three PRs passed their individual exact-head V6 serialization, V7 Build/PWA, and V7 Release Convergence checks; development push run 37998783774 passed.

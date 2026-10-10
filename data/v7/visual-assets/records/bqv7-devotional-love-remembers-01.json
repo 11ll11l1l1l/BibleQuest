@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-devotional-love-remembers-01",
+  "agentId": "codex-lane-z-manual",
+  "createdAt": "2026-10-10T11:10:00+09:00",
+  "status": "candidate_qa_pending",
+  "family": "devotional",
+  "visualRole": "devotional_cover",
+  "contentType": "devotional",
+  "contentId": "devotional.biblequest.grief_loss.01",
+  "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01a.json",
+  "sourceRevision": "r1",
+  "sourceTitle": "Love remembers",
+  "sourceBody": "Grief grows from love, so loss can leave a deep ache where relationship used to be. John 11:35 shows Jesus entering human sorrow rather than dismissing it. Remember what was good, lament what is gone, and let tears and gratitude share the same space as healing slowly begins.",
+  "concept": "An older adult and adult daughter remember an absent loved one at a dining table, sharing a quiet moment among soft-focused photographs and a familiar ceramic cup.",
+  "usage": [
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/devotional/bqv7-devotional-love-remembers-01.png",
+  "width": 1122,
+  "height": 1402,
+  "fileBytes": 2121689,
+  "sha256": "7d520b45d0c9338c2bcd829d5e6351fa3ba7afa83b93b59d06e60d7a05862897",
+  "gitBlobSha": "cb90c83178fd55502478e7b0b179750dc40438ab",
+  "format": "png",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.55,
+    "y": 0.5
+  },
+  "textSafeRegion": "left",
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated original scene for BibleQuest; no third-party source image supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An older adult and daughter remember someone together beside a cup and photographs.",
+    "essentialLiveTextRequired": true
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "exec-adaa16ad-2647-48ad-839a-da074a4daa83.png",
+    "sourceBytes": 2121689,
+    "sourceSha256": "7d520b45d0c9338c2bcd829d5e6351fa3ba7afa83b93b59d06e60d7a05862897",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceRevision": "v7/development bfbd5256b8c3277ded1711dd4b804dabef23bb41",
+    "noExternalSourceArt": true,
+    "noTextOrScriptureBakedIn": true,
+    "prompt": "Use case: photorealistic-natural. Asset type: original 4:5 portrait devotional cover candidate for BibleQuest V7. Primary request: A restrained cinematic editorial photograph for “Love remembers.” Full source: “Grief grows from love, so loss can leave a deep ache where relationship used to be. John 11:35 shows Jesus entering human sorrow rather than dismissing it. Remember what was good, lament what is gone, and let tears and gratitude share the same space as healing slowly begins.” Scene: A modest family dining room in quiet late-afternoon winter light. Subject: An older adult and adult daughter sit together at a wooden table, slowly arranging a few unlettered photographs beside a well-used ceramic cup belonging to someone absent. One hand rests near the cup; the daughter stays close, sharing the silence. Style: authentic cinematic editorial realism, human warmth, subtle expressions, believable older and younger adult anatomy and hands. Composition: vertical 4:5, cup and photographs in foreground, people in a thoughtful medium shot slightly right of center, quiet wall area on upper left for live title overlay. Lighting: restrained cloudy window light, tender and honest, memory and presence without sentimentality. Constraints: no words or legible image text, no Bible wording or reference, no UI, logos, watermark, cross, church, or explicit funeral details. Photos soft-focused/unidentifiable; do not portray grieving person as alone. Avoid hospital, casket, cemetery, dramatic tears, glowing Bible, stock praying hands, sunrise landscape, collage, split frame, distorted fingers."
+  },
+  "qc": {
+    "standaloneSingleScene": true,
+    "noVisibleBakedText": true,
+    "singleImageSha256Measured": true,
+    "dimensionsMeasured": true,
+    "initialVisualScreen": "passed: one scene, concept matches source, no visible text; alt and focal point recorded",
+    "independentVisualQA": "pending",
+    "scriptureContextQA": "pending final review; no Bible wording rendered in image",
+    "builtAppBrowser320390430": false,
+    "servedHTTPSha256": false,
+    "releaseCertified": false
+  }
+}

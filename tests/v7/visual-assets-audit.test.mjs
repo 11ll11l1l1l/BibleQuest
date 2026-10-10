@@ -594,3 +594,25 @@ test('reports candidate claims without crediting any missing CLEAN or complete b
   assert.equal(result.queues[0].completed, 0);
   assert.equal(result.queues[0].completeBundles, 0);
 });
+
+
+test('release audit fails closed if a known rejected TYPE is promoted by changing only metadata', async t => {
+  const f = await fixture(t);
+  f.record.assetId = 'bqv7-emotion-anger-01';
+  f.record.status = 'production_ready';
+  f.record.variants = [{
+    kind: 'TYPE',
+    sha256: '9eb2382869256dbdb845b2f93fb921892e6153ed6edf64316a747eb330bd9323',
+    qa: { topSafeAreaAcceptable: true, spellingCheckedAgainstTaxonomy: true,
+      visualInspected: true }
+  }];
+  await rm(f.metadataPath);
+  await writeFile(join(f.root, 'data/v7/visual-assets/records', f.record.assetId + '.json'),
+    JSON.stringify(f.record));
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'),
+    /production visual quarantined: known-bad visual variant: PR #1438/);
+  assert.equal(result.counts.productionReady, 0);
+  assert.deepEqual(result.manifest.assets, []);
+});
