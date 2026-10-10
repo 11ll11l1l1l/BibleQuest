@@ -79,6 +79,25 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       return publish({ responseStatus: 'error', responseError: error.message });
     }
   }
+  async function retryResponses() {
+    if (disposed || !state.lesson || state.responseStatus === 'loading'
+        || state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status)) return state;
+    const token = generation;
+    let key;
+    try {
+      key = context();
+      if (key !== loadedContext) fail('BQ_LESSON_CONTEXT_STALE', 'Reload after your account or congregation changes.');
+    } catch (error) {
+      generation += 1;
+      return clearLesson({ status: 'error', error: error.message });
+    }
+    const recovered = await hydrateResponses(token, key, state.lesson);
+    if (!disposed && token === generation && recovered.responseStatus === 'ready'
+        && recovered.status === 'save-error') {
+      return publish({ status: 'ready', error: null });
+    }
+    return state;
+  }
   async function load() {
     if (disposed) return state;
     const token = ++generation;
@@ -272,7 +291,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     }
     return save(state.stepIndex, true);
   }
-  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, move, complete, updateResponse, shareResponse, revokeResponseShare, invalidate,
+  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, retryResponses, move, complete, updateResponse, shareResponse, revokeResponseShare, invalidate,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     dispose() { disposed = true; generation += 1; dirtyResponseSteps.clear(); responseEditVersions.clear(); listeners.clear(); state = Object.freeze({ status: 'disposed', lesson: null }); },
   });
