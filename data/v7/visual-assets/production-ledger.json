@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "manual-chat-v7-b21",
+  "updatedBy": "manual-chat-v7-b21-rejected",
   "entries": [
     {
       "family": "devotional",
@@ -339,10 +339,20 @@
       "producer": "manual-chat-v7-b21",
       "sourceRevision": "r1",
       "sceneRevision": "modern-campus-closed-blank-laptop-accountability-v2",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:32.380Z",
       "qa": {},
-      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text.",
+      "rejectionReason": "Producer FAIL: modern people present, but image is a 3-panel collage with unrelated scenes; violates source-locked single-scene 4:5 requirement. Original candidate bytes safely deleted, no image submitted.",
+      "generationId": "1a2abff3-dd1f-4139-b67a-196aacfeede9",
+      "failedMeasuredBytesSha256": "eb16bd2d80303b43ba1fd9090a22542b7202d12cb3502d29fc7907173136b52f",
+      "failedMeasured": {
+        "format": "png",
+        "width": 1402,
+        "height": 1122,
+        "bytes": 2102504
+      },
+      "fileDeletionVerified": true
     },
     {
       "family": "devotional",
@@ -352,10 +362,20 @@
       "producer": "manual-chat-v7-b21",
       "sourceRevision": "r1",
       "sceneRevision": "modern-apartment-mint-one-sprig-v2",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:32.384Z",
       "qa": {},
-      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text.",
+      "rejectionReason": "Producer FAIL: modern people present, but image is a 3-panel collage with unrelated scenes; violates source-locked single-scene 4:5 requirement. Original candidate bytes safely deleted, no image submitted.",
+      "generationId": "4c7d760e-bb54-49b9-bb86-ef56a41a8a73",
+      "failedMeasuredBytesSha256": "84362ff9991e6408e24bbe012ff31da1035e6c65ca350d8764097c4231b73d06",
+      "failedMeasured": {
+        "format": "png",
+        "width": 1402,
+        "height": 1122,
+        "bytes": 2181049
+      },
+      "fileDeletionVerified": true
     },
     {
       "family": "devotional",
@@ -365,10 +385,20 @@
       "producer": "manual-chat-v7-b21",
       "sourceRevision": "r1",
       "sceneRevision": "modern-community-bicycle-listening-v2",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:32.384Z",
       "qa": {},
-      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text.",
+      "rejectionReason": "Producer FAIL: modern people present, but image is a 3-panel collage with unrelated scenes; violates source-locked single-scene 4:5 requirement. Original candidate bytes safely deleted, no image submitted.",
+      "generationId": "ef4402c6-3a98-42ef-8664-4e31e6860989",
+      "failedMeasuredBytesSha256": "ed979944b678b6fb1f7e4f1193f32446fd58004048c10c6be7fcb0c804e7e735",
+      "failedMeasured": {
+        "format": "png",
+        "width": 1402,
+        "height": 1122,
+        "bytes": 2204967
+      },
+      "fileDeletionVerified": true
     }
   ]
 }
