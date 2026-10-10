@@ -255,6 +255,72 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-10T16:13:00.353Z",
       "generatorId": "2d65d2ee-74f6-43ca-b2a8-45c58de3ac15"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-0742-peace03-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "guideChapter": "03-third-narrative-shots.md",
+      "sceneRevision": "20261011-manual-z-20261011-0742-peace03-r1-shot01",
+      "shotFingerprint": {
+        "narrativeAction": "adult in everyday apartment carefully repairs an existing reading lamp, calmly valuing what is already there",
+        "perspective": "restrained profile; muted late afternoon; right clear",
+        "ratio": "4:5",
+        "textFree": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T22:43:48.061Z",
+      "qa": {},
+      "note": "User-invoked manual-chat image production batch; source locked, no image created as of claim. Independent five-agent QA required."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.hurt_betrayal.07",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-0742-hurt07-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-07a.json",
+      "sourceChecksum": "sha256:61b27fcd568d91e22c165add7a6464c0c79c7f743c1eb8e95b5d39e4e4530adf",
+      "guideChapter": "07-reflection-practice-shots.md",
+      "sceneRevision": "20261011-manual-z-20261011-0742-hurt07-r1-shot01",
+      "shotFingerprint": {
+        "narrativeAction": "person recovering from broken trust walks by quiet canal, transfers an unlabeled personal boundary reminder card from notebook to coat pocket",
+        "perspective": "three-quarter view; quiet left title area",
+        "ratio": "4:5",
+        "textFree": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T22:43:48.061Z",
+      "qa": {},
+      "note": "User-invoked manual-chat image production batch; source locked, no image created as of claim. Independent five-agent QA required."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.discouragement.10",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-0742-discouragement10-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
+      "sourceChecksum": "sha256:0efc4b2b64c063147c37c27752752c687baf82bd27ad156849ad82772abff1f1",
+      "guideChapter": "10-remembrance-cue-shots.md",
+      "sceneRevision": "20261011-manual-z-20261011-0742-discouragement10-r1-shot01",
+      "shotFingerprint": {
+        "narrativeAction": "young mason places smooth pale tile near edge of partly completed wall, physical marker of progress",
+        "perspective": "low tabletop perspective; gentle late afternoon; bottom title area",
+        "ratio": "4:5",
+        "textFree": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T22:43:48.061Z",
+      "qa": {},
+      "note": "User-invoked manual-chat image production batch; source locked, no image created as of claim. Independent five-agent QA required."
     }
   ]
 }
