@@ -97,68 +97,22 @@
       "sourcePath": "src/features/library/emotion-taxonomy.js",
       "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
       "producer": "user-invoked-interactive-chat-20261011",
-      "status": "failed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:07:02.025Z",
       "qa": {
         "producerPreflight": {
           "verdict": "FAIL",
-          "reason": "Generator produced a three-panel biblical-era collage instead of the locked modern neighborhood workshop scene; prohibited triptych and missing target action."
+          "reason": "Triptych biblical-era altar/help/hill instead of contemporary adult workshop."
         }
       },
-      "note": "Producer-side fail before GitHub upload; local file deleted; no accepted bytes.",
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
       "failedSha256": "b45c3abd0d299b960e64920f10c6fc1ff685350543fee7975997e3925fd702b2",
       "localFileDeleted": true,
-      "failedAt": "2026-10-10T16:08:36.260Z"
-    },
-    {
-      "family": "need",
-      "contentId": "strength",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-need-strength-clean-01",
-      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
-      "sceneRevision": "guide20261011-s6-strength-door-hinges-v1",
-      "shotFingerprint": {
-        "narrativeAction": "Three people stabilize heavy wooden door while fourth aligns hinges",
-        "setting": "community repair workshop with solid door repair jig",
-        "focalObject": "wooden door and properly aligned hinges",
-        "peopleCount": 4,
-        "perspective": "slightly elevated 3/4 view at workstation",
-        "light": "diffuse natural skylight",
-        "palette": "warm wood, neutral blue workwear",
-        "metaphor": "shared grounded support"
-      },
-      "sourcePath": "src/features/library/emotion-taxonomy.js",
-      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
-      "producer": "user-invoked-interactive-chat-20261011",
-      "status": "claimed",
-      "claimedAt": "2026-10-10T16:07:02.025Z",
-      "qa": {},
-      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
-    },
-    {
-      "family": "hero",
-      "contentId": "home",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-hero-home-clean-01",
-      "sourceRevision": "guide-1f3b158542468f17d940a3aaca01f4ff743e6629",
-      "sceneRevision": "guide20261011-s7-home-community-hall-v1",
-      "shotFingerprint": {
-        "narrativeAction": "Adult and school-age child enter community hall while two adults read and work together",
-        "setting": "real contemporary neighborhood learning community hall",
-        "focalObject": "entry pair with bags and collaborative table",
-        "peopleCount": 4,
-        "perspective": "waist-height wide 35mm interior view with left 40 percent quiet",
-        "light": "late-afternoon natural amber-neutral light",
-        "palette": "quiet warm neutral",
-        "metaphor": "continuing together"
-      },
-      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
-      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#7-exactly-one-home-hero--fixed-hero-direction",
-      "producer": "user-invoked-interactive-chat-20261011",
-      "status": "claimed",
-      "claimedAt": "2026-10-10T16:07:02.025Z",
-      "qa": {},
-      "note": "Claim-only, pixel generation and independent QA not yet complete. Read existing approved, rejected, pending PRs before accept."
+      "failedAt": "2026-10-10T16:08:36.260Z",
+      "rejectionReason": "Triptych biblical-era altar/help/hill instead of contemporary adult workshop.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
     },
     {
       "family": "need",
@@ -180,18 +134,22 @@
       "sourcePath": "src/features/library/emotion-taxonomy.js",
       "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
       "producer": "user-invoked-interactive-chat-20261011",
-      "status": "failed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:08:36.260Z",
       "qa": {
         "producerPreflight": {
           "verdict": "FAIL",
-          "reason": "Single-scene request again became three-panel composition, biblical figure + mountain prayer + woodworking, incompatible with locked Courage action and 4:5 single CLEAN."
+          "reason": "Triptych teacher/mountain prayer/woodworker instead of required single Courage workshop scene."
         }
       },
-      "note": "New revision after wrong three-panel biblical collage. Single contemporary workshop scene, portrait 4:5 CLEAN only.",
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
       "failedSha256": "5174efdf84e6e27381e335ccbcc4327786c5961f2d87c6d6d6e95b7fcdebfa36",
       "localFileDeleted": true,
-      "failedAt": "2026-10-10T16:10:11.839Z"
+      "failedAt": "2026-10-10T16:10:11.839Z",
+      "rejectionReason": "Triptych teacher/mountain prayer/woodworker instead of required single Courage workshop scene.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
     },
     {
       "family": "need",
@@ -213,10 +171,21 @@
       "sourcePath": "src/features/library/emotion-taxonomy.js",
       "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
       "producer": "user-invoked-interactive-chat-20261011",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:10:11.839Z",
-      "qa": {},
-      "note": "Third attempt can use explicit portrait generator geometry; produce EXACTLY one modern supervised workshop moment."
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Composite shepherd/prayer/fishermen, not workshop and not portrait single-scene art."
+        }
+      },
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
+      "failedSha256": "92e7bf4343acacecefc252f244016ae02e7e69fb0fae01eedbe00ae7f0855fff",
+      "localFileDeleted": true,
+      "rejectionReason": "Composite shepherd/prayer/fishermen, not workshop and not portrait single-scene art.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
     }
   ]
 }
