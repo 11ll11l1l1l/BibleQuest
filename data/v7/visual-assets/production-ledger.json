@@ -112,7 +112,7 @@
       "producer": "manual-chat-20261011-z-mixed-scenes",
       "sourceRevision": "r1",
       "sceneRevision": "20261011-ch08-frustration-bike-stairwell-r1",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T01:06:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08c.json",
@@ -126,7 +126,10 @@
         "light": "neutral afternoon",
         "textSafeRegion": "lower left"
       },
-      "note": "Unique text-free P4 CLEAN candidate; reserved before generation, pending pixels and QA"
+      "note": "Failed producer render deleted locally; no GitHub candidate bytes; slot available for NEW source-locked attempt with new sceneRevision.",
+      "failedMeasuredBytesSha256": "136eaaa4bea348b7776e6d33fbf0642416b645e6225978cd53a8397757a9c816",
+      "failure": "Producer semantic + geometry preflight FAIL: Generator output was an unrelated biblical-era man and woman beside a well, no apartment stairwell or broken bicycle. 1536x1024 landscape, not 4:5; source locally deleted, never staged.",
+      "closedAt": "2026-10-11T01:18:00+09:00"
     },
     {
       "family": "devotional",
@@ -136,7 +139,7 @@
       "producer": "manual-chat-20261011-z-mixed-scenes",
       "sourceRevision": "r1",
       "sceneRevision": "20261011-ch10-gratitude-bead-ticket-r1",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T01:06:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10c.json",
@@ -150,7 +153,10 @@
         "light": "diffused daylight",
         "textSafeRegion": "right"
       },
-      "note": "Unique text-free P4 CLEAN candidate; reserved before generation, pending pixels and QA"
+      "note": "Failed producer render deleted locally; no GitHub candidate bytes; slot available for NEW source-locked attempt with new sceneRevision.",
+      "failedMeasuredBytesSha256": "974a3762f8f09cbabc9ae3a72eeb90ffb3ec7c0f3d220dbf1a8831358e1f5123",
+      "failure": "Producer semantic + geometry preflight FAIL: Generator output was unrelated biblical-era aid at stone doorway, no wooden bead/ticket holder. 1536x1024 landscape, not 4:5; source locally deleted, never staged.",
+      "closedAt": "2026-10-11T01:18:00+09:00"
     },
     {
       "family": "devotional",
@@ -160,7 +166,7 @@
       "producer": "manual-chat-20261011-z-mixed-scenes",
       "sourceRevision": "r1",
       "sceneRevision": "20261011-ch06-loneliness-chairs-r2",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T01:12:00+09:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
@@ -174,7 +180,10 @@
         "light": "amber dusk",
         "textSafeRegion": "bottom"
       },
-      "note": "Retry locked same prescribed action following wrong-scene producer rejection; no prior candidate bytes kept."
+      "note": "Failed producer render deleted locally; no GitHub candidate bytes; slot available for NEW source-locked attempt with new sceneRevision.",
+      "failedMeasuredBytesSha256": "e24778a149ad2162232554bdaebc600887e1ddd416cb77dda65f4a2ee9a31e68",
+      "failure": "Producer semantic + geometry preflight FAIL: Generator output was a prohibited triptych of biblical embrace, seascape and mountain hiker instead of one contemporary person arranging reading-circle chairs. 1536x1024 landscape, not 4:5; source locally deleted, never staged.",
+      "closedAt": "2026-10-11T01:18:00+09:00"
     }
   ]
 }
