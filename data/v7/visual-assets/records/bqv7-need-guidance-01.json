@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-guidance-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T22:09:21+09:00",
+  "status": "candidate_scene_revision_required",
+  "bundleStatus": "three_real_files_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "guidance",
+  "canonicalNeedId": "guidance",
+  "concept": "Two hikers confer at a forest trail fork, pointing toward a safe next step.",
+  "usage": [
+    "needs_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-guidance-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 225604,
+  "sha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
+  "focalPoint": {
+    "x": 0.49,
+    "y": 0.62
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "b43185c6-3b55-4b61-80d5-a77d6dbf971e",
+    "sourceImageWasComposite": true,
+    "sourceOriginalFile": "a_clean_presentation_portfolio_style_layout_with_t.png",
+    "sourceOriginalSha256": "4b8110e78f4b5e721bb465f7a07ad103f6ba5621c4c485826fdfe7fd4135280f",
+    "isolatedSingleScenePanelCropPixels": [
+      25,
+      100,
+      617,
+      840
+    ],
+    "sourceDescription": "Generated output was a 3-panel composite, not a standalone master. CLEAN is a text-free photo panel isolated by crop; original source composite preserved only in QA evidence. Independent visual QA may reject composite-origin source.",
+    "cleanSceneOriginalToThisGeneration": true,
+    "noThirdPartyPhotosSupplied": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene isolated from a generated presentation collage; no external photographs or logos supplied. Independent QA must confirm publication rights.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "fontFilesDistributed": false,
+    "scripture": "Reference only, no Scripture prose"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "Two backpackers pause at a fork in a leafy woodland trail; one points toward a route beside an unmarked wooden signpost.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "CLEAN with live TL Patnubay / CEB Paggiya / ILO Pannakaiturong and accessible live reference; EN TYPE only."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "guidance",
+    "locale": "en",
+    "exactLabel": "Guidance",
+    "reference": "Proverbs 3:5-6",
+    "scriptureTextIncluded": false,
+    "contextReview": "Proverbs 3:5-6 calls the reader to trust in the LORD rather than rely solely on personal understanding and acknowledge Him in all ways. The companion at a trail fork is a metaphor for seeking direction, not a claim of guaranteed effortless choices."
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "imageSceneStandaloneAfterCrop": true,
+    "originalGeneratedOutputWasCollage": true,
+    "repoVisualAudit": "not_run",
+    "builtAppBrowserQA": "not_run",
+    "publishedServedBytes": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "candidateOnly": true,
+    "localHttpExactBytes": true,
+    "localIsolatedChromium320390430": true,
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Existing forest-fork/hikers scene is a composite-origin crop and conflicts with mandatory section 6: local volunteer pointing out a safe next step on an unmarked transit map at a covered bus terminal.",
+    "rejectedSourceCleanSha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
+    "requiredNextAction": "Replace CLEAN, TYPE, THUMB and sidecar together on this same PR with a standalone original scene, then independent QA; do not reuse rejected bytes.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-guidance-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 225604,
+      "sha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
+      "locale": null,
+      "altText": "Two backpackers pause at a fork in a leafy woodland trail; one points toward a route beside an unmarked wooden signpost.",
+      "focalPoint": {
+        "x": 0.49,
+        "y": 0.62
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-guidance-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 218848,
+      "sha256": "6fba25a57ce5a68d22fbf130a70661a7722fe9dd80ea2391c89719890560c47c",
+      "locale": "en",
+      "altText": "Two backpackers pause at a fork in a leafy woodland trail; one points toward a route beside an unmarked wooden signpost. Embedded English text: Guidance; Proverbs 3:5-6.",
+      "focalPoint": {
+        "x": 0.49,
+        "y": 0.62
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      },
+      "embeddedWording": {
+        "label": "Guidance",
+        "scriptureReference": "Proverbs 3:5-6",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Independently typeset from CLEAN using continuous feathered warm veil, no hard overlay seam",
+        "sourceCleanSha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-guidance-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 59368,
+      "sha256": "08e9f48ebaaeb984de1c4633ec259e03b8edcec151ece33d9b3c2722474fe54a",
+      "locale": null,
+      "altText": "Two backpackers pause at a fork in a leafy woodland trail; one points toward a route beside an unmarked wooden signpost.",
+      "focalPoint": {
+        "x": 0.49,
+        "y": 0.62
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.01171875,
+          "y": 0.01171875,
+          "width": 0.9765625,
+          "height": 0.9765625
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
