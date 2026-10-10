@@ -10,7 +10,7 @@ on:
       - "scripts/v7-visual-assets-audit.mjs"
       - "scripts/v7-unfinished-image-guidebook-audit.mjs"
       - "docs/v7/unfinished-artwork-guide/**"
-      - "AGENTS.md"
+      - "AGENTS.md"\n      - "docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md"\n      - "data/v7/visual-assets/manual-chat-intake/**"\n      - "scripts/v7-manual-chat-origin-gate.mjs"\n      - "tests/v7/manual-chat-origin-gate.test.mjs"
       - "work/RULEBOOK.md"
       - "docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md"
       - "scripts/v7-visual-coverage-report.mjs"
@@ -83,6 +83,15 @@ jobs:
             printf '%s\n' "$bad_svg"
             exit 1
           fi
+
+      - name: Require a manual interactive ChatGPT origin receipt for every new or modified image
+        if: github.event_name == 'pull_request'
+        env:
+          BQ_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/v7-manual-chat-origin-gate.mjs --base "$BQ_BASE_SHA" --head "$BQ_EXACT_SHA"
+
+      - name: Test the fail-closed image intake contract
+        run: node --test tests/v7/manual-chat-origin-gate.test.mjs
 
       - name: Verify mandatory source-bound V7 image construction guide
         run: node scripts/v7-unfinished-image-guidebook-audit.mjs

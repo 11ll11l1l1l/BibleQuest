@@ -42,3 +42,31 @@
 ## 5. Agent startup instruction
 
 Before any visual task, read this file and `AGENTS.md`. If an older instruction says "produce one image per run", "regenerate after QA", "five generators", "continue producer", "manual lane autonomously", or "self-QA then commit artwork", treat that instruction as **revoked**. The sole authorized scheduled task is review of already-submitted images, not creation. New artwork may start only when the user manually invokes a ChatGPT image-generation conversation.
+
+## 6. Machine-checkable new-image intake
+
+All changed image binaries in a PR against `v7/development` must have **one** candidate receipt matching the actual image path and SHA-256 at:
+
+`data/v7/visual-assets/manual-chat-intake/<first-20-hex-of-sha256-of-repository-relative-image-path>.json`
+
+The image-path hash determines the receipt **filename**, while `sha256` inside it identifies the image **bytes**. The manual-chat conversation can author this JSON during explicit interactive submission:
+
+```json
+{
+  "policyVersion": "2026-10-11",
+  "assetId": "bqv7-emotion-example-01",
+  "imagePath": "public/v7/images/emotion/bqv7-emotion-example-01.webp",
+  "origin": "explicit_user_invoked_chatgpt_chat",
+  "reviewStatus": "pending_qa",
+  "sha256": "<measured 64-character SHA-256 of real image file>",
+  "chatEvidence": {
+    "origin": "explicit_user_invoked_chatgpt_chat",
+    "reference": "<real user-supplied nonsensitive chat identifier>",
+    "userConfirmationStatus": "pending_private_user_confirmation"
+  }
+}
+```
+
+Never fabricate a reference, actual hash, or user confirmation. A private chat can use a **nonsensitive user-provided identifier** and remain `pending_private_user_confirmation` until independently verified. An unsupported claim of confirmed provenance is not evidence. The PR guard checks presence, schema and **real image-byte** equality only; it cannot establish who generated the pixels. Reviewers must separately verify origin and quality and obtain explicit user art approval. Existing art files untouched by a PR are not rejected because they predate this rule; **changed** legacy candidate bytes must follow the new intake path and cannot falsely re-label agent work as manual.
+
+CI: `node scripts/v7-manual-chat-origin-gate.mjs --base <exact_base_sha> --head <exact_candidate_sha>`, then `node --test tests/v7/manual-chat-origin-gate.test.mjs`. This is a **candidate PR rule**, not a global release approval.
