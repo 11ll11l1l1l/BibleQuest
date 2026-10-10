@@ -90,8 +90,12 @@ async function verifyV2Wording(record, variant, root) {
   if (!words || proof.locale !== variant.locale || proof.exactLabel !== item.labels[variant.locale]
     || words.label !== proof.exactLabel || words.scriptureReference !== proof.reference)
     throw new Error('TYPE embedded wording does not match reviewed taxonomy');
-  if (proof.reference && !item.scripture.includes(proof.reference))
-    throw new Error('TYPE Scripture reference is not approved for emotion');
+  // A TYPE image may not silently omit the citation by making both
+  // the visual declaration and its source proof empty. Validate the exact
+  // reference against the canonical Feeling/Need Scripture list.
+  if (typeof proof.reference !== 'string' || !proof.reference.trim()
+    || !item.scripture.includes(proof.reference))
+    throw new Error('TYPE Scripture reference is missing or not approved for the concept');
   if (proof.scriptureTextIncluded !== false || words.scriptureTextIncluded !== false)
     throw new Error('TYPE Scripture prose requires a separately verified text-source contract');
   if (variant.qa?.spellingCheckedAgainstTaxonomy !== true
