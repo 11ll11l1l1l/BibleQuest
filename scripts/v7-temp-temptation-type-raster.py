@@ -53,7 +53,8 @@ def run():
     meta=measurement(OUT)
     assert meta["width"]==1024 and meta["height"]==1280
     j=json.loads(RECORD.read_text(encoding="utf-8"))
-    assert j["assetId"]=="bqv7-emotion-temptation-01-derivatives"
+    assert j.get("sourceMasterAssetId")=="bqv7-emotion-temptation-01"
+    j["assetId"]="bqv7-emotion-temptation-01-derivatives"
     j["status"]="candidate_real_webp_type_independent_browser_qa_pending"
     j["variants"]=[{
         "kind":"TYPE","locale":"en",**meta,
