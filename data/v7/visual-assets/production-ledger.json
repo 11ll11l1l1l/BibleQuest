@@ -354,10 +354,25 @@
         "palette": "restrained contemporary hall neutrals",
         "metaphor": "seeking counsel before an actionable decision"
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:18:00+09:00",
-      "qa": {},
-      "note": "Exactly one 4:5 CLEAN reserved, no image pixels yet; other PRs/ledger checked before reservation. Contemporary characters; exact source body and prescribed shot only."
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Image generator returned one contemporary woman journaling alone at an apartment kitchen table rather than the locked scene of two people consulting over an unlabeled floor plan in a community-center hallway. Wrong people count, action, focal object and setting; native 1024×1536 image also not 4:5."
+        }
+      },
+      "note": "Rejected 1/1 attempted image for this user-invoked single-image run. Local original PNG bytes deleted, only hash/evidence tombstone retained. Slot released for a future new scene revision; no QA-ready image created.",
+      "failedAt": "2026-10-11T08:18:00+09:00",
+      "generatorId": "b7061ef5-3e1a-40ae-a989-edaddaa2955f",
+      "failedSha256": "108ab029b0ac1777d8c4dc7a59ef8cd4850c915abed4651d60af04cf02f247f1",
+      "measuredWidth": 1024,
+      "measuredHeight": 1536,
+      "measuredBytes": 2155027,
+      "format": "PNG",
+      "rejectionReason": "Image generator returned one contemporary woman journaling alone at an apartment kitchen table rather than the locked scene of two people consulting over an unlabeled floor plan in a community-center hallway. Wrong people count, action, focal object and setting; native 1024×1536 image also not 4:5.",
+      "failStage": "producer-preflight; before GitHub candidate intake or five-agent QA",
+      "localFileDeleted": true
     }
   ]
 }
