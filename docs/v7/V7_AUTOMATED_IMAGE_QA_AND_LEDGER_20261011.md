@@ -24,7 +24,7 @@ Five roles, in order of independent evidence:
 
 These are **release output** minimums, not a request for a model to generate a specific unsupported dimension. Generator-native dimensions may have a different aspect ratio: use one honest derivative crop/export **only inside the user-invoked interactive image chat**, without distorting people/faces or enlarging a lower-resolution source to claim compliant pixels. If the source cannot support the minimum after crop, reject that candidate instead of accepting interpolation as true detail. Ratio tolerance ±2.5%; PNG/WebP actual encoding, max 10 MB. Existing original candidates at 1122×1402 4:5 meet the new portrait resolution floor (subject to their actual source/semantic QA). Standard P4 devotional original images need only ONE distinct CLEAN; TYPE/THUMB are optional for the P4 tally. Existing variants must not be regenerated just to chase an aspirational larger size.
 
-The native-size check is executable at `scripts/v7-image-work-ledger.mjs submit`. Existing release candidate/coverage audits remain binding; any other file with conflicting legacy high-resolution prose must not be used as a rejection rule unless it is a real executable release requirement.
+Header-level native-size and encoded-format checks (not a full decoded-pixel visual inspection) are executable at `scripts/v7-image-work-ledger.mjs submit`. Existing release candidate/coverage audits remain binding; any other file with conflicting legacy high-resolution prose must not be used as a rejection rule unless it is a real executable release requirement.
 
 ## Central ledger and collision contract
 
@@ -39,8 +39,8 @@ node scripts/v7-image-work-ledger.mjs status
 node scripts/v7-image-work-ledger.mjs next scene
 node scripts/v7-image-work-ledger.mjs claim devotional devotional.biblequest.anger.01 CLEAN bq7-anger01-r1 manual-chat-z r1 shot-v2
 # In the interactive image chat, create a single original PNG/WebP:
-# public/v7/images/qa-candidates/bq7-anger01-r1.png
-node scripts/v7-image-work-ledger.mjs submit bq7-anger01-r1 public/v7/images/qa-candidates/bq7-anger01-r1.png
+# data/v7/visual-assets/qa-candidates/bq7-anger01-r1.png
+node scripts/v7-image-work-ledger.mjs submit bq7-anger01-r1 data/v7/visual-assets/qa-candidates/bq7-anger01-r1.png
 node scripts/v7-image-work-ledger.mjs qa bq7-anger01-r1 scene PASS https://github.com/11ll11l1l1l/BibleQuest/pull/1234
 node scripts/v7-image-work-ledger.mjs qa bq7-anger01-r1 technical FAIL "Decoded source has missing image data"
 node scripts/v7-image-work-ledger.mjs next technical
@@ -56,9 +56,9 @@ At each scheduled run, review **as many existing candidates as can be checked wi
 - **FAIL**: reject the candidate or exact bad variant immediately, mark a bounded reason, **remove its unapproved staging pixels** and related unapproved candidate-only sidecars, and advance to the next candidate in the **same run**. Reassignment to an image-production chat uses a new attempt ID and sceneRevision or fixes only the failed TYPE/THUMB.
 - **HOLD**: missing readable pixels, rights/source mismatch, inaccessible CI or uncertain Scripture. Do not claim PASS; mark precise missing evidence then advance to the next candidate without waiting for an hourly update. A later run may re-queue HOLD only if new evidence actually arrived.
 
-In the CLI, a role's verdict for an attempt is terminal; new evidence after HOLD needs a new attempt ID / remediation record, not silent rewriting. Five distinct role PASSES change only ledger status to `qa_passed`; Lane A still binds the genuine binary to a canonical production sidecar and existing immutable approval mechanism, and Lane D checks the exact integrated build/release SHA. No human approval flag is required. Agents cannot publish assets by toggling a status without the existing pixel/source/content evidence.
+In the CLI, a role's verdict is sticky; on HOLD only, after genuinely new linked evidence the coordinator may explicitly run \`requeue <attemptId> <role> <newGitHubEvidenceUrl>\`; the prior HOLD is retained in reviewHistory. A FAIL requires a new attempt/scene or verified derivative fix, never silent rewriting. Five distinct role PASSES change only ledger status to `qa_passed`; Lane A still binds the genuine binary to a canonical production sidecar and existing immutable approval mechanism, and Lane D checks the exact integrated build/release SHA. No human approval flag is required. Agents cannot publish assets by toggling a status without the existing pixel/source/content evidence.
 
-**Deletion scope:** CLI removes a technically failing/rejected candidate's unique staging file only under `public/v7/images/qa-candidates/<attemptId>.png|webp`. A successful deletion is required before the ledger can record FAILED. Never delete common reusable approved CLEAN source, production registry/metadata or unrelated library content. Failed image bytes must not be committed to production or retained in staging after FAIL. Candidate-specific abandoned local exports/previews should also be removed by the owner; keep only one small no-image audit tombstone. Previously merged rejected images outside this staging subtree require safe provenance/reference audit before deletion; otherwise quarantine them and open a precise cleanup task. Do not rewrite Git history or purge certified rollback refs.
+**Deletion scope:** CLI removes a technically failing/rejected candidate's unique staging file only under `data/v7/visual-assets/qa-candidates/<attemptId>.png|webp`. A successful deletion is required before the ledger can record FAILED. Never delete common reusable approved CLEAN source, production registry/metadata or unrelated library content. Failed image bytes must not be committed to production or retained in staging after FAIL. Candidate-specific abandoned local exports/previews should also be removed by the owner; keep only one small no-image audit tombstone. Previously merged rejected images outside this staging subtree require safe provenance/reference audit before deletion; otherwise quarantine them and open a precise cleanup task. Do not rewrite Git history or purge certified rollback refs.
 
 ## Required preflight for EVERY new chat and image QA agent
 
