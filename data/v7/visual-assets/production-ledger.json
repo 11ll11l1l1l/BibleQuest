@@ -339,7 +339,7 @@
       "producer": "user-invoked-interactive-chat-20261011-single",
       "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
       "sceneRevision": "guide6-strength-doorrepair-20261011-cc41",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:24:00+09:00",
       "qa": {},
       "sourcePath": "src/features/library/emotion-taxonomy.js",
@@ -355,7 +355,42 @@
         "aspect": "4:5 portrait",
         "textSafeRegion": "lower 30 percent visually quiet"
       },
-      "note": "Single new original modern-day scene only; no collages, texts, ancient characters or reused imagery. Claim must not be counted as QA."
+      "note": "Single new original modern-day scene only; no collages, texts, ancient characters or reused imagery. Claim must not be counted as QA.",
+      "failure": "Producer source/scene FAIL: real 1122x1402 PNG shows lone contemporary man writing at desk, not four adults stabilizing door and aligning hinges; native portrait is insufficient when scene wrong. Deleted verified local candidate.",
+      "failedMeasuredBytesSha256": "9c7795e4dd3c9251d11f95adae72a53627f65c2b56476ef30c2b0c44f1d9ba5d",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 1996972,
+      "failedFormat": "PNG",
+      "generatorId": "011f8a55-d43b-44e8-83ae-ebefcc23968e",
+      "localFileDeleted": true,
+      "closedAt": "2026-10-11T08:29:00+09:00"
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-single-strength-cc41-b",
+      "producer": "user-invoked-interactive-chat-20261011-single",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide6-strength-doorrepair-20261011-cc41b",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T08:29:00+09:00",
+      "qa": {},
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6",
+      "shotFingerprint": {
+        "narrativeAction": "four community volunteers jointly repair one heavy wooden door; three stabilize it safely as the fourth aligns hinges",
+        "setting": "modern neighborhood repair workshop, timber repair jig",
+        "focalObject": "heavy wooden door and door hinges",
+        "peopleCount": 4,
+        "perspective": "editorial documentary 3/4 angle",
+        "lighting": "soft daylight from workshop windows",
+        "aspect": "4:5 portrait",
+        "textSafeRegion": "lower 30 percent visually quiet"
+      },
+      "note": "One final retry, strict single scene four volunteers, sturdy jig, aligned hinges. STOP on repeat failure."
     }
   ]
 }
