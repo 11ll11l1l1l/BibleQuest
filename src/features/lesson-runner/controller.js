@@ -59,7 +59,8 @@ export function createLessonRunner({ service, session, membership, pairId, revis
         }
         if (seenSteps.has(row.stepId)) fail('BQ_LESSON_RESPONSE_INVALID', 'Conflicting saved responses for one lesson step.');
         seenSteps.add(row.stepId);
-        const unchangedSinceRead = (responseEditVersions.get(row.stepId) ?? 0) === (hydrationVersions.get(row.stepId) ?? 0);
+        const unchangedSinceRead = !dirtyResponseSteps.has(row.stepId)
+          && (responseEditVersions.get(row.stepId) ?? 0) === (hydrationVersions.get(row.stepId) ?? 0);
         if (!state.writable && (row.visibility !== 'shared' || !Array.isArray(row.audienceUserIds) || !row.audienceUserIds.includes(state.mentorId))) {
           fail('BQ_LESSON_RESPONSE_SCOPE', 'Mentor preview received a response that was not explicitly shared.');
         }
