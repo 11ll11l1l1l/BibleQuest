@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-batch-20261011-0743",
   "entries": [
     {
       "family": "devotional",
@@ -269,10 +269,18 @@
       "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
       "sceneRevision": "20261011-spiritual_dryness_distance-03-shot-v1-svah37",
       "shotFingerprint": "A woman waters a neglected windowsill herb at dawn; soil remains dry at edges; closed blank notebook close by; soft morning side light, natural high three-quarter overhead view, left title-safe, modest home kitchen",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T22:44:28.161Z",
       "qa": {},
-      "note": "Manual-chat 3-image batch, source-locked, no image bytes yet; QA pending independent evidence; no production approval"
+      "note": "Rejected locally before submission. Only hash/size/evidence tombstone preserved. No QA-agent PASS; no production approval.",
+      "failure": "Landscape shows lone backpacked hiker at sunlit mountain overlook, not woman watering neglected windowsill herb; exact content/shot mismatch. Source native PNG 1402x1122 (landscape, not required portrait 4:5). Producer visual preflight failure. No upload; local image bytes deleted.",
+      "failedMeasuredBytesSha256": "22b53ab29335fc900da355b46c37c1205117dab5ac163b768b622d299b0e6b25",
+      "failedMeasuredBytes": 2175388,
+      "failedMeasuredWidth": 1402,
+      "failedMeasuredHeight": 1122,
+      "failedMeasuredFormat": "PNG",
+      "candidatePath": null,
+      "closedAt": "2026-10-10T22:47:02.951Z"
     },
     {
       "family": "devotional",
@@ -287,10 +295,18 @@
       "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
       "sceneRevision": "20261011-love_connection-06-shot-v1-svah37",
       "shotFingerprint": "A parent purposefully sits down at child’s puzzle table and shares undivided attention, instead of leaving for an errand; gentle wide home context, clean afternoon sunlight, right title-safe",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T22:44:28.161Z",
       "qa": {},
-      "note": "Manual-chat 3-image batch, source-locked, no image bytes yet; QA pending independent evidence; no production approval"
+      "note": "Rejected locally before submission. Only hash/size/evidence tombstone preserved. No QA-agent PASS; no production approval.",
+      "failure": "Three-panel collage of indoor contemplation, outdoor hiking assistance and prayer, not a parent sharing a child's puzzle; prohibited composite/triptych. Source native PNG 1402x1122 (landscape, not required portrait 4:5). Producer visual preflight failure. No upload; local image bytes deleted.",
+      "failedMeasuredBytesSha256": "5621ad39f90c0134a4b25d479ec7dfc9d0ee0745e60a27ea1daf90b0928b6daa",
+      "failedMeasuredBytes": 2290269,
+      "failedMeasuredWidth": 1402,
+      "failedMeasuredHeight": 1122,
+      "failedMeasuredFormat": "PNG",
+      "candidatePath": null,
+      "closedAt": "2026-10-10T22:47:02.951Z"
     },
     {
       "family": "devotional",
@@ -305,10 +321,18 @@
       "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
       "sceneRevision": "20261011-anxiety_worry-10-shot-v1-svah37",
       "shotFingerprint": "A worried bookbinder hangs a single plain unlettered wooden tag from a workshop hook as a quiet reminder, modest busy bookbinding workshop, warm practical afternoon lighting, medium side view, focal in upper third, left title-safe",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T22:44:28.161Z",
       "qa": {},
-      "note": "Manual-chat 3-image batch, source-locked, no image bytes yet; QA pending independent evidence; no production approval"
+      "note": "Rejected locally before submission. Only hash/size/evidence tombstone preserved. No QA-agent PASS; no production approval.",
+      "failure": "Three-panel contemplative prayer/mountain collage, not a bookbinder hanging a plain unlettered workshop tag; prohibited composite/triptych. Source native PNG 1402x1122 (landscape, not required portrait 4:5). Producer visual preflight failure. No upload; local image bytes deleted.",
+      "failedMeasuredBytesSha256": "790557ad58df0f6fe6d92b40bc26e97aea3cb453064578b62ed19146c9d81abf",
+      "failedMeasuredBytes": 2450056,
+      "failedMeasuredWidth": 1402,
+      "failedMeasuredHeight": 1122,
+      "failedMeasuredFormat": "PNG",
+      "candidatePath": null,
+      "closedAt": "2026-10-10T22:47:02.951Z"
     }
   ]
 }
