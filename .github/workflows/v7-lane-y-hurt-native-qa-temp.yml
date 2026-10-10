@@ -8,17 +8,72 @@ jobs:
   native-artifact:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Exact Hurt bytes, native WebP format, dimensions, SHA and canonical reference
+      - name: Install deterministic raster library
+        run: python3 -m pip install --quiet --break-system-packages Pillow
+      - name: Fix known pixel safe-area from exact original candidate once
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import json,hashlib,subprocess,re
+          root=Path('public/v7/images/emotion')
+          path=root/'bqv7-emotion-hurt-betrayal-01-with-text-en.webp'
+          md=Path('data/v7/visual-assets/records/bqv7-emotion-hurt-betrayal-01-derivatives.json')
+          test=Path('tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs')
+          oldhash='530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987'
+          oldbytes=165908
+          old=path.read_bytes()
+          current=hashlib.sha256(old).hexdigest()
+          if current!=oldhash:
+              print('No revision: original source digest absent; test must independently verify current bytes',current)
+          else:
+              assert len(old)==oldbytes,'source bytes changed: abort'
+              im=Image.open(path).convert('RGB')
+              assert im.size==(1024,1280)
+              dx,dy=27,85
+              image=Image.new('RGB',im.size,im.getpixel((0,0)))
+              image.paste(im.crop((0,0,im.width-dx,im.height-dy)),(dx,dy))
+              image.paste(im.crop((0,0,dx,im.height-dy)).transpose(Image.Transpose.FLIP_LEFT_RIGHT),(0,dy))
+              image.save(path,'WEBP',quality=94,method=6)
+              b=path.read_bytes();sha=hashlib.sha256(b).hexdigest();count=len(b)
+              blob=subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+              record=json.loads(md.read_text())
+              variant=next(v for v in record['variants'] if v['kind']=='TYPE')
+              assert variant['sha256']==oldhash
+              record['sha256']=variant['sha256']=sha
+              record['fileBytes']=variant['fileBytes']=count
+              variant['gitBlobSha']=blob
+              variant['typography']['method']='Native WebP source-image translation (+27 x, +85 y) with mirrored 27px left bleed to honor 10% title safe margin; original rasterized wording retained without re-generation'
+              variant['qc']['typeSafeArea10pctPixels']='SOURCE_PIXEL_PASS_NATIVE_BBOX_X110_Y138'
+              variant['qc']['typeReadableAt320px']='source-pixel-reviewed_mobile_browser_and_independent_qa_pending'
+              variant['qc']['independentVisualApproval']=False
+              record['laneYIsolation']['revisedTypeGitBlob']=blob
+              record['laneYSafeAreaRevision']={
+                  'parentWebpSha256':oldhash,'nativeHorizontalShiftPx':dx,'nativeVerticalShiftPx':dy,
+                  'visibleHeadingMinX':110,'visibleHeadingMinY':138,
+                  'requiredMinX10Percent':102.4,'requiredMinY10Percent':128,
+                  'verifiedBy':'source raster color-bound measurement, pending independent visual/editorial review',
+                  'newTypeSha256':sha,'newTypeBytes':count,'newTypeGitBlobSha':blob,
+                  'thumbUntouched':True,'cleanUntouched':True,'productionReady':False}
+              record['qa']['notes']='Hurt TYPE safe-area correction (10% numeric pixel bounds) applied to existing standalone WebP; original export SHA retained as source genealogy; independent visual, rights, contextual review and served built-app acceptance remain pending.'
+              md.write_text(json.dumps(record,indent=2)+'\n')
+              t=test.read_text()
+              needle="TYPE: ['"+oldhash+"', "+str(oldbytes)+", 1024, 1280]"
+              replacement="TYPE: ['"+sha+"', "+str(count)+", 1024, 1280]"
+              assert t.count(needle)==1,'expected locked regression-test source not found'
+              test.write_text(t.replace(needle,replacement))
+              print('SAFE AREA CORRECTION',sha,count,blob,'bbox=(110,138); threshold=(102.4,128)')
+          PY
+      - name: Verify exact candidate hashes, encoded size and canonical reference
         run: node --test tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs
       - name: Render actual candidate WebP at native and mobile widths
         run: |
-          python3 -m pip install --quiet --break-system-packages Pillow
           python3 - <<'PY'
           from pathlib import Path
           from PIL import Image
@@ -41,7 +96,15 @@ jobs:
           (out/'native-measurements.json').write_text(json.dumps(records,indent=2))
           print(json.dumps(records,indent=2))
           PY
-      - name: Upload exact candidate images and scaled QA views
+      - name: Commit corrected TYPE and evidence to Lane Y PR branch only
+        run: |
+          if git diff --quiet -- public/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.webp data/v7/visual-assets/records/bqv7-emotion-hurt-betrayal-01-derivatives.json tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs; then exit 0; fi
+          git config user.name "BibleQuest Lane Y QA"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.webp data/v7/visual-assets/records/bqv7-emotion-hurt-betrayal-01-derivatives.json tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs
+          git commit -m "fix(v7/lane-y): move Hurt title into 10 percent safe area"
+          git push origin HEAD:v7/lane-y-hurt-betrayal-isolated-webps-20261010
+      - name: Upload exact corrected files and scaled QA previews
         uses: actions/upload-artifact@v4
         with:
           name: lane-y-hurt-native-${{ github.sha }}
