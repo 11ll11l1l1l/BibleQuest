@@ -4,7 +4,7 @@
   "assetId": "bqv7-emotion-rejection-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-rejection-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_real_webp_derivatives_independent_qa_pending",
   "productionCertified": false,
   "contentType": "emotion",
   "contentId": "rejection",
@@ -64,12 +64,12 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 88016,
-      "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+      "fileBytes": 111752,
+      "sha256": "a164c0f11f9bf8ad6963a7ef73347aa248a43f9fa12ec760d9769c99704300fe",
       "sourceType": "generated",
       "locale": "en",
       "includedWording": "Rejected / unwanted",
@@ -114,17 +114,39 @@
         "visualRenderQA": "pending",
         "fontRenderQA": "pending",
         "referenceGeometryReviewed": true,
-        "typeReadableAt320px": "pending"
-      }
+        "typeReadableAt320px": "pending_independent_visual_mobile_review",
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "exactEnglishWordingPresentInRaster": true,
+        "scriptureReferenceOnly": true,
+        "noGeneratedVerseText": true
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+        "format": "svg",
+        "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+        "gitBlobSha": null,
+        "bytes": 88016
+      },
+      "gitBlobSha": "79e1045107ce45eb712e705dba43fc87061f324f"
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.webp",
+      "format": "webp",
       "width": 384,
       "height": 480,
-      "fileBytes": 87498,
-      "sha256": "b84eff663cd0190569b623b665ccb2b629e96d199bfa716a7182e8c9bd55a334",
+      "fileBytes": 34590,
+      "sha256": "c3cdeb2a854065c811258227dfb2806498e11bb5682a56ee909fd4b8c60b7669",
       "sourceType": "generated",
       "locale": null,
       "focalPoint": {
@@ -153,8 +175,29 @@
         "thumbnailAt100px": "pending",
         "visualRenderQA": "pending",
         "focalCropBrowserQA": "pending",
-        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run."
-      }
+        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run.",
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": "native_preview_pass_independent_review_pending"
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg",
+        "format": "svg",
+        "sha256": "b84eff663cd0190569b623b665ccb2b629e96d199bfa716a7182e8c9bd55a334",
+        "gitBlobSha": null,
+        "bytes": 87498
+      },
+      "gitBlobSha": "244b5a89a82cb0a1916b99f132864a6a3b7bf736"
     }
   ],
   "rights": {
@@ -185,10 +228,15 @@
     "scriptureQuoteIncluded": false,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
+    "notes": "Lane Y produced 2 independently stored WebP derivative(s) from byte-pinned legacy data-URI SVG(s) via https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38045007143. Source CLEAN bytes were not modified. Native WebP pixels inspected and copy/reference preliminarily checked; full 320/390/430 built-app verification, independent content/rights/typographic review and release certification remain pending.",
+    "productionReady": false,
+    "svgDataUriPolicyCompliant": null,
+    "realWebpDerivatives": true,
+    "nativeWebpReviewByLaneY": true,
+    "browserRenderedTypeQA": "pending_exact_head"
   },
   "createdAt": "2026-10-08T15:06:14+09:00",
-  "bundleStatus": "partial_candidate_not_production_ready",
+  "bundleStatus": "three_real_files_raster_candidate_independent_qa_pending",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -227,5 +275,25 @@
       "embeddedCleanIdentityMatches": true,
       "limitations": "SVG encoded dimensions/geometry checked from markup only. Full TYPE and THUMB browser rendering and 320px visual QA not performed; no production promotion."
     }
+  },
+  "laneYRasterExportEvidence": {
+    "runId": 38045007143,
+    "runUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38045007143",
+    "shaPinnedSources": true,
+    "exportedVariants": [
+      {
+        "kind": "TYPE",
+        "sha256": "a164c0f11f9bf8ad6963a7ef73347aa248a43f9fa12ec760d9769c99704300fe",
+        "bytes": 111752,
+        "gitBlobSha": "79e1045107ce45eb712e705dba43fc87061f324f"
+      },
+      {
+        "kind": "THUMB",
+        "sha256": "c3cdeb2a854065c811258227dfb2806498e11bb5682a56ee909fd4b8c60b7669",
+        "bytes": 34590,
+        "gitBlobSha": "244b5a89a82cb0a1916b99f132864a6a3b7bf736"
+      }
+    ],
+    "productionReady": false
   }
 }
