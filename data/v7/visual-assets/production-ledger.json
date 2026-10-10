@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "manual-chat-v7-b20",
+  "updatedBy": "manual-chat-v7-b20-failed-preflight",
   "entries": [
     {
       "family": "devotional",
@@ -264,9 +264,20 @@
       "producer": "manual-chat-v7-b20",
       "sourceRevision": "r1",
       "sceneRevision": "v7-z03:temptation:student-blank-laptop-to-accountability",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T07:43:00+09:00",
-      "qa": {}
+      "qa": {},
+      "rejectionReason": "FAILED PRE-SUBMIT producer preflight: generated a three-panel composite/collage of unrelated prior scenes rather than exact source-locked one-scene devotional cover; failed semantic identity and originality check. No image submitted. Unapproved local file was deleted.",
+      "failedMeasuredBytesSha256": "9b5dd3ba57a02d421ace48a93af5d9df7634897ca75c0b29966d2a74535d38a3",
+      "failedMeasured": {
+        "width": 1402,
+        "height": 1122,
+        "bytes": 2194141,
+        "format": "png"
+      },
+      "generationId": "da611690-51be-4935-910e-b38781516fdc",
+      "rejectedAt": "2026-10-11T07:43:00+09:00",
+      "fileDeletionVerified": true
     },
     {
       "family": "devotional",
@@ -276,9 +287,20 @@
       "producer": "manual-chat-v7-b20",
       "sourceRevision": "r1",
       "sceneRevision": "v7-z06:sadness:apartment-mint-for-supper",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T07:43:00+09:00",
-      "qa": {}
+      "qa": {},
+      "rejectionReason": "FAILED PRE-SUBMIT producer preflight: generated a three-panel composite/collage of unrelated prior scenes rather than exact source-locked one-scene devotional cover; failed semantic identity and originality check. No image submitted. Unapproved local file was deleted.",
+      "failedMeasuredBytesSha256": "b6ea056456db617a915f57161e6e9321a5a347570f40476d2d257b6d300415fe",
+      "failedMeasured": {
+        "width": 1122,
+        "height": 1402,
+        "bytes": 2224193,
+        "format": "png"
+      },
+      "generationId": "e01ba0a2-bceb-4a21-a543-bb7876da9dbf",
+      "rejectedAt": "2026-10-11T07:43:00+09:00",
+      "fileDeletionVerified": true
     },
     {
       "family": "devotional",
@@ -288,9 +310,20 @@
       "producer": "manual-chat-v7-b20",
       "sourceRevision": "r1",
       "sceneRevision": "v7-z09:love:bicycle-repair-attentive-listening",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T07:43:00+09:00",
-      "qa": {}
+      "qa": {},
+      "rejectionReason": "FAILED PRE-SUBMIT producer preflight: generated a three-panel composite/collage of unrelated prior scenes rather than exact source-locked one-scene devotional cover; failed semantic identity and originality check. No image submitted. Unapproved local file was deleted.",
+      "failedMeasuredBytesSha256": "f00849c298c17d6822337b2c48813dc4b88234627bdf6d786cd9030edfcdd5c9",
+      "failedMeasured": {
+        "width": 1983,
+        "height": 793,
+        "bytes": 2194440,
+        "format": "png"
+      },
+      "generationId": "48d34e57-6add-4190-95e8-a30bcc734c31",
+      "rejectedAt": "2026-10-11T07:43:00+09:00",
+      "fileDeletionVerified": true
     }
   ]
 }
