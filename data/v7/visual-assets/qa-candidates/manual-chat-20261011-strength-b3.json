@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "family": "need",
+  "contentId": "strength",
+  "variant": "CLEAN",
+  "attemptId": "manual-chat-20261011-strength-b3",
+  "status": "QA_PENDING",
+  "sourceTitle": "Strength",
+  "theme": "Shared practical effort and endurance.",
+  "sourcePath": "src/features/library/emotion-taxonomy.js",
+  "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+  "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+  "sceneRevision": "guide20261011-s6-strength-door-jig-v3",
+  "scriptureReferences": [
+    "Isaiah 40:31",
+    "Philippians 4:13"
+  ],
+  "scriptureBakedIntoImage": false,
+  "imagePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.webp",
+  "mimeType": "image/webp",
+  "width": 1122,
+  "height": 1402,
+  "aspectRatio": 0.8002853067047075,
+  "fileBytes": 371634,
+  "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4",
+  "provenance": {
+    "method": "user-invoked ChatGPT built-in image generation",
+    "externalImageReferences": [],
+    "generatorId": "not exposed"
+  },
+  "producerPreflight": {
+    "verdict": "PASS",
+    "notes": [
+      "one continuous contemporary workshop scene",
+      "three adults visibly stabilize a wooden door on a repair jig while a fourth aligns the hinge",
+      "four people, all present-day adults and no repeated rejected composition",
+      "no legible writing or text-bearing content",
+      "native 1122x1402 WebP meets 768x960 minimum and ±2.5% 4:5 tolerance",
+      "top-left area remains naturally quiet"
+    ]
+  },
+  "productionApproved": false,
+  "qa": {}
+}
