@@ -64,6 +64,13 @@ class RasterPreflightTests(unittest.TestCase):
         result=inspect_image(p,'emotion')
         self.assertTrue(any(x.startswith('raster_decode_failure') for x in result['reasons']))
 
+    def test_extension_must_match_decoded_raster_format(self):
+        source=self.build('actual.png',(1024,1024))
+        renamed=self.root/'renamed.webp'
+        renamed.write_bytes(source.read_bytes())
+        result=inspect_image(renamed,'emotion')
+        self.assertIn('source_extension_mismatch',result['reasons'])
+
     def test_missing_file_is_rejected(self):
         self.assertEqual(inspect_image(self.root/'missing.webp','hero')['reasons'],['file_not_found'])
 
