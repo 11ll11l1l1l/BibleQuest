@@ -1,0 +1,49 @@
+name: V7 Lane Y Hurt Candidate Native QA (temporary)
+on:
+  push:
+    branches:
+      - v7/lane-y-hurt-betrayal-isolated-webps-20261010
+  workflow_dispatch:
+jobs:
+  native-artifact:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Exact Hurt bytes, native WebP format, dimensions, SHA and canonical reference
+        run: node --test tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs
+      - name: Render actual candidate WebP at native and mobile widths
+        run: |
+          python3 -m pip install --quiet --break-system-packages Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import hashlib,json,shutil
+          root=Path('public/v7/images/emotion')
+          out=Path('artifacts/v7/lane-y-hurt-native')
+          out.mkdir(parents=True,exist_ok=True)
+          records=[]
+          for name in ('bqv7-emotion-hurt-betrayal-01-with-text-en.webp','bqv7-emotion-hurt-betrayal-01-thumbnail.webp'):
+              p=root/name
+              b=p.read_bytes()
+              im=Image.open(p)
+              im.load()
+              assert im.format == 'WEBP'
+              shutil.copyfile(p,out/name)
+              for w in (100,320,390,430,800):
+                  if 'with-text' in name and w==100: continue
+                  im.resize((w,round(im.height*w/im.width)),Image.Resampling.LANCZOS).save(out/(name.replace('.webp',f'-{w}.png')))
+              records.append(dict(file=name,sha256=hashlib.sha256(b).hexdigest(),bytes=len(b),width=im.width,height=im.height,mode=im.mode))
+          (out/'native-measurements.json').write_text(json.dumps(records,indent=2))
+          print(json.dumps(records,indent=2))
+          PY
+      - name: Upload exact candidate images and scaled QA views
+        uses: actions/upload-artifact@v4
+        with:
+          name: lane-y-hurt-native-${{ github.sha }}
+          path: artifacts/v7/lane-y-hurt-native/
+          retention-days: 3
