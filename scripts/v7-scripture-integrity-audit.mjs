@@ -16,7 +16,7 @@ export function checkScriptureReview(row) {
   const errors = [];
   if (!row || typeof row !== 'object' || Array.isArray(row)) return ['review must be an object'];
   if (row.schemaVersion !== 1) errors.push('schemaVersion must be 1');
-  if (!nonempty(row.contentPath) || row.contentPath.includes('..') || row.contentPath.startsWith('/') || row.contentPath.includes('\\\\')) errors.push('invalid contentPath');
+  if (!nonempty(row.contentPath) || row.contentPath.includes('..') || row.contentPath.startsWith('/') || row.contentPath.includes(String.fromCharCode(92))) errors.push('invalid contentPath');
   if (!nonempty(row.locale)) errors.push('locale missing');
   if (!ALLOWED.has(row.displayKind)) errors.push('invalid displayKind');
   if (!['pending','failed','approved'].includes(row.status)) errors.push('invalid status');
@@ -49,7 +49,7 @@ export async function auditScriptureReviews(root = ROOT) {
       const row = JSON.parse(await readFile(join(root, REVIEW_DIR, name), 'utf8'));
       const problems = checkScriptureReview(row);
       for (const problem of problems) errors.push(name + ': ' + problem);
-if (row.status === 'approved') {
+      if (row.status === 'approved') {
         const sourcePath = resolve(root, row.contentPath);
         const relativeSource = sourcePath.startsWith(resolve(root) + '/') ? sourcePath.slice(resolve(root).length + 1) : '';
         if (!relativeSource || relativeSource.startsWith('..')) errors.push(name + ': contentPath escapes repository root');
