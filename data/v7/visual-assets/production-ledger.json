@@ -330,6 +330,32 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-single-strength-cc41",
+      "producer": "user-invoked-interactive-chat-20261011-single",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide6-strength-doorrepair-20261011-cc41",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T08:24:00+09:00",
+      "qa": {},
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6",
+      "shotFingerprint": {
+        "narrativeAction": "four community volunteers jointly repair one heavy wooden door; three stabilize it safely as the fourth aligns hinges",
+        "setting": "modern neighborhood repair workshop, timber repair jig",
+        "focalObject": "heavy wooden door and door hinges",
+        "peopleCount": 4,
+        "perspective": "editorial documentary 3/4 angle",
+        "lighting": "soft daylight from workshop windows",
+        "aspect": "4:5 portrait",
+        "textSafeRegion": "lower 30 percent visually quiet"
+      },
+      "note": "Single new original modern-day scene only; no collages, texts, ancient characters or reused imagery. Claim must not be counted as QA."
     }
   ]
 }
