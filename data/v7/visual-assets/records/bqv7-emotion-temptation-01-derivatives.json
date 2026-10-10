@@ -67,7 +67,7 @@
   },
   "qa": {
     "sourceWebPEmbeddedIdenticalToClean": true,
-    "svgStaticSafetyChecked": "legacy_svg_evidence_only_new_art_webp",
+    "svgStaticSafetyChecked": true,
     "typographyExactTaxonomy": true,
     "referenceEquivalentAt320Px": 15,
     "browserRendered": false,
@@ -75,7 +75,8 @@
     "productionReady": false,
     "visualAuditScript": "not_run",
     "note": "Previous legacy SVG notes superseded by true standalone 1024x1280 WebP TYPE. PR-head source-locked raster screenshot review and SHA passed. No built-app served-byte Chromium, independent rights/context/originality or final production approval established.",
-    "sourcePixelWebpDecoded": true
+    "sourcePixelWebpDecoded": true,
+    "legacySvgEvidenceOnly": true
   },
   "assetId": "bqv7-emotion-temptation-01-derivatives",
   "generation": {
