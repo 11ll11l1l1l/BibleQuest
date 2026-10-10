@@ -271,7 +271,7 @@ export async function runLedger(command, args, root=ROOT) {
         const record=JSON.parse(await readFile(resolve(ROOT,r.externalRecordPath),'utf8'));
         if (record.status!=='candidate_qa_pending' ||
           record.contentId!==r.contentId || record.contentType!==r.family ||
-          !/^\\/v7\\/images\\/devotional\\/bqv7-devotional-[a-z0-9-]+\\.png$/.test(record.imagePath))
+          !/^\/v7\/images\/devotional\/bqv7-devotional-[a-z0-9-]+\.png$/.test(record.imagePath))
           throw new Error('external candidate record is stale or unsafe');
         const bytes=await readFile(join(ROOT,'public',record.imagePath.slice(1)));
         const measure=verifyGeometry(bytes,r.family,r.variant);
