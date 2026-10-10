@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "updatedBy": "v7-image-work-ledger",
+  "entries": [
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.anxiety_worry.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-1",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.fear.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-2",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.sadness.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-3",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.grief_loss.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-4",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-5",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically."
+    }
+  ]
+}
