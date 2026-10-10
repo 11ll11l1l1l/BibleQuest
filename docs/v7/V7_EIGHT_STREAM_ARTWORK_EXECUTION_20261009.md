@@ -1,3 +1,5 @@
+> **USER AUTHORITY UPDATE — 2026-10-11:** Any instructions below assigning images, derivatives, repairs or generation to scheduled Producers 1–5/agents or autonomous image queues are **revoked**. Active scheduled agents are QA-only, including the formerly named producers. All new/modified image bytes originate only from user-invoked interactive ChatGPT manual generation/repair conversations (X, Y, Z), with independent QA and user review before promotion. A/B/C/D retain existing non-image scopes, and D retains final release certification. Follow `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md` for precedence.
+
 # BibleQuest V7 — five scheduled agents plus three manual chat lanes
 Effective: 2026-10-09 JST. Canonical operations plan for image production. Repository: `11ll11l1l1l/BibleQuest`; integration: `v7/development`.
 This plan allocates WORK; it does not certify any image or change V7 release criteria. Keep Lane A #1300 owning art, Lane D #1303 owning the final certified release.

@@ -1,3 +1,5 @@
+> **V7 ARTWORK OVERRIDE (2026-10-11):** All five scheduled image agents are **QA ONLY**. No autonomous/scheduled image generation, regeneration, derivative/type/thumbnail export or image editing. **Only explicitly user-invoked interactive ChatGPT chat instances may create or revise image pixels.** Read [manual-chat-only artwork and QA policy](docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md) before any visual work. Conflicting old generator assignments are revoked. All real-art acceptance and release gates remain.
+
 # BibleQuest agent instructions
 
 Start at [work/README.md](work/README.md). The [rulebook](work/RULEBOOK.md) is the single operational policy for new work. Read its fast-start section and only task-relevant sections; do not execute every listed check for every task.

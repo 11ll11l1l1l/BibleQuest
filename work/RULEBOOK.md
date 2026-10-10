@@ -1,3 +1,5 @@
+> **Binding 2026-10-11 V7 artwork exception (supersedes old visual producer instructions):** All scheduled artwork agents are reassigned to independent **QA-only** tasks; they cannot create, change, repair, typeset, crop, regenerate or render images. Only a user-invoked interactive ChatGPT conversation may create/modify image pixels, with manual submission and user art approval. Refer to `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md`. QA agents may inspect/evaluate/report candidate artwork but never self-produce, self-approve or publish it. Preserve legacy art provenance and keep unapproved source bytes held.
+
 # BibleQuest rulebook
 
 Canonical operational policy for development, maintenance, multi-agent work and production releases. Updated 2026-10-04 JST. Applies from V7 onward; preserves V1–V6 lessons without importing obsolete workflow machinery.

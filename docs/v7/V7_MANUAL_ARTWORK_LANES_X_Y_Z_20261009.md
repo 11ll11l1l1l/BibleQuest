@@ -1,3 +1,5 @@
+> **2026-10-11 binding scope:** X/Y/Z are **manual ChatGPT conversation queues only** and run exclusively when the user invokes an interactive chat instance. No scheduled or autonomous agent may generate, edit, typeset, crop, repair or export imagery; agents may only inspect the submitted candidates. Previous authorizing wording below is constrained by `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md`. Preserve independent review and explicit user approval.
+
 # BibleQuest V7 — Manual Image Lanes X, Y, Z
 
 Authoritative scope correction — 2026-10-09 JST. Manual lanes run **only when explicitly invoked**; they are not recurring autonomous jobs. They supplement canonical A–D. Do not reassign them as Scripture QA or rewrite shared A–D files.

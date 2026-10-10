@@ -1,3 +1,5 @@
+> **SUPERSEDED IN PART — 2026-10-11:** The former five-agent image **generation** procedure, self-QA regeneration, producer ownership and "one image per scheduled run" instructions below are archived historical design notes, NOT active permissions. All scheduled artwork agents are now QA-only. Only user-invoked interactive ChatGPT conversations may create/modify image pixels. See `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md`. Visual specifications and independent quality gates below remain relevant. Do not run old generation steps.
+
 # BibleQuest V7 Visual Asset Production System
 
 Updated: 2026-10-08 JST

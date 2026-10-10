@@ -1,3 +1,5 @@
+> **Binding art-origin rule (2026-10-11):** No agent may generate/modify image bytes; scheduled agents are QA-only. New artwork and derivative image repairs are created only in user-invoked interactive ChatGPT conversations. Legacy producer files are held for QA and must not be relabeled as manual. [Manual-only image + QA policy](../../../docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md).
+
 # V7 Visual Assets
 
 This folder contains machine-readable sidecar records for generated/owned/licensed V7 visual assets.
@@ -6,7 +8,7 @@ Canonical production contract: `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`.
 
 Images are stored under `public/v7/images/**` so Vite can copy them to the built site as static assets. Metadata records live at `data/v7/visual-assets/records/<asset-id>.json`.
 
-There is deliberately no single shared mutable manifest. Five scheduled generators run in parallel, so one-file-per-asset records prevent merge collisions. Lane D can scan this directory to build/validate any runtime index it needs.
+There is deliberately no single shared mutable manifest. Unique one-file-per-asset records avoid merge collisions. As of 2026-10-11, scheduled image-generation jobs are prohibited and all V7 artwork agents are QA-only; only explicit user-invoked interactive ChatGPT image conversations may produce changed images. Lane D scans records to validate the runtime index after independent approval. See `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md`.
 
 Rules:
 - one unique asset ID per image;
