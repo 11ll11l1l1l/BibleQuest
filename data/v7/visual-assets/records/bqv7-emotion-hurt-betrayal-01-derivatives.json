@@ -82,16 +82,16 @@
         "fontLicenseEvidence": "No font files redistributed; independent original font/rendering-rights review remains pending",
         "referenceFontPxAtNative": 48,
         "referenceNominalPxAt320": 15,
-        "referenceBaselineY": 342,
+        "referenceBaselineY": 427,
         "referenceMobileReadability": "render_qa_pending",
-        "geometryAdjustment": "Raised reference font from 26 to 48 native px and moved baseline 315 to 342; nominal 15px at 320px-wide card. Actual browser font rendering and visual legibility not certified."
+        "geometryAdjustment": "Legacy source reference baseline 342 native px; after +85px TYPE safe-margin translation, final raster baseline is 427px. Label and reference pixels preserved exactly, not retypeset. Source-pixel legibility seen at 320/390/430/800; built app and independent typography QA pending."
       },
       "focalPoint": {
-        "x": 0.31,
-        "y": 0.63
+        "x": 0.34,
+        "y": 0.7
       },
       "textSafeRegion": "top",
-      "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed. Psalm 55:12\u201314.",
+      "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed. Psalm 55:12–14.",
       "decorative": true,
       "fallback": "CLEAN with localized live text",
       "qc": {
@@ -105,7 +105,7 @@
         "sourceEmbeddedWebpSha256Verified": true,
         "sourceEmbeddedWebpBytesVerified": true,
         "typeReadableAt320px": "source-pixel-reviewed_mobile_browser_and_independent_qa_pending",
-        "fontRenderQA": "pending",
+        "fontRenderQA": "raster_source_pixel_reviewed_browser_independent_pending",
         "referenceGeometryReviewed": true,
         "legacyDataUriSvgCandidateRetired": true,
         "realRasterWebpDecodeAndDimensionsVerified": true,
@@ -204,7 +204,7 @@
   },
   "accessibility": {
     "decorative": true,
-    "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed; Psalm 55:12\u201314."
+    "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed; Psalm 55:12–14."
   },
   "wordingSource": {
     "recordOriginalBlobSha": "2691f008f104fab718dcf455cda9078d3c31aace",
@@ -222,7 +222,9 @@
     "svgDataUriPolicyCompliant": null,
     "realWebpDerivatives": true,
     "nativeWebpReviewByLaneY": true,
-    "browserRenderedTypeQA": "pending_exact_head"
+    "browserRenderedTypeQA": "pending_exact_head",
+    "typeNativeSafeMarginsChecked": true,
+    "typeSafeMarginStatus": "numeric_source_pixel_pass_independent_review_pending"
   },
   "productionCertified": false,
   "wordingEvidence": {
