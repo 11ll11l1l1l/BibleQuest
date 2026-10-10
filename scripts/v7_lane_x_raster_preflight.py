@@ -87,6 +87,9 @@ def inspect_image(path: Path, family: str) -> dict:
             out.update({"decodedFormat": fmt, "width": w, "height": h})
             if fmt not in ("PNG", "WEBP"):
                 out["reasons"].append("only_real_png_or_webp_allowed")
+            ext_format={".png": "PNG", ".webp": "WEBP"}.get(path.suffix.lower())
+            if ext_format != fmt:
+                out["reasons"].append("source_extension_mismatch")
             if w<checks["min_width"] or h<checks["min_height"]:
                 out["reasons"].append("insufficient_original_raster_resolution")
             out["actualAspectRatio"] = round(w/h,5)
