@@ -330,6 +330,31 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-home-hero-81lvzjx",
+      "producer": "interactive-chat-20261011",
+      "sourceRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceChecksum": "git-blob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "sceneRevision": "guide-s7-modern-community-hall-81lvzjx",
+      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "shotFingerprint": {
+        "action": "adult and school-age child entering neighborhood learning hall with own bags; two adults jointly working at shared reading/project table",
+        "setting": "contemporary local community learning hall with accessibility",
+        "peopleCount": 4,
+        "view": "waist-high 35mm documentary wide shot",
+        "lighting": "late afternoon natural warm-neutral",
+        "safeRegion": "left 36-40 percent clear",
+        "geometry": "16:9"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:18:37.383Z",
+      "qa": {},
+      "note": "ONE IMAGE ONLY. Nonproduction claim. Render original photorealistic contemporary single-scene CLEAN hero before submitting. No QA pass, no release."
     }
   ]
 }
