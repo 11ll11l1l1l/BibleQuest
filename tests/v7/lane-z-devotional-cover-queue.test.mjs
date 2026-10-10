@@ -125,3 +125,19 @@ test('CLI defaults to exactly one original portrait brief and supports explicit 
  assert.match(specific.queue[0].prompt,/apartment kitchen table/);
  assert.doesNotMatch(specific.queue[0].prompt,/Create ten covers/i);
 });
+
+test('every eligible devotional has a locked exact-ID construction scene instead of a cyclic generic fallback', async () => {
+ const queue = await readLaneZCoverQueue();
+ const owned = queue.queue.filter(x => x.rightsEligible);
+ assert.equal(owned.length, 300);
+ assert.equal(owned.filter(x=>x.artDirectionSource==='human_source_bound_first30').length, 30);
+ assert.equal(owned.filter(x=>x.artDirectionSource==='locked_construction_guidebook').length, 270);
+ assert.ok(owned.every(x=>x.sourceBodyAnchor && x.scene.length>=80 && x.altTextDraft));
+ assert.equal(new Set(owned.map(x=>x.visualIdentity)).size, 300);
+ assert.ok(owned.every(x=>x.artDirectionSource !== 'deterministic_fallback_needs_editorial_review'));
+ for (const item of owned) {
+   assert.match(item.prompt, /Create exactly ONE standalone original 4:5 portrait/);
+   assert.match(item.prompt, /NO rendered text/);
+   assert.ok(item.prompt.includes(item.scene), item.devotionalId + ' has wrong scene in prompt');
+ }
+});

@@ -118,3 +118,7 @@ and pass source-art inspection, Scripture/translation review, canonical image
 audit, browser and release gates. A new SHA is **not automatically an approval**.
 Keep CLEAN with live translated text as a fallback when TYPE is rejected;
 do not publish a visually rejected three-file bundle.
+
+## Mandatory construction source for all chats and agents
+
+Every V7 visual generation, variant repair, approval and release step MUST first read `docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md`, its exact-ID scene chapter and `AGENTS.md`. The new guide defines the required human action, location, framing, lighting, original high-resolution raster medium, QA rejection criteria, and checks against accepted, draft and rejected art. It supersedes older generic scene prompts, but not release/rights/Scripture gates or exclusive lane ownership. Until PR #1481 integrates, obtain it from `docs/v7-complete-artwork-construction-guide-20261010`. Preserve an existing verified CLEAN master when correcting only TYPE/THUMB, and do not publish any image solely because a sidecar or structural check claims success.

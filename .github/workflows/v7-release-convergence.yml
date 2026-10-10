@@ -9,6 +9,9 @@ on:
       - 'src/**'
       - 'content/v7/**'
       - 'data/v7/**'
+      - 'docs/v7/unfinished-artwork-guide/**'
+      - 'AGENTS.md'
+      - 'work/RULEBOOK.md'
       - 'packages/db/**'
       - 'supabase/**'
       - 'tests/v7/**'
@@ -87,6 +90,9 @@ jobs:
 
       - name: Deterministic install
         run: npm ci
+
+      - name: Verify required artwork guidebook source identity
+        run: node scripts/v7-unfinished-image-guidebook-audit.mjs
 
       - name: Static and contract gates
         shell: bash
