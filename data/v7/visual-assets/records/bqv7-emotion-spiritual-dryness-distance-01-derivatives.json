@@ -121,9 +121,10 @@
     "reviewedEnglishWording": true,
     "exactMetadataMeasured": true,
     "browserRenderedTypeQA": "pending",
-    "notes": "Removed an unapproved embedded English UI heading from the TYPE SVG; only canonical English emotion label and Psalm 42:1-2 reference remain. Original WebP/CLEAN and THUMB unchanged. TYPE SHA-256 and byte size independently recalculated from the exact committed SVG. Actual built-app raster/render, font appearance, phone legibility and crop remain pending; candidate is NOT production-ready.",
+    "notes": "Legacy SVG correction succeeded; current TYPE and THUMB are independently decoded 1024x1280 and 768x960 genuine WebPs with source-locked hashes. Source-pixel 320/390/430/800 previews generated and inspected. Independent visual/rights/Scripture context and actual built-app served-byte QA not complete; candidate status remains.",
     "referenceGeometryAt320Px": "16.25px equivalent, not visually certified",
-    "typeUnboundHeadingRemoved": true
+    "typeUnboundHeadingRemoved": true,
+    "legacySvgReviewSuperseded": true
   },
   "sourceMasterAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
   "bundleStatus": "real_clean_type_thumb_candidate_browser_qa_pending",
@@ -139,5 +140,25 @@
     "actualBuiltAppBrowserQA": "pending",
     "servedByteSHA": "pending",
     "productionReady": false
+  },
+  "laneYBatchSourcePixelEvidence": {
+    "sourceReviewRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38065359391",
+    "candidateSha": "be9a93ea1992dcee8ff37f0c0f48737dfa9fa813",
+    "formatDecoded": "WEBP",
+    "sourcePixelsRenderedWidths": [
+      320,
+      390,
+      430,
+      800
+    ],
+    "sourceNativeChecksumMatchedSidecar": true,
+    "publicationAuthorization": false,
+    "sourcePixelReviewStatus": "reviewed_for_technical_identification_only",
+    "requiredStill": [
+      "independent visual originality and context",
+      "Scripture context and source rights",
+      "built-app served-byte and responsive browser QA",
+      "Lane D release certification"
+    ]
   }
 }
