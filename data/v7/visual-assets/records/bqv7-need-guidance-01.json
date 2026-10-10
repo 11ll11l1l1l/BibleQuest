@@ -3,7 +3,7 @@
   "assetId": "bqv7-need-guidance-01",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-09T22:09:21+09:00",
-  "status": "candidate_independent_qa_pending",
+  "status": "candidate_scene_revision_required",
   "bundleStatus": "three_real_files_qa_pending",
   "family": "need",
   "visualRole": "need_tile",
@@ -80,7 +80,12 @@
     "productionReady": false,
     "candidateOnly": true,
     "localHttpExactBytes": true,
-    "localIsolatedChromium320390430": true
+    "localIsolatedChromium320390430": true,
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Existing forest-fork/hikers scene is a composite-origin crop and conflicts with mandatory section 6: local volunteer pointing out a safe next step on an unmarked transit map at a covered bus terminal.",
+    "rejectedSourceCleanSha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
+    "requiredNextAction": "Replace CLEAN, TYPE, THUMB and sidecar together on this same PR with a standalone original scene, then independent QA; do not reuse rejected bytes.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
   },
   "variants": [
     {
