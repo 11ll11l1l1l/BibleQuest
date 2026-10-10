@@ -5,7 +5,7 @@
   "sourceMasterAssetId": "bqv7-emotion-anxiety-worry-01",
   "agentId": "visual-agent-1",
   "createdAt": "2026-10-08T06:08:55.096Z",
-  "status": "three_files_present_visual_qc_partial",
+  "status": "candidate_real_webp_scripture_reference_independent_browser_qa_pending",
   "contentType": "emotion",
   "contentId": "anxiety_worry",
   "canonicalEmotionId": "anxious",
@@ -51,95 +51,81 @@
       "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
       "format": "webp",
       "width": 1024,
-      "height": 1024,
-      "fileBytes": 52276,
-      "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa",
-      "gitBlobSha": "3284e88ee7e6b07e05e938abd5aa29b195baabd8",
+      "height": 1280,
+      "fileBytes": 73518,
+      "sha256": "8da80e598e633df054e7cc0ab906e06dbd3d11a89d05e9804f6c99efd653b070",
       "focalPoint": {
         "x": 0.52,
-        "y": 0.42
+        "y": 0.52
       },
-      "textSafeRegion": "bottom",
-      "includedWording": "Anxious / worried",
-      "wordingSource": {
-        "path": "src/features/library/emotion-taxonomy.js",
-        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
-        "canonicalId": "anxious",
-        "field": "labels.en",
-        "locale": "en"
+      "embeddedWording": {
+        "label": "Anxious / worried",
+        "scriptureReference": "Philippians 4:6-7",
+        "scriptureTextIncluded": false
       },
-      "scriptureIncluded": false,
-      "translation": null,
-      "revision": null,
+      "altText": "A worried young man on his bed at dusk. English title: Anxious / worried. Reference: Philippians 4:6-7.",
       "typography": {
-        "method": "rasterized professional editorial lettering",
-        "fontFamilies": [
-          "Noto Serif Display SemiBold",
-          "Noto Serif Display Italic"
-        ],
-        "fontLicense": "SIL OFL-1.1",
-        "fontLicenseEvidence": "fonts-noto-core 20201225-2 /usr/share/doc/fonts-noto-core/copyright; no font files redistributed",
-        "layout": "two-line lower-left serif with italic accent and dark gradient scrim"
+        "method": "Pillow deterministically rasterized on unchanged CLEAN",
+        "fontFamily": "Noto Serif Regular",
+        "fontLicense": "SIL OFL 1.1",
+        "locale": "en",
+        "fontFilesDistributed": false,
+        "sourceCleanSha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61"
       },
-      "altText": "A worried young man sits on his bed at dusk. Embedded English text: Anxious / worried.",
-      "decorative": true,
-      "fallback": "CLEAN with semantic localized live text",
-      "qc": {
-        "wordingVerified": true,
-        "spellingVerified": true,
-        "renderInspectedAt1024": true,
-        "phonePreviewPreviouslyInspected": true,
-        "noPseudoText": true,
-        "noScriptureQuote": true,
-        "contrastVisuallyReviewed": true
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "sourceWordingExact": true,
+        "scriptureReferenceOnly": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     },
     {
       "kind": "THUMB",
       "locale": null,
-      "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
-      "format": "svg",
-      "width": 384,
-      "height": 480,
-      "fileBytes": 67330,
-      "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
-      "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 960,
+      "fileBytes": 52214,
+      "sha256": "9d41b25c4f5e756898c832dca862eee299fa4c3d4f9aed0c415bd2e7b240f5b7",
       "focalPoint": {
         "x": 0.56,
         "y": 0.42
       },
-      "textSafeRegion": "none",
-      "altText": "A worried young man leans forward on a bed with one hand in his hair.",
-      "decorative": false,
+      "altText": "A worried young man sits on a bed, leaning forward with one hand in his hair.",
       "crop": {
-        "sourcePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+        "sourceFileSha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
         "sourceRectPixels": {
           "left": 140,
           "top": 0,
-          "right": 959.2,
+          "right": 959,
           "bottom": 1024
         },
         "targetAspectRatio": "4:5",
-        "method": "Self-contained SVG with exact CLEAN WebP bytes, 384x480 viewport clip and focal-aware horizontal crop",
-        "offlineSelfContained": true
+        "method": "Pillow LANCZOS actual 768x960 WebP crop"
       },
-      "fallback": "CLEAN",
-      "qc": {
-        "sourceMasterVerified": true,
-        "geometryChecked": true,
-        "reference400x500WebPVisuallyInspected": false,
-        "exactSvgBrowserRenderQA": "pending",
-        "noEmbeddedText": true
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "noBakedText": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     }
   ],
-  "bundleStatus": "three_files_present_render_qa_pending",
+  "bundleStatus": "real_clean_type_thumb_candidate_browser_qa_pending",
   "bundleLocaleCoverage": [
     "en"
   ],
   "generation": {
     "masterPrompt": "Create one original square 1:1 cinematic editorial photograph for BibleQuest V7 anxiety_worry emotion tile. A young Asian man sits hunched on a rumpled bed in a modest contemporary bedroom, one hand resting naturally in his hair, brows drawn and gaze lowered in a recognizable quiet moment of worry. Cool blue twilight from the window balances a soft amber bedside lamp; subdued blue-gray and warm neutral palette, shallow depth of field, believable natural anatomy, skin and fabric textures. Frame a strong central upper-half focal point readable at 100px, keep face and hands safely away from edges, reserve lower area for potential live UI. Emotion must read as anxiety rather than generic sadness. No text, logos, watermark, fake signage, Bible, crosses, mountain sunset, overdramatization, or copied app imagery. Premium cinematic editorial realism with quiet spiritual warmth.",
-    "derivatives": "TYPE programmatic typography from CLEAN; THUMB focal crop from CLEAN with embedded WebP in SVG."
+    "derivatives": "TYPE: separate licensed Noto Serif Pillow compositing from unchanged CLEAN; THUMB: actual 4:5 raster crop of unchanged CLEAN; no SVG/data URI."
   },
   "rights": {
     "image": "Original AI-generated image",
@@ -152,115 +138,49 @@
     "essentialTextRemainsLive": true
   },
   "qc": {
-    "rejectedCandidatesThisRun": 0,
-    "typeBinaryHashMeasured": true,
-    "thumbHashMeasured": true,
-    "thumbSvgBrowserRenderQA": "pending",
-    "note": "Existing 400x500 WebP thumbnail was visually accepted but direct GitHub blob creation was safety-blocked twice. A self-contained SVG focal crop was committed instead; it embeds the original master bytes and has no external runtime dependency.",
-    "independentBinarySHA256Recalculated20261008": true,
-    "cleanAndTypeWebPVisuallyInspected20261008": true,
-    "thumbnailSVGSourceGeometryInspected20261008": true,
-    "exactThumbnailSVGRenderedAtCardSize": false,
-    "releasePromotionBlockedOnThumbnailRender": true,
-    "thumbnailFocalCropRecomposed20261008": true
+    "sourceImageSha256Untouched": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+    "sourceImageWebPReused": true,
+    "typeAndThumbTrueWebP": true,
+    "referenceFromTaxonomy": "Philippians 4:6-7",
+    "independentVisualQA": "pending",
+    "actualBuiltAppBrowserQA": "pending",
+    "servedByteSHA": "pending",
+    "productionReady": false
   },
-  "inspectionEvidence": {
-    "inspectedAt": "2026-10-08T23:00:18+09:00",
-    "taxonomySourcePath": "src/features/library/emotion-taxonomy.js",
-    "taxonomyGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
     "canonicalEmotionId": "anxious",
-    "exactEnglishLabel": "Anxious / worried",
-    "typeArtworkObservedWording": "Anxious / worried",
-    "scriptureTextIncluded": false,
-    "files": [
-      {
-        "kind": "CLEAN",
-        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
-        "format": "webp",
-        "width": 1024,
-        "height": 1024,
-        "fileBytes": 50182,
-        "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
-        "gitBlobSha": "f7abc7a92fbdc76dcabbe8bd4f1ad746f8ffc89a",
-        "independentHashRecomputed": true,
-        "visuallyInspected": true
-      },
-      {
-        "kind": "TYPE",
-        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
-        "format": "webp",
-        "width": 1024,
-        "height": 1024,
-        "fileBytes": 52276,
-        "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa",
-        "gitBlobSha": "3284e88ee7e6b07e05e938abd5aa29b195baabd8",
-        "independentHashRecomputed": true,
-        "visuallyInspected": true,
-        "verifiedEnglishTaxonomyLabel": true,
-        "phone320RenderVerified": false
-      },
-      {
-        "kind": "THUMB",
-        "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
-        "format": "svg",
-        "width": 384,
-        "height": 480,
-        "fileBytes": 67330,
-        "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
-        "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
-        "independentHashRecomputed": true,
-        "geometry": {
-          "viewBox": "0 0 400 500",
-          "embeddedSourceWebPWidth": 500,
-          "embeddedSourceWebPHeight": 500,
-          "embeddedSourceX": -54.6875,
-          "embeddedSourceY": 0
-        },
-        "renderedAtCardSize": false
-      }
+    "locale": "en",
+    "exactLabel": "Anxious / worried",
+    "reference": "Philippians 4:6-7",
+    "scriptureTextIncluded": false
+  },
+  "qa": {
+    "sourcePixelWebpDecoded": true,
+    "webpThumbDecoded": true,
+    "independentVisualQA": "pending",
+    "builtAppBrowserQA": "pending",
+    "productionReady": false
+  },
+  "laneYBatchSourcePixelEvidence": {
+    "sourceReviewRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38065359391",
+    "candidateSha": "376209a14d7abe69133f2304f63c02f41eb0a84e",
+    "formatDecoded": "WEBP",
+    "sourcePixelsRenderedWidths": [
+      320,
+      390,
+      430,
+      800
     ],
-    "notes": "Focal crop re-composed using verified original CLEAN WebP. 384x480 geometry and embedded source identity verified; exact SVG browser render and app screenshots not performed.",
-    "thumbnail": {
-      "path": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.svg",
-      "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
-      "fileBytes": 67330,
-      "width": 384,
-      "height": 480,
-      "gitBlobSha": "2657fe01699948e8f72f23b729aafe99b4748477",
-      "geometry": {
-        "viewBox": "0 0 384 480",
-        "embeddedSourceWebPWidth": 480,
-        "embeddedSourceWebPHeight": 480,
-        "embeddedSourceX": -65.625,
-        "embeddedSourceY": 0
-      },
-      "cropRectSourcePixels": {
-        "left": 140,
-        "top": 0,
-        "right": 959.2,
-        "bottom": 1024
-      },
-      "visualInspected": false,
-      "browserRendered": false
-    },
-    "binaryReverification20261009": {
-      "method": "GitHub base64 bytes decoded independently; SHA-256 recomputed; SVG source embedding matched CLEAN exactly",
-      "clean": {
-        "bytes": 50182,
-        "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61"
-      },
-      "type": {
-        "bytes": 52276,
-        "sha256": "1df768e1446fa7c4052453f27691f382a38021baef6f90ced8b48a16c0487bfa"
-      },
-      "thumb": {
-        "bytes": 67330,
-        "sha256": "a767392c2244053a1bc7b0bbdc0af1ad03821872c1c842fcf4783413434623c6",
-        "viewBox": "0 0 384 480",
-        "embeddedCleanByteIdentical": true
-      },
-      "browserQa": "pending",
-      "officialAudit": "not_run"
-    }
+    "sourceNativeChecksumMatchedSidecar": true,
+    "publicationAuthorization": false,
+    "sourcePixelReviewStatus": "reviewed_for_technical_identification_only",
+    "requiredStill": [
+      "independent visual originality and context",
+      "Scripture context and source rights",
+      "built-app served-byte and responsive browser QA",
+      "Lane D release certification"
+    ]
   }
 }
