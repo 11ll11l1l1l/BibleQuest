@@ -1,3 +1,5 @@
+> **2026-10-11 producer authorization correction:** "producer"/"artist" and all G0–G5 image creation/export steps mean ONLY a **user-invoked interactive ChatGPT manual image chat**. All scheduled image agents must perform QA only (G5/G6 inspection), never generate/edit/re-export imagery. Refer to `docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_QA_POLICY_20261011.md`. No quality gate is relaxed.
+
 # BibleQuest V7 — Complete Unfinished Image Construction Guidebook
 **Edition:** 2026-10-10 JST | **Branch scope:** `v7/development` | **Classification:** production art direction / QA prevention, **not** artwork approval.
 
