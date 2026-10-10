@@ -85,13 +85,20 @@
       "producer": "manual-chat-v7-p4-p5dkdl",
       "sourceRevision": "r1",
       "sceneRevision": "guide-20261011-insecurity10-p5dkdl",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:08:50.593Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
       "sourceChecksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
       "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
-      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending.",
+      "reason": "Source/shot mismatch: rendered ancient robed praying figure, disciples and sunset hillside instead of mandatory junior architect at workbench with neutral paperweight; 1536x1024 landscape vs 4:5 portrait. Rejected before QA and not uploaded.",
+      "failedMeasuredBytesSha256": "89acc6704bec523c6644b9cc34b385ca913aca8bf580a14693c9e4e12d0e123a",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:10:17.848Z",
+      "generatorId": "e04c258a-05e2-48ab-8c9c-07a6b3a81ce1"
     },
     {
       "family": "devotional",
@@ -124,6 +131,22 @@
       "sourceChecksum": "sha256:da2a8a9712fd94fdfce37b67ca9064020aed4ff6b5d617722b2ff463564051db",
       "guidePath": "docs/v7/unfinished-artwork-guide/09-trustworthy-sharing-shots.md",
       "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.insecurity_unworthiness.10",
+      "variant": "CLEAN",
+      "attemptId": "bq7-insecurity10-p5dkdl-r2",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-insecurity10-p5dkdl-r2",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:10:17.848Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
+      "sourceChecksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
+      "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
+      "notes": "Retry different attempt after original output ignored mandatory scene. Must depict junior architect paperweight; no biblical period or sunset."
     }
   ]
 }
