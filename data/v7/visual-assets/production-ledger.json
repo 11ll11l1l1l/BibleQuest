@@ -356,6 +356,102 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-10T23:20:04.027Z",
       "notes": "Rejected immediately at single-image producer preflight; original bytes were deleted from local sandbox after measured decode and SHA. NO five-agent QA candidate submitted; slot is released. Next attempt must use fresh sceneRevision; investigate generator prompt contamination."
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-courage-b4",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v4",
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "Courage",
+      "theme": "A first practical step taken despite apprehension.",
+      "scriptureReferences": [
+        "Joshua 1:9",
+        "2 Timothy 1:7"
+      ],
+      "shotFingerprint": {
+        "narrativeAction": "An anxious adult takes one small step into an adult-learning workshop and prepares for a first task",
+        "setting": "modest contemporary neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety eyewear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "waist-height view from inside the work area looking toward the entry",
+        "light": "soft neutral window daylight",
+        "palette": "natural muted workshop materials",
+        "textSafeRegion": "bottom"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {},
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-strength-b3",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-strength-door-jig-v3",
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "Strength",
+      "theme": "Shared practical effort and endurance.",
+      "scriptureReferences": [
+        "Isaiah 40:31",
+        "Philippians 4:13"
+      ],
+      "shotFingerprint": {
+        "narrativeAction": "Three adults stabilize a heavy wooden door on a repair jig while a fourth aligns its hinges",
+        "setting": "contemporary neighborhood community workshop",
+        "focalObject": "wooden door held on a repair jig with visible hinge alignment",
+        "peopleCount": 4,
+        "perspective": "wide waist-height three-quarter view showing all four coordinated roles",
+        "light": "diffused natural workshop light",
+        "palette": "warm wood and muted neutral clothing",
+        "textSafeRegion": "top-left"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {},
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-home-v2",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sceneRevision": "guide20261011-s7-home-hall-v2",
+      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "sourceChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#7-exactly-one-home-hero-fixed-hero-direction",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "BibleQuest Home hero",
+      "theme": "A contemporary neighborhood learning hall where people continue together.",
+      "scriptureReferences": [],
+      "shotFingerprint": {
+        "narrativeAction": "An adult and school-age child enter with bags while two adults continue helping at a shared project table",
+        "setting": "contemporary neighborhood learning/community hall",
+        "focalObject": "shared reading and project table",
+        "peopleCount": 4,
+        "perspective": "wide documentary view from inside at waist height",
+        "light": "natural late-afternoon amber-neutral light",
+        "palette": "accurate skin tones and ordinary neutral materials",
+        "textSafeRegion": "left 36-40% quiet"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {},
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
     }
   ]
 }
