@@ -1,5 +1,16 @@
 # BibleQuest agent instructions
 
+## V7 image-work policy — 2026-10-11 (supersedes older artwork staffing/size/manual-approval language)
+
+**Mandatory first read:** [Image QA automation and work ledger](docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md). It governs ALL image work on V7 in every new chat, project lane, QA automation and scheduled task. When older documents disagree, use this policy while retaining stronger Scripture, rights, security, provenance and exact-SHA release safeguards.
+
+- ONLY explicitly user-invoked interactive ChatGPT chats create/repair/derive image pixels. All five hourly visual agents are QA-only (scene/Scripture, rights/wording, technical/responsive, uniqueness, coordination). **No routine human visual approval or owner sign-off is a V7 artwork acceptance step.** Automated agent decisions must be backed by independently observable pixels/evidence; missing evidence remains HOLD rather than imaginary PASS.
+- Native generator output is acceptable after deterministic crop/format export to **1024×1024 square**, **768×960 4:5**, or **1536×864 16:9 hero** minimum; THUMB has separately defined smaller minimum. Higher is welcome, but not required. No fake upscaled-resolution claim, SVG, canvas placeholder or text burned by the generator.
+- Before ANY image request, check [committed attempt ledger](data/v7/visual-assets/production-ledger.json), the matching exact-ID construction-guide chapter, existing production/candidate/rejected sidecars **and open PRs**. Claim the exact content ID + variant + source/scene revision in a committed ledger update before generation; concurrent claims must reconcile on Git merge. Do not reproduce QA-pending or finished pixels.
+- QA uses `scripts/v7-image-work-ledger.mjs` to choose the next waiting asset; on FAIL reject **and delete its unapproved staged candidate bytes immediately**, retain only tiny hash/scene/reason tombstone, then continue reviewing the **next** available candidate in the SAME run. Never delete approved CLEAN sources, unrelated variants or user content.
+- An individual agent PASS is NOT final approval; all five independent role evidences plus unchanged canonical binary, source/rights/Scripture and exact-SHA browser/release gates are necessary. QA agents may report/triage/reject, not create images or forge QA state. Lane D alone releases V7.
+
+
 Start at [work/README.md](work/README.md). The [rulebook](work/RULEBOOK.md) is the single operational policy for new work. Read its fast-start section and only task-relevant sections; do not execute every listed check for every task.
 
 Use current status and live branch/CI evidence. Fetch the task baseline once, make bounded changes, run affected existing checks, integrate or publish the result and leave an exact handoff. Do not redo completed certification, create replacement infrastructure or stop at reporting a plan.
