@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-frustration-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-09T00:07:14+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "family": "emotion",
+  "contentType": "emotion",
+  "contentId": "frustration",
+  "canonicalEmotionId": "frustrated",
+  "visualRole": "emotion_tile",
+  "concept": "A man at his desk grips his hair amid repeated failed attempts, discarded paper and unfinished work.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 68174,
+  "sha256": "0d0903a8e3e5c78952e5dd2beeaaf4ebd17ae323d69da00283cd3c44dbe06b75",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.37
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "embeddedWording": null,
+      "altText": "A frustrated man grips his hair over a cluttered desk of discarded attempts.",
+      "cropIntent": "Square subject-first crop retaining hands and crumpled papers",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": false,
+        "isolatedChromiumRendered": true,
+        "isolatedChromiumWidths": [
+          320,
+          390,
+          430
+        ],
+        "noBakedText": true
+      },
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 68174,
+      "sha256": "0d0903a8e3e5c78952e5dd2beeaaf4ebd17ae323d69da00283cd3c44dbe06b75"
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Frustrated",
+        "scriptureReference": "Galatians 6:9",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A man frustrated by failed work attempts, with embedded title Frustrated and reference Galatians 6:9.",
+      "cropIntent": "4:5 portrait with top dark scrim and original photo",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "referenceCheckedAgainstTaxonomy": true,
+        "visualInspected": true,
+        "typeReadableAt320px": true,
+        "builtAppBrowserQA": false,
+        "isolatedChromiumRendered": true,
+        "isolatedChromiumWidths": [
+          320,
+          390,
+          430
+        ],
+        "fontLicenseVerified": true
+      },
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 79248,
+      "sha256": "65d4318ea67fb6772cc607c18d40e8c4acac61a14a5c9907ffbd244e786aec64"
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "embeddedWording": null,
+      "altText": "A frustrated man grips his hair at a desk with crumpled papers.",
+      "cropIntent": "Focal-aware 4:5 crop retaining hands, face and evidence of repeated effort",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "builtAppBrowserQA": false,
+        "isolatedChromiumRendered": true,
+        "isolatedChromiumWidths": [
+          320,
+          390,
+          430
+        ],
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "imagePath": "/v7/images/emotion/bqv7-emotion-frustration-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 24070,
+      "sha256": "6c469f110a04c9b94a3ee885cd8852b9bdf55c50cbba1ee0df1b1871b13d4438"
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "frustrated",
+    "locale": "en",
+    "exactLabel": "Frustrated",
+    "reference": "Galatians 6:9",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "f9edf469-a3b1-4a66-b7a5-3a06cfa46ff3",
+    "source": "Left text-free photographic panel extracted from newly generated triptych; other panels were not used as source."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontFamilies": [
+      "Noto Serif Display SemiBold",
+      "Lato Medium"
+    ],
+    "fontLicense": "SIL OFL 1.1",
+    "fontFilesDistributed": false,
+    "fontGlyphsRasterized": true,
+    "scripture": "Reference only, no Bible prose",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ]
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A frustrated man grips his hair at a desk surrounded by failed attempts.",
+    "essentialTextRemainsLive": true,
+    "fallback": "CLEAN plus live localized label for TL, CEB, ILO."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": false,
+    "builtAppBrowserQA": "pending",
+    "visualAuditScript": "not_run_no_local_repo",
+    "reasonNotProductionReady": "Three real binaries passed isolated local Chromium checks at 320/390/430, but built-app browser QA and official repository Node audit remain pending; excluded from production registry.",
+    "localTypeAndThumbnailInspected": true,
+    "type320pxVisualInspected": true,
+    "isolatedChromiumAllVariantsDecoded": true,
+    "isolatedChromiumWidths": [
+      320,
+      390,
+      430
+    ]
+  },
+  "qaEvidence": {
+    "isolatedBrowserResults": "isolated_browser_qa.json",
+    "screenshots": {
+      "CLEAN": "clean-chromium-320.png",
+      "TYPE": "type-chromium-320.png",
+      "THUMB": "thumb-chromium-320.png"
+    },
+    "builtAppBrowserQA": false,
+    "repositoryAuditRun": false,
+    "commitSha": null,
+    "commitShaNote": "Commit SHA intentionally omitted to avoid self-reference; verify through Git history."
+  }
+}
