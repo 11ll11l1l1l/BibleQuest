@@ -108,13 +108,20 @@
       "producer": "manual-chat-v7-p4-p5dkdl",
       "sourceRevision": "r1",
       "sceneRevision": "guide-20261011-tiredness08-p5dkdl",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:08:50.593Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08b.json",
       "sourceChecksum": "sha256:19dba18049a3c7725aa577a2c341551780b9b9149e4fa48f9e8ce619dd80d067",
       "guidePath": "docs/v7/unfinished-artwork-guide/08-prayer-moments-shots.md",
-      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending.",
+      "reason": "Wrong scene and ratio: biblical-era praying man by sunset tree/lake, no exhausted parent, stool, folded towel or laundry room; PNG 1536x1024 landscape, required 4:5; local candidate deleted and never submitted.",
+      "failedMeasuredBytesSha256": "c72571923cf11e4aec14c11018fb4ddf00f91b38687eeafae9ede21cc6d2cc7f",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:13:00.353Z",
+      "generatorId": "be9196a8-924f-448a-9422-399e77e713a2"
     },
     {
       "family": "devotional",
@@ -124,29 +131,20 @@
       "producer": "manual-chat-v7-p4-p5dkdl",
       "sourceRevision": "r1",
       "sceneRevision": "guide-20261011-overwhelm09-p5dkdl",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:08:50.593Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-09b.json",
       "sourceChecksum": "sha256:da2a8a9712fd94fdfce37b67ca9064020aed4ff6b5d617722b2ff463564051db",
       "guidePath": "docs/v7/unfinished-artwork-guide/09-trustworthy-sharing-shots.md",
-      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
-    },
-    {
-      "family": "devotional",
-      "contentId": "devotional.biblequest.insecurity_unworthiness.10",
-      "variant": "CLEAN",
-      "attemptId": "bq7-insecurity10-p5dkdl-r2",
-      "producer": "manual-chat-v7-p4-p5dkdl",
-      "sourceRevision": "r1",
-      "sceneRevision": "guide-20261011-insecurity10-p5dkdl-r2",
-      "status": "claimed",
-      "claimedAt": "2026-10-10T16:10:17.848Z",
-      "qa": {},
-      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
-      "sourceChecksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
-      "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
-      "notes": "Retry different attempt after original output ignored mandatory scene. Must depict junior architect paperweight; no biblical period or sunset."
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending.",
+      "reason": "Wrong scene and ratio: lone biblical-era man viewing mountain sunset, no parent, relative, children's supplies or delegation; PNG 1536x1024 landscape; local candidate deleted and never submitted.",
+      "failedMeasuredBytesSha256": "84da710b38d38504a1e89a0f51389e27b9789d2a3cb2d66133e1deca3b822048",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:13:00.353Z",
+      "generatorId": "2d65d2ee-74f6-43ca-b2a8-45c58de3ac15"
     }
   ]
 }
