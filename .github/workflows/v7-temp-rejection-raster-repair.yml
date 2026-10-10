@@ -1,4 +1,4 @@
-name: TEMP V7 Rejection WebP Repair Retry
+name: TEMP V7 Rejection WebP Repair Corrected
 on:
   push:
     branches:
@@ -32,10 +32,11 @@ jobs:
           set -euo pipefail
           git config user.name "BibleQuest V7 Visual Repair"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -f --ignore-unmatch public/v7/images/emotion/bqv7-emotion-rejection-worry-01-thumbnail.svg
-          git add public/v7/images/emotion/bqv7-emotion-rejection-worry-01-with-text-en.webp
-          git add public/v7/images/emotion/bqv7-emotion-rejection-worry-01-thumbnail.webp
-          git add data/v7/visual-assets/records/bqv7-emotion-rejection-worry-01-derivatives.json
+          git rm -f --ignore-unmatch public/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg
+          git rm -f --ignore-unmatch public/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg
+          git add public/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp
+          git add public/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.webp
+          git add data/v7/visual-assets/records/bqv7-emotion-rejection-01-derivatives.json
           git diff --cached --check
           git diff --cached --quiet && { echo 'No changes'; exit 1; }
           git commit -m "fix(v7): replace Rejection THUMB SVG and add reference-safe TYPE WebP"
