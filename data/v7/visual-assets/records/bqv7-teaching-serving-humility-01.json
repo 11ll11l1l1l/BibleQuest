@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-teaching-serving-humility-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-10T02:00:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "family": "teaching",
+  "visualRole": "teaching_art",
+  "contentType": "past_teaching",
+  "contentId": "teaching.serving-humility",
+  "concept": "Two neighbors at a community pantry listen and exchange needed groceries at equal eye level, depicting humble service that begins with attention to another person.",
+  "usage": [
+    "past_teachings_library",
+    "teaching_feature_card"
+  ],
+  "imagePath": "/v7/images/teaching/bqv7-teaching-serving-humility-01.webp",
+  "format": "webp",
+  "width": 1536,
+  "height": 864,
+  "fileBytes": 115728,
+  "sha256": "6df810c99da29ee76c6a5dbbb6941822386165d84a1f50b6c567b769a287ad8b",
+  "gitBlobSha": "f06a64e023c09e65f47ba35e2237af18c3645f43",
+  "aspectRatio": "16:9",
+  "focalPoint": {
+    "x": 0.47,
+    "y": 0.48
+  },
+  "textSafeRegion": "right",
+  "contentSource": {
+    "path": "data/v7/past-teachings/launch-set-additional.json",
+    "gitBlobSha": "8393ea24f8326a31c2b6e94a57aa071b872720ab",
+    "id": "teaching.serving-humility",
+    "revision": "serving-humility-r1",
+    "sourceChecksum": "sha256:a2b934c32fd3894986c37c2bcd236dd05e77a8951ab10774c857702f92185f0f",
+    "exactEnglishTitle": "Serving without making yourself the center",
+    "scriptureReference": "Philippians 2:3-4",
+    "sourceReviewStatus": "pending_review",
+    "sourceRights": "verified first-party; display, translate, modify, distribute"
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "generationId": "043ab593-792c-450a-8ee4-1d9765f7b863",
+    "model": null,
+    "modelAvailability": "not exposed by tool",
+    "promptAvailability": "generation tool did not expose prompt metadata",
+    "sourceType": "generated",
+    "sourceOriginalName": "a_helping_hand_at_the_food_pantry.png",
+    "sourceBytes": 2025306,
+    "sourceSha256": "6c5ad2af5932b138fc01a1da13458f2e735ab4fe58904366cd14c908640a802a",
+    "sourceWidth": 1672,
+    "sourceHeight": 941,
+    "sourceCropRect": {
+      "left": 0,
+      "top": 0,
+      "right": 1672,
+      "bottom": 940
+    },
+    "sourceRevision": "v7/development ac4b6c1568931272698b8823522f558c1375b102",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source artwork supplied",
+    "teachingRights": "Original first-party BibleQuest content, separate from generated image rights",
+    "scriptureQuoteRights": "reference_only_no_quote",
+    "fontFilesRedistributed": false
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A community pantry volunteer listens closely to an older visitor as they hold a grocery bag together, with shelves of food behind them.",
+    "fallback": "CLEAN with live localized title and reference; no embedded English lettering",
+    "essentialLiveTextRequired": true
+  },
+  "localeHandling": {
+    "en": "CLEAN with live English teaching title and reference",
+    "tl": "CLEAN with live translated title and reference",
+    "ceb": "CLEAN with live translated title and reference",
+    "ilo": "CLEAN with live translated title and reference",
+    "translationApproval": "defer to first-party teaching content review; no translated prose fabricated"
+  },
+  "variantPolicy": {
+    "cleanMaster": true,
+    "withText": false,
+    "thumbnail": false,
+    "reason": "Past Teaching contract calls for clean 16:9 thematic editorial image and live localized text; audit verifyV2Wording only supports emotion/need taxonomy, so do not manufacture unsupported baked TYPE or a fake three-file bundle."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "imageDecoded": true,
+    "dimensionsMeasured": true,
+    "sha256Measured": true,
+    "localPillowVisualQA": "passed",
+    "localChromium320390430": "not_run",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "reviewNote": "Candidate only; source teaching itself pending content review"
+  },
+  "rejectedPriorCandidates": [
+    {
+      "generationId": "28235a5a-51fd-4cc5-8cb7-a053d35f30c6",
+      "reason": "Self-control desk/phone scene, not service"
+    },
+    {
+      "generationId": "58e4f3c7-e177-4ec9-9bd4-c6a0dc267df7",
+      "reason": "Near duplicate Self-control desk/phone scene, not service"
+    }
+  ]
+}
