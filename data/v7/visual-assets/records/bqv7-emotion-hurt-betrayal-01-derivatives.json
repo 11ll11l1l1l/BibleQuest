@@ -4,17 +4,17 @@
   "assetId": "bqv7-emotion-hurt-betrayal-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-hurt-betrayal-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_real_webp_derivatives_independent_qa_pending",
   "contentType": "emotion",
   "contentId": "hurt_betrayal",
   "family": "emotion",
   "visualRole": "emotion_tile_derivatives",
-  "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
-  "format": "svg",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.webp",
+  "format": "webp",
   "width": 1024,
   "height": 1280,
-  "fileBytes": 146831,
-  "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
+  "fileBytes": 165908,
+  "sha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.31,
@@ -58,12 +58,12 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 146831,
-      "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
+      "fileBytes": 165908,
+      "sha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
       "sourceType": "generated",
       "locale": "en",
       "includedWording": "Hurt / betrayed",
@@ -76,10 +76,10 @@
         "locale": "en"
       },
       "typography": {
-        "method": "Self-contained SVG editorial portrait with embedded original WebP",
+        "method": "Rasterized from original source-locked SVG composition using CairoSVG/Pillow; final TYPE is a standalone WebP, not an SVG or a data URI",
         "fontFamily": "Georgia / Times New Roman, italic serif accent",
         "fontFilesDistributed": false,
-        "fontLicenseEvidence": "No font files embedded or redistributed; system font rendering requires browser QA",
+        "fontLicenseEvidence": "No font files redistributed; independent original font/rendering-rights review remains pending",
         "referenceFontPxAtNative": 48,
         "referenceNominalPxAt320": 15,
         "referenceBaselineY": 342,
@@ -100,31 +100,52 @@
         "referenceVerified": true,
         "noGeneratedPseudoText": true,
         "geometryReviewed": true,
-        "svgEmbeddedImage": true,
-        "svgTextEditable": true,
         "visualRenderQA": "pending",
         "noScriptureQuote": true,
         "sourceEmbeddedWebpSha256Verified": true,
         "sourceEmbeddedWebpBytesVerified": true,
-        "svgSafetyInspected": true,
-        "typeReadableAt320px": "pending",
+        "typeReadableAt320px": "pending_independent_visual_mobile_review",
         "fontRenderQA": "pending",
-        "referenceGeometryReviewed": true
+        "referenceGeometryReviewed": true,
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "exactEnglishWordingPresentInRaster": true,
+        "scriptureReferenceOnly": true,
+        "noGeneratedVerseText": true,
+        "legacyRasterInsideSvgSource": true,
+        "standaloneWebpSource": true
       },
       "embeddedWording": {
         "label": "Hurt / betrayed",
         "scriptureReference": "Psalm 55:12-14",
         "scriptureTextIncluded": false
-      }
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
+        "format": "svg",
+        "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
+        "gitBlobSha": null,
+        "bytes": 146831
+      },
+      "gitBlobSha": "0d9336780f93ec7408e9f31edea96780e71c5a71"
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-thumbnail.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-thumbnail.webp",
+      "format": "webp",
       "width": 512,
       "height": 640,
-      "fileBytes": 145630,
-      "sha256": "342b2bbdbcae6d90e22fcff0ca5f78f96d93afa43638a18456950a3423a0ec86",
+      "fileBytes": 67402,
+      "sha256": "d55a743c0d295a1b46b1072f422325ba2f4e3becee220c0a4599dd034b29b5d4",
       "sourceType": "generated",
       "locale": null,
       "focalPoint": {
@@ -142,15 +163,36 @@
           "height": 1
         },
         "outputAspect": "4:5",
-        "method": "SVG embedded WebP at 640px height with 512px clipping viewport"
+        "method": "Standalone WebP export of focal crop from source-locked legacy SVG; no SVG wrapper shipped"
       },
       "fallback": "CLEAN",
       "qc": {
         "masterSourceVerified": true,
         "noEmbeddedText": true,
         "clipGeometryVerified": true,
-        "visualRenderQA": "pending"
-      }
+        "visualRenderQA": "pending",
+        "legacyDataUriSvgCandidateRetired": true,
+        "realRasterWebpDecodeAndDimensionsVerified": true,
+        "realRasterSha256Measured": true,
+        "nativePixelsInspectedByLaneY": true,
+        "independentVisualApproval": false,
+        "browserBuiltAppQA": "pending_exact_PR_head",
+        "mobileWidthsPending": [
+          320,
+          390,
+          430
+        ],
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": "native_preview_pass_independent_review_pending"
+      },
+      "legacySvgSource": {
+        "path": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-thumbnail.svg",
+        "format": "svg",
+        "sha256": "342b2bbdbcae6d90e22fcff0ca5f78f96d93afa43638a18456950a3423a0ec86",
+        "gitBlobSha": null,
+        "bytes": 145630
+      },
+      "gitBlobSha": "a9ffac1caa153b61a325dc2e9d9d93af87b5a776"
     }
   ],
   "rights": {
@@ -174,7 +216,12 @@
     "variantHashesMeasured": true,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "TYPE Scripture-reference lettering increased for nominal mobile readability. Existing CLEAN master preserved; SVG source image identity previously checked. Exact browser rendering and THUMB crop QA still pending; candidate not production certified."
+    "notes": "Scoped Hurt / betrayed TYPE + THUMB re-export from original source-locked assets, preserving CLEAN; split from overlapping #1492 so other independent Lane Y PRs may be reviewed without conflicting writes. Technical identity gates have a focused regression test. Native/built browser pixels, originality, rights, context and release approval remain pending.",
+    "productionReady": false,
+    "svgDataUriPolicyCompliant": null,
+    "realWebpDerivatives": true,
+    "nativeWebpReviewByLaneY": true,
+    "browserRenderedTypeQA": "pending_exact_head"
   },
   "productionCertified": false,
   "wordingEvidence": {
@@ -185,5 +232,34 @@
     "exactLabel": "Hurt / betrayed",
     "reference": "Psalm 55:12-14",
     "scriptureTextIncluded": false
+  },
+  "laneYRasterExportEvidence": {
+    "runId": 38045007143,
+    "runUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38045007143",
+    "shaPinnedSources": true,
+    "exportedVariants": [
+      {
+        "kind": "TYPE",
+        "sha256": "530b122c24b088199e4bbfb81f32cc465091da25486a1a65ba4aa3edeff73987",
+        "bytes": 165908,
+        "gitBlobSha": "0d9336780f93ec7408e9f31edea96780e71c5a71"
+      },
+      {
+        "kind": "THUMB",
+        "sha256": "d55a743c0d295a1b46b1072f422325ba2f4e3becee220c0a4599dd034b29b5d4",
+        "bytes": 67402,
+        "gitBlobSha": "a9ffac1caa153b61a325dc2e9d9d93af87b5a776"
+      }
+    ],
+    "productionReady": false
+  },
+  "laneYIsolation": {
+    "supersedesHurtOnlyFromPullRequest": 1492,
+    "sourceHead": "7a91052bee70b30d50ee84b9baa56a66053dac3a",
+    "sourceTypeGitBlob": "0d9336780f93ec7408e9f31edea96780e71c5a71",
+    "sourceThumbGitBlob": "a9ffac1caa153b61a325dc2e9d9d93af87b5a776",
+    "verifiedIndependentVisualApproval": false,
+    "servedByteAudit": "pending",
+    "integration": "candidate_only"
   }
 }
