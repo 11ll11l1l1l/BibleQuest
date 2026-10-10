@@ -15,6 +15,9 @@ on:
       - "docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md"
       - "scripts/v7-visual-coverage-report.mjs"
       - "scripts/v7-manual-candidate-integrity.mjs"
+      - "scripts/v7-manual-chat-artwork-gate.mjs"
+      - "tests/v7/manual-chat-artwork-gate.test.mjs"
+      - "data/v7/visual-assets/manual-chat-intake/**"
       - "scripts/v7-visual-candidate-triage.mjs"
       - "tests/v7/manual-candidate-integrity.test.mjs"
       - "tests/v7/visual-candidate-triage.test.mjs"
@@ -83,6 +86,17 @@ jobs:
             printf '%s\n' "$bad_svg"
             exit 1
           fi
+
+      - name: Enforce user-invoked manual ChatGPT image provenance on PR binary diffs
+        if: github.event_name == 'pull_request'
+        env:
+          BQ_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "$BQ_BASE_SHA"
+          node scripts/v7-manual-chat-artwork-gate.mjs --base "$BQ_BASE_SHA" --head "$BQ_EXACT_SHA"
+          node --test tests/v7/manual-chat-artwork-gate.test.mjs
 
       - name: Verify mandatory source-bound V7 image construction guide
         run: node scripts/v7-unfinished-image-guidebook-audit.mjs

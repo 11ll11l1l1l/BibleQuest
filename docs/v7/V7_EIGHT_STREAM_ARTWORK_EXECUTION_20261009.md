@@ -1,4 +1,6 @@
-# BibleQuest V7 — five scheduled agents plus three manual chat lanes
+# BibleQuest V7 — historical eight-stream artwork allocation (superseded)
+
+> **REPLACED 2026-10-11:** This document's scheduled image-production roles, throughput instructions, content-ID producer exclusivity and self-regeneration rules are retired. Scheduled Agents 1, 2, 4 and 5 plus Independent QA are **QA-only**. New/revised pixels belong exclusively to explicit user-invoked interactive ChatGPT chats (manual X/Y/Z and any directly invoked image chat). QA remains independent; release conditions are unchanged. Governing policy: [V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md](V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md). The old allocation table below is historical and must **not** be used to authorize production.
 Effective: 2026-10-09 JST. Canonical operations plan for image production. Repository: `11ll11l1l1l/BibleQuest`; integration: `v7/development`.
 This plan allocates WORK; it does not certify any image or change V7 release criteria. Keep Lane A #1300 owning art, Lane D #1303 owning the final certified release.
 
