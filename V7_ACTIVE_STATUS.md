@@ -1,12 +1,25 @@
 # BibleQuest V7 Active Status
 
-Updated: **2026-10-09 JST**  
+Updated: **2026-10-10 JST**  
 State: **V7 initial foundation on main; image-first release incomplete; Lane A and Lane D active, Lanes B and C core work closed**  
 Development branch: `v7/development`  
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
 Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
+
+## P0 safety update — 2026-10-10 JST
+
+- P0 remains **OPEN**. Rejected-art bytes are SHA-quarantined after #1461 merged at `43e25819f4472245c44aeffffce53f08d76e5c41`. ONE 2 ONE now revokes prior mentor sharing before edited response text is saved; #1464 merged at `d79c105c23cc61b10eaa60bf8d0a063b788641d1` after all four exact-head workflows passed on refreshed head `44a491aa8cf967f8cbfec2b9f253b9a0288df585`.
+- Scripture integrity PR #1415 remains a draft. Its exact-source revision and actual-image-byte checks pass the 7 focused tests, while its release audit correctly reports **23 visual records unreviewed** and no review inventory. No Scripture/context/right approval is inferred from metadata or CI.
+- Remaining P0 evidence: complete review entries bound to exact source and image revisions, verified quote/reference/context and applicable licenses, plus exact integrated account/congregation/pair privacy denials. Do not promote on partial P0 evidence.
+
+## Integration update — 2026-10-10 JST (development-only)
+
+- **Lane D #1303 remains open.** Merged #1440 (visual source integrity + reduced-motion cancellation) at `77e32e3f7e684963dfacf48770529bc15bb1acc1`; #1463 (actual Chromium PNG screenshot SHA256 attestation) at `3ca0072dbde5033e402b33bc9235c9bd4d13eace`; #1472 (development push is non-strict while `main` and manual certification remain strict) at `52e3dce70a68f70b334e0b7ddc60d55be9009809`. All three PRs passed their individual exact-head V6 serialization, V7 Build/PWA, and V7 Release Convergence checks; development push run 37998783774 passed.
+- **2026-10-10 runtime/QA continuation:** #1467 was rebased onto current development and merged at `3da0df924680193c4bc6687cda14a0898c394e36`, with all required CI checks passing. Its shared audited-art resolver now retries failed/offline/invalid registry fetches on subsequent loads without weakening source/schema/path/hash checks or caching a failed null forever. #1473 adds **800px tablet** to the exact built-artifact accessibility browser acceptance alongside 320/390/430, including keyboard focus, 200% text scale, contrast, reduced motion and horizontal overflow. Exact-head V6, Build/PWA and Release Convergence checks passed; merged at `ea7d86ffcda9e75b050099baecb22eee6f3a7412`.
+- **Measured visual P0 baseline at Lane D release gate candidate `38bd5bfec35830d3572ca7a4c156e85f7429c912`:** source audit passed; **9/30 complete Feeling bundles**, **1/19 complete Need bundles** (launch P0 minimum 5), and **0/1 complete Home hero**. Still needed for P0: 21 complete Feeling, 4 more complete Need, and 1 Home hero bundles. Draft/uncertified candidate files do **not** contribute to those totals; counts may evolve as Lane A separately merges audited artwork.
+- **No production promotion.** The image-first V7 release remains `OPEN` until all required Lane A image source/rights/locale/artistic QA and P0 quotas, Lane B immutable approval, Lane C auth/tenant privacy, Lane D browser/accessibility/motion/offline/PWA, exact-SHA strict main gate, and deployed identity/smoke jointly pass. Development CI success is **not** release readiness. The post-merge development push check for the latest tablet integration may still be running; do not misstate its status.
 
 ## Integration update — 2026-10-09 JST
 

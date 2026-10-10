@@ -1,3 +1,4 @@
+import { findV7Visual } from '../../ui/visual-assets.js';
 import {
   LIBRARY_EMOTIONS, LIBRARY_NEEDS, libraryDiscoveryLabel,
   libraryDiscoveryShellLabel, normalizeLibraryDiscoveryLocale,
@@ -31,7 +32,7 @@ export function normalizeV7DeckLocale(value) {
 
 // Input MUST be a registry from the passing Lane A binary audit, never a
 // user-supplied per-card URL or an unverified asset-record directory.
-export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = false } = {}) {
+export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = false, locale = 'en', title = '' } = {}) {
   const fallback = Object.freeze({ src: '', alt: '', fallback: kind || 'library', type: 'fallback', assetId: '' });
   // Lane D's production loader returns validated Maps, while the Lane A
   // audit and fixture tools provide the equivalent versioned JSON schema.
@@ -54,6 +55,13 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
       || !SHA.test(clean(asset.sha256))) continue;
     const master = safeV7VisualPath(asset.src);
     if (!master) continue;
+    const typed = mapped ? findV7Visual(registry, keys, locale, title) : null;
+    if (typed?.assetId === asset.assetId && typed.src !== master && safeV7VisualPath(typed.src)) {
+      return Object.freeze({
+        src: typed.src, alt: '', fallback: clean(asset.fallbackKey) || kind || 'library',
+        type: 'with_text', assetId: clean(asset.assetId),
+      });
+    }
     const thumb = thumbnail && Array.isArray(asset.variants)
       ? asset.variants.find(row => row.kind === 'thumbnail'
         && SHA.test(clean(row.sha256)) && safeV7VisualPath(row.src))
@@ -92,7 +100,9 @@ export function buildV7LibraryDeckModel({ kind, locale = 'en', registry, selecte
       return Object.freeze({
         id: row.id, kind, label: label.label, labelLocale: label.locale,
         scripture: Object.freeze([...row.scripture]), selected: selected.has(row.id),
-        visual: resolveV7LibraryVisual(registry, kind, row.id),
+        visual: resolveV7LibraryVisual(registry, kind, row.id, {
+          locale: resolvedLocale, title: label.label,
+        }),
       });
     })),
   });

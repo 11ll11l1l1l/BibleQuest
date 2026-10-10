@@ -28,8 +28,8 @@
       "format": "svg",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 72957,
-      "sha256": "e6d45de876caff99303a4f0fe1622a00b780bf060cad815a1abd3bd0e899c888",
+      "fileBytes": 72801,
+      "sha256": "218413ed523d3bdb5613401ba36600c0356aedf0e21b78609e69f31b18b55d6b",
       "locale": "en",
       "exactWording": "Spiritually dry / distant",
       "referenceOnly": "Psalm 42:1-2",
@@ -61,7 +61,14 @@
         "referenceMobileGeometryChecked": true,
         "typeReadableAt320px": false,
         "visualInspected": false,
-        "imageDecoded": false
+        "imageDecoded": false,
+        "unreviewedEnglishCopyRemoved": true,
+        "allowedSvgTextNodesVerified": [
+          "Spiritually dry",
+          "/ distant",
+          "PSALM 42:1-2"
+        ],
+        "originalRasterBytesUnchanged": true
       }
     },
     {
@@ -122,7 +129,8 @@
     "reviewedEnglishWording": true,
     "exactMetadataMeasured": true,
     "browserRenderedTypeQA": "pending",
-    "notes": "Corrected previously 7.81px-equivalent reference to 16.25px-equivalent. Original WebP embedded unchanged. Actual browser render, font licensing/appearance, legibility and crop remain pending; candidate not production ready.",
-    "referenceGeometryAt320Px": "16.25px equivalent, not visually certified"
+    "notes": "Removed an unapproved embedded English UI heading from the TYPE SVG; only canonical English emotion label and Psalm 42:1-2 reference remain. Original WebP/CLEAN and THUMB unchanged. TYPE SHA-256 and byte size independently recalculated from the exact committed SVG. Actual built-app raster/render, font appearance, phone legibility and crop remain pending; candidate is NOT production-ready.",
+    "referenceGeometryAt320Px": "16.25px equivalent, not visually certified",
+    "typeUnboundHeadingRemoved": true
   }
 }
