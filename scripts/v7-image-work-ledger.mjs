@@ -264,6 +264,31 @@ export async function runLedger(command, args, root=ROOT) {
     if (r.qa?.[role]) throw new Error('role already reviewed attempt');
     if (verdict==='PASS' && !SAFE_URL.test(evidence))
       throw new Error('PASS requires a GitHub source evidence link, not a self-declared checkbox');
+    if (verdict==='PASS') {
+      // Every QA PASS must observe the same actual image bytes. This is
+      // identity/geometry verification, NOT a substitute for pixel inspection.
+      if (r.externalRecordPath) {
+        const record=JSON.parse(await readFile(resolve(ROOT,r.externalRecordPath),'utf8'));
+        if (record.status!=='candidate_qa_pending' ||
+          record.contentId!==r.contentId || record.contentType!==r.family ||
+          !/^\\/v7\\/images\\/devotional\\/bqv7-devotional-[a-z0-9-]+\\.png$/.test(record.imagePath))
+          throw new Error('external candidate record is stale or unsafe');
+        const bytes=await readFile(join(ROOT,'public',record.imagePath.slice(1)));
+        const measure=verifyGeometry(bytes,r.family,r.variant);
+        if (measure.sha256!==record.sha256 || measure.width!==record.width ||
+          measure.height!==record.height || record.fileBytes!==bytes.length)
+          throw new Error('external candidate exact bytes do not match the source record');
+        if (r.sha256 && r.sha256!==measure.sha256)
+          throw new Error('candidate bytes changed between reviews');
+        r.sha256=measure.sha256;
+        r.measured=measure;
+      } else {
+        if (!r.candidatePath || !r.sha256) throw new Error('no candidate binary for QA PASS');
+        const bytes=await readFile(safeStagedPath(r.attemptId,r.candidatePath));
+        const measured=verifyGeometry(bytes,r.family,r.variant);
+        if (measured.sha256!==r.sha256) throw new Error('candidate bytes changed between reviews');
+      }
+    }
     r.qa ??= {};
     r.qa[role]={verdict,evidence,recordedAt:new Date().toISOString()};
     if (verdict==='FAIL') await rejectAndDelete(r,role+': '+evidence);
