@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-hope-02",
   "agentId": "visual-agent-5",
   "createdAt": "2026-10-09T14:12:52+09:00",
-  "status": "candidate_pending_built_app_QA",
-  "bundleStatus": "three_real_webp_files_pending_release_QA",
+  "status": "repair_required_type_safe_area",
+  "bundleStatus": "CLEAN_THUMB_retained_TYPE_rejected_repair_not_uploaded",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
@@ -74,9 +74,11 @@
         "visualInspected": true,
         "spellingCheckedAgainstTaxonomy": true,
         "typeReadableAt320px": false,
-        "builtAppBrowserQA": "pending_corrected_type_exact_head",
+        "builtAppBrowserQA": "blocked_until_new_TYPE_binary_committed",
         "isolatedChromiumQA": "Producer static responsive previews at 292/320/356/390/392/430; not built-app QA",
-        "independentLegibilityReview": "PENDING independent review: original TYPE failed at 320px; replacement producer-inspected at 292/320/356/390/392/430; not certified"
+        "independentLegibilityReview": "REJECTED current TYPE: title begins ~31px from top, requires >=128px; local replacement is not committed or independently approved",
+        "topSafeAreaAcceptable": false,
+        "topMarginRepairRequired": true
       },
       "locale": "en",
       "embeddedWording": {
@@ -189,8 +191,8 @@
     "builtAppBrowserQA": "pending_corrected_type_exact_head",
     "publishedHttpHashQA": "pending",
     "officialRepositoryAudit": "pending_corrected_type_new_head",
-    "exactHeadCI": "pending_corrected_type_new_head",
-    "independentQA": "pending_corrected_type_legibility",
+    "exactHeadCI": "not_a_visual_approval_rejected_TYPE",
+    "independentQA": "blocked_rejected_TYPE",
     "productionReady": false,
     "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification",
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
@@ -198,13 +200,20 @@
     "localReviewEvidence": "Corrected TYPE replaces previously rejected 320px typography; producer visual previews only, no independent approval",
     "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed.",
     "correctedTypeCandidate": {
-      "sha256": "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
-      "fileBytes": 155764,
+      "sha256": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+      "fileBytes": 147928,
       "width": 1024,
       "height": 1280,
-      "committed": true,
-      "source": "own PR #1437 branch TYPE path",
-      "note": "Binary and record updated together; independent QA, exact-head CI, deployed HTTP hash and Lane D signoff pending"
+      "committed": false,
+      "source": "local producer-only artifact, not on GitHub",
+      "titleInkTopPx": 143,
+      "referenceInkTopPx": 279,
+      "requiredInsetPx": 128,
+      "notGitHubVerified": true,
+      "independentQA": "PENDING",
+      "builtAppQA": "PENDING",
+      "servedBytesQA": "PENDING",
+      "note": "Do not replace variant SHA or mark ready until actual TYPE bytes and sidecar are committed together; original CLEAN and THUMB must remain unchanged."
     }
   },
   "supersedesCandidateAssetId": "bqv7-emotion-hope-01"
