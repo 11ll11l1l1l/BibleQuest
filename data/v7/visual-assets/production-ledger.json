@@ -76,6 +76,54 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.insecurity_unworthiness.10",
+      "variant": "CLEAN",
+      "attemptId": "bq7-insecurity10-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-insecurity10-p5dkdl",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
+      "sourceChecksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
+      "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.tiredness_weariness.08",
+      "variant": "CLEAN",
+      "attemptId": "bq7-tiredness08-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-tiredness08-p5dkdl",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08b.json",
+      "sourceChecksum": "sha256:19dba18049a3c7725aa577a2c341551780b9b9149e4fa48f9e8ce619dd80d067",
+      "guidePath": "docs/v7/unfinished-artwork-guide/08-prayer-moments-shots.md",
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.overwhelm.09",
+      "variant": "CLEAN",
+      "attemptId": "bq7-overwhelm09-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-overwhelm09-p5dkdl",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-09b.json",
+      "sourceChecksum": "sha256:da2a8a9712fd94fdfce37b67ca9064020aed4ff6b5d617722b2ff463564051db",
+      "guidePath": "docs/v7/unfinished-artwork-guide/09-trustworthy-sharing-shots.md",
+      "notes": "Manual interactive P4 batch; exact ID/scene claimed before image generation. Three independent candidate PNG/WebP files and independent QA pending."
     }
   ]
 }
