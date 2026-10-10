@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-v7-batch-b19",
   "entries": [
     {
       "family": "devotional",
@@ -76,6 +76,42 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.anger.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-anger03-b19",
+      "producer": "manual-chat-v7-batch-b19",
+      "sourceRevision": "r1",
+      "sceneRevision": "v7-z03:anger:in-a-small-electronics-lab-a-technician-s",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:07:00+09:00",
+      "qa": {}
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-doubt06-b19",
+      "producer": "manual-chat-v7-batch-b19",
+      "sourceRevision": "r1",
+      "sceneRevision": "v7-z06:doubt:civic-research-tutor-step",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:07:00+09:00",
+      "qa": {}
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.tiredness_weariness.09",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-tired09-b19",
+      "producer": "manual-chat-v7-batch-b19",
+      "sourceRevision": "r1",
+      "sceneRevision": "v7-z09:tiredness:shift-lead-rest-break",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:07:00+09:00",
+      "qa": {}
     }
   ]
 }
