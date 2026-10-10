@@ -7,6 +7,14 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { auditV7VisualAssets } from './v7-visual-assets-audit.mjs';
 import { buildV7VisualCoverageReport } from './v7-visual-coverage-report.mjs';
+import { LIBRARY_EMOTIONS } from '../src/features/library/emotion-taxonomy.js';
+
+// A raw count cannot prove the authorized launch concepts are present.
+// Do not substitute a later Need (e.g. wisdom) for the five agreed launch cards.
+export const V7_RELEASE_REQUIRED_NEEDS = Object.freeze([
+  'peace', 'hope', 'comfort', 'courage', 'strength',
+]);
+const REQUIRED_FEELINGS = Object.freeze(LIBRARY_EMOTIONS.map(item => item.id));
 
 export const V7_RELEASE_ART_MINIMUM = Object.freeze({
   emotions: 30,
@@ -30,7 +38,10 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
     .map(a => a.canonicalContentId));
   const needIds = new Set(complete.filter(a => a.contentType === 'need')
     .map(a => a.canonicalContentId));
-  const heroes = complete.filter(a => a.contentType === 'hero').length;
+  const homeHeroes = complete.filter(a =>
+    a.contentType === 'hero' && a.canonicalContentId === 'home').length;
+  const missingLaunchFeelings = REQUIRED_FEELINGS.filter(id => !emotionIds.has(id));
+  const missingLaunchNeeds = V7_RELEASE_REQUIRED_NEEDS.filter(id => !needIds.has(id));
   if (coverage.summary?.completeThreeFileBundles !== emotionIds.size
     || coverage.needs?.completeThreeFileBundles !== needIds.size
     || coverage.summary?.auditedAssetCount !== assets.length)
@@ -75,9 +86,11 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
           'mobile-width-no-overflow'].every(check => checks.includes(check));
   }
 
-  const coverageReady = emotionIds.size >= V7_RELEASE_ART_MINIMUM.emotions
-    && needIds.size >= V7_RELEASE_ART_MINIMUM.needs
-    && heroes >= V7_RELEASE_ART_MINIMUM.heroes;
+  // Pass only the canonical 30 Feelings, designated five Needs and Home hero.
+  // A passing total from unrelated concepts must never certify this release.
+  const coverageReady = missingLaunchFeelings.length === 0
+    && missingLaunchNeeds.length === 0
+    && homeHeroes >= V7_RELEASE_ART_MINIMUM.heroes;
   const releaseReady = coverageReady && browserVerified;
   return {
     schemaVersion: 1, candidateSha: sha,
@@ -89,7 +102,8 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
     coverage: {
       emotionComplete: emotionIds.size, emotionTotal: coverage.summary.emotionTotal,
       needComplete: needIds.size, needTotal: coverage.needs.total,
-      heroComplete: heroes,
+      heroComplete: homeHeroes,
+      missingLaunchFeelings, missingLaunchNeeds,
       otherComplete: Object.fromEntries(['devotional','book','past_teaching']
         .map(type => [type, complete.filter(a => a.contentType === type).length])),
       pendingEmotionDerivatives: coverage.summary.pendingDerivativeBackfills,

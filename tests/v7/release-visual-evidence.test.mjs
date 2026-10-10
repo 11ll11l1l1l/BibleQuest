@@ -1,12 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { assessV7VisualRelease, attestV7ReleaseScreenshots } from '../../scripts/v7-release-visual-evidence.mjs';
+import { assessV7VisualRelease, attestV7ReleaseScreenshots, V7_RELEASE_REQUIRED_NEEDS } from '../../scripts/v7-release-visual-evidence.mjs';
+import { LIBRARY_EMOTIONS } from '../../src/features/library/emotion-taxonomy.js';
 
 const sha = 'a'.repeat(40);
 const binary = 'b'.repeat(64);
 const file = (src) => ({src, sha256:binary});
 const asset = (type,i) => ({
-  assetId:type+'-'+i, contentType:type, canonicalContentId:type+'-'+i,
+  assetId:type+'-'+i, contentType:type,
+  canonicalContentId: type === 'emotion' ? LIBRARY_EMOTIONS[i]?.id
+    : type === 'need' ? (V7_RELEASE_REQUIRED_NEEDS[i] || 'extra-need-'+i)
+      : type === 'hero' ? 'home' : type+'-'+i,
   bundleStatus:'complete', ...file('/v7/images/'+type+'/'+i+'-clean.webp'),
   variants:[{kind:'with_text',...file('/v7/images/'+type+'/'+i+'-type.webp')},
     {kind:'thumbnail',...file('/v7/images/'+type+'/'+i+'-thumb.webp')}],
@@ -50,6 +54,37 @@ test('development run records incomplete artwork instead of calling it a release
   assert.equal(report.status,'OPEN');
   assert.equal(report.coverageReady,false);
   assert.equal(report.builtBrowserVerified,false);
+});
+
+test('five unrelated Need concepts do not substitute for the five launch Needs',()=>{
+  const fixture=make();
+  fixture.audit.manifest.assets.find(a=>a.contentType==='need' && a.canonicalContentId==='strength')
+    .canonicalContentId='wisdom';
+  const result=assessV7VisualRelease({candidateSha:sha,...fixture});
+  assert.equal(result.coverage.needComplete,5);
+  assert.equal(result.coverageReady,false);
+  assert.deepEqual(result.coverage.missingLaunchNeeds,['strength']);
+  assert.equal(result.status,'OPEN');
+});
+
+test('thirty unrelated Feeling IDs do not certify the canonical Feeling set',()=>{
+  const fixture=make();
+  fixture.audit.manifest.assets.find(a=>a.contentType==='emotion' && a.canonicalContentId==='connected')
+    .canonicalContentId='invented-feeling';
+  const result=assessV7VisualRelease({candidateSha:sha,...fixture});
+  assert.equal(result.coverage.emotionComplete,30);
+  assert.equal(result.coverageReady,false);
+  assert.deepEqual(result.coverage.missingLaunchFeelings,['connected']);
+  assert.equal(result.status,'OPEN');
+});
+
+test('non-Home hero artwork cannot fulfill the required Home hero milestone',()=>{
+  const fixture=make();
+  fixture.audit.manifest.assets.find(a=>a.contentType==='hero').canonicalContentId='library-banner';
+  const result=assessV7VisualRelease({candidateSha:sha,...fixture});
+  assert.equal(result.coverage.heroComplete,0);
+  assert.equal(result.coverageReady,false);
+  assert.equal(result.status,'OPEN');
 });
 
 test('a passing source audit without built visual evidence is not release proof',()=>{
