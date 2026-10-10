@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-comfort-01",
+  "agentId": "manual-x",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_files_present_built_app_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "comfort",
+  "canonicalNeedId": "comfort",
+  "concept": "A weary adult rests by a softly lit window with a warm mug and an open, text-free Bible nearby; the scene suggests welcome and rest without promising an instant cure.",
+  "usage": [
+    "needs_deck",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-comfort-01.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1280,
+  "aspectRatio": "4:5",
+  "fileBytes": 3977,
+  "sha256": "5ffcf8df84ecbc28fc287c26930d97bee5ca3502faee0a1ef7d587d9f4a9db39",
+  "focalPoint": {
+    "x": 0.63,
+    "y": 0.61
+  },
+  "textSafeRegion": "bottom",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "comfort",
+    "locale": "en",
+    "exactLabel": "Comfort",
+    "reference": "Matthew 11:28",
+    "scriptureTextIncluded": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original programmatically authored SVG scene; no copied third-party imagery or embedded fonts. Uses host system fonts. Rights and artistic suitability remain pending independent review."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An adult rests in a quiet chair beside a sunlit window, holding a warm mug; an open Bible rests nearby.",
+    "localizedFallback": "CLEAN with live localized accessible text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": null,
+    "subjectReadableAtThumbnail": null,
+    "cropSafe": null,
+    "matchesVisualSystem": null,
+    "duplicateChecked": false,
+    "officialNodeAudit": "not_run",
+    "builtAppBrowserQA": "pending",
+    "editorialReview": "pending"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-comfort-01.svg",
+      "locale": null,
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 3977,
+      "sha256": "5ffcf8df84ecbc28fc287c26930d97bee5ca3502faee0a1ef7d587d9f4a9db39",
+      "altText": "An adult rests in a quiet chair beside a sunlit window, holding a warm mug; an open Bible rests nearby.",
+      "qa": {
+        "imageDecoded": false,
+        "dimensionsMeasuredFromSource": true,
+        "sha256Measured": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-comfort-01-with-text-en.svg",
+      "locale": "en",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 4347,
+      "sha256": "5d07b855276477eec634e97d21b8a12ec23f03f2c347055cfb071dc98f32f26b",
+      "altText": "An adult rests by a sunlit window with a warm mug and open Bible; the English title Comfort and reference Matthew 11:28 are embedded.",
+      "qa": {
+        "imageDecoded": false,
+        "dimensionsMeasuredFromSource": true,
+        "sha256Measured": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": "pending"
+      },
+      "embeddedWording": {
+        "label": "Comfort",
+        "scriptureReference": "Matthew 11:28",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamily": "Georgia or serif system fallback",
+        "fontsRedistributed": false,
+        "fontLicense": "none bundled; uses host system fonts"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-comfort-01-thumbnail.svg",
+      "locale": null,
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 4009,
+      "sha256": "8638eb6f7b52fc46a12c10e2753f969d37cab38ef1803fc7b170f10952fcdcd3",
+      "altText": "An adult rests in a quiet chair beside a sunlit window, holding a warm mug; an open Bible rests nearby.",
+      "qa": {
+        "imageDecoded": false,
+        "dimensionsMeasuredFromSource": true,
+        "sha256Measured": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": "pending"
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 48,
+          "top": 42,
+          "right": 976,
+          "bottom": 1202
+        },
+        "targetAspectRatio": "4:5",
+        "method": "independent SVG scene viewBox crop; artwork preserved"
+      }
+    }
+  ],
+  "generation": {
+    "provider": "Codex programmatic SVG scene illustration",
+    "promptSummary": "One original vector scene of an adult resting by a softly lit window; no third-party material, Scripture quotation, UI or collage.",
+    "note": "Authored directly as vector artwork after image generation did not return. Not yet rendered or visually inspected; keep quarantined pending independent Visual QA and browser checks."
+  }
+}
