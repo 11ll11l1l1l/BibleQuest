@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-single-image-producer",
   "entries": [
     {
       "family": "devotional",
@@ -330,6 +330,34 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.confusion_uncertainty.01",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-confusion01-b73e",
+      "producer": "user-invoked-chat-v7-single-image",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01c.json",
+      "sourceChecksum": "sha256:247edd36cf3d7b0e82b3f1dbc4cc61d9ddbf7b8065d859fa3b57f23c5f8cccfd",
+      "sourceBlobSha": "cc5b9bf410ff3dcf03bee76c32aa447f34a16ca4",
+      "sceneRevision": "guide01-confusion-community-hall-v1-b73e",
+      "guidePath": "docs/v7/unfinished-artwork-guide/01-first-story-shots.md",
+      "guideBlobSha": "db360dc63985afc535ec4eef06667bcfa79aa0c8",
+      "shotFingerprint": {
+        "narrativeAction": "One volunteer consulting an older colleague over two possible routes on an unlabeled floor plan",
+        "setting": "Modern community center hallway",
+        "focalObject": "unlabeled floor plan with two abstract routes",
+        "peopleCount": 2,
+        "perspective": "over-shoulder medium portrait, faces partly visible",
+        "light": "neutral overhead practical light with clean window bounce",
+        "palette": "restrained contemporary hall neutrals",
+        "metaphor": "seeking counsel before an actionable decision"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-11T08:18:00+09:00",
+      "qa": {},
+      "note": "Exactly one 4:5 CLEAN reserved, no image pixels yet; other PRs/ledger checked before reservation. Contemporary characters; exact source body and prescribed shot only."
     }
   ]
 }
