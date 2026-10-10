@@ -4,18 +4,18 @@
   "assetId": "bqv7-emotion-rejection-01-derivatives",
   "sourceMasterAssetId": "bqv7-emotion-rejection-01",
   "agentId": "visual-agent-2",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_real_webp_scripture_reference_independent_browser_qa_pending",
   "productionCertified": false,
   "contentType": "emotion",
   "contentId": "rejection",
   "family": "emotion",
   "visualRole": "emotion_tile_derivatives",
-  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
-  "format": "svg",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp",
+  "format": "webp",
   "width": 1024,
   "height": 1280,
-  "fileBytes": 88016,
-  "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+  "fileBytes": 90722,
+  "sha256": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
   "sourceType": "generated",
   "focalPoint": {
     "x": 0.3,
@@ -64,96 +64,75 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
-      "format": "svg",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 88016,
-      "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
-      "sourceType": "generated",
-      "locale": "en",
-      "includedWording": "Rejected / unwanted",
-      "includedReference": "Psalm 27:10",
-      "includedScriptureText": null,
-      "wordingSource": {
-        "path": "src/features/library/emotion-taxonomy.js",
-        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
-        "emotionId": "rejected",
-        "locale": "en",
-        "sourceTranslation": null,
-        "sourceRevision": null
-      },
-      "typography": {
-        "method": "SVG embedded live vector text over generated source WebP with editorial scrim",
-        "fontFamily": "Noto Serif Display / Georgia / Noto Sans / Arial",
-        "license": "Noto fonts SIL OFL 1.1 when available; platform Georgia/Arial host provided; no font binaries redistributed or embedded",
-        "fontFilesDistributed": false,
-        "referenceFontPxAtNative": 46,
-        "referenceNominalPxAt320": 14.375,
-        "referenceBaselineY": 1235,
-        "referenceLetterSpacingPx": 3,
-        "referenceMobileReadability": "render_qa_pending",
-        "geometryAdjustment": "Raised reference font from 25 to 46 native px and moved baseline 1211 to 1235; nominal height 14.375px at 320px-wide card; actual browser font rendering unverified."
-      },
+      "fileBytes": 90722,
+      "sha256": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
       "focalPoint": {
-        "x": 0.3,
-        "y": 0.27
+        "x": 0.52,
+        "y": 0.52
       },
-      "textSafeRegion": "lower",
-      "altText": "A young man sits apart from chatting friends. Embedded English words: Rejected / unwanted; Psalm 27:10.",
-      "decorative": true,
-      "fallback": "CLEAN with localized live text",
-      "qc": {
-        "sourceBlobVerified": true,
-        "wordingVerified": true,
-        "referenceVerified": true,
-        "noVerseTextIncluded": true,
-        "noPseudoText": true,
-        "svgSelfContained": true,
-        "geometryChecked": true,
-        "visualRenderQA": "pending",
-        "fontRenderQA": "pending",
-        "referenceGeometryReviewed": true,
-        "typeReadableAt320px": "pending"
+      "embeddedWording": {
+        "label": "Rejected / unwanted",
+        "scriptureReference": "Psalm 27:10",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A young man sits apart from a nearby group, looking down. English title: Rejected / unwanted. Reference: Psalm 27:10.",
+      "typography": {
+        "method": "Pillow deterministically rasterized on unchanged CLEAN",
+        "fontFamily": "Noto Serif Regular",
+        "fontLicense": "SIL OFL 1.1",
+        "locale": "en",
+        "fontFilesDistributed": false,
+        "sourceCleanSha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "sourceWordingExact": true,
+        "scriptureReferenceOnly": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.svg",
-      "format": "svg",
-      "width": 384,
-      "height": 480,
-      "fileBytes": 87498,
-      "sha256": "b84eff663cd0190569b623b665ccb2b629e96d199bfa716a7182e8c9bd55a334",
-      "sourceType": "generated",
       "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01-thumbnail.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 960,
+      "fileBytes": 78860,
+      "sha256": "6afc933892ed6ac09da8ad5700291b4b5f128ae45eaaab42ec9dc133d03b4a1a",
       "focalPoint": {
-        "x": 0.25,
-        "y": 0.32
+        "x": 0.56,
+        "y": 0.42
       },
-      "textSafeRegion": "none",
+      "altText": "A young man sits on a low step apart from a group of friends, looking down.",
       "crop": {
-        "sourceRegionNormalized": {
-          "x": 0.15,
-          "y": 0,
-          "width": 0.8,
-          "height": 1
+        "sourceFileSha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+        "sourceRectPixels": {
+          "left": 120,
+          "top": 0,
+          "right": 939,
+          "bottom": 1024
         },
-        "outputAspect": "4:5",
-        "method": "Self-contained SVG: exact original 1024x1024 WebP embedded at 480x480, shifted -72px into 384x480 clipping window; 0.17 max-opacity edge vignette."
+        "targetAspectRatio": "4:5",
+        "method": "Pillow LANCZOS actual 768x960 WebP crop"
       },
-      "altText": "A young man looks down alone in the foreground while friends talk together behind him.",
-      "decorative": false,
-      "fallback": "CLEAN",
-      "qc": {
-        "sourceBlobVerified": true,
-        "noEmbeddedText": true,
-        "clipGeometryChecked": true,
-        "sourceVisualInspected": true,
-        "thumbnailAt100px": "pending",
-        "visualRenderQA": "pending",
-        "focalCropBrowserQA": "pending",
-        "notes": "Existing source visually inspected; crop x=15%-95% of source, placing foreground face near 25% of output width. No rendered 384x480/100px browser evidence in this run."
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "noBakedText": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     }
   ],
@@ -185,10 +164,11 @@
     "scriptureQuoteIncluded": false,
     "visualRenderQA": "pending",
     "rasterOptimization": "pending",
-    "notes": "Reference typography revised for nominal 320px readability. Embedded source WebP SHA-256 independently verified; corrected SVG bytes/hash measured. Browser visual render, font fallback, and THUMB crop QA still pending. Not production certified."
+    "notes": "Corrected primary pointer after independently rendering true TYPE WebP; all original CLEAN/TYPE/THUMB binary hashes validated at pinned PR head. Legacy data-URI SVG deleted in this candidate; remains historical SHA. Exact built-app served-byte and independent originality/context/rights QA pending.",
+    "primaryPathMatchesStandaloneWebp": true
   },
   "createdAt": "2026-10-08T15:06:14+09:00",
-  "bundleStatus": "partial_candidate_not_production_ready",
+  "bundleStatus": "real_clean_type_thumb_candidate_browser_qa_pending",
   "wordingEvidence": {
     "sourcePath": "src/features/library/emotion-taxonomy.js",
     "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
@@ -227,5 +207,45 @@
       "embeddedCleanIdentityMatches": true,
       "limitations": "SVG encoded dimensions/geometry checked from markup only. Full TYPE and THUMB browser rendering and 320px visual QA not performed; no production promotion."
     }
+  },
+  "generation": {
+    "derivatives": "TYPE: separate licensed Noto Serif Pillow compositing from unchanged CLEAN; THUMB: actual 4:5 raster crop of unchanged CLEAN; no SVG/data URI."
+  },
+  "qc": {
+    "sourceImageSha256Untouched": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+    "sourceImageWebPReused": true,
+    "typeAndThumbTrueWebP": true,
+    "referenceFromTaxonomy": "Psalm 27:10",
+    "independentVisualQA": "pending",
+    "actualBuiltAppBrowserQA": "pending",
+    "servedByteSHA": "pending",
+    "productionReady": false
+  },
+  "legacyPrimarySvg": {
+    "path": "/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.svg",
+    "format": "svg",
+    "bytes": 88016,
+    "sha256": "6b0852de1dfe8b51ed6aed7c765bedc4e80dbdef6859513e421761028bb26243",
+    "retired": true
+  },
+  "laneYBatchSourcePixelEvidence": {
+    "sourceReviewRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38065359391",
+    "candidateSha": "d9b672bc575234d83128ca6164b052f5bd629a62",
+    "formatDecoded": "WEBP",
+    "sourcePixelsRenderedWidths": [
+      320,
+      390,
+      430,
+      800
+    ],
+    "sourceNativeChecksumMatchedSidecar": true,
+    "publicationAuthorization": false,
+    "sourcePixelReviewStatus": "reviewed_for_technical_identification_only",
+    "requiredStill": [
+      "independent visual originality and context",
+      "Scripture context and source rights",
+      "built-app served-byte and responsive browser QA",
+      "Lane D release certification"
+    ]
   }
 }
