@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "family": "need",
+  "contentId": "courage",
+  "variant": "CLEAN",
+  "attemptId": "manual-chat-20261011-courage-b4",
+  "status": "QA_PENDING",
+  "sourceTitle": "Courage",
+  "theme": "A first practical step taken despite apprehension.",
+  "sourcePath": "src/features/library/emotion-taxonomy.js",
+  "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+  "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+  "sceneRevision": "guide20261011-s6-courage-workshop-v4",
+  "scriptureReferences": [
+    "Joshua 1:9",
+    "2 Timothy 1:7"
+  ],
+  "scriptureBakedIntoImage": false,
+  "imagePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.webp",
+  "mimeType": "image/webp",
+  "width": 1122,
+  "height": 1402,
+  "aspectRatio": 0.8002853067047075,
+  "fileBytes": 239604,
+  "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f",
+  "provenance": {
+    "method": "user-invoked ChatGPT built-in image generation",
+    "externalImageReferences": [],
+    "generatorId": "not exposed"
+  },
+  "producerPreflight": {
+    "verdict": "PASS",
+    "notes": [
+      "single contemporary workshop scene",
+      "learner entering with properly worn safety glasses and apron",
+      "instructor and first-task workbench visible",
+      "no text or religious imagery",
+      "native 1122×1402 portrait meets 768×960 minimum and ±2.5% 4:5 tolerance"
+    ]
+  },
+  "productionApproved": false,
+  "qa": {}
+}
