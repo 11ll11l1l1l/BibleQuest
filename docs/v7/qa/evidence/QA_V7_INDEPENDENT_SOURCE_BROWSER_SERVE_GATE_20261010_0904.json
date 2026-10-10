@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "kind": "independent_visual_qa",
+  "runDateJst": "2026-10-10",
+  "integrationHead": "1bec7acade37e5330079f964baa3c97b1e7716f1",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "canonicalExecutionDocBlob": "d9a1d5866ab2c297cdee4a874ed8023e94cb8ad0",
+  "qaMethod": {
+    "source": "GitHub fetch_file encoding=base64 at exact immutable PR head",
+    "digest": "Independent pure-JS SHA256 (self-tested SHA256('abc') = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad)",
+    "size": "decoded binary bytes",
+    "dimensions": "WebP RIFF VP8 bitstream frame headers",
+    "blob": "GitHub contents SHA",
+    "pixels": "direct source CLEAN/TYPE/THUMB visual inspection",
+    "browser": "Downloaded exact-head GitHub Actions visual-browser artifact ZIPs, inspected candidate route-fulfilled screenshots at 320/390/430; not actual release HTTP",
+    "fonts": "Checked installed Debian Noto/Lato/EB Garamond package copyright for SIL OFL 1.1; exact font binary provenance unverified"
+  },
+  "releaseCertified": false,
+  "laneDFinalAuthority": true,
+  "backlog": [
+    {
+      "pr": 1436,
+      "assetId": "bqv7-emotion-jealousy-envy-01",
+      "owner": "visual-agent-4",
+      "head": "5782f3a51f26cd9cafdd92dbe129ccd1d181f63e",
+      "sidecarBlob": "d1752836a54bd4b1809f43b355454ca589bc05bf",
+      "status": "QA_PENDING",
+      "visualVerdict": "PASS_SOURCE_ONLY",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "exactText": [
+        "Jealous / envious",
+        "Proverbs 14:30"
+      ],
+      "theology": "Proverbs 14:30 contrasts a tranquil heart with envy; appropriate",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "sha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+          "bytes": 108318,
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "gitBlob": "27e58738d70727bee2a469e119d74e2870ae8297"
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+          "bytes": 127576,
+          "dimensions": [
+            1024,
+            1280
+          ],
+          "gitBlob": "db78c08db70338b5fbe451b3642aff74e3dc3466"
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+          "bytes": 30986,
+          "dimensions": [
+            384,
+            480
+          ],
+          "gitBlob": "32f457efca1049edfa7939dd11f6d59fb96f2cac"
+        }
+      ],
+      "ci": {
+        "visual": 38002953454,
+        "build": 38002953381,
+        "convergence": 38002953461,
+        "serialization": 38002953460,
+        "conclusions": "success",
+        "visualArtifact": 11649049186
+      },
+      "candidateScreenshots": [
+        320,
+        390,
+        430
+      ],
+      "publishedVerifiedServedFilesMatchingAsset": 0,
+      "transport": "Playwright candidate route fulfillment",
+      "findings": [
+        "Typography and gold divider visually separated at 320/390/430",
+        "CLEAN text-free; THUMB retains two-person comparison",
+        "sidecar old candidate screenshot reference bc5b2998 stale for live head",
+        "generation record unverified",
+        "release HTTP unverified"
+      ]
+    },
+    {
+      "pr": 1437,
+      "assetId": "bqv7-emotion-hope-02",
+      "owner": "visual-agent-5",
+      "head": "fb9fadbea652dd8314ced13fc62365e0e47d3c1c",
+      "sidecarBlob": "051e9b3edbdc3aa4746e0412a4bdac5c7cdefe8b",
+      "status": "QA_PENDING",
+      "visualVerdict": "PASS_SOURCE_ONLY",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "exactText": [
+        "Hopeful",
+        "Romans 15:13"
+      ],
+      "theology": "Paul's prayer that God fill believers with joy, peace, hope; appropriate, no guarantee of specific outcome",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "sha256": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+          "bytes": 143934,
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "gitBlob": "d69a3844987677b2ea317e41b3b377ffd6f8fe83"
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "a393a964ed770652e6a9cec82b268bd651c4bab6b131ab1afb5939cb41e2be74",
+          "bytes": 155764,
+          "dimensions": [
+            1024,
+            1280
+          ],
+          "gitBlob": "2a6eb1c0c6f474dd7a35db720c796fc3e9b8cdc9"
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "4f60530aefb863439905cd80d02f657567788f386ec7e538e7446d9038e51e1f",
+          "bytes": 42358,
+          "dimensions": [
+            384,
+            480
+          ],
+          "gitBlob": "179cfdd1f5bf4291621b3112f0aad54d990a8f33"
+        }
+      ],
+      "ci": {
+        "visual": 37941589860,
+        "build": 37941589916,
+        "convergence": 37941589950,
+        "serialization": 37941590195,
+        "conclusions": "success",
+        "visualArtifact": 11621059198
+      },
+      "candidateScreenshots": [
+        320,
+        390,
+        430
+      ],
+      "publishedVerifiedServedFilesMatchingAsset": 0,
+      "transport": "Playwright candidate route fulfillment",
+      "findings": [
+        "Corrected title and Romans 15:13 legible at 320/390/430",
+        "CLEAN text-free; THUMB retains seedling and hands",
+        "sidecar TYPE.qa.typeReadableAt320px=false is stale",
+        "original generation source PNG and exact font binaries not independently fetched",
+        "release HTTP unverified"
+      ]
+    },
+    {
+      "pr": 1398,
+      "assetId": "bqv7-emotion-frustration-01",
+      "owner": "visual-agent-4",
+      "head": "dec3e0995e1a4206350ff39b3709f6b75230820b",
+      "sidecarBlob": "53304ed46b18216981529f69040630b4214966f7",
+      "status": "REPAIR_NEEDED",
+      "visualVerdict": "FAIL",
+      "releaseVerdict": "BLOCKED",
+      "exactText": [
+        "Frustrated",
+        "Galatians 6:9"
+      ],
+      "theology": "Galatians 6:9 addresses persevering in doing good; generic failed desk tasks may overextend application",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "sha256": "0d0903a8e3e5c78952e5dd2beeaaf4ebd17ae323d69da00283cd3c44dbe06b75",
+          "bytes": 68174,
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "gitBlob": "bbb26e1a3ed8487aad03e4cef8c788d402e38bfa"
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "65d4318ea67fb6772cc607c18d40e8c4acac61a14a5c9907ffbd244e786aec64",
+          "bytes": 79248,
+          "dimensions": [
+            1024,
+            1280
+          ],
+          "gitBlob": "ff5eaf667b4581d4c1ed9579eb8d1216c5dde518"
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "6c469f110a04c9b94a3ee885cd8852b9bdf55c50cbba1ee0df1b1871b13d4438",
+          "bytes": 24070,
+          "dimensions": [
+            384,
+            480
+          ],
+          "gitBlob": "e2a7b497c1617f93d1e6bcfdb22f524b0c629996"
+        }
+      ],
+      "findings": [
+        "White Galatians 6:9 reference low contrast over bright lamp",
+        "sidecar generation.source admits CLEAN extracted from triptych panel; violates single-scene original source contract",
+        "duplicateChecked=false",
+        "local run17 corrected ZIP not committed to PR",
+        "require fresh original CLEAN, contrast-fixed TYPE, THUMB and independent QA"
+      ]
+    },
+    {
+      "pr": 1452,
+      "assetId": "bqv7-emotion-numbness-emptiness-01",
+      "owner": "visual-agent-4",
+      "head": "b8617a1f9820ba3d5267b2e4a2c21ed0e56f3a61",
+      "sidecarBlob": "eaffabd403cc11ae7849e32a3b04d0e68bcc4d52",
+      "status": "QA_PENDING",
+      "visualVerdict": "PASS_SOURCE_ONLY",
+      "releaseVerdict": "RELEASE_HTTP_NOT_CERTIFIED",
+      "exactText": [
+        "Numb / empty",
+        "Psalm 42:5"
+      ],
+      "theology": "Psalmist addresses downcast soul and calls for hope in God; not instant cure",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "sha256": "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+          "bytes": 91154,
+          "dimensions": [
+            1024,
+            1024
+          ],
+          "gitBlob": "695b89a427141790cdefea44cb8bacdaf763b69e"
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "c73c8ed4d12014329e905aac9efd88677e931f647b7d1957677a603b0272b7b0",
+          "bytes": 102710,
+          "dimensions": [
+            1024,
+            1280
+          ],
+          "gitBlob": "4c3322f2913a6aac865e7fa9065aa29a3bac5fa1"
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "9d2597b031dacfa59a2e4112b77ff5f6134388f9af39c0ccdd641efe5bb5f0d1",
+          "bytes": 23966,
+          "dimensions": [
+            384,
+            480
+          ],
+          "gitBlob": "b2a491a28d91684d6aabed3104befa1606dbad00"
+        }
+      ],
+      "ci": {
+        "visual": 38002989256,
+        "build": 38002989359,
+        "convergence": 38002989371,
+        "serialization": 38002989456,
+        "conclusions": "success",
+        "visualArtifact": 11649664973
+      },
+      "candidateScreenshots": [
+        320,
+        390,
+        430
+      ],
+      "publishedVerifiedServedFilesMatchingAsset": 0,
+      "transport": "Playwright candidate route fulfillment",
+      "findings": [
+        "Correct title and Psalm 42:5 legible at 320/390/430",
+        "CLEAN text-free; THUMB retains man and celebration",
+        "sidecar candidateExactHeadCiEvidence.commitSha=1451cfa... stale versus b8617a...",
+        "original generation and exact font binaries unverified",
+        "release HTTP unverified"
+      ]
+    }
+  ],
+  "globalBlockers": [
+    "All three visual CI artifact reports verifiedServedFiles have ZERO paths for their respective candidate; draftCandidateTriage.publicationApproved=false",
+    "No non-intercepted published release HTTP SHA proof for any candidate",
+    "No runtime TL/CEB/ILO CLEAN+live-text accessibility verification",
+    "No full cross-catalog near-duplicate audit",
+    "Original image generation records and exact raster font binaries not independently retrieved"
+  ],
+  "githubReviewAttempts": "blocked_by_safety_checks",
+  "artworkModified": false,
+  "sharedManifestModified": false,
+  "productionStatusChanged": false
+}
