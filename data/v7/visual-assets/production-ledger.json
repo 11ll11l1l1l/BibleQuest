@@ -374,7 +374,7 @@
       "producer": "user-invoked-interactive-chat-20261011-single",
       "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
       "sceneRevision": "guide6-strength-doorrepair-20261011-cc41b",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T08:29:00+09:00",
       "qa": {},
       "sourcePath": "src/features/library/emotion-taxonomy.js",
@@ -390,7 +390,16 @@
         "aspect": "4:5 portrait",
         "textSafeRegion": "lower 30 percent visually quiet"
       },
-      "note": "One final retry, strict single scene four volunteers, sturdy jig, aligned hinges. STOP on repeat failure."
+      "note": "Repeated same-class source-scene mismatch; no third attempt. No active reservation, all failed pixels deleted. Retain SHA+scene tombstone; manually choose alternative generation environment/context before retry.",
+      "failure": "Producer scene FAIL on second consecutive attempt: single young woman sitting with knees held in contemporary bedroom; NO four volunteers, wooden door, repair jig, or hinges. Valid PNG 1122x1402 cannot compensate for semantically invalid pixels. Generator-control circuit breaker engaged. Actual unapproved file deleted from local container.",
+      "failedMeasuredBytesSha256": "bfd71df2ea7d2274879935cadc12e1ca2ef9649cbc8f7416c7a183026d5cd319",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2280817,
+      "failedFormat": "PNG",
+      "generatorId": "8ec37138-9899-4e54-bf14-c3352e0e61a3",
+      "localFileDeleted": true,
+      "closedAt": "2026-10-11T08:33:00+09:00"
     }
   ]
 }
