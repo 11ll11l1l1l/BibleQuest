@@ -1,5 +1,7 @@
 # BibleQuest rulebook
 
+> **2026-10-11 V7 artwork override:** Only an explicitly user-invoked interactive ChatGPT chat may create/edit image pixels; **all scheduled agents are artwork QA-only**. Supersedes old visual producer task instructions. Read [manual-chat-only artwork policy](../docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md) before any V7 art task. Rights/Scripture/release safeguards remain intact.
+
 Canonical operational policy for development, maintenance, multi-agent work and production releases. Updated 2026-10-04 JST. Applies from V7 onward; preserves V1–V6 lessons without importing obsolete workflow machinery.
 
 ## 1. Authority and fast start

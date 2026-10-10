@@ -1,5 +1,7 @@
 # BibleQuest V7 — Manual Image Lanes X, Y, Z
 
+> **2026-10-11 amendment:** Only a user-invoked *interactive ChatGPT conversation* may generate or revise image pixels, including TYPE and THUMB. Scheduled agents formerly generating art are now **QA-only**. Manual X/Y/Z remain user-invoked chat labels; not autonomous jobs. Read [V7 manual-chat-only artwork policy](V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md). Independent QA and user approval remain mandatory.
+
 Authoritative scope correction — 2026-10-09 JST. Manual lanes run **only when explicitly invoked**; they are not recurring autonomous jobs. They supplement canonical A–D. Do not reassign them as Scripture QA or rewrite shared A–D files.
 
 | Manual lane | Assignment | Exclusions |

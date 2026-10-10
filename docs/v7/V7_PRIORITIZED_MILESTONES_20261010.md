@@ -1,5 +1,7 @@
 # V7 prioritized milestone execution — 2026-10-10
 
+> **ARTWORK OWNERSHIP AMENDED 2026-10-11:** References below to "producers" and "image factory" mean **QA-only agents**, not automatic generators. All pixel creation, repairs, TYPE and THUMB rendering, and 300-cover creation are restricted to user-invoked interactive ChatGPT image chats. See [V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md](V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md). The release targets remain unchanged.
+
 **Purpose:** one actionable ordering for the *remaining* image-first V7 redesign and release work. This is a scheduling/triage view, **not** a new acceptance authority, relaxation of gates, authorization to deploy production, or a replacement for `V7_ACTIVE_STATUS.md`, `work/RULEBOOK.md` or the binding V7 UI, image, motion and release contracts. Those sources and live exact-head code/CI win if a snapshot below is stale.
 
 **Integration:** `v7/development`; keep `main` and release/rollback refs protected. **Scope already delivered:** first V7 foundation on main, 300 EN/TL/CEB/ILO source devotionals, eight external-link-only launch books, five first-party Past Teachings, core automated Content Review and ONE 2 ONE. Do not regenerate that content simply to make a new milestone look active.

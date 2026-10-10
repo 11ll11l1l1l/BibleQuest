@@ -1,5 +1,8 @@
 # BibleQuest V7 Visual Asset Production System
 
+> **HISTORICAL PRODUCER CONTRACT — OVERRIDDEN 2026-10-11:** Every instruction below directing scheduled agents to generate/regenerate/repair images is revoked. All agent runs now perform only QA. A user-invoked interactive ChatGPT chat is the sole source of new/revised image pixels, per [manual-chat-only artwork policy](V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md). All unchanged quality, technical, Scripture and rights requirements remain in force.
+
+
 Updated: 2026-10-08 JST
 Status: ACTIVE — production contract for the five V7 image agents
 Parent UI authority: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
