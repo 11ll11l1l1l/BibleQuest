@@ -82,9 +82,12 @@ test('candidate with retired SVG pointer or explicit failed QA cannot be auto-ce
   assert.match(r.rejected[0].reason,/quarantined/);
 });
 
-test('the actual unmodified base Fear sidecar remains quarantined while static SVG flag is stale',async()=>{
+test('corrected Fear source sidecar enters technical Chromium queue without publication approval',async()=>{
   const r=await triageV7DerivativeCandidates();
-  const entry=r.rejected.find(x=>x.assetId===assetId+'-derivatives');
-  assert(entry,'legacy stored false SVG QA flag should not silently auto-pass');
-  assert.match(entry.reason,/quarantined/);
+  const entry=r.technicallyVerified.find(x=>x.assetId===assetId+'-derivatives');
+  assert(entry,'retired SVG history must not block genuine source-verified WebPs');
+  assert.equal(entry.publicationApproved,false);
+  assert.equal(entry.files.length,3);
+  assert(!r.rejected.some(x=>x.assetId===assetId+'-derivatives'),
+    'corrected Fear should not stay quarantined for removed SVG-only failure');
 });
