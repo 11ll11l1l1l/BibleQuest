@@ -3,7 +3,7 @@
   "assetId": "bqv7-need-hope-02",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-10T10:06:17+09:00",
-  "status": "candidate_independent_qa_pending",
+  "status": "candidate_scene_revision_required",
   "bundleStatus": "three_real_files_qa_pending",
   "family": "need",
   "visualRole": "need_tile",
@@ -80,7 +80,12 @@
     "localHttpExactBytes": true,
     "localIsolatedChromium320390430": true,
     "replacementFor": "bqv7-need-hope-01 (independent QA near-duplicate and title safe-area defect; old PR #1448 must be closed/superseded before new PR)",
-    "localQaReport": "producer-local-qa.json"
+    "localQaReport": "producer-local-qa.json",
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Current lone-person rain-wet city overlook violates guidebook section 6, which requires neighbors fitting the last timber slat into a repaired public bus shelter after rough weather.",
+    "rejectedSourceCleanSha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+    "requiredNextAction": "Replace CLEAN, TYPE, THUMB and sidecar with one standalone original community bus-shelter-repair scene. Independent QA and Lane D published-byte certification still required.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
   },
   "variants": [
     {
