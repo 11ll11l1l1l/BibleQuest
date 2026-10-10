@@ -76,6 +76,51 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-01",
+      "producer": "manual-chat-v7-batch-20261011",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "20261011-guide-courage-shot-v1",
+      "shotFingerprint": "adult entering neighborhood training workshop; protective eyewear; threshold waist-level close environmental portrait; diffused daytime; 4:5",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:06:12.833Z",
+      "qa": {},
+      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "policyRevision": "959ed918dc7ca000b6772340e413f880f852f19d"
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-strength-clean-01",
+      "producer": "manual-chat-v7-batch-20261011",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "20261011-guide-strength-shot-v1",
+      "shotFingerprint": "four community repair volunteers aligning heavy wooden door hinges on repair jig; coordinated grasp; side-view workshop; directional indoor light; 4:5",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:06:12.833Z",
+      "qa": {},
+      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "policyRevision": "959ed918dc7ca000b6772340e413f880f852f19d"
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-hero-home-clean-01",
+      "producer": "manual-chat-v7-batch-20261011",
+      "sourceRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sceneRevision": "20261011-guide-home-hero-shot-v1",
+      "shotFingerprint": "wide 35mm waist level interior contemporary community learning hall adult and child walking in carrying bags midground two adult collaborators at reading table quiet left 40percent; afternoon; 16:9",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:06:12.833Z",
+      "qa": {},
+      "guideRevision": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "policyRevision": "959ed918dc7ca000b6772340e413f880f852f19d"
     }
   ]
 }
