@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "v7-image-work-ledger",
+  "updatedBy": "manual-chat-v7-b21",
   "entries": [
     {
       "family": "devotional",
@@ -330,6 +330,45 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.temptation.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-b21-temptation03",
+      "producer": "manual-chat-v7-b21",
+      "sourceRevision": "r1",
+      "sceneRevision": "modern-campus-closed-blank-laptop-accountability-v2",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:32.380Z",
+      "qa": {},
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.sadness.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-b21-sadness06",
+      "producer": "manual-chat-v7-b21",
+      "sourceRevision": "r1",
+      "sceneRevision": "modern-apartment-mint-one-sprig-v2",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:32.384Z",
+      "qa": {},
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.love_connection.09",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-b21-love09",
+      "producer": "manual-chat-v7-b21",
+      "sourceRevision": "r1",
+      "sceneRevision": "modern-community-bicycle-listening-v2",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:32.384Z",
+      "qa": {},
+      "artDirection": "Original contemporary people, present-day environment and clothing, single unpanelled photographic shot; no biblical-era characters, religious costume, montage, collage or generated text."
     }
   ]
 }
