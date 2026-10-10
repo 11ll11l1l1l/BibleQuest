@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-stressed-01",
+  "status": "candidate_qa_pending",
+  "family": "emotion",
+  "contentType": "emotion",
+  "contentId": "stress",
+  "queueConcept": "stress",
+  "canonicalEmotionId": "stressed",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+  "format": "webp",
+  "width": 1254,
+  "height": 1254,
+  "fileBytes": 276790,
+  "sha256": "13e214e6c52855dceaab9ee5622c9338dc8f4c717a08f83d7473726cf77bc23f",
+  "note": "CLEAN-only candidate pending user/independent visual QA; preferred ~1536px master size not met; do not count as production-ready. Review details in docs/v7/visual-qa-candidates/bqv7-emotion-stressed-01.md."
+}

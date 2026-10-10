@@ -1,6 +1,6 @@
 # Stressed — CLEAN source candidate for visual QA
 
-**State:** one-file review candidate only. This is not independent approval, a complete three-file bundle, or a production-ready asset.
+**State:** one-file review candidate only. This is not independent approval, a complete three-file bundle, or a production-ready asset. The minimal sidecar uses `candidate_qa_pending`, so it is excluded from production and release counts.
 
 - Content: `emotion:stressed`
 - Asset ID: `bqv7-emotion-stressed-01`
@@ -28,4 +28,4 @@
 - After CLEAN is accepted: separately typeset TYPE with exact `Stressed` / `John 14:27`, then independently crop text-free THUMB. No derivatives were made from this pending master.
 - Exact-head browser/device checks, registry audit, rights/provenance confirmation, and Lane D certification remain outstanding.
 
-The candidate must remain out of the registry and release counts until the required reviews pass.
+The candidate record remains `candidate_qa_pending` and must stay out of publication/release counts until every required gate passes.
