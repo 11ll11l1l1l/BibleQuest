@@ -339,13 +339,23 @@
       "producer": "manual-chat-single-strength-20261011",
       "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
       "sceneRevision": "guide-20261011-s6-strength-door-jig-rrgfgb",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:18:46.037Z",
       "qa": {},
       "sourcePath": "src/features/library/emotion-taxonomy.js",
       "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
       "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
-      "note": "ONE manual-chat generated CLEAN for P1 need Strength. Scene four modern adult repair volunteers carefully stabilize wooden door on repair jig while fourth aligns hinge. No other content ID; no TYPE/THUMB produced in this request."
+      "note": "ONE manual-chat generated CLEAN for P1 need Strength. Scene four modern adult repair volunteers carefully stabilize wooden door on repair jig while fourth aligns hinge. No other content ID; no TYPE/THUMB produced in this request.",
+      "reason": "Producer source/scene mismatch: image depicts a solitary modern student writing in a bedroom study under desk lamp. Required four adult volunteers stabilizing a heavy wooden door and aligning hinges in modern community workshop. No repair jig or door visible; 4:5 geometry/photorealism alone cannot compensate for wrong scene. No candidate image uploaded.",
+      "failedMeasuredBytesSha256": "b65d6f7da7c77ca0bc12ba98186285df8f0db888c0bda9fb5d3e32d7ce0cf71a",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2027782,
+      "failedFormat": "png",
+      "generatorId": "866c7fda-0fbc-47ed-a9b2-10c770bf75f1",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T23:20:04.027Z",
+      "notes": "Rejected immediately at single-image producer preflight; original bytes were deleted from local sandbox after measured decode and SHA. NO five-agent QA candidate submitted; slot is released. Next attempt must use fresh sceneRevision; investigate generator prompt contamination."
     }
   ]
 }
