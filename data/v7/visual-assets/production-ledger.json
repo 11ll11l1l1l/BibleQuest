@@ -330,6 +330,78 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-11T07:43:00+09:00",
       "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-v7-modern-20261011-peace03-r1",
+      "producer": "interactive-chat-gpt6-modern-20261011",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sceneRevision": "modern-first-party-shot-v2-20261011-peace03",
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "Modern casually dressed adult repairs existing reading lamp at ordinary apartment worktable; profile, muted late afternoon, leave right quiet.",
+        "era": "contemporary",
+        "aspect": "4:5",
+        "noCollage": true,
+        "noText": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:17.833Z",
+      "qa": {},
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.hurt_betrayal.07",
+      "variant": "CLEAN",
+      "attemptId": "manual-v7-modern-20261011-hurt07-r1",
+      "producer": "interactive-chat-gpt6-modern-20261011",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-07a.json",
+      "sourceBlob": "e7e8a78e62b51990ab2fd81e8c098a5cfca9f6b2",
+      "sourceChecksum": "sha256:61b27fcd568d91e22c165add7a6464c0c79c7f743c1eb8e95b5d39e4e4530adf",
+      "sceneRevision": "modern-first-party-shot-v2-20261011-hurt07",
+      "guidePath": "docs/v7/unfinished-artwork-guide/07-reflection-practice-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "Modern adult wearing plain contemporary coat walks beside quiet canal and moves blank boundary reminder card from closed notebook into coat pocket; three-quarter documentary view; left side quiet.",
+        "era": "contemporary",
+        "aspect": "4:5",
+        "noCollage": true,
+        "noText": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:17.833Z",
+      "qa": {},
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.discouragement.10",
+      "variant": "CLEAN",
+      "attemptId": "manual-v7-modern-20261011-discouragement10-r1",
+      "producer": "interactive-chat-gpt6-modern-20261011",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
+      "sourceBlob": "d6fc93c787d618a3371584af108a5ccccca084c7",
+      "sourceChecksum": "sha256:0efc4b2b64c063147c37c27752752c687baf82bd27ad156849ad82772abff1f1",
+      "sceneRevision": "modern-first-party-shot-v2-20261011-discouragement10",
+      "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "Modern young adult mason wearing believable contemporary safety workwear embeds smooth pale tile near the edge of partly completed brick wall, genuine construction tools, low documentary angle, late-afternoon light, bottom quiet.",
+        "era": "contemporary",
+        "aspect": "4:5",
+        "noCollage": true,
+        "noText": true
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:09:17.833Z",
+      "qa": {},
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
     }
   ]
 }
