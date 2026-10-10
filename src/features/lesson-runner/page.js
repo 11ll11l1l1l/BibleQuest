@@ -60,7 +60,7 @@ function responseEditor(state, step, t) {
     <p class="bq-help">${t('responseHint')}</p><div class="bq-lesson-sharing"${sharingBusy ? ' aria-busy="true"' : ''}>${sharing}</div></div>`;
 }
 function mentorSharedResponse(state, step, t) {
-  if (state.writable || step.type === 'scripture') return '';
+  if (state.writable || step.type === 'scripture' || state.responseStatus !== 'ready') return '';
   const response = state.responses?.[step.id];
   if (!response || response.visibility !== 'shared') return '';
   return `<section class="bq-lesson-mentor-response" data-lesson-shared-response="${escape(step.id)}"><h2>${t('mentorShared')}</h2><p>${escape(responseText(response)).replace(/\n/g, '<br>')}</p></section>`;
