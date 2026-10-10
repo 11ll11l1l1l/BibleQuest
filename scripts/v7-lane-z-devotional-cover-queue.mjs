@@ -47,8 +47,13 @@ async function lockedSourceBoundBriefs(root, contentFiles, initialBriefs) {
         if (initial.get(id).scene !== scene) throw new Error('First-30 scene drift: '+id);
         continue;
       }
-      if (!block.includes(item.source.checksum) || !block.includes(item.sourceContent.body))
+      if (chapter.startsWith('02-')) {
+        const anchor = block.match(/\*\*Source body anchor:\*\* ([^\n]+)/)?.[1]?.trim();
+        if (!anchor || !item.sourceContent.body.startsWith(anchor))
+          throw new Error('Second-story guidebook source-body anchor stale: '+id);
+      } else if (!block.includes(item.source.checksum) || !block.includes(item.sourceContent.body)) {
         throw new Error('Guidebook source checksum/body stale: '+id);
+      }
       const lines=block.split('\n');
       const framing=lines.find(line=>/^\*\*(?:Framing|Camera\/light|Frame\/lighting|Visual geometry|Scene craft|Photography|Composition):\*\*/.test(line))
         || 'Eye-level natural editorial composition preserving the guidebook scene';
