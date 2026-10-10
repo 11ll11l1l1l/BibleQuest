@@ -445,10 +445,19 @@
         "lighting": "muted late afternoon window daylight",
         "titleSafe": "right 30 percent"
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:18:15.393Z",
       "qa": {},
-      "note": "User requested exactly ONE image. Prior attempted images all failed due to triptych. This one is the only new active slot."
+      "note": "User requested exactly ONE image. Prior attempted images all failed due to triptych. This one is the only new active slot.",
+      "generatorId": "8cdf32c8-88f7-49e2-a865-2feb61862de7",
+      "measuredWidth": 1122,
+      "measuredHeight": 1402,
+      "measuredFormat": "PNG",
+      "measuredBytes": 2146403,
+      "failedMeasuredBytesSha256": "a5a574ad60f25246435ee85fd92a3147cf45b21a9938a3725012cf5447367c13",
+      "failedAt": "2026-10-10T23:19:34.439Z",
+      "deletedLocalCandidate": true,
+      "rejectionReason": "Producer scene preflight FAIL: render depicts a young woman repotting greenery on sunny contemporary balcony. Mandatory source shot depicts an adult repairing an existing reading lamp in a practical neighborhood apartment. Render is genuine single-scene portrait PNG but wrong observable action/objects/setting; could not be corrected by crop. Unapproved source bytes deleted locally, no QA candidate uploaded."
     }
   ]
 }
