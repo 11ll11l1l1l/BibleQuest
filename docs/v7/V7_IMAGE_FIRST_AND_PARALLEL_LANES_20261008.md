@@ -1,5 +1,8 @@
 # BibleQuest V7 — Image-first UI, integrated lettering, and four-lane parallel execution
 
+> **SUPERSEDED IMAGE PRODUCER AUTHORITY (2026-10-11):** This earlier parallel producer plan remains useful for historical status and non-art feature ownership but **no agent may generate, regenerate, typeset, crop or modify image pixels**. Only direct, user-invoked interactive ChatGPT image sessions may produce new or revised artwork. Scheduled former visual producers now exclusively perform QA. See [V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md](V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md); no QA or release gate is weakened.
+
+
 **Decision date:** 2026-10-08 JST  
 **Status:** Release-blocking V7 scope, effective on integration into `v7/development`  
 **Authority:** Latest user visual direction; supersedes conflicting no-rasterized-text and tiny-carousel guidance only as explicitly described here.  

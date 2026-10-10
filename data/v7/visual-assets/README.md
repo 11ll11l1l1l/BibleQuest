@@ -1,5 +1,7 @@
 # V7 Visual Assets
 
+> **ARTWORK POLICY OVERRIDE — 2026-10-11:** The former five scheduled generators have been reassigned to QA-only. New/modified image pixels and derivatives may be made **only in a user-invoked interactive ChatGPT conversation**, never in an agent automation, workflow or autonomous code path. Existing queue-ownership paragraphs are legacy historical guidance, not generation authorization. Each new/changed raster requires measured manual-chat intake evidence. See [V7 manual-chat-only policy](../../../docs/v7/V7_MANUAL_CHAT_ARTWORK_ONLY_20261011.md). Strict rights/content/technical/release gates remain unchanged.
+
 This folder contains machine-readable sidecar records for generated/owned/licensed V7 visual assets.
 
 Canonical production contract: `docs/v7/V7_VISUAL_ASSET_PRODUCTION_20261008.md`.
