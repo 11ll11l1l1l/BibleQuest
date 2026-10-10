@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-devotional-courage-next-step-01",
+  "agentId": "codex-lane-z-manual",
+  "createdAt": "2026-10-10T11:10:00+09:00",
+  "status": "candidate_qa_pending",
+  "family": "devotional",
+  "visualRole": "devotional_cover",
+  "contentType": "devotional",
+  "contentId": "devotional.biblequest.fear.01",
+  "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01a.json",
+  "sourceRevision": "r1",
+  "sourceTitle": "Courage for the next step",
+  "sourceBody": "Fear often asks you to imagine the worst before anything has happened. Isaiah 41:10 redirects attention from the size of the threat to the presence and help of God. Courage can be small: stand up, breathe, pray, and do the next right thing without pretending you feel fearless.",
+  "concept": "An apprehensive new employee pauses at an open workplace doorway, hand on a messenger-bag strap, then takes a small step inside with a colleague waiting calmly in the distance.",
+  "usage": [
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/devotional/bqv7-devotional-courage-next-step-01.png",
+  "width": 1122,
+  "height": 1402,
+  "fileBytes": 2162373,
+  "sha256": "8895ba24fc9c3f8883efa4a4faf051f34160c3318db2436babddf4ef7fce4442",
+  "gitBlobSha": "866e522acc7d415ae90cf72d3fc67733ebaa5903",
+  "format": "png",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.31,
+    "y": 0.44
+  },
+  "textSafeRegion": "right",
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated original scene for BibleQuest; no third-party source image supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young employee pauses at an open workplace doorway before taking a small step inside.",
+    "essentialLiveTextRequired": true
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "exec-6b2ce9ed-deee-4ab6-8d31-a6f6303c509e.png",
+    "sourceBytes": 2162373,
+    "sourceSha256": "8895ba24fc9c3f8883efa4a4faf051f34160c3318db2436babddf4ef7fce4442",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceRevision": "v7/development bfbd5256b8c3277ded1711dd4b804dabef23bb41",
+    "noExternalSourceArt": true,
+    "noTextOrScriptureBakedIn": true,
+    "prompt": "Use case: photorealistic-natural. Asset type: original 4:5 portrait devotional cover candidate for BibleQuest V7. Primary request: A premium cinematic editorial photograph for the devotional “Courage for the next step.” Full source: “Fear often asks you to imagine the worst before anything has happened. Isaiah 41:10 redirects attention from the size of the threat to the presence and help of God. Courage can be small: stand up, breathe, pray, and do the next right thing without pretending you feel fearless.” Scene: Entrance to an ordinary modern workplace on a cool cloudy morning. Subject: An apprehensive young adult employee pauses just outside the open glass door, takes a quiet breath, and shifts one foot forward; one hand rests on a messenger-bag strap, a colleague waits calmly farther inside. Style: believable cinematic editorial realism, natural people, realistic face, clothing, building materials, hands and posture. Composition: vertical 4:5, subject on the left third with quiet soft-focus wall/door area at upper right for live localized title overlay; threshold visible. Lighting: cool morning outside, gentle warm interior. Constraints: no text, signs, logos, letters, numbers, Bible verse, reference, UI, watermark, branded clothing or legible documents. Do not imply fear has vanished or guarantee worldly success. Avoid cliffs, hiking, dramatic storms, glowing Bible, cross, church, exaggerated panic, tears, collage, split frame, extra foreground people, malformed hands or feet."
+  },
+  "qc": {
+    "standaloneSingleScene": true,
+    "noVisibleBakedText": true,
+    "singleImageSha256Measured": true,
+    "dimensionsMeasured": true,
+    "initialVisualScreen": "passed: one scene, concept matches source, no visible text; alt and focal point recorded",
+    "independentVisualQA": "pending",
+    "scriptureContextQA": "pending final review; no Bible wording rendered in image",
+    "builtAppBrowser320390430": false,
+    "servedHTTPSha256": false,
+    "releaseCertified": false
+  }
+}
