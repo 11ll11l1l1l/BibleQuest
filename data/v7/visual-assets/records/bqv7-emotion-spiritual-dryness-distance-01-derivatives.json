@@ -4,7 +4,7 @@
   "parentAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T15:10:57+09:00",
-  "status": "three_files_present_render_qa_pending",
+  "status": "candidate_real_webp_scripture_reference_independent_browser_qa_pending",
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentId": "spiritual_dryness_distance",
@@ -24,83 +24,75 @@
     },
     {
       "kind": "TYPE",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.svg",
-      "format": "svg",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 72801,
-      "sha256": "218413ed523d3bdb5613401ba36600c0356aedf0e21b78609e69f31b18b55d6b",
-      "locale": "en",
-      "exactWording": "Spiritually dry / distant",
-      "referenceOnly": "Psalm 42:1-2",
-      "crop": {
-        "source": {
-          "x": 102,
-          "y": 0,
-          "width": 819,
-          "height": 1024
-        },
-        "output": {
-          "width": 1024,
-          "height": 1280
-        },
-        "mode": "cover"
-      },
+      "fileBytes": 87918,
+      "sha256": "05865fdb2f66ad224b60a2314e8aef115c49b49d89fe246976aad2091ee71a49",
       "focalPoint": {
-        "x": 0.44,
-        "y": 0.36
+        "x": 0.52,
+        "y": 0.52
       },
-      "altText": "A contemplative man by a rainy window. Embedded words: Spiritually dry / distant; Psalm 42:1-2.",
+      "embeddedWording": {
+        "label": "Spiritually dry / distant",
+        "scriptureReference": "Psalm 42:1-2",
+        "scriptureTextIncluded": false
+      },
+      "altText": "A young man sits quietly at his apartment table gazing out at a cloudy city sky. English title: Spiritually dry / distant. Reference: Psalm 42:1-2.",
+      "typography": {
+        "method": "Pillow deterministically rasterized on unchanged CLEAN",
+        "fontFamily": "Noto Serif Regular",
+        "fontLicense": "SIL OFL 1.1",
+        "locale": "en",
+        "fontFilesDistributed": false,
+        "sourceCleanSha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3"
+      },
       "qa": {
-        "textMatchesTaxonomy": true,
-        "noVerseText": true,
-        "embeddedSource": true,
-        "browserRenderPending": true,
-        "referenceFontPx": 52,
-        "referenceEquivalentAt320Px": 16.25,
-        "referenceMobileGeometryChecked": true,
-        "typeReadableAt320px": false,
-        "visualInspected": false,
-        "imageDecoded": false,
-        "unreviewedEnglishCopyRemoved": true,
-        "allowedSvgTextNodesVerified": [
-          "Spiritually dry",
-          "/ distant",
-          "PSALM 42:1-2"
-        ],
-        "originalRasterBytesUnchanged": true
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "sourceWordingExact": true,
+        "scriptureReferenceOnly": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.svg",
-      "format": "svg",
-      "width": 400,
-      "height": 500,
-      "fileBytes": 71566,
-      "sha256": "0f2505e071a19d20896c9b8007afda29e4f7b4f61475b6751dfd5fc075b6c663",
-      "crop": {
-        "source": {
-          "x": 85,
-          "y": 0,
-          "width": 819,
-          "height": 1024
-        },
-        "output": {
-          "width": 400,
-          "height": 500
-        },
-        "mode": "focalAwarePortrait"
-      },
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 960,
+      "fileBytes": 67754,
+      "sha256": "ac302c96529a8bc4a497e5b1f8f7ab59d1f1d9e9f153bc3238b050b7b68a639c",
       "focalPoint": {
-        "x": 0.44,
-        "y": 0.36
+        "x": 0.56,
+        "y": 0.42
       },
-      "altText": "A contemplative man sits quietly at a kitchen table, looking out through a rain-speckled window toward a cloudy city.",
+      "altText": "A young man sits at home near a window with a distant, contemplative expression.",
+      "crop": {
+        "sourceFileSha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+        "sourceRectPixels": {
+          "left": 120,
+          "top": 0,
+          "right": 939,
+          "bottom": 1024
+        },
+        "targetAspectRatio": "4:5",
+        "method": "Pillow LANCZOS actual 768x960 WebP crop"
+      },
       "qa": {
-        "noText": true,
-        "embeddedSource": true,
-        "browserRenderPending": true
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "noBakedText": true,
+        "independentVisualQA": "pending",
+        "builtAppBrowserQA": "pending",
+        "productionReady": false
       }
     }
   ],
@@ -132,5 +124,20 @@
     "notes": "Removed an unapproved embedded English UI heading from the TYPE SVG; only canonical English emotion label and Psalm 42:1-2 reference remain. Original WebP/CLEAN and THUMB unchanged. TYPE SHA-256 and byte size independently recalculated from the exact committed SVG. Actual built-app raster/render, font appearance, phone legibility and crop remain pending; candidate is NOT production-ready.",
     "referenceGeometryAt320Px": "16.25px equivalent, not visually certified",
     "typeUnboundHeadingRemoved": true
+  },
+  "sourceMasterAssetId": "bqv7-emotion-spiritual-dryness-distance-01",
+  "bundleStatus": "real_clean_type_thumb_candidate_browser_qa_pending",
+  "generation": {
+    "derivatives": "TYPE: separate licensed Noto Serif Pillow compositing from unchanged CLEAN; THUMB: actual 4:5 raster crop of unchanged CLEAN; no SVG/data URI."
+  },
+  "qc": {
+    "sourceImageSha256Untouched": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+    "sourceImageWebPReused": true,
+    "typeAndThumbTrueWebP": true,
+    "referenceFromTaxonomy": "Psalm 42:1-2",
+    "independentVisualQA": "pending",
+    "actualBuiltAppBrowserQA": "pending",
+    "servedByteSHA": "pending",
+    "productionReady": false
   }
 }
