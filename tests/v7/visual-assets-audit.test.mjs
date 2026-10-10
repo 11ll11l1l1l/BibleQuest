@@ -397,7 +397,26 @@ test('rejects V2 Need with mismatched text or unsupported Scripture reference', 
   await f.saveNeed();
   result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
-  assert.match(result.errors.join('\\n'), /Scripture reference is not approved/);
+  assert.match(result.errors.join('\\n'), /Scripture reference is missing or not approved/);
+});
+
+test('rejects V2 TYPE images with missing, blank or absent Scripture citation', async t => {
+  const f = await needV2BundleFixture(t);
+  for (const empty of ['', '   ', null]) {
+    f.record.wordingEvidence.reference = empty;
+    f.record.variants[1].embeddedWording.scriptureReference = empty;
+    await f.saveNeed();
+    const result = await auditV7VisualAssets(f.root);
+    assert.equal(result.status, 'FAIL', 'unbound TYPE Scripture must never enter a production manifest');
+    assert.match(result.errors.join('\\n'), /TYPE Scripture reference is missing or not approved/);
+    assert.equal(result.manifest.assets.length, 0);
+  }
+  delete f.record.wordingEvidence.reference;
+  delete f.record.variants[1].embeddedWording.scriptureReference;
+  await f.saveNeed();
+  const missing = await auditV7VisualAssets(f.root);
+  assert.equal(missing.status, 'FAIL');
+  assert.match(missing.errors.join('\\n'), /TYPE Scripture reference is missing or not approved/);
 });
 
 test('rejects V2 Need when typography source revision or canonical Need ID drifts', async t => {
