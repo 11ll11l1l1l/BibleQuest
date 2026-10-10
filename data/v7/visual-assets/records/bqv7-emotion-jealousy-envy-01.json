@@ -3,8 +3,8 @@
   "assetId": "bqv7-emotion-jealousy-envy-01",
   "agentId": "visual-agent-4",
   "createdAt": "2026-10-08T23:08:50+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "status": "candidate_type_visual_repair_required",
+  "bundleStatus": "three_real_files_type_visual_qa_rejected",
   "family": "emotion",
   "contentType": "emotion",
   "contentId": "jealousy_envy",
@@ -79,14 +79,14 @@
         "imageDecoded": true,
         "dimensionsMeasured": true,
         "sha256Measured": true,
-        "visualInspected": true,
+        "visualInspected": false,
         "isolatedChromiumRendered": true,
         "builtAppBrowserQA": false,
         "noBakedText": false,
         "cropReviewed": true,
         "spellingCheckedAgainstTaxonomy": true,
         "referenceCheckedAgainstTaxonomy": true,
-        "typeReadableAt320px": true,
+        "typeReadableAt320px": false,
         "fontLicenseVerified": true
       }
     },
@@ -166,16 +166,70 @@
     "matchesVisualSystem": true,
     "duplicateChecked": true,
     "allThreeLocalWebPDecodingAndSHA256Verified": true,
-    "localTypeAndThumbnailInspected": true,
-    "type320pxVisualInspected": true,
+    "localTypeAndThumbnailInspected": false,
+    "type320pxVisualInspected": false,
     "isolatedChromiumAllVariantsDecoded": true,
     "isolatedChromiumWidths": [
       320,
       390,
       430
     ],
-    "builtAppBrowserQA": "pending",
+    "builtAppBrowserQA": "blocked_type_flourish_overlaps_title",
     "visualAuditScript": "not_run_no_local_repo",
-    "reasonNotProductionReady": "Built-app browser review and official repository Node audit have not run; do not publish TYPE/THUMB to release registry."
+    "reasonNotProductionReady": "Jealous TYPE gold flourish overlaps the title glyphs. Regenerate from original CLEAN and verify at 320/390/430px.",
+    "typeRepairCandidate": {
+      "state": "footer_webp_rendered_and_verified_full_TYPE_not_yet_rebuilt",
+      "exactCleanImagePath": "/v7/images/emotion/bqv7-emotion-jealousy-envy-01.webp",
+      "exactCleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "exactCleanGitBlobSha": "27e58738d70727bee2a469e119d74e2870ae8297",
+      "preservedThumbSha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+      "typographySourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "exactEnglishTitle": "Jealous / envious",
+      "scriptureReferenceOnly": "Proverbs 14:30",
+      "scriptureProseIncluded": false,
+      "footerFormat": "webp",
+      "footerDimensions": {
+        "width": 1024,
+        "height": 256
+      },
+      "footerBytes": 12466,
+      "footerSha256": "fe1a13f845a3bdfbc74bcfab79fea11d15ec4941aca7d53e2bb9e340d5be073d",
+      "fonts": [
+        "Noto Serif Display SemiBold",
+        "Noto Serif Display SemiBold Italic",
+        "Lato Medium"
+      ],
+      "fontLicense": "SIL OFL 1.1",
+      "titleGlyphBottomBeforeRuleY": 136,
+      "decorativeRuleY": 144,
+      "referenceTopY": 180,
+      "localUnitTests": "5_of_5_pass",
+      "isolatedChromiumFooterOnly": {
+        "widths": [
+          320,
+          390,
+          430
+        ],
+        "decoded": [
+          true,
+          true,
+          true
+        ],
+        "httpStatus": [
+          200,
+          200,
+          200
+        ],
+        "servedBytesVerified": true,
+        "servedSha256Verified": true,
+        "screenshotsVisuallyInspected": true
+      },
+      "fullTypeComposited": false,
+      "fullType320390430Qa": false,
+      "builtAppExactHeadQa": false,
+      "officialAuditRun": false,
+      "publicationAllowed": false,
+      "reason": "The exact CLEAN binary is available via GitHub base64 read, but cannot be materialized in the local image compositor. This is footer-only QA, not proof for the full TYPE WebP."
+    }
   }
 }
