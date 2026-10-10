@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-hope-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T20:13:53+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "hope",
+  "canonicalNeedId": "hope",
+  "concept": "Active hope after rain: an urban rooftop gardener tends a newly planted seedling as storm clouds clear.",
+  "usage": [
+    "needs_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-hope-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 184020,
+  "sha256": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+  "focalPoint": {
+    "x": 0.56,
+    "y": 0.63
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "9c92acf3-53f9-41e6-84ab-81ac37f5727b",
+    "sourceImageWasComposite": true,
+    "sourceOriginalFile": "a_composite_image_collage_with_three_panels_versio.png",
+    "sourceOriginalSha256": "b2ac8543a15a8d4bf42779767a7f1c99a1b96017fb5ed8914e68e3f9cf3d2e27",
+    "isolatedSingleScenePanelCropPixels": [
+      20,
+      147,
+      623,
+      899
+    ],
+    "sourceDescription": "Generated image output was a 3-panel collage despite a single-scene request; final CLEAN is a fully isolated photo scene cropped from the left panel with no text or panel borders. Provenance disclosed; independent QA may reject this derivation.",
+    "cleanSceneOriginalToThisGeneration": true,
+    "noThirdPartyPhotosSupplied": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated image, cropped from its generated composite. No external photo or branded content provided; publication rights require independent review.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "fontFilesDistributed": false,
+    "scripture": "Bible reference only; no Scripture prose"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A gardener gently plants a new green shoot in a rain-clearing rooftop garden, with the city skyline beyond.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "CLEAN with live TL Pag-asa / CEB Paglaom / ILO Namnama and accessible live reference; English TYPE not localized."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "hope",
+    "locale": "en",
+    "exactLabel": "Hope",
+    "reference": "Romans 15:13",
+    "scriptureTextIncluded": false,
+    "contextReview": "Romans 15:13 is Paul’s prayer that the God of hope fill believers with joy and peace in believing. The new shoot visually suggests hope but does not promise specific material outcomes."
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "imageSceneStandaloneAfterCrop": true,
+    "originalGeneratedOutputWasCollage": true,
+    "repoVisualAudit": "prior_head_pass;revised_type_not_yet_run",
+    "builtAppBrowserQA": "prior_head_pass;revised_type_not_yet_run",
+    "publishedServedBytes": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "candidateOnly": true,
+    "localHttpExactBytes": true,
+    "localIsolatedChromium320390430": true,
+    "localQaReport": "qa-local-report.json",
+    "githubUploadedCandidateBlobs": {
+      "CLEAN": "53ba85ade7eb2cb7dfdc49f95e0523e7c1fb46b7",
+      "TYPE": "4853aefd6e97bbc8e99e57905caafcfe63d027b1",
+      "THUMB": "0c044d6f54d86b67a4ae83aa8c060df3c384bb7e"
+    },
+    "githubBranchCommit": "pending_new_commit",
+    "githubReadback": "pending_new_commit",
+    "typeRepair": {
+      "reason": "hard vertical overlay boundary visible in prior TYPE at full resolution; replaced by continuous feathered vignette, CLEAN and THUMB unchanged",
+      "priorTypeSha256": "4205309a46aff8822bfe949366bae378693562e15bd8b3903e0037673615e3a9",
+      "repairedTypeSha256": "96c276dcbf3e94fcd68347fc7757011205c9fdbc81b49f4653a2063bdf79c222",
+      "localBrowserWidths": [
+        320,
+        390,
+        430
+      ],
+      "priorHeadCIRun": 37924799517,
+      "priorHeadArtifactId": 11613431851,
+      "revisedHeadCI": "pending"
+    }
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-hope-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 184020,
+      "sha256": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+      "locale": null,
+      "altText": "A gardener gently plants a new green shoot in a rain-clearing rooftop garden, with the city skyline beyond.",
+      "focalPoint": {
+        "x": 0.56,
+        "y": 0.63
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-hope-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 189012,
+      "sha256": "96c276dcbf3e94fcd68347fc7757011205c9fdbc81b49f4653a2063bdf79c222",
+      "locale": "en",
+      "altText": "A gardener gently plants a new green shoot in a rain-clearing rooftop garden, with the city skyline beyond. Embedded English text: Hope; Romans 15:13.",
+      "focalPoint": {
+        "x": 0.56,
+        "y": 0.63
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      },
+      "embeddedWording": {
+        "label": "Hope",
+        "scriptureReference": "Romans 15:13",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Independently typeset EB Garamond from immutable CLEAN with continuous upper-right feathered vignette, avoiding hard rectangular overlay seam",
+        "sourceCleanSha256": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+        "priorTypeVariant": {
+          "sha256": "4205309a46aff8822bfe949366bae378693562e15bd8b3903e0037673615e3a9",
+          "bytes": 192076
+        }
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-hope-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 47752,
+      "sha256": "ddc32bc1f36714603c011aec17e2c194672913359db3a2f7695fca0738fa63e2",
+      "locale": null,
+      "altText": "A gardener gently plants a new green shoot in a rain-clearing rooftop garden, with the city skyline beyond.",
+      "focalPoint": {
+        "x": 0.55,
+        "y": 0.63
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.087891,
+          "y": 0.058594,
+          "width": 0.839844,
+          "height": 0.839844
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
