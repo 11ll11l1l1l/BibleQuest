@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { candidateQuarantineReason, KNOWN_REJECTED_V7_VARIANTS } from '../../scripts/v7-visual-candidate-policy.mjs';
 
 async function fixture(t, entries) {
   const root = await mkdtemp(join(tmpdir(), 'bq-v7-candidate-triage-'));
@@ -92,4 +93,24 @@ test('repair-required, unsafe SVG and failed TYPE safe-area candidates cannot pa
   assert.equal(result.rejected.length, 3);
   assert(result.rejected.every(row => /quarantined/.test(row.reason)));
   assert.equal(result.publicationApproved, false);
+});
+
+
+test('known rejected image digests cannot be relabeled as visually approved candidates', () => {
+  assert.equal(Object.keys(KNOWN_REJECTED_V7_VARIANTS).length, 5);
+  for (const [assetId, variants] of Object.entries(KNOWN_REJECTED_V7_VARIANTS)) {
+    for (const variant of variants) {
+      const record = {
+        assetId, status: 'candidate_built_app_qa_pending',
+        variants: [{ kind: variant.kind, sha256: variant.sha256, qa: {
+          topSafeAreaAcceptable: true, spellingCheckedAgainstTaxonomy: true,
+          visualInspected: true, subjectReadableAtThumbnail: true
+        }}]
+      };
+      assert.match(candidateQuarantineReason(record), /known-bad visual variant: PR #/);
+      record.variants[0].sha256 = '0'.repeat(64);
+      assert.equal(candidateQuarantineReason(record), null,
+        'new digest needs fresh review but is not on the known-bad list');
+    }
+  }
 });

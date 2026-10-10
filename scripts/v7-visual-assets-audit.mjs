@@ -3,6 +3,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
+import { knownRejectedVisualReason } from './v7-visual-candidate-policy.mjs';
 
 const DEFAULT_ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const REQUIRED_QC = [
@@ -89,8 +90,12 @@ async function verifyV2Wording(record, variant, root) {
   if (!words || proof.locale !== variant.locale || proof.exactLabel !== item.labels[variant.locale]
     || words.label !== proof.exactLabel || words.scriptureReference !== proof.reference)
     throw new Error('TYPE embedded wording does not match reviewed taxonomy');
-  if (proof.reference && !item.scripture.includes(proof.reference))
-    throw new Error('TYPE Scripture reference is not approved for emotion');
+  // A TYPE image may not silently omit the citation by making both
+  // the visual declaration and its source proof empty. Validate the exact
+  // reference against the canonical Feeling/Need Scripture list.
+  if (typeof proof.reference !== 'string' || !proof.reference.trim()
+    || !item.scripture.includes(proof.reference))
+    throw new Error('TYPE Scripture reference is missing or not approved for the concept');
   if (proof.scriptureTextIncluded !== false || words.scriptureTextIncluded !== false)
     throw new Error('TYPE Scripture prose requires a separately verified text-source contract');
   if (variant.qa?.spellingCheckedAgainstTaxonomy !== true
@@ -250,6 +255,10 @@ export async function auditV7VisualAssets(root = DEFAULT_ROOT) {
         warnings.push(name + ': excluded non-production status ' + record.status);
         continue;
       }
+      // Image producers may mark a record ready only after the editorial denylist
+      // is cleared by replacing rejected bytes, not by flipping QA booleans.
+      const quarantined = knownRejectedVisualReason(record);
+      if (quarantined) throw new Error('production visual quarantined: ' + quarantined);
       if (!record.family || !id.startsWith('bqv7-' + record.family + '-')) throw new Error('family/ID mismatch');
       if (!CONTENT_TYPES.has(record.contentType) || !record.contentId) throw new Error('unknown content type or missing content ID');
       if (!Array.isArray(record.usage) || !record.usage.length) throw new Error('missing usage');

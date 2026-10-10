@@ -8,7 +8,7 @@
   "contentType": "emotion",
   "contentId": "fear",
   "canonicalEmotionId": "afraid",
-  "status": "candidate_svg_embedded_data_uri_repair_required",
+  "status": "candidate_real_webp_three_files_independent_browser_qa_pending",
   "variants": [
     {
       "kind": "CLEAN",
@@ -33,13 +33,13 @@
     {
       "kind": "TYPE",
       "locale": "en",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.webp",
+      "format": "webp",
       "width": 1024,
       "height": 1280,
-      "fileBytes": 107267,
-      "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
-      "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
+      "fileBytes": 113042,
+      "sha256": "3af06a111b0a5db56fdd360b4e777dbf6d55b5ab5e3670821d79a9f44aa07863",
+      "gitBlobSha": "4d57aa5430c9f2de855e58cd9e650b7bb4972f89",
       "includedWording": "Afraid",
       "includedReference": "Psalm 34:4",
       "wordingSource": {
@@ -66,13 +66,14 @@
         "spellingVerified": true,
         "sourceTaxonomyVerified": true,
         "geometryChecked": true,
-        "browserRender": "pending",
-        "phoneReadability": "pending",
+        "browserRender": "pending_built_app",
+        "phoneReadability": "pending_independent_phone_art_direction_qa",
         "spellingCheckedAgainstTaxonomy": true,
         "typeReadableAt320px": false,
-        "visualInspected": false,
+        "visualInspected": true,
         "referenceOutlineRasterizedAt320": true,
-        "referenceOutlinePreviewSpellingVerified": true
+        "referenceOutlinePreviewSpellingVerified": true,
+        "referenceVisibleOnFullImage": true
       },
       "wordingEvidence": {
         "sourcePath": "src/features/library/emotion-taxonomy.js",
@@ -89,20 +90,26 @@
         "scriptureTextIncluded": false
       },
       "qa": {
-        "allowedSvgReferencesOnly": false,
-        "embeddedDataImageSourceViolation": true,
-        "needsFormatReExport": true
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "sourceSvgDataUriProblem": "resolved_by_raster_conversion",
+        "fontVisualAppearance": "rasterized original source; platform font is no longer loaded at runtime",
+        "independentReviewPending": true,
+        "browserAppQA": "pending",
+        "typeReadableAt320px": null
       }
     },
     {
       "kind": "THUMB",
-      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
-      "format": "svg",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.webp",
+      "format": "webp",
       "width": 384,
       "height": 480,
-      "fileBytes": 100730,
-      "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
-      "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+      "fileBytes": 34768,
+      "sha256": "151b3a9aec32b2a3bf39290cd3ac5eb7d31ffc4987e194cdc5249a4c71882d92",
+      "gitBlobSha": "24a1a69b361c389abf1d5666f0ac248e0c390c16",
       "crop": {
         "sourceRectPixels": {
           "left": 153.6,
@@ -123,12 +130,19 @@
         "geometryChecked": true,
         "noBakedText": true,
         "browserRender": "pending",
-        "thumbnailVisualQA": "pending"
+        "thumbnailVisualQA": "inspected_native_384x480_candidate"
       },
       "qa": {
-        "allowedSvgReferencesOnly": false,
-        "embeddedDataImageSourceViolation": true,
-        "needsFormatReExport": true
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "sourceSvgDataUriProblem": "resolved_by_raster_conversion",
+        "independentReviewPending": true,
+        "browserAppQA": "pending"
       }
     }
   ],
@@ -154,8 +168,8 @@
     "typeReferenceMobileGeometryPassed": true,
     "typeReferenceVectorOutlined": true,
     "typeReferenceIsolated320RasterPreviewPassed": true,
-    "svgDataUriPolicyCompliant": false,
-    "policyQaReason": "Both TYPE and THUMB SVGs use <image> with an embedded data:image/webp;base64 href, prohibited by the repo's data/v7/visual-assets/README.md (only internal SVG #id references permitted). Keep the original compliant CLEAN WebP unchanged. Replace TYPE and THUMB with actual raster WebP derivatives or policy-compliant fully vector SVG, with new exact hashes and pixel QA. Do not weaken the global SVG audit.",
+    "svgDataUriPolicyCompliant": null,
+    "policyQaReason": "Legacy data-URI SVG files were replaced by genuine independently stored WebP TYPE and THUMB; original SVG evidence preserved in Git history and candidate record. Current live derivative paths contain no SVG or data-URI references. Promotion awaits independent image/artwork and exact-built-browser QA.",
     "exactArtifactInspection": {
       "sourceTree": "v7/development@144bbd9883c0e208873022a2268bad1eff999dd7",
       "typeSvgGitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
@@ -166,9 +180,37 @@
       "svgPolicyPass": false,
       "browserQa": "still pending",
       "fontAndScriptureContextReview": "not asserted by this static check"
+    },
+    "legacyUnsafeSvgRemovedFromReleaseTree": true,
+    "currentCandidateFormats": {
+      "CLEAN": "webp",
+      "TYPE": "webp",
+      "THUMB": "webp"
+    },
+    "rasterOutputTechnicalVerification": {
+      "exporterRunId": 37996760992,
+      "exporterRunUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/37996760992",
+      "sourceSha256Pinned": true,
+      "type": {
+        "sha256": "3af06a111b0a5db56fdd360b4e777dbf6d55b5ab5e3670821d79a9f44aa07863",
+        "bytes": 113042,
+        "width": 1024,
+        "height": 1280,
+        "gitBlobSha": "4d57aa5430c9f2de855e58cd9e650b7bb4972f89"
+      },
+      "thumbnail": {
+        "sha256": "151b3a9aec32b2a3bf39290cd3ac5eb7d31ffc4987e194cdc5249a4c71882d92",
+        "bytes": 34768,
+        "width": 384,
+        "height": 480,
+        "gitBlobSha": "24a1a69b361c389abf1d5666f0ac248e0c390c16"
+      },
+      "previewInspection": "TYPE exact label 'Afraid' and reference 'Psalm 34:4' legible at native 1024×1280 raster; THUMB preserves eye expression, hand and door at native 384×480. These are pre-independent human QA findings only.",
+      "releaseStatus": "candidate",
+      "outstanding": "320/390/430 built Chromium QA, served-image SHA verification, independent pixel/text/context check and exact final release"
     }
   },
-  "bundleStatus": "three_files_present_type_reference_geometry_corrected_browser_qa_pending",
+  "bundleStatus": "three_real_webp_files_candidate_not_production_certified",
   "inspectionEvidence": {
     "inspectedAt": "2026-10-08T12:07:12.064Z",
     "inspectionMethod": "Existing CLEAN/title unchanged; Noto Sans SemiBold reference converted to glyph outlines, locally rasterized at 320px and inspected in isolation. Full artwork browser/app QA still pending.",
@@ -186,29 +228,30 @@
       "height": 1024
     },
     "type": {
-      "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
-      "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
-      "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
-      "fileBytes": 107267,
+      "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.webp",
+      "gitBlobSha": "4d57aa5430c9f2de855e58cd9e650b7bb4972f89",
+      "sha256": "3af06a111b0a5db56fdd360b4e777dbf6d55b5ab5e3670821d79a9f44aa07863",
+      "fileBytes": 113042,
       "width": 1024,
       "height": 1280,
-      "staticSafe": true,
+      "staticSafe": null,
       "embeddedSourceExact": true,
       "referenceFontPx": 48,
       "referenceAt320Px": 15,
-      "visualInspected": false,
+      "visualInspected": true,
       "phoneReadabilityPassed": false,
       "referenceVectorOutlined": true,
-      "isolated320RasterPreviewPassed": true
+      "isolated320RasterPreviewPassed": true,
+      "legacySourceRemoved": true
     },
     "thumbnail": {
-      "path": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
-      "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
-      "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
-      "fileBytes": 100730,
+      "path": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.webp",
+      "gitBlobSha": "24a1a69b361c389abf1d5666f0ac248e0c390c16",
+      "sha256": "151b3a9aec32b2a3bf39290cd3ac5eb7d31ffc4987e194cdc5249a4c71882d92",
+      "fileBytes": 34768,
       "width": 384,
       "height": 480,
-      "staticSafe": true,
+      "staticSafe": null,
       "embeddedSourceExact": true,
       "sourceScaledTo": {
         "width": 480,
@@ -222,9 +265,28 @@
         "right": 972.8,
         "bottom": 1024
       },
-      "visualInspected": false,
-      "browserRendered": false
+      "visualInspected": true,
+      "browserRendered": false,
+      "legacySourceRemoved": true
     },
-    "nextAction": "Render full TYPE and THUMB in browser at 320px, inspect type/crop, run Node audit; then consolidate if all gates pass."
+    "nextAction": "Built-app Chromium 320/390/430, independent QA of saved WebP pixels/Scripture/fonts/rights, then consolidate canonical V2 metadata only with verified current-head PASS.",
+    "legacySources": [
+      {
+        "kind": "TYPE",
+        "path": "/v7/images/emotion/bqv7-emotion-fear-01-with-text-en.svg",
+        "sha256": "4367a655df8712e92f43bbe821ae3b35c9d68f2d63ed6c9956ea284b402910db",
+        "gitBlobSha": "1974a6523ff6f51b27aa5cef3605d950a3491ec3",
+        "sourceSize": 107267,
+        "format": "svg"
+      },
+      {
+        "kind": "THUMB",
+        "path": "/v7/images/emotion/bqv7-emotion-fear-01-thumbnail.svg",
+        "sha256": "25e41561e4eb943d48111dc2a308253a272a3b5f75b6c86b54e096e779eaa9fc",
+        "gitBlobSha": "42f7f944edb9034430a51f07e138cb255d7ad142",
+        "sourceSize": 100730,
+        "format": "svg"
+      }
+    ]
   }
 }
