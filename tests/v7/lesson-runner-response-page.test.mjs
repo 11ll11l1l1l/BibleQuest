@@ -83,6 +83,28 @@ test('mentor preview renders only an explicitly shared response as read-only con
   assert.doesNotMatch(host.innerHTML, /<textarea/);
 });
 
+test('mentor cannot see cached shared answer before current permission validation', () => {
+  const lesson = { steps: [
+    { id: 'step-0', type: 'scripture', content: { text: 'Read' } },
+    { id: 'step-1', type: 'understand', content: { text: 'Discuss' } },
+  ] };
+  for (const responseStatus of ['loading', 'error']) {
+    const state = { lesson, status: 'ready', responseStatus, shareStatus: 'idle',
+      writable: false, stepIndex: 1, progress: null, error: null,
+      responses: { 'step-1': { id: 'secret', visibility: 'shared', response: 'sensitive stale content' } },
+      responseDrafts: {} };
+    const runner = { getState: () => state, subscribe() { return () => {}; },
+      load() {}, invalidate() {}, dispose() {} };
+    const host = { innerHTML: '', querySelector() { return null; } };
+    const page = { querySelector: () => host, addEventListener() {}, removeEventListener() {} };
+    const cleanup = createLessonRunnerPage({ runner, onBack() {}, subscribeContext() { return () => {}; } })
+      .mount({ querySelector: () => page });
+    assert.doesNotMatch(host.innerHTML, /sensitive stale content/);
+    assert.doesNotMatch(host.innerHTML, /data-lesson-shared-response/);
+    cleanup();
+  }
+});
+
 test('lesson response and step labels follow every supported V7 locale', () => {
   const previous = globalThis.localStorage;
   const values = new Map();
