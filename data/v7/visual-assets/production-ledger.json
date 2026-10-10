@@ -385,10 +385,32 @@
         "palette": "natural muted workshop materials",
         "textSafeRegion": "bottom"
       },
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-10T23:31:43.554Z",
       "qa": {},
-      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 239604,
+        "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f"
+      },
+      "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-10T23:56:37.722Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single contemporary workshop scene",
+          "learner enters wearing protective glasses and apron",
+          "instructor and workbench visible",
+          "text-free",
+          "native 1122x1402 WebP meets 768x960 and 4:5 geometry"
+        ]
+      },
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531"
     },
     {
       "family": "need",
