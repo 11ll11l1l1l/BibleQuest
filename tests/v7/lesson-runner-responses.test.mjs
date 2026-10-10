@@ -380,3 +380,40 @@ test('a response from another lesson revision cannot grant stale sharing', async
   assert.match(f.runner.getState().responseError, /did not belong/);
   assert.deepEqual(f.runner.getState().responses, {});
 });
+
+test('retry response hydration preserves an unsaved draft and restores share revocation', async () => {
+  let reads = 0;
+  const shared = { ...row('step-1', 'old mentor-visible answer'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => {
+    reads += 1;
+    if (reads === 1) throw new Error('temporary response read failure');
+    return [shared];
+  } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('private draft after outage', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  const restored = await f.runner.retryResponses();
+  assert.equal(restored.responseStatus, 'ready');
+  assert.equal(restored.status, 'ready');
+  assert.equal(restored.responseDrafts['step-1'], 'private draft after outage');
+  assert.equal(restored.responses['step-1'].visibility, 'shared');
+  await f.runner.move(1);
+  const ops = f.log.map(entry => entry[0]);
+  assert.ok(ops.indexOf('revokeResponseShare') < ops.indexOf('savePrivateResponse'));
+  assert.equal(f.responseWrites.at(-1).response, 'private draft after outage');
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.equal(f.runner.getState().stepIndex, 2);
+});
+
+test('retry response hydration fails closed after a congregation switch', async () => {
+  const f = fixture({ loadResponses: async () => { throw new Error('offline'); } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('scoped response', 'step-1');
+  f.active.congregationId = 'another-church';
+  await f.runner.retryResponses();
+  assert.equal(f.runner.getState().lesson, null);
+  assert.equal(f.runner.getState().status, 'error');
+  assert.deepEqual(f.runner.getState().responseDrafts, {});
+  assert.equal(f.responseWrites.length, 0);
+});
