@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-devotional-one-concern-at-a-time-01",
+  "agentId": "codex-lane-z-manual",
+  "createdAt": "2026-10-10T11:00:00+09:00",
+  "status": "candidate_qa_pending",
+  "family": "devotional",
+  "visualRole": "devotional_cover",
+  "contentType": "devotional",
+  "contentId": "devotional.biblequest.anxiety_worry.01",
+  "concept": "At dusk in a modest apartment kitchen, hands set one blank paper slip aside from a small stack while the phone lies dark, visually expressing one concern at a time.",
+  "usage": [
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+  "width": 1122,
+  "height": 1402,
+  "fileBytes": 1865912,
+  "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+  "gitBlobSha": "14769146888d401ef444f0847ab129ffb535fc77",
+  "format": "png",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.77,
+    "y": 0.6
+  },
+  "textSafeRegion": "left",
+  "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01a.json",
+  "sourceRevision": "r1",
+  "sourceTitle": "One concern at a time",
+  "sourceBody": "When your mind keeps rehearsing what might go wrong, bring one concern at a time before God. Philippians 4:6-7 joins prayer and thanksgiving with God’s guarding peace. You do not have to solve the whole future tonight; take the next faithful step and entrust what you cannot control.",
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated original scene for BibleQuest; no third-party source image supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "At a kitchen table in evening light, hands set one blank paper slip aside beside a stack while a phone lies dark.",
+    "essentialLiveTextRequired": true
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "exec-e9550af9-9cd7-49d5-8df1-2c12f21766c8.png",
+    "sourceBytes": 1865912,
+    "sourceSha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceRevision": "v7/development bfbd5256b8c3277ded1711dd4b804dabef23bb41",
+    "noExternalSourceArt": true,
+    "noTextOrScriptureBakedIn": true,
+    "prompt": "Photorealistic-natural, 4:5 vertical editorial cover for “One concern at a time.” A modest apartment kitchen at dusk. Camera diagonally across a plain wooden table toward an unadorned plaster wall and small window. On the far right third, one adult’s natural hands calmly choose one blank paper slip from a short stack beside a folded blank slip; a dark phone sits farther away, screen off. Leave the left 40 percent as quiet uncluttered dark warm plaster and softly lit empty table for a live localized title overlay. Warm practical kitchen light on the right, cool dusk outside. Human, grounded, cinematic. Absolutely no text, writing, numbers, Bible words, verse references, typography, UI, logos or watermarks; paper blank and phone dark."
+  },
+  "qc": {
+    "standaloneSingleScene": true,
+    "noVisibleBakedText": true,
+    "singleImageSha256Measured": true,
+    "dimensionsMeasured": true,
+    "independentVisualQA": "initial separate review: one coherent scene, blank paper and dark screen, calm action matches source concept; final independent project QA pending",
+    "biblicalContextQA": "pending source-bound interpretation review; image includes no Bible wording",
+    "builtAppBrowser320390430": false,
+    "servedHTTPSha256": false,
+    "releaseCertified": false,
+    "backupSelection": "selected after first composition did not leave sufficient quiet title-safe area"
+  }
+}

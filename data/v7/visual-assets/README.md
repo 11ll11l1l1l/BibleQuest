@@ -100,3 +100,25 @@ translation or release QA approvals. Files only present in separate
 draft pull requests are not part of these numbers. If the audit reports
 `status: FAIL`, do not publish the manifest, regardless of intermediate
 coverage statistics. The release remains gated by independent visual QA.
+
+
+### Source-pixel reject ledger (Lane A)
+
+`scripts/v7-visual-candidate-policy.mjs` contains a **SHA-256-bound visual
+reject list** for exact rejected TYPE/CLEAN files from visual-agent drafts,
+including PRs #1423, #1437, #1438, #1439, and #1448. This list records
+documented source-pixel safe-area or near-duplicate findings. These are
+**specific rejected binary hashes, not whole concepts or agents**.
+
+Both candidate triage and the production registry reject those exact bytes
+even if a draft simply changes `qa` fields or sets `production_ready`.
+After the producer repairs a composition, the corrected source must be
+independently rendered and measured (new SHA-256, actual byte count/dimensions)
+and pass source-art inspection, Scripture/translation review, canonical image
+audit, browser and release gates. A new SHA is **not automatically an approval**.
+Keep CLEAN with live translated text as a fallback when TYPE is rejected;
+do not publish a visually rejected three-file bundle.
+
+## Mandatory construction source for all chats and agents
+
+Every V7 visual generation, variant repair, approval and release step MUST first read `docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md`, its exact-ID scene chapter and `AGENTS.md`. The new guide defines the required human action, location, framing, lighting, original high-resolution raster medium, QA rejection criteria, and checks against accepted, draft and rejected art. It supersedes older generic scene prompts, but not release/rights/Scripture gates or exclusive lane ownership. Until PR #1481 integrates, obtain it from `docs/v7-complete-artwork-construction-guide-20261010`. Preserve an existing verified CLEAN master when correcting only TYPE/THUMB, and do not publish any image solely because a sidecar or structural check claims success.
