@@ -157,7 +157,7 @@
     "rejectedCandidates": 0,
     "duplicateSceneAvoidance": "Existing approved master reused",
     "browserQA": "pending",
-    "staticSvgSafetyReviewed": false,
+    "staticSvgSafetyReviewed": null,
     "svgSourceWebPByteIdentityVerified": true,
     "typeReferenceMobileReadable": null,
     "referenceFontSizeAt1024Px": 48,
@@ -208,7 +208,10 @@
       "previewInspection": "TYPE exact label 'Afraid' and reference 'Psalm 34:4' legible at native 1024×1280 raster; THUMB preserves eye expression, hand and door at native 384×480. These are pre-independent human QA findings only.",
       "releaseStatus": "candidate",
       "outstanding": "320/390/430 built Chromium QA, served-image SHA verification, independent pixel/text/context check and exact final release"
-    }
+    },
+    "legacySvgStaticSafetyReviewed": false,
+    "currentWebpFormatAndByteIdentityVerified": true,
+    "metadataRevision": "Legacy original SVG failed source policy and is deleted from working tree; current independently stored TYPE/THUMB WebP source bytes were verified against recorded SHA. null staticSvgSafetyReviewed denotes SVG check NOT APPLICABLE to current WebPs, not approval. Separate typography/rights/context/Chromium/production QA remains outstanding."
   },
   "bundleStatus": "three_real_webp_files_candidate_not_production_certified",
   "inspectionEvidence": {
@@ -287,6 +290,9 @@
         "sourceSize": 100730,
         "format": "svg"
       }
-    ]
+    ],
+    "legacySvgPolicyStatus": "failed_in_retired_svg_source_not_current_webp",
+    "currentRasterPublicationApproved": false,
+    "currentRasterBrowserQA": "pending_exact_sha"
   }
 }
