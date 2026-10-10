@@ -200,6 +200,19 @@
     "cropSafe": true,
     "matchesVisualSystem": true,
     "duplicateChecked": true,
-    "conceptAccurate": true
+    "conceptAccurate": true,
+    "guidebookSceneCompliance": "HOLD_mismatch"
+  },
+  "guidebookPreflight": {
+    "guidebookPath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "shotSection": "5 — P1 Feelings, anger",
+    "canonicalContentId": "emotion:angry",
+    "requiredScene": "Two neighbors at a community sports-club equipment shed after disagreement; one deliberately releases a tightly gripped towel while the other speaks; no violence.",
+    "existingSceneFromSidecar": "Woman beside two mugs in a kitchen with clenched fist and another person facing away.",
+    "sceneMatch": false,
+    "decision": "G1 HOLD — prior CLEAN/TYPE/THUMB are retained as unapproved evidence, not eligible for derivative-only promotion; require newly generated original scene on new versioned asset ID before independent QA.",
+    "independentTypeDefect": "Existing TYPE title reported ~30–40px from top of 1280px; required inset >=128px. Do not spend a TYPE-only repair on scene-invalid source.",
+    "verificationScope": "Comparison of exact GitHub sidecar source description to merged guidebook shot and prior independent QA comment; pixel novelty, new scene, built-app HTTP and independent QA not executed in this run."
   }
 }
