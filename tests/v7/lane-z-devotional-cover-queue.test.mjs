@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { readLaneZCoverQueue, buildLaneZCoverQueue } from '../../scripts/v7-lane-z-devotional-cover-queue.mjs';
 
 function devotional(id,title='Faithful next step') {
@@ -68,4 +69,75 @@ test('actual V7 catalog supplies exactly 300 owned source assignments', async ()
  assert.equal(new Set(result.queue.map(x=>x.expectedCleanPath)).size,result.queue.length);
  assert.equal(result.counts.verifiedComplete,0,
    'Sidecar metadata alone must never certify artwork');
+});
+
+test('source-grounded scene briefs override cyclic fallback only at matching source revision', () => {
+ const item=devotional('devotional.biblequest.anxiety_worry.01','One concern at a time');
+ item.sourceContent.body='When your mind keeps rehearsing worries, place one concern before God.';
+ const brief={devotionalId:item.id,sourceRevision:'r1',sourceTitle:'One concern at a time',
+ sourceBodyAnchor:'When your mind keeps',scene:'At a kitchen table a worried person puts aside a stack of blank papers and holds only one at a time.',
+ composition:'Quiet medium portrait beside a dim kitchen window',lighting:'warm lamp and cool window',
+ textSafeRegion:'bottom',altText:'An adult concentrates on one blank paper while setting others aside.',
+ visualFingerprint:'kitchen-one-paper-person-pauses'};
+ const result=buildLaneZCoverQueue([{path:'x',items:[item]}],[],[brief]);
+ assert.equal(result.queue[0].artDirectionSource,'human_source_bound_first30');
+ assert.equal(result.queue[0].scene,brief.scene);
+ assert.equal(result.queue[0].textSafeRegion,'bottom');
+ assert.match(result.queue[0].prompt,/At a kitchen table/);
+ assert.match(result.queue[0].prompt,/NO rendered text/);
+ assert.equal(result.counts.verifiedComplete,0);
+ item.revision='r2';
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[brief]),/Stale source-bound/);
+});
+
+test('briefs cannot invent unknown content or duplicate visual fingerprints', () => {
+ const item=devotional('devotional.biblequest.anxiety_worry.01','One concern at a time');
+ item.sourceContent.body='When your mind keeps rehearsing worries and doubt.';
+ const base={devotionalId:item.id,sourceRevision:'r1',sourceTitle:item.sourceContent.title,
+ sourceBodyAnchor:'When your mind keeps',scene:'One human in a realistic kitchen removes one sheet from a small stack of unmarked papers on a table.',
+ composition:'Quiet eye-level side profile',lighting:'blue hour and warm kitchen light',
+ textSafeRegion:'bottom',altText:'One person holding one paper.',
+ visualFingerprint:'single-kitchen-paper'};
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[base,{...base,devotionalId:'devotional.biblequest.unknown.01'}]),/Duplicate source-bound visual fingerprint/);
+ assert.throws(()=>buildLaneZCoverQueue([{path:'x',items:[item]}],[],[{...base,devotionalId:'devotional.biblequest.unknown.01'}]),/missing\/rights-ineligible/);
+});
+
+test('live initial 30 briefs are distinct and tied to canonical source IDs', async () => {
+ const result=await readLaneZCoverQueue();
+ const first30=result.queue.filter(x=>x.artDirectionSource==='human_source_bound_first30');
+ assert.equal(first30.length,30,'First 30 first-party devotional stories require individual scene briefs');
+ assert.equal(new Set(first30.map(x=>x.devotionalId)).size,30);
+ assert.equal(new Set(first30.map(x=>x.visualIdentity)).size,30);
+ assert.ok(first30.every(x=>x.altTextDraft && x.sourceBodyAnchor && x.scene.length>=80));
+ assert.ok(first30.every(x=>x.state==='not_generated' || x.state==='existing_asset_requires_independent_audit'));
+});
+
+test('CLI defaults to exactly one original portrait brief and supports explicit source ID', () => {
+ const cmd=new URL('../../scripts/v7-lane-z-devotional-cover-queue.mjs',import.meta.url);
+ const base=[cmd.pathname];
+ const first=JSON.parse(execFileSync(process.execPath,base,{encoding:'utf8'}));
+ assert.equal(first.queue.length,1,'Default must never invite contact-sheet generation');
+ assert.equal(first.queue[0].artDirectionSource,'human_source_bound_first30');
+ const target='devotional.biblequest.anxiety_worry.01';
+ const specific=JSON.parse(execFileSync(process.execPath,[...base,'--id='+target],{encoding:'utf8'}));
+ assert.equal(specific.queue.length,1);
+ assert.equal(specific.queue[0].devotionalId,target);
+ assert.match(specific.queue[0].prompt,/apartment kitchen table/);
+ assert.doesNotMatch(specific.queue[0].prompt,/Create ten covers/i);
+});
+
+test('every eligible devotional has a locked exact-ID construction scene instead of a cyclic generic fallback', async () => {
+ const queue = await readLaneZCoverQueue();
+ const owned = queue.queue.filter(x => x.rightsEligible);
+ assert.equal(owned.length, 300);
+ assert.equal(owned.filter(x=>x.artDirectionSource==='human_source_bound_first30').length, 30);
+ assert.equal(owned.filter(x=>x.artDirectionSource==='locked_construction_guidebook').length, 270);
+ assert.ok(owned.every(x=>x.sourceBodyAnchor && x.scene.length>=80 && x.altTextDraft));
+ assert.equal(new Set(owned.map(x=>x.visualIdentity)).size, 300);
+ assert.ok(owned.every(x=>x.artDirectionSource !== 'deterministic_fallback_needs_editorial_review'));
+ for (const item of owned) {
+   assert.match(item.prompt, /Create exactly ONE standalone original 4:5 portrait/);
+   assert.match(item.prompt, /NO rendered text/);
+   assert.ok(item.prompt.includes(item.scene), item.devotionalId + ' has wrong scene in prompt');
+ }
 });

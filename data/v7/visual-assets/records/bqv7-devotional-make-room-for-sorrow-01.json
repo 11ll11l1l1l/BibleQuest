@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-devotional-make-room-for-sorrow-01",
+  "agentId": "codex-lane-z-manual",
+  "createdAt": "2026-10-10T11:10:00+09:00",
+  "status": "candidate_qa_pending",
+  "family": "devotional",
+  "visualRole": "devotional_cover",
+  "contentType": "devotional",
+  "contentId": "devotional.biblequest.sadness.01",
+  "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01a.json",
+  "sourceRevision": "r1",
+  "sourceTitle": "Make room for sorrow",
+  "sourceBody": "Sadness is not a failure of faith. Psalm 34:18 places God near the brokenhearted, not far from them. Give yourself permission to name what hurts, bring it honestly to God, and receive the care of people who can sit with you without rushing your grief.",
+  "concept": "On a rainy afternoon, one adult holds a mug and sits quietly while a trusted friend remains beside them without urging them to smile or rush their grief.",
+  "usage": [
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/devotional/bqv7-devotional-make-room-for-sorrow-01.png",
+  "width": 1122,
+  "height": 1402,
+  "fileBytes": 2307674,
+  "sha256": "3f406af28537318c6b846587e13623c5eb885968b9c8c8698362969767649c8d",
+  "gitBlobSha": "0fcab96976449e111b465397b2cf5976f5692038",
+  "format": "png",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.57,
+    "y": 0.52
+  },
+  "textSafeRegion": "left",
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated original scene for BibleQuest; no third-party source image supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A friend quietly sits beside a sad person holding a mug on a rainy afternoon.",
+    "essentialLiveTextRequired": true
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "exec-e28f4786-6da3-4e65-ba42-264c3e7cb28e.png",
+    "sourceBytes": 2307674,
+    "sourceSha256": "3f406af28537318c6b846587e13623c5eb885968b9c8c8698362969767649c8d",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceRevision": "v7/development bfbd5256b8c3277ded1711dd4b804dabef23bb41",
+    "noExternalSourceArt": true,
+    "noTextOrScriptureBakedIn": true,
+    "prompt": "Use case: photorealistic-natural. Asset type: original 4:5 portrait devotional cover candidate for BibleQuest V7. Primary request: A quiet premium editorial image for “Make room for sorrow.” Full source: “Sadness is not a failure of faith. Psalm 34:18 places God near the brokenhearted, not far from them. Give yourself permission to name what hurts, bring it honestly to God, and receive the care of people who can sit with you without rushing your grief.” Scene: A simple lived-in apartment living room on a rainy afternoon, window light soft and gray. Subject: One adult sits quietly on a sofa looking down at a mug held in both hands. A trusted friend sits nearby at the same level, present without touching or urging them to smile. Style: understated cinematic editorial photography, intimate, respectful, realistic faces and hands, emotionally specific without dramatization. Composition: true 4:5 vertical; seated figures on the right half, quiet muted curtain/window area on the left for future localized live title overlay; no funeral or medical props. Lighting: soft overcast window light with a gentle warm lamp, calm and compassionate. Constraints: no text, lettering, verse, reference, cross, church, logo, UI, watermark. Do not depict sadness as spiritual failure or promise instant healing. Avoid crying close-up, despair theatrics, funeral, hospital, sunrise, hiking, Bible stock photo, praying hands, collage, split frame, extra fingers, unnatural anatomy."
+  },
+  "qc": {
+    "standaloneSingleScene": true,
+    "noVisibleBakedText": true,
+    "singleImageSha256Measured": true,
+    "dimensionsMeasured": true,
+    "initialVisualScreen": "passed: one scene, concept matches source, no visible text; alt and focal point recorded",
+    "independentVisualQA": "pending",
+    "scriptureContextQA": "pending final review; no Bible wording rendered in image",
+    "builtAppBrowser320390430": false,
+    "servedHTTPSha256": false,
+    "releaseCertified": false
+  }
+}

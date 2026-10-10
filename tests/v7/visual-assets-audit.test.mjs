@@ -397,7 +397,26 @@ test('rejects V2 Need with mismatched text or unsupported Scripture reference', 
   await f.saveNeed();
   result = await auditV7VisualAssets(f.root);
   assert.equal(result.status, 'FAIL');
-  assert.match(result.errors.join('\\n'), /Scripture reference is not approved/);
+  assert.match(result.errors.join('\\n'), /Scripture reference is missing or not approved/);
+});
+
+test('rejects V2 TYPE images with missing, blank or absent Scripture citation', async t => {
+  const f = await needV2BundleFixture(t);
+  for (const empty of ['', '   ', null]) {
+    f.record.wordingEvidence.reference = empty;
+    f.record.variants[1].embeddedWording.scriptureReference = empty;
+    await f.saveNeed();
+    const result = await auditV7VisualAssets(f.root);
+    assert.equal(result.status, 'FAIL', 'unbound TYPE Scripture must never enter a production manifest');
+    assert.match(result.errors.join('\\n'), /TYPE Scripture reference is missing or not approved/);
+    assert.equal(result.manifest.assets.length, 0);
+  }
+  delete f.record.wordingEvidence.reference;
+  delete f.record.variants[1].embeddedWording.scriptureReference;
+  await f.saveNeed();
+  const missing = await auditV7VisualAssets(f.root);
+  assert.equal(missing.status, 'FAIL');
+  assert.match(missing.errors.join('\\n'), /TYPE Scripture reference is missing or not approved/);
 });
 
 test('rejects V2 Need when typography source revision or canonical Need ID drifts', async t => {
@@ -593,4 +612,26 @@ test('reports candidate claims without crediting any missing CLEAN or complete b
   assert.deepEqual(result.coverage.unapprovedRecordClaims, [{ assetId: ID, status: 'qa_pending' }]);
   assert.equal(result.queues[0].completed, 0);
   assert.equal(result.queues[0].completeBundles, 0);
+});
+
+
+test('release audit fails closed if a known rejected TYPE is promoted by changing only metadata', async t => {
+  const f = await fixture(t);
+  f.record.assetId = 'bqv7-emotion-anger-01';
+  f.record.status = 'production_ready';
+  f.record.variants = [{
+    kind: 'TYPE',
+    sha256: '9eb2382869256dbdb845b2f93fb921892e6153ed6edf64316a747eb330bd9323',
+    qa: { topSafeAreaAcceptable: true, spellingCheckedAgainstTaxonomy: true,
+      visualInspected: true }
+  }];
+  await rm(f.metadataPath);
+  await writeFile(join(f.root, 'data/v7/visual-assets/records', f.record.assetId + '.json'),
+    JSON.stringify(f.record));
+  const result = await auditV7VisualAssets(f.root);
+  assert.equal(result.status, 'FAIL');
+  assert.match(result.errors.join('\\n'),
+    /production visual quarantined: known-bad visual variant: PR #1438/);
+  assert.equal(result.counts.productionReady, 0);
+  assert.deepEqual(result.manifest.assets, []);
 });
