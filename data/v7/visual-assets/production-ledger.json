@@ -89,10 +89,15 @@
       "sceneRevision": "20261011-locked-guide-gratitude-06-shot01",
       "guideChapter": "06-faithful-action-shots.md",
       "shotFingerprint": "borrowed-drill-cleaning-return-tool-library | side-profile; overcast light; left overlay space",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T16:09:48.936Z",
       "qa": {},
-      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only.",
+      "failedMeasuredBytesSha256": "9264cec8eb4dd0e91c9c49592d487c86958674608a539ab90a0ff3d1fafa657f",
+      "failureReason": "Rejected producer-side before QA: image generator produced unrelated sunset mountain kneeling prayer scene, 1536x1024 landscape rather than the exact drill-return story and 4:5 portrait. Invalid bytes deleted from local staging; no GitHub candidate bytes.",
+      "failureEvidence": "generator gen_id 72bba0c5-1eb2-4dc1-86c1-aa3c22ecdf31",
+      "failedAt": "2026-10-10T16:11:02.314Z",
+      "localCandidateDeleted": true
     },
     {
       "family": "devotional",
@@ -127,6 +132,23 @@
       "claimedAt": "2026-10-10T16:09:48.936Z",
       "qa": {},
       "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.gratitude.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-gratitude-06-r2",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06c.json",
+      "sourceChecksum": "sha256:da360295e668825ec82258deb190c29f9a3d7ccbd324543ca86521543f8fbaf2",
+      "sceneRevision": "20261011-locked-guide-gratitude-06-shot02",
+      "guideChapter": "06-faithful-action-shots.md",
+      "shotFingerprint": "explicit tool-library borrower cleans unpowered cordless drill on counter and hands it back, camera profile at waist level, true 4:5, left blank vertical wall for title",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:11:02.314Z",
+      "qa": {},
+      "note": "Retry after producer-side failure; G1 mandatory tool-library return scene unchanged, shot02 better-specific crop"
     }
   ]
 }
