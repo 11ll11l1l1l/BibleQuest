@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 export const REQUIRED_MOTION_WIDTHS = Object.freeze([320, 390, 430, 800]);
 export const REQUIRED_MOTION_PREFERENCES = Object.freeze(['no-preference', 'reduce']);
 export const REQUIRED_MOTION_LOCALES = Object.freeze(['en', 'tl', 'ceb']);
+export const REQUIRED_LIBRARY_DECK_KINDS = Object.freeze(['emotion', 'need']);
 export const REQUIRED_SCREENSHOTS = Object.freeze(
   REQUIRED_MOTION_PREFERENCES.flatMap(preference =>
     ['rest', 'interacting', 'settled'].map(state =>
@@ -55,6 +56,34 @@ export function validateV7MotionEvidence(evidence, candidateSha) {
     assert.ok(layout.layoutShiftScore <= 0.25,
       `material non-input layout instability at ${combo}`);
   }
+
+  // Independently verify real built-app Lane B deck navigation under both
+  // animation settings; existence of a carousel is not functional evidence.
+  const deckRows = Array.isArray(evidence.deckObservations) ? evidence.deckObservations : [];
+  for (const preference of REQUIRED_MOTION_PREFERENCES) {
+    for (const kind of REQUIRED_LIBRARY_DECK_KINDS) {
+      const rows = deckRows.filter(row => row.width === 390
+        && row.reducedMotion === preference && row.kind === kind && row.locale === 'en');
+      assert.equal(rows.length, 1, 'missing exact built Library deck motion check: ' + kind + '/' + preference);
+      const row = rows[0];
+      assert.ok(row.firstId && row.secondId && row.firstId !== row.secondId,
+        kind + ': invalid observed card identity');
+      assert.equal(row.activeAfterNext, row.secondId, kind + ': Next did not settle');
+      assert.equal(row.activeAfterHome, row.firstId, kind + ': keyboard Home did not settle');
+      for (const field of ['selectedUnchanged','keyboardFocusRestored','scrollable','noOverflow'])
+        assert.equal(row[field], true, kind + ': missing deck interaction evidence ' + field);
+      assert.ok(Number.isFinite(row.transitionMs) && row.transitionMs >= 0,
+        kind + ': missing computed transition duration');
+      if (preference === 'reduce') assert.equal(row.transitionMs, 0,
+        kind + ': reduced-motion animation remains enabled');
+      else assert.ok(row.transitionMs > 0 && row.transitionMs <= 400,
+        kind + ': normal deck transition outside motion budget');
+      assert.ok(checks.includes('390/' + preference + '/en:built-library-' + kind + '-deck-motion-and-focus'),
+        kind + ': missing exact browser interaction proof');
+    }
+  }
+  assert.equal(deckRows.length, REQUIRED_MOTION_PREFERENCES.length * REQUIRED_LIBRARY_DECK_KINDS.length,
+    'unexpected or duplicated built Library deck motion evidence');
   assert.ok(Array.isArray(evidence.screenshots), 'screenshot list must exist');
   assert.equal(new Set(evidence.screenshots).size, evidence.screenshots.length,
     'motion screenshot names must be unique');
@@ -71,6 +100,7 @@ export function validateV7MotionEvidence(evidence, candidateSha) {
     coveredMotion: [...REQUIRED_MOTION_PREFERENCES],
     coveredLocales: [...REQUIRED_MOTION_LOCALES],
     verifiedCombinations: requiredCombos.length,
+    verifiedLibraryDeckCombinations: deckRows.length,
     screenshotCount: REQUIRED_SCREENSHOTS.length,
     measuredMaxCls: Math.max(...results.map(row => row.layout.layoutShiftScore)),
     measuredMaxLongTaskMs: Math.max(...results.map(row => row.layout.maxLongTaskMs)),
