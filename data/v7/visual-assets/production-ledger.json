@@ -76,6 +76,57 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.gratitude.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-gratitude-06-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06c.json",
+      "sourceChecksum": "sha256:da360295e668825ec82258deb190c29f9a3d7ccbd324543ca86521543f8fbaf2",
+      "sceneRevision": "20261011-locked-guide-gratitude-06-shot01",
+      "guideChapter": "06-faithful-action-shots.md",
+      "shotFingerprint": "borrowed-drill-cleaning-return-tool-library | side-profile; overcast light; left overlay space",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:09:48.936Z",
+      "qa": {},
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.frustration.09",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-frustration-09-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-09c.json",
+      "sourceChecksum": "sha256:8a5c8d4fc6cc3515e93d569f8a4f116b17c05ead2d8fa2f9ec4a829f3159a246",
+      "sceneRevision": "20261011-locked-guide-frustration-09-shot01",
+      "guideChapter": "09-trustworthy-sharing-shots.md",
+      "shotFingerprint": "two-makers-discuss-failed-wood-bridge-model-stem-club | wide dialogue; neutral morning; right overlay space",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:09:48.936Z",
+      "qa": {},
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.temptation.11",
+      "variant": "CLEAN",
+      "attemptId": "manual-z-20261011-temptation-11-r1",
+      "producer": "manual-chat-v7-z",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-11-backfill.json",
+      "sourceChecksum": "sha256:2517ccb977983b82b6bdad598e24c1d3b3283340a581a1fbf25f0b0107c23d4d",
+      "sceneRevision": "20261011-locked-guide-temptation-11-shot01",
+      "guideChapter": "11-original-backfill-shots.md",
+      "shotFingerprint": "student-moves-blank-tablet-from-bedroom-into-shared-charging-drawer | three-quarter view; realistic warm neutral; left overlay space",
+      "status": "claimed",
+      "claimedAt": "2026-10-10T16:09:48.936Z",
+      "qa": {},
+      "note": "Manual user-invoked 3-cover batch; source-verified scene claimed before pixels; no QA PASS or image binary yet; five-agent QA only."
     }
   ]
 }
