@@ -1,25 +1,39 @@
-name: V7 Lane Y Six Candidate Pixel Review (temporary)
+name: V7 Lane Y Candidate Regression QA (temporary)
 on:
   push:
     branches: [v7/lane-y-six-candidate-pixel-review-20261011]
 jobs:
-  source-locked-pixel-preview:
+  candidate-byte-and-reference-regression:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - id: rejection
+            branch: v7/lane-y-rejection-raster-repair-20261010
+            sha: ab5c25869ac186eb7ca829f1596d3e4d11daadca
+            test: tests/v7/lane-y-rejection-webp-repair.test.mjs
+          - id: temptation
+            branch: v7/lane-y-temptation-type-webp-20261010
+            sha: dfa9977e6ae22934e163e9aafd04f7eb8d611ab6
+            test: tests/v7/lane-y-temptation-webp-repair.test.mjs
+          - id: hurt-betrayal
+            branch: v7/lane-y-hurt-betrayal-isolated-webps-20261010
+            sha: 0677a9f30efafd8b20be5ea1c8e3db8b7369a9d7
+            test: tests/v7/lane-y-hurt-betrayal-webp-repair.test.mjs
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
-      - run: python -m pip install 'Pillow==12.0.0'
-      - name: Inspect six pinned candidate branch WebP sources
-        run: python scripts/v7-lane-y-six-pixel-review-temp.py
-      - name: Upload isolated source pixel and mobile QA samples
-        uses: actions/upload-artifact@v4
-        with:
-          name: lane-y-six-pixel-review-${{ github.sha }}
-          path: artifacts/v7/lane-y-six-pixel-review
-          retention-days: 3
+          node-version: '22'
+      - name: Lock exact candidate head and run affected WebP regression
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --depth=1 origin "refs/heads/${{ matrix.branch }}"
+          test "$(git rev-parse FETCH_HEAD)" = "${{ matrix.sha }}"
+          git checkout --detach "${{ matrix.sha }}"
+          node --test "${{ matrix.test }}"
