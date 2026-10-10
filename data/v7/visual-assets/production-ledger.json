@@ -350,10 +350,18 @@
         "noCollage": true,
         "noText": true
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:17.833Z",
       "qa": {},
-      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet.",
+      "failedMeasuredBytesSha256": "152a578a01283f1c7dcc3276a50404730fde4c5897d8a6834f8da5a537b2dc65",
+      "generatorId": "545867a5-fd70-4bc4-a325-b79ae1a95829",
+      "measuredWidth": 1402,
+      "measuredHeight": 1122,
+      "measuredBytes": 2334851,
+      "rejectionReason": "Triptych combines lamp repair, canal, mason in one image, not an individual CLEAN; 1402x1122 invalid landscape geometry",
+      "deletedLocalCandidate": true,
+      "failedAt": "2026-10-10T23:18:15.388Z"
     },
     {
       "family": "devotional",
@@ -374,10 +382,18 @@
         "noCollage": true,
         "noText": true
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:17.833Z",
       "qa": {},
-      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet.",
+      "failedMeasuredBytesSha256": "11d80cb8f21ffa31292ff80e73ce62642059fa7cdc7d29ee7d0f5f44b11422f8",
+      "generatorId": "4db7c6e1-164d-4cbd-a80f-768077bfc827",
+      "measuredWidth": 1402,
+      "measuredHeight": 1122,
+      "measuredBytes": 2211185,
+      "rejectionReason": "Triptych unrelated to canal boundary card scene; 1402x1122 invalid landscape geometry",
+      "deletedLocalCandidate": true,
+      "failedAt": "2026-10-10T23:18:15.393Z"
     },
     {
       "family": "devotional",
@@ -398,10 +414,41 @@
         "noCollage": true,
         "noText": true
       },
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-10T23:09:17.833Z",
       "qa": {},
-      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet."
+      "note": "User explicitly requires modern people. Unique contemporary source-locked shot. Previous off-scene generations are rejected; no candidate pixel yet.",
+      "failedMeasuredBytesSha256": "d9a01cab0dac7756335cf13af77939075908c8e5913b7f3f8b0b2cb2da57a5b6",
+      "generatorId": "76b228fe-d4b3-4aca-99cf-e98a41179f48",
+      "measuredWidth": 1402,
+      "measuredHeight": 1122,
+      "measuredBytes": 2265030,
+      "rejectionReason": "Triptych unrelated to mason fitting tile in partly completed wall; 1402x1122 invalid landscape geometry",
+      "deletedLocalCandidate": true,
+      "failedAt": "2026-10-10T23:18:15.393Z"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-v7-modern-20261011-peace03-single-r2",
+      "producer": "interactive-chat-gpt6-modern-20261011",
+      "sourceRevision": "r1",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sceneRevision": "modern-single-scene-lamp-repair-20261011-r2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "One casually dressed modern adult repairing the bulb socket of an existing black reading lamp at a practical apartment desk, no other scene",
+        "camera": "close side profile single uninterrupted vertical 4:5",
+        "lighting": "muted late afternoon window daylight",
+        "titleSafe": "right 30 percent"
+      },
+      "status": "claimed",
+      "claimedAt": "2026-10-10T23:18:15.393Z",
+      "qa": {},
+      "note": "User requested exactly ONE image. Prior attempted images all failed due to triptych. This one is the only new active slot."
     }
   ]
 }
