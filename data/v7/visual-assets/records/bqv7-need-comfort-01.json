@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-comfort-01",
+  "agentId": "manual-x",
+  "status": "candidate_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "comfort",
+  "queueConcept": "comfort",
+  "canonicalNeedId": "comfort",
+  "concept": "Guidebook §6: in an ordinary evening community center after difficult news, a close friend pulls up a chair and sits attentively beside another adult.",
+  "imagePath": "/v7/images/need/bqv7-need-comfort-01.webp",
+  "format": "webp",
+  "width": 1122,
+  "height": 1402,
+  "aspectRatio": "4:5",
+  "fileBytes": 299928,
+  "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "comfort",
+    "locale": "en",
+    "exactLabel": "Comfort",
+    "proposedReference": "2 Corinthians 1:3-4",
+    "scriptureTextIncluded": false
+  },
+  "provenance": {
+    "sourceType": "generated",
+    "generator": "OpenAI ImageGen built-in",
+    "sourcePNGPath": "generated_images/exec-21f86137-41c8-460a-aa9d-64590311e895.png",
+    "sourcePNGBytes": 2331004,
+    "sourcePNGSha256": "40ce21164184d54209f65ba90973f79787076ba534e4b09ad72361806c9d2477",
+    "export": "RGB WebP, quality 94; native pixel dimensions retained; no upscaling"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene; rights and artistic suitability remain pending independent review."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A friend pulls a chair up and listens attentively beside another adult in an evening community center.",
+    "localizedFallback": "CLEAN with live localized text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": null,
+    "subjectReadableAtThumbnail": null,
+    "cropSafe": null,
+    "matchesVisualSystem": null,
+    "duplicateChecked": false,
+    "officialNodeAudit": "not_run",
+    "builtAppBrowserQA": "pending",
+    "editorialReview": "pending"
+  },
+  "note": "CLEAN-only candidate. No TYPE or THUMB has been created. Candidate pending independent user/visual/rights QA; do not count as production-ready or merge into production.",
+  "constructionSource": {
+    "path": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "blobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "integrationBaseSha": "0395b0237be9e22d6c81ecff17d21f2c7ec86060"
+  }
+}
