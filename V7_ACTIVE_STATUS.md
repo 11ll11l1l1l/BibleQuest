@@ -8,6 +8,14 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
+## One-master / live-text / focal-crop QA policy — 2026-10-11 JST (PR #1530, pending integration)
+
+- Owner-approved direction: one **original modern text-free CLEAN image per canonical content ID**. TYPE is live localized text; THUMB is focal-positioned CSS crop of the same master or a deterministic smaller build WebP. No separate generated TYPE/THUMB art.
+- Prescribed source-guide actions are preferred; unique, specifically source-meaningful `THEMATIC_ALTERNATIVE` can earn evidence-backed scene QA PASS. Unrelated/Scripture-conflicting subjects fail.
+- Fixed master/crop ratio plus stored per-master `focalPoint` yields deterministic placement. Source/box same aspect => scale only; cross-ratio means possible clipping. Require 320/390/430/800 and 100px evidence before declaring presentation safe; CSS crop does not reduce bytes sent.
+- All five scheduled QA agents' prompts updated (Scene, Rights, Technical, Uniqueness, Coordinator), and previously disabled Uniqueness re-enabled. See `docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md`, `docs/v7/V7_MASTER_IMAGE_PROMPT_V2_3.md`, and matching construction guide section 0.
+- **Status: DOCS/QA AGENT UPDATE ONLY — PR #1530 not yet merged.** Existing runtime selectors, V2 Feeling/Need `complete_three_real_files` audit and old release protections are not converted by this docs PR; CLEAN-only Feeling/Need still `HOLD_POLICY_MIGRATION`. Never delete accepted TYPE/THUMB or manufacture QA PASS. A separate tested runtime/validator migration is required.
+
 ## Image-production and QA operating-policy update — 2026-10-11 JST
 
 - New mandatory [automated image-QA and persisted work ledger contract](docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md): manual ChatGPT-instance image generation only; five hourly agents now **QA-only**, one role each (scene, rights, technical, uniqueness, coordinator); no human per-image approval blocker. Realistic native output minima are 1024² square, 768×960 portraits and 1536×864 Home hero; no false upscale or SVG substitutes.
