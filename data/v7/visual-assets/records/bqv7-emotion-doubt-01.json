@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-doubt-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-09T11:09:57+09:00",
+  "status": "candidate_independent_qa_pending",
+  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "doubt",
+  "queueConcept": "doubt",
+  "canonicalEmotionId": "doubtful",
+  "concept": "Cautious trust: a woman tests a rain-slick wooden footbridge before crossing, expressing doubt rather than decision overload.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "fileBytes": 180808,
+  "sha256": "14e9bd1edce76cb160900780e1160b225ebd026bc5033eeab2565e1623bd7cab",
+  "focalPoint": {
+    "x": 0.46,
+    "y": 0.32
+  },
+  "textSafeRegion": "bottom",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "ebf2ab90-8779-4589-83cb-d15d92f867c3",
+    "sourceDescription": "Single generated photographic scene, square 1254x1254 original; original image was resized to CLEAN and separately rasterized into TYPE and THUMB."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "notes": "Original AI-generated image with no external supplied source art; EB Garamond font used for raster lettering only; no font files distributed."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "For tl, ceb, ilo use CLEAN with localized semantic live label/reference. English TYPE must not be served as translated."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "doubtful",
+    "locale": "en",
+    "exactLabel": "Doubtful",
+    "reference": "Mark 9:24",
+    "scriptureTextIncluded": false
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "repoVisualAudit": "not_run_no_checkout",
+    "builtAppBrowserQA": "not_run_no_repo_checkout",
+    "productionReady": false,
+    "localBrowserQA": "passed_isolated_data_uri_320_390_430",
+    "typeVisualQA": "passed_isolated_320_390_430",
+    "thumbnailVisualQA": "passed_isolated_320_390_430",
+    "httpServedBytes": "local_fixture_only_verified_3_of_3_not_published",
+    "browserEvidence": "producer_local_isolated_320_390_430_only_not_built_app",
+    "httpEvidence": "producer_local_http_3_of_3_only_not_published",
+    "latestProducerVerification": {
+      "dateJst": "2026-10-09",
+      "branchBaseSha": "d061418560e524429f33979efa0a0b269a1d0b44",
+      "sourceTaxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "originalBinaryGitBlobs": {
+        "CLEAN": "4f57fc6f24d55aa4f8828cc5f161a19f922d9563",
+        "TYPE": "b77075c45b59b39ced3094a909abcc6d14f37849",
+        "THUMB": "bd56b1d566b506bbf7c0e8c8923a80c2eb49600f"
+      },
+      "imageChecks": "3/3 decoded; exact dimensions, byte counts, SHA256 and Git blob SHA1 independently matched local originals",
+      "isolatedChromium": "320/390/430px data-URI fixture rendered; no overflow; title visible; NOT BibleQuest built app",
+      "localeFallback": "TL/CEB/ILO localized live labels tested in isolated fixture with CLEAN source at 320/390/430; NOT application integration proof",
+      "localHttp": "3/3 exact served-byte hashes from localhost Python HTTP server, NOT production or preview published URLs",
+      "builtAppChromium": "unperformed; navigation to localhost blocked by ERR_BLOCKED_BY_ADMINISTRATOR",
+      "publishedServedBytes": "unperformed",
+      "canonicalAudit": "unperformed; no complete repository checkout",
+      "independentVisualQa": "pending QA Agent",
+      "scriptureReferenceContext": "Mark 9:24 is the father's appeal for help with unbelief during Jesus's encounter; artwork is an analogy for hesitating trust, not a claim that the verse promises physical bridge safety",
+      "productionReady": false,
+      "metadataSafeRegionCorrection": "Changed unsupported 'lower' to canonical 'bottom' per audit REGIONS enum; artwork binaries untouched."
+    },
+    "independentQaApproved": false,
+    "qaHoldReason": "Independent Lane A bottom-margin defect repaired locally; independent re-review required."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 180808,
+      "sha256": "14e9bd1edce76cb160900780e1160b225ebd026bc5033eeab2565e1623bd7cab",
+      "locale": null,
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.32
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noBakedText": true,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 97132,
+      "sha256": "1a59f04d9801f5a3e0199a05a0bcf4672fd0934434a00e9858cc251fb924b027",
+      "locale": "en",
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing. English lettering: Doubtful; Mark 9:24.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.32
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "spellingCheckedAgainstTaxonomy": true,
+        "noBibleVerseText": true,
+        "fontRightsVerified": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Doubtful",
+        "scriptureReference": "Mark 9:24",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Original CLEAN unchanged; feathered bottom extension; EN text within 10% safe area",
+        "safeTextBoundingBoxes": [
+          [
+            264,
+            884,
+            761,
+            982
+          ],
+          [
+            375,
+            1062,
+            647,
+            1122
+          ]
+        ],
+        "safeMarginPx": 128,
+        "priorTypeSha256": "1fd0f996fe2c655718f15da581069141de2ad345a63529b7caeaa571964e55ca"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-doubt-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 54358,
+      "sha256": "19c4d135ae3121b45381fd97fd61254a84aaa469722c6b4692866f06d82a7948",
+      "locale": null,
+      "altText": "A woman hesitates at the first step of a wet wooden footbridge, testing the crossing while gripping the railing.",
+      "focalPoint": {
+        "x": 0.46,
+        "y": 0.34
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.109375,
+          "y": 0,
+          "width": 0.7998046875,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS focal-aware crop"
+      }
+    }
+  ]
+}
