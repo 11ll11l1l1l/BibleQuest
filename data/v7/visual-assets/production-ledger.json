@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedBy": "manual-chat-v7-batch-b19",
+  "updatedBy": "manual-chat-v7-b19-rejected-no-candidate",
   "entries": [
     {
       "family": "devotional",
@@ -85,33 +85,18 @@
       "producer": "manual-chat-v7-batch-b19",
       "sourceRevision": "r1",
       "sceneRevision": "v7-z03:anger:in-a-small-electronics-lab-a-technician-s",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-11T01:07:00+09:00",
-      "qa": {}
-    },
-    {
-      "family": "devotional",
-      "contentId": "devotional.biblequest.doubt.06",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-z-doubt06-b19",
-      "producer": "manual-chat-v7-batch-b19",
-      "sourceRevision": "r1",
-      "sceneRevision": "v7-z06:doubt:civic-research-tutor-step",
-      "status": "claimed",
-      "claimedAt": "2026-10-11T01:07:00+09:00",
-      "qa": {}
-    },
-    {
-      "family": "devotional",
-      "contentId": "devotional.biblequest.tiredness_weariness.09",
-      "variant": "CLEAN",
-      "attemptId": "manual-20261011-z-tired09-b19",
-      "producer": "manual-chat-v7-batch-b19",
-      "sourceRevision": "r1",
-      "sceneRevision": "v7-z09:tiredness:shift-lead-rest-break",
-      "status": "claimed",
-      "claimedAt": "2026-10-11T01:07:00+09:00",
-      "qa": {}
+      "qa": {},
+      "producerPreflightFailure": "Generation tool ignored source-locked modern electronics-lab scene; three scene-mismatched 1536x1024 outputs, no image submitted. All local candidate bytes discarded. See PR #1513 and docs/v7/artwork-failure/B19_GENERATOR_SCENE_FAILURE_20261011.md",
+      "failureCount": 3,
+      "failureGenerationIds": [
+        "a7139828-7f93-4a2e-8c8f-8ded7d500abd",
+        "609e6178-8768-48dd-bab4-f60cebb5b527",
+        "74173f5a-3e8d-4337-847a-b7de75133f9d"
+      ],
+      "failedMeasuredBytesSha256": "b993496bfa44ead15466cafb90b9f1eeb8b5bb985f44bea2e47f3fe3651039dd",
+      "rejectionReason": "Wrong scene and 3:2 aspect, source requirement not met; third failed image SHA shown solely as tombstone; earlier two hashes not measured"
     }
   ]
 }
