@@ -165,6 +165,23 @@ export async function runLedger(command, args, root=ROOT) {
     entries:rows.map(({candidatePath,...r})=>({...r,candidatePath}))
   };
   if (command === 'next') return selectNext(rows,args[0]);
+  if (command === 'inventory') {
+    // The ledger includes all new work; existing merged records are also
+    // displayed so future chats can inspect legacy work before generating.
+    const dir=join(ROOT,'data/v7/visual-assets/records');
+    const existing=[];
+    for (const name of (await readdir(dir)).filter(n=>n.endsWith('.json')).sort()) {
+      const record=JSON.parse(await readFile(join(dir,name),'utf8'));
+      if (!TYPES.has(record.contentType)) continue;
+      existing.push({assetId:record.assetId || null,contentType:record.contentType,
+        contentId:record.contentId || null,variant:record.visualRole || 'bundle',
+        status:record.status || 'unknown',sourceRevision:record.sourceRevision || null,
+        imagePath:record.imagePath || null,sidecar:'data/v7/visual-assets/records/'+name});
+    }
+    return {trackedAttempts:rows.length,existingMergedRecords:existing.length,
+      sourceOfTruthWarning:'Also check all OPEN candidate PRs; Git working tree alone cannot see their images.',
+      ledgerEntries:rows,existing};
+  }
   if (command === 'audit') {
     // Detect missing accepted/pending bytes and undeleted rejects.
     const missing = [];
@@ -183,6 +200,18 @@ export async function runLedger(command, args, root=ROOT) {
         }
       }
     }
+    // Unclaimed staged files are waste/duplicate risks and cannot survive QA.
+    try {
+      const dir=join(ROOT,STAGING);
+      for(const name of await readdir(dir)) {
+        if(!/^[a-zA-Z0-9._-]+\\.(?:png|webp)$/.test(name)) {
+          missing.push('unrecognized_candidate_file:'+name); continue;
+        }
+        const candidate=STAGING+name;
+        if(!rows.some(x=>x.candidatePath===candidate))
+          missing.push('unclaimed_staged_file:'+candidate);
+      }
+    } catch(err) {if(err.code!=='ENOENT') throw err;}
     return {pass:missing.length===0,attempts:rows.length,problems:missing};
   }
   if (command === 'claim') {
@@ -240,7 +269,7 @@ export async function runLedger(command, args, root=ROOT) {
     if (verdict==='FAIL') await rejectAndDelete(r,role+': '+evidence);
     else if (ROLES.every(k=>r.qa[k]?.verdict==='PASS')) r.status='qa_passed';
     // HOLD does not block other submissions: next(role) advances to the next candidate.
-  } else throw new Error('commands: status | next role | claim ... | submit ... | qa ... | requeue ... | audit');
+  } else throw new Error('commands: status | inventory | next role | claim ... | submit ... | qa ... | requeue ... | audit');
   await saveLedger(ledger);
   return command==='qa' ? {attemptId:args[0],status:rows.find(r=>r.attemptId===args[0])?.status,
     next:selectNext(rows,args[1])?.attemptId||null} : {status:'saved',command};
