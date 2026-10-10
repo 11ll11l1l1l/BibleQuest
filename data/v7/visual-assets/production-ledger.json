@@ -76,6 +76,105 @@
       "qa": {},
       "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
       "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-loneliness06-01",
+      "producer": "manual-chat-20261011-z-mixed-scenes",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261011-ch06-loneliness-chairs-r1",
+      "status": "rejected",
+      "claimedAt": "2026-10-11T01:06:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
+      "sourceChecksum": "sha256:940e8097c349316c158fb3680cbb98b3ca10339fd8efbee7206941921996028c",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "newcomer setting reading circle chairs",
+        "setting": "community reading room",
+        "focalObject": "empty folding chairs",
+        "perspective": "side-profile",
+        "light": "amber dusk",
+        "textSafeRegion": "bottom"
+      },
+      "note": "Unique text-free P4 CLEAN candidate; reserved before generation, pending pixels and QA",
+      "failedMeasuredBytesSha256": "e2e4625d6ebe7430fa86bc374b44bcebec96ccfd10be557d2f7e67e38b54fad7",
+      "failure": "Producer scene mismatch: generated Good Samaritan ancient roadside first-aid scene rather than locked present-day newcomer arranging chairs in reading circle. File locally deleted; no candidate uploaded.",
+      "closedAt": "2026-10-11T01:12:00+09:00"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.frustration.08",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-frustration08-01",
+      "producer": "manual-chat-20261011-z-mixed-scenes",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261011-ch08-frustration-bike-stairwell-r1",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:06:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08c.json",
+      "sourceChecksum": "sha256:21ed60fa75ddeddb6912424ec9c108272a628d55be55016670f154e63e19071b",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/08-prayer-moments-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "irritated commuter pauses seated beside disabled bicycle",
+        "setting": "apartment stairwell",
+        "focalObject": "bicycle",
+        "perspective": "three-quarter-side",
+        "light": "neutral afternoon",
+        "textSafeRegion": "lower left"
+      },
+      "note": "Unique text-free P4 CLEAN candidate; reserved before generation, pending pixels and QA"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.gratitude.10",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-gratitude10-01",
+      "producer": "manual-chat-20261011-z-mixed-scenes",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261011-ch10-gratitude-bead-ticket-r1",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:06:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10c.json",
+      "sourceChecksum": "sha256:11bb2183583d4e158ba764779e3a929754b598d2539623aa36ffdeab1a6d86a7",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "grateful traveler places wooden bead beside blank ticket holder",
+        "setting": "tabletop by window",
+        "focalObject": "hand carved wooden bead",
+        "perspective": "low tabletop",
+        "light": "diffused daylight",
+        "textSafeRegion": "right"
+      },
+      "note": "Unique text-free P4 CLEAN candidate; reserved before generation, pending pixels and QA"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.06",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-z-loneliness06-02",
+      "producer": "manual-chat-20261011-z-mixed-scenes",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261011-ch06-loneliness-chairs-r2",
+      "status": "claimed",
+      "claimedAt": "2026-10-11T01:12:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06a.json",
+      "sourceChecksum": "sha256:940e8097c349316c158fb3680cbb98b3ca10339fd8efbee7206941921996028c",
+      "sceneGuide": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "shotFingerprint": {
+        "narrativeAction": "newcomer setting reading circle chairs",
+        "setting": "community reading room",
+        "focalObject": "empty folding chairs",
+        "perspective": "side-profile",
+        "light": "amber dusk",
+        "textSafeRegion": "bottom"
+      },
+      "note": "Retry locked same prescribed action following wrong-scene producer rejection; no prior candidate bytes kept."
     }
   ]
 }
