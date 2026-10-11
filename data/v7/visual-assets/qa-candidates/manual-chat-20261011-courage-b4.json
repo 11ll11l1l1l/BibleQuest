@@ -41,5 +41,39 @@
     ]
   },
   "productionApproved": false,
-  "qa": {}
+  "qa": {
+    "sceneScripture": {
+      "verdict": "PASS",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Scene/action matches locked guide. No verse is baked into the image; scripture associations remain metadata only. Strength jig identification has minor uncertainty."
+    },
+    "rightsLanguageProvenance": {
+      "verdict": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Pixels show no visible wording, verse, logo, watermark, or obvious third-party mark. Reviewer could not access sidecars/ledger/source blobs to verify declared source revision, external-reference list, and rights/provenance linkage."
+    },
+    "technical": {
+      "verdict": "HOLD",
+      "fileIntegrity": "PASS",
+      "responsiveIntegration": "HOLD",
+      "servedByteIdentity": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Independent decode, dimensions, bytes, aspect ratio, and SHA match. Responsive crop and exact served-byte/build identity are unverified."
+    },
+    "originalityVisual": {
+      "verdict": "PASS",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Originality/anatomy pass; distinct modern workshop entry scene; no collage or embedded text."
+    },
+    "independentCoordination": {
+      "verdict": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Consolidated review: candidate remains pending until required role holds are resolved; no release or production approval."
+    }
+  }
 }
