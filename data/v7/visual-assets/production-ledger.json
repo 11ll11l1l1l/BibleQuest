@@ -491,10 +491,32 @@
         "palette": "accurate skin tones and ordinary neutral materials",
         "textSafeRegion": "left 36-40% quiet"
       },
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-10T23:31:43.554Z",
       "qa": {},
-      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet."
+      "note": "Pre-generation claim registered in a draft GitHub intake PR. No pixels exist yet.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1672,
+        "height": 941,
+        "bytes": 197622,
+        "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16"
+      },
+      "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-11T00:02:55.805Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single contemporary neighborhood learning hall scene",
+          "adult and school-age child enter with bags while two adults work together at shared project/reading table",
+          "left 40% quiet for hero copy",
+          "text-free; no scripture is specified for Home",
+          "native 1672x941 WebP meets 1536x864 minimum and 16:9 ratio tolerance"
+        ]
+      }
     }
   ]
 }
