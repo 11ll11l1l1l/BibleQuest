@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewDate": "2026-10-13",
+  "verdict": "FAIL_PROVENANCE",
+  "releaseAllowed": false,
+  "contentType": "emotion",
+  "canonicalContentId": "frustrated",
+  "historicalContentId": "frustration",
+  "assetId": "bqv7-emotion-frustration-01",
+  "pr": 1398,
+  "reviewedHead": "dec3e0995e1a4206350ff39b3709f6b75230820b",
+  "source": {
+    "taxonomyPath": "src/features/library/emotion-taxonomy.js",
+    "taxonomyGitBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guideGitBlob": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+    "sidecarGitBlob": "53304ed46b18216981529f69040630b4214966f7"
+  },
+  "originalMaster": {
+    "path": "public/v7/images/emotion/bqv7-emotion-frustration-01.webp",
+    "gitBlob": "bbb26e1a3ed8487aad03e4cef8c788d402e38bfa",
+    "sha256": "0d0903a8e3e5c78952e5dd2beeaaf4ebd17ae323d69da00283cd3c44dbe06b75",
+    "bytes": 68174
+  },
+  "wording": {
+    "verifiedEnglishTitle": "Frustrated",
+    "verifiedEnglishReference": "Galatians 6:9",
+    "scriptureQuotationIncluded": false,
+    "cleanEmbeddedTitleObserved": false
+  },
+  "reason": "Source sidecar explicitly states CLEAN is the left panel extracted from a generated triptych, prohibited by one-original-CLEAN single-master contract. Actual inspected CLEAN shows an adult at a desk with crumpled paper, not the construction guide's potter reconsidering a collapsing clay vessel. Rights/wording role rejects source provenance; this is not a copyright-infringement finding.",
+  "safety": "No pixel deletion: file is already committed on a PR branch under public/v7/images, not an exclusive qa-candidates/<attemptId> staging path. Do not delete before cross-reference and rollback audit. Keep rejected hash and exclude from release.",
+  "policyMigration": "CLEAN-only Feeling release also HOLD_POLICY_MIGRATION until separately reviewed migration.",
+  "proofLinks": [
+    "https://github.com/11ll11l1l1l/BibleQuest/pull/1398",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/dec3e0995e1a4206350ff39b3709f6b75230820b/data/v7/visual-assets/records/bqv7-emotion-frustration-01.json",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/v7/qa-single-master-crop-v23-20261011/docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md"
+  ]
+}
