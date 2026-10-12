@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "family": "hero",
+  "contentId": "home",
+  "variant": "CLEAN",
+  "attemptId": "manual-chat-20261011-home-v2",
+  "status": "QA_PENDING",
+  "sourceTitle": "BibleQuest Home hero",
+  "theme": "A contemporary neighborhood learning hall where people continue together.",
+  "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+  "sourceRevision": "gitblob-1f3b158542468f17d940a3aca01f4ff743e6629",
+  "sourceChecksum": "gitblob:1f3b158542468f17d940a3aca01f4ff743e6629",
+  "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#7-exactly-one-home-hero-fixed-hero-direction",
+  "guideChecksum": "gitblob:1f3b158542468f17d940a3aca01f4ff743e6629",
+  "sceneRevision": "guide20261011-s7-home-hall-v2",
+  "scriptureReferences": [],
+  "scriptureBakedIntoImage": false,
+  "imagePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.webp",
+  "mimeType": "image/webp",
+  "width": 1672,
+  "height": 941,
+  "aspectRatio": 1.7768331562167907,
+  "fileBytes": 197622,
+  "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16",
+  "provenance": {
+    "method": "user-invoked ChatGPT built-in image generation",
+    "externalImageReferences": [],
+    "generatorId": "not exposed"
+  },
+  "producerPreflight": {
+    "verdict": "PASS",
+    "notes": [
+      "one continuous contemporary neighborhood learning hall scene",
+      "adult and school-age child enter with bags; two adults continue a shared reading/project activity",
+      "left 40% quiet for hero copy",
+      "no text or religious imagery",
+      "native 1672x941 WebP meets 1536x864 minimum and ±2.5% 16:9 tolerance"
+    ]
+  },
+  "productionApproved": false,
+  "qa": {
+    "sceneScripture": {
+      "verdict": "PASS",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Scene/action matches locked guide. No verse is baked into the image; scripture associations remain metadata only. Strength jig identification has minor uncertainty."
+    },
+    "rightsLanguageProvenance": {
+      "verdict": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Pixels show no visible wording, verse, logo, watermark, or obvious third-party mark. Reviewer could not access sidecars/ledger/source blobs to verify declared source revision, external-reference list, and rights/provenance linkage."
+    },
+    "technical": {
+      "verdict": "HOLD",
+      "fileIntegrity": "PASS",
+      "responsiveIntegration": "HOLD",
+      "servedByteIdentity": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Independent decode, dimensions, bytes, aspect ratio, and SHA match. Responsive crop and exact served-byte/build identity are unverified."
+    },
+    "originalityVisual": {
+      "verdict": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Full-frame scene matches guide, but centered object-fit crop at mobile hero sizes may clip table helpers; review or adjust mobile crop."
+    },
+    "independentCoordination": {
+      "verdict": "HOLD",
+      "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+      "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "notes": "Consolidated review: candidate remains pending until required role holds are resolved; no release or production approval."
+    }
+  }
+}

@@ -356,6 +356,345 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-10T23:20:04.027Z",
       "notes": "Rejected immediately at single-image producer preflight; original bytes were deleted from local sandbox after measured decode and SHA. NO five-agent QA candidate submitted; slot is released. Next attempt must use fresh sceneRevision; investigate generator prompt contamination."
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-courage-b4",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v4",
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "Courage",
+      "theme": "A first practical step taken despite apprehension.",
+      "scriptureReferences": [
+        "Joshua 1:9",
+        "2 Timothy 1:7"
+      ],
+      "shotFingerprint": {
+        "narrativeAction": "An anxious adult takes one small step into an adult-learning workshop and prepares for a first task",
+        "setting": "modest contemporary neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety eyewear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "waist-height view from inside the work area looking toward the entry",
+        "light": "soft neutral window daylight",
+        "palette": "natural muted workshop materials",
+        "textSafeRegion": "bottom"
+      },
+      "status": "qa_pending",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {
+        "sceneScripture": {
+          "verdict": "PASS",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Scene/action matches locked guide. No verse is baked into the image; scripture associations remain metadata only. Strength jig identification has minor uncertainty."
+        },
+        "rightsLanguageProvenance": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Pixels show no visible wording, verse, logo, watermark, or obvious third-party mark. Reviewer could not access sidecars/ledger/source blobs to verify declared source revision, external-reference list, and rights/provenance linkage."
+        },
+        "technical": {
+          "verdict": "HOLD",
+          "fileIntegrity": "PASS",
+          "responsiveIntegration": "HOLD",
+          "servedByteIdentity": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Independent decode, dimensions, bytes, aspect ratio, and SHA match. Responsive crop and exact served-byte/build identity are unverified."
+        },
+        "originalityVisual": {
+          "verdict": "PASS",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Originality/anatomy pass; distinct modern workshop entry scene; no collage or embedded text."
+        },
+        "independentCoordination": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Consolidated review: image remains pending until required role holds are resolved; no release or production approval."
+        }
+      },
+      "note": "Five-role QA recorded on PR #1531. Overall HOLD; candidate remains unapproved for production.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 239604,
+        "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f"
+      },
+      "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-10T23:56:37.722Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single contemporary workshop scene",
+          "learner enters wearing protective glasses and apron",
+          "instructor and workbench visible",
+          "text-free",
+          "native 1122x1402 WebP meets 768x960 and 4:5 geometry"
+        ]
+      },
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531"
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-strength-b3",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-strength-door-jig-v3",
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "Strength",
+      "theme": "Shared practical effort and endurance.",
+      "scriptureReferences": [
+        "Isaiah 40:31",
+        "Philippians 4:13"
+      ],
+      "shotFingerprint": {
+        "narrativeAction": "Three adults stabilize a heavy wooden door on a repair jig while a fourth aligns its hinges",
+        "setting": "contemporary neighborhood community workshop",
+        "focalObject": "wooden door held on a repair jig with visible hinge alignment",
+        "peopleCount": 4,
+        "perspective": "wide waist-height three-quarter view showing all four coordinated roles",
+        "light": "diffused natural workshop light",
+        "palette": "warm wood and muted neutral clothing",
+        "textSafeRegion": "top-left"
+      },
+      "status": "qa_pending",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {
+        "sceneScripture": {
+          "verdict": "PASS",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Scene/action matches locked guide. No verse is baked into the image; scripture associations remain metadata only. Strength jig identification has minor uncertainty."
+        },
+        "rightsLanguageProvenance": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Pixels show no visible wording, verse, logo, watermark, or obvious third-party mark. Reviewer could not access sidecars/ledger/source blobs to verify declared source revision, external-reference list, and rights/provenance linkage."
+        },
+        "technical": {
+          "verdict": "HOLD",
+          "fileIntegrity": "PASS",
+          "responsiveIntegration": "HOLD",
+          "servedByteIdentity": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Independent decode, dimensions, bytes, aspect ratio, and SHA match. Responsive crop and exact served-byte/build identity are unverified."
+        },
+        "originalityVisual": {
+          "verdict": "PASS",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Originality/anatomy pass; distinct coordinated door-repair scene; no collage or embedded text."
+        },
+        "independentCoordination": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Consolidated review: image remains pending until required role holds are resolved; no release or production approval."
+        }
+      },
+      "note": "Five-role QA recorded on PR #1531. Overall HOLD; candidate remains unapproved for production.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 371634,
+        "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4"
+      },
+      "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-10T23:59:50.116Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single scene; four contemporary adults repairing a wooden door on a jig",
+          "three stabilize the door while the fourth aligns a hinge",
+          "no legible text or religious imagery",
+          "native 1122x1402 WebP meets portrait minimum and ratio tolerance"
+        ]
+      }
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "manual-chat-20261011-home-v2",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "gitblob-1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sceneRevision": "guide20261011-s7-home-hall-v2",
+      "sourcePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "sourceChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#7-exactly-one-home-hero-fixed-hero-direction",
+      "guideChecksum": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "sourceTitle": "BibleQuest Home hero",
+      "theme": "A contemporary neighborhood learning hall where people continue together.",
+      "scriptureReferences": [],
+      "shotFingerprint": {
+        "narrativeAction": "An adult and school-age child enter with bags while two adults continue helping at a shared project table",
+        "setting": "contemporary neighborhood learning/community hall",
+        "focalObject": "shared reading and project table",
+        "peopleCount": 4,
+        "perspective": "wide documentary view from inside at waist height",
+        "light": "natural late-afternoon amber-neutral light",
+        "palette": "accurate skin tones and ordinary neutral materials",
+        "textSafeRegion": "left 36-40% quiet"
+      },
+      "status": "qa_pending",
+      "claimedAt": "2026-10-10T23:31:43.554Z",
+      "qa": {
+        "sceneScripture": {
+          "verdict": "PASS",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Scene/action matches locked guide. No verse is baked into the image; scripture associations remain metadata only. Strength jig identification has minor uncertainty."
+        },
+        "rightsLanguageProvenance": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Pixels show no visible wording, verse, logo, watermark, or obvious third-party mark. Reviewer could not access sidecars/ledger/source blobs to verify declared source revision, external-reference list, and rights/provenance linkage."
+        },
+        "technical": {
+          "verdict": "HOLD",
+          "fileIntegrity": "PASS",
+          "responsiveIntegration": "HOLD",
+          "servedByteIdentity": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Independent decode, dimensions, bytes, aspect ratio, and SHA match. Responsive crop and exact served-byte/build identity are unverified."
+        },
+        "originalityVisual": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Full-frame scene matches guide, but centered object-fit crop at mobile hero sizes may clip table helpers; review or adjust mobile crop."
+        },
+        "independentCoordination": {
+          "verdict": "HOLD",
+          "reviewedHead": "f8d359af0ece5f11b8d6bda9372be6df8fd7fa99",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+          "notes": "Consolidated review: image remains pending until required role holds are resolved; no release or production approval."
+        }
+      },
+      "note": "Five-role QA recorded on PR #1531. Overall HOLD; candidate remains unapproved for production.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1672,
+        "height": 941,
+        "bytes": 197622,
+        "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16"
+      },
+      "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+      "producerPreflight": {
+        "verdict": "PASS",
+        "recordedAt": "2026-10-11T00:02:55.805Z",
+        "evidence": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+        "notes": [
+          "single contemporary neighborhood learning hall scene",
+          "adult and school-age child enter with bags while two adults work together at shared project/reading table",
+          "left 40% quiet for hero copy",
+          "text-free; no scripture is specified for Home",
+          "native 1672x941 WebP meets 1536x864 minimum and 16:9 ratio tolerance"
+        ]
+      }
+    },
+    {
+      "family": "need",
+      "contentId": "patience",
+      "variant": "CLEAN",
+      "attemptId": "unclaimed-manual-chat-20261011-patience-orphan",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "unclaimed",
+      "sceneRevision": "unclaimed-preworkflow-artifact",
+      "status": "rejected",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "HOLD",
+          "reason": "No pre-generation claim; excluded from submitted batch."
+        }
+      },
+      "failedFormat": "png",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2179897,
+      "failedSha256": "d530ca73d2ac9920ed9ec8444f4f9db507ed38d624a83de09c5523921639ca93",
+      "localFileDeleted": true,
+      "failStage": "claim-preflight",
+      "rejectionReason": "Unclaimed/pre-claim process violation; not submitted for QA; retained only as a metadata tombstone.",
+      "note": "Prior generated orphan. Bytes deleted after recording tombstone; not counted as a current-batch failure."
+    },
+    {
+      "family": "need",
+      "contentId": "trust",
+      "variant": "CLEAN",
+      "attemptId": "unclaimed-manual-chat-20261011-trust-orphan",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "unclaimed",
+      "sceneRevision": "unclaimed-preworkflow-artifact",
+      "status": "rejected",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "HOLD",
+          "reason": "No pre-generation claim; excluded from submitted batch."
+        }
+      },
+      "failedFormat": "png",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2289737,
+      "failedSha256": "af3ef403b519c334c3bdd56d8abd8d69111c11262e98c4b88e94c232c619e88a",
+      "localFileDeleted": true,
+      "failStage": "claim-preflight",
+      "rejectionReason": "Unclaimed/pre-claim process violation; not submitted for QA; retained only as a metadata tombstone.",
+      "note": "Prior generated orphan. Bytes deleted after recording tombstone; not counted as a current-batch failure."
+    },
+    {
+      "family": "hero",
+      "contentId": "home",
+      "variant": "CLEAN",
+      "attemptId": "unclaimed-manual-chat-20261011-home-orphan",
+      "producer": "user-invoked-chatgpt-imagegen",
+      "sourceRevision": "unclaimed",
+      "sceneRevision": "unclaimed-preworkflow-artifact",
+      "status": "rejected",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "HOLD",
+          "reason": "No pre-generation claim; excluded from submitted batch."
+        }
+      },
+      "failedFormat": "png",
+      "failedWidth": 1672,
+      "failedHeight": 941,
+      "failedByteCount": 2174171,
+      "failedSha256": "152650ef334807f0db9ec8444f4f9db507ed38d624a83de09c5523921639ca93",
+      "localFileDeleted": true,
+      "failStage": "claim-preflight",
+      "rejectionReason": "Unclaimed/pre-claim process violation; not submitted for QA; retained only as a metadata tombstone.",
+      "note": "Prior generated orphan. Bytes deleted after recording tombstone; not counted as a current-batch failure."
     }
-  ]
+  ],
+  "updatedAt": "2026-10-11T00:09:03.022Z"
 }
