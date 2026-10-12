@@ -1,0 +1,15 @@
+{
+  "reviewRole": "rights_wording_provenance",
+  "verdict": "HOLD",
+  "pr": 1452,
+  "reviewedHead": "b8617a1f9820ba3d5267b2e4a2c21ed0e56f3a61",
+  "cleanSha256": "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+  "sourceTaxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "missing": [
+    "original generation-input provenance",
+    "source PNG proof",
+    "live localized app rendering",
+    "five-role certification"
+  ],
+  "policyMigration": "HOLD_POLICY_MIGRATION"
+}
