@@ -1,0 +1,10 @@
+{
+  "pr": 1448,
+  "head": "6d08ce277cabb6e281b6ebcd0b51d9873c1a0ed8",
+  "sidecarBlob": "2a41b74c2488c1ca5dae606c506d1b0c11749a2a",
+  "cleanSha256": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+  "verdict": "FAIL_PROVENANCE",
+  "reason": "Source record confirms generated three-panel composite and extraction of one panel; prohibited by single-master contract.",
+  "deleted": false,
+  "deleteReason": "Candidate bytes in public asset paths on unmerged PR; exclusive staging ownership and shared references not established."
+}
