@@ -1,0 +1,53 @@
+{
+  "baseline": {
+    "development": "15d7534b3a4529eea7cc30da43e0d1bd3622d42e",
+    "AGENTS": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "policy": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "ledger": "9c63125933e23a7783952ac7c7007c64cc9806da"
+  },
+  "reviews": [
+    {
+      "pr": 1437,
+      "head": "b3f19e42de61724513bdea90e747917e194f6874",
+      "recordBlob": "a509d279bdfd72cd8613f966336a777a316f71d7",
+      "contentId": "hopeful",
+      "cleanSha256": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+      "typeSha256": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+      "title": "Hopeful",
+      "reference": "Romans 15:13",
+      "verdict": "HOLD_PROVENANCE",
+      "reason": "Pixels and hashes verified; no baked CLEAN wording; originating full prompt/source PNG and generation input rights unverified; live locales not observed. Close scene-action overlap with PR1448 is referred to independent uniqueness QA."
+    },
+    {
+      "pr": 1436,
+      "head": "5782f3a51f26cd9cafdd92dbe129ccd1d181f63e",
+      "recordBlob": "d1752836a54bd4b1809f43b355454ca589bc05bf",
+      "contentId": "jealous",
+      "legacyContentId": "jealousy_envy",
+      "cleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "typeSha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+      "title": "Jealous / envious",
+      "reference": "Proverbs 14:30",
+      "verdict": "HOLD_PROVENANCE",
+      "reason": "Pixels and hashes verified; correct English historical TYPE; no baked CLEAN wording. Original prompt/rights event and live locale output not independently verified."
+    },
+    {
+      "pr": 1438,
+      "head": "30848964b2a875b0e0a7c46022b2d1c73ff08a1b",
+      "recordBlob": "88c7c68862f27e881275ddf93439f72af233a4a1",
+      "contentId": "angry",
+      "legacyContentId": "anger",
+      "cleanSha256": "822445b73345e5cd280608933ce3d001e61d62d8691c5015ab14b4c1b2e6f0e9",
+      "typeSha256": "9eb2382869256dbdb845b2f93fb921892e6153ed6edf64316a747eb330bd9323",
+      "title": "Angry",
+      "reference": "James 1:19-20",
+      "verdict": "HOLD_PROVENANCE_WORDING",
+      "reason": "Pixels and hashes verified; no baked CLEAN text. Legacy TYPE renders en dash in James 1:19–20 versus taxonomy ASCII hyphen; exact character normalization unresolved. Full source prompt/PNG and live localized rendering unverified. Competing Angry PR1489 requires separate coordinator reconciliation."
+    }
+  ],
+  "release": "CLEAN-only Feeling/Need remains HOLD_POLICY_MIGRATION. No five-role PASS or release.",
+  "writes": "QA evidence only; no artwork changes."
+}
