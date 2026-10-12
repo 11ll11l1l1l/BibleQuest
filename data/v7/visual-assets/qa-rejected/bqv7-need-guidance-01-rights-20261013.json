@@ -12,7 +12,8 @@
   "rejectedCleanSha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
   "reason": "Sidecar declares three-panel source composite and isolated single-scene panel crop; prohibited by one-original-CLEAN contract. Actual pixels depict hikers at forest fork, not the construction guide bus-terminal map.",
   "wording": "Guidance / Proverbs 3:5-6 historical TYPE checked; no verse prose",
-  "deletionStatus": "PENDING_SAFE_EXCLUSIVE_DELETION",
+  "deletionStatus": "BLOCKED_BY_CONNECTOR_SAFETY; rejected exclusive candidate pixels still present on PR branch; never release",
   "release": "HOLD_POLICY_MIGRATION",
-  "approval": false
+  "approval": false,
+  "deletionAttempted": true
 }
