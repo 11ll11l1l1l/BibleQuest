@@ -1,5 +1,11 @@
 # BibleQuest agent instructions
 
+## V7 single-master visual QA override — 2026-10-11 (highest priority for new artwork)
+
+Read [one-CLEAN-master crop/QA contract](docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md) first, then the central ledger and matching source-bound guide chapter. The user now requires **one modern, original CLEAN raster per canonical content ID**, not three independently generated scenes or mandatory stored TYPE/THUMB variants. Show authorized localized title/reference as **live UI text** and present THUMB using a **deterministic focal-aware crop** of that same master; create optional build-time reduced raster delivery files only when performance/QA warrants. “Three variants” in older instructions is **historical production-format language**, not a new ChatGPT generation quota.
+
+Prescribed actions in older guide chapters are **preferred**, not an automatic scene-FAIL: a unique, source-grounded `THEMATIC_ALTERNATIVE` with a visible connection to the core Scripture/devotional meaning may pass independent scene QA. `UNRELATED`, deceptive source interpretation, wrong biblical context, unsafe/duplicate art, collage or fake technical proof still fails. Require actual master and viewport/crop evidence; do not declare runtime conversion or new CLEAN-only Feeling/Need production eligibility until validators, resolver, browser tests and exact-SHA release contracts are migrated and green. Until then report `HOLD_POLICY_MIGRATION`. Keep the five hourly agents **QA only**, and never delete approved legacy artifacts merely because their presentation mode is changing.
+
 ## V7 image-work policy — 2026-10-11 (supersedes older artwork staffing/size/manual-approval language)
 
 **Mandatory first read:** [Image QA automation and work ledger](docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md). It governs ALL image work on V7 in every new chat, project lane, QA automation and scheduled task. When older documents disagree, use this policy while retaining stronger Scripture, rights, security, provenance and exact-SHA release safeguards.

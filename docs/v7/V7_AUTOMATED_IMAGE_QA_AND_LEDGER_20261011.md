@@ -1,6 +1,18 @@
 # BibleQuest V7: automatic image QA, work identity and deletion contract
 Effective 2026-10-11 JST. Binding for every V7 chat, five scheduled agents, X/Y/Z, A–D, any task or workflow that touches artwork. Entry points: `AGENTS.md`, `work/README.md` and the complete construction guide.
 
+## New one-master source / deterministic-presentation override — 2026-10-11
+
+**Authoritative companion:** [V7 single-master crop and QA contract](V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md). This section supersedes any prior requirement that a producer create three physical CLEAN/TYPE/THUMB files or that a Scene reviewer reject a unique related modern image solely for not performing the guide's exact named action. It **does not** silently change current bundle validators, runtime, production-ready flags or release gates.
+
+For new artwork, generate ONE original text-free CLEAN PNG/WebP for a canonical content ID. Store normalized focal point and title-safe region. TYPE becomes source-approved **live localized text** on/near the same CLEAN, and THUMB becomes an audited deterministic crop at the target ratio (or an optional lower-byte build-time derived image from the same source). The image-generation tool must NOT draw typography or new scene variants.
+
+An equivalent contemporary action can be `THEMATIC_ALTERNATIVE` and may PASS **scene meaning** only when actual visible pixels and the complete canonical source/Scripture support the depicted action and the uniqueness reviewer independently confirms it is not a generic or duplicated image. Record the exact alternative rationale. `EXACT_SCENE` also eligible. `UNRELATED` or contradictory scenes always FAIL. Missing evidence => HOLD. A successful semantic scene verdict is not a five-role or production release PASS.
+
+The technical reviewer must inspect the true master geometry and real built-app crops, live text/contrast/locale, thumbnail focus, immutable SHA/served bytes, and payload/offline impact. A constant source+target aspect+focal object-position gives repeatable **math**, not guaranteed safe content framing: review each master and each display ratio. A same-ratio display only scales the source; portrait-to-square may clip crucial meaning. Never split a collage into apparent separate assets.
+
+**Compatibility:** Current Feeling/Need V2 release audit still expects full real-file bundles, and some runtime components prioritize baked TYPE. Until a reviewed implementation migrates those schema/selector/CI/browser contracts, mark CLEAN-only Feeling/Need source as `HOLD_POLICY_MIGRATION`; do not fake missing variants, turn off validators, or call such a candidate production ready. Existing approved three-file bundles remain sound. P4 one-CLEAN covers stay valid under current P4 policy. All five automated roles continue reviewing available candidates and moving on after FAIL/HOLD without waiting for another scheduled run.
+
 ## Authority, roles and accepted interpretation
 
 The user's updated order replaces older requirements for a human to individually approve every generated image. **Five independent autonomous agent reviewers own 100% of image QA**: scene/Scripture, rights/wording/provenance, technical/format/crop, visual originality/aesthetics, and QA coordination/consolidation. They are QA-only: never make, edit, upscale, retouch, typeset, crop, regenerate, or export pixels and never launch image generation. The sole generator is an expressly user-invoked interactive ChatGPT image-production chat (manual X/Y/Z or equivalent). The human can audit after the fact, but human review is **not a blocking QA gate**.

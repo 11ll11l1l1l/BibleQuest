@@ -19,5 +19,11 @@
   ],
   "selectionRule": "After initialQueue is covered, sort eligible uncovered content IDs lexicographically and take indices where index % 5 equals agentNumber-1.",
   "status": "active",
-  "note": "State is inferred from existing per-asset records; do not mutate this queue file during scheduled runs."
+  "note": "QA only. Preserve existing taxonomy assignments for static audit compatibility. One immutable CLEAN source; separate presentation crop QA. Advance on FAIL/HOLD. Never produce pixels.",
+  "mode": "qa_only",
+  "qaRole": "coordinator",
+  "productionPolicy": "one_clean_master_live_locale_focal_crop",
+  "qaInstructions": "Join five independent reviewer evidences to exact immutable CLEAN/PR; no imaginary TYPE/THUMB PASS or production-ready ahead of schema and browser migration.",
+  "qaContract": "docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md",
+  "legacyTaxonomyNote": "initialQueue/afterInitialQueue remain legacy category coverage fixtures for validators, NOT instructions to create artwork. Claim no images; review only actual eligible QA candidates."
 }
