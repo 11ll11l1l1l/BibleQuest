@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "role": "RIGHTS_WORDING_PROVENANCE",
+  "date": "2026-10-14",
+  "scope": "V7 candidate QA only, no production approval",
+  "developmentHead": "639ad9fa40d28bfa36c28406b1ec4c4b6f68e1ff",
+  "policyBlobs": {
+    "AGENTS.md": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "src/features/library/emotion-taxonomy.js": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "data/v7/visual-assets/production-ledger.json": "9af29be02501e327024aef4c46074f54ec5b3c56"
+  },
+  "counts": {
+    "PASS": 0,
+    "FAIL": 0,
+    "HOLD": 3
+  },
+  "checks": "Nine WebP assets fetched as actual GitHub base64, decoded for visual inspection, SHA-256 independently computed using a local JS implementation, and compared to sidecars. No verse prose appears in inspected historical variants; exact live UI rendering not observed.",
+  "releasePolicy": "PR #1530 merged; PR #1534 runtime partial migration merged; clean-only Feeling/Need release schema and coverage gate remain not certified. No CLEAN-only candidate is released.",
+  "reviews": [
+    {
+      "pr": 1423,
+      "head": "76318e35b5600c0be4f60908c5f0a17c61bb1e8c",
+      "recordBlob": "d418c73ade25ab552b7bca0af562f412470759a9",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/76318e35b5600c0be4f60908c5f0a17c61bb1e8c/data/v7/visual-assets/records/bqv7-emotion-insecurity-unworthiness-01.json",
+      "canonicalId": "emotion:insecure",
+      "canonicalTitle": "Insecure / unworthy",
+      "canonicalReference": "Ephesians 2:10",
+      "localeLabels": {
+        "tl": "Walang tiwala sa sarili / hindi karapat-dapat",
+        "ceb": "Walay pagsalig sa kaugalingon / dili takos",
+        "ilo": "Awan ti panagtalek iti bagi / saan a maikari"
+      },
+      "verdict": "HOLD_PROVENANCE_LIVE_COPY",
+      "rightsDisposition": "No identifiable third-party branding or infringement observed; complete original generation input-rights chain remains unverified",
+      "sourcePngSha256ClaimOnly": null,
+      "generationIdClaimOnly": "4d0816d9-3556-47d6-b447-db881df55ce6",
+      "sourcePngIndependentlyVerified": false,
+      "liveLocaleAndScriptureProseVerified": false,
+      "legacyTypeAndThumbAreHistoricalNotNewGenerationRequirement": true,
+      "release": "HOLD_POLICY_MIGRATION",
+      "observations": "CLEAN depicts contemporary woman adjusting blazer before event while looking in mirror, no baked text/logo. Historical TYPE reads Insecure / unworthy / Ephesians 2:10. Native generated PNG has no declared original SHA; generation-input provenance and exact font binary unverified. Previous built-app CI did not inspect candidate due to altText error, so no live locale evidence.",
+      "assets": [
+        {
+          "type": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/76318e35b5600c0be4f60908c5f0a17c61bb1e8c/public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01.webp",
+          "sha256IndependentlyCalculated": "a6d5283d91074db3fc893e00c33e8d93caeed55bb5451a5015ab9bfb68ed61d5",
+          "bytesIndependentlyMeasured": 77160,
+          "gitBlob": "8a5033683d9acf79c73116a9eb1332c930c248ee"
+        },
+        {
+          "type": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-with-text-en.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/76318e35b5600c0be4f60908c5f0a17c61bb1e8c/public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-with-text-en.webp",
+          "sha256IndependentlyCalculated": "204b9069a5f436ff693c22f3aac73918eb19eb2b5908d7c4c9839ac2cbf32dab",
+          "bytesIndependentlyMeasured": 84820,
+          "gitBlob": "38ce300511110f03d1cf634486a5d66c06dca39d"
+        },
+        {
+          "type": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-thumbnail.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/76318e35b5600c0be4f60908c5f0a17c61bb1e8c/public/v7/images/emotion/bqv7-emotion-insecurity-unworthiness-01-thumbnail.webp",
+          "sha256IndependentlyCalculated": "d0a580fd4b30e5f7904cae96c2b4f0366b5ec2462f2d0f2e320b1c71d7745d77",
+          "bytesIndependentlyMeasured": 24138,
+          "gitBlob": "a24fc8ba62c8bce44726f4b9ff4ea1bd59d8f038"
+        }
+      ]
+    },
+    {
+      "pr": 1437,
+      "head": "b3f19e42de61724513bdea90e747917e194f6874",
+      "recordBlob": "a509d279bdfd72cd8613f966336a777a316f71d7",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/b3f19e42de61724513bdea90e747917e194f6874/data/v7/visual-assets/records/bqv7-emotion-hope-02.json",
+      "canonicalId": "emotion:hopeful",
+      "canonicalTitle": "Hopeful",
+      "canonicalReference": "Romans 15:13",
+      "localeLabels": {
+        "tl": "Umaasa",
+        "ceb": "Malaumon",
+        "ilo": "Addaan namnama"
+      },
+      "verdict": "HOLD_PROVENANCE_FONT_LIVE_COPY",
+      "rightsDisposition": "No identifiable third-party branding or infringement observed; complete original generation input-rights chain remains unverified",
+      "sourcePngSha256ClaimOnly": "3cb18d4cc3b0d501d6cc2cad351c52a424d007d5c807d77cb43e0d1a20729042",
+      "generationIdClaimOnly": "fb95f42d-588b-4890-b4b7-7a1b789caa87",
+      "sourcePngIndependentlyVerified": false,
+      "liveLocaleAndScriptureProseVerified": false,
+      "legacyTypeAndThumbAreHistoricalNotNewGenerationRequirement": true,
+      "release": "HOLD_POLICY_MIGRATION",
+      "observations": "CLEAN depicts contemporary greenhouse worker planting seedling, no baked text/logo. Historical TYPE reads Hopeful / Romans 15:13. The producer states source PNG and font license but native source PNG, full prompt, input rights and exact font binary not independently authenticated. Live localized display unverified; guide warns this Hopeful scene should not be copied by Need Hope.",
+      "assets": [
+        {
+          "type": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-02.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/b3f19e42de61724513bdea90e747917e194f6874/public/v7/images/emotion/bqv7-emotion-hope-02.webp",
+          "sha256IndependentlyCalculated": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+          "bytesIndependentlyMeasured": 143934,
+          "gitBlob": "d69a3844987677b2ea317e41b3b377ffd6f8fe83"
+        },
+        {
+          "type": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-02-with-text-en.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/b3f19e42de61724513bdea90e747917e194f6874/public/v7/images/emotion/bqv7-emotion-hope-02-with-text-en.webp",
+          "sha256IndependentlyCalculated": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+          "bytesIndependentlyMeasured": 147928,
+          "gitBlob": "628cd4ec7da1867dea2cfefb0f7dc807746d16c0"
+        },
+        {
+          "type": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-hope-02-thumbnail.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/b3f19e42de61724513bdea90e747917e194f6874/public/v7/images/emotion/bqv7-emotion-hope-02-thumbnail.webp",
+          "sha256IndependentlyCalculated": "4f60530aefb863439905cd80d02f657567788f386ec7e538e7446d9038e51e1f",
+          "bytesIndependentlyMeasured": 42358,
+          "gitBlob": "179cfdd1f5bf4291621b3112f0aad54d990a8f33"
+        }
+      ]
+    },
+    {
+      "pr": 1455,
+      "head": "8a0053e43834967762b09127e23a23bf06796b97",
+      "recordBlob": "116b7a85eaea06c66b2bfbb33dd4d8355276e523",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/8a0053e43834967762b09127e23a23bf06796b97/data/v7/visual-assets/records/bqv7-need-encouragement-01.json",
+      "canonicalId": "need:encouragement",
+      "canonicalTitle": "Encouragement",
+      "canonicalReference": "1 Thessalonians 5:11",
+      "localeLabels": {
+        "tl": "Pagpapalakas ng loob",
+        "ceb": "Pagdasig",
+        "ilo": "Pammabileg ti nakem"
+      },
+      "verdict": "HOLD_PROVENANCE_SCENE_LIVE_COPY",
+      "rightsDisposition": "No identifiable third-party branding or infringement observed; complete original generation input-rights chain remains unverified",
+      "sourcePngSha256ClaimOnly": "7dcccf7f3720fac7f7dc046207114821523446308e10cb8e2ef6e828b7fadcb2",
+      "generationIdClaimOnly": "033f6473-56eb-406f-a674-569279cfb7ff",
+      "sourcePngIndependentlyVerified": false,
+      "liveLocaleAndScriptureProseVerified": false,
+      "legacyTypeAndThumbAreHistoricalNotNewGenerationRequirement": true,
+      "release": "HOLD_POLICY_MIGRATION",
+      "observations": "CLEAN depicts one runner helping another stand after community run; single contemporary image with no text/logo. Historical TYPE exact title/reference. Prior sidecar scene rejection references old chess-club-only action, while 2026-10-11 override allows source-supported THEMATIC_ALTERNATIVE. Independent scene/uniqueness certification remains pending. Original generation PNG/prompt/input chain and live localized display unverified.",
+      "assets": [
+        {
+          "type": "CLEAN",
+          "path": "public/v7/images/need/bqv7-need-encouragement-01.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/8a0053e43834967762b09127e23a23bf06796b97/public/v7/images/need/bqv7-need-encouragement-01.webp",
+          "sha256IndependentlyCalculated": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+          "bytesIndependentlyMeasured": 154430,
+          "gitBlob": "faaff730bf04dd46c5f38972367384867a7f9857"
+        },
+        {
+          "type": "TYPE",
+          "path": "public/v7/images/need/bqv7-need-encouragement-01-with-text-en.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/8a0053e43834967762b09127e23a23bf06796b97/public/v7/images/need/bqv7-need-encouragement-01-with-text-en.webp",
+          "sha256IndependentlyCalculated": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+          "bytesIndependentlyMeasured": 180798,
+          "gitBlob": "437f9395216d0878c19ede166a75552845e8dfdb"
+        },
+        {
+          "type": "THUMB",
+          "path": "public/v7/images/need/bqv7-need-encouragement-01-thumbnail.webp",
+          "url": "https://github.com/11ll11l1l1l/BibleQuest/blob/8a0053e43834967762b09127e23a23bf06796b97/public/v7/images/need/bqv7-need-encouragement-01-thumbnail.webp",
+          "sha256IndependentlyCalculated": "d61b924ee552ea4e1502f7c97c3dcf79f2940ee223f2cce19a04aaaafc6579b1",
+          "bytesIndependentlyMeasured": 30956,
+          "gitBlob": "f6a49ae4f548e68df7f797cc0ae8a1d7b8362e54"
+        }
+      ]
+    }
+  ],
+  "mutations": "Evidence-only; no crop, image creation, candidate deletion, ledger status change, approval, merge or deployment."
+}
