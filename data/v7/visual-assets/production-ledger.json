@@ -1492,7 +1492,7 @@
       "producer": "manual-chat-20261014-c",
       "sourceRevision": "r1",
       "sceneRevision": "pottery-bowl-empty-stool-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T23:53:42.263462+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
@@ -1515,7 +1515,32 @@
         "perspective": "over shoulder",
         "sourceRevision": "r1"
       },
-      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-hurt-betrayal03-20261014-r1.webp",
+      "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 218178,
+        "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "113d1427f07e2d56745fb1b471877f83cb27ae1992dbc8ac7c9de9e5d500f3a8",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult studies a visibly cracked whole bowl beside an empty stool in a pottery studio.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      }
     },
     {
       "family": "devotional",
@@ -1525,7 +1550,7 @@
       "producer": "manual-chat-20261014-c",
       "sourceRevision": "r1",
       "sceneRevision": "tailor-pause-jacket-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T23:53:42.271902+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
@@ -1539,7 +1564,7 @@
       "textSafeRegion": "left",
       "focalPoint": {
         "x": 0.5,
-        "y": 0.45
+        "y": 0.5
       },
       "sceneFingerprint": {
         "action": "tailor-pause-jacket",
@@ -1548,7 +1573,33 @@
         "perspective": "low seated eye height",
         "sourceRevision": "r1"
       },
-      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-impatience-waiting03-20261014-r1.webp",
+      "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 215200,
+        "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "fa6bf717eb2323c0c9f213aa27bc9c37ca9b15231512f403a44d4729d798e920",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "THEMATIC_ALTERNATIVE",
+        "observed": "Tailor pauses beside an unfinished pinned jacket; a plain unmarked cloth ribbon rests on the bench.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Visible pause beside an unfinished pinned jacket expresses diligent preparation and patience. Plain ribbon is not asserted as a numbered measuring tape; fabric settling or preceding pinning is not observable."
     },
     {
       "family": "devotional",
@@ -1558,7 +1609,7 @@
       "producer": "manual-chat-20261014-c",
       "sourceRevision": "r1",
       "sceneRevision": "breakfast-nook-flower-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T23:53:42.279200+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
@@ -1572,7 +1623,7 @@
       "textSafeRegion": "left",
       "focalPoint": {
         "x": 0.5,
-        "y": 0.45
+        "y": 0.55
       },
       "sceneFingerprint": {
         "action": "breakfast-nook-flower",
@@ -1581,7 +1632,32 @@
         "perspective": "medium environmental eye height",
         "sourceRevision": "r1"
       },
-      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-numbness-emptiness03-20261014-r1.webp",
+      "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 178260,
+        "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8b00856e92dcf137c7eba7972ef500a41bd3cc62d6a0790f0283bbfe9f7d89e5",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Reserved adult gently places a single fresh flower into a jar at a faded breakfast nook.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      }
     }
   ]
 }
