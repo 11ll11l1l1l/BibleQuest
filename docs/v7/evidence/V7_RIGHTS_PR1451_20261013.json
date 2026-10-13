@@ -28,19 +28,28 @@
       "kind": "CLEAN",
       "sha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
       "gitBlob": "a8a9c6a50f7174a432e2dbe0c65604b6ff832998",
-      "bytes": 148110
+      "bytes": 148110,
+      "width": 1024,
+      "height": 1280,
+      "geometryEvidence": "Measured from actual VP8 bitstream frame header"
     },
     {
       "kind": "TYPE",
       "sha256": "4001a52d236c0fbfb0b3a02385a69c5f4b3687c44a0ffa93abb9d789b3d77947",
       "gitBlob": "a9ea683931c386c40d8412320d834ef6c8762027",
-      "bytes": 170026
+      "bytes": 170026,
+      "width": 1024,
+      "height": 1280,
+      "geometryEvidence": "Measured from actual VP8 bitstream frame header"
     },
     {
       "kind": "THUMB",
       "sha256": "bce73968813af484c1f703d1c35c1606daf09832486ec8e0dbf075e5507358de",
       "gitBlob": "2d422f4a745360971ccc0d9fc1594089b007fcb0",
-      "bytes": 37094
+      "bytes": 37094,
+      "width": 384,
+      "height": 480,
+      "geometryEvidence": "Measured from actual VP8 bitstream frame header"
     }
   ],
   "observed": "CLEAN modern man face-down phone while sketching, no baked title/reference/Scripture/watermark/logo. Historical TYPE visually reads Self-control / Galatians 5:22-23; THUMB has no text.",
