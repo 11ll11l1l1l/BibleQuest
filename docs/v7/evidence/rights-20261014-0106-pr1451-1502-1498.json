@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewDate": "2026-10-14",
+  "verdictSummary": {
+    "PASS": 0,
+    "FAIL": 0,
+    "HOLD": 3
+  },
+  "scope": "Independent QA-only review; no generated or modified image pixels; no production approval",
+  "source": {
+    "developmentHead": "6e23bf305fd1cf56f6bd88abba52b8480c08dd8d",
+    "agentsBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQaBlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "singleMasterReviewBranchHead": "6da0da79f3a06a166f02959b83b07305af03745a",
+    "ledgerBlob": "4b44064fb4ce0059c336c4286b5f7dc00f222c12",
+    "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8"
+  },
+  "hashMethod": "Actual WebP bytes fetched as base64 from pinned GitHub refs, independently decoded and SHA-256 hashed using local JavaScript implementation validated with NIST abc test vector. RIFF WEBP header verified; image pixels displayed and visually inspected.",
+  "candidates": [
+    {
+      "pr": 1451,
+      "prHead": "6df3f1c0726b86c52a4466f6b789599af6269f6f",
+      "assetId": "bqv7-need-self-control-01",
+      "canonicalContentId": "self_control",
+      "sourceRecordBlob": "3859ea6566bcdd561c447c2ef029f6f09dc220c3",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "presentationRelease": "HOLD_POLICY_MIGRATION",
+      "canonical": {
+        "en": "Self-control",
+        "tl": "Pagpipigil sa sarili",
+        "ceb": "Pagpugong sa kaugalingon",
+        "ilo": "Panagtengngel iti bagi",
+        "reference": "Galatians 5:22-23",
+        "otherPermittedReference": "2 Timothy 1:7"
+      },
+      "assets": [
+        {
+          "kind": "CLEAN",
+          "sha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
+          "gitBlob": "a8a9c6a50f7174a432e2dbe0c65604b6ff832998",
+          "bytes": 148110,
+          "dimensions": "1024x1280"
+        },
+        {
+          "kind": "historical_TYPE",
+          "sha256": "4001a52d236c0fbfb0b3a02385a69c5f4b3687c44a0ffa93abb9d789b3d77947",
+          "gitBlob": "a9ea683931c386c40d8412320d834ef6c8762027",
+          "bytes": 170026,
+          "dimensions": "1024x1280"
+        },
+        {
+          "kind": "historical_THUMB",
+          "sha256": "bce73968813af484c1f703d1c35c1606daf09832486ec8e0dbf075e5507358de",
+          "gitBlob": "2d422f4a745360971ccc0d9fc1594089b007fcb0",
+          "bytes": 37094,
+          "dimensions": "384x480"
+        }
+      ],
+      "pixelEvidence": "Contemporary young adult physically setting a smartphone down while sketching. CLEAN text-free, no visible logos or watermarks. TYPE visibly reads Self-control / Galatians 5:22-23; no Bible verse prose. THUMB shows same scene. Preferred guide depicts pausing before a difficult reply at a laptop; this is a plausible thematic alternative for intentional self-restraint but final scene classification belongs to independent scene reviewer.",
+      "provenance": "Record asserts generated PNG named turning_away_to_create.png, source SHA-256 5d7436de2e998b306391879da517f12ef2356313fb66522c6a3c05ff0bc72d25, generation ID 4d415523-9fcb-4b81-b1b9-92baf6fe8c8d and no external source art. Original PNG, generation event, actual input prompt and third-party source chain not independently retrieved.",
+      "missing": [
+        "original PNG source and independent SHA verification",
+        "original generation event and complete input-rights chain",
+        "live TL/CEB/ILO/EN app text, actual reference selection and any displayed licensed verse prose",
+        "exact-head built-app served-byte and five-role evidence"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1451",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6df3f1c0726b86c52a4466f6b789599af6269f6f/data/v7/visual-assets/records/bqv7-need-self-control-01.json"
+      ]
+    },
+    {
+      "pr": 1502,
+      "prHead": "0677a9f30efafd8b20be5ea1c8e3db8b7369a9d7",
+      "assetId": "bqv7-emotion-hurt-betrayal-01",
+      "canonicalContentId": "hurt",
+      "sourceRecordBlob": "2691f008f104fab718dcf455cda9078d3c31aace",
+      "derivativeRecordBlob": "32507427dd55d924b7d9f981d7f169d7d6493c4b",
+      "verdict": "HOLD_PROVENANCE_FONT_LIVE_LOCALIZATION",
+      "presentationRelease": "HOLD_POLICY_MIGRATION for new CLEAN-only release; existing legacy master must not be deleted",
+      "canonical": {
+        "en": "Hurt / betrayed",
+        "tl": "Nasaktan / pinagtaksilan",
+        "ceb": "Nasakitan / gibudhian",
+        "ilo": "Nasaktan / naliputan",
+        "reference": "Psalm 55:12-14",
+        "otherPermittedReference": "Psalm 147:3"
+      },
+      "assets": [
+        {
+          "kind": "CLEAN",
+          "sha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+          "gitBlob": "9d6549cb3e18bf615be51b966689bbc880e32d28",
+          "bytes": 108974,
+          "dimensions": "1024x1024"
+        },
+        {
+          "kind": "historical_TYPE",
+          "sha256": "a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c",
+          "gitBlob": "e2b1998352470996b04a7aa6131997b0bb10a72f",
+          "bytes": 158944,
+          "dimensions": "1024x1280"
+        },
+        {
+          "kind": "historical_THUMB",
+          "sha256": "d55a743c0d295a1b46b1072f422325ba2f4e3becee220c0a4599dd034b29b5d4",
+          "gitBlob": "a9ffac1caa153b61a325dc2e9d9d93af87b5a776",
+          "bytes": 67402,
+          "dimensions": "512x640"
+        }
+      ],
+      "pixelEvidence": "CLEAN is a text-free contemporary solitary woman seated on rocky overlook at sunset; no visible logo or watermark. Historical TYPE visibly reads Hurt / betrayed and PSALM 55:12–14 (typographic en dash, canonical source reference hyphen); no Bible verse prose. Historical THUMB shows same master scene.",
+      "provenance": "Original source record claims OpenAI generation ID 400eab14-c318-44f5-906f-dd4ed7898e84; exact prompt is null and original source PNG is not independently retrievable. Derivative TYPE reports Georgia/Times New Roman font with independent rendering rights review pending.",
+      "missing": [
+        "original generation source PNG, immutable original source SHA and input-rights chain",
+        "exact historical typography/font origin evidence",
+        "live localized text and Scripture license/wording where rendered",
+        "exact-head built-app served-byte and five-role evidence"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1502",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/0677a9f30efafd8b20be5ea1c8e3db8b7369a9d7/data/v7/visual-assets/records/bqv7-emotion-hurt-betrayal-01-derivatives.json"
+      ]
+    },
+    {
+      "pr": 1498,
+      "prHead": "ab5c25869ac186eb7ca829f1596d3e4d11daadca",
+      "assetId": "bqv7-emotion-rejection-01",
+      "canonicalContentId": "rejected",
+      "sourceRecordBlob": "46be222cc7f9494e5a9b034387104fcd25a5d303",
+      "derivativeRecordBlob": "bd043aca611020a156cafe50f95709c457c424a7",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "presentationRelease": "HOLD_POLICY_MIGRATION for new CLEAN-only release; existing legacy master must not be deleted",
+      "canonical": {
+        "en": "Rejected / unwanted",
+        "tl": "Hindi tanggap / hindi gusto",
+        "ceb": "Gisalikway / dili gusto",
+        "ilo": "Tinukiad / saan a kayat",
+        "reference": "Psalm 27:10",
+        "otherPermittedReference": "1 Peter 2:4"
+      },
+      "assets": [
+        {
+          "kind": "CLEAN",
+          "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+          "gitBlob": "3ef260dcf1bcb22e421e4cccb02645439233d30c",
+          "bytes": 65046,
+          "dimensions": "1024x1024"
+        },
+        {
+          "kind": "historical_TYPE",
+          "sha256": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
+          "gitBlob": "0ca2150a5cde549a69365194f7c6442d47a5a277",
+          "bytes": 90722,
+          "dimensions": "1024x1280"
+        },
+        {
+          "kind": "historical_THUMB",
+          "sha256": "6afc933892ed6ac09da8ad5700291b4b5f128ae45eaaab42ec9dc133d03b4a1a",
+          "gitBlob": "5f922cc754fa9a18d61114c2fd435c0eaa93b1b6",
+          "bytes": 78860,
+          "dimensions": "768x960"
+        }
+      ],
+      "pixelEvidence": "CLEAN shows young adult sitting apart from chatting group in contemporary outdoor setting; text-free, no visible branding. Historical TYPE visibly reads Rejected / unwanted / Psalm 27:10; no Bible verse prose. THUMB same scene.",
+      "provenance": "Original source record claims generated image and supplied prompt, but original generation PNG and complete input rights chain are not independently retrievable. Font binary identity not independently authenticated.",
+      "missing": [
+        "original generation PNG and independently checked original source SHA",
+        "full generation-input rights and font chain",
+        "actual live localized app text, chosen reference, any displayed Scripture prose and its license",
+        "exact-head built-app served-byte and five-role evidence"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1498",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/ab5c25869ac186eb7ca829f1596d3e4d11daadca/data/v7/visual-assets/records/bqv7-emotion-rejection-01-derivatives.json"
+      ]
+    }
+  ],
+  "actions": {
+    "pixelsCreated": false,
+    "pixelsCropped": false,
+    "pixelsDeleted": false,
+    "ledgerModified": false,
+    "releaseApproved": false,
+    "merged": false,
+    "deployed": false,
+    "reasonNoDeletion": "All candidates HOLD, not FAIL; committed public paths not exclusive unapproved staging bytes."
+  }
+}
