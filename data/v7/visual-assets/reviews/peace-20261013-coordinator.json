@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "reviewerIdentity": "/root/peace_coordinator_qa",
   "role": "coordination",
-  "reviewedAt": "2026-10-13T12:09:48.655907+00:00",
-  "verdict": "HOLD",
-  "candidateAcceptance": "HOLD_TECHNICAL_EVIDENCE",
+  "reviewedAt": "2026-10-13T12:21:04.602591+00:00",
+  "verdict": "PASS",
+  "candidateAcceptance": "PASS_STAGED_MASTER_AND_QA_PRESENTATION",
   "productionEligibility": "HOLD_POLICY_MIGRATION",
   "releaseApproved": false,
   "sourcePath": "src/features/library/emotion-taxonomy.js",
@@ -28,14 +28,15 @@
       "matchesLedger": true,
       "sourceBlobMatches": true,
       "reference": "John 14:27",
-      "verdict": "HOLD",
+      "verdict": "PASS",
       "individualRoleVerdicts": {
         "scene": "PASS",
         "rights": "PASS",
         "uniqueness": "PASS",
-        "technical": "HOLD",
-        "coordination": "HOLD"
-      }
+        "technical": "PASS",
+        "coordination": "PASS"
+      },
+      "productionEligibility": "HOLD_POLICY_MIGRATION"
     },
     {
       "attemptId": "manual-peaceful-20261013-r3",
@@ -48,27 +49,62 @@
       "matchesLedger": true,
       "sourceBlobMatches": true,
       "reference": "Philippians 4:11-12",
-      "verdict": "HOLD",
+      "verdict": "PASS",
       "individualRoleVerdicts": {
         "scene": "PASS",
         "rights": "PASS",
         "uniqueness": "PASS",
-        "technical": "HOLD",
-        "coordination": "HOLD"
-      }
+        "technical": "PASS",
+        "coordination": "PASS"
+      },
+      "productionEligibility": "HOLD_POLICY_MIGRATION"
     }
   ],
-  "missingEvidence": [
-    "Exact candidate browser presentation evidence with PR-head binding, actual crop/localized titles/zoom and served-byte identity",
-    "Technical independent final PASS after reviewing browser and network/offline evidence",
-    "Exact-head relevant CI",
-    "Reviewed migration of production schema and strict acceptance gates remains separate"
-  ],
+  "missingEvidence": [],
   "limits": [
     "Personally viewed both exact staged masters and independently decoded/hashed their bytes. No image pixels created or modified.",
-    "Scene/rights/uniqueness roles pass their bounded scopes; technical explicitly HOLD. No role inferred or forged.",
+    "Scene/rights/uniqueness/technical roles each independently PASS their bounded scopes, as reconciled by coordinator. Five-role staged-candidate PASS is not production readiness.",
     "Novelty proof compares seven inspected relevant rasters, not all collection/internet images.",
     "Canonical source labels and references match current taxonomy; no Scripture quotation licensed by this review.",
     "Five-role candidate source/presentation approval does not imply production or Lane D release approval."
-  ]
+  ],
+  "productionMissingEvidence": [
+    "Production-component crop/text certification",
+    "Deployable HTTP served-byte/offline proof",
+    "Reviewed single-master schema and strict release migration",
+    "Lane D exact integrated release-head certification"
+  ],
+  "ciEvidence": {
+    "head": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+    "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38395756325",
+    "reportPath": "artifacts/v7/peace-ci-ec40/report.json",
+    "reportSha256": "5f006de00fdaa0170e6067bdcf3f4c32ede382f59c50d432549a62a40bed9832",
+    "result": "PASS",
+    "screenshotCount": 64,
+    "allScreenshotTextScale": 2,
+    "verifiedSourceHashes": [
+      "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd"
+    ],
+    "artifactId": "11812291071",
+    "zipSha256": "356a6cf40f367988b195ac4203e69a9deffef6b1d3a84f7bb4a6710fc1fbe996"
+  },
+  "evidenceScope": "CI QA-only inline presentation figure with Playwright routed staging bytes; not deployed production component",
+  "independentCoordinatorPixelInspection": [
+    "Both full immutable staged master WebPs",
+    "Exact-head CI 320px Ilocano live-title screenshots for both candidates",
+    "Exact-head CI 100px square English thumbnails for both candidates"
+  ],
+  "roleEvidencePaths": [
+    "data/v7/visual-assets/reviews/peace-20261013-scene.json",
+    "data/v7/visual-assets/reviews/peace-20261013-rights.json",
+    "data/v7/visual-assets/reviews/peace-20261013-technical.json",
+    "data/v7/visual-assets/reviews/peace-20261013-uniqueness.json"
+  ],
+  "roleEvidenceSha256": {
+    "data/v7/visual-assets/reviews/peace-20261013-scene.json": "7a2bbc0173c4efef4f282978034381215407e0d20aaa779561f7cd1ca084a1b0",
+    "data/v7/visual-assets/reviews/peace-20261013-rights.json": "22f28c7862ec601d8899b68ce7b0e03025269c4deb3b88b80d1cbbe71cea8674",
+    "data/v7/visual-assets/reviews/peace-20261013-technical.json": "b1f4749ac4c2ba43e34279aa0debc1c5f9518e2631bcaeabe50e8df5985860fe",
+    "data/v7/visual-assets/reviews/peace-20261013-uniqueness.json": "9884bc95986b38ccfdae0a1c6684c7d0471a6ff6a871109138a909c7f989c226"
+  }
 }

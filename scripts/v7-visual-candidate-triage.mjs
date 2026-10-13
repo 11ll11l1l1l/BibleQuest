@@ -67,7 +67,7 @@ export async function triageV7SingleMasters(root = ROOT) {
   validateLedger(ledger);
   const technicallyVerified=[], rejected=[];
   for(const row of ledger.entries) {
-    if(row.status !== 'qa_pending' || row.variant !== 'CLEAN' || !row.candidatePath) continue;
+    if(!['qa_pending','qa_passed'].includes(row.status) || row.variant !== 'CLEAN' || !row.candidatePath) continue;
     if(!['emotion','need'].includes(row.family)) continue;
     try {
       const path=`data/v7/visual-assets/qa-candidates/${row.attemptId}.`;
