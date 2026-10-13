@@ -1093,7 +1093,14 @@
       "sceneRevision": "library-reference-study-20261014-r2",
       "status": "rejected",
       "claimedAt": "2026-10-13T22:22:15.756698+00:00",
-      "qa": {},
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
       "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
       "sourceContent": {
@@ -1137,9 +1144,45 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "garden-hose-reroute-20261014-r2",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T22:22:15.763670+00:00",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
       "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
       "sourceContent": {
@@ -1160,7 +1203,7 @@
         "perspective": "restrained eye-height environmental portrait",
         "sourceRevision": "r1"
       },
-      "note": "Missing canonical cover; native single-scene source generated after persisted claim. Five-role independent QA pending.",
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
       "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
       "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
       "measured": {
@@ -1180,12 +1223,17 @@
         "export": "WebP quality91; no crop/resize/upscale/text"
       },
       "producerPreflight": {
-        "scene": "EXACT_SCENE",
+        "scene": "THEMATIC_ALTERNATIVE",
         "observed": "Gardener calmly guides a curved irrigation hose beside a loose stone rather than yanking it.",
         "singleScene": true,
         "noBakedText": true,
         "publicationApproved": false
-      }
+      },
+      "semanticAnchor": "Visible calm practical hose adjustment beside a stone expresses patient response to an obstacle. Blockage, prior irritation and before/after recovery are not asserted.",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
     },
     {
       "family": "devotional",
@@ -1195,9 +1243,45 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "school-custodian-mural-20261014-r2",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T22:22:15.773188+00:00",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
       "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
       "sourceContent": {
@@ -1218,7 +1302,7 @@
         "perspective": "restrained eye-height environmental portrait",
         "sourceRevision": "r1"
       },
-      "note": "Missing canonical cover; native single-scene source generated after persisted claim. Five-role independent QA pending.",
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
       "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
       "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
       "measured": {
@@ -1243,7 +1327,11 @@
         "singleScene": true,
         "noBakedText": true,
         "publicationApproved": false
-      }
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
     },
     {
       "family": "devotional",
@@ -1255,7 +1343,14 @@
       "sceneRevision": "library-photographic-atlas-overhead-20261014-r3",
       "status": "rejected",
       "claimedAt": "2026-10-13T22:27:18.531485+00:00",
-      "qa": {},
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r3-20261014-rights.json"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
       "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
       "sourceContent": {
@@ -1299,9 +1394,45 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "library-carrel-shelf-free-photo-study-20261014-r4",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T22:30:17.529002+00:00",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r4-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
       "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
       "sourceContent": {
@@ -1322,7 +1453,7 @@
         "perspective": "side environmental eye-height",
         "sourceRevision": "r1"
       },
-      "note": "Distinct shelf-free library carrel, younger female cast, side environmental framing and diffused daylight. Three photograph-only atlases, no paragraph or spine typography. R2/R3 failed bytes deleted.",
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
       "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
       "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
       "measured": {
@@ -1347,7 +1478,11 @@
         "singleScene": true,
         "noBakedText": true,
         "publicationApproved": false
-      }
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
     }
   ]
 }

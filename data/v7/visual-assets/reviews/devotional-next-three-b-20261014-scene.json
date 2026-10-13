@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "role": "scene",
+  "reviewerIdentity": "/root/peace_scene_qa",
+  "reviewedAt": "2026-10-13T22:32:23.202815+00:00",
+  "releaseApproved": false,
+  "reviewMethod": "Independent view_image inspection of exact staged WebPs; full source English bodies, canonical r1/checksum, chapter03 briefs and exact production prompts read; primary BSB chapter context retrieved.",
+  "reviews": [
+    {
+      "canonicalId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r2",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r2.webp",
+      "candidateSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "observedEvidence": [
+        "Adult thoughtfully studies several open books at a library table; fingertip indicates a page while additional books remain open for comparison.",
+        "Separate sheet has faint geometric pencil shapes, no readable question or verse; books have printed-looking texture but no identifiable Scripture/title/quotation at inspected frame.",
+        "One contemporary coherent photographic scene, no panels, visible logos, baked title, Bible verse/reference, UI or watermark."
+      ],
+      "reference": "Acts 17:11",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/acts/17.htm",
+      "scriptureContext": "Acts 17:10-12 describes Bereans eagerly hearing Paul and Silas and testing the message daily against Scripture. The library study illustrates careful examination; unidentified reference books are not claimed to be Scripture or to replace its authority.",
+      "limitations": [
+        "Actual book contents, prior doubt and open-minded intent are not independently provable from still pixels.",
+        "Accompanying canonical source and approved reference remain necessary for full spiritual meaning.",
+        "Role-only scene judgment; no independent rights, uniqueness, responsive/crop or coordinator verdict asserted."
+      ],
+      "candidateLifecycle": "REJECTED_BY_RIGHTS",
+      "lifecycleNote": "Coordinator reported independent rights rejection for baked pseudoletter paragraphs and deletion of r2 bytes. Historical scene meaning PASS does not override rights FAIL."
+    },
+    {
+      "canonicalId": "devotional.biblequest.frustration.03",
+      "attemptId": "manual-frustration03-20261014-r2",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceContent": {
+        "title": "Let patience outlast irritation",
+        "body": "Frustration wants an immediate ending, even when haste would make the situation worse. Ecclesiastes 7:8-9 praises patience and warns against quick anger. Slow the decision down just enough to distinguish a real obstacle from wounded pride, then respond to the actual problem."
+      },
+      "verdict": "PASS",
+      "classification": "THEMATIC_ALTERNATIVE",
+      "observedEvidence": [
+        "Kneeling gardener calmly uses both gloved hands beside a rounded stone and a continuous hose curved around its side.",
+        "Hose has a visible connector; no demonstrated blockage, pinched cross-section or water-flow restoration can be inferred. Visible careful placement around an obstacle supports practical patient adaptation.",
+        "One contemporary coherent photographic scene, no panels, visible logos, baked title, Bible verse/reference, UI or watermark."
+      ],
+      "reference": "Ecclesiastes 7:8-9",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/ecclesiastes/7.htm",
+      "scriptureContext": "Ecclesiastes 7:8-10 contrasts patience with pride, warns against quick anger and idealizing former days. Calm handling of an actual physical obstacle illustrates a patient response rather than frustrated haste.",
+      "limitations": [
+        "Temporal discovery of blockage and rerouting before/after are not provable; image classified THEMATIC_ALTERNATIVE rather than claiming the complete prescribed event occurred.",
+        "Accompanying canonical source and approved reference remain necessary for full spiritual meaning.",
+        "Role-only scene judgment; no independent rights, uniqueness, responsive/crop or coordinator verdict asserted."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.joy.03",
+      "attemptId": "manual-joy03-20261014-r2",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceContent": {
+        "title": "Let joy become strength",
+        "body": "Joy is more than a pleasant break from serious life. Nehemiah 8:10 connects the joy of the Lord with strength. Receive good things deeply enough that they restore energy for obedience, service, and endurance. Celebration can prepare you for faithful work."
+      },
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "observedEvidence": [
+        "Custodian beside cleaning cart smiles at three students looking at a simple abstract mural; one student makes a modest open-handed appreciative gesture.",
+        "Shared quiet joy occurs within ordinary service setting, without balloons, exaggerated revelry or theological claim that decoration itself creates divine strength.",
+        "One contemporary coherent photographic scene, no panels, visible logos, baked title, Bible verse/reference, UI or watermark."
+      ],
+      "reference": "Nehemiah 8:10",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/nehemiah/8.htm",
+      "scriptureContext": "Nehemiah 8:1-12 follows the public reading and explanation of the Law; leaders direct a grieving assembly toward holy-day joy, sharing food and strength in the Lord. Quiet shared appreciation alongside service is a contemporary illustration of restorative joy, not a literal festival or a replacement of the joy of the Lord with aesthetic pleasure.",
+      "limitations": [
+        "Mural creation history and future restored energy cannot be independently proved from still pixels.",
+        "Accompanying canonical source and approved reference remain necessary for full spiritual meaning.",
+        "Role-only scene judgment; no independent rights, uniqueness, responsive/crop or coordinator verdict asserted."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r3",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r3.webp",
+      "candidateSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "observedEvidence": [
+        "Older contemporary adult in a cream sweater compares three open photographic reference volumes at a public-library table.",
+        "His left hand holds a spread while right index finger indicates geological texture in another; multiple reference spreads and a geometric nonletter comparison sketch make deliberate evidence examination visible.",
+        "One continuous overhead three-quarter photographic scene; no printed paragraphs/captions are visible on the foreground atlas spreads. No baked devotional title, verse, UI or watermark observed."
+      ],
+      "reference": "Acts 17:11",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/acts/17.htm",
+      "scriptureContext": "Acts 17:10-12 describes Bereans eagerly hearing Paul and Silas and testing the message daily against Scripture. The library study illustrates careful examination; unidentified reference books are not claimed to be Scripture or to replace its authority.",
+      "limitations": [
+        "Actual knowledge, doubt or theological investigation is not provable from pixels; the atlases illustrate comparison, not Scripture itself.",
+        "Small label-like or spine-mark textures are visible on distant library shelves; rights/wording reviewer must judge typography policy independently. This scene-role PASS makes no blanket text-free or rights claim.",
+        "Full source and Acts17:10-12 context previously independently retrieved remain necessary to communicate Scripture authority; no other-role or production approval asserted."
+      ],
+      "reviewedAt": "2026-10-13T22:29:37.685859+00:00",
+      "candidateLifecycle": "REJECTED_BY_RIGHTS",
+      "lifecycleNote": "Coordinator reports rights rejection for background spine typography and deletion of r3 bytes; bounded scene PASS is historical only."
+    },
+    {
+      "canonicalId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "observedEvidence": [
+        "Contemporary adult studies three open photographic reference books inside plain-partition study carrel; fingertip points to rock texture while other hand holds another spread.",
+        "Comparative reference-study action and separate geometric-circle texture sketch visibly express careful evidence examination rather than distressed isolation.",
+        "Atlas spreads are photographs without visible paragraphs or captions; shelf-free background has no visible book-spine wording; no baked title, Scripture, UI, logo or watermark observed.",
+        "Single coherent photographic scene with contemporary ordinary clothing."
+      ],
+      "reference": "Acts 17:11",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/acts/17.htm",
+      "scriptureContext": "Acts 17:10-12 describes Bereans eagerly hearing Paul and Silas and testing the message daily against Scripture. The library study illustrates careful examination; unidentified reference books are not claimed to be Scripture or to replace its authority.",
+      "limitations": [
+        "Specific study subject, internal doubt and theological investigation are not provable from pixels; photographic reference books illustrate inquiry and do not replace Scripture authority.",
+        "Acts17:10-12 context and canonical devotional prose remain necessary to express full spiritual meaning; geometric sketch is not a readable written question.",
+        "Scene-role judgment only; no rights, uniqueness, crop certification or production approval asserted."
+      ],
+      "reviewedAt": "2026-10-13T22:32:23.202815+00:00"
+    }
+  ]
+}
