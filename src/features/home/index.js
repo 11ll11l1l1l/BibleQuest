@@ -333,8 +333,8 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           image.onload = () => {
             if (disposed || !root.isConnected) return;
             heroCover.src = art.src;
-            const x = Math.max(0, Math.min(1, Number(art.focalPoint?.x) || 0.5));
-            const y = Math.max(0, Math.min(1, Number(art.focalPoint?.y) || 0.5));
+            const x = Math.max(0, Math.min(1, art.focalPoint.x));
+            const y = Math.max(0, Math.min(1, art.focalPoint.y));
             heroCover.style.objectPosition = `${x * 100}% ${y * 100}%`;
             heroCover.dataset.artSource = 'approved';
           };

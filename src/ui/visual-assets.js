@@ -3,6 +3,17 @@
 const REGISTRY_URL = 'data/v7/visual-assets.json';
 const APPROVED_IMAGE = /^\/v7\/images\/[a-z0-9-]+\/[a-z0-9-]+\.(?:webp|png|jpe?g)$/i;
 
+// Zero is a valid edge focal position; missing/invalid metadata defaults to center.
+export function v7VisualFocalPoint(value) {
+  const coordinate = n => typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 1 ? n : 0.5;
+  return Object.freeze({ x: coordinate(value?.x), y: coordinate(value?.y) });
+}
+
+export function v7VisualObjectPosition(value) {
+  const point = v7VisualFocalPoint(value);
+  return `${point.x * 100}% ${point.y * 100}%`;
+}
+
 export function normalizeV7VisualRegistry(data) {
   if (data?.schemaVersion !== 1 || !Array.isArray(data.assets)
       || !data.byContent || typeof data.byContent !== 'object') {
@@ -36,14 +47,12 @@ export function findV7Visual(registry, contentKeys = [], locale = 'en', title = 
     const id = registry.byContent.get(key)?.[0];
     const asset = registry.assets.get(id);
     if (!asset) continue;
-    const language = String(locale || 'en').toLowerCase().split('-')[0];
-    const typed = asset.variants.find(v =>
-      v.kind === 'with_text' && v.locale?.toLowerCase().split('-')[0] === language
-        && v.embeddedText === title);
+    // All app consumers render semantic localized text themselves. Retain legacy
+    // TYPE files in the audited registry, but never select baked wording here.
     return Object.freeze({
-      src: typed?.src || asset.src,
-      alt: typed ? '' : (asset.decorative ? '' : asset.alt),
-      focalPoint: asset.focalPoint || { x: 0.5, y: 0.5 },
+      src: asset.src,
+      alt: asset.decorative ? '' : asset.alt,
+      focalPoint: v7VisualFocalPoint(asset.focalPoint),
       assetId: asset.assetId,
     });
   }

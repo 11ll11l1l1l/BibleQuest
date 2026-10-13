@@ -1,4 +1,15 @@
+import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { chromium } from 'playwright';
+import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
+
+const audit = await auditV7VisualAssets();
+if (audit.status !== 'PASS') throw new Error(audit.errors.join('; '));
+const master = audit.manifest.assets.find(asset => asset.contentType === 'emotion');
+if (!master) throw new Error('Focal rendering QA needs an audited raster master');
+const masterBytes = await readFile(new URL('../../public' + master.src, import.meta.url));
+if (createHash('sha256').update(masterBytes).digest('hex') !== master.sha256)
+  throw new Error('Component fixture changed since source audit');
 
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
 const assert = (ok, why) => { if (!ok) throw new Error(why); };
@@ -6,7 +17,13 @@ const browser = await chromium.launch({ headless: true });
 
 try {
   for (const width of [320, 390, 430, 800]) {
-    const page = await browser.newPage({ viewport: { width, height: 840 }, isMobile: width < 720, hasTouch: width < 720 });
+    const page = await browser.newPage({ viewport: { width, height: 840 }, isMobile: width < 720, hasTouch: width < 720, serviceWorkers: 'block' });
+    // Vite intentionally disables publicDir. Supply audited fixture bytes only
+    // to this source-component harness; built HTTP verification stays separate.
+    await page.route('**/v7/images/**', route => {
+      if(new URL(route.request().url()).pathname !== master.src) return route.continue();
+      return route.fulfill({status:200,contentType:'image/webp',body:masterBytes});
+    });
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await page.evaluate(async () => {
       const root = document.createElement('main');
@@ -39,10 +56,10 @@ try {
       width: el.clientWidth, scrollWidth: el.scrollWidth,
       firstWidth: el.querySelector('button')?.getBoundingClientRect().width,
       documentWidth: document.querySelector('#bq-lane-b-deck-browser').scrollWidth,
-      viewportWidth: innerWidth,
+      viewportWidth: innerWidth, cardStyle: ['width','maxWidth','flexBasis'].map(k=>getComputedStyle(el.querySelector('button'))[k]),padding:[getComputedStyle(el).paddingLeft,getComputedStyle(el).paddingRight],
     }));
     assert(stats.scrollWidth > stats.width, width + ': deck cannot swipe');
-    assert(stats.firstWidth >= (width < 720 ? stats.width * 0.75 : 420), width + ': primary feeling art is too small');
+    assert(stats.firstWidth >= (width < 720 ? stats.width * 0.75 : 420), width + ': primary feeling art is too small ' + JSON.stringify(stats));
     assert(stats.documentWidth <= stats.viewportWidth + 1, width + ': deck creates document overflow');
     assert(await page.locator('[data-v7-deck="emotion"] [data-v7-deck-id]').count() === 30, '30 feelings missing');
     assert(await page.locator('[data-v7-deck="need"] [data-v7-deck-id]').count() === 19, '19 needs missing');
@@ -86,8 +103,50 @@ try {
     assert((await page.evaluate(() => window.__bqLaneBOpened?.id)) === 'devotional-test', 'visual card did not call onOpen');
     const empty = await page.locator('.bq-v7-content-card__cover img').count();
     assert(empty === 0, 'no image should create a safe gradient fallback, not a broken image');
+    // Exercise actual Library components using audited raster bytes and an
+    // explicit edge focal fixture. This is component QA, not editorial approval.
+    for (const locale of ['en', 'tl', 'ceb', 'ilo']) {
+      const observed = await page.evaluate(async ({ master, locale }) => {
+        const { createV7LibraryDiscoveryDeck, createV7LibraryVisualContentCard } =
+          await import('/src/features/library/index.js');
+        const { normalizeV7VisualRegistry } = await import('/src/ui/visual-assets.js');
+        const fixture = { ...master, contentType: 'emotion', contentId: 'anxiety_worry',
+          focalPoint: {x:0,y:0.75}, variants: [{kind:'with_text',locale,
+            embeddedText:'Anxious / worried',src:master.src,sha256:master.sha256}] };
+        const registry = normalizeV7VisualRegistry({schemaVersion:1,assets:[fixture],
+          byContent:{'emotion:anxiety_worry':[fixture.assetId]}});
+        const host=document.createElement('div');
+        document.querySelector('#bq-lane-b-deck-browser').replaceChildren(host);
+        window.__bqLaneBFeeling?.destroy(); window.__bqLaneBNeed?.destroy();
+        const deck=createV7LibraryDiscoveryDeck({root:host,kind:'emotion',locale,registry});
+        const card=host.querySelector('[data-v7-deck-id="anxious"]');
+        const image=card.querySelector('img'); image.loading='eager';
+        await image.decode().catch(error => { throw new Error('deck ' + image.src + ': ' + error.message); });
+        card.querySelector('.bq-v7-visual-deck__label').style.fontSize='200%';
+        const contentRegistry=normalizeV7VisualRegistry({schemaVersion:1,
+          assets:[{...fixture,contentType:'devotional',contentId:'devotional-test'}],
+          byContent:{'devotional:devotional-test':[fixture.assetId]}});
+        const content=createV7LibraryVisualContentCard({document,registry:contentRegistry,locale,
+          item:{id:'devotional-test',title:'A long localized title with room to read and reflect',
+            contentType:'devotional',publicationState:'published',
+            rights:{status:'verified',allowedUses:['display']}},onOpen:()=>{}});
+        host.append(content);
+        const cover=content.querySelector('img'); cover.loading='eager'; await cover.decode().catch(error => { throw new Error('cover ' + cover.src + ': ' + error.message); });
+        const result={position:getComputedStyle(image).objectPosition,
+          coverPosition:getComputedStyle(cover).objectPosition,
+          src:new URL(image.src).pathname,label:card.querySelector('.bq-v7-visual-deck__label').textContent,
+          labelLang:card.getAttribute('lang'),overflow:host.scrollWidth>innerWidth,
+          decoded:image.naturalWidth>0&&cover.naturalWidth>0};
+        deck.destroy(); content.remove();
+        return result;
+      }, {master,locale});
+      assert(observed.position === '0% 75%' && observed.coverPosition === '0% 75%',
+        width + '/' + locale + ': Library ignored edge focal position');
+      assert(observed.src === master.src && observed.decoded, 'Library must decode the CLEAN source');
+      assert(observed.label && observed.labelLang === locale, 'Live localized title lost');
+      assert(!observed.overflow, 'Live text at 200% creates horizontal overflow');
+    }
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.locator('[data-v7-deck="need"] [aria-label="Sunod nga kard"]').click();
     await page.evaluate(() => { window.__bqLaneBFeeling?.destroy(); window.__bqLaneBNeed?.destroy(); });
     await page.close();
   }

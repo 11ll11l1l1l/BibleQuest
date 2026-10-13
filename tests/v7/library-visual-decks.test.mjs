@@ -52,16 +52,16 @@ test('audited CLEAN master is used even when TYPE lettering exists but is not se
     '/v7/images/emotion/anxiety-thumbnail.webp');
 });
 
-test('approved TYPE artwork is shown only for its exact locale and live title', () => {
+test('legacy approved TYPE never duplicates the live locale title on app cards', () => {
   const raw = assetsManifest();
   raw.assets[0].variants[0].embeddedText = 'Anxious / worried';
   const registry = normalizeV7VisualRegistry(raw);
   const english = resolveV7LibraryVisual(registry, 'emotion', 'anxious', {
     locale: 'en', title: 'Anxious / worried',
   });
-  assert.equal(english.type, 'with_text');
-  assert.equal(english.src, '/v7/images/emotion/anxiety-with-text-en.webp');
-  assert.equal(english.alt, '', 'embedded lettering remains decorative; live title stays semantic');
+  assert.equal(english.type, 'clean');
+  assert.equal(english.src, '/v7/images/emotion/anxiety.webp');
+  assert.equal(english.alt, raw.assets[0].alt, 'CLEAN description remains accessible');
   const untranslated = resolveV7LibraryVisual(registry, 'emotion', 'anxious', {
     locale: 'tl', title: 'Balisa / nag-aalala',
   });
@@ -72,7 +72,7 @@ test('approved TYPE artwork is shown only for its exact locale and live title', 
   });
   assert.equal(wrongText.type, 'clean');
   const model = buildV7LibraryDeckModel({ kind: 'emotion', locale: 'en', registry });
-  assert.equal(model.entries.find(row => row.id === 'anxious').visual.type, 'with_text');
+  assert.equal(model.entries.find(row => row.id === 'anxious').visual.type, 'clean');
 });
 
 test('Lane D audited Map registry supplies visible CLEAN and THUMB imagery', () => {
@@ -122,4 +122,12 @@ test('cover-led cards cannot expose unapproved or rights-unknown Library content
   assert.throws(() => assertV7PublishedVisualCardItem({ ...item, publicationState: 'pending_review' }), /rights-verified published/);
   assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'unknown', allowedUses: ['display'] } }), /rights-verified published/);
   assert.throws(() => assertV7PublishedVisualCardItem({ ...item, rights: { status: 'verified', allowedUses: [] } }), /rights-verified published/);
+});
+
+test('both audited registry shapes carry the master focal position to Library cards', () => {
+ const raw=assetsManifest(); raw.assets[0].focalPoint={x:0,y:0.75};
+ for(const registry of [raw,normalizeV7VisualRegistry(raw)]) {
+  const visual=resolveV7LibraryVisual(registry,'emotion','anxious');
+  assert.deepEqual(visual.focalPoint,{x:0,y:0.75});
+ }
 });

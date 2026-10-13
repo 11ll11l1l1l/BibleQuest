@@ -1,4 +1,4 @@
-import { findV7Visual } from '../../ui/visual-assets.js';
+import { v7VisualFocalPoint } from '../../ui/visual-assets.js';
 import {
   LIBRARY_EMOTIONS, LIBRARY_NEEDS, libraryDiscoveryLabel,
   libraryDiscoveryShellLabel, normalizeLibraryDiscoveryLocale,
@@ -55,13 +55,6 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
       || !SHA.test(clean(asset.sha256))) continue;
     const master = safeV7VisualPath(asset.src);
     if (!master) continue;
-    const typed = mapped ? findV7Visual(registry, keys, locale, title) : null;
-    if (typed?.assetId === asset.assetId && typed.src !== master && safeV7VisualPath(typed.src)) {
-      return Object.freeze({
-        src: typed.src, alt: '', fallback: clean(asset.fallbackKey) || kind || 'library',
-        type: 'with_text', assetId: clean(asset.assetId),
-      });
-    }
     const thumb = thumbnail && Array.isArray(asset.variants)
       ? asset.variants.find(row => row.kind === 'thumbnail'
         && SHA.test(clean(row.sha256)) && safeV7VisualPath(row.src))
@@ -70,6 +63,7 @@ export function resolveV7LibraryVisual(registry, kind, contentId, { thumbnail = 
       src: thumb ? thumb.src : master, alt: clean(asset.alt),
       fallback: clean(asset.fallbackKey) || kind || 'library',
       type: thumb ? 'thumbnail' : 'clean', assetId: clean(asset.assetId),
+      focalPoint: v7VisualFocalPoint(thumb?.focalPoint || asset.focalPoint),
     });
   }
   return fallback;

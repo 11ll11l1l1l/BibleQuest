@@ -29,7 +29,8 @@
   position: relative;
   display: grid;
   grid-template-rows: minmax(0,1fr) auto auto;
-  flex: 0 0 min(84%, 440px);
+  /* Track padding already reserves 8% on each side of the viewport. */
+  flex: 0 0 min(100%, 440px);
   gap: 0;
   overflow: hidden;
   min-width: 0;
@@ -120,7 +121,7 @@
 }
 @media (min-width: 720px) {
   .bq-v7-visual-deck__track { padding-inline: max(12%, calc((100% - 440px)/2)); }
-  .bq-v7-visual-deck__card { flex-basis: min(70%, 440px); }
+  .bq-v7-visual-deck__card { flex-basis: min(100%, 440px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .bq-v7-visual-deck__track { scroll-behavior: auto !important; }

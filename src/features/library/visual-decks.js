@@ -1,3 +1,4 @@
+import { v7VisualObjectPosition } from '../../ui/visual-assets.js';
 import { buildV7LibraryDeckModel } from './visual-registry.js';
 import { cleanupMotion, deckSpring, motionEnabled, pressFeedback } from '../../ui/motion.js';
 
@@ -58,6 +59,7 @@ export function createV7LibraryDiscoveryDeck({
     if (entry.visual.src) {
       const image = doc.createElement('img');
       image.src = entry.visual.src;
+      image.style.objectPosition = v7VisualObjectPosition(entry.visual.focalPoint);
       image.alt = entry.visual.alt; // a decorative image uses alt="", with a live card label
       image.loading = 'lazy';
       image.decoding = 'async';

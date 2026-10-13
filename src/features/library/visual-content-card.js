@@ -1,3 +1,4 @@
+import { v7VisualObjectPosition } from '../../ui/visual-assets.js';
 import { assertV7PublishedVisualCardItem, normalizeV7DeckLocale, resolveV7LibraryVisual } from './visual-registry.js';
 import { cardReveal, pressFeedback } from '../../ui/motion.js';
 
@@ -25,6 +26,7 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   if (visual.src) {
     const image = document.createElement('img');
     image.src = visual.src;
+    image.style.objectPosition = v7VisualObjectPosition(visual.focalPoint);
     image.alt = visual.alt;
     image.loading = 'lazy';
     image.decoding = 'async';

@@ -5,6 +5,12 @@ on:
     branches:
       - v7/development
     paths:
+      - "src/ui/visual-assets.js"
+      - "src/features/library/visual-*.js"
+      - "src/features/library/visual-decks.css"
+      - "src/features/home/index.js"
+      - "tests/v7/shared-visual-runtime.test.mjs"
+      - "tests/v7/library-visual-decks*"
       - "data/v7/visual-assets/**"
       - "public/v7/images/**"
       - "scripts/v7-visual-assets-audit.mjs"
@@ -90,7 +96,7 @@ jobs:
       - name: Fail-closed image masters and localized text audit
         run: |
           node scripts/v7-visual-assets-audit.mjs
-          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs tests/v7/visual-candidate-triage.test.mjs
+          node --test tests/v7/visual-assets-audit.test.mjs tests/v7/visual-coverage-report.test.mjs tests/v7/manual-candidate-integrity.test.mjs tests/v7/visual-candidate-triage.test.mjs tests/v7/shared-visual-runtime.test.mjs tests/v7/library-visual-decks.test.mjs
 
       - name: Build exact candidate
         env:
@@ -114,6 +120,19 @@ jobs:
           done
           cat /tmp/bq-v7-image-preview.log
           exit 1
+
+      - name: Verify live locale titles and focal crops in actual Library components
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run dev -- --host 127.0.0.1 --port 4174 > /tmp/bq-v7-library-components.log 2>&1 &
+          component_pid=$!
+          trap 'kill "$component_pid" || true' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4174/ >/dev/null; then break; fi
+            sleep 1
+          done
+          BQ_BASE_URL=http://127.0.0.1:4174/ node tests/v7/library-visual-decks-browser.mjs
 
       - name: Verify actual shipped image bytes, Chromium decode and phone layouts
         run: node tests/v7/visual-assets-built-browser.mjs

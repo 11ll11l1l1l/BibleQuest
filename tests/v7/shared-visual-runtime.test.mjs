@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeV7VisualRegistry, findV7Visual, loadV7VisualRegistry, createV7VisualRegistryLoader } from '../../src/ui/visual-assets.js';
+import { normalizeV7VisualRegistry, findV7Visual, loadV7VisualRegistry, createV7VisualRegistryLoader, v7VisualObjectPosition } from '../../src/ui/visual-assets.js';
 const sha='a'.repeat(64);
 function fixture(){return {schemaVersion:1,assets:[{
  assetId:'bqv7-emotion-anxiety-worry-01',contentType:'emotion',contentId:'anxiety_worry',
@@ -9,9 +9,9 @@ function fixture(){return {schemaVersion:1,assets:[{
  variants:[{kind:'with_text',locale:'en',embeddedText:'Anxious / worried',
  src:'/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp',sha256:sha}]
  }],byContent:{'emotion:anxiety_worry':['bqv7-emotion-anxiety-worry-01']}};}
-test('shared visual resolver only selects verified text matching exact label and language',()=>{
+test('shared visual resolver always selects CLEAN for live localized app headings',()=>{
  const registry=normalizeV7VisualRegistry(fixture());
- assert.match(findV7Visual(registry,['emotion:anxiety_worry'],'en','Anxious / worried').src,/with-text-en/);
+ assert.doesNotMatch(findV7Visual(registry,['emotion:anxiety_worry'],'en','Anxious / worried').src,/with-text/);
  assert.doesNotMatch(findV7Visual(registry,['emotion:anxiety_worry'],'tl','Balisa').src,/with-text/);
  assert.doesNotMatch(findV7Visual(registry,['emotion:anxiety_worry'],'en','Different title').src,/with-text/);
  assert.equal(findV7Visual(registry,['emotion:missing']),null);
@@ -93,4 +93,13 @@ test('source mode and missing fetch fail closed without throwing', async () => {
  assert.equal(await disabled(), null);
  assert.equal(calls, 0);
  assert.equal(await createV7VisualRegistryLoader({ production: true })(), null);
+});
+
+test('focal positioning preserves zero and one while containing invalid coordinates', () => {
+ assert.equal(v7VisualObjectPosition({x:0,y:1}), '0% 100%');
+ assert.equal(v7VisualObjectPosition({x:0.25,y:0.75}), '25% 75%');
+ for (const point of [undefined, {x:NaN,y:Infinity}, {x:-1,y:2}, {x:'0',y:null}])
+  assert.equal(v7VisualObjectPosition(point), '50% 50%');
+ const data=fixture(); data.assets[0].focalPoint={x:0,y:1};
+ assert.deepEqual(findV7Visual(normalizeV7VisualRegistry(data),['emotion:anxiety_worry']).focalPoint,{x:0,y:1});
 });
