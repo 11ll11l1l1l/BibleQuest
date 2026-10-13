@@ -1,0 +1,116 @@
+{
+  "type": "V7_RIGHTS_WORDING_PROVENANCE_QA",
+  "date": "2026-10-13",
+  "pr": 1531,
+  "prHead": "cbbe465163d1377fc05a397ca9d26f2a6a021d41",
+  "developmentHead": "6e23bf305fd1cf56f6bd88abba52b8480c08dd8d",
+  "sources": {
+    "agents": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQa": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "ledger": "4b44064fb4ce0059c336c4286b5f7dc00f222c12",
+    "guide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "method": "Independent GitHub file fetch of actual base64 WebP, SHA-256 calculation, RIFF/VP8 native size and byte count, visual pixel inspection; canonical taxonomy and guide source read.",
+  "results": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 3
+  },
+  "items": [
+    {
+      "id": "need:courage",
+      "sidecar": "manual-chat-20261011-courage-b4.json",
+      "image": "manual-chat-20261011-courage-b4.webp",
+      "gitBlob": "1738f85a792bf68bc7d82b24b6492f44ba753f46",
+      "sidecarBlob": "e73cb25bcbafcf7613629f426a489b638a8a7431",
+      "bytes": 239604,
+      "size": "1122x1402",
+      "sha256": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f",
+      "verdict": "HOLD_PROVENANCE_WORDING",
+      "observed": "Modern adult wearing safety goggles enters woodshop; instructor at bench. No baked title/verse/logo.",
+      "canonical": {
+        "en": "Courage",
+        "tl": "Lakas ng loob",
+        "ceb": "Kaisog",
+        "ilo": "Tured",
+        "allowedRefs": [
+          "Joshua 1:9",
+          "2 Timothy 1:7"
+        ]
+      },
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.json",
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531"
+      },
+      "missing": [
+        "native generation event and exact prompt/source PNG verification",
+        "independently corroborated input-rights chain",
+        "actual live localized text and Scripture wording/translation-license evidence"
+      ],
+      "release": "HOLD_POLICY_MIGRATION"
+    },
+    {
+      "id": "need:strength",
+      "sidecar": "manual-chat-20261011-strength-b3.json",
+      "image": "manual-chat-20261011-strength-b3.webp",
+      "gitBlob": "c382f3393f5efb1ebfb2254a6771ba02ff8e0f1e",
+      "sidecarBlob": "68a11689c562e898932578a8543fccff38071ef7",
+      "bytes": 371634,
+      "size": "1122x1402",
+      "sha256": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4",
+      "verdict": "HOLD_PROVENANCE_WORDING",
+      "observed": "Four modern adults steady wooden door and align hardware; no baked title/verse/logo.",
+      "canonical": {
+        "en": "Strength",
+        "tl": "Lakas",
+        "ceb": "Kusog",
+        "ilo": "Pigsa",
+        "allowedRefs": [
+          "Isaiah 40:31",
+          "Philippians 4:13"
+        ]
+      },
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.json",
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531"
+      },
+      "missing": [
+        "native generation event and exact prompt/source PNG verification",
+        "independently corroborated input-rights chain",
+        "actual live localized text and Scripture wording/translation-license evidence"
+      ],
+      "release": "HOLD_POLICY_MIGRATION"
+    },
+    {
+      "id": "hero:home",
+      "sidecar": "manual-chat-20261011-home-v2.json",
+      "image": "manual-chat-20261011-home-v2.webp",
+      "gitBlob": "8badede3f7ce01c5d59f9b9db32d093ff05c1531",
+      "sidecarBlob": "f15fbb5cb829dfdfb9ab32f7cdfb30a0df44afc2",
+      "bytes": 197622,
+      "size": "1672x941",
+      "sha256": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16",
+      "verdict": "HOLD_PROVENANCE_LIVE_COPY",
+      "observed": "Adult and child entering contemporary community learning hall; two adults work at table; left side quiet. No baked title/verse/logo.",
+      "canonical": {
+        "allowedRefs": []
+      },
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.json",
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531"
+      },
+      "missing": [
+        "native generation event and exact prompt/source PNG verification",
+        "independently corroborated input-rights chain",
+        "actual live localized text and Scripture wording/translation-license evidence"
+      ],
+      "release": "NOT_RELEASED"
+    }
+  ],
+  "actions": "No image generation/crop/deletion/ledger overwrite/approval/merge/deploy."
+}
