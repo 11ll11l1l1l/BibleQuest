@@ -8,13 +8,22 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
-## One-master / live-text / focal-crop QA policy — 2026-10-11 JST (PR #1530, pending integration)
+## Live-title and focal-position runtime repair — 2026-10-13 JST
+
+- Shared app resolver and Library cards use the approved CLEAN master with existing live localized headings. Legacy TYPE files remain audited/stored but no longer override app titles. Explicit optional thumbnail renditions remain supported.
+- Library discovery and content cards apply normalized per-master focal positions; Home preserves valid zero coordinates. Invalid/missing focal metadata safely centers the view.
+- Discovery deck track padding already leaves an 84% viewport for artwork; card flex basis now fills that space instead of applying a second 84% reduction.
+- Verification: 692 V7 unit tests and ledger audit passed locally; local production build passed (Node 24.19.0, not pinned release certification). Local Library Chromium harness passed using actual components with audited raster bytes in EN/TL/CEB/ILO at 320/390/430/800 and 200% live-label text; workflow includes that harness and runtime path triggers.
+- Fresh source audit on this repair branch: 18 published masters, including 17/30 Feeling masters; 10 legacy complete bundles (9 Feelings, 1 nonlaunch Need). Eight Feeling masters need presentation completion rather than fresh generation. Still absent: 13 Feeling masters, all five designated launch Needs and Home hero. Pending candidates are excluded.
+- **Boundary: presentation repair only.** No artwork generated, approved, deleted or counted as newly complete. Source-only Feeling/Need schema, coverage and strict release migration remain OPEN. Current three-file validator is unchanged; five-role image evidence and exact-SHA release requirements remain binding.
+
+## One-master / live-text / focal-crop QA policy — 2026-10-11 JST (PR #1530 integrated)
 
 - Owner-approved direction: one **original modern text-free CLEAN image per canonical content ID**. TYPE is live localized text; THUMB is focal-positioned CSS crop of the same master or a deterministic smaller build WebP. No separate generated TYPE/THUMB art.
 - Prescribed source-guide actions are preferred; unique, specifically source-meaningful `THEMATIC_ALTERNATIVE` can earn evidence-backed scene QA PASS. Unrelated/Scripture-conflicting subjects fail.
 - Fixed master/crop ratio plus stored per-master `focalPoint` yields deterministic placement. Source/box same aspect => scale only; cross-ratio means possible clipping. Require 320/390/430/800 and 100px evidence before declaring presentation safe; CSS crop does not reduce bytes sent.
 - All five scheduled QA agents' prompts updated (Scene, Rights, Technical, Uniqueness, Coordinator), and previously disabled Uniqueness re-enabled. See `docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md`, `docs/v7/V7_MASTER_IMAGE_PROMPT_V2_3.md`, and matching construction guide section 0.
-- **Status: DOCS/QA AGENT UPDATE ONLY — PR #1530 not yet merged.** Existing runtime selectors, V2 Feeling/Need `complete_three_real_files` audit and old release protections are not converted by this docs PR; CLEAN-only Feeling/Need still `HOLD_POLICY_MIGRATION`. Never delete accepted TYPE/THUMB or manufacture QA PASS. A separate tested runtime/validator migration is required.
+- **Status: DOCS/QA AGENT UPDATE INTEGRATED — PR #1530 merged at `15d7534b3a4529eea7cc30da43e0d1bd3622d42e` after all four exact-head workflows passed on `6da0da79f3a06a166f02959b83b07305af03745a`.** Existing runtime selectors, V2 Feeling/Need `complete_three_real_files` audit and old release protections are not converted by this docs PR; CLEAN-only Feeling/Need still `HOLD_POLICY_MIGRATION`. Never delete accepted TYPE/THUMB or manufacture QA PASS. A separate tested runtime/validator migration is required.
 
 ## Image-production and QA operating-policy update — 2026-10-11 JST
 
