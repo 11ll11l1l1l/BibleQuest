@@ -1299,7 +1299,7 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "library-carrel-shelf-free-photo-study-20261014-r4",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T22:30:17.529002+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
@@ -1312,8 +1312,8 @@
       "reference": "Acts 17:11",
       "textSafeRegion": "right",
       "focalPoint": {
-        "x": 0.4,
-        "y": 0.45
+        "x": 0.5,
+        "y": 0.5
       },
       "sceneFingerprint": {
         "action": "compare photograph-only atlases in shelf-free carrel",
@@ -1322,7 +1322,32 @@
         "perspective": "side environmental eye-height",
         "sourceRevision": "r1"
       },
-      "note": "Distinct shelf-free library carrel, younger female cast, side environmental framing and diffused daylight. Three photograph-only atlases, no paragraph or spine typography. R2/R3 failed bytes deleted."
+      "note": "Distinct shelf-free library carrel, younger female cast, side environmental framing and diffused daylight. Three photograph-only atlases, no paragraph or spine typography. R2/R3 failed bytes deleted.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 323018,
+        "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "5bbb88a35d603d230bc1df52f610df819a85c57467ddec5a44554f69382d9618",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult compares three photograph-only reference books and geometric question sketch in shelf-free library study carrel; no page/spine text observed.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      }
     }
   ]
 }
