@@ -585,7 +585,8 @@
         "bytes": 174880,
         "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
       },
-      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "reference": "Hebrews 13:5"
     },
     {
       "family": "devotional",
@@ -635,7 +636,8 @@
         "bytes": 217804,
         "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
       },
-      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "reference": "Isaiah 40:29"
     },
     {
       "family": "devotional",
@@ -685,7 +687,8 @@
         "bytes": 158650,
         "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
       },
-      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "reference": "Ephesians 4:26-27"
     },
     {
       "family": "devotional",
@@ -735,7 +738,8 @@
         "bytes": 151090,
         "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
       },
-      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "reference": "Psalm 103:2"
     },
     {
       "family": "devotional",
@@ -785,7 +789,8 @@
         "bytes": 326890,
         "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
       },
-      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "reference": "Joshua 1:9"
     },
     {
       "family": "devotional",
@@ -835,7 +840,8 @@
         "bytes": 188400,
         "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
       },
-      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "reference": "Psalm 25:16"
     }
   ]
 }

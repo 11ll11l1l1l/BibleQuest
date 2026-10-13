@@ -68,17 +68,51 @@ export async function triageV7SingleMasters(root = ROOT) {
   const technicallyVerified=[], rejected=[];
   for(const row of ledger.entries) {
     if(!['qa_pending','qa_passed'].includes(row.status) || row.variant !== 'CLEAN' || !row.candidatePath) continue;
-    if(!['emotion','need'].includes(row.family)) continue;
+    if(!['emotion','need','devotional'].includes(row.family)) continue;
     try {
       const path=`data/v7/visual-assets/qa-candidates/${row.attemptId}.`;
       if(![path+'png',path+'webp'].includes(row.candidatePath)) throw Error('unsafe single-master path');
-      if(row.sourcePath !== 'src/features/library/emotion-taxonomy.js') throw Error('unsupported live wording source');
-      const source=await readFile(join(root,row.sourcePath));
-      const sourceBlob=createHash('sha1').update(Buffer.from('blob '+source.length+'\0')).update(source).digest('hex');
-      if(row.sourceChecksum !== 'gitblob:'+sourceBlob || row.sourceRevision !== 'taxonomy-'+sourceBlob)
-        throw Error('single-master source revision changed');
-      const item=(row.family==='need'?LIBRARY_NEEDS:LIBRARY_EMOTIONS).find(item=>item.id===row.contentId);
-      if(!item || !item.scripture.includes(row.reference)) throw Error('unknown canonical ID or reference');
+      let item, sourceBlob;
+      if(row.family === 'devotional') {
+        if(!/^content\/v7\/devotionals\/[a-z0-9-]+\.json$/.test(row.sourcePath || ''))
+          throw Error('unsafe devotional source path');
+        const source=await readFile(join(root,row.sourcePath));
+        sourceBlob=createHash('sha1').update(Buffer.from('blob '+source.length+'\0')).update(source).digest('hex');
+        const bundle=JSON.parse(source.toString('utf8'));
+        const matches=(bundle.items || []).filter(value=>value.id===row.contentId);
+        if(matches.length!==1) throw Error('unknown or duplicate devotional ID');
+        const canonical=matches[0];
+        const digest='sha256:'+createHash('sha256').update(`${canonical.sourceContent.title}\n${canonical.sourceContent.body || ''}`,'utf8').digest('hex');
+        if(canonical.type!=='devotional' || canonical.source?.kind!=='first_party'
+          || canonical.rights?.status!=='verified'
+          || !['display','translate'].every(use=>canonical.rights.allowedUses?.includes(use)))
+          throw Error('devotional source rights incomplete');
+        if(digest!==canonical.source.checksum || digest!==row.sourceChecksum
+          || row.sourceRevision!==canonical.source.revision || canonical.revision!==row.sourceRevision)
+          throw Error('single-master source revision changed');
+        if(row.sourceContent?.title!==canonical.sourceContent.title
+          || row.sourceContent?.body!==canonical.sourceContent.body)
+          throw Error('devotional source content changed');
+        if(typeof row.reference!=='string' || !row.reference
+          || !canonical.sourceContent.body.includes(row.reference)) throw Error('unknown canonical reference');
+        const labels={en:canonical.sourceContent.title};
+        for(const locale of ['tl','ceb','ilo']) {
+          const translations=(canonical.translations || []).filter(value=>value.locale===locale);
+          if(translations.length!==1 || translations[0].reviewStatus!=='reviewed'
+            || translations[0].translatedFromRevision!==canonical.revision
+            || !translations[0].content?.title) throw Error('devotional translation stale or missing');
+          labels[locale]=translations[0].content.title;
+        }
+        item={labels};
+      } else {
+        if(row.sourcePath !== 'src/features/library/emotion-taxonomy.js') throw Error('unsupported live wording source');
+        const source=await readFile(join(root,row.sourcePath));
+        sourceBlob=createHash('sha1').update(Buffer.from('blob '+source.length+'\0')).update(source).digest('hex');
+        if(row.sourceChecksum !== 'gitblob:'+sourceBlob || row.sourceRevision !== 'taxonomy-'+sourceBlob)
+          throw Error('single-master source revision changed');
+        item=(row.family==='need'?LIBRARY_NEEDS:LIBRARY_EMOTIONS).find(item=>item.id===row.contentId);
+        if(!item || !item.scripture.includes(row.reference)) throw Error('unknown canonical ID or reference');
+      }
       if(row.generation?.provider !== 'OpenAI image generation' || row.generation.thirdPartyInputs !== false
         || !/^[a-f0-9]{64}$/.test(row.generation.originalSha256 || '')) throw Error('master provenance incomplete');
       if(!row.focalPoint || ['x','y'].some(k=>typeof row.focalPoint[k]!=='number'
