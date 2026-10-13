@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_coordinator_qa",
+  "role": "coordination",
+  "reviewedAt": "2026-10-13T21:50:27.757473+00:00",
+  "overallVerdict": "PASS",
+  "verdictScope": "Immutable staged native master and QA-only source-bound presentation profiles; not production registration or release",
+  "publicationApproved": false,
+  "releaseApproved": false,
+  "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE",
+  "reviews": [
+    {
+      "attemptId": "manual-contentment03-20261014-r4",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 174880,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Practice contentment with presence",
+        "tl": "Magsanay ng kasiyahan sa presensya",
+        "ceb": "Pagpraktis sa pagkakontento pinaagi sa presensya",
+        "ilo": "Agpraktis iti pannakapnek babaen iti kaadda"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Hebrews 13:5",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-weariness03-20261014-r4",
+      "contentId": "devotional.biblequest.tiredness_weariness.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 217804,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Receive strength instead of manufacturing it",
+        "tl": "Tumanggap ng lakas sa halip na pilitin ito",
+        "ceb": "Dawata ang kusog imbis pugson kini",
+        "ilo": "Awatem ti pigsa imbes a piliten"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Isaiah 40:29",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-anger03-20261014-r4",
+      "contentId": "devotional.biblequest.anger.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 158650,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Do not give anger a room overnight",
+        "tl": "Huwag bigyan ng silid ang galit magdamag",
+        "ceb": "Ayaw tugoti ang kasuko nga magpuyo tibuok gabii",
+        "ilo": "Saanmo a pagtaengen ti pungtot iti rabii"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Ephesians 4:26-27",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "contentId": "devotional.biblequest.gratitude.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 151090,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Do not forget the benefits",
+        "tl": "Huwag kalimutan ang mga kabutihan",
+        "ceb": "Ayaw kalimti ang mga kaayohan",
+        "ilo": "Saanmo a lipaten dagiti bendision"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Psalm 103:2",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-fear03-20261014-r1",
+      "contentId": "devotional.biblequest.fear.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 326890,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Courage can move while fear remains",
+        "tl": "Maaaring kumilos ang tapang kahit may takot",
+        "ceb": "Makalihok ang kaisog bisan adunay kahadlok",
+        "ilo": "Mabalin nga agtignay ti kinatured uray adda ti buteng"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Joshua 1:9",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "contentId": "devotional.biblequest.loneliness.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 188400,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
+      "sourceRevision": "r1",
+      "sourceLabels": {
+        "en": "Tell God the ache of being alone",
+        "tl": "Sabihin sa Diyos ang sakit ng pag-iisa",
+        "ceb": "Isulti sa Dios ang kasakit sa pag-inusara",
+        "ilo": "Ibagam iti Dios ti sakit ti panagmaymaysa"
+      },
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "reference": "Psalm 25:16",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    }
+  ],
+  "missingEvidence": [],
+  "observedEvidence": [
+    "All six actual immutable WebPs viewed independently",
+    "All six fully decoded and SHA/native dimensions compared to ledger",
+    "All six source entry IDs/revisions/checksums/sourceContent matched current canonical content",
+    "Four source locale titles read for each"
+  ],
+  "limitations": [
+    "Rights verified fields are canonical metadata, not substituted independent role review",
+    "No pixels generated or modified; no ledger/source edits",
+    "Production registration, production component/offline behavior and Lane D exact release eligibility remain separate",
+    "Bounded uniqueness comparisons show distinct scene/activity; not internet-wide originality certification. QA profiles are inline figures served by staging route, not actual production component."
+  ],
+  "reviewerIdentities": [
+    "/root/peace_scene_qa",
+    "independent-rights-wording-agent",
+    "independent-technical-qa",
+    "/root/peace_uniqueness_qa",
+    "/root/peace_coordinator_qa"
+  ],
+  "ciEvidence": {
+    "head": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+    "workflowUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38472837495",
+    "artifactId": 11852727674,
+    "zipSha256": "4d1ba70c923a7981c763e3d71efaba6af933f1fc70ee791146bd35bea23342ba",
+    "reportPath": "artifacts/v7/devotional-ci-539829/report.json",
+    "reportSha256": "3d6d44c5bfd7f26b49bf20f6a7079bfef7c1f0272ecc24bbe02da398d1bb243d",
+    "rejected": [],
+    "deliveryScope": "QA-only routed staging bytes, not deployed production HTTP",
+    "sixBatchScreenshotCount": 192
+  },
+  "independentCoordinatorPixelInspection": "All six full staged masters; all six exact-head CI 320px Cebuano portrait/live-title screenshots and all six exact-head CI 100px English square thumbnail screenshots at200% text; narratives retained and text wraps without clipping.",
+  "roleEvidencePaths": [
+    "data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json"
+  ],
+  "roleEvidenceSha256": {
+    "data/v7/visual-assets/reviews/devotional-six-20261014-scene.json": "c8879268b4a01cd856578492b6ac7ce72ca84524a665109547afe1856df71f48",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-rights.json": "c3f090c9e299d34615e074c131a72f7d28f6640571d25d80d69bc41c72206fd8",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-technical.json": "05dcaaeeff3958f830920872b58e06c8b47dcc0593f08820e387cd7288ed704b",
+    "data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json": "44deb1564e301075928096f062212f94c356db9b77b8fac8897b5bdb707aed06"
+  },
+  "productionMissingEvidence": [
+    "Actual production component certification",
+    "Production served-byte/offline proof",
+    "Release publication gates",
+    "Canonical asset record/registry integration and exact integrated Lane D release certification"
+  ]
+}

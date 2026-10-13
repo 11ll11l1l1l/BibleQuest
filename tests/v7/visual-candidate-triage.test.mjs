@@ -156,3 +156,38 @@ test('rejected ledger attempts never re-enter single-master browser intake',asyn
  const root=await singleFixture(t,r=>{r.status='rejected';delete r.candidatePath});
  const result=await triageV7SingleMasters(root);assert.deepEqual(result.technicallyVerified,[]);
 });
+
+async function devotionalFixture(t, change=()=>{}) {
+ const root=await singleFixture(t);
+ const ledgerPath=join(root,'data/v7/visual-assets/production-ledger.json');
+ const ledger=JSON.parse(await readFile(ledgerPath,'utf8')),row=ledger.entries[0];
+ const bytes=await readFile(join(root,row.candidatePath));bytes.writeUIntLE(1279,27,3);
+ await writeFile(join(root,row.candidatePath),bytes);
+ row.sha256=createHash('sha256').update(bytes).digest('hex');
+ Object.assign(row.measured,{height:1280,sha256:row.sha256});
+ const sourcePath='content/v7/devotionals/biblequest-original-emotions-03c.json';
+ const bundle=JSON.parse(await readFile(new URL('../../'+sourcePath,import.meta.url),'utf8'));
+ const item=bundle.items.find(value=>value.id==='devotional.biblequest.peace_contentment.03');
+ Object.assign(row,{family:'devotional',contentId:item.id,sourcePath,sourceRevision:item.source.revision,
+  sourceChecksum:item.source.checksum,sourceContent:structuredClone(item.sourceContent),reference:'Hebrews 13:5'});
+ change(row,item);
+ await mkdir(join(root,'content/v7/devotionals'),{recursive:true});
+ await writeFile(join(root,sourcePath),JSON.stringify(bundle));
+ await writeFile(ledgerPath,JSON.stringify(ledger));return root;
+}
+test('devotional intake binds full first-party source and reviewed titles without publication',async t=>{
+ const result=await triageV7SingleMasters(await devotionalFixture(t));
+ assert.deepEqual(result.rejected,[]);assert.equal(result.technicallyVerified.length,1);
+ assert.equal(result.technicallyVerified[0].labels.en,'Practice contentment with presence');
+ assert.equal(result.technicallyVerified[0].labels.ceb,'Pagpraktis sa pagkakontento pinaagi sa presensya');
+ assert.equal(result.technicallyVerified[0].publicationApproved,false);
+});
+test('devotional intake rejects source tampering, stale translation, rights and path escapes',async t=>{
+ for(const change of [(r,i)=>{i.sourceContent.body+=' changed'},r=>{r.sourceContent.title='Changed'},
+  r=>{r.sourceRevision='r2'},r=>{r.reference='Matthew 1:1'},r=>{r.reference='13:5'},r=>{r.sourcePath='../private.json'},
+  (r,i)=>{i.rights.status='pending_review'},(r,i)=>{i.translations[0].translatedFromRevision='r0'},
+  (r,i)=>{i.translations[0].reviewStatus='pending_review'}]) {
+  const result=await triageV7SingleMasters(await devotionalFixture(t,change));
+  assert.equal(result.technicallyVerified.length,0);assert.equal(result.rejected.length,1);
+ }
+});
