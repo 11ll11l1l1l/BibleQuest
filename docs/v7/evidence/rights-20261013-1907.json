@@ -1,0 +1,34 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-13",
+  "baseline": "d0cefe98ab3586f706b6cc609962b04e7b42090f",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "policyBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "reviews": [
+    {
+      "pr": 1437,
+      "head": "b3f19e42de61724513bdea90e747917e194f6874",
+      "contentId": "hopeful",
+      "verdict": "HOLD_PROVENANCE",
+      "sidecarBlob": "a509d279bdfd72cd8613f966336a777a316f71d7",
+      "cleanSha256": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+      "typeSha256": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+      "thumbSha256": "4f60530aefb863439905cd80d02f657567788f386ec7e538e7446d9038e51e1f",
+      "wording": "Hopeful — Romans 15:13; CLEAN has no baked words",
+      "missing": "Original generation PNG, input-rights chain, exact prompt, licensed live locale and verse rendering, five-role certification"
+    },
+    {
+      "pr": 1436,
+      "head": "5782f3a51f26cd9cafdd92dbe129ccd1d181f63e",
+      "contentId": "jealous",
+      "verdict": "HOLD_PROVENANCE",
+      "sidecarBlob": "d1752836a54bd4b1809f43b355454ca589bc05bf",
+      "cleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "typeSha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+      "thumbSha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+      "wording": "Jealous / envious — Proverbs 14:30; CLEAN has no baked words",
+      "missing": "Original generation provenance, source art rights, licensed live locale/verse rendering, exact-head certification"
+    }
+  ],
+  "release": "No approval; CLEAN-only Feeling/Need remains HOLD_POLICY_MIGRATION. No deletion, crop, merge or deployment."
+}
