@@ -1091,7 +1091,7 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "library-reference-study-20261014-r2",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-13T22:22:15.756698+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
@@ -1105,7 +1105,7 @@
       "textSafeRegion": "right",
       "focalPoint": {
         "x": 0.5,
-        "y": 0.45
+        "y": 0.6
       },
       "sceneFingerprint": {
         "action": "library-reference-study",
@@ -1114,7 +1114,20 @@
         "perspective": "restrained eye-height environmental portrait",
         "sourceRevision": "r1"
       },
-      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8df5b7d8c1b799accbe1f8213454a4c567d9f3d4dfb31f4b1ae3e6643015dfaf",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights QA FAIL: baked letter-like paragraphs on open book pages; no readable quotation or proven copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:27:18.531427+00:00",
+      "failedMeasuredBytesSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45"
     },
     {
       "family": "devotional",
@@ -1124,7 +1137,7 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "garden-hose-reroute-20261014-r2",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T22:22:15.763670+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
@@ -1138,7 +1151,7 @@
       "textSafeRegion": "right",
       "focalPoint": {
         "x": 0.5,
-        "y": 0.45
+        "y": 0.55
       },
       "sceneFingerprint": {
         "action": "garden-hose-reroute",
@@ -1147,7 +1160,32 @@
         "perspective": "restrained eye-height environmental portrait",
         "sourceRevision": "r1"
       },
-      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
+      "note": "Missing canonical cover; native single-scene source generated after persisted claim. Five-role independent QA pending.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 462366,
+        "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "12a91c0d0429ef3da9193a522bbf64deba8a14890e1e523f27f764ab823e566d",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Gardener calmly guides a curved irrigation hose beside a loose stone rather than yanking it.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      }
     },
     {
       "family": "devotional",
@@ -1157,7 +1195,7 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "school-custodian-mural-20261014-r2",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T22:22:15.773188+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
@@ -1171,7 +1209,7 @@
       "textSafeRegion": "left",
       "focalPoint": {
         "x": 0.5,
-        "y": 0.45
+        "y": 0.35
       },
       "sceneFingerprint": {
         "action": "school-custodian-mural",
@@ -1180,7 +1218,65 @@
         "perspective": "restrained eye-height environmental portrait",
         "sourceRevision": "r1"
       },
-      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
+      "note": "Missing canonical cover; native single-scene source generated after persisted claim. Five-role independent QA pending.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 211942,
+        "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "3ce616e4efbf5188e9abdcc41650af71bbd0fadac58761b1cfbd598b8bc5ace7",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Custodian smiles alongside three students appreciating an abstract school mural.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      }
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r3",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-photographic-atlas-overhead-20261014-r3",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T22:27:18.531485+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "sceneFingerprint": {
+        "action": "compare three photograph-only reference atlases",
+        "setting": "public library study table",
+        "peopleCount": 1,
+        "perspective": "high three-quarter over shoulder",
+        "sourceRevision": "r1"
+      },
+      "note": "New native source after r2 pseudoletter FAIL. Different older male cast, overhead camera, photograph-only atlas pages and comparison action. No paragraphs/letters/page numbers."
     }
   ]
 }
