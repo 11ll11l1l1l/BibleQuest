@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { minimumSize, verifyGeometry, selectNext, validateLedger } from '../../scripts/v7-image-work-ledger.mjs';
+import { minimumSize, verifyGeometry, selectNext, validateLedger, isV7StagedCandidateFilename } from '../../scripts/v7-image-work-ledger.mjs';
 
 function webpHeader(width,height) {
   const b=Buffer.alloc(30);
@@ -50,4 +50,11 @@ test('failed, held and already-reviewed slots do not block the next item',()=>{
   assert.equal(selectNext([first,second,third],'scene').attemptId,'try-c');
   assert.equal(selectNext([first,second,third],'rights').attemptId,'try-b');
   assert.equal(selectNext([first,second,third],'coordinator').attemptId,'try-b');
+});
+
+test('staging audit accepts real PNG/WebP filenames and rejects paths and disguised extensions', () => {
+ for(const name of ['manual-peace-20261013-r3.webp','try_a.02.png'])
+  assert.equal(isV7StagedCandidateFilename(name),true,name);
+ for(const name of ['../try.png','dir/try.webp','try.svg','try.webp.js','try\\.webp','.png'])
+  assert.equal(isV7StagedCandidateFilename(name),false,name);
 });

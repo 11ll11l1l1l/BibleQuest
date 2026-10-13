@@ -8,6 +8,13 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
+## Peace master intake and QA-pipeline repair — 2026-10-13 JST, PR #1535
+
+- Generated two independent contemporary text-free master candidates: `need:peace` (mother calmly listening to her child amid a busy waiting room, 1122×1402) and `emotion:peaceful` (contented adult in a modest home, 1254×1254). Both are actual original rasters replacing unsupported SVG concept candidates, not duplicates of existing valid open raster submissions.
+- Claims were GitHub-visible before rendering. Measured WebPs, source PNG hashes, exact render prompts, source blob and producer observations are bound in the ledger/evidence. Five independent reviewer files are separate; no producer self-approval.
+- Fixed an overescaped staging-extension regex that rejected legitimate submitted WebP filenames. Added source-locked single-master browser intake: exact submitted bytes/SHA, canonical source/reference, provenance and focal bounds; live EN/TL/CEB/ILO text at200% and 320/390/430/800 plus100px crops. Legacy approved-file and three-file candidate checks remain.
+- Candidate bytes are QA-only routed in disposable Chromium, excluded from deployable output. Source/presentation proof is not production-served HTTP evidence. **Production remains HOLD_POLICY_MIGRATION** until single-master coverage/approval/release schema migration is integrated; no artwork completion or production release claimed here.
+
 ## Live-title and focal-position runtime repair — 2026-10-13 JST
 
 - Shared app resolver and Library cards use the approved CLEAN master with existing live localized headings. Legacy TYPE files remain audited/stored but no longer override app titles. Explicit optional thumbnail renditions remain supported.

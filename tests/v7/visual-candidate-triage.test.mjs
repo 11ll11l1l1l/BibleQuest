@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { mkdir, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { triageV7ArtworkCandidates, triageV7SingleMasters } from '../../scripts/v7-visual-candidate-triage.mjs';
 import { candidateQuarantineReason, KNOWN_REJECTED_V7_VARIANTS } from '../../scripts/v7-visual-candidate-policy.mjs';
 
 async function fixture(t, entries) {
@@ -113,4 +114,45 @@ test('known rejected image digests cannot be relabeled as visually approved cand
         'new digest needs fresh review but is not on the known-bad list');
     }
   }
+});
+
+async function singleFixture(t, change=()=>{}) {
+ const root=await fixture(t,{});
+ const source=await readFile(new URL('../../src/features/library/emotion-taxonomy.js',import.meta.url));
+ const sourceBlob=createHash('sha1').update(Buffer.from('blob '+source.length+'\0')).update(source).digest('hex');
+ // Header triage fixture only; actual full decoding is a separate Chromium gate.
+ const bytes=Buffer.alloc(30);bytes.write('RIFF',0);bytes.writeUInt32LE(22,4);bytes.write('WEBP',8);
+ bytes.write('VP8X',12);bytes.writeUInt32LE(10,16);bytes.writeUIntLE(1023,24,3);bytes.writeUIntLE(1023,27,3);
+ const digest=createHash('sha256').update(bytes).digest('hex');
+ const row={family:'emotion',contentId:'peaceful',variant:'CLEAN',attemptId:'test-single',producer:'manual-chat',
+  sourcePath:'src/features/library/emotion-taxonomy.js',sourceRevision:'taxonomy-'+sourceBlob,
+  sourceChecksum:'gitblob:'+sourceBlob,sceneRevision:'test-r1',status:'qa_pending',qa:{},
+  candidatePath:'data/v7/visual-assets/qa-candidates/test-single.webp',sha256:digest,
+  measured:{width:1024,height:1024,bytes:bytes.length,sha256:digest},reference:'Philippians 4:11-12',
+  focalPoint:{x:0,y:1},generation:{provider:'OpenAI image generation',thirdPartyInputs:false,originalSha256:'a'.repeat(64)},
+  producerPreflight:{noBakedText:true,singleScene:true}};
+ await mkdir(join(root,'src/features/library'),{recursive:true});
+ await writeFile(join(root,row.sourcePath),source);
+ await mkdir(join(root,'data/v7/visual-assets/qa-candidates'),{recursive:true});
+ await writeFile(join(root,row.candidatePath),bytes);
+ change(row);
+ await writeFile(join(root,'data/v7/visual-assets/production-ledger.json'),JSON.stringify({schemaVersion:1,entries:[row]}));
+ return root;
+}
+test('one CLEAN candidate reaches technical intake without inventing TYPE/THUMB or publication',async t=>{
+ const result=await triageV7SingleMasters(await singleFixture(t));
+ assert.equal(result.technicallyVerified.length,1);assert.deepEqual(result.rejected,[]);
+ assert.equal(result.publicationApproved,false);assert.equal(result.technicallyVerified[0].labels.ilo,'Natalna / kontento');
+});
+test('single-master intake rejects changed bytes, source revisions, unsafe paths and noncanonical wording',async t=>{
+ for(const change of [r=>{r.sha256='0'.repeat(64)},r=>{r.sourceChecksum='gitblob:'+'0'.repeat(40)},
+  r=>{r.candidatePath='../../private.webp'},r=>{r.reference='Matthew 1:1'},r=>{r.focalPoint.x=NaN},
+  r=>{r.generation.thirdPartyInputs=true}]) {
+  const result=await triageV7SingleMasters(await singleFixture(t,change));
+  assert.equal(result.technicallyVerified.length,0);assert.equal(result.rejected.length,1);
+ }
+});
+test('rejected ledger attempts never re-enter single-master browser intake',async t=>{
+ const root=await singleFixture(t,r=>{r.status='rejected';delete r.candidatePath});
+ const result=await triageV7SingleMasters(root);assert.deepEqual(result.technicallyVerified,[]);
 });

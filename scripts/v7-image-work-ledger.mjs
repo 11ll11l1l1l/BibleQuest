@@ -29,6 +29,8 @@ const ID = /^[a-zA-Z0-9][a-zA-Z0-9._-]{1,119}$/;
 const SAFE_URL = /^https:\/\/github\.com\/11ll11l1l1l\/BibleQuest\/(?:pull|issues|actions|blob|commit)\//;
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const keyOf = r => r.family + ':' + r.contentId + ':' + r.variant;
+export const isV7StagedCandidateFilename = name =>
+  typeof name === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9._-]*\.(?:png|webp)$/.test(name);
 
 export function minimumSize(family, variant) {
   if (variant === 'THUMB') {
@@ -204,7 +206,7 @@ export async function runLedger(command, args, root=ROOT) {
     try {
       const dir=join(ROOT,STAGING);
       for(const name of await readdir(dir)) {
-        if(!/^[a-zA-Z0-9._-]+\\.(?:png|webp)$/.test(name)) {
+        if(!isV7StagedCandidateFilename(name)) {
           missing.push('unrecognized_candidate_file:'+name); continue;
         }
         const candidate=STAGING+name;

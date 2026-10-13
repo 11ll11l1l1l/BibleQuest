@@ -1,0 +1,63 @@
+{
+  "role": "technical_responsive",
+  "reviewer": "independent-peace-technical-qa",
+  "overallVerdict": "HOLD",
+  "releaseApproval": false,
+  "scope": "Native raster verification complete; responsive built evidence pending",
+  "candidates": [
+    {
+      "attemptId": "manual-peace-20261013-r3",
+      "contentId": "peace",
+      "path": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 174990,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "ratio": 0.8002853067047075,
+      "minimumMet": true,
+      "verdict": "HOLD",
+      "missingEvidence": [
+        "Exact PR head and CI proof",
+        "Actual candidate Chromium crops and text at required viewports/locales/zoom",
+        "Served-byte identity and offline/network scope"
+      ]
+    },
+    {
+      "attemptId": "manual-peaceful-20261013-r3",
+      "contentId": "peaceful",
+      "path": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 213416,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.45
+      },
+      "focalInBounds": true,
+      "ratio": 1.0,
+      "minimumMet": true,
+      "verdict": "HOLD",
+      "missingEvidence": [
+        "Exact PR head and CI proof",
+        "Actual candidate Chromium crops and text at required viewports/locales/zoom",
+        "Served-byte identity and offline/network scope"
+      ]
+    }
+  ]
+}
