@@ -1,0 +1,41 @@
+{
+  "review": "rights_wording_provenance",
+  "date": "2026-10-13",
+  "policySha": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "taxonomySha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "sourceTeachingBlob": "8393ea24f8326a31c2b6e94a57aa071b872720ab",
+  "results": [
+    {
+      "pr": 1439,
+      "head": "138436bd935fcdbed6fa75897a749857028e735f",
+      "id": "doubtful",
+      "cleanSha256": "14e9bd1edce76cb160900780e1160b225ebd026bc5033eeab2565e1623bd7cab",
+      "sourceRecordBlob": "d0ca456ce5e41fffcda3899d37a25dc84a43a1ed",
+      "verdict": "HOLD_PROVENANCE",
+      "missing": "Original PNG/input-rights proof and live localized rendering. CLEAN-only Feeling release HOLD_POLICY_MIGRATION."
+    },
+    {
+      "pr": 1458,
+      "head": "a6964690d586896e583b97f2f797ad6a80cabe3d",
+      "id": "teaching.serving-humility",
+      "cleanSha256": "6df810c99da29ee76c6a5dbbb6941822386165d84a1f50b6c567b769a287ad8b",
+      "sourceRecordBlob": "d8e7092c6e7a48edcdba1216952a18ec688509c6",
+      "verdict": "HOLD_PROVENANCE_SOURCE_REVIEW",
+      "missing": "Original PNG/input-rights proof; source pending_review; localized rendering unverified."
+    },
+    {
+      "pr": 1459,
+      "head": "c1e0c72f5199e1bd431163ba463127c1a79eb57f",
+      "id": "teaching.forgiveness-reconciliation",
+      "cleanSha256": "16cbd68d16b5b3e8dd73368e9d1f4eefc06e4717ca6d6c451233ab72a7b0da03",
+      "sourceRecordBlob": "4c2906140bafad6277ea556bc77fc0125aa3a302",
+      "verdict": "HOLD_PROVENANCE_SOURCE_REVIEW",
+      "missing": "Original PNG/input-rights proof; source pending_review; localized rendering unverified."
+    }
+  ],
+  "summary": {
+    "PASS": 0,
+    "FAIL": 0,
+    "HOLD": 3
+  }
+}
