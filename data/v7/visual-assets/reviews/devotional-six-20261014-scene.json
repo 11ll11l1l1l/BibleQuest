@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "role": "scene",
+  "reviewerIdentity": "/root/peace_scene_qa",
+  "reviewedAt": "2026-10-13T21:39:54.317306+00:00",
+  "reviewMethod": "Independent view_image full-frame inspection of each of six exact staged WebPs; canonical full English body, r1 and checksum read directly from devotional source and checked against ledger; matched chapter03 guide instructions; BSB Scripture context retrieved independently.",
+  "releaseApproved": false,
+  "reviews": [
+    {
+      "canonicalId": "devotional.biblequest.peace_contentment.03",
+      "attemptId": "manual-contentment03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceContent": {
+        "title": "Practice contentment with presence",
+        "body": "Contentment is stronger when it rests on presence rather than possessions. Hebrews 13:5 connects freedom from the love of money with God's promise not to leave his people. Notice what money or achievement cannot provide, then receive the relationships and presence already available today."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Hebrews 13:5",
+      "scriptureContext": "Hebrews 13:1-6 exhorts believers toward love and contentment, grounding freedom from love of money in God\u2019s faithful presence. Repair with a present companion illustrates ordinary sufficiency without implying repaired possessions replace God.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/hebrews/13.htm",
+      "observedEvidence": [
+        "Adult uses a screwdriver on the hinge of an existing ordinary reading lamp; unplugged plug is visibly lying on the table.",
+        "Companion prepares cups in the same modest apartment, making relational presence visible beside repair rather than a new purchase.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "History of choosing repair over replacement is implied by the visible repair, not independently observable; God\u2019s presence and motive remain in the accompanying source prose.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.tiredness_weariness.03",
+      "attemptId": "manual-weariness03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceContent": {
+        "title": "Receive strength instead of manufacturing it",
+        "body": "Weariness can make you work harder simply because you feel weak. Isaiah 40:29 describes God giving strength to the weary. Ask what restoration actually requires: sleep, food, help, quiet, or prayer. Strength received can be wiser than effort forced."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Isaiah 40:29",
+      "scriptureContext": "Isaiah 40:27-31 answers Israel\u2019s sense of being overlooked by pointing to the everlasting Creator who strengthens the weary. The recovery scene illustrates receiving restoration rather than forcing effort; it promises no immediate medical cure.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/isaiah/40.htm",
+      "observedEvidence": [
+        "Adult rests naturally on sofa, hands relaxed on thighs, tired/settled expression; bed, towel and glass of water visible nearby.",
+        "Hall light is visibly dark; recovery rather than frantic work, collapse or luxury spa is depicted.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "Parent status, prior switch-off movement and sleep are not provable from this still; rest, towel, water and dark hall lamp are visible.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.anger.03",
+      "attemptId": "manual-anger03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Do not give anger a room overnight",
+        "body": "Anger can be a signal without becoming a permanent resident. Ephesians 4:26-27 warns against letting anger remain and gain ground. Before the day closes, identify what must be addressed, what must be released, and what conversation needs a calmer time."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Ephesians 4:26-27",
+      "scriptureContext": "Ephesians 4:25-32 addresses the community\u2019s truthful speech, anger without sin, relinquishing hostility and kindness. Open palms and calm discussion provide a source-faithful modern illustration of releasing anger and addressing matters constructively.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/ephesians/4.htm",
+      "observedEvidence": [
+        "Technician stands back from an open small electronic prototype, both palms open on workbench.",
+        "A colleague listens face to face; deliberate nonaggressive conversation is visible with no raised fists.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "Prior anger, prototype malfunction and an elapsed step away are not observable; current open-handed calm discussion is visible.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.gratitude.03",
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceContent": {
+        "title": "Do not forget the benefits",
+        "body": "Gratitude weakens when good gifts become background noise. Psalm 103:2 tells the soul not to forget God's benefits. Review the last seven days and name three provisions you almost stopped noticing. Remembering turns ordinary goodness back into received grace."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Psalm 103:2",
+      "scriptureContext": "Psalm 103:1-5 calls the soul to remember and bless God for his kindness, forgiveness, rescue and provision. Appreciation expressed through an ordinary shared meal illustrates noticing goodness, without reducing the psalm to food or a transaction.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/psalms/103.htm",
+      "observedEvidence": [
+        "Bag-carrying adult shares a plain food container at an ordinary apartment entry with an older neighbor.",
+        "Warm eye contact and modest appreciative smile visibly communicate acknowledgement of care and everyday provision.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "An earlier trip, apartment-checking favor and homemade origin cannot be proven from pixels; appreciative food handoff and neighbor-like entry encounter are supported.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.fear.03",
+      "attemptId": "manual-fear03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Courage can move while fear remains",
+        "body": "Fear does not have to disappear before obedience begins. Joshua 1:9 ties courage to God's presence, not to a fearless feeling. Name the next faithful action, take it at a manageable size, and let courage be movement with God rather than the absence of fear."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Joshua 1:9",
+      "scriptureContext": "Joshua 1:1-9 is God\u2019s commission to Joshua after Moses, linking courage to divine presence and obedience. Supported careful movement is an illustrative contemporary application, not a literal Joshua scene or a guarantee of safety for reckless activity.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/joshua/1.htm",
+      "observedEvidence": [
+        "Cautious-looking adult walks a sturdy railed harbor gangway, one hand on railing, beside an attentive smiling companion.",
+        "Both walk safely on the gangway surface; deliberate manageable movement is visible without a cliff pose or unsafe leap.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "Deep-water phobia, trust history and specific obedience cannot be proved from pixels; cautious expression, support and safe movement are visible.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    },
+    {
+      "canonicalId": "devotional.biblequest.loneliness.03",
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Tell God the ache of being alone",
+        "body": "Loneliness can make silence feel like proof that nobody sees you. Psalm 25:16 turns loneliness itself into prayer. Tell God exactly where isolation hurts, then choose one human connection you can pursue rather than waiting for connection to happen accidentally."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "Psalm 25:16",
+      "scriptureContext": "Psalm 25:15-22 is David\u2019s prayer for grace in loneliness, affliction and distress. Offering connection illustrates the devotional\u2019s additional practical invitation; no claim is made that Psalm 25 commands restaurant socializing or guarantees loneliness disappears.",
+      "scripturePrimaryTextUrl": "https://biblehub.com/bsb/psalms/25.htm",
+      "observedEvidence": [
+        "Diner patron looks at arriving neighbor and holds the back of the empty chair turned toward them.",
+        "Visible eye contact and offered seating illustrate intentionally initiating human connection in an ordinary evening diner.",
+        "One coherent contemporary photographic scene; no visible baked Scripture, title, UI, watermark or unrelated cross."
+      ],
+      "limitations": [
+        "Night-shift employment, prior loneliness and actual prayer cannot be proved from pixels; deliberate invitation and evening diner setting are visible.",
+        "Full source prose remains necessary for theological meaning; still pixels cannot independently demonstrate a person\u2019s faith or internal spiritual experience.",
+        "Role-only PASS: independent uniqueness, rights, technical/crop and coordinator judgments remain separate. No production or release approval."
+      ]
+    }
+  ]
+}

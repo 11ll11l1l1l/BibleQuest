@@ -1,0 +1,11 @@
+# Six devotional master QA evidence — 2026-10-14
+
+These are immutable staged CLEAN masters, not registered production images. The six sources are contentment.03, tiredness_weariness.03, anger.03, gratitude.03, fear.03 and loneliness.03. Originals and exact generation prompts remain in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md.
+
+The single-master intake now verifies the canonical first-party devotional item, title-newline-body SHA-256, source revision, complete source body/title, verified display/translation rights, cited reference, reviewed EN/TL/CEB/ILO title revisions, safe paths, native geometry, exact raster hash, focal bounds and prompt-only provenance. Regression tests reject source edits, mismatched revisions/titles, partial or unrelated references, stale translations, unverified rights and path traversal. This does not approve source publication.
+
+Actual Chromium evidence: commit `539829172ba2bbad3cadd84c1602bcfe2913440e`, [workflow38472837495](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38472837495), artifact11852727674, ZIP SHA-256 `4d1ba70c923a7981c763e3d71efaba6af933f1fc70ee791146bd35bea23342ba`. Root downloaded and verified the ZIP digest. The report records eight accepted masters, zero rejected masters and256 screenshots;192 belong to these six,64 to prior Peace/Peaceful masters. Each candidate has32 screenshots:320/390/430/800 widths × EN/TL/CEB/ILO × live-title/100px-thumbnail. Actual root text scale is200%. Source bytes are routed through a QA-only Playwright endpoint, excluded from deployable build. This is not production-component or deployed-HTTP/offline evidence.
+
+Five independent QA-only roles record exact-SHA verdicts in `data/v7/visual-assets/reviews/devotional-six-20261014-{scene,rights,technical,uniqueness,coordinator}.json`. Producer observations never substitute for independent verdicts. The ledger may mark an immutable staged image qa_passed only after all five candidate-specific verdicts pass. Publication remains false and production eligibility remains HOLD_REGISTRATION_AND_RELEASE.
+
+Validation:698 V7 unit tests and ledger audit passed; Vite build passed. The final metadata commit must also complete all four exact-head repository checks before merging into development. No production release is asserted.

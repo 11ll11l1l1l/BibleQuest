@@ -545,9 +545,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "lamp-repair-20261014-r4",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:21:12.087Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
       "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
       "sourceContent": {
@@ -555,7 +591,7 @@
         "body": "Contentment is stronger when it rests on presence rather than possessions. Hebrews 13:5 connects freedom from the love of money with God's promise not to leave his people. Notice what money or achievement cannot provide, then receive the relationships and presence already available today."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "One independently generated original CLEAN portrait. Existing attempts failed before submission; no valid pending source duplicates. Full five-role QA remains pending.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -586,7 +622,11 @@
         "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
       },
       "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
-      "reference": "Hebrews 13:5"
+      "reference": "Hebrews 13:5",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     },
     {
       "family": "devotional",
@@ -596,9 +636,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "recovery-sofa-20261014-r4",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:21:12.159Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
       "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
       "sourceContent": {
@@ -606,7 +682,7 @@
         "body": "Weariness can make you work harder simply because you feel weak. Isaiah 40:29 describes God giving strength to the weary. Ask what restoration actually requires: sleep, food, help, quiet, or prayer. Strength received can be wiser than effort forced."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "One independently generated original CLEAN portrait. Existing attempts failed before submission; no valid pending source duplicates. Full five-role QA remains pending.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -637,7 +713,11 @@
         "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
       },
       "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
-      "reference": "Isaiah 40:29"
+      "reference": "Isaiah 40:29",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     },
     {
       "family": "devotional",
@@ -647,9 +727,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "electronics-lab-20261014-r4",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:21:12.233Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
       "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
       "sourceContent": {
@@ -657,7 +773,7 @@
         "body": "Anger can be a signal without becoming a permanent resident. Ephesians 4:26-27 warns against letting anger remain and gain ground. Before the day closes, identify what must be addressed, what must be released, and what conversation needs a calmer time."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "One independently generated original CLEAN portrait. Existing attempts failed before submission; no valid pending source duplicates. Full five-role QA remains pending.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -688,7 +804,11 @@
         "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
       },
       "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
-      "reference": "Ephesians 4:26-27"
+      "reference": "Ephesians 4:26-27",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     },
     {
       "family": "devotional",
@@ -698,9 +818,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "neighbor-food-thanks-20261014-r1",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:34:55.596Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
       "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
       "sourceContent": {
@@ -708,7 +864,7 @@
         "body": "Gratitude weakens when good gifts become background noise. Psalm 103:2 tells the soul not to forget God's benefits. Review the last seven days and name three provisions you almost stopped noticing. Remembering turns ordinary goodness back into received grace."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -739,7 +895,11 @@
         "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
       },
       "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
-      "reference": "Psalm 103:2"
+      "reference": "Psalm 103:2",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     },
     {
       "family": "devotional",
@@ -749,9 +909,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "harbor-safe-step-20261014-r1",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:34:55.667Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
       "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
       "sourceContent": {
@@ -759,7 +955,7 @@
         "body": "Fear does not have to disappear before obedience begins. Joshua 1:9 ties courage to God's presence, not to a fearless feeling. Name the next faithful action, take it at a manageable size, and let courage be movement with God rather than the absence of fear."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -790,7 +986,11 @@
         "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
       },
       "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
-      "reference": "Joshua 1:9"
+      "reference": "Joshua 1:9",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     },
     {
       "family": "devotional",
@@ -800,9 +1000,45 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "diner-invitation-20261014-r1",
-      "status": "qa_pending",
+      "status": "qa_passed",
       "claimedAt": "2026-10-13T20:34:55.738Z",
-      "qa": {},
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
       "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
       "sourceContent": {
@@ -810,7 +1046,7 @@
         "body": "Loneliness can make silence feel like proof that nobody sees you. Psalm 25:16 turns loneliness itself into prayer. Tell God exactly where isolation hurts, then choose one human connection you can pursue rather than waiting for connection to happen accidentally."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
       "generation": {
         "provider": "OpenAI image generation",
         "mode": "built-in interactive",
@@ -841,7 +1077,11 @@
         "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
       },
       "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
-      "reference": "Psalm 25:16"
+      "reference": "Psalm 25:16",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
     }
   ]
 }

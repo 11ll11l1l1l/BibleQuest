@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "independent-rights-wording-agent",
+  "reviewedAt": "2026-10-13T21:39:56.786380+00:00",
+  "baselineCommit": "a660c639b542b50dd18c7fbcf846725488c4b616",
+  "candidatePr": 1536,
+  "publicationApproved": false,
+  "reviews": [
+    {
+      "attemptId": "manual-contentment03-20261014-r4",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceContent": {
+        "title": "Practice contentment with presence",
+        "body": "Contentment is stronger when it rests on presence rather than possessions. Hebrews 13:5 connects freedom from the love of money with God's promise not to leave his people. Notice what money or achievement cannot provide, then receive the relationships and presence already available today."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Practice contentment with presence",
+        "tl": "Magsanay ng kasiyahan sa presensya",
+        "ceb": "Pagpraktis sa pagkakontento pinaagi sa presensya",
+        "ilo": "Agpraktis iti pannakapnek babaen iti kaadda"
+      },
+      "authorizedReferenceOnly": "Hebrews 13:5",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-685978c5-0faf-4bed-b491-2df0c4b7fdb2.png",
+        "originalPngSha256": "c0b4afebcef1df2fc94a20dae4d837aa2b1e94cded7e5f113c0e4d7d62b6ce42",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    },
+    {
+      "attemptId": "manual-weariness03-20261014-r4",
+      "contentId": "devotional.biblequest.tiredness_weariness.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceContent": {
+        "title": "Receive strength instead of manufacturing it",
+        "body": "Weariness can make you work harder simply because you feel weak. Isaiah 40:29 describes God giving strength to the weary. Ask what restoration actually requires: sleep, food, help, quiet, or prayer. Strength received can be wiser than effort forced."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Receive strength instead of manufacturing it",
+        "tl": "Tumanggap ng lakas sa halip na pilitin ito",
+        "ceb": "Dawata ang kusog imbis pugson kini",
+        "ilo": "Awatem ti pigsa imbes a piliten"
+      },
+      "authorizedReferenceOnly": "Isaiah 40:29",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-86c3ce52-c02f-4952-bf44-518bbf503d5b.png",
+        "originalPngSha256": "68c97aba1766eb937657dca02c8a79bcc6ce8ca53fe09e57fb53d3bd55d39958",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    },
+    {
+      "attemptId": "manual-anger03-20261014-r4",
+      "contentId": "devotional.biblequest.anger.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Do not give anger a room overnight",
+        "body": "Anger can be a signal without becoming a permanent resident. Ephesians 4:26-27 warns against letting anger remain and gain ground. Before the day closes, identify what must be addressed, what must be released, and what conversation needs a calmer time."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Do not give anger a room overnight",
+        "tl": "Huwag bigyan ng silid ang galit magdamag",
+        "ceb": "Ayaw tugoti ang kasuko nga magpuyo tibuok gabii",
+        "ilo": "Saanmo a pagtaengen ti pungtot iti rabii"
+      },
+      "authorizedReferenceOnly": "Ephesians 4:26-27",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-ac3fd771-ab4b-4153-9c03-ffffc411653c.png",
+        "originalPngSha256": "e544b44e159ac19ce5a632c6b39b51f7392232c1eae41e18e3e2bde72330cc01",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    },
+    {
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "contentId": "devotional.biblequest.gratitude.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceContent": {
+        "title": "Do not forget the benefits",
+        "body": "Gratitude weakens when good gifts become background noise. Psalm 103:2 tells the soul not to forget God's benefits. Review the last seven days and name three provisions you almost stopped noticing. Remembering turns ordinary goodness back into received grace."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Do not forget the benefits",
+        "tl": "Huwag kalimutan ang mga kabutihan",
+        "ceb": "Ayaw kalimti ang mga kaayohan",
+        "ilo": "Saanmo a lipaten dagiti bendision"
+      },
+      "authorizedReferenceOnly": "Psalm 103:2",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-13a3c348-8788-420b-bbef-88e1b3bcc08d.png",
+        "originalPngSha256": "8f9b90af07dbb477efa4d70d58419b5f8273932ed38dd978ef74c1197734f5aa",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    },
+    {
+      "attemptId": "manual-fear03-20261014-r1",
+      "contentId": "devotional.biblequest.fear.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Courage can move while fear remains",
+        "body": "Fear does not have to disappear before obedience begins. Joshua 1:9 ties courage to God's presence, not to a fearless feeling. Name the next faithful action, take it at a manageable size, and let courage be movement with God rather than the absence of fear."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Courage can move while fear remains",
+        "tl": "Maaaring kumilos ang tapang kahit may takot",
+        "ceb": "Makalihok ang kaisog bisan adunay kahadlok",
+        "ilo": "Mabalin nga agtignay ti kinatured uray adda ti buteng"
+      },
+      "authorizedReferenceOnly": "Joshua 1:9",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-3bf2c61d-1329-4bd1-88e8-b9da64371d22.png",
+        "originalPngSha256": "6c53fec75ab1b41838c448785ff0d1ff7cfb68725f055b700722f61727ffdce1",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    },
+    {
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "contentId": "devotional.biblequest.loneliness.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and authorized source-bound live wording; not full artwork or publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceContent": {
+        "title": "Tell God the ache of being alone",
+        "body": "Loneliness can make silence feel like proof that nobody sees you. Psalm 25:16 turns loneliness itself into prayer. Tell God exactly where isolation hurts, then choose one human connection you can pursue rather than waiting for connection to happen accidentally."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Tell God the ache of being alone",
+        "tl": "Sabihin sa Diyos ang sakit ng pag-iisa",
+        "ceb": "Isulti sa Dios ang kasakit sa pag-inusara",
+        "ilo": "Ibagam iti Dios ti sakit ti panagmaymaysa"
+      },
+      "authorizedReferenceOnly": "Psalm 25:16",
+      "translationEvidence": "TL/CEB/ILO complete translated bodies read; each source r1 and existing reviewed status, live title copied exactly from canonical translation. No new translation approval status asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "mode": "built-in interactive",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts and invocation metadata read in DEVOTIONAL_THREE_20261014.md and DEVOTIONAL_NEXT_THREE_20261014.md plus generating parent report: prompt and transparent_background:false only.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-e179cbc8-adf6-43d3-9bfe-6fbf3e4ade4d.png",
+        "originalPngSha256": "bddce1354229b8c520e02095118978a5d6754024cf23bcbb442a6a3d1b4d121a",
+        "originalPngHashIndependentlyVerified": true,
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full WebP: one modern scene, no rendered title, verse quotation, legible brand, watermark, official book cover or named public figure identity. No raster typography/fonts. Small background/instrument details are not readable wording or identifiable marks.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ]
+    }
+  ]
+}
