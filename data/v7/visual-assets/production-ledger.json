@@ -1483,6 +1483,105 @@
       "publicationApproved": false,
       "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
       "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.hurt_betrayal.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-hurt-betrayal03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "pottery-bowl-empty-stool-20261014-r1",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T23:53:42.263462+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:304f5b29af92906c31bd645e783908b7cfc7bfbac2cbd6782b370abd8d766972",
+      "sourceContent": {
+        "title": "Grieve the broken trust honestly",
+        "body": "Betrayal hurts differently because the wound comes through relationship. Psalm 55:12-14 names the pain of being harmed by someone once close. Do not minimize the breach. Grieve what was lost, protect what needs protection, and let future trust be rebuilt by truth rather than pressure."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Psalm 55:12-14",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "pottery-bowl-empty-stool",
+        "setting": "quiet pottery studio",
+        "peopleCount": 1,
+        "perspective": "over shoulder",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.impatience_waiting.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-impatience-waiting03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "tailor-pause-jacket-20261014-r1",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T23:53:42.271902+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:99afed045919c0ca8fa1f2b4dcbf72a7798c23e1e44e77926adb73474c5e451b",
+      "sourceContent": {
+        "title": "Let patience have a practice",
+        "body": "Waiting becomes harder when patience is only an idea. James 5:7-8 compares waiting to a farmer who continues through seasons before harvest. Give patience a form today: prepare something useful, keep one promise, or refuse one shortcut while the larger answer is still delayed."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "James 5:7-8",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "tailor-pause-jacket",
+        "setting": "tailoring workroom",
+        "peopleCount": 1,
+        "perspective": "low seated eye height",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.numbness_emptiness.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-numbness-emptiness03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "breakfast-nook-flower-20261014-r1",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T23:53:42.279200+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:1f3638734c78fe23fea150ac39fd1b338c174d6a739d8a8541f1aca59123fabd",
+      "sourceContent": {
+        "title": "Ask for a renewed heart",
+        "body": "Numbness can make you assume that nothing inside will change. Psalm 51:10 is a prayer for a clean heart and renewed spirit. If you cannot produce feeling, ask for renewal. Keep one honest practice open so that change has somewhere to enter."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Psalm 51:10",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "breakfast-nook-flower",
+        "setting": "faded apartment breakfast nook",
+        "peopleCount": 1,
+        "perspective": "medium environmental eye height",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing source-bound cover; persisted claim before generation. One modern text-free native master; five independent QA pending."
     }
   ]
 }
