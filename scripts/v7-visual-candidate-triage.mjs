@@ -93,7 +93,8 @@ export async function triageV7SingleMasters(root = ROOT) {
         if(row.sourceContent?.title!==canonical.sourceContent.title
           || row.sourceContent?.body!==canonical.sourceContent.body)
           throw Error('devotional source content changed');
-        if(typeof row.reference!=='string' || !row.reference
+        if(typeof row.reference!=='string'
+          || !/^(?:[1-3] )?[A-Z][a-z]+(?: [A-Z][a-z]+)* [1-9][0-9]*:[1-9][0-9]*(?:-[1-9][0-9]*)?$/.test(row.reference)
           || !canonical.sourceContent.body.includes(row.reference)) throw Error('unknown canonical reference');
         const labels={en:canonical.sourceContent.title};
         for(const locale of ['tl','ceb','ilo']) {

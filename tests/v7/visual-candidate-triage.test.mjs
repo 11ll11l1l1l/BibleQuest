@@ -184,7 +184,7 @@ test('devotional intake binds full first-party source and reviewed titles withou
 });
 test('devotional intake rejects source tampering, stale translation, rights and path escapes',async t=>{
  for(const change of [(r,i)=>{i.sourceContent.body+=' changed'},r=>{r.sourceContent.title='Changed'},
-  r=>{r.sourceRevision='r2'},r=>{r.reference='Matthew 1:1'},r=>{r.sourcePath='../private.json'},
+  r=>{r.sourceRevision='r2'},r=>{r.reference='Matthew 1:1'},r=>{r.reference='13:5'},r=>{r.sourcePath='../private.json'},
   (r,i)=>{i.rights.status='pending_review'},(r,i)=>{i.translations[0].translatedFromRevision='r0'},
   (r,i)=>{i.translations[0].reviewStatus='pending_review'}]) {
   const result=await triageV7SingleMasters(await devotionalFixture(t,change));
