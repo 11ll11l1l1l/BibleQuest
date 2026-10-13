@@ -1082,6 +1082,105 @@
       "publicationApproved": false,
       "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
       "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-reference-study-20261014-r2",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T22:22:15.756698+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "library-reference-study",
+        "setting": "public library",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.frustration.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-frustration03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "garden-hose-reroute-20261014-r2",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T22:22:15.763670+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceContent": {
+        "title": "Let patience outlast irritation",
+        "body": "Frustration wants an immediate ending, even when haste would make the situation worse. Ecclesiastes 7:8-9 praises patience and warns against quick anger. Slow the decision down just enough to distinguish a real obstacle from wounded pride, then respond to the actual problem."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Ecclesiastes 7:8-9",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "garden-hose-reroute",
+        "setting": "community garden",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.joy.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-joy03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "school-custodian-mural-20261014-r2",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T22:22:15.773188+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceContent": {
+        "title": "Let joy become strength",
+        "body": "Joy is more than a pleasant break from serious life. Nehemiah 8:10 connects the joy of the Lord with strength. Receive good things deeply enough that they restore energy for obedience, service, and endurance. Celebration can prepare you for faithful work."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Nehemiah 8:10",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "school-custodian-mural",
+        "setting": "school corridor",
+        "peopleCount": 4,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending."
     }
   ]
 }
