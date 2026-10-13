@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "independent-rights-wording-agent",
+  "reviewedAt": "2026-10-13T12:03:43.289671+00:00",
+  "baselineCommit": "d0cefe98ab3586f706b6cc609962b04e7b42090f",
+  "publicationApproved": false,
+  "reviews": [
+    {
+      "attemptId": "manual-peace-20261013-r3",
+      "canonicalId": "need:peace",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic generated-original provenance and permitted source-bound live wording only; no production approval",
+      "observedEvidence": [
+        "Personally inspected full actual candidate WebP and original source PNG with view_image; visually same single scene, no embedded title, verse quotation, readable brand, logo, watermark, official cover or depicted identifiable public figure claim.",
+        "Independently recalculated candidate and original PNG SHA-256; both match ledger.",
+        "Current taxonomy git blob independently verified as e64366970838d62c11ea602dd606e0acfe5b0cb2; exact labels and proposed reference match canonical entry."
+      ],
+      "provenance": {
+        "classification": "original_ai_generated",
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "evidenceBasis": "Generation metadata in newest ledger and generating parent explicit report of prompt plus transparent_background:false only, without referenced_image_paths or num_last_images_to_include; original PNG directly inspected and hashed.",
+        "sourcePngSha256": "e54c9185a4aa9f6f3a61571a75f1a74ca4c0aaf81a283fd6e1f2f14cbff9d9ef",
+        "exportDeclaration": "WebP quality 91; no crop, resize, upscale, text or scene edits",
+        "modelId": null
+      },
+      "authorizedLiveWording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "labels": {
+          "en": "Peace",
+          "tl": "Kapayapaan",
+          "ceb": "Kalinaw",
+          "ilo": "Talna"
+        },
+        "reference": "John 14:27",
+        "referenceOnly": true,
+        "scriptureQuotationAuthorized": false
+      },
+      "limitations": [
+        "Generated-original classification describes creation provenance; it is not a claim of exclusive copyright, legal clearance certification, or impossibility of coincidental resemblance. No third-party input was declared or observed; visual inspection cannot prove absence of training-data similarities.",
+        "Live titles and numeric Scripture reference are source-bound first-party UI wording; no Bible translation excerpt or external book cover is being licensed by this review.",
+        "No font is embedded in CLEAN pixels. Actual UI font rights, locale rendering, contrast, crop safety, browser served identity and policy migration remain independent technical/integration gates.",
+        "No exact final PR-head or Lane D production release certification is granted by this candidate SHA-bound role PASS."
+      ]
+    },
+    {
+      "attemptId": "manual-peaceful-20261013-r3",
+      "canonicalId": "emotion:peaceful",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic generated-original provenance and permitted source-bound live wording only; no production approval",
+      "observedEvidence": [
+        "Personally inspected full actual candidate WebP and original source PNG with view_image; visually same single scene, no embedded title, verse quotation, readable brand, logo, watermark, official cover or depicted identifiable public figure claim.",
+        "Independently recalculated candidate and original PNG SHA-256; both match ledger.",
+        "Current taxonomy git blob independently verified as e64366970838d62c11ea602dd606e0acfe5b0cb2; exact labels and proposed reference match canonical entry."
+      ],
+      "provenance": {
+        "classification": "original_ai_generated",
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "evidenceBasis": "Generation metadata in newest ledger and generating parent explicit report of prompt plus transparent_background:false only, without referenced_image_paths or num_last_images_to_include; original PNG directly inspected and hashed.",
+        "sourcePngSha256": "80d2f8aa3edb4506525d4569bd4e3e8fb13f2754e7b69a3b61d1622c658c62f6",
+        "exportDeclaration": "WebP quality 91; no crop, resize, upscale, text or scene edits",
+        "modelId": null
+      },
+      "authorizedLiveWording": {
+        "sourcePath": "src/features/library/emotion-taxonomy.js",
+        "sourceGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "labels": {
+          "en": "Peaceful / content",
+          "tl": "Payapa / kuntento",
+          "ceb": "Malinawon / kontento",
+          "ilo": "Natalna / kontento"
+        },
+        "reference": "Philippians 4:11-12",
+        "referenceOnly": true,
+        "scriptureQuotationAuthorized": false
+      },
+      "limitations": [
+        "Generated-original classification describes creation provenance; it is not a claim of exclusive copyright, legal clearance certification, or impossibility of coincidental resemblance. No third-party input was declared or observed; visual inspection cannot prove absence of training-data similarities.",
+        "Live titles and numeric Scripture reference are source-bound first-party UI wording; no Bible translation excerpt or external book cover is being licensed by this review.",
+        "No font is embedded in CLEAN pixels. Actual UI font rights, locale rendering, contrast, crop safety, browser served identity and policy migration remain independent technical/integration gates.",
+        "No exact final PR-head or Lane D production release certification is granted by this candidate SHA-bound role PASS."
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
-import { triageV7ArtworkCandidates } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { triageV7ArtworkCandidates, triageV7SingleMasters } from '../../scripts/v7-visual-candidate-triage.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = (process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
@@ -29,6 +29,7 @@ const candidateBundles = candidateTriage.technicallyVerified.map(row => {
     ],
   };
 });
+const singleMasterTriage = await triageV7SingleMasters();
 const bundles = [...publishedBundles, ...candidateBundles];
 const files = new Map();
 // Deployed output must contain ONLY the published audited files.
@@ -70,12 +71,19 @@ for (const row of candidateTriage.technicallyVerified) {
     candidateResponses.set(file.path, { bytes, contentType });
   }
 }
+for(const asset of singleMasterTriage.technicallyVerified) {
+  assert(!candidateResponses.has(asset.src) && !files.has(asset.src), 'Single-master path collision');
+  const bytes=await readFile(join(ROOT,asset.sourcePath));
+  assert.equal(sha(bytes),asset.sha256,'Single master changed after triage');
+  candidateResponses.set(asset.src,{bytes,contentType:asset.src.endsWith('.webp')?'image/webp':'image/png'});
+}
+const singleMasterPresentationScreenshots=[];
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const screenshots = [];
 const candidateBrowserFailures = new Map();
 try {
-  for (const width of [320, 390, 430]) {
+  for (const width of [320, 390, 430, 800]) {
     // Service workers can fulfill image URLs before Playwright interception.
     // This isolated candidate QA context must route exact source bytes itself.
     const page = await browser.newPage({ viewport: { width, height: 900 },
@@ -126,11 +134,11 @@ try {
           'Candidate byte route was bypassed: ' + variant.src);
         assert.equal(geometry.naturalWidth, variant.width, 'Chromium width mismatch: ' + variant.src);
         assert.equal(geometry.naturalHeight, variant.height, 'Chromium height mismatch: ' + variant.src);
-        assert(geometry.renderedWidth >= width * 0.70, 'Image too small for phone card: ' + variant.src);
+        assert(geometry.renderedWidth >= Math.min(width * 0.70, 400), 'Image too small for phone card: ' + variant.src);
         assert(geometry.renderedWidth <= width - 20, 'Image exceeds safe mobile width: ' + variant.src);
         assert(geometry.stageScrollWidth <= geometry.stageClientWidth + 1, 'Horizontal overflow: ' + variant.src);
         assert(geometry.renderedHeight > 0, 'Zero-height image: ' + variant.src);
-        if (variant.kind !== 'clean') {
+        if (variant.kind !== 'clean' && width !== 800) {
           const screenshot = join(output, (asset.candidate ? 'draft-' : 'release-') + asset.assetId + '-' + variant.kind + '-' + width + '.png');
           await page.locator('#bq-artwork-browser-qa figure').screenshot({ path: screenshot });
           screenshots.push(screenshot);
@@ -146,6 +154,52 @@ try {
           const prior = candidateBrowserFailures.get(asset.assetId) || [];
           prior.push({ path: variant.src, viewportWidth: width, reason: error.message });
           candidateBrowserFailures.set(asset.assetId, prior);
+        }
+      }
+    }
+    for(const asset of singleMasterTriage.technicallyVerified) {
+      for(const profile of ['live-title','thumbnail']) {
+        for(const [locale,label] of Object.entries(asset.labels)) {
+          try {
+            const geometry=await page.evaluate(async ({asset,profile,locale,label})=>{
+              document.getElementById('bq-artwork-browser-qa')?.remove();
+              const stage=document.createElement('main'); stage.id='bq-artwork-browser-qa';
+              stage.style.cssText='position:fixed;inset:0;z-index:2147483646;background:#f6f4f0;overflow:auto;padding:14px;box-sizing:border-box;color:#172b2b;font-family:Arial,sans-serif';
+              const frame=document.createElement('figure');
+              frame.lang=locale; frame.style.cssText='width:100%;max-width:420px;margin:0 auto';
+              const image=document.createElement('img'); image.src=asset.src;
+              image.alt='Source-bound candidate artwork';
+              image.style.cssText=profile==='thumbnail'
+                ?'display:block;width:100px;height:100px;object-fit:cover'
+                :'display:block;width:100%;aspect-ratio:4/5;object-fit:cover';
+              image.style.objectPosition=`${asset.focalPoint.x*100}% ${asset.focalPoint.y*100}%`;
+              const title=document.createElement('figcaption'); title.textContent=label;
+              title.style.cssText='font-size:1.28rem;line-height:1.25;padding:14px 0;overflow-wrap:anywhere';
+              window.__bqQaBaseFontSize ||= parseFloat(getComputedStyle(document.documentElement).fontSize);
+              document.documentElement.style.fontSize=`${window.__bqQaBaseFontSize*2}px`;
+              const reference=document.createElement('p');reference.textContent=asset.reference;
+              frame.append(image,title,reference);stage.append(frame);document.body.append(stage);
+              await image.decode(); const rect=image.getBoundingClientRect();
+              return {naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,
+                width:rect.width,height:rect.height,position:getComputedStyle(image).objectPosition,
+                overflow:stage.scrollWidth>stage.clientWidth+1,
+                textScale:parseFloat(getComputedStyle(document.documentElement).fontSize)/window.__bqQaBaseFontSize};
+            },{asset,profile,locale,label});
+            assert(routedCandidatePaths.has(asset.src),'Single-master route bypassed');
+            assert.equal(geometry.naturalWidth,asset.width);assert.equal(geometry.naturalHeight,asset.height);
+            assert.equal(geometry.position,`${asset.focalPoint.x*100}% ${asset.focalPoint.y*100}%`);
+            assert(!geometry.overflow,'Live localized text overflow');
+            assert.equal(geometry.textScale,2,'Actual root text scale must be 200%');
+            if(profile==='thumbnail')assert.equal(geometry.width,100);
+            const path=join(output,`draft-${asset.assetId}-${profile}-${locale}-${width}.png`);
+            await page.locator('#bq-artwork-browser-qa figure').screenshot({path});
+            screenshots.push(path);singleMasterPresentationScreenshots.push({assetId:asset.assetId,
+              sha256:asset.sha256,profile,locale,viewportWidth:width,textScale:2,productionComponent:false,path});
+          } catch(error) {
+            const prior=candidateBrowserFailures.get(asset.assetId)||[];
+            prior.push({path:asset.src,viewportWidth:width,profile,locale,reason:error.message});
+            candidateBrowserFailures.set(asset.assetId,prior);
+          }
         }
       }
     }
@@ -172,8 +226,17 @@ const report = {
     browserDelivery: 'QA-only Playwright fulfillment from independently verified source bytes; excluded from deployable build',
     verifiedCandidateFilePaths: [...candidateResponses.keys()].sort(),
   },
+  singleMasterCandidates: {
+    technicalBrowserPass: singleMasterTriage.technicallyVerified
+      .filter(asset=>!candidateBrowserFailures.has(asset.assetId)),
+    rejected:[...singleMasterTriage.rejected,...singleMasterTriage.technicallyVerified
+      .filter(asset=>candidateBrowserFailures.has(asset.assetId))
+      .map(asset=>({assetId:asset.assetId,failures:candidateBrowserFailures.get(asset.assetId)}))],
+    screenshots:singleMasterPresentationScreenshots,publicationApproved:false,
+    delivery:'QA-only exact-source routing; not deployed HTTP evidence'
+  },
   verifiedServedFiles: downloaded, screenshots,
-  viewports: [320, 390, 430],
+  viewports: [320, 390, 430, 800],
   technicalChecks: ['source-asset-audit', 'actual-served-sha256', 'browser-decode',
     'intrinsic-image-dimensions', 'mobile-width-no-overflow', 'recorded-type-and-thumb-screenshots'],
   visualApproval: 'NOT_AUTOMATIC: artistic legibility, crop intent, and reviewed text in pixels require genuine image inspection'
@@ -181,6 +244,7 @@ const report = {
 await writeFile(join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n');
 console.log('PASS visual binary built-browser QA: ' + downloaded.length + ' image files, '
   + publishedBundles.length + ' release bundles, '
-  + (candidateBundles.length - candidateBrowserFailures.size) + ' draft bundles passed browser QA, '
+  + candidateBundles.filter(asset => !candidateBrowserFailures.has(asset.assetId)).length + ' draft bundles passed browser QA, '
   + (candidateTriage.rejected.length + candidateBrowserFailures.size) + ' drafts requiring repair, '
-  + screenshots.length + ' TYPE/THUMB screenshots; draft publication remains blocked');
+  + screenshots.length + ' presentation screenshots, ' + singleMasterPresentationScreenshots.length
+  + ' single-master locale/crop screenshots; draft publication remains blocked');

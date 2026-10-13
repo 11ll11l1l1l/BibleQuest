@@ -1,0 +1,104 @@
+{
+  "role": "technical_responsive",
+  "reviewer": "independent-peace-technical-qa",
+  "overallVerdict": "PASS",
+  "releaseApproval": false,
+  "scope": "Native raster decode/hash/geometry and SHA-bound CI staging presentation profiles at 200% text scale verified.",
+  "candidates": [
+    {
+      "attemptId": "manual-peace-20261013-r3",
+      "contentId": "peace",
+      "path": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 174990,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "ratio": 0.8002853067047075,
+      "minimumMet": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "stagedPresentationVerdict": "PASS",
+      "productionHolds": [
+        "Production component crop/text certification",
+        "Deployable HTTP served-byte/offline proof",
+        "Single-master schema/release migration"
+      ],
+      "nativeGeometryCaveat": "Decoded geometry equals producer native claim; source generation provenance belongs to independent rights role."
+    },
+    {
+      "attemptId": "manual-peaceful-20261013-r3",
+      "contentId": "peaceful",
+      "path": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 213416,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.45
+      },
+      "focalInBounds": true,
+      "ratio": 1.0,
+      "minimumMet": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "stagedPresentationVerdict": "PASS",
+      "productionHolds": [
+        "Production component crop/text certification",
+        "Deployable HTTP served-byte/offline proof",
+        "Single-master schema/release migration"
+      ],
+      "nativeGeometryCaveat": "Decoded geometry equals producer native claim; source generation provenance belongs to independent rights role."
+    }
+  ],
+  "stagedPresentationEvidence": {
+    "reportPath": "artifacts/v7/peace-ci-ec40/report.json",
+    "screenshotsRecorded": 64,
+    "viewports": [
+      320,
+      390,
+      430,
+      800
+    ],
+    "locales": [
+      "en",
+      "tl",
+      "ceb",
+      "ilo"
+    ],
+    "visuallyInspected": "Exact-head CI both candidates at all four viewport widths with representative locales; all four localized 100px thumbnails at320, including long wrapped titles.",
+    "observations": "Both faces/interaction remain visible in Peace; Peaceful face/mug retained through portrait and square profiles. Long Cebuano labels wrap; dark text on pale adjacent panel remains readable.",
+    "deliveryScope": "Playwright routed verified staging bytes; QA-only inline figure, not production component or deployed HTTP",
+    "textZoomScope": "Exact-head CI doubled captured root baseline; computed textScale=2. Actual title and reference pixels reviewed."
+  },
+  "verdictScope": "Independent technical role PASS for immutable staged native masters and QA-only presentation profiles; not production readiness.",
+  "productionVerdict": "HOLD_POLICY_MIGRATION",
+  "ciEvidence": {
+    "head": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+    "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38395756325",
+    "reportPath": "artifacts/v7/peace-ci-ec40/report.json",
+    "reportSha256": "5f006de00fdaa0170e6067bdcf3f4c32ede382f59c50d432549a62a40bed9832",
+    "result": "PASS",
+    "screenshotCount": 64,
+    "allScreenshotTextScale": 2,
+    "verifiedSourceHashes": [
+      "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd"
+    ]
+  }
+}

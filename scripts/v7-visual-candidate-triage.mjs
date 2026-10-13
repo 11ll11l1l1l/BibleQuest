@@ -3,11 +3,15 @@
  * local binary integrity before the built-app Chromium check. This module
  * never promotes a candidate or edits the release registry.
  */
+import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { verifyV7ManualCandidate } from './v7-manual-candidate-integrity.mjs';
 import { candidateQuarantineReason } from './v7-visual-candidate-policy.mjs';
+
+import { validateLedger, verifyGeometry } from './v7-image-work-ledger.mjs';
+import { LIBRARY_EMOTIONS, LIBRARY_NEEDS } from '../src/features/library/emotion-taxonomy.js';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const recordName = /^bqv7-(?:emotion|need)-[a-z0-9-]+-[0-9]{2,}\.json$/;
@@ -54,4 +58,43 @@ export async function triageV7ArtworkCandidates(root = ROOT, verify = verifyV7Ma
   }
   return { technicallyVerified: approved, rejected, threeFileCandidates: pending,
     publicationApproved: false };
+}
+
+// One-master intake has its own evidence path; never pretend it is a legacy
+// three-file bundle or add unapproved staging bytes to the production registry.
+export async function triageV7SingleMasters(root = ROOT) {
+  const ledger = JSON.parse(await readFile(join(root,'data/v7/visual-assets/production-ledger.json'),'utf8'));
+  validateLedger(ledger);
+  const technicallyVerified=[], rejected=[];
+  for(const row of ledger.entries) {
+    if(!['qa_pending','qa_passed'].includes(row.status) || row.variant !== 'CLEAN' || !row.candidatePath) continue;
+    if(!['emotion','need'].includes(row.family)) continue;
+    try {
+      const path=`data/v7/visual-assets/qa-candidates/${row.attemptId}.`;
+      if(![path+'png',path+'webp'].includes(row.candidatePath)) throw Error('unsafe single-master path');
+      if(row.sourcePath !== 'src/features/library/emotion-taxonomy.js') throw Error('unsupported live wording source');
+      const source=await readFile(join(root,row.sourcePath));
+      const sourceBlob=createHash('sha1').update(Buffer.from('blob '+source.length+'\0')).update(source).digest('hex');
+      if(row.sourceChecksum !== 'gitblob:'+sourceBlob || row.sourceRevision !== 'taxonomy-'+sourceBlob)
+        throw Error('single-master source revision changed');
+      const item=(row.family==='need'?LIBRARY_NEEDS:LIBRARY_EMOTIONS).find(item=>item.id===row.contentId);
+      if(!item || !item.scripture.includes(row.reference)) throw Error('unknown canonical ID or reference');
+      if(row.generation?.provider !== 'OpenAI image generation' || row.generation.thirdPartyInputs !== false
+        || !/^[a-f0-9]{64}$/.test(row.generation.originalSha256 || '')) throw Error('master provenance incomplete');
+      if(!row.focalPoint || ['x','y'].some(k=>typeof row.focalPoint[k]!=='number'
+        || !Number.isFinite(row.focalPoint[k]) || row.focalPoint[k]<0 || row.focalPoint[k]>1)) throw Error('invalid master focal point');
+      const bytes=await readFile(join(root,row.candidatePath)), measured=verifyGeometry(bytes,row.family,'CLEAN');
+      if(!row.candidatePath.endsWith('.'+measured.format) || measured.sha256!==row.sha256
+        || ['width','height','bytes','sha256'].some(k=>row.measured?.[k]!==measured[k]))
+        throw Error('single-master bytes differ from submitted identity');
+      if(row.producerPreflight?.noBakedText!==true || row.producerPreflight?.singleScene!==true)
+        throw Error('single-master preflight missing');
+      technicallyVerified.push({assetId:row.attemptId,contentType:row.family,contentId:row.contentId,
+        src:'/v7/images/qa-only/'+row.attemptId+'.'+measured.format,sourcePath:row.candidatePath,
+        sha256:measured.sha256,width:measured.width,height:measured.height,
+        focalPoint:row.focalPoint,labels:item.labels,reference:row.reference,
+        sourceBlob,publicationApproved:false});
+    } catch(error) {rejected.push({assetId:row.attemptId,reason:error.message});}
+  }
+  return {technicallyVerified,rejected,publicationApproved:false};
 }

@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_uniqueness_qa",
+  "role": "uniqueness",
+  "reviewedAt": "2026-10-13T12:04:52.524581+00:00",
+  "baselineGitHead": "d0cefe98ab3586f706b6cc609962b04e7b42090f",
+  "reviewMethod": "Independent full-frame pixels of both immutable WebP sources, four actual merged raster comparators and three relevant open PR1504 raster peers via connector fetch_file base64. No pixels generated, edited, rendered or exported.",
+  "releaseApproved": false,
+  "openPrEvidence": {
+    "search": "repo:11ll11l1l1l/BibleQuest peace state:open",
+    "observedPrNumbers": [
+      1535,
+      1521,
+      1435,
+      1421
+    ],
+    "scope": "PR1504 Comfort, Tired and Stressed actual raster pixels inspected at exact head. PR1421 old unsupported quiet-interior SVG is intentionally replaced; its pixels not rendered. Other unrelated workshop/door/bus-shelter metadata does not imply pixel comparison.",
+    "pixelComparedPrNumbers": [
+      1504
+    ]
+  },
+  "rejectedHistoryEvidence": {
+    "source": "records/bqv7-emotion-peace-contentment-01.json and production-ledger.json",
+    "observed": "Prior repeated golden sunset/lake triptychs and unrelated ancient figures; candidate pair does not visually share those motifs.",
+    "limitation": "Rejected binary bytes deleted under policy; textual tombstones inspected only."
+  },
+  "reviews": [
+    {
+      "family": "need",
+      "contentId": "peace",
+      "attemptId": "manual-peace-20261013-r3",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "verdict": "PASS",
+      "anatomyAndAffectVerdict": "PASS",
+      "boundedComparatorOriginalityVerdict": "PASS",
+      "observedEvidence": [
+        "Mother and child face one another with calm eye contact; relaxed shoulders and natural joined child hands.",
+        "Mother has coherent overlapping hands, ordinary facial proportions and plausible legs/shoes; background faces intentionally shallow focus.",
+        "Modern populated service waiting room, one photograph-like coherent composition; no legible text, logo, watermark or collage."
+      ],
+      "cropSafeCoreAssessment": "1122x1402 to 1:1 at focal y=.43 clips about 120.4px top and 159.6px bottom; both faces and joined hands remain. 4:5 is essentially native. Feet may clip in square without removing calm listening narrative.",
+      "distinctnessEvidence": "Waiting-room setting overlaps impatience but relational mother/child action, two-subject framing and relaxed affect are distinct from single man checking watch.",
+      "presentationLimit": "Crop math and full-source positioning inspected only; no exported crop or actual built-app preview inspected by this reviewer. Bottom textile/floor is relatively quiet, but title contrast requires technical/browser role.",
+      "comparatorsInspected": [
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+          "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Waiting-room impatience with watch and frown"
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+          "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Curled distressed outdoor woman"
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+          "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Isolated older man holding mug at communal table"
+        },
+        {
+          "path": "public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+          "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Close hands sorting blank concern cards at kitchen table"
+        },
+        {
+          "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+          "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Two adult women listening after difficult news in evening center; distinct from mother/child in busy office."
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+          "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Resting male baker in work apron at bakery bench; distinct from contented woman at home with mug."
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+          "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Standing cook at metal kitchen pass with coworker; different action/environment from both candidates."
+        }
+      ],
+      "verdictScope": "Independent uniqueness/anatomy role PASS within seven actually inspected relevant merged/open raster comparators; not final artwork acceptance or internet-wide originality certification."
+    },
+    {
+      "family": "emotion",
+      "contentId": "peaceful",
+      "attemptId": "manual-peaceful-20261013-r3",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "verdict": "PASS",
+      "anatomyAndAffectVerdict": "PASS",
+      "boundedComparatorOriginalityVerdict": "PASS",
+      "observedEvidence": [
+        "Woman relaxed in a worn armchair with slightly upturned mouth and closed eyes; contentment reads more strongly than sadness.",
+        "Visible fingers around mug and handle are plausible with natural occlusion; coherent face, arms, crossed legs and chair.",
+        "Modest contemporary apartment in neutral daylight; no legible text, logo or watermark."
+      ],
+      "cropSafeCoreAssessment": "1254 square to 4:5 retains width 1003.2px; focal x=.6 clips about150.5px left and100.3px right. Face and both hands/mug remain. 1:1 uses full image.",
+      "distinctnessEvidence": "Mug motif overlaps loneliness, but solitary resting woman with closed eyes/soft smile in apartment differs from isolated elder watching social group; no depression posture.",
+      "presentationLimit": "Crop math and full-source positioning inspected only; no exported crop or actual built-app preview inspected by this reviewer. Bottom textile/floor is relatively quiet, but title contrast requires technical/browser role.",
+      "comparatorsInspected": [
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+          "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Waiting-room impatience with watch and frown"
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+          "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Curled distressed outdoor woman"
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+          "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Isolated older man holding mug at communal table"
+        },
+        {
+          "path": "public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+          "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+          "pixelInspection": "full-frame view_image",
+          "observed": "Close hands sorting blank concern cards at kitchen table"
+        },
+        {
+          "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+          "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Two adult women listening after difficult news in evening center; distinct from mother/child in busy office."
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+          "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Resting male baker in work apron at bakery bench; distinct from contented woman at home with mug."
+        },
+        {
+          "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+          "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+          "pr": 1504,
+          "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+          "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+          "observed": "Standing cook at metal kitchen pass with coworker; different action/environment from both candidates."
+        }
+      ],
+      "verdictScope": "Independent uniqueness/anatomy role PASS within seven actually inspected relevant merged/open raster comparators; not final artwork acceptance or internet-wide originality certification."
+    }
+  ],
+  "residualLimits": [
+    "Seven comparator pixel inspections cover the relevant checked merged/open scenes, not every artwork or internet image.",
+    "Need Peace old SVG open PR pixels not inspected.",
+    "Built browser crop/mobile semantics/overlay evidence delegated to technical role and not implied by this review.",
+    "Not five-role final artwork approval."
+  ]
+}

@@ -356,6 +356,186 @@
       "deletedLocalCandidate": true,
       "deletedAt": "2026-10-10T23:20:04.027Z",
       "notes": "Rejected immediately at single-image producer preflight; original bytes were deleted from local sandbox after measured decode and SHA. NO five-agent QA candidate submitted; slot is released. Next attempt must use fresh sceneRevision; investigate generator prompt contamination."
+    },
+    {
+      "family": "need",
+      "contentId": "peace",
+      "variant": "CLEAN",
+      "attemptId": "manual-peace-20261013-r3",
+      "producer": "manual-chat-20261013",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "housing-office-peace-r3",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T11:55:49.109Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "scope": "one-original-clean-master-live-text-focal-crop",
+      "note": "Replacing unusable SVG candidate only; preserve accepted masters and all real QA-pending candidates. Need Peace: #1421 SVG, no eligible raster. Peaceful: merged -01 SVG, no eligible raster. No independent QA verdict assigned.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 174990,
+        "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239"
+      },
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "reference": "John 14:27",
+      "altText": "A calm mother listens to her daughter amid a busy municipal waiting room.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "e54c9185a4aa9f6f3a61571a75f1a74ca4c0aaf81a283fd6e1f2f14cbff9d9ef",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality 91; no crop, resize, upscale, text or scene edits"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Mother and child converse calmly in a populated contemporary office waiting room.",
+        "noBakedText": true,
+        "singleScene": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Settled attentive presence in a noisy circumstance, not a promise to remove hardship.",
+      "productionEligibility": "HOLD_POLICY_MIGRATION",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+      "technicalEvidenceRun": 38395756325
+    },
+    {
+      "family": "emotion",
+      "contentId": "peaceful",
+      "variant": "CLEAN",
+      "attemptId": "manual-peaceful-20261013-r3",
+      "producer": "manual-chat-20261013",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "modern-armchair-contentment-r3",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T11:55:49.185Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "scope": "one-original-clean-master-live-text-focal-crop",
+      "note": "Replacing unusable SVG candidate only; preserve accepted masters and all real QA-pending candidates. Need Peace: #1421 SVG, no eligible raster. Peaceful: merged -01 SVG, no eligible raster. No independent QA verdict assigned.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 213416,
+        "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd"
+      },
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.45
+      },
+      "textSafeRegion": "bottom",
+      "reference": "Philippians 4:11-12",
+      "altText": "A woman rests contentedly in a modest apartment, holding a plain mug.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "80d2f8aa3edb4506525d4569bd4e3e8fb13f2754e7b69a3b61d1622c658c62f6",
+        "nativeWidth": 1254,
+        "nativeHeight": 1254,
+        "export": "WebP quality 91; no crop, resize, upscale, text or scene edits"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Woman rests in an ordinary armchair holding a mug; modest apartment, natural daylight.",
+        "noBakedText": true,
+        "singleScene": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Contentment in ordinary circumstances rather than luxury or acquiring possessions.",
+      "productionEligibility": "HOLD_POLICY_MIGRATION",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+      "technicalEvidenceRun": 38395756325
     }
   ]
 }
