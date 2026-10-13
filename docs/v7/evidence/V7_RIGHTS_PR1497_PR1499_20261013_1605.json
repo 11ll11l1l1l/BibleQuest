@@ -1,0 +1,143 @@
+{
+  "schema": "bq-v7-independent-rights-evidence-v1",
+  "reviewedAt": "2026-10-13T16:05:21+09:00",
+  "role": "rights-wording-provenance",
+  "scope": "QA-only; no production or release authority",
+  "developmentHead": "d0cefe98ab3586f706b6cc609962b04e7b42090f",
+  "policyGitBlobs": {
+    "agents": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQA": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "constructionGuide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "productionLedger": "9c63125933e23a7783952ac7c7007c64cc9806da",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "reviewMethod": "Fetched PR-head original WebP binary base64 from GitHub; independently decoded and SHA-256 hashed with locally implemented SHA-256 validated against abc test vector; decoded VP8 dimensions and visually inspected each of six real images. Verified exact taxonomy metadata and sidecars.",
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 2
+  },
+  "reviews": [
+    {
+      "pr": 1497,
+      "head": "afefe4df184f63c2275a6ebf6e03a8f72ee95c83",
+      "contentId": "anxious",
+      "assetId": "bqv7-emotion-anxiety-worry-01",
+      "verdict": "HOLD_PROVENANCE_FONT_LIVE_RENDER",
+      "sourceMasterRecordBlob": "b4db13fab4f0dffcdcecc47b8e318f780dc346cd",
+      "candidateSidecarBlob": "e1d33fd1538a5cbf16e58b29a4c19a810b10f291",
+      "canonical": {
+        "en": "Anxious / worried",
+        "tl": "Balisa / nag-aalala",
+        "ceb": "Nabalaka / nahingawa",
+        "ilo": "Madanagan / mariribukan",
+        "reference": "Philippians 4:6-7"
+      },
+      "files": {
+        "CLEAN": {
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+          "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+          "gitBlob": "f7abc7a92fbdc76dcabbe8bd4f1ad746f8ffc89a",
+          "bytes": 50182,
+          "width": 1024,
+          "height": 1024,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/public/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+          "sha256IndependentlyVerified": true
+        },
+        "TYPE": {
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
+          "sha256": "8da80e598e633df054e7cc0ab906e06dbd3d11a89d05e9804f6c99efd653b070",
+          "gitBlob": "ab9458b23d0f884c66716ca1e87313071bcc9e7c",
+          "bytes": 73518,
+          "width": 1024,
+          "height": 1280,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
+          "sha256IndependentlyVerified": true
+        },
+        "THUMB": {
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.webp",
+          "sha256": "9d41b25c4f5e756898c832dca862eee299fa4c3d4f9aed0c415bd2e7b240f5b7",
+          "gitBlob": "cf63986cb99fdadcbce85672a593c36b444b0076",
+          "bytes": 52214,
+          "width": 768,
+          "height": 960,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.webp",
+          "sha256IndependentlyVerified": true
+        }
+      },
+      "observed": "CLEAN is a text-free contemporary bedroom anxiety scene. Historical TYPE reads exactly Anxious / worried and Philippians 4:6-7, no verse quotation. THUMB text-free. All three WebP pixels independently viewed.",
+      "holds": [
+        "Original ImageGen event/source PNG/input-rights chain not independently authenticated; source record's generation and rights are first-party declarations.",
+        "Font provenance inconsistent: TYPE typography.fontFamily=Noto Serif Regular; sidecar rights.font=Noto Serif Display OFL-1.1. Verify actual font and license evidence.",
+        "Exact live localized title/reference and served-byte identity in built app not independently observed.",
+        "Existing schema-1 master status production_ready does not certify this pending PR derivative bundle."
+      ],
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1497",
+      "sidecarUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/data/v7/visual-assets/records/bqv7-emotion-anxiety-worry-01-derivatives.json",
+      "sourceRecordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/d0cefe98ab3586f706b6cc609962b04e7b42090f/data/v7/visual-assets/records/bqv7-emotion-anxiety-worry-01.json",
+      "canonicalSourceUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/d0cefe98ab3586f706b6cc609962b04e7b42090f/src/features/library/emotion-taxonomy.js"
+    },
+    {
+      "pr": 1499,
+      "head": "df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7",
+      "contentId": "tempted",
+      "assetId": "bqv7-emotion-temptation-01",
+      "verdict": "HOLD_PROVENANCE_FONT_LIVE_RENDER",
+      "sourceMasterRecordBlob": "2c01015e4a4fd6fcefa8c674c9bd3302d77d8930",
+      "candidateSidecarBlob": "7f05b2400e950a540acaa3f9d32a697fd6f6af1c",
+      "canonical": {
+        "en": "Tempted",
+        "tl": "Natutukso",
+        "ceb": "Gitintal",
+        "ilo": "Masulisog",
+        "reference": "1 Corinthians 10:13"
+      },
+      "files": {
+        "CLEAN": {
+          "path": "public/v7/images/emotion/bqv7-emotion-temptation-01.webp",
+          "sha256": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+          "gitBlob": "10fe6e841fbd333244de4ea12645b1fe38f29c68",
+          "bytes": 128668,
+          "width": 1024,
+          "height": 1024,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7/public/v7/images/emotion/bqv7-emotion-temptation-01.webp",
+          "sha256IndependentlyVerified": true
+        },
+        "TYPE": {
+          "path": "public/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
+          "sha256": "0ace3ccd561e94133cab14fe1b29326b42c67ef6e72f65cd7c2364625b278aeb",
+          "gitBlob": "0b9994c49b98203dc67aa7a9ac2508d08ad1f32c",
+          "bytes": 163612,
+          "width": 1024,
+          "height": 1280,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7/public/v7/images/emotion/bqv7-emotion-temptation-01-with-text-en.webp",
+          "sha256IndependentlyVerified": true
+        },
+        "THUMB": {
+          "path": "public/v7/images/emotion/bqv7-emotion-temptation-01-thumbnail.webp",
+          "sha256": "96d2c67d3cef5d8b1e1285fa33d976516c5cc6ff9ab9cb0892c2ba93e514234f",
+          "gitBlob": "d2e92cd73747052be2d2cd7d5d8bd4abbd0831ef",
+          "bytes": 32404,
+          "width": 384,
+          "height": 480,
+          "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7/public/v7/images/emotion/bqv7-emotion-temptation-01-thumbnail.webp",
+          "sha256IndependentlyVerified": true
+        }
+      },
+      "observed": "CLEAN shows a woman on a train reaching toward a lost wallet; no baked title, quotation, brand, or visible identifying text. Historical corrected TYPE reads Tempted and 1 Corinthians 10:13 exactly; THUMB text-free. All three WebP pixels independently viewed.",
+      "holds": [
+        "Original ImageGen prompt is null in canonical source record; source generation event and input-rights chain independently unverified.",
+        "Derivative sidecar has stale SVG/Georgia/Times statements despite new true WebP TYPE and declared Noto Serif Regular SIL OFL 1.1. Reconcile exact font license/source and provenance.",
+        "Exact live localized title/reference and served-byte identity in built app not independently observed.",
+        "Existing master status production_ready does not certify this pending PR derivative bundle."
+      ],
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1499",
+      "sidecarUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7/data/v7/visual-assets/records/bqv7-emotion-temptation-01-derivatives.json",
+      "sourceRecordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/d0cefe98ab3586f706b6cc609962b04e7b42090f/data/v7/visual-assets/records/bqv7-emotion-temptation-01.json",
+      "canonicalSourceUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/d0cefe98ab3586f706b6cc609962b04e7b42090f/src/features/library/emotion-taxonomy.js"
+    }
+  ],
+  "policyNote": "Both candidates have historical three-real-file bundles, so CLEAN-only migration hold does not describe missing variants here. New CLEAN-only Feeling/Need release remains HOLD_POLICY_MIGRATION until reviewed runtime/schema/browser migration. Historical TYPE/THUMB are evidence only; do not generate new ones.",
+  "actions": "No pixel generation/crop/deletion, no production ledger modification, no merge or deploy; only independent evidence file."
+}
