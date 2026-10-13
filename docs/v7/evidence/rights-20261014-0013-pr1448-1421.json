@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-14",
+  "baseBranch": "v7/development",
+  "baseCommit": "6e23bf305fd1cf56f6bd88abba52b8480c08dd8d",
+  "policyBlobs": {
+    "agents": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQA": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "ledger": "4b44064fb4ce0059c336c4286b5f7dc00f222c12"
+  },
+  "results": [
+    {
+      "pr": 1448,
+      "prHead": "6d08ce277cabb6e281b6ebcd0b51d9873c1a0ed8",
+      "assetId": "bqv7-need-hope-01",
+      "canonicalId": "hope",
+      "verdict": "FAIL_SINGLE_MASTER_ORIGIN",
+      "sidecarBlob": "2a41b74c2488c1ca5dae606c506d1b0c11749a2a",
+      "clean": {
+        "gitBlob": "53ba85ade7eb2cb7dfdc49f95e0523e7c1fb46b7",
+        "sha256": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+        "bytes": 184020,
+        "width": 1024,
+        "height": 1280
+      },
+      "historicalType": {
+        "gitBlob": "4853aefd6e97bbc8e99e57905caafcfe63d027b1",
+        "sha256": "96c276dcbf3e94fcd68347fc7757011205c9fdbc81b49f4653a2063bdf79c222",
+        "bytes": 189012,
+        "width": 1024,
+        "height": 1280
+      },
+      "historicalThumb": {
+        "gitBlob": "0c044d6f54d86b67a4ae83aa8c060df3c384bb7e",
+        "sha256": "ddc32bc1f36714603c011aec17e2c194672913359db3a2f7695fca0738fa63e2",
+        "bytes": 47752,
+        "width": 384,
+        "height": 480
+      },
+      "hashMethod": "Independent SHA-256 calculated from fetched base64-decoded actual WebP bytes; native VP8 dimensions measured",
+      "visualObservation": "Contemporary gardener planting a seedling in rooftop garden. CLEAN text-free; historical TYPE visibly Hope and Romans 15:13; no Bible verse prose or identifiable branding observed.",
+      "wording": {
+        "en": "Hope",
+        "tl": "Pag-asa",
+        "ceb": "Paglaom",
+        "ilo": "Namnama",
+        "reference": "Romans 15:13",
+        "taxonomyMatch": true,
+        "liveApplicationRenderingVerified": false,
+        "verseProseIncluded": false
+      },
+      "sourceOrigin": "Sidecar explicitly declares sourceImageWasComposite:true, sourceOriginalFile a_composite_image_collage_with_three_panels_versio.png and isolatedSingleScenePanelCropPixels [20,147,623,899]. One original standalone CLEAN raster per ID forbids collage-panel salvage. Original PNG and its stated SHA unverified.",
+      "rights": "No recognizable third-party art observed, but exact generation inputs and original PNG rights chain unverified. This is not a finding of copyright infringement.",
+      "guide": "Preferred Hope scene is neighbors repairing a bus shelter; garden explicitly discouraged, but semantic alternatives can be separately assessed. Source-origin failure alone is dispositive.",
+      "deletion": "Not deleted: public/v7/images/need/... committed to open PR, not an exclusive qa-candidates/<attemptId> staging file. Reference/rollback audit required before cleanup.",
+      "policyMigration": "HOLD_POLICY_MIGRATION applies independently to CLEAN-only Feeling/Need release",
+      "links": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1448",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6d08ce277cabb6e281b6ebcd0b51d9873c1a0ed8/data/v7/visual-assets/records/bqv7-need-hope-01.json"
+      ]
+    },
+    {
+      "pr": 1421,
+      "prHead": "1bfa0749a9671818744949f8224f44789588789e",
+      "assetId": "bqv7-need-peace-01",
+      "canonicalId": "peace",
+      "verdict": "FAIL_SINGLE_MASTER_RASTER_CONTRACT",
+      "sidecarBlob": "3a7265400f6c967bbe9fc4a8ca6e266363b5c82d",
+      "sourceFile": {
+        "path": "public/v7/images/need/bqv7-need-peace-01.svg",
+        "gitBlob": "49f91154a98de262fd4ea13d9aa4eec4053f4457",
+        "format": "SVG",
+        "sha256Declared": "5c5ce319a2b496d9228538d88af3dc04ee9741f41bd12ff13fe04771bbfa885c",
+        "independentSha256Verified": false
+      },
+      "visualObservation": "Actual source file begins with SVG XML markup, not PNG/WebP raster bytes. No raster pixel inspection claimed.",
+      "wording": {
+        "en": "Peace",
+        "tl": "Kapayapaan",
+        "ceb": "Kalinaw",
+        "ilo": "Talna",
+        "reference": "John 14:27",
+        "taxonomyMatch": true,
+        "liveApplicationRenderingVerified": false,
+        "verseProseIncluded": false
+      },
+      "sourceOrigin": "Sidecar identifies procedural SVG illustration, disallowed as original CLEAN raster. Historic TYPE/THUMB are also SVG. Source art depicts empty tea/curtains, whereas guide specifies peaceful composure amid a crowded waiting room; no scene PASS inferred.",
+      "rights": "Sidecar says no third-party assets or embedded font files; independent provenance remains unverified. Not a copyright infringement finding.",
+      "conflict": "New Peace masters already merged through PR #1535 into development commit 6e23bf305fd1cf56f6bd88abba52b8480c08dd8d; old open PR must not displace new canonical source.",
+      "deletion": "Not deleted: committed SVG files on an open PR branch, not exclusive unapproved qa-candidates staging pixels. No deletion without reference/rollback audit.",
+      "policyMigration": "HOLD_POLICY_MIGRATION applies independently to CLEAN-only Feeling/Need release",
+      "links": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1421",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/1bfa0749a9671818744949f8224f44789588789e/data/v7/visual-assets/records/bqv7-need-peace-01.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1535"
+      ]
+    }
+  ],
+  "releaseAllowed": false,
+  "otherRoleCertificationClaimed": false,
+  "changesToProductionLedger": false,
+  "deletedPixels": false,
+  "generatedPixels": false,
+  "mergeOrDeploy": false
+}
