@@ -695,7 +695,7 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "neighbor-food-thanks-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T20:34:55.596Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
@@ -705,7 +705,37 @@
         "body": "Gratitude weakens when good gifts become background noise. Psalm 103:2 tells the soul not to forget God's benefits. Review the last seven days and name three provisions you almost stopped noticing. Remembering turns ordinary goodness back into received grace."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed."
+      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8f9b90af07dbb477efa4d70d58419b5f8273932ed38dd978ef74c1197734f5aa",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "left",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Commuter shares homemade food with an older neighbor in a modest apartment doorway.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 151090,
+        "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+      },
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
     },
     {
       "family": "devotional",
@@ -715,7 +745,7 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "harbor-safe-step-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T20:34:55.667Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
@@ -725,7 +755,37 @@
         "body": "Fear does not have to disappear before obedience begins. Joshua 1:9 ties courage to God's presence, not to a fearless feeling. Name the next faithful action, take it at a manageable size, and let courage be movement with God rather than the absence of fear."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed."
+      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "6c53fec75ab1b41838c448785ff0d1ff7cfb68725f055b700722f61727ffdce1",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Cautious adult walks a sturdy railed harbor gangway beside an attentive companion.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 326890,
+        "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+      },
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
     },
     {
       "family": "devotional",
@@ -735,7 +795,7 @@
       "producer": "manual-chat-20261014",
       "sourceRevision": "r1",
       "sceneRevision": "diner-invitation-20261014-r1",
-      "status": "claimed",
+      "status": "qa_pending",
       "claimedAt": "2026-10-13T20:34:55.738Z",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
@@ -745,7 +805,37 @@
         "body": "Loneliness can make silence feel like proof that nobody sees you. Psalm 25:16 turns loneliness itself into prayer. Tell God exactly where isolation hurts, then choose one human connection you can pursue rather than waiting for connection to happen accidentally."
       },
       "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
-      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed."
+      "note": "New missing devotional portrait slot; one original CLEAN only. No existing pending/finished source. Independent QA not performed.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "bddce1354229b8c520e02095118978a5d6754024cf23bcbb442a6a3d1b4d121a",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Diner regular offers an empty chair to a newly arrived neighbor.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 188400,
+        "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+      },
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
     }
   ]
 }
