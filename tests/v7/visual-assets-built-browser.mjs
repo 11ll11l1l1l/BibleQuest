@@ -174,23 +174,27 @@ try {
                 :'display:block;width:100%;aspect-ratio:4/5;object-fit:cover';
               image.style.objectPosition=`${asset.focalPoint.x*100}% ${asset.focalPoint.y*100}%`;
               const title=document.createElement('figcaption'); title.textContent=label;
-              title.style.cssText='font-size:2rem;line-height:1.25;padding:14px 0;overflow-wrap:anywhere';
+              title.style.cssText='font-size:1.28rem;line-height:1.25;padding:14px 0;overflow-wrap:anywhere';
+              window.__bqQaBaseFontSize ||= parseFloat(getComputedStyle(document.documentElement).fontSize);
+              document.documentElement.style.fontSize=`${window.__bqQaBaseFontSize*2}px`;
               const reference=document.createElement('p');reference.textContent=asset.reference;
               frame.append(image,title,reference);stage.append(frame);document.body.append(stage);
               await image.decode(); const rect=image.getBoundingClientRect();
               return {naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight,
                 width:rect.width,height:rect.height,position:getComputedStyle(image).objectPosition,
-                overflow:stage.scrollWidth>stage.clientWidth+1};
+                overflow:stage.scrollWidth>stage.clientWidth+1,
+                textScale:parseFloat(getComputedStyle(document.documentElement).fontSize)/window.__bqQaBaseFontSize};
             },{asset,profile,locale,label});
             assert(routedCandidatePaths.has(asset.src),'Single-master route bypassed');
             assert.equal(geometry.naturalWidth,asset.width);assert.equal(geometry.naturalHeight,asset.height);
             assert.equal(geometry.position,`${asset.focalPoint.x*100}% ${asset.focalPoint.y*100}%`);
             assert(!geometry.overflow,'Live localized text overflow');
+            assert.equal(geometry.textScale,2,'Actual root text scale must be 200%');
             if(profile==='thumbnail')assert.equal(geometry.width,100);
             const path=join(output,`draft-${asset.assetId}-${profile}-${locale}-${width}.png`);
             await page.locator('#bq-artwork-browser-qa figure').screenshot({path});
             screenshots.push(path);singleMasterPresentationScreenshots.push({assetId:asset.assetId,
-              sha256:asset.sha256,profile,locale,viewportWidth:width,path});
+              sha256:asset.sha256,profile,locale,viewportWidth:width,textScale:2,productionComponent:false,path});
           } catch(error) {
             const prior=candidateBrowserFailures.get(asset.assetId)||[];
             prior.push({path:asset.src,viewportWidth:width,profile,locale,reason:error.message});
