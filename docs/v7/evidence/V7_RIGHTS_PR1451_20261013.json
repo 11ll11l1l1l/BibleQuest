@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewDate": "2026-10-13",
+  "pr": 1451,
+  "reviewedHead": "6df3f1c0726b86c52a4466f6b789599af6269f6f",
+  "verdict": "HOLD_PROVENANCE",
+  "releaseAllowed": false,
+  "canonical": {
+    "family": "need",
+    "id": "self_control",
+    "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "title": {
+      "en": "Self-control",
+      "tl": "Pagpipigil sa sarili",
+      "ceb": "Pagpugong sa kaugalingon",
+      "ilo": "Panagtengngel iti bagi"
+    },
+    "selectedReference": "Galatians 5:22-23",
+    "otherAllowedReference": "2 Timothy 1:7",
+    "scriptureQuoteIncluded": false
+  },
+  "sidecarBlob": "3859ea6566bcdd561c447c2ef029f6f09dc220c3",
+  "guideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+  "contractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "verifiedActualWebP": [
+    {
+      "kind": "CLEAN",
+      "sha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
+      "gitBlob": "a8a9c6a50f7174a432e2dbe0c65604b6ff832998",
+      "bytes": 148110
+    },
+    {
+      "kind": "TYPE",
+      "sha256": "4001a52d236c0fbfb0b3a02385a69c5f4b3687c44a0ffa93abb9d789b3d77947",
+      "gitBlob": "a9ea683931c386c40d8412320d834ef6c8762027",
+      "bytes": 170026
+    },
+    {
+      "kind": "THUMB",
+      "sha256": "bce73968813af484c1f703d1c35c1606daf09832486ec8e0dbf075e5507358de",
+      "gitBlob": "2d422f4a745360971ccc0d9fc1594089b007fcb0",
+      "bytes": 37094
+    }
+  ],
+  "observed": "CLEAN modern man face-down phone while sketching, no baked title/reference/Scripture/watermark/logo. Historical TYPE visually reads Self-control / Galatians 5:22-23; THUMB has no text.",
+  "holdReasons": [
+    "original 1122x1402 PNG and declared SHA not independently retrieved",
+    "exact generation prompt unavailable; generation event and input rights uncorroborated",
+    "font license proof only sidecar local-path declaration",
+    "live localized UI rendering and served-byte identity not verified"
+  ],
+  "sourceOriginalSha256DeclaredOnly": "5d7436de2e998b306391879da517f12ef2356313fb66522c6a3c05ff0bc72d25",
+  "policyMigration": "HOLD_POLICY_MIGRATION for CLEAN-only Feeling/Need release until reviewed schema/runtime/build migration",
+  "scope": "Rights-only; no scene/technical/uniqueness/coordinator PASS. No pixel changes, approval, release, merge or deploy.",
+  "proofLinks": [
+    "https://github.com/11ll11l1l1l/BibleQuest/pull/1451",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/6df3f1c0726b86c52a4466f6b789599af6269f6f/data/v7/visual-assets/records/bqv7-need-self-control-01.json",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/6df3f1c0726b86c52a4466f6b789599af6269f6f/public/v7/images/need/bqv7-need-self-control-01.webp"
+  ]
+}
