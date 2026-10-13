@@ -1253,7 +1253,7 @@
       "producer": "manual-chat-20261014-next",
       "sourceRevision": "r1",
       "sceneRevision": "library-photographic-atlas-overhead-20261014-r3",
-      "status": "claimed",
+      "status": "rejected",
       "claimedAt": "2026-10-13T22:27:18.531485+00:00",
       "qa": {},
       "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
@@ -1266,8 +1266,8 @@
       "reference": "Acts 17:11",
       "textSafeRegion": "right",
       "focalPoint": {
-        "x": 0.5,
-        "y": 0.6
+        "x": 0.4,
+        "y": 0.45
       },
       "sceneFingerprint": {
         "action": "compare three photograph-only reference atlases",
@@ -1276,7 +1276,53 @@
         "perspective": "high three-quarter over shoulder",
         "sourceRevision": "r1"
       },
-      "note": "New native source after r2 pseudoletter FAIL. Different older male cast, overhead camera, photograph-only atlas pages and comparison action. No paragraphs/letters/page numbers."
+      "note": "New native source after r2 pseudoletter FAIL. Different older male cast, overhead camera, photograph-only atlas pages and comparison action. No paragraphs/letters/page numbers.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "99662a92a05fb6eda6d9264d5b06fead7e54e4394b8fa8687e63e12dea2a65fd",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights FAIL: background book-spine pseudoletters; foreground photo pages corrected. No copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:30:17.528984+00:00",
+      "failedMeasuredBytesSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r4",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-carrel-shelf-free-photo-study-20261014-r4",
+      "status": "claimed",
+      "claimedAt": "2026-10-13T22:30:17.529002+00:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.4,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "compare photograph-only atlases in shelf-free carrel",
+        "setting": "library individual study carrel with plain partitions",
+        "peopleCount": 1,
+        "perspective": "side environmental eye-height",
+        "sourceRevision": "r1"
+      },
+      "note": "Distinct shelf-free library carrel, younger female cast, side environmental framing and diffused daylight. Three photograph-only atlases, no paragraph or spine typography. R2/R3 failed bytes deleted."
     }
   ]
 }
