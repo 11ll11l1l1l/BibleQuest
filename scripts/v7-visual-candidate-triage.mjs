@@ -133,3 +133,13 @@ export async function triageV7SingleMasters(root = ROOT) {
   }
   return {technicallyVerified,rejected,publicationApproved:false};
 }
+
+// Chromium serializes CSS percentages after rounding insignificant floating
+// point digits. Compare the actual numeric crop, not its string spelling.
+export function focalPositionMatches(actual, focal) {
+  const match=typeof actual==='string' && actual.match(/^(-?[0-9]+(?:\.[0-9]+)?)% (-?[0-9]+(?:\.[0-9]+)?)%$/);
+  if(!match || !focal || ['x','y'].some(key=>typeof focal[key]!=='number'
+    || !Number.isFinite(focal[key]) || focal[key]<0 || focal[key]>1)) return false;
+  return Math.abs(Number(match[1])-focal.x*100)<=0.000001
+    && Math.abs(Number(match[2])-focal.y*100)<=0.000001;
+}

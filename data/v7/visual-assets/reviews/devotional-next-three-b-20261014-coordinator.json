@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_coordinator_qa",
+  "role": "coordination",
+  "reviewedAt": "2026-10-13T22:42:50.730657+00:00",
+  "overallVerdict": "PASS",
+  "verdictScope": "Immutable active staged masters and QA-only source-bound presentation profiles; not production registration or release",
+  "publicationApproved": false,
+  "releaseApproved": false,
+  "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE",
+  "reviews": [
+    {
+      "attemptId": "manual-frustration03-20261014-r2",
+      "contentId": "devotional.biblequest.frustration.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 462366,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceLabels": {
+        "en": "Let patience outlast irritation",
+        "tl": "Hayaang mas tumagal ang pasensya kaysa iritasyon",
+        "ceb": "Tugoti ang pagpailub nga molungtad labaw sa kasapot",
+        "ilo": "Palubosam ti anus a bumayag ngem ti pannakairita"
+      },
+      "reference": "Ecclesiastes 7:8-9",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-joy03-20261014-r2",
+      "contentId": "devotional.biblequest.joy.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 211942,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceLabels": {
+        "en": "Let joy become strength",
+        "tl": "Hayaang maging lakas ang kagalakan",
+        "ceb": "Tugoti ang kalipay nga mahimong kusog",
+        "ilo": "Palubosam ti rag-o a mangbalin a pigsa"
+      },
+      "reference": "Nehemiah 8:10",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-doubt03-20261014-r4",
+      "contentId": "devotional.biblequest.doubt.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 323018,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "52d570746ec335662d2bb549266bca61f07a868c",
+      "sourceLabels": {
+        "en": "Turn doubt into careful examination",
+        "tl": "Gawing maingat na pagsusuri ang pag-aalinlangan",
+        "ceb": "Himoang maampingong pagsusi ang pagduhaduha",
+        "ilo": "Pagbalinem a naannad a panangsukimat ti panagduadua"
+      },
+      "reference": "Acts 17:11",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    }
+  ],
+  "reviewerIdentities": [
+    "/root/peace_scene_qa",
+    "independent-rights-wording-agent",
+    "independent-technical-qa",
+    "/root/peace_uniqueness_qa",
+    "/root/peace_coordinator_qa"
+  ],
+  "missingEvidence": [],
+  "ciEvidence": {
+    "head": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+    "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38478979308",
+    "artifactId": 11856587014,
+    "zipSha256": "3852ee2902430b90494ae94645205540c7782c489669d0d63bba76c26f75b819",
+    "reportPath": "artifacts/v7/devotional-ci-bff1/report.json",
+    "reportSha256": "c446dd0de32f5bbcdbc730ec5d1d78d37ffb309b994bcdc1d36576127618f500",
+    "rejected": [],
+    "deliveryScope": "QA-only source-routed staging bytes",
+    "activeBatchScreenshotCount": 96
+  },
+  "independentCoordinatorPixelInspection": "All three active full WebPs independently inspected; exact-head CI all three320px Cebuano live-title and100px English thumbnails at200% text inspected. Narrative framing retained and wording/reference legible without clipped text.",
+  "roleEvidencePaths": [
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+    "data/v7/visual-assets/reviews/devotional-doubt-r4-20261014-rights.json"
+  ],
+  "roleEvidenceSha256": {
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json": "7891d83932579344068ea4b5d2dd15b549a88af469dd4138e9dff4c2ef30fbf0",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json": "f4c81c08c4d5a53d71cd56e5d811410fd7e8d559e5476b09f318578eddc1b42e",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json": "1547d5309e9c4d163bc733593c253191ee6f50005f2ef43592ef281669097c93",
+    "data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json": "556c3da1bf6d9eef5b041dbfe0c439ef58426dce1b88e013599a0c5711998fc8",
+    "data/v7/visual-assets/reviews/devotional-doubt-r4-20261014-rights.json": "91a29b2e3bff2459d73abe67f51b2fecc79058d41b7769ce394decea174d976d"
+  },
+  "rejectedHistory": [
+    "manual-doubt03-20261014-r2",
+    "manual-doubt03-20261014-r3"
+  ],
+  "limits": [
+    "Rights FAIL supersedes earlier scene/uniqueness PASS on deleted doubt r2/r3; neither is accepted. Active r4 has separate independent rights PASS.",
+    "Five independent role PASS applies only to active immutable staged sources and SHA-bound QA profiles.",
+    "QA-only inline figures and routed staging bytes are not production components or deployed HTTP/offline evidence.",
+    "Production canonical registration, component certification and Lane D exact integrated release gates remain HOLD.",
+    "No pixel generation/editing, ledger/source edits or Git mutation by coordinator."
+  ]
+}

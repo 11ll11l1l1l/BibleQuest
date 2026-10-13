@@ -1,0 +1,217 @@
+{
+  "role": "technical_responsive",
+  "reviewer": "independent-technical-qa",
+  "overallVerdict": "PASS",
+  "releaseApproval": false,
+  "scope": "Independent active staged technical role: native raster integrity and source-bound QA-only presentation profiles.",
+  "candidates": [
+    {
+      "attemptId": "manual-doubt03-20261014-r2",
+      "contentId": "devotional.biblequest.doubt.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r2.webp",
+      "sha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 176916,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "focalInBounds": true,
+      "verdict": "HOLD",
+      "missingEvidence": [
+        "Exact-head source-bound CI responsive screenshots"
+      ],
+      "status": "superseded_after_independent_rights_fail",
+      "currentQueued": false
+    },
+    {
+      "attemptId": "manual-frustration03-20261014-r2",
+      "contentId": "devotional.biblequest.frustration.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 462366,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "currentQueued": true,
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final exact-head live-title320CEB390TL430ILO800EN and100px320CEB for each active candidate.",
+        "observed": "Core action remains visible in square crop: book comparison/pointing,stone/hose repair,janitorcart/group/mural. Some upper hair/head framing clipped in square doubt/frustration but eyes/face/action remain visible. Long titles wrap and references stay readable at200% without horizontal clipping."
+      }
+    },
+    {
+      "attemptId": "manual-joy03-20261014-r2",
+      "contentId": "devotional.biblequest.joy.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 211942,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.35
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "currentQueued": true,
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final exact-head live-title320CEB390TL430ILO800EN and100px320CEB for each active candidate.",
+        "observed": "Core action remains visible in square crop: book comparison/pointing,stone/hose repair,janitorcart/group/mural. Some upper hair/head framing clipped in square doubt/frustration but eyes/face/action remain visible. Long titles wrap and references stay readable at200% without horizontal clipping."
+      }
+    },
+    {
+      "attemptId": "manual-doubt03-20261014-r3",
+      "contentId": "devotional.biblequest.doubt.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r3.webp",
+      "sha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 379580,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.4,
+        "y": 0.45
+      },
+      "focalInBounds": true,
+      "currentQueued": false,
+      "verdict": "HOLD",
+      "missingEvidence": [
+        "Exact-head responsive CI screenshots"
+      ],
+      "status": "superseded_after_independent_rights_fail"
+    },
+    {
+      "attemptId": "manual-doubt03-20261014-r4",
+      "contentId": "devotional.biblequest.doubt.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 323018,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "focalInBounds": true,
+      "currentQueued": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final exact-head live-title320CEB390TL430ILO800EN and100px320CEB for each active candidate.",
+        "observed": "Core action remains visible in square crop: book comparison/pointing,stone/hose repair,janitorcart/group/mural. Some upper hair/head framing clipped in square doubt/frustration but eyes/face/action remain visible. Long titles wrap and references stay readable at200% without horizontal clipping."
+      }
+    }
+  ],
+  "productionVerdict": "HOLD",
+  "productionHolds": [
+    "Actual production component certification",
+    "Deployed HTTP/offline served-byte proof",
+    "Production publication/release gates"
+  ],
+  "ciEvidence": {
+    "head": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+    "url": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38478979308",
+    "artifactId": 11856587014,
+    "zipSha256": "3852ee2902430b90494ae94645205540c7782c489669d0d63bba76c26f75b819",
+    "reportPath": "artifacts/v7/devotional-ci-bff1/report.json",
+    "reportSha256": "c446dd0de32f5bbcdbc730ec5d1d78d37ffb309b994bcdc1d36576127618f500",
+    "rejected": [],
+    "deliveryScope": "QA-only source-routed staging bytes"
+  }
+}

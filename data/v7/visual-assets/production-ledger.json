@@ -1082,6 +1082,407 @@
       "publicationApproved": false,
       "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
       "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-reference-study-20261014-r2",
+      "status": "rejected",
+      "claimedAt": "2026-10-13T22:22:15.756698+00:00",
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "sceneFingerprint": {
+        "action": "library-reference-study",
+        "setting": "public library",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8df5b7d8c1b799accbe1f8213454a4c567d9f3d4dfb31f4b1ae3e6643015dfaf",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights QA FAIL: baked letter-like paragraphs on open book pages; no readable quotation or proven copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:27:18.531427+00:00",
+      "failedMeasuredBytesSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.frustration.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-frustration03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "garden-hose-reroute-20261014-r2",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:22:15.763670+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceContent": {
+        "title": "Let patience outlast irritation",
+        "body": "Frustration wants an immediate ending, even when haste would make the situation worse. Ecclesiastes 7:8-9 praises patience and warns against quick anger. Slow the decision down just enough to distinguish a real obstacle from wounded pride, then respond to the actual problem."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Ecclesiastes 7:8-9",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "sceneFingerprint": {
+        "action": "garden-hose-reroute",
+        "setting": "community garden",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 462366,
+        "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "12a91c0d0429ef3da9193a522bbf64deba8a14890e1e523f27f764ab823e566d",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "THEMATIC_ALTERNATIVE",
+        "observed": "Gardener calmly guides a curved irrigation hose beside a loose stone rather than yanking it.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Visible calm practical hose adjustment beside a stone expresses patient response to an obstacle. Blockage, prior irritation and before/after recovery are not asserted.",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.joy.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-joy03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "school-custodian-mural-20261014-r2",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:22:15.773188+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceContent": {
+        "title": "Let joy become strength",
+        "body": "Joy is more than a pleasant break from serious life. Nehemiah 8:10 connects the joy of the Lord with strength. Receive good things deeply enough that they restore energy for obedience, service, and endurance. Celebration can prepare you for faithful work."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Nehemiah 8:10",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.35
+      },
+      "sceneFingerprint": {
+        "action": "school-custodian-mural",
+        "setting": "school corridor",
+        "peopleCount": 4,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 211942,
+        "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "3ce616e4efbf5188e9abdcc41650af71bbd0fadac58761b1cfbd598b8bc5ace7",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Custodian smiles alongside three students appreciating an abstract school mural.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r3",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-photographic-atlas-overhead-20261014-r3",
+      "status": "rejected",
+      "claimedAt": "2026-10-13T22:27:18.531485+00:00",
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r3-20261014-rights.json"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.4,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "compare three photograph-only reference atlases",
+        "setting": "public library study table",
+        "peopleCount": 1,
+        "perspective": "high three-quarter over shoulder",
+        "sourceRevision": "r1"
+      },
+      "note": "New native source after r2 pseudoletter FAIL. Different older male cast, overhead camera, photograph-only atlas pages and comparison action. No paragraphs/letters/page numbers.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "99662a92a05fb6eda6d9264d5b06fead7e54e4394b8fa8687e63e12dea2a65fd",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights FAIL: background book-spine pseudoletters; foreground photo pages corrected. No copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:30:17.528984+00:00",
+      "failedMeasuredBytesSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r4",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-carrel-shelf-free-photo-study-20261014-r4",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:30:17.529002+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r4-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "sceneFingerprint": {
+        "action": "compare photograph-only atlases in shelf-free carrel",
+        "setting": "library individual study carrel with plain partitions",
+        "peopleCount": 1,
+        "perspective": "side environmental eye-height",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 323018,
+        "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "5bbb88a35d603d230bc1df52f610df819a85c57467ddec5a44554f69382d9618",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult compares three photograph-only reference books and geometric question sketch in shelf-free library study carrel; no page/spine text observed.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
     }
   ]
 }

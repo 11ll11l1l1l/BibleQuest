@@ -1,12 +1,19 @@
 # BibleQuest V7 Active Status
 
-Updated: **2026-10-10 JST**  
+Updated: **2026-10-14 JST**  
 State: **V7 initial foundation on main; image-first release incomplete; Lane A and Lane D active, Lanes B and C core work closed**  
 Development branch: `v7/development`  
 Reset baseline: `725646bcb512c489f05966ffe83090977c7f3fc3`  
 Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`  
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
+
+## Devotional master QA batches — 2026-10-14 JST
+
+- PR #1536 merged six separately generated native1122×1402 covers (contentment.03, tiredness_weariness.03, anger.03, gratitude.03, fear.03, loneliness.03), all five independent source/presentation roles PASS;192 exact-head screenshots. Evidence: `docs/v7/artwork-evidence/DEVOTIONAL_SIX_QA_20261014.md`.
+- PR #1537 adds doubt.03, frustration.03 and joy.03 native masters. Five independent source/presentation roles PASS at `bff1a644e9af318e9610ea9e0ab3c053127176cd`, workflow38478979308,96 actual screenshots across four widths/locales and live-title/100px-thumbnail at200%text. Two doubt attempts with generated pseudoletters were rejected and their original/staged bytes deleted before distinctly claimed replacements; hashes/reasons remain.
+- Fixed a real QA false rejection: CSS focal percentages are compared numerically instead of requiring Chromium to preserve JavaScript floating-point string noise. Genuine changed crops remain rejected by regression tests.699 V7 tests and28-attempt ledger audit passed. Evidence/prompts: `docs/v7/artwork-evidence/DEVOTIONAL_NEXT_THREE_B_20261014.md`.
+- These nine dedicated devotional masters are **staged QA passes**, not nine registered/published production covers or completion of the300-cover quota. Candidate bytes remain excluded from deployable output. Production registration, actual production-component/deployed/offline certification and full release remain **HOLD_REGISTRATION_AND_RELEASE**. Final PR1537 metadata head still requires all four exact-head repository checks before development merge.
 
 ## Peace master intake and QA-pipeline repair — 2026-10-13 JST, PR #1535
 

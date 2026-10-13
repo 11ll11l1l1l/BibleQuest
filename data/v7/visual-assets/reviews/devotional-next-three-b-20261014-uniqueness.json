@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "role": "uniqueness",
+  "reviewerIdentity": "/root/peace_uniqueness_qa",
+  "reviewedAt": "2026-10-13T22:28:58.224076+00:00",
+  "releaseApproved": false,
+  "reviewMethod": "Actual full-frame three masters and three published comparators; prior six/Peace pair/relevant merged-open comparators directly inspected same context. No pixel edits or git mutation.",
+  "sourceReads": [
+    "ledger sourceContent full",
+    "exact guidechapter03",
+    "docs/v7/artwork-evidence/DEVOTIONAL_NEXT_THREE_B_20261014.md"
+  ],
+  "comparatorsInspected": [
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Waiting-room impatience with watch and frown"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+      "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Curled distressed outdoor woman"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+      "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Isolated older man holding mug at communal table"
+    },
+    {
+      "path": "public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+      "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Close hands sorting blank concern cards at kitchen table"
+    },
+    {
+      "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+      "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Two adult women listening after difficult news in evening center; distinct from mother/child in busy office."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+      "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Resting male baker in work apron at bakery bench; distinct from contented woman at home with mug."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+      "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Standing cook at metal kitchen pass with coworker; different action/environment from both candidates."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-gratitude-01.webp",
+      "sha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Flowers and hug"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-fear-01.webp",
+      "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Woman frightened behind door"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-love-connection-01.webp",
+      "sha256": "44aa89412c29931296f101ac4e4bede31d9081eee7ced2e1e7a2a872157bc824",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Two adults repairing bowl together"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Mother child attentive in busy office"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Contented woman holding mug in armchair"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
+      "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2",
+      "pixelInspection": "Actual full-frame this turn"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "pixelInspection": "Actual full-frame this turn"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-joy-01.webp",
+      "sha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+      "pixelInspection": "Actual full-frame this turn"
+    }
+  ],
+  "reviews": [
+    {
+      "contentId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r2",
+      "candidatePathAtInspection": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r2.webp",
+      "candidateSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "verdict": "PASS",
+      "verdictScope": "Independent anatomy and originality role only; no waiver of separate wording rejection.",
+      "observedEvidence": [
+        "Three open books, coherent chin/pointing hands, focused examination.",
+        "Visible nonlegible dense print and grayscale pictures: cannot certify zero letters/pseudo-text. Source now rejected/deleted by other role; inspection preceded deletion."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Reference-reading action differs from lamp repair/rest.",
+        "Library setting differs from home/lab.",
+        "Solo seated reader with books foreground differs from worker pair or reclined full-body adult."
+      ],
+      "peerNewCandidatesCompared": [
+        "devotional.biblequest.frustration.03",
+        "devotional.biblequest.joy.03"
+      ],
+      "productionEligible": false
+    },
+    {
+      "contentId": "devotional.biblequest.frustration.03",
+      "attemptId": "manual-frustration03-20261014-r2",
+      "candidatePathAtInspection": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "verdict": "PASS",
+      "verdictScope": "Independent anatomy and originality role only; no waiver of separate wording rejection.",
+      "observedEvidence": [
+        "Coherent gloved hands, stone and continuous hose including inline joining band. Calm crouched routing action visible.",
+        "Original sharp pinch or water blockage not provable; anatomy/geometric coherence acceptable."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Hose/stone routing action differs from lamp/prototype work.",
+        "Outdoor vegetable-bed setting differs from interiors.",
+        "Older kneeling gloved woman differs from male repairer/technician posture."
+      ],
+      "peerNewCandidatesCompared": [
+        "devotional.biblequest.doubt.03",
+        "devotional.biblequest.joy.03"
+      ],
+      "productionEligible": false
+    },
+    {
+      "contentId": "devotional.biblequest.joy.03",
+      "attemptId": "manual-joy03-20261014-r2",
+      "candidatePathAtInspection": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "verdict": "PASS",
+      "verdictScope": "Independent anatomy and originality role only; no waiver of separate wording rejection.",
+      "observedEvidence": [
+        "Four coherent bodies/faces, cart hand and open student gesture natural.",
+        "Original-looking simple abstract waves without identifiable copied characters/logos; quiet school appreciation."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Mural appreciation/cart action differs from sunset/diner.",
+        "School corridor setting differs from lake/restaurant.",
+        "Four standing profiles differ from solo seated joy or two-person listening."
+      ],
+      "peerNewCandidatesCompared": [
+        "devotional.biblequest.doubt.03",
+        "devotional.biblequest.frustration.03"
+      ],
+      "productionEligible": false
+    },
+    {
+      "contentId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r3",
+      "candidatePathAtInspection": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r3.webp",
+      "candidateSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "reviewedAt": "2026-10-13T22:30:00.273318+00:00",
+      "verdict": "PASS",
+      "verdictScope": "Independent anatomy/visual originality role; source/wording/browser gates separate.",
+      "observedEvidence": [
+        "Older man holds rear open photo atlas with left hand and points to rock strata photo in middle book with right index finger; visible hands and face coherent, three bindings/page perspective plausible despite overlap.",
+        "Three atlases contain photographic landscapes/rocks rather than visible paragraph rows, plus geometric geological comparison sketch. No readable title, paragraph, logo or Scripture in main subject area.",
+        "Distant shelf spines include tiny light/dark marks resembling label bands; full-frame inspection cannot resolve them into meaningful wording or prove absolutely no character-like mark. Do not claim background-spine OCR or copyright clearance."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Compared with deleted r2: older male with spectacles vs middle-aged woman; photo-only atlases vs paragraph reference books; high over-shoulder composition vs face-front seated three-quarter.",
+        "Compared with staged repair/rest/invitation: reference comparison action vs household maintenance/rest/social welcome; library table setting vs apartment/diner; overhead hands/books emphasis vs body/face narrative.",
+        "Compared with Frustration and Joy: solo investigative reading vs gardener reroute or four-person corridor appreciation, distinct props/environments/camera."
+      ],
+      "priorR2ObservedSha": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+      "productionEligible": false,
+      "limits": [
+        "Geology subject is visible evidence-comparison analogy; Scripture interpretation belongs scene role.",
+        "No exhaustive global originality guarantee; incidental background wording belongs rights role."
+      ]
+    },
+    {
+      "contentId": "devotional.biblequest.doubt.03",
+      "attemptId": "manual-doubt03-20261014-r4",
+      "candidatePathAtInspection": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "reviewedAt": "2026-10-13T22:32:38.593264+00:00",
+      "verdict": "PASS",
+      "verdictScope": "Independent actual-pixel anatomy/originality role; not consolidated production approval.",
+      "observedEvidence": [
+        "Young adult seated in shelf-free plain gray carrel, fingertip points at rock-strata photo while opposite hand holds book edge; both hands/fingers and face natural.",
+        "Three coherent open photograph-only atlases, page bindings and paper curvature plausible; image continuity across gutter consistent with photographic double-page spread, no visible captions/paragraphs/page numbering.",
+        "Blank partitions and frosted window remove all background spines. Sketch contains three nonletter shaded circles and intersecting lines. No identifiable lettering/logo/watermark in inspected full-frame pixels."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "R3 historical peer: young female vs older male, front high angle vs over shoulder, shelf-free carrel vs open-shelf library.",
+        "Prior repair/rest/invitation peers: geological evidence comparison vs mechanical repair/rest/social welcome, carrel vs kitchen/sofa/diner, close hands/books foreground vs seated body/interaction composition.",
+        "Frustration/Joy peers: indoor reference comparison vs outdoor hose problem or school group appreciation; solo reader vs kneeling gardener/four-standing-person cast; gray restrained palette vs vegetable garden/mural colors."
+      ],
+      "productionEligible": false,
+      "limits": [
+        "Photographic geology is visible comparison analogy; canonical Scripture fit belongs scene reviewer.",
+        "Internet-wide exclusivity and unseen entire collection not asserted.",
+        "Actual browser crop/text surfaces require technical proof."
+      ]
+    }
+  ],
+  "crossRoleConcern": "Historical r2 paragraph print and r3 distant spine pseudoletters remain separately rejected/deleted. Active r4 shelf-free composition removes those observed risks; no history revived.",
+  "residualLimits": [
+    "Bounded collection, not worldwide exclusivity/all300 covers.",
+    "Built browser/crop/title proof delegated to technical role.",
+    "Still-image initial obstacle/occupation/emotion not objectively provable."
+  ]
+}

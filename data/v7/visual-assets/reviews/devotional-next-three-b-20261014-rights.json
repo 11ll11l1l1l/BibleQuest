@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "independent-rights-wording-agent",
+  "reviewedAt": "2026-10-13T22:26:51.836234+00:00",
+  "candidatePr": 1537,
+  "baselineCommit": "639ad9fa40d28bfa36c28406b1ec4c4b6f68e1ff",
+  "publicationApproved": false,
+  "reviews": [
+    {
+      "attemptId": "manual-doubt03-20261014-r2",
+      "contentId": "devotional.biblequest.doubt.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r2.webp",
+      "sha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+      "role": "rights",
+      "verdict": "FAIL",
+      "scope": "Intrinsic rights/provenance and source-bound wording only; no publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Turn doubt into careful examination",
+        "tl": "Gawing maingat na pagsusuri ang pag-aalinlangan",
+        "ceb": "Himoang maampingong pagsusi ang pagduhaduha",
+        "ilo": "Pagbalinem a naannad a panangsukimat ti panagduadua"
+      },
+      "authorizedReferenceOnly": "Acts 17:11",
+      "translationEvidence": "Full canonical translated bodies read, r1 binding and existing reviewed state checked. No new translation publication approval asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts/provenance read in DEVOTIONAL_NEXT_THREE_B_20261014.md, prompt and transparent_background:false only; source PNG digest independently matched ledger.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-25b1d467-bdba-4314-ad7c-17462b9d76f4.png",
+        "originalPngSha256": "8df5b7d8c1b799accbe1f8213454a4c567d9f3d4dfb31f4b1ae3e6643015dfaf",
+        "modelId": null
+      },
+      "pixelObservation": "Open book pages contain obvious printed paragraph-like pseudoletter typography and grayscale illustration/photo-like rectangles. Exact readable wording/source artwork identity cannot be resolved; no copied work or copyright infringement is asserted. These are visibly baked pseudoletters, contrary to CLEAN no generated text contract.",
+      "failureReason": "Baked pseudoletter typography on several open reference-book pages; no-text CLEAN requirement fails. Need new source revision with genuinely unlettered pages or another source-faithful examination scene.",
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ],
+      "publicationApproved": false
+    },
+    {
+      "attemptId": "manual-frustration03-20261014-r2",
+      "contentId": "devotional.biblequest.frustration.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and source-bound wording only; no publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceContent": {
+        "title": "Let patience outlast irritation",
+        "body": "Frustration wants an immediate ending, even when haste would make the situation worse. Ecclesiastes 7:8-9 praises patience and warns against quick anger. Slow the decision down just enough to distinguish a real obstacle from wounded pride, then respond to the actual problem."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Let patience outlast irritation",
+        "tl": "Hayaang mas tumagal ang pasensya kaysa iritasyon",
+        "ceb": "Tugoti ang pagpailub nga molungtad labaw sa kasapot",
+        "ilo": "Palubosam ti anus a bumayag ngem ti pannakairita"
+      },
+      "authorizedReferenceOnly": "Ecclesiastes 7:8-9",
+      "translationEvidence": "Full canonical translated bodies read, r1 binding and existing reviewed state checked. No new translation publication approval asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts/provenance read in DEVOTIONAL_NEXT_THREE_B_20261014.md, prompt and transparent_background:false only; source PNG digest independently matched ledger.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-07f79260-a995-4d3e-ad48-85ce53b0ef58.png",
+        "originalPngSha256": "12a91c0d0429ef3da9193a522bbf64deba8a14890e1e523f27f764ab823e566d",
+        "modelId": null
+      },
+      "pixelObservation": "Gardener/hose scene has no observed baked text, identifiable brand or watermark.",
+      "failureReason": null,
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ],
+      "publicationApproved": false
+    },
+    {
+      "attemptId": "manual-joy03-20261014-r2",
+      "contentId": "devotional.biblequest.joy.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and source-bound wording only; no publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceContent": {
+        "title": "Let joy become strength",
+        "body": "Joy is more than a pleasant break from serious life. Nehemiah 8:10 connects the joy of the Lord with strength. Receive good things deeply enough that they restore energy for obedience, service, and endurance. Celebration can prepare you for faithful work."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Let joy become strength",
+        "tl": "Hayaang maging lakas ang kagalakan",
+        "ceb": "Tugoti ang kalipay nga mahimong kusog",
+        "ilo": "Palubosam ti rag-o a mangbalin a pigsa"
+      },
+      "authorizedReferenceOnly": "Nehemiah 8:10",
+      "translationEvidence": "Full canonical translated bodies read, r1 binding and existing reviewed state checked. No new translation publication approval asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "noReferenceInputs": true,
+        "basis": "Exact prompts/provenance read in DEVOTIONAL_NEXT_THREE_B_20261014.md, prompt and transparent_background:false only; source PNG digest independently matched ledger.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-b3930b33-1c05-40c2-bf02-6a7b9fe136e5.png",
+        "originalPngSha256": "3ce616e4efbf5188e9abdcc41650af71bbd0fadac58761b1cfbd598b8bc5ace7",
+        "modelId": null
+      },
+      "pixelObservation": "Mural comprises generic organic curved colored bands, no observed characters, identifiable copied artwork, logos or watermark. Clothing/cart appear unbranded.",
+      "failureReason": null,
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ],
+      "publicationApproved": false
+    }
+  ]
+}

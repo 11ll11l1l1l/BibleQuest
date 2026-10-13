@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "independent-rights-wording-agent",
+  "reviewedAt": "2026-10-13T22:32:12.900803+00:00",
+  "candidatePr": 1537,
+  "publicationApproved": false,
+  "previousFailedAttempts": [
+    "manual-doubt03-20261014-r2",
+    "manual-doubt03-20261014-r3"
+  ],
+  "reviews": [
+    {
+      "attemptId": "manual-doubt03-20261014-r4",
+      "contentId": "devotional.biblequest.doubt.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "role": "rights",
+      "verdict": "PASS",
+      "scope": "Intrinsic rights/provenance and source-bound wording only; no publication approval",
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "sourceRights": {
+        "status": "verified",
+        "holder": "BibleQuest project",
+        "basis": "Original first-party devotional prose created for BibleQuest V7; no third-party devotional prose is embedded. Scripture is cited by reference only.",
+        "attribution": "BibleQuest V7 Content Factory.",
+        "allowedUses": [
+          "display",
+          "translate",
+          "modify",
+          "distribute"
+        ]
+      },
+      "authorizedLiveTitles": {
+        "en": "Turn doubt into careful examination",
+        "tl": "Gawing maingat na pagsusuri ang pag-aalinlangan",
+        "ceb": "Himoang maampingong pagsusi ang pagduhaduha",
+        "ilo": "Pagbalinem a naannad a panangsukimat ti panagduadua"
+      },
+      "authorizedReferenceOnly": "Acts 17:11",
+      "translationEvidence": "Full canonical translated bodies read, r1 binding and existing reviewed state checked. No new translation publication approval asserted.",
+      "generationEvidence": {
+        "provider": "OpenAI image generation",
+        "classification": "original_ai_generated",
+        "noReferenceInputs": true,
+        "basis": "Exact r4 prompt and prompt-only invocation provenance read in DEVOTIONAL_NEXT_THREE_B_20261014.md; original PNG independently hashed.",
+        "originalPngPath": "/workspace/scratch/7d48d1d3bd8e/generated_images/exec-45ab0940-3047-4a54-adb0-1983bd63359a.png",
+        "originalPngSha256": "5bbb88a35d603d230bc1df52f610df819a85c57467ddec5a44554f69382d9618",
+        "modelId": null
+      },
+      "pixelObservation": "Personally inspected actual full r4 WebP. Three photo-only atlas spreads show landscape/rock textures without paragraphs, captions, pseudoletters or numerals. Geometric sketch comprises circles/texture strokes only. Plain study partitions and frosted window have no shelves, book spines or incidental typography. No identifiable brands, logos, watermarks or named copied artworks observed.",
+      "failureReason": null,
+      "limitations": [
+        "Generated-original source classification is provenance, not exclusive copyright/legal forensic certification or a guarantee against coincidental resemblance.",
+        "Image inspection and documented prompt-only invocation support absence of supplied third-party image inputs; training-data provenance is not ascertainable from these pixels.",
+        "Source publicationState and review.status remain pending_review; role PASS grants no devotional publication authority.",
+        "No Bible translation quotation/font is embedded. Browser live text fit, contrast, crop, font licensing and exact served-byte/integration/release checks remain separate roles.",
+        "Numeric reference is authorized from canonical body; independent Scripture-context role owns theological scene fidelity."
+      ],
+      "publicationApproved": false
+    }
+  ]
+}
