@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { auditV7VisualAssets } from '../../scripts/v7-visual-assets-audit.mjs';
-import { triageV7ArtworkCandidates, triageV7SingleMasters } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { triageV7ArtworkCandidates, triageV7SingleMasters, focalPositionMatches } from '../../scripts/v7-visual-candidate-triage.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = (process.env.BQ_PREVIEW_URL || 'http://127.0.0.1:4173').replace(/\/$/, '');
@@ -187,7 +187,7 @@ try {
             },{asset,profile,locale,label});
             assert(routedCandidatePaths.has(asset.src),'Single-master route bypassed');
             assert.equal(geometry.naturalWidth,asset.width);assert.equal(geometry.naturalHeight,asset.height);
-            assert.equal(geometry.position,`${asset.focalPoint.x*100}% ${asset.focalPoint.y*100}%`);
+            assert(focalPositionMatches(geometry.position,asset.focalPoint),'Browser crop differs from submitted focal point');
             assert(!geometry.overflow,'Live localized text overflow');
             assert.equal(geometry.textScale,2,'Actual root text scale must be 200%');
             if(profile==='thumbnail')assert.equal(geometry.width,100);

@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { triageV7ArtworkCandidates, triageV7SingleMasters } from '../../scripts/v7-visual-candidate-triage.mjs';
+import { triageV7ArtworkCandidates, triageV7SingleMasters, focalPositionMatches } from '../../scripts/v7-visual-candidate-triage.mjs';
 import { candidateQuarantineReason, KNOWN_REJECTED_V7_VARIANTS } from '../../scripts/v7-visual-candidate-policy.mjs';
 
 async function fixture(t, entries) {
@@ -190,4 +190,14 @@ test('devotional intake rejects source tampering, stale translation, rights and 
   const result=await triageV7SingleMasters(await devotionalFixture(t,change));
   assert.equal(result.technicallyVerified.length,0);assert.equal(result.rejected.length,1);
  }
+});
+
+test('CSS focal proof accepts serialization rounding but rejects changed crops',()=>{
+ assert.equal(focalPositionMatches('50% 55%',{x:.5,y:.55}),true);
+ assert.equal(focalPositionMatches('0% 100%',{x:0,y:1}),true);
+ assert.equal(focalPositionMatches('50% 54.99%',{x:.5,y:.55}),false);
+ assert.equal(focalPositionMatches('55% 50%',{x:.5,y:.55}),false);
+ assert.equal(focalPositionMatches('center center',{x:.5,y:.5}),false);
+ assert.equal(focalPositionMatches('50% 55%',{x:.5,y:NaN}),false);
+ assert.equal(focalPositionMatches('50% 55%',{x:.5,y:1.5}),false);
 });
