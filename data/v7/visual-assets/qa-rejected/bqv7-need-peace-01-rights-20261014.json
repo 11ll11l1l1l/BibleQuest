@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "date": "2026-10-14",
+  "verdict": "FAIL",
+  "candidatePr": 1421,
+  "reviewedHead": "1bfa0749a9671818744949f8224f44789588789e",
+  "sourceRecordBlob": "3a7265400f6c967bbe9fc4a8ca6e266363b5c82d",
+  "reason": "CLEAN/TYPE/THUMB are SVG, not required original raster PNG/WebP. Sidecar declares procedural SVG with no decoded PNG/WebP. Unapproved exclusive SVG candidate files only eligible for deletion after tombstone.",
+  "release": "NOT_APPROVED",
+  "deletionStatus": "PENDING_EXCLUSIVE_FILE_DELETION",
+  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011"
+}
