@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "date": "2026-10-14",
+  "verdict": "FAIL",
+  "candidatePr": 1448,
+  "reviewedHead": "6d08ce277cabb6e281b6ebcd0b51d9873c1a0ed8",
+  "sourceRecordBlob": "2a41b74c2488c1ca5dae606c506d1b0c11749a2a",
+  "reason": "generation.sourceImageWasComposite=true, isolatedSingleScenePanelCropPixels populated; CLEAN cropped from a three-panel collage, prohibited by one-original-CLEAN policy. Competing Need Hope PR #1479; no source-original PNG proof. No approval; exclusive candidate files only eligible for deletion after tombstone.",
+  "release": "NOT_APPROVED",
+  "deletionStatus": "PENDING_EXCLUSIVE_FILE_DELETION",
+  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011"
+}
