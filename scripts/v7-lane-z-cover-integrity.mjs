@@ -9,6 +9,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readLaneZCoverQueue } from './v7-lane-z-devotional-cover-queue.mjs';
+import { knownRejectedLaneZCoverReason } from './v7-visual-candidate-policy.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const RECORDS = 'data/v7/visual-assets/records';
@@ -86,7 +87,10 @@ export function validateLaneZCoverRecord(record, source, bytes) {
         problems.push('record_dimensions_mismatch');
     } catch(err) { problems.push('image_header_invalid:'+err.message); }
     if (bytes.length !== record.fileBytes) problems.push('record_byte_length_mismatch');
-    if (!HEX64.test(record.sha256||'') || createHash('sha256').update(bytes).digest('hex')!==record.sha256)
+    const actualSha256=createHash('sha256').update(bytes).digest('hex');
+    const rejectedScene=knownRejectedLaneZCoverReason(actualSha256);
+    if (rejectedScene) problems.push('known_rejected_devotional_scene:'+rejectedScene);
+    if (!HEX64.test(record.sha256||'') || actualSha256!==record.sha256)
       problems.push('record_sha256_mismatch');
     if (bytes.length>10_000_000) problems.push('cover_exceeds_10mb');
   }
