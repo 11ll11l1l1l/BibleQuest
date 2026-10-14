@@ -1,0 +1,21 @@
+name: V7 Scripture integrity (release blocking)
+on:
+  pull_request:
+    branches: [v7/development]
+  push:
+    branches: [v7/development]
+  workflow_dispatch:
+jobs:
+  scripture-integrity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Scripture review validator tests
+        run: node --test tests/v7/scripture-integrity-audit.test.mjs
+      - name: Block release when any visual lacks review evidence
+        run: node scripts/v7-scripture-integrity-audit.mjs
