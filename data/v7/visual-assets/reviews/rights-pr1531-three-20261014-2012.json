@@ -1,0 +1,141 @@
+{
+  "reviewRole": "rights_wording_provenance_only",
+  "reviewDateJST": "2026-10-14",
+  "prNumber": 1531,
+  "prHead": "cbbe465163d1377fc05a397ca9d26f2a6a021d41",
+  "developmentHeadAtReview": "13f2359d20612eea6464941a4b79b27488024998",
+  "policyBlobs": {
+    "AGENTS": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQa": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c"
+  },
+  "sourceBlobs": {
+    "canonicalNeedTaxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "currentGuide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "sidecarDeclaredGuide": "1f3b158542468f17d940a3aaca01f4ff743e6629",
+    "developmentLedger": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "prLedger": "cd6676b1b05fbdc884a0131a5d5e9ed856825edc"
+  },
+  "outcome": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 3
+  },
+  "notes": [
+    "The three binary WebPs were retrieved at the exact PR HEAD as base64, independently decoded as RIFF/WEBP VP8, dimensions parsed from VP8 frame header, byte count and SHA-256 independently calculated, and full images visually inspected.",
+    "No baked title, Scripture prose, logo, watermark, or obvious unlicensed recognizable asset was visible. This is not a license or provenance certification.",
+    "Original generator prompt/receipt, source-generation image identity and independently authenticated absence of external reference assets are not provided; sidecar claims alone are insufficient to certify first-party rights.",
+    "Current canonical taxonomy matches the sidecars' content IDs and permitted Scripture references; no Scripture quotations appear in the CLEAN files. Live localized title/reference and any displayed Scripture prose are not certified from built app screenshots or network proof.",
+    "The sidecars' previous role QA reviewedHead f8d359af... differs from current PR HEAD. This report is exact-head independent rights evidence; it does not overwrite any other agent role.",
+    "CLEAN-only Need assets remain HOLD_POLICY_MIGRATION under the still-operative three-real-file release gate. Home hero is not governed by the Feeling/Need three-file gate, but remains QA/release HOLD.",
+    "The source guide's current Git blob differs from sidecar's historical guide blob; section 6 Courage/Strength and section 7 Home locked scene descriptions were compared and remain substantively identical.",
+    "No pixels created, cropped, transformed, deleted, approved or published."
+  ],
+  "candidates": [
+    {
+      "contentKey": "need:courage:CLEAN",
+      "attemptId": "manual-chat-20261011-courage-b4",
+      "verdict": "HOLD",
+      "sha256IndependentlyVerified": "b5548dcd738ad1a512a8c608a061f766c3c9ba31ea834d717283c42edf20c33f",
+      "gitBlob": "1738f85a792bf68bc7d82b24b6492f44ba753f46",
+      "dimensionsVerifiedFromVP8": {
+        "width": 1122,
+        "height": 1402
+      },
+      "bytesVerified": 239604,
+      "sidecarGitBlob": "e73cb25bcbafcf7613629f426a489b638a8a7431",
+      "sourceRevision": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "canonicalLabels": {
+        "en": "Courage",
+        "tl": "Lakas ng loob",
+        "ceb": "Kaisog",
+        "ilo": "Tured"
+      },
+      "allowedReferences": [
+        "Joshua 1:9",
+        "2 Timothy 1:7"
+      ],
+      "visualInspection": "Modern workshop entrance, learner wearing safety glasses and apron, mentor at bench. No visible embedded text.",
+      "missingEvidence": [
+        "Original generation-input provenance and rights chain unverified",
+        "Live localized title/reference and any Scripture prose not demonstrated",
+        "HOLD_POLICY_MIGRATION"
+      ],
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-courage-b4.json"
+      }
+    },
+    {
+      "contentKey": "need:strength:CLEAN",
+      "attemptId": "manual-chat-20261011-strength-b3",
+      "verdict": "HOLD",
+      "sha256IndependentlyVerified": "c80ff1e75cf5cd7717cf87118e5e07931a35e6c12d6b4f5bd48657f0bf5900d4",
+      "gitBlob": "c382f3393f5efb1ebfb2254a6771ba02ff8e0f1e",
+      "dimensionsVerifiedFromVP8": {
+        "width": 1122,
+        "height": 1402
+      },
+      "bytesVerified": 371634,
+      "sidecarGitBlob": "68a11689c562e898932578a8543fccff38071ef7",
+      "sourceRevision": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "canonicalLabels": {
+        "en": "Strength",
+        "tl": "Lakas",
+        "ceb": "Kusog",
+        "ilo": "Pigsa"
+      },
+      "allowedReferences": [
+        "Isaiah 40:31",
+        "Philippians 4:13"
+      ],
+      "visualInspection": "Four modern adults at workbench supporting wooden door and aligning hinge. No visible embedded text.",
+      "missingEvidence": [
+        "Original generation-input provenance and rights chain unverified",
+        "Live localized title/reference and any Scripture prose not demonstrated",
+        "HOLD_POLICY_MIGRATION"
+      ],
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-strength-b3.json"
+      }
+    },
+    {
+      "contentKey": "hero:home:CLEAN",
+      "attemptId": "manual-chat-20261011-home-v2",
+      "verdict": "HOLD",
+      "sha256IndependentlyVerified": "aabeb1ae7ea468c82549842bc5220271ea31dbb2164725bacdd5a49e3aca5d16",
+      "gitBlob": "8badede3f7ce01c5d59f9b9db32d093ff05c1531",
+      "dimensionsVerifiedFromVP8": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytesVerified": 197622,
+      "sidecarGitBlob": "f15fbb5cb829dfdfb9ab32f7cdfb30a0df44afc2",
+      "sourceRevision": "gitblob:1f3b158542468f17d940a3aaca01f4ff743e6629",
+      "canonicalLabels": {
+        "en": "BibleQuest Home hero",
+        "tl": null,
+        "ceb": null,
+        "ilo": null
+      },
+      "allowedReferences": [],
+      "visualInspection": "Wide contemporary learning hall with adult and child entering and two adults collaborating at a table. Left quiet space; no visible embedded text. No Home verse in source.",
+      "missingEvidence": [
+        "Original generation-input provenance and rights chain unverified",
+        "No exact live Home title/CTA/locale source and browser proof supplied",
+        "No release or built responsive evidence (other agents' remit)"
+      ],
+      "proof": {
+        "image": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/cbbe465163d1377fc05a397ca9d26f2a6a021d41/data/v7/visual-assets/qa-candidates/manual-chat-20261011-home-v2.json"
+      }
+    }
+  ],
+  "proof": {
+    "pullRequest": "https://github.com/11ll11l1l1l/BibleQuest/pull/1531",
+    "canonicalTaxonomy": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/src/features/library/emotion-taxonomy.js",
+    "guide": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "contract": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md"
+  }
+}
