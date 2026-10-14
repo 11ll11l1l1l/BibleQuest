@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "branchScope": "v7/development",
+  "reviewerScope": "QA-only; no pixels generated, cropped, exported, deleted, or promoted",
+  "verdictSummary": {
+    "PASS": 0,
+    "FAIL": 0,
+    "HOLD": 2
+  },
+  "exactBaseline": {
+    "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+    "agentsGitBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "qaPolicyGitBlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractGitBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "guideGitBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "ledgerGitBlob": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "taxonomyGitBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "resolverGitBlob": "9c836ddfd77221c3cc4a1fbb7d933a11c4327f5a"
+  },
+  "method": "Retrieved all six actual WebP binary payloads through exact Git commit refs, base64-decoded, independently SHA-256 hashed, RIFF/WEBP signatures inspected, and CLEAN/TYPE pixel content visually inspected. Hashes and byte lengths matched exact-head derivative sidecars. Git blob identities also matched development for both unchanged CLEAN masters. No exact-built-browser/served-localization or original generator PNG was inspected.",
+  "reviews": [
+    {
+      "pr": 1497,
+      "prHead": "afefe4df184f63c2275a6ebf6e03a8f72ee95c83",
+      "family": "emotion",
+      "canonicalId": "anxious",
+      "historicalRecordId": "anxiety_worry",
+      "assetId": "bqv7-emotion-anxiety-worry-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "sourceMasterRecordGitBlob": "b4db13fab4f0dffcdcecc47b8e318f780dc346cd",
+      "derivativeRecordGitBlob": "e1d33fd1538a5cbf16e58b29a4c19a810b10f291",
+      "sourceRevision": "taxonomy:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "actualBinary": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+          "gitBlob": "f7abc7a92fbdc76dcabbe8bd4f1ad746f8ffc89a",
+          "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+          "bytes": 50182,
+          "width": 1024,
+          "height": 1024
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp",
+          "gitBlob": "ab9458b23d0f884c66716ca1e87313071bcc9e7c",
+          "sha256": "8da80e598e633df054e7cc0ab906e06dbd3d11a89d05e9804f6c99efd653b070",
+          "bytes": 73518,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-thumbnail.webp",
+          "gitBlob": "cf63986cb99fdadcbce85672a593c36b444b0076",
+          "sha256": "9d41b25c4f5e756898c832dca862eee299fa4c3d4f9aed0c415bd2e7b240f5b7",
+          "bytes": 52214,
+          "width": 768,
+          "height": 960
+        }
+      ],
+      "wording": {
+        "canonicalEnglishTitle": "Anxious / worried",
+        "canonicalReference": "Philippians 4:6-7",
+        "typePixelsExactEnglishTitle": true,
+        "typePixelsExactReference": true,
+        "typeScriptureProseObserved": false,
+        "cleanBakedTitleObserved": false,
+        "cleanBakedScriptureObserved": false,
+        "observedLogoOrWatermark": false,
+        "localeLabelsPresentInTaxonomy": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "liveLocaleRenderingVerified": false
+      },
+      "visualEvidence": "CLEAN: contemporary man seated on bed with one hand in hair, subdued indoor evening lighting. TYPE: English title and Philippians 4:6-7 in separate top panel. No visible embedded text in CLEAN.",
+      "rightsEvidence": "Master record declares first-party generated image and includes a detailed generation prompt. TYPE sidecar declares Noto Serif Display OFL 1.1 glyphs rasterized. Original generation source binary, exact generation-input audit trail and font use/license artifact evidence not independently retrieved.",
+      "holds": [
+        "No independently authenticated original generator PNG and complete input provenance.",
+        "No exact-head built app/browser evidence for live TL/CEB/ILO title and reference, accessible text, or served image SHA.",
+        "Historical contentId anxiety_worry vs canonical anxious mapping is not independently verified in the built registry."
+      ],
+      "releaseAllowed": false,
+      "deletePixels": false,
+      "reasonNoDelete": "No proven exclusive unapproved failed staging candidate; unchanged CLEAN already registered in development and must be preserved.",
+      "proofLinks": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1497",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/data/v7/visual-assets/records/bqv7-emotion-anxiety-worry-01-derivatives.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/afefe4df184f63c2275a6ebf6e03a8f72ee95c83/public/v7/images/emotion/bqv7-emotion-anxiety-worry-01-with-text-en.webp"
+      ]
+    },
+    {
+      "pr": 1500,
+      "prHead": "6263416dff07b7457ce28d163e12577ab142e3e4",
+      "family": "emotion",
+      "canonicalId": "spiritually_dry",
+      "historicalRecordId": "spiritual_dryness_distance",
+      "assetId": "bqv7-emotion-spiritual-dryness-distance-01",
+      "verdict": "HOLD_PROVENANCE_FONT_METADATA_LIVE_LOCALIZATION",
+      "sourceMasterRecordGitBlob": "7d72c81bf2b2132bdec263ec459a77ce9ce19daf",
+      "derivativeRecordGitBlob": "eaa40677b212e25f0c9386d948c128aa08710612",
+      "sourceRevision": "taxonomy:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "actualBinary": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01.webp",
+          "gitBlob": "65ecc211c670f821f59e327c458f679569e91194",
+          "sha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+          "bytes": 53468,
+          "width": 1024,
+          "height": 1024
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp",
+          "gitBlob": "c3fce6f02c11b635f2d88066a525487b271aef98",
+          "sha256": "05865fdb2f66ad224b60a2314e8aef115c49b49d89fe246976aad2091ee71a49",
+          "bytes": 87918,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.webp",
+          "gitBlob": "3d47e26ff7aa34217968e250919f8fc2630d37f1",
+          "sha256": "ac302c96529a8bc4a497e5b1f8f7ab59d1f1d9e9f153bc3238b050b7b68a639c",
+          "bytes": 67754,
+          "width": 768,
+          "height": 960
+        }
+      ],
+      "wording": {
+        "canonicalEnglishTitle": "Spiritually dry / distant",
+        "canonicalReference": "Psalm 42:1-2",
+        "typePixelsExactEnglishTitle": true,
+        "typePixelsExactReference": true,
+        "typeScriptureProseObserved": false,
+        "cleanBakedTitleObserved": false,
+        "cleanBakedScriptureObserved": false,
+        "observedLogoOrWatermark": false,
+        "localeLabelsPresentInTaxonomy": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "liveLocaleRenderingVerified": false
+      },
+      "visualEvidence": "CLEAN: contemporary man resting his chin on his hand at a kitchen table, looking out rainy city window. TYPE: English title and Psalm 42:1-2 in separate top panel. No visible embedded text in CLEAN.",
+      "rightsEvidence": "Master record declares first-party generated image with detailed prompt and original 1254-square PNG, but source PNG not authenticated. PR and derivative generation notes claim Noto Serif Pillow rasterized typography, while derivative rights.font still describes platform Arial/Georgia/Times New Roman fallback and says licensing not independently certified.",
+      "holds": [
+        "Reconcile exact font provenance and rights metadata: rights.font contradicts claimed Noto Serif typography; provide versioned OFL font source/usage evidence.",
+        "Original generation PNG/input rights chain not independently authenticated.",
+        "No exact-head built app/browser proof of live localized title/reference or served-byte identity.",
+        "Historical contentId spiritual_dryness_distance vs canonical spiritually_dry mapping not independently verified in built registry."
+      ],
+      "releaseAllowed": false,
+      "deletePixels": false,
+      "reasonNoDelete": "No proven exclusive failed candidate; CLEAN source is an unchanged registered development master.",
+      "proofLinks": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1500",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6263416dff07b7457ce28d163e12577ab142e3e4/data/v7/visual-assets/records/bqv7-emotion-spiritual-dryness-distance-01-derivatives.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6263416dff07b7457ce28d163e12577ab142e3e4/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp"
+      ]
+    }
+  ],
+  "releasePolicy": "These are historical three-real-file bundles, not newly submitted CLEAN-only Feeling/Need assets. Their real-file format alone does not establish five-role, live-render or exact-SHA release certification. New CLEAN-only Feeling/Need submissions remain HOLD_POLICY_MIGRATION until reviewed full migration; do not label released.",
+  "otherRoles": "No inference of scene/Scripture, technical/responsive, uniqueness or coordinator PASS. All five roles remain independent."
+}
