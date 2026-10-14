@@ -1,0 +1,39 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-14",
+  "development": "13f2359d20612eea6464941a4b79b27488024998",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "ledgerBlob": "c56cea69361db56701d627effd7346f26c1e7ccf",
+  "reviews": [
+    {
+      "pr": 1451,
+      "head": "6df3f1c0726b86c52a4466f6b789599af6269f6f",
+      "id": "self_control",
+      "verdict": "HOLD",
+      "cleanSha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
+      "typeSha256": "4001a52d236c0fbfb0b3a02385a69c5f4b3687c44a0ffa93abb9d789b3d77947",
+      "thumbSha256": "bce73968813af484c1f703d1c35c1606daf09832486ec8e0dbf075e5507358de",
+      "recordBlob": "3859ea6566bcdd561c447c2ef029f6f09dc220c3",
+      "title": "Self-control",
+      "reference": "Galatians 5:22-23",
+      "finding": "Three WebP hashes, geometry and visible pixels verified; CLEAN text-free, historical TYPE exact reference-only. Original PNG and generation-input rights evidence absent; live locale/browser copy unverified. Alt asserts phone-turning motion not provable from still."
+    },
+    {
+      "pr": 1468,
+      "head": "f793f852fece5327bd8b173691d813d3c6a1d13e",
+      "id": "afraid",
+      "legacyId": "fear",
+      "verdict": "HOLD",
+      "cleanSha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "typeSha256": "3af06a111b0a5db56fdd360b4e777dbf6d55b5ab5e3670821d79a9f44aa07863",
+      "thumbSha256": "151b3a9aec32b2a3bf39290cd3ac5eb7d31ffc4987e194cdc5249a4c71882d92",
+      "recordBlob": "0494268f6e5d88b3f59adec2f4b05c9e7e83f0d7",
+      "title": "Afraid",
+      "reference": "Psalm 34:4",
+      "finding": "Three WebP hashes, geometry and visible pixels verified; CLEAN text-free, historical TYPE exact reference-only. Original generation PNG/input and live locale/browser copy unverified. Preserve original registered CLEAN."
+    }
+  ],
+  "noImageGeneration": true,
+  "noDeletion": true,
+  "noRelease": true
+}
