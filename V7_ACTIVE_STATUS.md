@@ -8,6 +8,13 @@ Operative release override: `docs/v7/V7_RELEASE_RESET_20261007.md`
 Operative UI/UX release override: `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`
 Operative motion release addition: `docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`
 
+## Three more devotional masters and draft-isolation repair — PR #1538
+
+- Hurt/betrayal.03, impatience/waiting.03 and numbness/emptiness.03 native1122×1402 masters pass all five independent source/presentation roles at6236b3d13f9a144667629be5b7ee909d7f841065.96 actual CI profiles cover four widths/locales, live-title/100px-thumbnail and200%text. Tailor preparation/pause is a faithful thematic alternative; unobservable fabric settling is not claimed.
+- Fixed a real build leak: legacy recursive data copying included QA-candidate rasters in deployed artifacts. The staging subtree is excluded, stale local output removed, and build evidence rejects leaks. Approved publication/private source-map removal now precede the integrity seal. The unchanged32MiB image budget passes with30,720,220bytes; actual CI ZIP and manifest contain zero staging paths.
+- 700V7 tests,31-attempt ledger audit and four affected V6 contract checks pass. All four repaired-head workflows passed; final metadata head must also complete required checks before development merge. Evidence/prompts: `docs/v7/artwork-evidence/DEVOTIONAL_NEXT_THREE_C_20261014.md`.
+- Twelve dedicated devotional masters are now staged five-role QA passes across PRs1536–1538. This is not twelve registered/published production covers or completion of the300-cover quota. Production registration, actual production-component/deployed/offline and full release remain HOLD_REGISTRATION_AND_RELEASE.
+
 ## Devotional master QA batches — 2026-10-14 JST
 
 - PR #1536 merged six separately generated native1122×1402 covers (contentment.03, tiredness_weariness.03, anger.03, gratitude.03, fear.03, loneliness.03), all five independent source/presentation roles PASS;192 exact-head screenshots. Evidence: `docs/v7/artwork-evidence/DEVOTIONAL_SIX_QA_20261014.md`.

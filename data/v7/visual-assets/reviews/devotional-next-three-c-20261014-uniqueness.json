@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "role": "uniqueness",
+  "reviewerIdentity": "/root/peace_uniqueness_qa",
+  "reviewedAt": "2026-10-13T23:58:35.279863+00:00",
+  "releaseApproved": false,
+  "reviewMethod": "Actual full-frame view_image of three new masters and published hurt image; prior nine active devotional/Peace pair/relevant published-open peers inspected directly in same continuing agent context. Pairwise three new candidates compared. No pixel generation/editing/export, ledger or git changes.",
+  "sourceReads": [
+    "ledger full sourceContent exact three",
+    "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md exact entries",
+    "docs/v7/artwork-evidence/DEVOTIONAL_NEXT_THREE_C_20261014.md"
+  ],
+  "comparatorsInspected": [
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Waiting-room impatience with watch and frown"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+      "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Curled distressed outdoor woman"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+      "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Isolated older man holding mug at communal table"
+    },
+    {
+      "path": "public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+      "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Close hands sorting blank concern cards at kitchen table"
+    },
+    {
+      "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+      "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Two adult women listening after difficult news in evening center; distinct from mother/child in busy office."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+      "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Resting male baker in work apron at bakery bench; distinct from contented woman at home with mug."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+      "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Standing cook at metal kitchen pass with coworker; different action/environment from both candidates."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-gratitude-01.webp",
+      "sha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Flowers and hug"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-fear-01.webp",
+      "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Woman frightened behind door"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-love-connection-01.webp",
+      "sha256": "44aa89412c29931296f101ac4e4bede31d9081eee7ced2e1e7a2a872157bc824",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Two adults repairing bowl together"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Mother child attentive in busy office"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Contented woman holding mug in armchair"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "pixelInspection": "Actual full-frame preceding same-agent review"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
+      "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2",
+      "pixelInspection": "Actual full-frame this turn"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "pixelInspection": "Actual full-frame this turn"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-joy-01.webp",
+      "sha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+      "pixelInspection": "Actual full-frame this turn"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "pixelInspection": "Actual full-frame inspected earlier same agent context"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "pixelInspection": "Actual full-frame inspected earlier same agent context"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "pixelInspection": "Actual full-frame inspected earlier same agent context"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-hurt-betrayal-01.webp",
+      "sha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+      "pixelInspection": "Actual full-frame this review",
+      "observed": "Withdrawn woman curled at sunset lookout"
+    }
+  ],
+  "reviews": [
+    {
+      "contentId": "devotional.biblequest.hurt_betrayal.03",
+      "attemptId": "manual-hurt-betrayal03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-hurt-betrayal03-20261014-r1.webp",
+      "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+      "sourceChecksum": "sha256:304f5b29af92906c31bd645e783908b7cfc7bfbac2cbd6782b370abd8d766972",
+      "verdict": "PASS",
+      "verdictScope": "Independent actual-pixel anatomy/distinctness role only within inspected relevant staged/merged/open comparator set.",
+      "observedEvidence": [
+        "Whole ceramic bowl has clear single thin crack running from rim down wall; both hands support it plausibly with fingers naturally curved; no sharp fragments, repair action or injury.",
+        "Woman partly in profile with restrained serious expression; second stool visibly empty, pottery shelf/workbench coherent; cool reflected daylight. No visible text."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Action: solitary crack evaluation vs shared bowl repair in published love-connection.",
+        "Cast/affect: single serious woman plus absent stool vs smiling intergenerational pair.",
+        "Camera/palette: close over-shoulder gray-blue studio vs frontal warm collaborative workbench; also distinct from sunset withdrawn hurt image."
+      ],
+      "pairwiseNewCandidatesCompared": [
+        {
+          "contentId": "devotional.biblequest.impatience_waiting.03",
+          "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7"
+        },
+        {
+          "contentId": "devotional.biblequest.numbness_emptiness.03",
+          "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3"
+        }
+      ],
+      "cropAssessment": "Portrait native; face/hands/key object in central area retain narrative under stated focal square cropping. Exact thumbnail/live-title presentation belongs technical role.",
+      "productionEligible": false
+    },
+    {
+      "contentId": "devotional.biblequest.impatience_waiting.03",
+      "attemptId": "manual-impatience-waiting03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-impatience-waiting03-20261014-r1.webp",
+      "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+      "sourceChecksum": "sha256:99afed045919c0ca8fa1f2b4dcbf72a7798c23e1e44e77926adb73474c5e451b",
+      "verdict": "PASS",
+      "verdictScope": "Independent actual-pixel anatomy/distinctness role only within inspected relevant staged/merged/open comparator set.",
+      "observedEvidence": [
+        "Plain navy jacket with unfinished/raw edges and tiny round-headed sleeve pins on coherent mannequin. One hand steadies sleeve, other rests at blank ribbon on bench; hands/faces plausible.",
+        "Plain ribbon visibly unnumbered; natural neutral window light and quiet evaluation, no clock, hourglass or unsafe pin use."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Action/props: pinned textile settling/mannequin vs watch-checking impatience or lamp repair.",
+        "Setting/material: tailoring room/fabric vs public waiting room or apartment electronics.",
+        "Posture/framing: standing mature tailor evaluating hanging sleeve vs seated frowning man, tool-using lamp repairer or gardener crouching at hose."
+      ],
+      "pairwiseNewCandidatesCompared": [
+        {
+          "contentId": "devotional.biblequest.hurt_betrayal.03",
+          "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7"
+        },
+        {
+          "contentId": "devotional.biblequest.numbness_emptiness.03",
+          "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3"
+        }
+      ],
+      "cropAssessment": "Portrait native; face/hands/key object in central area retain narrative under stated focal square cropping. Exact thumbnail/live-title presentation belongs technical role.",
+      "productionEligible": false
+    },
+    {
+      "contentId": "devotional.biblequest.numbness_emptiness.03",
+      "attemptId": "manual-numbness-emptiness03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-numbness-emptiness03-20261014-r1.webp",
+      "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+      "sourceChecksum": "sha256:1f3638734c78fe23fea150ac39fd1b338c174d6a739d8a8541f1aca59123fabd",
+      "verdict": "PASS",
+      "verdictScope": "Independent actual-pixel anatomy/distinctness role only within inspected relevant staged/merged/open comparator set.",
+      "observedEvidence": [
+        "Single pale flower stem continuously extends into water in clear jar; one hand lightly guides stem above jar mouth, other steadies glass naturally. Jar/reflections and visible water surface plausible.",
+        "Young adult reserved face, no forced smile/tears; modest worn table/plain bowl/faded nook and cloudy diffuse daylight. No visible text."
+      ],
+      "nearestComparatorDistinctnessAxes": [
+        "Action: small flower arrangement vs bouquet hug gratitude or resting sofa/armchair.",
+        "Cast/affect: young reserved male vs smiling two-woman hug or contented middle-aged woman.",
+        "Framing/props: face/hands/jar close together in faded nook vs reclined full-body man or warm collaborative pottery pair."
+      ],
+      "pairwiseNewCandidatesCompared": [
+        {
+          "contentId": "devotional.biblequest.hurt_betrayal.03",
+          "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7"
+        },
+        {
+          "contentId": "devotional.biblequest.impatience_waiting.03",
+          "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7"
+        }
+      ],
+      "cropAssessment": "Portrait native; face/hands/key object in central area retain narrative under stated focal square cropping. Exact thumbnail/live-title presentation belongs technical role.",
+      "productionEligible": false
+    }
+  ],
+  "collectionObservation": "Some studio/window/clothing and plausible cast similarities recur across covers, but specific actions, material props, relational meaning and camera distinguish these scenes. Bowl motif deliberately differs from collaborative repair by single unforced grief/empty stool.",
+  "residualLimits": [
+    "No internet-wide exclusivity or full300-cover comparison guarantee.",
+    "Still image cannot prove past betrayal, stem motion or previous tailoring chronology; only visible narrative cues assessed.",
+    "Browser100px/320/390/430/800 and overlay tests separate role."
+  ]
+}
