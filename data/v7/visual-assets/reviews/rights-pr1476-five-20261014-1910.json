@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-14",
+  "reviewedDevelopmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "candidatePr": 1476,
+  "candidatePrHead": "d3c18a87d5c2dc250447560ab377db7795ba3772",
+  "policyBlobs": {
+    "agents": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQA": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "guidebook": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "exactShotGuide": "db360dc63985afc535ec4eef06667bcfa79aa0c8",
+    "sourceFile": "5d7de986a9132827691dc548fb7f2147333fa434",
+    "ledger": "c56cea69361db56701d627effd7346f26c1e7ccf"
+  },
+  "scope": "Textual source, sidecar and Git blob metadata only; GitHub connector returned empty binary content for PNGs and binary Git blob endpoint failed UTF-8 decoding. No actual pixels or independently computed SHA256 available. Do not infer visual or rights PASS.",
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 5
+  },
+  "candidates": [
+    {
+      "contentId": "devotional.biblequest.anxiety_worry.01",
+      "assetId": "bqv7-devotional-one-concern-at-a-time-01",
+      "sidecarGitBlob": "4c42021391063bee79871e78e00e8d9e9fe5aaaf",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:fd379e6c9edde46c407c8bdb3355ccb0405e9be45ca992d7bd592b267dfe0a44",
+      "sourceTitleAndBodyExactMatch": true,
+      "sourceRightsStatus": "verified_first_party_claim",
+      "sourcePublicationState": "pending_review",
+      "translatedTitlesPresent": [
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "translationReviewStatuses": [
+        "reviewed",
+        "reviewed",
+        "reviewed"
+      ],
+      "sourceReference": "Philippians 4:6-7",
+      "committedPngGitBlobIndependentlyConfirmed": "14769146888d401ef444f0847ab129ffb535fc77",
+      "declaredPngSha256NotIndependentlyRecomputed": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+      "verdict": "HOLD_SOURCE_PUBLICATION_PROVENANCE_PIXELS_LIVE_LOCALIZATION",
+      "missingEvidence": [
+        "actual PNG binary decode and independent SHA-256/visual inspection",
+        "generation input/source image chain and third-party identifiable material exclusion",
+        "live localized EN/TL/CEB/ILO title/reference rendering and any Scripture quotation license",
+        "publication approval for source revision r1",
+        "exact-head browser/served-byte evidence"
+      ],
+      "links": {
+        "source": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/content/v7/devotionals/biblequest-original-emotions-01a.json",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-one-concern-at-a-time-01.json",
+        "png": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png"
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.fear.01",
+      "assetId": "bqv7-devotional-courage-next-step-01",
+      "sidecarGitBlob": "bc19485f17f469165eb80ece15c2f7153c84a1ae",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:6a0e1135cab5c296a1bea53f24b6dccb39253f108424add038a3a69f31f63307",
+      "sourceTitleAndBodyExactMatch": true,
+      "sourceRightsStatus": "verified_first_party_claim",
+      "sourcePublicationState": "pending_review",
+      "translatedTitlesPresent": [
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "translationReviewStatuses": [
+        "reviewed",
+        "reviewed",
+        "reviewed"
+      ],
+      "sourceReference": "Isaiah 41:10",
+      "committedPngGitBlobIndependentlyConfirmed": "866e522acc7d415ae90cf72d3fc67733ebaa5903",
+      "declaredPngSha256NotIndependentlyRecomputed": "8895ba24fc9c3f8883efa4a4faf051f34160c3318db2436babddf4ef7fce4442",
+      "verdict": "HOLD_SOURCE_PUBLICATION_PROVENANCE_PIXELS_LIVE_LOCALIZATION",
+      "missingEvidence": [
+        "actual PNG binary decode and independent SHA-256/visual inspection",
+        "generation input/source image chain and third-party identifiable material exclusion",
+        "live localized EN/TL/CEB/ILO title/reference rendering and any Scripture quotation license",
+        "publication approval for source revision r1",
+        "exact-head browser/served-byte evidence"
+      ],
+      "links": {
+        "source": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/content/v7/devotionals/biblequest-original-emotions-01a.json",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-courage-next-step-01.json",
+        "png": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-courage-next-step-01.png"
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.sadness.01",
+      "assetId": "bqv7-devotional-make-room-for-sorrow-01",
+      "sidecarGitBlob": "1ac6f844018dc284bc7e7e6767d250da3b09d7e0",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:67796e69bcb1a255133089b73f2762c80e8e60e1acd6bd57be338d0792a46000",
+      "sourceTitleAndBodyExactMatch": true,
+      "sourceRightsStatus": "verified_first_party_claim",
+      "sourcePublicationState": "pending_review",
+      "translatedTitlesPresent": [
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "translationReviewStatuses": [
+        "reviewed",
+        "reviewed",
+        "reviewed"
+      ],
+      "sourceReference": "Psalm 34:18",
+      "committedPngGitBlobIndependentlyConfirmed": "0fcab96976449e111b465397b2cf5976f5692038",
+      "declaredPngSha256NotIndependentlyRecomputed": "3f406af28537318c6b846587e13623c5eb885968b9c8c8698362969767649c8d",
+      "verdict": "HOLD_SOURCE_PUBLICATION_PROVENANCE_PIXELS_LIVE_LOCALIZATION",
+      "missingEvidence": [
+        "actual PNG binary decode and independent SHA-256/visual inspection",
+        "generation input/source image chain and third-party identifiable material exclusion",
+        "live localized EN/TL/CEB/ILO title/reference rendering and any Scripture quotation license",
+        "publication approval for source revision r1",
+        "exact-head browser/served-byte evidence"
+      ],
+      "links": {
+        "source": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/content/v7/devotionals/biblequest-original-emotions-01a.json",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-make-room-for-sorrow-01.json",
+        "png": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-make-room-for-sorrow-01.png"
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.grief_loss.01",
+      "assetId": "bqv7-devotional-love-remembers-01",
+      "sidecarGitBlob": "66584578147f4b00fac9ddf10e1a6e2b75aadd1d",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:6e1b106d63b735fca87e6ca49826bc4e454d6216eb4140b3c672d25bd28ae5e9",
+      "sourceTitleAndBodyExactMatch": true,
+      "sourceRightsStatus": "verified_first_party_claim",
+      "sourcePublicationState": "pending_review",
+      "translatedTitlesPresent": [
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "translationReviewStatuses": [
+        "reviewed",
+        "reviewed",
+        "reviewed"
+      ],
+      "sourceReference": "John 11:35",
+      "committedPngGitBlobIndependentlyConfirmed": "cb90c83178fd55502478e7b0b179750dc40438ab",
+      "declaredPngSha256NotIndependentlyRecomputed": "7d520b45d0c9338c2bcd829d5e6351fa3ba7afa83b93b59d06e60d7a05862897",
+      "verdict": "HOLD_SOURCE_PUBLICATION_PROVENANCE_PIXELS_LIVE_LOCALIZATION",
+      "missingEvidence": [
+        "actual PNG binary decode and independent SHA-256/visual inspection",
+        "generation input/source image chain and third-party identifiable material exclusion",
+        "live localized EN/TL/CEB/ILO title/reference rendering and any Scripture quotation license",
+        "publication approval for source revision r1",
+        "exact-head browser/served-byte evidence"
+      ],
+      "links": {
+        "source": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/content/v7/devotionals/biblequest-original-emotions-01a.json",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-love-remembers-01.json",
+        "png": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-love-remembers-01.png"
+      }
+    },
+    {
+      "contentId": "devotional.biblequest.loneliness.01",
+      "assetId": "bqv7-devotional-do-not-disappear-01",
+      "sidecarGitBlob": "c435a1103567706f6b8bdbb0a095ba451304401c",
+      "sourceRevision": "r1",
+      "sourceChecksum": "sha256:2a1d4f0f0ecde19bf94ee235567c41de5e44340d2ec14c345c60aac21f6ed028",
+      "sourceTitleAndBodyExactMatch": true,
+      "sourceRightsStatus": "verified_first_party_claim",
+      "sourcePublicationState": "pending_review",
+      "translatedTitlesPresent": [
+        "tl",
+        "ceb",
+        "ilo"
+      ],
+      "translationReviewStatuses": [
+        "reviewed",
+        "reviewed",
+        "reviewed"
+      ],
+      "sourceReference": "Psalm 68:6",
+      "committedPngGitBlobIndependentlyConfirmed": "382ce6605ff1d39a7de93ae6fd15c4b0bc05d54b",
+      "declaredPngSha256NotIndependentlyRecomputed": "df7a7fb10271f6bd0452c2e236915e36fb761fac96c8258e0c83c07caf2ea107",
+      "verdict": "HOLD_SOURCE_PUBLICATION_PROVENANCE_PIXELS_LIVE_LOCALIZATION",
+      "missingEvidence": [
+        "actual PNG binary decode and independent SHA-256/visual inspection",
+        "generation input/source image chain and third-party identifiable material exclusion",
+        "live localized EN/TL/CEB/ILO title/reference rendering and any Scripture quotation license",
+        "publication approval for source revision r1",
+        "exact-head browser/served-byte evidence"
+      ],
+      "links": {
+        "source": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/content/v7/devotionals/biblequest-original-emotions-01a.json",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json",
+        "png": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-do-not-disappear-01.png"
+      }
+    }
+  ],
+  "notes": [
+    "Source title/body and revision matched all five sidecars against live canonical file; sidecar declared SHA256 is not independent binary proof.",
+    "Exact shot guide has quiet-overlay-region preferences that differ from some sidecar textSafeRegion values; require actual crop evidence, not an automatic FAIL.",
+    "These are devotional P4 images; Feeling/Need three-real-file migration HOLD applies only if reused as CLEAN-only Feeling/Need production bundles.",
+    "No image generation, cropping, deletion, approval, merge, deployment, or production-ledger changes."
+  ]
+}
