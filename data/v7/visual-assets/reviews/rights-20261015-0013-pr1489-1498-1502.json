@@ -1,0 +1,38 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-15",
+  "base": "13f2359d20612eea6464941a4b79b27488024998",
+  "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "guide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+  "contract": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "results": [
+    {
+      "pr": 1489,
+      "head": "3874405d08853ca35fbebe53d9468b12d46cc95d",
+      "verdict": "HOLD",
+      "clean": "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+      "type": "09a13e3e8ac4aef3f6513a04e46f1f461bcfaf5b5bbce3927d4f44a1657416df",
+      "thumb": "950b3482128c5c75714729d7970c92a074ff0d4cbea20e079a491977e45b7646",
+      "missing": "Original PNG and input rights chain; live localized copy; anger-to-angry resolver."
+    },
+    {
+      "pr": 1498,
+      "head": "ab5c25869ac186eb7ca829f1596d3e4d11daadca",
+      "verdict": "HOLD",
+      "clean": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+      "type": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
+      "thumb": "6afc933892ed6ac09da8ad5700291b4b5f128ae45eaaab42ec9dc133d03b4a1a",
+      "missing": "Original generation-input rights chain and live locale rendering."
+    },
+    {
+      "pr": 1502,
+      "head": "0677a9f30efafd8b20be5ea1c8e3db8b7369a9d7",
+      "verdict": "HOLD",
+      "clean": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+      "type": "a0f37571306d059c0604d1bb51ab72fb2c79bcaf624a92645d80a02cb43bc55c",
+      "thumb": "d55a743c0d295a1b46b1072f422325ba2f4e3becee220c0a4599dd034b29b5d4",
+      "missing": "Original PNG, full generation prompt/input chain, live locale and ID resolver."
+    }
+  ],
+  "evidence": "Nine real WebP binaries independently fetched, visually inspected, SHA256 recalculated and matched sidecars. CLEAN contains no baked wording. Historical English TYPE shows only approved title and reference; no verse prose. No PASS, release, merge, deletion or deployment."
+}
