@@ -3,8 +3,8 @@
   "assetId": "bqv7-need-hope-01",
   "agentId": "visual-agent-2",
   "createdAt": "2026-10-09T20:13:53+09:00",
-  "status": "candidate_built_app_qa_pending",
-  "bundleStatus": "three_real_files_built_app_qa_pending",
+  "status": "rejected_rights_provenance",
+  "bundleStatus": "rejected_do_not_release",
   "family": "need",
   "visualRole": "need_tile",
   "contentType": "need",
@@ -101,7 +101,10 @@
       "priorHeadCIRun": 37924799517,
       "priorHeadArtifactId": 11613431851,
       "revisedHeadCI": "pending"
-    }
+    },
+    "independentRightsQA": "FAIL",
+    "deletionStatus": "blocked_by_connector_safety_pixels_quarantined",
+    "rejectionEvidence": "data/v7/visual-assets/qa-rejected/bqv7-need-hope-01-rights-20261014.json"
   },
   "variants": [
     {
@@ -201,5 +204,6 @@
         "method": "Pillow LANCZOS focal-aware crop"
       }
     }
-  ]
+  ],
+  "productionReady": false
 }
