@@ -1,0 +1,42 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-15",
+  "verdicts": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 2
+  },
+  "source": {
+    "development": "13f2359d20612eea6464941a4b79b27488024998",
+    "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "contractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c"
+  },
+  "candidates": [
+    {
+      "pr": 1493,
+      "head": "b405eb7ade97589a7cfaa75bea76fb81fdb32796",
+      "id": "joyful",
+      "recordBlob": "b8dfd193560c3d9a114ea999c313e3f7ebb1b53c",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "cleanSha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+      "typeSha256": "099ba90c52ada76cfe8d7eaddcdbb3d45b72ae129345adf8e9c6679e2d43b1ad",
+      "thumbSha256": "28517b515f1296db2afd7abbf4cb10418db841838e536e35c6736821f86fb38c",
+      "wording": "Joyful — Philippians 4:4",
+      "finding": "Actual CLEAN/TYPE/THUMB pixels viewed; all three SHA-256 hashes independently match sidecar. CLEAN no baked text. Original generator input and exact-head localized live rendering not certified."
+    },
+    {
+      "pr": 1363,
+      "head": "704a38c54c9bb24c145eb764b355128ba13bd53f",
+      "id": "grateful",
+      "recordBlob": "468c841dff723dc1c8c1f8355e5d710c2835197d",
+      "verdict": "HOLD_PROVENANCE_LIVE_REFERENCE",
+      "cleanSha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "typeSha256": "46fa88f869fe62391aeab6c0d48c61c60d02cda08f07de9cfa5cbfb97f59f699",
+      "thumbSha256": "c5854a280bff4ce330c1c0f4fd7fd88eadb449b439656c2ed9bd4934441067aa",
+      "wording": "Grateful; canonical references 1 Thessalonians 5:18 or Psalm 100:4",
+      "finding": "Actual CLEAN/TYPE/THUMB pixels viewed; all three SHA-256 hashes independently match sidecar. TYPE omits reference, so exact live reference needs proof. Original generator input not certified."
+    }
+  ],
+  "actions": "No pixel writes/deletions, no ledger mutation, no release."
+}
