@@ -203,6 +203,9 @@ const publicSourceMapFiles = files.filter((file) => file.endsWith('.map'));
 const publicSourceMapReferences = [];
 for (const file of files) {
   const path = relative(outDir, file).replaceAll('\\', '/');
+  if (path.startsWith('data/v7/visual-assets/qa-candidates/')) {
+    throw new Error('Unapproved QA raster leaked into deployable artifact: ' + path);
+  }
   const extension = extname(file).toLowerCase();
   if (!path.startsWith('_v6/') || !new Set(['.js', '.mjs', '.css']).has(extension)) continue;
   const content = await readFile(file, 'utf8');
