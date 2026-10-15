@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "candidate": {
+    "pr": 1479,
+    "head": "004cc63f7fdd2e441a101bd56d5f9753d2ae9889",
+    "branch": "art/v7-agent2-need-hope-02-20261010-1210",
+    "contentType": "need",
+    "canonicalContentId": "hope",
+    "assetId": "bqv7-need-hope-02",
+    "sidecarPath": "data/v7/visual-assets/records/bqv7-need-hope-02.json",
+    "sidecarGitBlob": "18c46e55b7efbb38f38693a05a33cd1fd33b3132"
+  },
+  "source": {
+    "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+    "taxonomyPath": "src/features/library/emotion-taxonomy.js",
+    "taxonomyGitBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "guideGitBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "agentsGitBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "ledgerGitBlob": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "automatedQaPolicyGitBlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractGitBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "contractPr": 1530,
+    "contractPrMerged": true
+  },
+  "inspectedBinaries": [
+    {
+      "kind": "CLEAN",
+      "path": "public/v7/images/need/bqv7-need-hope-02.webp",
+      "gitBlob": "0065fc5c5c2785f6ef3d61b2c55a5c73b3acfbe9",
+      "measuredSha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+      "measuredBytes": 116390,
+      "declaredPixels": [
+        1024,
+        1280
+      ],
+      "visualInspected": true,
+      "observed": "Single modern adult in navy raincoat looking toward brightening skyline from rain-wet elevated city walkway; no discernible baked title, Bible quotation, logo, watermark or recognizable brand."
+    },
+    {
+      "kind": "HISTORICAL_TYPE",
+      "path": "public/v7/images/need/bqv7-need-hope-02-with-text-en.webp",
+      "gitBlob": "a9446a7ff13f2781a8f7c0ff75112b4de0721168",
+      "measuredSha256": "7508a2f40da7e2a68470db9527ec56f49b90ae3be75d1aa8adfca08779a1c2d9",
+      "measuredBytes": 139054,
+      "declaredPixels": [
+        1024,
+        1280
+      ],
+      "visualInspected": true,
+      "observedWording": "Hope — Romans 15:13; no Scripture prose."
+    },
+    {
+      "kind": "HISTORICAL_THUMB",
+      "path": "public/v7/images/need/bqv7-need-hope-02-thumbnail.webp",
+      "gitBlob": "1a676192caafa6fd764aced836a31f60275f369b",
+      "measuredSha256": "60897befe7138ae3e47c90555392557d56b513ac1ebe0351f4a88d8f0540a8a5",
+      "measuredBytes": 25132,
+      "declaredPixels": [
+        384,
+        480
+      ],
+      "visualInspected": true,
+      "observed": "Text-free downsample of same city scene."
+    }
+  ],
+  "wording": {
+    "canonicalTitles": {
+      "en": "Hope",
+      "tl": "Pag-asa",
+      "ceb": "Paglaom",
+      "ilo": "Namnama"
+    },
+    "allowedReferences": [
+      "Romans 15:13",
+      "Hebrews 6:19"
+    ],
+    "historicalTypeReference": "Romans 15:13",
+    "historicalTypeMatchesEnglishSource": true,
+    "scriptureProseEmbedded": false,
+    "exactHeadLiveLocaleRenderVerified": false,
+    "actualScriptureQuotationVersionVerified": false
+  },
+  "rights": {
+    "providerClaim": "OpenAI image generation",
+    "generatorIdClaim": "11c6d163-414e-4d83-8b5b-b9660a3fe3a1",
+    "originalFileClaim": "contemplation_over_the_rainy_city.png",
+    "originalSha256ClaimUnverified": "fde9e405225ed7c7606c8edb3781562206c738f8e98cf45906352de7c20e72d8",
+    "originalPixelsClaim": [
+      1122,
+      1402
+    ],
+    "originalPngPresentInReviewedPrTree": false,
+    "prTreeTruncated": false,
+    "thirdPartyInputsClaim": "No third-party photos supplied; sidecar declaration only, not independent input-chain proof.",
+    "visibleUnlicensedIdentifiableMaterial": "No observed logo, copyrighted character or recognizable branded asset; identity/likeness clearance not independently established.",
+    "fontClaim": "EB Garamond 12 Regular/Italic; SIL OFL 1.1",
+    "fontLicenseSourceVerified": "https://github.com/georgd/EB-Garamond/blob/master/COPYING",
+    "actualTypesettingFontBinaryProvenanceVerified": false
+  },
+  "existingSceneGate": {
+    "producerSidecarStatus": "candidate_scene_revision_required",
+    "producerGuidebookSceneMatch": false,
+    "guidePreferred": "Neighbors fitting final timber slat into repaired public bus shelter after rough weather",
+    "observed": "Single individual looking over city at sunrise after rain",
+    "sceneVerdictByThisRightsReviewer": "NOT_ISSUED",
+    "semanticAlternative": "Needs independent Scene/Scripture review of visible action and canonical theme, plus Uniqueness review; a sunrise alone does not establish those approvals."
+  },
+  "verdict": "HOLD_GENERATION_PROVENANCE_LIVE_LOCALIZATION",
+  "blockingEvidence": [
+    "Authenticated original generation PNG and complete prompt/reference/input provenance not available in PR tree.",
+    "Exact PR-head built-app TL/CEB/ILO live title/reference rendering not independently verified.",
+    "Actual font binary/source version used for historical TYPE not authenticated.",
+    "Independent Scene/Scripture, Uniqueness, Technical and Coordinator decisions remain outstanding; candidate sidecar explicitly requires scene revision."
+  ],
+  "release": {
+    "approved": false,
+    "productionReady": false,
+    "ledgerMutated": false,
+    "cleanOnlyFeelingNeedPolicyMigration": "Not directly applicable to this historical three-real-WebP bundle; CLEAN-only Feeling/Need remains HOLD_POLICY_MIGRATION until independently certified migration.",
+    "pixelsCreatedOrModified": false,
+    "pixelsDeleted": false
+  },
+  "proofLinks": [
+    "https://github.com/11ll11l1l1l/BibleQuest/pull/1479",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/004cc63f7fdd2e441a101bd56d5f9753d2ae9889/data/v7/visual-assets/records/bqv7-need-hope-02.json",
+    "https://github.com/11ll11l1l1l/BibleQuest/blob/004cc63f7fdd2e441a101bd56d5f9753d2ae9889/public/v7/images/need/bqv7-need-hope-02.webp",
+    "https://github.com/11ll11l1l1l/BibleQuest/pull/1530",
+    "https://github.com/georgd/EB-Garamond/blob/master/COPYING"
+  ]
+}
