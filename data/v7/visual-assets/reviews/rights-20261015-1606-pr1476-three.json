@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "reviewScope": "QA-only; no pixel creation/crop/export, release merge/deploy or ledger edits",
+  "pr": 1476,
+  "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+  "prHead": "d3c18a87d5c2dc250447560ab377db7795ba3772",
+  "mergeCommit": "a018a1a253bde4b40e6f3f35782c35c48d333309",
+  "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "sourceBlob": "5d7de986a9132827691dc548fb7f2147333fa434",
+  "guideBlob": "db360dc63985afc535ec4eef06667bcfa79aa0c8",
+  "policyBlobs": {
+    "AGENTS.md": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "data/v7/visual-assets/production-ledger.json": "c56cea69361db56701d627effd7346f26c1e7ccf"
+  },
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 3,
+    "independentlyInspectedPixels": 0,
+    "independentlyVerifiedPixelSHA256": 0
+  },
+  "reviews": [
+    {
+      "assetId": "bqv7-devotional-make-room-for-sorrow-01",
+      "canonicalId": "devotional.biblequest.sadness.01",
+      "title": "Make room for sorrow",
+      "reference": "Psalm 34:18",
+      "sourceChecksum": "sha256:67796e69bcb1a255133089b73f2762c80e8e60e1acd6bd57be338d0792a46000",
+      "recordBlob": "1ac6f844018dc284bc7e7e6767d250da3b09d7e0",
+      "candidateGitBlobDeclared": "0fcab96976449e111b465397b2cf5976f5692038",
+      "candidateSHA256Declared": "3f406af28537318c6b846587e13623c5eb885968b9c8c8698362969767649c8d",
+      "bytesDeclared": 2307674,
+      "localizedTitles": {
+        "tl": "Bigyan ng puwang ang lungkot",
+        "ceb": "Hatagi ug luna ang kasubo",
+        "ilo": "Ikkan iti lugar ti ladingit"
+      },
+      "note": "Guide's preferred scene is an older woman with friend at family table, sidecar instead claims an adult with mug on sofa and friend; thematic alternative is possible but actual pixels unavailable.",
+      "sourceRevision": "r1",
+      "sourcePublicationState": "pending_review",
+      "firstPartyProseRightsStatus": "verified (canonical metadata)",
+      "sourceTitleBodyMatch": true,
+      "translationRecordStatus": "reviewed (canonical metadata; not proof of live display)",
+      "generationPromptPresent": true,
+      "generationInputProvenance": "declared only, not independently authenticated",
+      "candidatePixelsAvailable": false,
+      "candidateShaIndependentlyVerified": false,
+      "noBakedTextIndependentlyVerified": false,
+      "liveLocalizedTitleReferenceIndependentlyVerified": false,
+      "verdict": "HOLD_PIXELS_PROVENANCE_LIVE_LOCALIZATION_SOURCE_REVIEW",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-make-room-for-sorrow-01.json",
+      "candidateUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-make-room-for-sorrow-01.png",
+      "missingEvidence": [
+        "Readable actual original CLEAN PNG bytes and independent SHA-256, dimensions and visual inspection",
+        "Authenticated original generation output, complete input/reference chain and image rights beyond sidecar assertion",
+        "Real exact-head localized DOM title/reference rendering in en/tl/ceb/ilo with no baked text or false Scripture quotation",
+        "Canonical content publication review and independent remaining-role QA"
+      ]
+    },
+    {
+      "assetId": "bqv7-devotional-love-remembers-01",
+      "canonicalId": "devotional.biblequest.grief_loss.01",
+      "title": "Love remembers",
+      "reference": "John 11:35",
+      "sourceChecksum": "sha256:6e1b106d63b735fca87e6ca49826bc4e454d6216eb4140b3c672d25bd28ae5e9",
+      "recordBlob": "66584578147f4b00fac9ddf10e1a6e2b75aadd1d",
+      "candidateGitBlobDeclared": "cb90c83178fd55502478e7b0b179750dc40438ab",
+      "candidateSHA256Declared": "7d520b45d0c9338c2bcd829d5e6351fa3ba7afa83b93b59d06e60d7a05862897",
+      "bytesDeclared": 2121689,
+      "localizedTitles": {
+        "tl": "Naaalala ng pag-ibig",
+        "ceb": "Ang gugma makahinumdom",
+        "ilo": "Laglagipen ti ayat"
+      },
+      "note": "Sidecar prompt corresponds to guide's preferred family dining table, older adult and daughter, photographs and cup. Actual scene cannot be certified without pixels.",
+      "sourceRevision": "r1",
+      "sourcePublicationState": "pending_review",
+      "firstPartyProseRightsStatus": "verified (canonical metadata)",
+      "sourceTitleBodyMatch": true,
+      "translationRecordStatus": "reviewed (canonical metadata; not proof of live display)",
+      "generationPromptPresent": true,
+      "generationInputProvenance": "declared only, not independently authenticated",
+      "candidatePixelsAvailable": false,
+      "candidateShaIndependentlyVerified": false,
+      "noBakedTextIndependentlyVerified": false,
+      "liveLocalizedTitleReferenceIndependentlyVerified": false,
+      "verdict": "HOLD_PIXELS_PROVENANCE_LIVE_LOCALIZATION_SOURCE_REVIEW",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-love-remembers-01.json",
+      "candidateUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-love-remembers-01.png",
+      "missingEvidence": [
+        "Readable actual original CLEAN PNG bytes and independent SHA-256, dimensions and visual inspection",
+        "Authenticated original generation output, complete input/reference chain and image rights beyond sidecar assertion",
+        "Real exact-head localized DOM title/reference rendering in en/tl/ceb/ilo with no baked text or false Scripture quotation",
+        "Canonical content publication review and independent remaining-role QA"
+      ]
+    },
+    {
+      "assetId": "bqv7-devotional-do-not-disappear-01",
+      "canonicalId": "devotional.biblequest.loneliness.01",
+      "title": "Do not disappear",
+      "reference": "Psalm 68:6",
+      "sourceChecksum": "sha256:2a1d4f0f0ecde19bf94ee235567c41de5e44340d2ec14c345c60aac21f6ed028",
+      "recordBlob": "c435a1103567706f6b8bdbb0a095ba451304401c",
+      "candidateGitBlobDeclared": "382ce6605ff1d39a7de93ae6fd15c4b0bc05d54b",
+      "candidateSHA256Declared": "df7a7fb10271f6bd0452c2e236915e36fb761fac96c8258e0c83c07caf2ea107",
+      "bytesDeclared": 1934576,
+      "localizedTitles": {
+        "tl": "Huwag kang mawala",
+        "ceb": "Ayaw pagkawala",
+        "ilo": "Saan ka nga aglemmeng"
+      },
+      "note": "Sidecar prompt and guide both specify a contemporary resident opening a door to another person; image itself inaccessible.",
+      "sourceRevision": "r1",
+      "sourcePublicationState": "pending_review",
+      "firstPartyProseRightsStatus": "verified (canonical metadata)",
+      "sourceTitleBodyMatch": true,
+      "translationRecordStatus": "reviewed (canonical metadata; not proof of live display)",
+      "generationPromptPresent": true,
+      "generationInputProvenance": "declared only, not independently authenticated",
+      "candidatePixelsAvailable": false,
+      "candidateShaIndependentlyVerified": false,
+      "noBakedTextIndependentlyVerified": false,
+      "liveLocalizedTitleReferenceIndependentlyVerified": false,
+      "verdict": "HOLD_PIXELS_PROVENANCE_LIVE_LOCALIZATION_SOURCE_REVIEW",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json",
+      "candidateUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/devotional/bqv7-devotional-do-not-disappear-01.png",
+      "missingEvidence": [
+        "Readable actual original CLEAN PNG bytes and independent SHA-256, dimensions and visual inspection",
+        "Authenticated original generation output, complete input/reference chain and image rights beyond sidecar assertion",
+        "Real exact-head localized DOM title/reference rendering in en/tl/ceb/ilo with no baked text or false Scripture quotation",
+        "Canonical content publication review and independent remaining-role QA"
+      ]
+    }
+  ],
+  "retrievalAttempts": [
+    "GitHub fetch_file with base64 returned empty content for a >1.9 MB PNG",
+    "GitHub fetch_blob rejected raw PNG with UnicodeDecodeError",
+    "GitHub fetch git blob URL rejected non-UTF-8 response",
+    "Container raw GitHub URL inaccessible due network DNS restrictions"
+  ],
+  "policyMigration": "P4 devotional one-CLEAN candidate is allowed by policy, but source is pending_review and artwork not certified; Feeling/Need CLEAN-only assets remain HOLD_POLICY_MIGRATION under current three-real-file gate.",
+  "mutations": {
+    "imageCreated": 0,
+    "imageCropped": 0,
+    "imageDeleted": 0,
+    "tombstonesCreated": 0,
+    "productionLedgerChanged": false,
+    "releaseMerged": false,
+    "deployed": false
+  }
+}
