@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "reviewedPr": 1504,
+  "reviewedPrHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+  "reviewedBaseHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "sourceIdentities": {
+    "agents": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQA": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMaster": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "constructionGuide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "ledger": "c56cea69361db56701d627effd7346f26c1e7ccf"
+  },
+  "counts": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 5
+  },
+  "verdict": "HOLD",
+  "scope": "Rights, exact wording, source provenance only. Not independent scene/technical/uniqueness PASS or release.",
+  "methods": [
+    "Fetched exact-head WebP bytes as base64 via GitHub connector",
+    "Independently decoded binary content and recalculated SHA-256 using in-run SHA-256 implementation",
+    "Verified RIFF/WEBP signature, RIFF declared byte length, actual byte length, and inspected all five actual CLEAN images",
+    "Fetched exact-head sidecars, canonical taxonomy, construction guide and current policies",
+    "Searched open PRs for competing/QA work"
+  ],
+  "sharedHolds": [
+    "Original generation PNG bytes referenced by sidecars were not accessible in repository; their SHA-256 claims and original generation inputs/prompts cannot be independently authenticated",
+    "No exact-head application rendering proves localized live titles, references or Scripture wording in EN/TL/CEB/ILO",
+    "No independently authenticated third-party asset/input rights chain beyond sidecar assertions; no obvious visible logo or licensed identifiable subject detected",
+    "CLEAN-only Feeling/Need cannot be release certified until reviewed schema, resolver, validators and built-browser migration; HOLD_POLICY_MIGRATION"
+  ],
+  "candidates": [
+    {
+      "canonicalId": "overwhelmed",
+      "family": "emotion",
+      "historicalId": "overwhelm",
+      "assetId": "bqv7-emotion-overwhelm-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "releaseGate": "HOLD_POLICY_MIGRATION",
+      "clean": {
+        "path": "public/v7/images/emotion/bqv7-emotion-overwhelm-01.webp",
+        "sha256Verified": "1cf2dd8bde10a376bb76edcb1b8cee8306b1bcdc5088137e1c087c599325d03f",
+        "byteCountVerified": 299768,
+        "nativeDimensionsDeclared": [
+          1254,
+          1254
+        ],
+        "gitBlob": "caed7f6515493c227de2c12f11f7a5b0b20e03b6",
+        "actualPixelsInspected": true,
+        "noBakedTitleObserved": true,
+        "noScriptureProseObserved": true,
+        "noVisibleLogoObserved": true
+      },
+      "source": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "sidecarBlob": "9bdfb735888d2912fc559e818e8627461d103abb",
+        "claimedOriginalPNGSha256NotVerified": "55aa53b46b3dee0fd223550bd80b8ad99dd02c516b1b7733651ffa5537dc3d3a",
+        "originalPNGAccessible": false,
+        "completeOriginalPromptAuthenticated": false
+      },
+      "wording": {
+        "localeOrder": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "canonicalTitles": [
+          "Overwhelmed",
+          "Sobrang nabibigatan",
+          "Nabug-atan pag-ayo",
+          "Nadagsenan unay"
+        ],
+        "allowedProposedReference": "Matthew 11:28",
+        "referenceNotBurnedIntoClean": true,
+        "liveLocalizedAppRenderVerified": false
+      },
+      "visualEvidence": "Community organizer delegates cables and chairs to two helpers. The action is visible and corresponds to the guide; independent scene verdict still required.",
+      "proof": {
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "clean": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/emotion/bqv7-emotion-overwhelm-01.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-emotion-overwhelm-01.json"
+      }
+    },
+    {
+      "canonicalId": "stressed",
+      "family": "emotion",
+      "historicalId": "stress",
+      "assetId": "bqv7-emotion-stressed-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "releaseGate": "HOLD_POLICY_MIGRATION",
+      "clean": {
+        "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+        "sha256Verified": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+        "byteCountVerified": 163296,
+        "nativeDimensionsDeclared": [
+          1254,
+          1254
+        ],
+        "gitBlob": "895d71c3d73100c216df6ce65adb1e5c08b365dc",
+        "actualPixelsInspected": true,
+        "noBakedTitleObserved": true,
+        "noScriptureProseObserved": true,
+        "noVisibleLogoObserved": true
+      },
+      "source": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "sidecarBlob": "7c2aba4de5656282e6c85beecedc341459657539",
+        "claimedOriginalPNGSha256NotVerified": "53b175779319eb4894a568c3cb84fe1d4a4d37018a9deb37d4b93b17b306aec7",
+        "originalPNGAccessible": false,
+        "completeOriginalPromptAuthenticated": false
+      },
+      "wording": {
+        "localeOrder": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "canonicalTitles": [
+          "Stressed",
+          "Nai-stress",
+          "Na-stress",
+          "Na-stress"
+        ],
+        "allowedProposedReference": "John 14:27",
+        "referenceNotBurnedIntoClean": true,
+        "liveLocalizedAppRenderVerified": false
+      },
+      "visualEvidence": "Cook pauses at a kitchen counter while another handles plates. No claim of emotional diagnosis can be established from pixels; scene reviewer decides.",
+      "proof": {
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "clean": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-emotion-stressed-01.json"
+      }
+    },
+    {
+      "canonicalId": "tired",
+      "family": "emotion",
+      "historicalId": "tiredness_weariness",
+      "assetId": "bqv7-emotion-tired-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "releaseGate": "HOLD_POLICY_MIGRATION",
+      "clean": {
+        "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+        "sha256Verified": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+        "byteCountVerified": 318452,
+        "nativeDimensionsDeclared": [
+          1254,
+          1254
+        ],
+        "gitBlob": "6e9f7a7b1fcdcd198a63c6b1da03e2a90fe628c4",
+        "actualPixelsInspected": true,
+        "noBakedTitleObserved": true,
+        "noScriptureProseObserved": true,
+        "noVisibleLogoObserved": true
+      },
+      "source": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "sidecarBlob": "12b4e8b6e04114a58452d48706e4280752f68c0b",
+        "claimedOriginalPNGSha256NotVerified": "c6122da705c7ada72bd803b5745bb93088077c0aaf1f1349dc3eb1bdf5d6251e",
+        "originalPNGAccessible": false,
+        "completeOriginalPromptAuthenticated": false
+      },
+      "wording": {
+        "localeOrder": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "canonicalTitles": [
+          "Tired / weary",
+          "Pagod / nanghihina",
+          "Kapoy / gikapoy",
+          "Nabannog / nakapuy"
+        ],
+        "allowedProposedReference": "Isaiah 40:31",
+        "referenceNotBurnedIntoClean": true,
+        "liveLocalizedAppRenderVerified": false
+      },
+      "visualEvidence": "Seated baker with flour-dusted apron, loaves and workbench. Supports guide's post-shift resting scene; no Bible prose.",
+      "proof": {
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "clean": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-emotion-tired-01.json"
+      }
+    },
+    {
+      "canonicalId": "comfort",
+      "family": "need",
+      "historicalId": "comfort",
+      "assetId": "bqv7-need-comfort-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "releaseGate": "HOLD_POLICY_MIGRATION",
+      "clean": {
+        "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+        "sha256Verified": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+        "byteCountVerified": 299928,
+        "nativeDimensionsDeclared": [
+          1122,
+          1402
+        ],
+        "gitBlob": "da4842b73056d597b2f8ce0f3d39520f40990832",
+        "actualPixelsInspected": true,
+        "noBakedTitleObserved": true,
+        "noScriptureProseObserved": true,
+        "noVisibleLogoObserved": true
+      },
+      "source": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "sidecarBlob": "8ad83b64367a50f26d68cfe9ff019969e4017e37",
+        "claimedOriginalPNGSha256NotVerified": "40ce21164184d54209f65ba90973f79787076ba534e4b09ad72361806c9d2477",
+        "originalPNGAccessible": false,
+        "completeOriginalPromptAuthenticated": false
+      },
+      "wording": {
+        "localeOrder": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "canonicalTitles": [
+          "Comfort",
+          "Kaaliwan",
+          "Kahupayan",
+          "Liwliwa"
+        ],
+        "allowedProposedReference": "2 Corinthians 1:3-4",
+        "referenceNotBurnedIntoClean": true,
+        "liveLocalizedAppRenderVerified": false
+      },
+      "visualEvidence": "Two adults seated closely in community room, one attentively listening; no coercive embrace or cure promise observed.",
+      "proof": {
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "clean": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/need/bqv7-need-comfort-01.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-need-comfort-01.json"
+      }
+    },
+    {
+      "canonicalId": "forgiveness",
+      "family": "need",
+      "historicalId": "forgiveness",
+      "assetId": "bqv7-need-forgiveness-01",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "releaseGate": "HOLD_POLICY_MIGRATION",
+      "clean": {
+        "path": "public/v7/images/need/bqv7-need-forgiveness-01.webp",
+        "sha256Verified": "689dd4957a803dd8c87b322129c3a60cd0d6743e97d1b6977420619799b8f18f",
+        "byteCountVerified": 345132,
+        "nativeDimensionsDeclared": [
+          1122,
+          1402
+        ],
+        "gitBlob": "1ad452dcd1d6b6e9b053504bf04ed792c5770d0d",
+        "actualPixelsInspected": true,
+        "noBakedTitleObserved": true,
+        "noScriptureProseObserved": true,
+        "noVisibleLogoObserved": true
+      },
+      "source": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "sidecarBlob": "98811ff7f2baa81ba28d8ba23f66bd5af3e0a3a2",
+        "claimedOriginalPNGSha256NotVerified": "02ca3ea5c98486051f5cc91d9c606c8dfbd0f297d98f9825ab125db6853b8747",
+        "originalPNGAccessible": false,
+        "completeOriginalPromptAuthenticated": false
+      },
+      "wording": {
+        "localeOrder": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "canonicalTitles": [
+          "Forgiveness",
+          "Kapatawaran",
+          "Pagpasaylo",
+          "Pammakawan"
+        ],
+        "allowedProposedReference": "1 John 1:9",
+        "referenceNotBurnedIntoClean": true,
+        "liveLocalizedAppRenderVerified": false
+      },
+      "visualEvidence": "Man presents lamp to woman at front door; her uncertain posture avoids implying automatic reconciliation. The lamp's repair/history cannot be established from pixels alone.",
+      "proof": {
+        "pr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "clean": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/need/bqv7-need-forgiveness-01.webp",
+        "sidecar": "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-need-forgiveness-01.json"
+      }
+    }
+  ],
+  "actions": {
+    "pixelsGenerated": false,
+    "pixelsDeleted": false,
+    "productionLedgerChanged": false,
+    "releaseApproved": false,
+    "releaseMerged": false,
+    "deployed": false
+  }
+}
