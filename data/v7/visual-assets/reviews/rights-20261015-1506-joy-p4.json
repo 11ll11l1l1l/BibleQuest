@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "reviewScope": "QA-only; no pixel creation, derivative export, release promotion, or production-ledger mutation",
+  "branchBaseline": "13f2359d20612eea6464941a4b79b27488024998",
+  "policyBlobs": {
+    "AGENTS.md": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "data/v7/visual-assets/production-ledger.json": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "src/features/library/emotion-taxonomy.js": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "content/v7/devotionals/biblequest-original-emotions-01a.json": "5d7de986a9132827691dc548fb7f2147333fa434",
+    "docs/v7/unfinished-artwork-guide/01-first-story-shots.md": "db360dc63985afc535ec4eef06667bcfa79aa0c8"
+  },
+  "summary": {
+    "rightsPASS": 0,
+    "rightsFAIL": 0,
+    "rightsHOLD": 3,
+    "filesActuallyVisuallyInspected": 3,
+    "filesIndependentlySHA256Verified": 3,
+    "filesInaccessibleForPixelInspection": 2
+  },
+  "reviews": [
+    {
+      "pr": 1493,
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1493",
+      "head": "b405eb7ade97589a7cfaa75bea76fb81fdb32796",
+      "assetId": "bqv7-emotion-joy-01",
+      "canonicalId": "joyful",
+      "recordBlob": "b8dfd193560c3d9a114ea999c313e3f7ebb1b53c",
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/b405eb7ade97589a7cfaa75bea76fb81fdb32796/data/v7/visual-assets/records/bqv7-emotion-joy-01.json",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION",
+      "binaryProof": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-joy-01.webp",
+          "gitBlob": "6ea1e24e2e24da9b44b5165c5f9f7d41cebf26df",
+          "sha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+          "bytes": 60846,
+          "width": 768,
+          "height": 768,
+          "webpHeader": "RIFF/WEBP/VP8",
+          "visuallyInspected": true,
+          "noBakedTextObserved": true
+        },
+        {
+          "kind": "HISTORICAL_TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-joy-01-with-text-en.webp",
+          "gitBlob": "75e8ce8a9a6c3a7cb35ff691bd386dd115ce0a8f",
+          "sha256": "099ba90c52ada76cfe8d7eaddcdbb3d45b72ae129345adf8e9c6679e2d43b1ad",
+          "bytes": 105476,
+          "width": 1024,
+          "height": 1280,
+          "webpHeader": "RIFF/WEBP/VP8",
+          "visuallyInspected": true,
+          "observedText": "Joyful; Philippians 4:4; no Scripture prose"
+        },
+        {
+          "kind": "HISTORICAL_THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-joy-01-thumbnail.webp",
+          "gitBlob": "054fef49a06c43067cd552692f277202b74548f9",
+          "sha256": "28517b515f1296db2afd7abbf4cb10418db841838e536e35c6736821f86fb38c",
+          "bytes": 28614,
+          "width": 384,
+          "height": 480,
+          "webpHeader": "RIFF/WEBP/VP8",
+          "visuallyInspected": true,
+          "noBakedTextObserved": true
+        }
+      ],
+      "sourceWording": {
+        "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "en": "Joyful",
+        "tl": "Masaya",
+        "ceb": "Malipayon",
+        "ilo": "Naragsak",
+        "permittedReferences": [
+          "Philippians 4:4",
+          "Psalm 118:24"
+        ],
+        "observedHistoricalTypeReference": "Philippians 4:4",
+        "scriptureQuotationInPixels": false,
+        "actualLiveLocaleRenderingVerified": false
+      },
+      "visualObservation": "Single contemporary adult in sweater seated on rocky overlook by lake under sunset sky; head tilted up, smiling. CLEAN contains no observed lettering/logo/watermark. Distinctiveness relative to Hurt/Betrayal sunset overlook is separately disputed in PR comments; this role does not override uniqueness QA.",
+      "rightsFindings": [
+        "OpenAI-generation claim and generation ID are recorded, but original 1254x1254 PNG is not available for independent byte/hash verification; prompt field is empty and notes say generation relied on conversation context.",
+        "Font metadata identifies Noto Serif Display and Lato with claimed SIL OFL 1.1; original local font-license paths and exact font inputs were not independently authenticated.",
+        "Source record is already marked production_ready although this draft PR has no exact-head localized browser certification; do not treat metadata as independent rights/release PASS.",
+        "Legacy CLEAN is 768x768; current new-Feeling 1024x1024 floor requires separate technical/policy reconciliation without deleting the existing registered master."
+      ],
+      "missingEvidence": [
+        "Original generator PNG and authenticated generation-input chain, including prompt/conversation and any reference image provenance",
+        "Independent exact font binary/license evidence if historical TYPE is retained",
+        "Real app locale title/reference rendering for en/tl/ceb/ilo at exact PR/build SHA and served bytes",
+        "Independent uniqueness and coordinator assessment of known scene collision",
+        "Release migration certification where a CLEAN-only replacement is proposed"
+      ],
+      "proofLinks": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1493#issuecomment-6099414547",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/b405eb7ade97589a7cfaa75bea76fb81fdb32796/public/v7/images/emotion/bqv7-emotion-joy-01.webp"
+      ]
+    },
+    {
+      "pr": 1476,
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "merged": true,
+      "sourceHead": "d3c18a87d5c2dc250447560ab377db7795ba3772",
+      "assetId": "bqv7-devotional-one-concern-at-a-time-01",
+      "canonicalId": "devotional.biblequest.anxiety_worry.01",
+      "sourceRevision": "r1",
+      "sourceChecksumDeclared": "sha256:fd379e6c9edde46c407c8bdb3355ccb0405e9be45ca992d7bd592b267dfe0a44",
+      "sourceReview": "pending_review",
+      "sourceTitle": "One concern at a time",
+      "reference": "Philippians 4:6-7",
+      "guideBlob": "db360dc63985afc535ec4eef06667bcfa79aa0c8",
+      "recordBlob": "4c42021391063bee79871e78e00e8d9e9fe5aaaf",
+      "candidateGitBlob": "14769146888d401ef444f0847ab129ffb535fc77",
+      "candidateSha256Declared": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+      "candidateSha256IndependentlyVerified": false,
+      "actualPixelInspection": false,
+      "verdict": "HOLD_PIXELS_UNAVAILABLE",
+      "reason": "GitHub fetch_file returned an empty base64 content string for this 1,865,912-byte PNG; fetch_blob could not decode the binary. Sidecar declares original PNG identical to stored CLEAN and full generator prompt, but no visual/byte verification was possible in this run.",
+      "missingEvidence": [
+        "Readable actual PNG bytes for independent SHA-256 and no-baked-wording inspection",
+        "Authenticated original generation and no-external-reference inputs beyond metadata declaration",
+        "Actual localized title/reference render and current approved source status"
+      ],
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-one-concern-at-a-time-01.json"
+    },
+    {
+      "pr": 1476,
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "merged": true,
+      "sourceHead": "d3c18a87d5c2dc250447560ab377db7795ba3772",
+      "assetId": "bqv7-devotional-courage-next-step-01",
+      "canonicalId": "devotional.biblequest.fear.01",
+      "sourceRevision": "r1",
+      "sourceChecksumDeclared": "sha256:6a0e1135cab5c296a1bea53f24b6dccb39253f108424add038a3a69f31f63307",
+      "sourceReview": "pending_review",
+      "sourceTitle": "Courage for the next step",
+      "reference": "Isaiah 41:10",
+      "guideBlob": "db360dc63985afc535ec4eef06667bcfa79aa0c8",
+      "recordBlob": "bc19485f17f469165eb80ece15c2f7153c84a1ae",
+      "candidateGitBlob": "866e522acc7d415ae90cf72d3fc67733ebaa5903",
+      "candidateSha256Declared": "8895ba24fc9c3f8883efa4a4faf051f34160c3318db2436babddf4ef7fce4442",
+      "candidateSha256IndependentlyVerified": false,
+      "actualPixelInspection": false,
+      "verdict": "HOLD_PIXELS_UNAVAILABLE",
+      "reason": "Source metadata and exact guide/source inspected, but actual 2,162,373-byte PNG could not be independently retrieved as viewable bytes via connector (large binary retrieval limitation). No visual or SHA-256 PASS claimed.",
+      "missingEvidence": [
+        "Readable actual PNG bytes for independent SHA-256 and no-baked-wording inspection",
+        "Authenticated original generation and no-external-reference inputs beyond metadata declaration",
+        "Actual localized title/reference render and current approved source status"
+      ],
+      "recordUrl": "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-devotional-courage-next-step-01.json"
+    }
+  ],
+  "policyMigration": "Existing Feeling/Need three-real-file release gate persists; CLEAN-only Feeling/Need remains HOLD_POLICY_MIGRATION. No changes to existing historical production artifacts.",
+  "mutations": {
+    "imagesCreated": 0,
+    "imagesCropped": 0,
+    "imagesDeleted": 0,
+    "tombstonesCreated": 0,
+    "productionLedgerEdited": false,
+    "releaseMerged": false,
+    "deployed": false
+  }
+}
