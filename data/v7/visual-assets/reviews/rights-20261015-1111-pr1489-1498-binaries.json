@@ -1,0 +1,69 @@
+{
+  "reviewDate": "2026-10-15",
+  "role": "rights_wording_provenance",
+  "reviewedDevelopmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "sourceBlobSha": {
+    "AGENTS.md": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "qaPolicy": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContract": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "guide": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "ledger": "c56cea69361db56701d627effd7346f26c1e7ccf"
+  },
+  "files": [
+    [
+      "1489",
+      "CLEAN",
+      "833660d022a64ffb092c0d2ea590af81dfc64310",
+      "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+      169548,
+      "1024x1024"
+    ],
+    [
+      "1489",
+      "TYPE",
+      "07759906831fbc8368704cad60ff39489f2d4f16",
+      "09a13e3e8ac4aef3f6513a04e46f1f461bcfaf5b5bbce3927d4f44a1657416df",
+      152170,
+      "1024x1280"
+    ],
+    [
+      "1489",
+      "THUMB",
+      "ae70319ccfa23a604e0f4865a9f15a1dd73507ce",
+      "950b3482128c5c75714729d7970c92a074ff0d4cbea20e079a491977e45b7646",
+      42356,
+      "384x480"
+    ],
+    [
+      "1498",
+      "CLEAN",
+      "3ef260dcf1bcb22e421e4cccb02645439233d30c",
+      "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+      65046,
+      "1024x1024"
+    ],
+    [
+      "1498",
+      "TYPE",
+      "0ca2150a5cde549a69365194f7c6442d47a5a277",
+      "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
+      90722,
+      "1024x1280"
+    ],
+    [
+      "1498",
+      "THUMB",
+      "5f922cc754fa9a18d61114c2fd435c0eaa93b1b6",
+      "6afc933892ed6ac09da8ad5700291b4b5f128ae45eaaab42ec9dc133d03b4a1a",
+      78860,
+      "768x960"
+    ]
+  ],
+  "method": "Actual GitHub base64 WebP bytes independently SHA-256 checked; RIFF/WEBP, VP8 native dimensions, file length, and visual inspection. All six matched sidecars.",
+  "findings": [
+    "PR1489 CLEAN no baked text; historical TYPE reads Angry and James 1:19-20; original PNG hash only declared; source provenance and live locale unverified.",
+    "PR1498 CLEAN unchanged from development; historical TYPE reads Rejected / unwanted and Psalm 27:10; original PNG/font source evidence and live locale unverified.",
+    "Both HOLD; no new FAIL; neither release certified."
+  ]
+}
