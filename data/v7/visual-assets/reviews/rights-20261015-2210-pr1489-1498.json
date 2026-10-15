@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewedAt": "2026-10-15T22:10:00+09:00",
+  "overall": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 2,
+    "releaseAllowed": false
+  },
+  "scope": {
+    "repository": "11ll11l1l1l/BibleQuest",
+    "developmentRef": "v7/development",
+    "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+    "agentsBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "qaPolicyBlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "guideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "ledgerBlob": "c56cea69361db56701d627effd7346f26c1e7ccf"
+  },
+  "method": "Fetched actual GitHub binary contents at pinned refs as base64, decoded and independently SHA-256 hashed in JavaScript; visually inspected CLEAN/TYPE/THUMB images from actual bytes. Compared English wording and locale taxonomy with pinned canonical taxonomy. Source PNGs, font binary and built-app localized screenshots were not available; no release certification inferred.",
+  "reviews": [
+    {
+      "pr": 1489,
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1489",
+      "prHead": "3874405d08853ca35fbebe53d9468b12d46cc95d",
+      "assetId": "bqv7-emotion-anger-02",
+      "canonicalId": "emotion:angry",
+      "sidecarBlob": "329c90f2997b0d3837ae9a01e76dc098f13988d2",
+      "sidecarPath": "data/v7/visual-assets/records/bqv7-emotion-anger-02.json",
+      "verdict": "HOLD_GENERATION_PROVENANCE_LIVE_LOCALIZATION",
+      "files": [
+        {
+          "kind": "CLEAN",
+          "sha256": "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+          "bytes": 169548,
+          "gitBlob": "833660d022a64ffb092c0d2ea590af81dfc64310",
+          "visuallyInspected": true
+        },
+        {
+          "kind": "TYPE_HISTORICAL",
+          "sha256": "09a13e3e8ac4aef3f6513a04e46f1f461bcfaf5b5bbce3927d4f44a1657416df",
+          "bytes": 152170,
+          "gitBlob": "07759906831fbc8368704cad60ff39489f2d4f16",
+          "visuallyInspected": true
+        },
+        {
+          "kind": "THUMB_HISTORICAL",
+          "sha256": "950b3482128c5c75714729d7970c92a074ff0d4cbea20e079a491977e45b7646",
+          "bytes": 42356,
+          "gitBlob": "ae70319ccfa23a604e0f4865a9f15a1dd73507ce",
+          "visuallyInspected": true
+        }
+      ],
+      "wording": {
+        "en": "Angry",
+        "tl": "Galit",
+        "ceb": "Nasuko",
+        "ilo": "Nakarrungsot",
+        "observedHistoricalType": "Angry — James 1:19-20",
+        "approvedReferences": [
+          "James 1:19-20",
+          "Ephesians 4:26"
+        ],
+        "scriptureQuotationObserved": false,
+        "cleanEmbeddedTextObserved": false,
+        "liveLocalizedRendered": false
+      },
+      "pixels": "Two adults converse at a sports-equipment shed; one holds a white towel while looking down. No readable text, logo, watermark, or identifiable third-party work observed. Whether the towel grip is intentionally relaxing is not conclusively observable; independent scene reviewer decides.",
+      "provenance": {
+        "providerClaim": "OpenAI image generation",
+        "generationIdClaim": "d5110558-1a8f-4d71-9c1e-4ff0e432c998",
+        "declaredOriginalPngSha256": "905e9928dcd44c7af6ca04d4eb59369ed24f0ecf47aae342d4efb1053c388519",
+        "originalPngBytesIndependentlyVerified": false,
+        "fullGenerationInputsAuthenticated": false,
+        "declaredRetouch": "OpenCV Telea cap nonverbal inpaint",
+        "fontClaim": "Noto Serif / SIL OFL 1.1",
+        "exactHistoricalFontBinaryAuthenticated": false
+      },
+      "holds": [
+        "Original PNG bytes and complete generation-input/rights chain not independently authenticated",
+        "Exact-head EN/TL/CEB/ILO live UI title/reference rendering not independently observed",
+        "Historical font file identity/license not independently authenticated",
+        "Independent scene and uniqueness role evidence required; not inferred from rights role"
+      ],
+      "policyMigration": "Historical three-real-file candidate; no new release certification. Any proposed CLEAN-only Feeling/Need release remains HOLD_POLICY_MIGRATION until separately certified.",
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/3874405d08853ca35fbebe53d9468b12d46cc95d/data/v7/visual-assets/records/bqv7-emotion-anger-02.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/3874405d08853ca35fbebe53d9468b12d46cc95d/public/v7/images/emotion/bqv7-emotion-anger-02.webp"
+      ]
+    },
+    {
+      "pr": 1498,
+      "prUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1498",
+      "prHead": "ab5c25869ac186eb7ca829f1596d3e4d11daadca",
+      "assetId": "bqv7-emotion-rejection-01-derivatives",
+      "canonicalId": "emotion:rejected",
+      "sidecarBlob": "bd043aca611020a156cafe50f95709c457c424a7",
+      "sourceMasterRecordBlob": "46be222cc7f9494e5a9b034387104fcd25a5d303",
+      "verdict": "HOLD_SOURCE_PROVENANCE_LIVE_LOCALIZATION_STATUS_CONFLICT",
+      "files": [
+        {
+          "kind": "CLEAN_UNCHANGED",
+          "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+          "bytes": 65046,
+          "gitBlob": "3ef260dcf1bcb22e421e4cccb02645439233d30c",
+          "visuallyInspected": true
+        },
+        {
+          "kind": "TYPE_HISTORICAL",
+          "sha256": "cf1ed430df3200931e3c3bdb525a1a5a16dee1748bc0d545d960703d6ef7ef4a",
+          "bytes": 90722,
+          "gitBlob": "0ca2150a5cde549a69365194f7c6442d47a5a277",
+          "visuallyInspected": true
+        },
+        {
+          "kind": "THUMB_HISTORICAL",
+          "sha256": "6afc933892ed6ac09da8ad5700291b4b5f128ae45eaaab42ec9dc133d03b4a1a",
+          "bytes": 78860,
+          "gitBlob": "5f922cc754fa9a18d61114c2fd435c0eaa93b1b6",
+          "visuallyInspected": true
+        }
+      ],
+      "wording": {
+        "en": "Rejected / unwanted",
+        "tl": "Hindi tanggap / hindi gusto",
+        "ceb": "Gisalikway / dili gusto",
+        "ilo": "Tinukiad / saan a kayat",
+        "observedHistoricalType": "Rejected / unwanted — Psalm 27:10",
+        "approvedReferences": [
+          "Psalm 27:10",
+          "1 Peter 2:4"
+        ],
+        "scriptureQuotationObserved": false,
+        "cleanEmbeddedTextObserved": false,
+        "liveLocalizedRendered": false
+      },
+      "pixels": "CLEAN shows a seated young adult looking down while a group converse at a distance; no baked wording, visible logo, watermark, or identifiable licensed third-party artwork. TYPE is English-only reference-only. THUMB retains person and distant group.",
+      "provenance": {
+        "providerClaim": "OpenAI image generation",
+        "generationIdClaim": "d4c10115-d2dd-4397-be9d-6f458f38b2b0",
+        "promptInOriginalSourceRecord": true,
+        "originalGenerationBinaryAuthenticated": false,
+        "thirdPartyReferenceInputsAuthenticated": false,
+        "fontClaim": "Noto Serif Regular / SIL OFL 1.1",
+        "exactHistoricalFontBinaryAuthenticated": false
+      },
+      "holds": [
+        "Original generated source bytes and complete input/rights chain not independently authenticated",
+        "Exact-head localized UI text/reference and served-image identity not independently verified",
+        "Source CLEAN record states production_ready while derivative record states productionCertified=false and browser QA pending; cannot infer release eligibility",
+        "Historical font binary/source not independently authenticated"
+      ],
+      "policyMigration": "Existing unchanged CLEAN and historical derivative repairs; do not delete approved source or claim release. CLEAN-only Feeling/Need proposals separately HOLD_POLICY_MIGRATION.",
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/ab5c25869ac186eb7ca829f1596d3e4d11daadca/data/v7/visual-assets/records/bqv7-emotion-rejection-01-derivatives.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/ab5c25869ac186eb7ca829f1596d3e4d11daadca/public/v7/images/emotion/bqv7-emotion-rejection-01-with-text-en.webp",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/public/v7/images/emotion/bqv7-emotion-rejection-01.webp"
+      ]
+    }
+  ],
+  "actions": {
+    "imagesGenerated": 0,
+    "imagesCroppedOrExported": 0,
+    "imagesDeleted": 0,
+    "tombstonesCreated": 0,
+    "ledgerModified": false,
+    "releaseMerge": false,
+    "deployed": false
+  }
+}
