@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "reviewRole": "rights_wording_provenance",
+  "reviewedAt": "2026-10-16T00:15:00+09:00",
+  "qaOnly": true,
+  "branchBaseline": "v7/development",
+  "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "policy": {
+    "agentsBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedImageQABlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "singleMasterReviewBranch": "v7/qa-single-master-crop-v23-20261011",
+    "constructionGuideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "productionLedgerBlob": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "canonicalTaxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "summary": {
+    "pass": 0,
+    "fail": 0,
+    "hold": 3,
+    "filesHashVerified": 5,
+    "cleanVisuallyInspected": 3,
+    "typeVisuallyInspected": 1,
+    "thumbVisuallyInspected": 1
+  },
+  "candidates": [
+    {
+      "assetId": "bqv7-emotion-stressed-01",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "sourceType": "taxonomy",
+      "sourceId": "emotion:stressed",
+      "sidecarContentId": "stress",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sidecarBlob": "7c2aba4de5656282e6c85beecedc341459657539",
+      "canonicalLabels": {
+        "en": "Stressed",
+        "tl": "Nai-stress",
+        "ceb": "Na-stress",
+        "ilo": "Na-stress"
+      },
+      "allowedReferences": [
+        "Matthew 6:34",
+        "John 14:27"
+      ],
+      "proposedReference": "John 14:27",
+      "clean": {
+        "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+        "gitBlob": "895d71c3d73100c216df6ce65adb1e5c08b365dc",
+        "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+        "bytes": 163296,
+        "independentlyHashVerified": true,
+        "visuallyInspected": true,
+        "visibleText": false,
+        "visibleLogo": false
+      },
+      "originalPNG": {
+        "declaredPath": "generated_images/exec-fa49a5c0-d993-4a42-8bc1-e21082946213.png",
+        "declaredSha256": "53b175779319eb4894a568c3cb84fe1d4a4d37018a9deb37d4b93b17b306aec7",
+        "independentlyAuthenticated": false
+      },
+      "visualObservation": "Contemporary cafeteria cook resting hands at a stainless counter, coworker stacking plates. No baked words or recognizable branding visible.",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION_POLICY_MIGRATION",
+      "missingEvidence": [
+        "Original ImageGen generation-input chain and declared PNG independently retrievable/hashed",
+        "Independent generation rights and near-duplicate/third-party likeness provenance",
+        "Actual built-app locale title/reference display and served-byte identity",
+        "Canonical runtime ID mapping from sidecar contentId stress to taxonomy ID stressed",
+        "Feeling CLEAN-only release migration remains uncertified"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-emotion-stressed-01.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/emotion/bqv7-emotion-stressed-01.webp"
+      ]
+    },
+    {
+      "assetId": "bqv7-need-comfort-01",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "sourceType": "taxonomy",
+      "sourceId": "need:comfort",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sidecarBlob": "8ad83b64367a50f26d68cfe9ff019969e4017e37",
+      "canonicalLabels": {
+        "en": "Comfort",
+        "tl": "Kaaliwan",
+        "ceb": "Kahupayan",
+        "ilo": "Liwliwa"
+      },
+      "allowedReferences": [
+        "2 Corinthians 1:3-4",
+        "Psalm 23:4"
+      ],
+      "proposedReference": "2 Corinthians 1:3-4",
+      "clean": {
+        "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+        "gitBlob": "da4842b73056d597b2f8ce0f3d39520f40990832",
+        "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+        "bytes": 299928,
+        "independentlyHashVerified": true,
+        "visuallyInspected": true,
+        "visibleText": false,
+        "visibleLogo": false
+      },
+      "originalPNG": {
+        "declaredPath": "generated_images/exec-21f86137-41c8-460a-aa9d-64590311e895.png",
+        "declaredSha256": "40ce21164184d54209f65ba90973f79787076ba534e4b09ad72361806c9d2477",
+        "independentlyAuthenticated": false
+      },
+      "visualObservation": "Two adults in a contemporary community room seated close, one attentively leaning toward the other. No baked text or recognizable third-party logo visible.",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION_POLICY_MIGRATION",
+      "missingEvidence": [
+        "Original generation PNG bytes, prompt/reference chain and independent usage-rights evidence",
+        "Live localized title/reference rendering and served-byte identity",
+        "Need CLEAN-only release migration schema/runtime/browser certification",
+        "Independent originality/identifiable-likeness cross-comparison"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1504",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/data/v7/visual-assets/records/bqv7-need-comfort-01.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/000540cb7a105df20cdb648e2e8063c7d1c38571/public/v7/images/need/bqv7-need-comfort-01.webp"
+      ]
+    },
+    {
+      "assetId": "bqv7-emotion-spiritual-dryness-distance-01",
+      "pr": 1500,
+      "prHead": "6263416dff07b7457ce28d163e12577ab142e3e4",
+      "sourceType": "taxonomy",
+      "sourceId": "emotion:spiritually_dry",
+      "sourceRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sidecarBlob": "eaa40677b212e25f0c9386d948c128aa08710612",
+      "originalSourceRecordBlob": "7d72c81bf2b2132bdec263ec459a77ce9ce19daf",
+      "canonicalLabels": {
+        "en": "Spiritually dry / distant",
+        "tl": "Tuyong espirituwal / malayo",
+        "ceb": "Uga sa espiritu / layo",
+        "ilo": "Namagaan iti espiritu / adayo"
+      },
+      "allowedReferences": [
+        "Psalm 42:1-2",
+        "James 4:8"
+      ],
+      "embeddedHistoricalEnglishReference": "Psalm 42:1-2",
+      "variants": [
+        {
+          "kind": "CLEAN",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01.webp",
+          "gitBlob": "65ecc211c670f821f59e327c458f679569e91194",
+          "sha256": "4da226c6017a64bb108d52a66ddea338d9d4feb4adc4c03393abc67a257332d3",
+          "bytes": 53468,
+          "independentlyHashVerified": true,
+          "visuallyInspected": true,
+          "visibleText": false,
+          "unchangedDevelopmentGitBlob": true
+        },
+        {
+          "kind": "TYPE",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp",
+          "gitBlob": "c3fce6f02c11b635f2d88066a525487b271aef98",
+          "sha256": "05865fdb2f66ad224b60a2314e8aef115c49b49d89fe246976aad2091ee71a49",
+          "bytes": 87918,
+          "independentlyHashVerified": true,
+          "visuallyInspected": true,
+          "wordingExact": true,
+          "noScriptureProse": true
+        },
+        {
+          "kind": "THUMB",
+          "path": "public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-thumbnail.webp",
+          "gitBlob": "3d47e26ff7aa34217968e250919f8fc2630d37f1",
+          "sha256": "ac302c96529a8bc4a497e5b1f8f7ab59d1f1d9e9f153bc3238b050b7b68a639c",
+          "bytes": 67754,
+          "independentlyHashVerified": true,
+          "visuallyInspected": true,
+          "visibleText": false
+        }
+      ],
+      "visualObservation": "Contemporary person gazes through rainy window; no baked text in CLEAN. Historical TYPE shows one exact English title and Psalm 42:1-2 reference, no quotation. THUMB retains same scene.",
+      "verdict": "HOLD_PROVENANCE_LIVE_LOCALIZATION_STATUS_CONFLICT",
+      "missingEvidence": [
+        "Independent authentication of original ImageGen PNG and full generation-input chain",
+        "Exact historical font binary/license chain for Noto Serif derivative",
+        "Built-app live localized title/reference and served-byte rendering evidence",
+        "Resolve original source record production_ready vs derivative pending browser QA",
+        "Independent originality and source-rights confirmation"
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1500",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6263416dff07b7457ce28d163e12577ab142e3e4/data/v7/visual-assets/records/bqv7-emotion-spiritual-dryness-distance-01-derivatives.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/6263416dff07b7457ce28d163e12577ab142e3e4/public/v7/images/emotion/bqv7-emotion-spiritual-dryness-distance-01-with-text-en.webp"
+      ]
+    }
+  ],
+  "action": {
+    "createdPixels": false,
+    "createdCrop": false,
+    "deletedPixels": false,
+    "modifiedLedger": false,
+    "approved": false,
+    "released": false,
+    "merged": false,
+    "deployed": false,
+    "reason": "All candidates HOLD, no independently supported exclusive-candidate FAIL."
+  }
+}
