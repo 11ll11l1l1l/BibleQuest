@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "role": "rights_wording_provenance",
+  "reviewDate": "2026-10-15",
+  "reviewSession": "20261015-0913",
+  "scope": "QA only; exact PR HEAD and actual WebP binaries; no pixels generated/modified",
+  "result": {
+    "pass": 0,
+    "newFail": 0,
+    "hold": 3
+  },
+  "sources": {
+    "developmentCommit": "13f2359d20612eea6464941a4b79b27488024998",
+    "agentsBlob": "c9d170cad1223a9db846015eee04bc121749fb28",
+    "automatedQaPolicyBlob": "0f89b3237db3ce99cae2e8073f27c06641d6546f",
+    "singleMasterContractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+    "guideBlob": "9fc97dcbcc81f540ad5f728fe0beb7e7278e7ba8",
+    "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "ledgerBlob": "c56cea69361db56701d627effd7346f26c1e7ccf",
+    "runtimeResolverBlob": "9c836ddfd77221c3cc4a1fbb7d933a11c4327f5a",
+    "singleMasterContractPr": 1530,
+    "singleMasterContractPrMerged": true
+  },
+  "checks": {
+    "sha256": "independently computed from actual fetched binary bytes using SHA-256 (test vector abc matched)",
+    "fileFormat": "RIFF/WEBP",
+    "nativeDimensions": "parsed WebP VP8 frame header",
+    "visual": "actual CLEAN and historical TYPE inspected",
+    "scripture": "taxonomy references only; no Scripture prose embedded",
+    "release": "no production certification"
+  },
+  "reviews": [
+    {
+      "contentId": "lonely",
+      "historicalContentId": "loneliness",
+      "family": "emotion",
+      "pr": 1406,
+      "prHead": "73124a1dbb3df2cbf977673dfbfe76b81f0f7a79",
+      "sidecarBlob": "23f5f93ae4abbad6482cdb4df6f906310122cb5a",
+      "developmentSidecarBlob": "36acfebdfce9738ec76a2e35322e247763923bbd",
+      "status": "HOLD_PROVENANCE_LIVE_LOCALIZATION_LEGACY_REAUDIT",
+      "existingProductionStatus": "production_ready_preserve",
+      "observedScene": "Older adult sitting apart from a conversing group at a long community table.",
+      "sourceReference": "Psalm 68:6",
+      "historicalTypeText": "Lonely — Psalm 68:6",
+      "canonicalTitles": {
+        "en": "Lonely",
+        "tl": "Nag-iisa",
+        "ceb": "Nag-inusara",
+        "ilo": "Agmaymaysa"
+      },
+      "cleanTextFreeObserved": true,
+      "scriptureProseObserved": false,
+      "images": [
+        {
+          "kind": "CLEAN",
+          "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+          "gitBlob": "4db1a865dbad528df4f3e769ff5b982fd32a1915",
+          "bytes": 119888,
+          "width": 1024,
+          "height": 1024
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "1a702b4e22103716d6e5a1c66b1ce7b6e698f4896cd7cc66442ff5502843a2b4",
+          "gitBlob": "d6231f60abde6a9799ea5ea3ba1238a260b895bc",
+          "bytes": 138206,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "0854f9dd7ab7a8649ab10289ee00d17cc99c43b8f1139b84b5609a1d08556cb1",
+          "gitBlob": "5d4ad5c19bf1e0f2063c79718b6caba249b6fa9a",
+          "bytes": 29472,
+          "width": 384,
+          "height": 480
+        }
+      ],
+      "findings": [
+        "All three PR binaries SHA-256/byte count/RIFF WebP/dimensions independently verified; CLEAN Git blob identical to existing development production_ready master; do not duplicate, reject or delete approved legacy source.",
+        "Source sidecar declares generation ID but not independently authenticated original generation PNG, original prompt or generation-input provenance.",
+        "Alt text asserts subject is Filipino; nationality is not independently established from still pixels. Use visually supportable description or provide reliable provenance.",
+        "Actual built application localized title/reference and font package/license provenance not independently certified. Historical TYPE is baked English only."
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1406",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/73124a1dbb3df2cbf977673dfbfe76b81f0f7a79/data/v7/visual-assets/records/bqv7-emotion-loneliness-01.json",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/13f2359d20612eea6464941a4b79b27488024998/data/v7/visual-assets/records/bqv7-emotion-loneliness-01.json"
+      ]
+    },
+    {
+      "contentId": "angry",
+      "historicalContentId": "anger",
+      "family": "emotion",
+      "pr": 1438,
+      "prHead": "30848964b2a875b0e0a7c46022b2d1c73ff08a1b",
+      "sidecarBlob": "88c7c68862f27e881275ddf93439f72af233a4a1",
+      "status": "HOLD_PROVENANCE_COMPETING_MASTER_LIVE_LOCALIZATION",
+      "observedScene": "Contemporary woman with clenched fist beside two mugs in a kitchen; another adult turned away.",
+      "sourceReference": "James 1:19-20",
+      "historicalTypeText": "Angry — James 1:19-20",
+      "canonicalTitles": {
+        "en": "Angry",
+        "tl": "Galit",
+        "ceb": "Nasuko",
+        "ilo": "Nakarrungsot"
+      },
+      "cleanTextFreeObserved": true,
+      "scriptureProseObserved": false,
+      "originalGenerationPngDeclaredSha256": "47a1b320ab852dc25214a1aac174d9b13028186a107905af38e946307012134a",
+      "images": [
+        {
+          "kind": "CLEAN",
+          "sha256": "822445b73345e5cd280608933ce3d001e61d62d8691c5015ab14b4c1b2e6f0e9",
+          "gitBlob": "dc6c43986802de1167737e90b0cf12cc85d04383",
+          "bytes": 115614,
+          "width": 1024,
+          "height": 1024
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "9eb2382869256dbdb845b2f93fb921892e6153ed6edf64316a747eb330bd9323",
+          "gitBlob": "c468d97c4fb713c37b6fec1650c4346a700a6ddb",
+          "bytes": 120508,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "a22e460acef7049e0e2a4fcacc6e249b6ea31c0c6b2d7291bdfb577952c03797",
+          "gitBlob": "cec8a18917d327aacd2ddb936a89c3af9e1999a1",
+          "bytes": 29558,
+          "width": 384,
+          "height": 480
+        }
+      ],
+      "findings": [
+        "All three actual binaries SHA-256/byte count/RIFF WebP/dimensions independently verified.",
+        "Original PNG source hash is declared but PNG bytes and full generation-input rights evidence are absent from PR; prompt metadata explicitly unexposed.",
+        "Another open candidate for the same canonical ID exists at PR #1489, head 3874405d08853ca35fbebe53d9468b12d46cc95d. One immutable original CLEAN per canonical ID requires resolution; do not count two masters.",
+        "Visual connection to restraint/anger is plausible, but guide preferred sports-shed scene; scene reviewer must independently adjudicate thematic alternative and uniqueness.",
+        "TYPE displays authorized English title and reference; actual live TL/CEB/ILO title/reference and font license source evidence not certified."
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1438",
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1489",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/30848964b2a875b0e0a7c46022b2d1c73ff08a1b/data/v7/visual-assets/records/bqv7-emotion-anger-01.json"
+      ]
+    },
+    {
+      "contentId": "hope",
+      "family": "need",
+      "pr": 1479,
+      "prHead": "004cc63f7fdd2e441a101bd56d5f9753d2ae9889",
+      "sidecarBlob": "18c46e55b7efbb38f38693a05a33cd1fd33b3132",
+      "status": "HOLD_PROVENANCE_SOURCE_SCENE_LIVE_LOCALIZATION",
+      "policyMigration": "HOLD_POLICY_MIGRATION_for_any_new_CLEAN_only_release",
+      "observedScene": "Contemporary adult in dark raincoat looking over a rain-wet city and breaking clouds.",
+      "sourceReference": "Romans 15:13",
+      "historicalTypeText": "Hope — Romans 15:13",
+      "canonicalTitles": {
+        "en": "Hope",
+        "tl": "Pag-asa",
+        "ceb": "Paglaom",
+        "ilo": "Namnama"
+      },
+      "cleanTextFreeObserved": true,
+      "scriptureProseObserved": false,
+      "originalGenerationPngDeclaredSha256": "fde9e405225ed7c7606c8edb3781562206c738f8e98cf45906352de7c20e72d8",
+      "images": [
+        {
+          "kind": "CLEAN",
+          "sha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+          "gitBlob": "0065fc5c5c2785f6ef3d61b2c55a5c73b3acfbe9",
+          "bytes": 116390,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "TYPE",
+          "sha256": "7508a2f40da7e2a68470db9527ec56f49b90ae3be75d1aa8adfca08779a1c2d9",
+          "gitBlob": "a9446a7ff13f2781a8f7c0ff75112b4de0721168",
+          "bytes": 139054,
+          "width": 1024,
+          "height": 1280
+        },
+        {
+          "kind": "THUMB",
+          "sha256": "60897befe7138ae3e47c90555392557d56b513ac1ebe0351f4a88d8f0540a8a5",
+          "gitBlob": "1a676192caafa6fd764aced836a31f60275f369b",
+          "bytes": 25132,
+          "width": 384,
+          "height": 480
+        }
+      ],
+      "findings": [
+        "All three actual binaries SHA-256/byte count/RIFF WebP/dimensions independently verified.",
+        "Sidecar claims standalone original, but original PNG and complete generation-input evidence are not independently available.",
+        "Sidecar explicitly marks candidate_scene_revision_required and rejectedSourceCleanSha256 identical to current CLEAN. It is not scene-approved; no source/rights review can override that status.",
+        "The visible skyline/dawn is not the guide's repaired public bus-shelter scene; guide also warns against generic hope=sun. Scene reviewer must independently decide whether a distinctive full-source-grounded alternative is supportable; do not assert scene PASS.",
+        "Historical TYPE has correct English title/reference and no verse prose; live locale rendering and font license evidence not certified.",
+        "Older competing Need Hope PR #1448 has a previously recorded rights FAIL and remains open; exclude its composite-origin candidate."
+      ],
+      "proof": [
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1479",
+        "https://github.com/11ll11l1l1l/BibleQuest/pull/1448",
+        "https://github.com/11ll11l1l1l/BibleQuest/blob/004cc63f7fdd2e441a101bd56d5f9753d2ae9889/data/v7/visual-assets/records/bqv7-need-hope-02.json"
+      ]
+    }
+  ],
+  "actions": {
+    "pixelChanges": false,
+    "deleted": false,
+    "tombstonesCreated": false,
+    "ledgerChanged": false,
+    "releaseMerge": false,
+    "deployed": false
+  },
+  "limitations": [
+    "No authenticated original generator PNGs and complete generation-input evidence were supplied in the reviewed PRs.",
+    "Live localized built-app/served-byte evidence not independently inspected.",
+    "HOLD candidates preserved; historical production_ready Lonely master protected.",
+    "Single-master migration gate remains binding for new CLEAN-only Feeling/Need releases."
+  ]
+}
