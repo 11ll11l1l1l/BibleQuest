@@ -8,6 +8,19 @@
   "sourceRecordBlob": "2a41b74c2488c1ca5dae606c506d1b0c11749a2a",
   "reason": "generation.sourceImageWasComposite=true, isolatedSingleScenePanelCropPixels populated; CLEAN cropped from a three-panel collage, prohibited by one-original-CLEAN policy. Competing Need Hope PR #1479; no source-original PNG proof. No approval; exclusive candidate files only eligible for deletion after tombstone.",
   "release": "NOT_APPROVED",
-  "deletionStatus": "PENDING_EXCLUSIVE_FILE_DELETION",
-  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011"
+  "deletionStatus": "PENDING_SAFE_CLEANUP",
+  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011",
+  "coordinatorReconciliation": {
+    "date": "2026-10-16",
+    "candidateHeadBeforeCleanup": "65752b28f12c89c37bd27cef0cbbabd23125d3f0",
+    "canonicalId": "need:hope",
+    "reason": "Disclosed collage-origin panel crop violates one-original-CLEAN policy; superseded by standalone PR #1479. Candidate-only files absent from v7/development. Do not release.",
+    "candidateSha256": {
+      "CLEAN": "9916381aaa9cb244847bbb3fcee69e1f15cee04bea76bb4f026ad7772e74061f",
+      "TYPE": "96c276dcbf3e94fcd68347fc7757011205c9fdbc81b49f4653a2063bdf79c222",
+      "THUMB": "ddc32bc1f36714603c011aec17e2c194672913359db3a2f7695fca0738fa63e2"
+    },
+    "supersedingCandidate": "https://github.com/11ll11l1l1l/BibleQuest/pull/1479",
+    "cleanupScope": "exclusive PR #1448 candidate binaries and candidate-only record, no development/approved files"
+  }
 }
