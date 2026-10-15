@@ -1,0 +1,23 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-15",
+  "base": "13f2359d20612eea6464941a4b79b27488024998",
+  "taxonomy": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "results": [
+    {
+      "pr": 1489,
+      "head": "3874405d08853ca35fbebe53d9468b12d46cc95d",
+      "clean": "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+      "verdict": "HOLD",
+      "reason": "Original generation input provenance and exact-head live locale rendering not independently certified."
+    },
+    {
+      "pr": 1498,
+      "head": "ab5c25869ac186eb7ca829f1596d3e4d11daadca",
+      "clean": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+      "verdict": "HOLD",
+      "reason": "Original input provenance, font evidence and exact-head live locale rendering not independently certified."
+    }
+  ],
+  "release": false
+}
