@@ -1,13 +1,44 @@
 {
   "schemaVersion": 1,
-  "role": "rights_wording_provenance",
-  "date": "2026-10-14",
+  "role": "coordinator_consolidation",
+  "date": "2026-10-17",
   "verdict": "FAIL",
   "candidatePr": 1421,
-  "reviewedHead": "1bfa0749a9671818744949f8224f44789588789e",
+  "reviewedHead": "98b08cb1007a575d20c7393737ae1067faa38831",
   "sourceRecordBlob": "3a7265400f6c967bbe9fc4a8ca6e266363b5c82d",
-  "reason": "CLEAN/TYPE/THUMB are SVG, not required original raster PNG/WebP. Sidecar declares procedural SVG with no decoded PNG/WebP. Unapproved exclusive SVG candidate files only eligible for deletion after tombstone.",
+  "reason": "Rejected CLEAN is procedural SVG, not an original decoded PNG/WebP raster. TYPE and THUMB also SVG. Independent rights reviewer previously marked FAIL on 2026-10-14.",
+  "canonicalId": "need:peace:CLEAN",
+  "sourceAndVariants": [
+    {
+      "variant": "CLEAN",
+      "path": "public/v7/images/need/bqv7-need-peace-01.svg",
+      "sha256": "5c5ce319a2b496d9228538d88af3dc04ee9741f41bd12ff13fe04771bbfa885c",
+      "gitBlob": "49f91154a98de262fd4ea13d9aa4eec4053f4457",
+      "bytes": 10312
+    },
+    {
+      "variant": "TYPE-en",
+      "path": "public/v7/images/need/bqv7-need-peace-01-with-text-en.svg",
+      "sha256": "dc08905c4fe55e33ee7d82f2d97a4fbc0a850a55d1d58b8e26f9200c83bc5657",
+      "gitBlob": "0f017bbd8f594b19dde4f10ca78a5b25530aeb4b",
+      "bytes": 10746
+    },
+    {
+      "variant": "THUMB",
+      "path": "public/v7/images/need/bqv7-need-peace-01-thumbnail.svg",
+      "sha256": "41d3dbd2a1d914c2f25abec146930e55e6007356a5f62e49c0847a6fe5d58229",
+      "gitBlob": "94316dbf4a0b08dbcf4634d44e9f8e352b2bd2fc",
+      "bytes": 10348
+    }
+  ],
+  "ownershipEvidence": {
+    "developmentPathsAbsent": true,
+    "onlyOpenPRWithExactAssetId": 1421,
+    "prChangedPathsExclusive": true,
+    "productionApproved": false,
+    "source": "Live GitHub PR changed files, development fetch 404, open PR search, record and independent rights FAIL"
+  },
+  "deletionStatus": "OWNERSHIP_VERIFIED_PENDING_DELETION",
   "release": "NOT_APPROVED",
-  "deletionStatus": "PENDING_EXCLUSIVE_FILE_DELETION",
   "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011"
 }
