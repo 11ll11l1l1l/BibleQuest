@@ -119,7 +119,9 @@
 }
 @media (max-width: 430px) {
   .bq-main .bq-hero.bq-v7-home-feature {
-    min-height: clamp(290px, 90vw, 380px);
+    /* Keep the Bible action and next Quest continuation discoverable above
+       the first viewport on common phones, including 430px. */
+    min-height: clamp(270px, 66vw, 300px);
     padding: 22px;
   }
   .bq-v7-home-feature .bq-home-welcome__mark {
