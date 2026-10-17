@@ -33,9 +33,9 @@ assert.ok(!/>BQ<\/strong>/.test(shell), 'Shell must not fall back to a bare "BQ"
 // Accept the original V4 shell or the deliberate V7 five-destination redesign.
 // In V7 the legacy Learn/Play/Grow routes still exist, but are owned by
 // Library/Home/Groups instead of consuming separate top-level tabs.
-const navMatch = shell.match(/const NAV\\s*=\\s*\\[([\\s\\S]*?)\\];/);
+const navMatch = shell.match(/const NAV\s*=\s*\[([\s\S]*?)\];/);
 assert.ok(navMatch, 'Shell must define its primary navigation.');
-const nav = [...navMatch[1].matchAll(/\\[\\s*'([^']+)'\\s*,\\s*'([^']+)'\\s*,\\s*'([^']+)'\\s*\\]/g)]
+const nav = [...navMatch[1].matchAll(/\[\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*'([^']+)'\s*\]/g)]
   .map(match => ({ route: match[1], key: match[2], icon: match[3] }));
 assert.equal(nav.length, 5, 'Shell must have exactly five labeled primary destinations');
 const routes = nav.map(row => row.route);
