@@ -380,7 +380,7 @@ function boot(root){
     if(context.contentType)params.set('contentType',context.contentType);
     if(context.taxonomyId)params.set('taxonomyId',context.taxonomyId);
     if(context.discoveryQuery)serializeLibraryDiscoveryQuery(context.discoveryQuery,params);
-    if(target.replace)history.replaceState(null,'',`#/${target.routeKey}?${params}`);
+    if(target.replace)router.replace(`${target.routeKey}?${params}`);
     else router.navigate(`${target.routeKey}?${params}`);
   };
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
