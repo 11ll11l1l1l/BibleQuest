@@ -33,8 +33,8 @@ if (v7Home) {
   assert.ok(home.includes('data-home-feature') && home.includes('data-home-hero-reader') &&
     home.includes('aria-label="${escapeHtml(tx(\'nav.bible\'))}"'),
     'V7 hero must keep a meaningful labeled Bible/Continue action.');
-  assert.ok(home.includes('data-home-cover data-art-source="fallback" src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"'),
-    'V7 hero must preserve the rights-safe decorative fallback SVG.');
+  assert.ok(home.includes('data-home-cover data-art-source="home-editorial" src="assets/bq-home-scripture-study-20261017.webp" alt="" aria-hidden="true"'),
+    'V7 hero must preserve the reviewed original study photograph and decorative accessibility contract.');
 } else {
   assert.ok(home.includes('<img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">'),
     'Legacy hero must retain its decorative accessibility contract.');

@@ -25,7 +25,7 @@ for(const icon of ['assignments','transform','notifications','tutorial'])
   assert.ok(icons.includes(`${icon}:`),`Missing semantic inline icon: ${icon}`);
 
 const home=read('src/features/home/index.js');
-for(const binding of ["icon: 'assignments'","iconSvg('transform'","iconSvg('notifications'","iconSvg('tutorial'","dailyPassageTitle(daily.passage,locale)"])
+for(const binding of ["iconSvg('assignments'","iconSvg('transform'","iconSvg('notifications'","iconSvg('tutorial'","dailyPassageTitle(daily.passage,locale)"])
   assert.ok(home.includes(binding),`Home hotfix contract missing: ${binding}`);
 
 const grow=read('src/features/progress/index.js');

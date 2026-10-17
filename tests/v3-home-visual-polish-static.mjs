@@ -20,8 +20,8 @@ if (v7) {
   assert(home.includes('data-home-feature') && home.includes('data-home-hero-reader') &&
     home.includes('<h1>BibleQuest</h1>'),
     'V7 Home must provide a readable branded heading and real Bible action');
-  assert(home.includes('data-home-cover data-art-source="fallback" src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"'),
-    'V7 Home must preserve its inert decorative SVG when no audited cover exists');
+  assert(home.includes('data-home-cover data-art-source="home-editorial" src="assets/bq-home-scripture-study-20261017.webp" alt="" aria-hidden="true"'),
+    'V7 Home must use the reviewed original study photograph as an inert decorative image');
   assert(v7Css.includes('linear-gradient') && v7Css.includes('.bq-v7-home-feature__action'),
     'V7 Home must have a readable editorial fallback with a prominent action');
 } else {

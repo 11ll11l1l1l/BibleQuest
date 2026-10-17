@@ -62,14 +62,13 @@ assert.ok(bootstrap.includes("const openFreeReader=()=>navigateGeneral('reader')
 for(const sheet of['src/ui/home-v4.css','src/ui/learn-v4.css','src/ui/games-v4.css','src/ui/journey-v4.css','src/ui/more-v4.css','src/ui/family-accents-v4.css'])
   assert.ok(index.includes(`href="${sheet}"`),`Primary V4 family stylesheet is not active: ${sheet}.`);
 
-const shortcutLabels=['Daily Journey','Reader','Assignments','Calendar','Progress'];
-let previous=-1;
-for(const label of shortcutLabels){
-  const at=home.indexOf(`label: '${label}'`);
-  assert.ok(at>previous,`Home shortcut rail must retain requested order; missing/out-of-order ${label}.`);
-  previous=at;
-}
-for(const hook of['data-home-rail','data-home-daily','data-home-assignments','data-home-rail-action']) assert.ok(home.includes(hook),`Home family contract lost ${hook}.`);
+// V7 phone correction replaces the duplicate shortcut rail with direct,
+// localized Today actions while retaining the same destination owners.
+for(const hook of ['data-home-hero-reader', 'data-home-bible-quest', 'data-home-daily', 'data-open-daily', 'data-open-congregation-assignments', 'data-open-home-next-event', 'data-home-progress'])
+  assert.ok(home.includes(hook), `Home continuation and destination contract lost ${hook}.`);
+for(const action of ['onMission?.()', 'onReader?.()', 'onAssignments?.()', 'onCalendar?.()'])
+  assert.ok(home.includes(action), `Home destination callback lost ${action}.`);
+assert.ok(!home.includes('data-home-rail-action'), 'V7 Home must not restore the duplicate shortcut rail.');
 
 for(const hook of['data-open-reader','data-open-study','data-open-deep-questions','data-open-bible-world','data-open-open-review','data-open-private-notes','data-open-cloud-notes'])
   assert.ok(learn.includes(hook),`Learn hub lost required entry point ${hook}.`);
