@@ -289,6 +289,11 @@
   font-weight: 750;
   cursor: pointer;
 }
+.bq-one2one-home :is(.bq-one2one-home__tools summary, .bq-one2one-home__context-disclosure summary) {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+}
 .bq-one2one-home :is(.bq-one2one-home__tools, .bq-one2one-home__context-disclosure)[hidden] {
   display: none;
 }

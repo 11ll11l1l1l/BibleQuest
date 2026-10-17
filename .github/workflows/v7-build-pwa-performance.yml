@@ -167,6 +167,12 @@ jobs:
           BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
         run: node tests/v7/release-responsive-accessibility-browser.mjs
 
+      - name: V7 phone-first UI/UX correction matrix
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+          BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: node tests/v7/phone-first-uiux-built-artifact-browser.mjs
+
       - name: Seal successful exact-SHA certification
         shell: bash
         run: |
@@ -229,5 +235,7 @@ jobs:
             artifacts/v7/content-report.json
             artifacts/v7/certification.json
             artifacts/v7/release-responsive-accessibility.json
+            artifacts/v7/phone-first-uiux-geometry.json
+            artifacts/v7/phone-first-uiux/
             artifacts/v7/evidence.sha256
             dist-v6/
