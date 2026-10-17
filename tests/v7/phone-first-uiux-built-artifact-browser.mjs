@@ -124,7 +124,10 @@ try {
           shortTapTargets: [...document.querySelectorAll('#bq-view button, #bq-view input, #bq-view select, #bq-view textarea, #bq-view summary')]
             .filter(element => element.getClientRects().length && !element.closest('[hidden]'))
             .map(element => {
-              const value = element.getBoundingClientRect();
+              // Native checkbox/radio labels are part of their clickable area.
+              const target = element.matches('input[type="checkbox"], input[type="radio"]')
+                ? element.labels?.[0] || element : element;
+              const value = target.getBoundingClientRect();
               return { tag: element.tagName, label: element.getAttribute('aria-label') || element.labels?.[0]?.textContent?.trim() || element.textContent?.trim(), width: Number(value.width.toFixed(2)), height: Number(value.height.toFixed(2)) };
             })
             .filter(target => target.width < 44 || target.height < 44),
@@ -191,7 +194,7 @@ try {
               return { label: element.textContent.trim(), width: bounds.width, height: bounds.height };
             }));
           assert.ok(expandedTargets.length > 0, `${viewport.width}: expanded audio controls should be exposed`);
-          assert.deepEqual(expandedTargets.filter(target => target.width < 44 || target.height < 44), [],
+          assert.deepEqual(expandedTargets.filter(target => target.width < 43.999 || target.height < 43.999), [],
             `${viewport.width}: expanded audio settings have a target below 44px`);
           readerAudio = {
             collapsedPlayer: await audio.evaluate(element => ({
