@@ -72,10 +72,11 @@ One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if nece
 
 ## Candidate verification probe — 2026-10-17
 
-- Rechecked the open correction PR #1549 head `f5275b1f4e00b4bf60038098c40198ebef7b9cc6` and its latest checks. The V6 PR Serialization Guard is green; no latest-head Pages preview result or mobile-browser evidence is available.
+- Rechecked the open correction PR #1549 after the Reader parser fix; current head is `fcbf49a61b12a4fb78fff0c6658df3be63e9f550`. The V6 PR Serialization Guard passed, and Cloudflare Pages deployed the exact head successfully to `https://9b3b7d78.mybiblequest.pages.dev`.
 - Installed the lockfile dependencies in the local checkout (available Node `24.19.0`; project pins `22.23.2`). `npm run typecheck` passes. `npm run unit:v7` passes all 721 tests and the image-ledger audit (31 attempts, no problems).
 - The first local production build and Vite dev-server dependency scan exposed a JavaScript parse error in the Reader audio markup at `src/features/reader/index.js`. Rewrote the audio HTML as explicit fragments while preserving all reader audio hooks and controls. `node --check src/features/reader/index.js` and `npm run build:v6` now pass locally.
-- Playwright is present, but this environment has no Chromium binary. Installing Chromium returned a truncated/invalid archive, so no rendered phone screenshots or DOM geometry were produced. The successful local build used the development build identity; it is not exact-SHA or deployment evidence.
+- Browser preview spot check ran as guest in dark theme at 1363×936 CSS px on Home, Reader, Library, ONE 2 ONE, and You; all five routes loaded and document scroll width stayed within the viewport. Reader audio bounds were x=186, y=4555, 982×166, while primary navigation was y=860–928. This is desktop-only evidence and does not satisfy the phone matrix or prove small-screen geometry.
+- Local Playwright is present, but its Chromium binary is unavailable. Installing Chromium returned a truncated/invalid archive, so no rendered phone screenshots or phone DOM geometry were produced. The exact-head local build passed; this is not production deployment or smoke evidence.
 - Phase status remains unchanged: Phase 00 and 03 are BLOCKED; Phases 01–02 and 04–11 remain IN_PROGRESS; Phase 12 remains OPEN and is not entered because its prerequisite phases lack their required evidence. No phase is PASS. Next required action is a Chromium-capable exact-candidate phone matrix, starting with Reader 320/390/430 px and recording player/nav/content bounds.
 
 ## Claim/coordination model
