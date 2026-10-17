@@ -23,7 +23,7 @@ Allowed state transitions:
 | 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | BLOCKED | 2026-10-17 live guest baseline: five routes observed at 1363×936; Reader R01/R02 reproduced. Need 320/390/430/800 device captures, light theme, saved screenshots and exact deployed SHA; current browser cannot emulate mobile and local Chromium is absent. |
 | 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | IN_PROGRESS | Source fix + responsive browser assertions on branch codex/v7-uiux-phase-00-01-20261017; exact browser CI pending. |
 | 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | IN_PROGRESS | Auto-next moved back inside Audio options; unknown duration now has localized unavailable text. Reader browser assertions added; exact browser CI pending; do not mark PASS until Phase 01 checks pass. |
-| 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | OPEN | Not started |
+| 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | BLOCKED | 2026-10-17 live spot check at 1363×936: five labeled tabs are present, Bible is active, locale selector and Guest button fit the topbar, and fixed nav is 68px high with an 8px viewport-bottom gap. Cannot satisfy 320/390/430/800, Android PWA/browser resize or safe-area gates here; Phases 01–02 exact-head checks are also pending. No speculative shell CSS change. R05 remains unresolved pending mobile evidence. |
 | 04 | Shared type/colors/spacing/components | 03; source CSS audit | R10 H08 Y03 Y07 O09 L09 G02 G03 | OPEN | Not started |
 | 05 | Home primary first viewport | 04 | H01 H02 H07 | OPEN | Not started |
 | 06 | Home lower density/shortcuts | 05 | H03 H04 H05 H06 H08 H09 H10 | OPEN | Not started |
@@ -48,6 +48,12 @@ One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if nece
 - Reader reproduction: live BSB audio player was 982×166.14 px at x=185.5, y=697.86; primary navigation begins at y=860. The player therefore overlaps the nav by 4 px and visually covers Scripture while scrolling. Its computed position was `sticky` with `bottom: 78px`. Screenshot was observed in the browser but is not retained as a repository file.
 - Exact blocker: the cloud browser cannot set a 320/390/430/800 CSS viewport and the local Playwright Chromium executable is unavailable. The 1363×936 route metrics are useful reproduction evidence, not substitutes for the required mobile/light-theme matrix. Record Phase 00 as BLOCKED until that matrix and sanitized durable screenshots are available. R01/R02 were reproducible and sufficient to begin their bounded Reader fix.
 - Branch work in progress: remove the sticky overlay and use an in-flow two-row mobile audio layout; keep controls reachable; move Auto-next inside its disclosure; replace `--:--` with a localized duration-unavailable status. Targeted reader wiring tests and typecheck passed locally. Local build failed in the worktree at the V6 compatibility hook (`missing the deployable index or root PWA manifest`) under Node 24.19, while the repository requires Node 22.23.2; exact-head CI is pending and is the required build/browser evidence.
+
+## Phase 03 live shell spot check — 2026-10-17
+
+- Public Reader route, guest, dark theme, 1363×936 CSS px only. Topbar locale selector: x=1054.56, y=10, 65×44; Guest button: x=1125.56, y=10, 70.94×44. Neither is clipped or behind the brand at this width.
+- Primary navigation exposes Home, Bible, Library, Groups and You; Bible is the current route. Nav bounds: x=416.5, y=860, 520×68, bottom=928 (8px from viewport bottom). This is desktop-height evidence only and does not prove device safe-area behavior or no content overlap at smaller heights.
+- Phase 03 entered for this bounded shell evidence check and is now BLOCKED: its dependency phases 01–02 have no exact-head build/browser checks, and the required 320/390/430/800 + Android PWA/resize matrix is unavailable. R05 remains open; do not change shell z-index or spacing until the suspected mobile clipping can be tested.
 
 ## Claim/coordination model
 
