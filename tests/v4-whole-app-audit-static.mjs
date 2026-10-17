@@ -30,14 +30,25 @@ for (const route of ['congregation', 'leaderboards', 'recognition', 'assignments
   assert.ok(routeRe.test(artCss), `Community hub icon for '${route}' must use real custom art, not an emoji placeholder.`);
 }
 
-// --- Document overflow: record the known coverage boundary so it isn't
-// mistaken for exhaustive route coverage. This assertion fails loudly if
-// PRIMARY_ROUTES silently changes without this audit note being revisited.
+// --- Document overflow: the mobile smoke now probes the actual current
+// five primary tabs. V7's five routes differ intentionally from V4.
+// Deep links are separately covered by v4-whole-app-deep-routes-smoke.
 const widthTest = read('tests/v3-final-mobile-widths-smoke.mjs');
-const primaryRoutesMatch = widthTest.match(/const PRIMARY_ROUTES = \[([^\]]+)\]/);
-assert.ok(primaryRoutesMatch, 'Expected to find PRIMARY_ROUTES in the width-overflow smoke test.');
-const primaryRoutes = primaryRoutesMatch[1].match(/'([a-z-]+)'/g).map(s => s.replace(/'/g, ''));
-assert.deepEqual(primaryRoutes, ['home', 'learn', 'play', 'grow', 'more'], 'Automated overflow coverage is currently limited to the 5 primary nav routes only - deep-linked feature pages (Community, Couples Journey, Congregation, Admin Console, etc.) are NOT independently overflow-tested. This is a recorded, open audit gap (see V4_UI_WHOLE_APP_AUDIT.md), not something this assertion claims to close.');
+const v4RoutesMatch = widthTest.match(/const V4_ROUTES = \[([^\]]+)\]/);
+const v7RoutesMatch = widthTest.match(/const V7_ROUTES = \[([^\]]+)\]/);
+const legacyRoutesMatch = widthTest.match(/const PRIMARY_ROUTES = \[([^\]]+)\]/);
+const extract = match => match?.[1].match(/'([a-z-]+)'/g)?.map(s=>s.replace(/'/g,'')) || [];
+if(v4RoutesMatch && v7RoutesMatch) {
+  assert.deepEqual(extract(v4RoutesMatch),['home','learn','play','grow','more'],
+    'Keep the original V4 tab compatibility model in width acceptance');
+  assert.deepEqual(extract(v7RoutesMatch),['home','reader','library','one-to-one','more'],
+    'V7 mobile width acceptance must cover all five current tabs');
+  assert.ok(widthTest.includes('for (const route of home.navRoutes)'),
+    'Mobile smoke must exercise actual mounted primary links, not a stale route list');
+} else {
+  assert.deepEqual(extract(legacyRoutesMatch),['home','learn','play','grow','more'],
+    'Legacy overflow smoke must retain the original five primary route coverage');
+}
 
 // --- Icon consistency, round 2 (Section G priority list): Notification
 // Center, Couples Family, and Journey Group Encouragements category icons.
