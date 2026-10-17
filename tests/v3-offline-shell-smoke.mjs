@@ -4,7 +4,22 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 const browser=await chromium.launch({headless:true});
 const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'allow'});
 const page=await context.newPage();
-const errors=[],failed=[];page.on('pageerror',error=>errors.push(error.message));page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('requestfailed',request=>failed.push({url:request.url(),failure:request.failure()?.errorText||''}));
+const errors=[],failed=[],expectedOfflineTransport=[];
+let switchedOffline=false;
+page.on('pageerror',error=>errors.push(error.message));
+page.on('console',message=>{
+  if(message.type()!=='error')return;
+  const value=message.text();
+  // Chromium writes a transport-level error for a best-effort resource fetch
+  // while deliberately offline. This is not a JavaScript exception. Core
+  // bundle failures still fail via mount and tracked requestfailures below.
+  if(switchedOffline && value==='Failed to load resource: net::ERR_FAILED') {
+    expectedOfflineTransport.push(value);
+    return;
+  }
+  errors.push(value);
+});
+page.on('requestfailed',request=>failed.push({url:request.url(),failure:request.failure()?.errorText||'',whileOffline:switchedOffline}));
 const warmSentinels=[
   '/src/app/bootstrap.js',
   '/src/app/offline-shell.js',
@@ -61,6 +76,7 @@ try{
   else assert(readiness.builtAssets>0,'Deployable offline shell cache did not retain built application assets.');
   assert(!readiness.probe,'Client Diagnostics network probe must never enter the offline shell cache.');
   assert(!readiness.packs,'#98 shell cache must not contain Bible packs reserved for #99.');
+  switchedOffline=true;
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded',timeout:15000});
   try{await page.locator('[data-bq-shell="v3"]').waitFor({timeout:15000})}catch(error){
@@ -81,6 +97,10 @@ try{
   assert(metrics.heading==='BibleQuest','Offline reload must render the home shell.');
   assert(metrics.controller,'Offline reload must remain controlled by the #98 worker.');
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Offline mobile reload overflowed horizontally: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
+  // Offline media/API probes may fail by design, but core JS/CSS may not.
+  const coreFailures=failed.filter(item=>item.whileOffline &&
+    /\\.(?:js|mjs|css)(?:\\?|$)/i.test(new URL(item.url).pathname));
+  assert(coreFailures.length===0,`Offline core asset failures: ${JSON.stringify(coreFailures)}`);
   assert(errors.length===0,`Offline shell browser errors: ${errors.join(' | ')}`);
   console.log('BibleQuest v3 offline shell mobile browser regression passed.');
 }finally{await context.setOffline(false).catch(()=>{});await browser.close()}
