@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-encouragement-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-10T05:12:01+09:00",
+  "status": "candidate_scene_revision_required",
+  "bundleStatus": "three_real_files_local_qa_pass_independent_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "encouragement",
+  "canonicalNeedId": "encouragement",
+  "concept": "After a community 5K, a friend quietly helps another stand, embodying mutual encouragement rather than heroic rescue.",
+  "usage": [
+    "needs_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-encouragement-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 154430,
+  "sha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+  "focalPoint": {
+    "x": 0.51,
+    "y": 0.56
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "033f6473-56eb-406f-a674-569279cfb7ff",
+    "sourceImageWasComposite": false,
+    "sourceOriginalFile": "outdoor_scene_a_realistic_cinematic_warm_toned.png",
+    "sourceOriginalSha256": "7dcccf7f3720fac7f7dc046207114821523446308e10cb8e2ef6e828b7fadcb2",
+    "sourceOriginalWidth": 1122,
+    "sourceOriginalHeight": 1402,
+    "sourceCropPixels": [
+      0,
+      0,
+      1122,
+      1402
+    ],
+    "sourceDescription": "One original single-scene text-free photographic render, not a montage, not a book cover; no third-party source photo supplied.",
+    "cleanSceneOriginalToThisGeneration": true,
+    "noThirdPartyPhotosSupplied": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Generated using OpenAI image generation without supplied third-party photography. Generated provenance and publication suitability remain subject to independent rights and visual review; no exclusivity represented.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "fontFilesDistributed": false,
+    "scripture": "Reference only; no Scripture prose"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "After a community run, one friend offers a steady hand to another seated on the path; both share an encouraging smile.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "CLEAN with live TL Pagpapalakas ng loob / CEB Pagdasig / ILO Pammabileg ti nakem and live Scripture reference; English TYPE not localized."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "encouragement",
+    "locale": "en",
+    "exactLabel": "Encouragement",
+    "reference": "1 Thessalonians 5:11",
+    "scriptureTextIncluded": false,
+    "contextReview": "1 Thessalonians 5:11 exhorts the believing community to encourage and build one another up. A friend helping a runner stand depicts mutual practical support, not a claim of guaranteed athletic success."
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "sourceImageStandaloneOriginal": true,
+    "originalGeneratedOutputWasCollage": false,
+    "repoVisualAudit": "not_run_for_repaired_type",
+    "builtAppBrowserQA": "not_run_for_repaired_type",
+    "publishedServedBytes": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "candidateOnly": true,
+    "localHttpExactBytes": true,
+    "localIsolatedChromium320390430": true,
+    "localQaReport": "qa-repair-report.json",
+    "typeRepair": {
+      "reason": "Producer visual inspection of 320px isolated Chromium screenshot found the English Scripture reference too small for comfortable reading; independently enlarged it and retypeset on unchanged CLEAN.",
+      "priorTypeSha256": "01633f23596ce7178d123b65669035b6b62e83ad2e3287eeba8e6d87a555e518",
+      "priorTypeBytes": 170078,
+      "repairedTypeSha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+      "repairedTypeBytes": 180798,
+      "browserWidths": [
+        320,
+        390,
+        430
+      ],
+      "producerVisualInspected320": true,
+      "independentQa": "pending",
+      "publishedServedBytes": "not_run",
+      "actualBuiltApp": "not_run",
+      "method": "Pillow exact-text annotation from original CLEAN, feathered translucent upper-left veil; no hard seam, no Scripture prose"
+    },
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Standalone original 5K runners scene conflicts with mandatory guidebook §6 chess-club scene. TYPE also has reported sub-10% top inset; replacing TYPE alone would not correct narrative mismatch. Existing source and all derivatives require scene revision.",
+    "rejectedSourceCleanSha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+    "rejectedTypeSha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+    "rejectedThumbSha256": "d61b924ee552ea4e1502f7c97c3dcf79f2940ee223f2cce19a04aaaafc6579b1",
+    "requiredScene": "An experienced chess-club volunteer calmly reassures a beginner after a lost match, pointing to a blank wooden board; not a repeat 5K finish line.",
+    "requiredNextAction": "Create ONE genuinely standalone source matching mandatory guidebook §6, document >=3 novelty axes from the rejected scene and source revision, replace only owned CLEAN/TYPE/THUMB+sidecar after producer QA; submit to independent Visual QA; do not merge current candidate.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-encouragement-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 154430,
+      "sha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+      "locale": null,
+      "altText": "After a community run, one friend offers a steady hand to another seated on the path; both share an encouraging smile.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.56
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-encouragement-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 180798,
+      "sha256": "24921ff58b96e075b2a0a2bfd41754024081fd3fcd056808ae812ba238bdceef",
+      "locale": "en",
+      "altText": "After a community run, one friend offers a steady hand to another seated on the path; both share an encouraging smile. Embedded English text: Encouragement; 1 Thessalonians 5:11.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.56
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      },
+      "embeddedWording": {
+        "label": "Encouragement",
+        "scriptureReference": "1 Thessalonians 5:11",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Independently typeset EB Garamond on unchanged original CLEAN with feathered upper-left veil; enlarged italic reference and title, no hard rectangular seam",
+        "sourceCleanSha256": "4a689a7d5f0c9724585b888094d9ca8c39297e134e0a185ab091a77512d53a4c",
+        "priorTypeVariant": {
+          "sha256": "01633f23596ce7178d123b65669035b6b62e83ad2e3287eeba8e6d87a555e518",
+          "bytes": 170078
+        }
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-encouragement-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 30956,
+      "sha256": "d61b924ee552ea4e1502f7c97c3dcf79f2940ee223f2cce19a04aaaafc6579b1",
+      "locale": null,
+      "altText": "After a community run, one friend offers a steady hand to another seated on the path; both share an encouraging smile.",
+      "focalPoint": {
+        "x": 0.51,
+        "y": 0.56
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": false,
+        "noLogo": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS direct full-scene resize"
+      }
+    }
+  ]
+}
