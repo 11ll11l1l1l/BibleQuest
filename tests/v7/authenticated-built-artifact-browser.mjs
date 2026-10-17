@@ -411,9 +411,19 @@ try {
   await openRoute(page, 'one-to-one', '[data-pair-results]');
   const mentorPair = page.locator(`[data-open-pair="${ids.pair}"]`);
   await mentorPair.waitFor({ state: 'visible' });
-  await openRoute(page, 'one-to-one?view=authoring', '[data-curriculum-authoring]');
+  const mentorTools = page.locator('[data-pair-mentor-tools]');
+  await mentorTools.waitFor({ state: 'visible' });
+  await mentorTools.locator('summary').click();
+  await page.locator('[data-pair-authoring]').click();
+  await page.locator('[data-curriculum-authoring]').waitFor({ state: 'visible' });
+  assert.equal(await page.evaluate(() => location.hash), '#/one-to-one?view=authoring');
   await assertNoHorizontalOverflow(page, 'mentor authoring');
-  await openRoute(page, 'one-to-one?view=assignment', '[data-assignment-preparation]');
+  await page.locator('[data-authoring-nav="back"]').click();
+  await mentorTools.waitFor({ state: 'visible' });
+  await mentorTools.locator('summary').click();
+  await page.locator('[data-pair-assignments]').click();
+  await page.locator('[data-assignment-preparation]').waitFor({ state: 'visible' });
+  assert.equal(await page.evaluate(() => location.hash), '#/one-to-one?view=assignment');
   await assertNoHorizontalOverflow(page, 'mentor assignment preparation');
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
 
@@ -426,6 +436,8 @@ try {
   await openRoute(page, 'one-to-one', '[data-pair-results]');
   const menteePair = page.locator(`[data-open-pair="${ids.pair}"]`);
   await menteePair.waitFor({ state: 'visible' });
+  assert.equal(await page.locator('[data-pair-mentor-tools]').isVisible(), false,
+    'member account must not inherit stale leader tools after account switching');
   await openRoute(page, `one-to-one-track?pairId=${ids.pair}`, '[data-assigned-curriculum]');
   const assignedTrack = page.getByRole('button', { name: 'V7 CI Browser Track' });
   await assignedTrack.waitFor({ state: 'visible' });

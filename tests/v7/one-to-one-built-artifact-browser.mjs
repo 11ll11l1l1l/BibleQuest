@@ -102,9 +102,10 @@ try {
   // that overview buttons reach the registered workspace pages.
   const page = await context.newPage();
   await assertBuiltRoute(page, 'one-to-one', '390px overview launcher');
+  if (await page.locator('[data-pair-mentor-tools]').isVisible()) {
+    throw new Error('Signed-out overview exposes leader-only tools');
+  }
   for (const [control, route, back] of [
-    ['[data-pair-authoring]', 'one-to-one?view=authoring', '[data-authoring-nav="back"]'],
-    ['[data-pair-assignments]', 'one-to-one?view=assignment', '[data-assignment-nav="back"]'],
     ['[data-pair-invite]', 'one-to-one-pair', '[data-pair-nav="back"]'],
   ]) {
     await page.locator(control).click();

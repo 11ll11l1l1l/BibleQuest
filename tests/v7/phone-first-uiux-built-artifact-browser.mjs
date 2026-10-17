@@ -82,7 +82,7 @@ try {
           const channel = value / 255;
           return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
         }).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
-        const contrastSamples = [...document.querySelectorAll('.bq-you-shortcut-copy strong, .bq-you-shortcut-copy small, .bq-report-launcher')]
+        const contrastSamples = [...document.querySelectorAll('.bq-you-shortcut-copy strong, .bq-you-shortcut-copy small, .bq-report-launcher, .bq-v7-content-card--text-only h3, .bq-v7-content-card--text-only p, .bq-v7-content-card--text-only .bq-v7-content-card__cta')]
           .filter(element => element.getClientRects().length)
           .map(element => {
             const foreground = rgb(getComputedStyle(element).color);
