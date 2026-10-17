@@ -180,6 +180,7 @@ jobs:
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/built-artifact-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/one-to-one-built-artifact-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/library-built-artifact-browser.mjs
+          BQ_BASE_URL=http://127.0.0.1:4173/ node tests/v7/library-visual-decks-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/content-review-library-browser.mjs
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v6/pwa-built-artifact-browser.mjs
           BQ_BASE_URL=http://127.0.0.1:4173/ node tests/v3-accessibility-smoke.mjs
@@ -187,7 +188,7 @@ jobs:
           BQ_PREVIEW_URL=http://127.0.0.1:4173 node tests/v7/motion-built-artifact-browser.mjs
           node scripts/v7-certify-motion-evidence.mjs
 
-      - name: Built visual binary, Chromium decode and mobile proof for strict release
+      - name: Built published visual binary, Chromium decode and mobile proof for strict release
         if: env.BQ_STRICT_RELEASE == 'true'
         run: node tests/v7/visual-assets-built-browser.mjs
 
