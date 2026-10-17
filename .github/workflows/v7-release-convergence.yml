@@ -39,11 +39,13 @@ on:
         type: string
   push:
     branches:
+      - v7/release-byte-diagnostic-20261017
       - main
       - v7/development
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: v7-release-convergence-${{ github.event.pull_request.number || inputs.candidate_sha || github.sha }}
@@ -58,6 +60,7 @@ env:
 
 jobs:
   converge:
+    if: github.ref != 'refs/heads/v7/release-byte-diagnostic-20261017'
     name: Exact-SHA integrated V7 certification
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -483,3 +486,43 @@ jobs:
             cd /tmp/bq-v7-convergence-db
             supabase stop || true
           fi
+
+  diagnose-deployed-difference:
+    if: github.ref == 'refs/heads/v7/release-byte-diagnostic-20261017'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 5ee5b0d3eaca072273365f9ea8c3564f2528a898
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/download-artifact@v4
+        with:
+          name: v7-release-convergence-5ee5b0d3eaca072273365f9ea8c3564f2528a898
+          run-id: 39009128149
+          github-token: ${{ github.token }}
+          path: /tmp/certified-v7
+      - name: Compare certified and served inventory without relaxing verification
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          const certified=JSON.parse(readFileSync('/tmp/certified-v7/dist-v6/bq-artifact-integrity.json','utf8'));
+          const response=await fetch('https://mybiblequest.pages.dev/bq-artifact-integrity.json',{cache:'no-store'});
+          if(!response.ok) throw new Error('Manifest HTTP '+response.status);
+          const served=await response.json();
+          const a=new Map(certified.files.map(x=>[x.path,x]));
+          const b=new Map(served.files.map(x=>[x.path,x]));
+          const differences=[...new Set([...a.keys(),...b.keys()])].sort().flatMap(path=>{
+            const expected=a.get(path),actual=b.get(path);
+            return expected?.sha256===actual?.sha256&&expected?.bytes===actual?.bytes?[]:[{path,certified:expected||null,served:actual||null}];
+          });
+          const report={certifiedSource:certified.sourceSha,servedSource:served.sourceSha,certifiedArtifact:certified.artifactSha256,servedArtifact:served.artifactSha256,certifiedCount:certified.fileCount,servedCount:served.fileCount,differences};
+          console.log(JSON.stringify(report,null,2));
+          writeFileSync('/tmp/v7-deployment-difference.json',JSON.stringify(report,null,2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v7-deployment-byte-difference
+          path: /tmp/v7-deployment-difference.json
