@@ -7,6 +7,7 @@ async function run(){
   assert(manifest.link==='manifest.webmanifest'&&manifest.value.start_url==='./'&&manifest.value.scope==='./'&&manifest.value.display==='standalone',`Browser must discover the relative standalone manifest: ${JSON.stringify({link:manifest.link,startUrl:manifest.value.start_url,scope:manifest.value.scope,display:manifest.value.display})}`);
   assert(manifest.icons['pwa-icon-192.png']?.size==='192x192'&&manifest.icons['pwa-icon-512.png']?.size==='512x512'&&manifest.icons['pwa-icon-maskable-512.png']?.size==='512x512','Browser could not load correctly sized install icons.');
   assert(manifest.icons['pwa-icon-maskable-512.png'].cornerAlpha===255,'Maskable icon must provide an opaque full-canvas background.');
+  await page.locator('[data-more-group="device"] > details > summary').click();
   assert(await page.locator('[data-more-install]').isHidden(),'Install UI must stay hidden before browser eligibility.');
   await page.evaluate(()=>{const event=new Event('beforeinstallprompt');event.prompt=async()=>{};event.userChoice=Promise.resolve({outcome:'accepted'});window.dispatchEvent(event)});
   const panel=page.locator('[data-more-install]');await panel.waitFor();const button=panel.locator('[data-install-app]');
