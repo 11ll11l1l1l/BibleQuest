@@ -52,6 +52,8 @@ async function verifyWidth(width) {
       lastNav: rect(navLinks.at(-1)),
       quest: rect(document.querySelector('[data-home-bible-quest]')),
       questButton: rect(document.querySelector('[data-open-bible-quest-continue]')),
+      heroAction: rect(document.querySelector('[data-home-hero-reader]')),
+      questDescription: document.querySelector('[data-home-bible-quest] p:not(.bq-eyebrow)')?.textContent || '',
       questHeading: document.querySelector('[data-home-bible-quest] h2')?.textContent?.trim() || '',
       daily: rect(document.querySelector('[data-home-daily]')),
       dailyButton: rect(document.querySelector('[data-open-daily]')),
@@ -84,8 +86,8 @@ async function verifyWidth(width) {
   assert(home.firstNav?.left >= -1 && home.lastNav?.right <= width + 1, `${width}px primary navigation is clipped.`);
 
   assert(home.quest && home.questButton, `${width}px Main Bible Quest surface/CTA is missing.`);
-  assert(/Genesis/i.test(home.questHeading) && /Revelation|Pahayag|Pinadayag/i.test(home.questHeading), `${width}px Main Bible Quest heading lost its Genesis-to-Revelation hierarchy.`);
-  assert(home.quest.top < home.innerHeight && home.questButton.top < home.innerHeight, `${width}px Main Bible Quest CTA is not discoverable in the initial viewport.`);
+  assert(/Next: Genesis 1/i.test(home.questHeading) && /Genesis.*Revelation/i.test(home.questDescription), `${width}px Main Bible Quest heading lost its Genesis-to-Revelation hierarchy.`);
+  assert(home.heroAction && home.heroAction.top < home.innerHeight && home.heroAction.height >= 44, `${width}px primary Bible action must remain discoverable in the initial viewport.`);
   assert(home.questButton.height >= 44, `${width}px Main Bible Quest CTA is below practical 44px target.`);
 
   assert(home.daily && home.dailyButton, `${width}px Daily Journey surface/CTA is missing.`);
