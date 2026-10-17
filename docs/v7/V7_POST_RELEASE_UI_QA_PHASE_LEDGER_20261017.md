@@ -70,6 +70,14 @@ One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if nece
 - Phase 11 adds explicit return-state regressions for submitted search, type, taxonomy, Feeling, and Need selections, and now restores vertical scroll and focus to the originating card after results settle. Browser validation of actual scroll timing, offline/cache, and live content checks remain outstanding.
 - Focused Home, ONE 2 ONE, Library page/card tests and syntax/diff checks pass locally. Exact-head browser/phone QA, real account role variants, and production reproduction remain unverified; no phase is marked PASS.
 
+## Candidate verification probe — 2026-10-17
+
+- Rechecked the open correction PR #1549 head `f5275b1f4e00b4bf60038098c40198ebef7b9cc6` and its latest checks. The V6 PR Serialization Guard is green; no latest-head Pages preview result or mobile-browser evidence is available.
+- Installed the lockfile dependencies in the local checkout (available Node `24.19.0`; project pins `22.23.2`). `npm run typecheck` passes. `npm run unit:v7` passes all 721 tests and the image-ledger audit (31 attempts, no problems).
+- The first local production build and Vite dev-server dependency scan exposed a JavaScript parse error in the Reader audio markup at `src/features/reader/index.js`. Rewrote the audio HTML as explicit fragments while preserving all reader audio hooks and controls. `node --check src/features/reader/index.js` and `npm run build:v6` now pass locally.
+- Playwright is present, but this environment has no Chromium binary. Installing Chromium returned a truncated/invalid archive, so no rendered phone screenshots or DOM geometry were produced. The successful local build used the development build identity; it is not exact-SHA or deployment evidence.
+- Phase status remains unchanged: Phase 00 and 03 are BLOCKED; Phases 01–02 and 04–11 remain IN_PROGRESS; Phase 12 remains OPEN and is not entered because its prerequisite phases lack their required evidence. No phase is PASS. Next required action is a Chromium-capable exact-candidate phone matrix, starting with Reader 320/390/430 px and recording player/nav/content bounds.
+
 ## Claim/coordination model
 
 - At start, read newest main SHA, this ledger, open UI PRs and the most recently merged related changes.
