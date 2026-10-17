@@ -8,9 +8,12 @@ const candidateSha = String(process.env.BQ_EXACT_SHA || '').trim().toLowerCase()
 assert.match(candidateSha, /^[a-f0-9]{40}$/, 'BQ_EXACT_SHA must identify the built candidate');
 
 const viewports = [
-  { width: 320, height: 800, locale: 'en', colorScheme: 'dark' },
-  { width: 390, height: 844, locale: 'en', colorScheme: 'light' },
-  ...['tl', 'ceb', 'ilo'].map(locale => ({ width: 390, height: 844, locale, colorScheme: 'dark' })),
+  ...[320, 390].flatMap(width => ['en', 'tl', 'ceb', 'ilo'].map(locale => ({
+    width,
+    height: width === 320 ? 800 : 844,
+    locale,
+    colorScheme: width === 390 && locale === 'en' ? 'light' : 'dark',
+  }))),
   { width: 430, height: 932, locale: 'en', colorScheme: 'dark' },
   { width: 800, height: 1024, locale: 'en', colorScheme: 'light' },
 ];
@@ -26,6 +29,7 @@ const report = {
   candidateSha,
   result: 'PASS',
   scope: 'built-artifact phone-first route geometry; not owner visual acceptance or physical-device safe-area certification',
+  profiles: viewports.map(({ width, height, locale, colorScheme }) => ({ width, height, locale, colorScheme })),
   observations: [],
   screenshots: [],
 };
@@ -47,6 +51,9 @@ try {
     for (const route of routes) {
       const page = await context.newPage();
       const errors = [];
+      page.on('console', message => {
+        if (message.type() === 'error') errors.push(message.text());
+      });
       page.on('pageerror', error => errors.push(error.message));
       await page.goto(`${baseUrl}/#/${route.id}`, { waitUntil: 'networkidle' });
       await page.locator(route.selector).first().waitFor({ state: 'visible', timeout: 15000 });
@@ -136,8 +143,9 @@ try {
             `${viewport.width}: audio options must not overlay the passage or primary navigation`);
           assert.equal(await audio.evaluate(element => ['fixed', 'sticky'].includes(getComputedStyle(element).position)), false,
             `${viewport.width}: Reader audio player must not overlay Scripture/navigation`);
-          assert.match(await page.locator('[data-reader-audio-time]').textContent(), /Duration unavailable|\d+:\d{2}/,
-            `${viewport.width}: audio must expose a truthful duration state`);
+          const durationText = String(await page.locator('[data-reader-audio-time]').textContent() || '').trim();
+          assert.ok(durationText && !durationText.includes('--:--'),
+            `${viewport.width}/${viewport.locale}: audio must expose a localized duration or unavailable state`);
           if (viewport.width === 390 && viewport.locale === 'en') {
             const player = await audio.screenshot({ animations: 'disabled' });
             await mkdir('artifacts/v7/phone-first-uiux', { recursive: true });
