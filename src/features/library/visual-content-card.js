@@ -15,6 +15,9 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   assertV7PublishedVisualCardItem(item);
   const lang = normalizeV7DeckLocale(locale);
   const labels = typeNames[lang] || typeNames.en;
+  const visual = resolveV7LibraryVisual(registry, item.contentType, item.id, {
+    locale: lang, title: String(item.title),
+  });
   if (compact) {
     const row = document.createElement('article');
     row.className = 'bq-v7-content-card bq-v7-content-card--text-only bq-v7-content-card--compact';
@@ -32,12 +35,21 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
       event.stopPropagation();
       onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
     });
+    if (visual.src) {
+      const image = document.createElement('img');
+      image.className = 'bq-library-title-thumbnail';
+      image.src = visual.src;
+      image.alt = visual.alt;
+      image.style.objectPosition = v7VisualObjectPosition(visual.focalPoint);
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      image.addEventListener('error', () => { image.remove(); row.classList?.remove('bq-v7-content-card--compact-image'); });
+      row.className = 'bq-v7-content-card bq-v7-content-card--compact bq-v7-content-card--compact-image';
+      row.append(image);
+    }
     row.append(title, button);
     return row;
   }
-  const visual = resolveV7LibraryVisual(registry, item.contentType, item.id, {
-    locale: lang, title: String(item.title),
-  });
   const root = document.createElement('article');
   const hasApprovedArt = Boolean(visual.src);
   root.className = 'bq-v7-content-card' +

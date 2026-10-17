@@ -67,7 +67,7 @@ test('audited artwork remains optional, and a failed image becomes readable colo
   assert.ok(card.children[0].children.some(node => node.tagName === 'h3' && node.textContent === item.title));
 });
 
-test('compact Library rows show the real title without source tags, summaries or artwork', () => {
+test('compact Library rows without approved artwork show the real title without source tags or summaries', () => {
   let opened;
   const card = createV7LibraryVisualContentCard({ document, item, compact: true, onOpen: row => { opened = row; } });
   assert.match(card.className, /--compact/);
@@ -76,4 +76,20 @@ test('compact Library rows show the real title without source tags, summaries or
   assert.equal(card.children[1].attributes['aria-label'], 'Open: ' + item.title);
   card.children[1].events.click({ stopPropagation() {} });
   assert.equal(opened.id, item.id);
+});
+
+test('compact Library retains approved artwork as a small thumbnail with its real title', () => {
+  const assetId = 'audited-devotional-01';
+  const registry = { schemaVersion: 1, assets: [{
+    assetId, contentType: 'devotional', contentId: item.id,
+    src: '/v7/images/devotional/approved.webp', sha256: 'a'.repeat(64),
+    alt: 'A reader at a table', fallbackKey: 'devotional',
+  }], byContent: { ['devotional:' + item.id]: [assetId] } };
+  const card = createV7LibraryVisualContentCard({ document, item, registry, compact: true, onOpen() {} });
+  assert.deepEqual(card.children.map(node => node.tagName), ['img', 'h3', 'button']);
+  assert.equal(card.children[0].src, '/v7/images/devotional/approved.webp');
+  assert.equal(card.children[1].textContent, item.title);
+  card.children[0].events.error();
+  assert.deepEqual(card.children.map(node => node.tagName), ['h3', 'button']);
+  assert.throws(() => createV7LibraryVisualContentCard({ document, item: { ...item, rights: { status: 'unverified', allowedUses: [] } }, registry, compact: true, onOpen() {} }), /rights-verified published/);
 });

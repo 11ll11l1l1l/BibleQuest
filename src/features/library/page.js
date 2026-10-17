@@ -263,7 +263,7 @@ export function createLibraryPage({
               row.className = 'bq-library-card bq-library-card--visual';
               row.append(createV7LibraryVisualContentCard({
                 document: results.ownerDocument, item, registry: visualRegistry,
-                locale: localization.getLocale(), compact: true,
+                locale: localization.getLocale(), compact: ['book', 'devotional'].includes(item.contentType),
                 onOpen: ({ id }) => {
                   const currentState = service.getState();
                   stageLibraryReturnFocus(id, Number(globalThis.window?.scrollY ?? globalThis.scrollY));
