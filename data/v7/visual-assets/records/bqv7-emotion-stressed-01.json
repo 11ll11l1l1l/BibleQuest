@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-stressed-01",
+  "agentId": "manual-x",
+  "status": "candidate_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "stress",
+  "queueConcept": "stress",
+  "canonicalEmotionId": "stressed",
+  "concept": "X-S1 / guidebook §5: an adult cafeteria cook pauses for a measured breath at a stainless service pass while one coworker arranges plain plates behind.",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+  "format": "webp",
+  "width": 1254,
+  "height": 1254,
+  "aspectRatio": "1:1",
+  "fileBytes": 163296,
+  "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "stressed",
+    "locale": "en",
+    "exactLabel": "Stressed",
+    "proposedReference": "John 14:27",
+    "scriptureTextIncluded": false
+  },
+  "provenance": {
+    "sourceType": "generated",
+    "generator": "OpenAI ImageGen built-in",
+    "sourcePNGPath": "generated_images/exec-fa49a5c0-d993-4a42-8bc1-e21082946213.png",
+    "sourcePNGBytes": 1881679,
+    "sourcePNGSha256": "53b175779319eb4894a568c3cb84fe1d4a4d37018a9deb37d4b93b17b306aec7",
+    "export": "RGB WebP, quality 94; native pixel dimensions retained; no upscaling"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene; rights and artistic suitability remain pending independent review."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A cafeteria cook pauses with relaxed hands at a service counter while a coworker continues arranging plain plates behind them.",
+    "localizedFallback": "CLEAN with live localized text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": null,
+    "subjectReadableAtThumbnail": null,
+    "cropSafe": null,
+    "matchesVisualSystem": null,
+    "duplicateChecked": false,
+    "officialNodeAudit": "not_run",
+    "builtAppBrowserQA": "pending",
+    "editorialReview": "pending"
+  },
+  "note": "CLEAN-only candidate. No TYPE or THUMB has been created. Candidate pending independent user/visual/rights QA; do not count as production-ready or merge into production.",
+  "constructionSource": {
+    "path": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "blobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "integrationBaseSha": "0395b0237be9e22d6c81ecff17d21f2c7ec86060"
+  }
+}

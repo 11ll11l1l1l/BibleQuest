@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-tired-01",
+  "agentId": "manual-x",
+  "status": "candidate_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "tiredness_weariness",
+  "queueConcept": "tiredness_weariness",
+  "canonicalEmotionId": "tired",
+  "concept": "PR #1488 X-S2 / guidebook §5: one night-shift baker rests safely upright on a sturdy stool in a flour-dusted bakery, with a folded apron and plain cooling loaves.",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-tired-01.webp",
+  "format": "webp",
+  "width": 1254,
+  "height": 1254,
+  "aspectRatio": "1:1",
+  "fileBytes": 318452,
+  "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "tired",
+    "locale": "en",
+    "exactLabel": "Tired / weary",
+    "proposedReference": "Isaiah 40:31",
+    "scriptureTextIncluded": false
+  },
+  "provenance": {
+    "sourceType": "generated",
+    "generator": "OpenAI ImageGen built-in",
+    "sourcePNGPath": "generated_images/exec-f0fcffe6-c553-49d4-9594-a2d813849d84.png",
+    "sourcePNGBytes": 2318574,
+    "sourcePNGSha256": "c6122da705c7ada72bd803b5745bb93088077c0aaf1f1349dc3eb1bdf5d6251e",
+    "export": "RGB WebP, quality 94; native pixel dimensions retained; no upscaling"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene; rights and artistic suitability remain pending independent review."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "After an overnight shift, a baker rests upright on a stool beside a folded apron and cooling loaves in a quiet bakery.",
+    "localizedFallback": "CLEAN with live localized text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": null,
+    "subjectReadableAtThumbnail": null,
+    "cropSafe": null,
+    "matchesVisualSystem": null,
+    "duplicateChecked": false,
+    "officialNodeAudit": "not_run",
+    "builtAppBrowserQA": "pending",
+    "editorialReview": "pending"
+  },
+  "note": "CLEAN-only candidate. No TYPE or THUMB has been created. Candidate pending independent user/visual/rights QA; do not count as production-ready or merge into production.",
+  "constructionSource": {
+    "path": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "blobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "integrationBaseSha": "0395b0237be9e22d6c81ecff17d21f2c7ec86060"
+  }
+}
