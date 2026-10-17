@@ -109,6 +109,7 @@
 .bq-reader-toolbar .bq-reader-search { display: flex; min-width: min(100%, 360px); margin: 0; }
 .bq-reader-toolbar .bq-reader-search label { min-width: 0; flex: 1; }
 @media (max-width: 720px) {
+  .bq-reader-passage { position: static; }
   .bq-reader-toolbar { grid-column: 1 / -1; min-width: 0; flex-wrap: wrap; overflow: visible; }
   .bq-reader-toolbar .bq-reader-search { display: grid; grid-template-columns: minmax(0, 1fr); flex: 1 1 100%; width: 100%; min-width: 0; }
   .bq-reader-toolbar .bq-reader-search input { min-width: 44px; }

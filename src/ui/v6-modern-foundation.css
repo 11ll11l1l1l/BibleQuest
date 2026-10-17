@@ -378,7 +378,8 @@ body {
   .bq-surface { border-radius: 15px; }
   .bq-nav {
     width: calc(100% - 12px);
-    height: 64px;
+    height: auto;
+    min-height: 64px;
     bottom: max(6px, env(safe-area-inset-bottom));
   }
 }

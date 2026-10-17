@@ -60,6 +60,18 @@ try {
       await page.locator(route.selector).first().waitFor({ state: 'visible', timeout: 15000 });
       await page.locator('.bq-nav').waitFor({ state: 'visible' });
       await page.waitForFunction(() => document.readyState === 'complete');
+      if (route.id === 'home') {
+        const heroImage = await page.locator('[data-home-cover]').evaluate(element => ({
+          src: element.getAttribute('src'), complete: element.complete,
+          naturalWidth: element.naturalWidth, naturalHeight: element.naturalHeight,
+          objectFit: getComputedStyle(element).objectFit,
+        }));
+        assert.ok(heroImage.complete && heroImage.naturalWidth >= 1536 && heroImage.naturalHeight >= 864,
+          `Home editorial image must decode at its native resolution: ${JSON.stringify(heroImage)}`);
+        assert.ok(heroImage.src.endsWith('/bq-home-scripture-study-20261017.webp'), 'Home must use the dedicated Bible-study artwork');
+        assert.equal(heroImage.objectFit, 'cover', 'Home art should fill its bounded hero');
+      }
+
 
       const geometry = await page.evaluate(() => {
         const rect = element => {
@@ -227,9 +239,9 @@ try {
         }
       }
 
-      if (viewport.width === 390 && viewport.locale === 'en') {
+      if (viewport.locale === 'en' && (viewport.width === 390 || route.id === 'home')) {
         await mkdir('artifacts/v7/phone-first-uiux', { recursive: true });
-        const file = `artifacts/v7/phone-first-uiux/${route.id}-390.png`;
+        const file = `artifacts/v7/phone-first-uiux/${route.id}-${viewport.width}.png`;
         await page.screenshot({ path: file, fullPage: true, animations: 'disabled' });
         const bytes = await readFile(file);
         report.screenshots.push({ file, sha256: createHash('sha256').update(bytes).digest('hex') });

@@ -240,6 +240,18 @@ dialog,
 }
 
 /* Form controls must never flash a white inherited browser surface. */
+.bq-reader-search input,
+.bq-reader-controls select,
+.bq-reader-audio-controls select,
+.bq-reader-toolbar > button {
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  box-shadow: none;
+}
+.bq-reader-toolbar > button { padding: 8px 12px; font: inherit; }
+
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
   border-color: var(--bq-border-strong);
   background: var(--bq-surface-muted);

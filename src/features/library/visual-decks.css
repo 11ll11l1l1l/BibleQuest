@@ -94,10 +94,12 @@
   color: var(--green, #146044);
 }
 .bq-v7-visual-deck__controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  min-width: 0;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
 }
 .bq-v7-visual-deck__arrow {
   min-width: 48px;
@@ -114,7 +116,8 @@
   cursor: not-allowed;
 }
 .bq-v7-visual-deck__counter {
-  min-width: 6rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
   text-align: center;
   font-size: 1rem;
   font-variant-numeric: tabular-nums;
