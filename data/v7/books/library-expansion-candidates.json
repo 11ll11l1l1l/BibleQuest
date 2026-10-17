@@ -18,7 +18,7 @@
       "type": "book",
       "revision": "books.imitation-of-christ.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "The Imitation of Christ",
@@ -44,7 +44,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
@@ -61,7 +63,7 @@
       "type": "book",
       "revision": "books.holy-war.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "The Holy War",
@@ -87,7 +89,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
@@ -104,7 +108,7 @@
       "type": "book",
       "revision": "books.orthodoxy.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "Orthodoxy",
@@ -130,7 +134,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
@@ -147,7 +153,7 @@
       "type": "book",
       "revision": "books.confessions-augustine.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "Confessions of St. Augustine",
@@ -173,7 +179,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
@@ -190,7 +198,7 @@
       "type": "book",
       "revision": "books.life-teresa.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "The Life of St. Teresa of Jesus",
@@ -216,7 +224,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
@@ -233,7 +243,7 @@
       "type": "book",
       "revision": "books.everlasting-man.r1",
       "sourceLocale": "en",
-      "publicationState": "pending_review",
+      "publicationState": "published",
       "source": {
         "kind": "external",
         "title": "The Everlasting Man",
@@ -259,7 +269,9 @@
         "verifiedAt": "2026-10-06"
       },
       "review": {
-        "status": "pending_review"
+        "status": "approved",
+        "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+        "decidedAt": "2026-10-17"
       },
       "revisionHistory": [],
       "taxonomyLinks": [
