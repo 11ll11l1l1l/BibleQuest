@@ -1,3 +1,13 @@
+# Current production follow-up — 2026-10-17 JST
+
+Production now includes PR [#1546](https://github.com/11ll11l1l1l/BibleQuest/pull/1546), merged at `3df992466fdf3d0fcc7b4c9101f3841125378cdd`. It fixes the mobile Calendar’s low-contrast month grid. Exact-SHA release certification [39013661108](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39013661108) passed: **1170 files / 128861069 bytes**, artifact SHA-256 `37a9b017e425f9e79a432e1ed34ec671d9e206e746044a807ba62b81c6b37b6d`, integrity SHA-256 `7a6e47f1f13d3327324eac143476277fc6cb4b8f966adb0611ded65a31f23feb`; production identity and PWA smoke passed. The calendar contrast browser assertion, built-artifact regressions, published-media checks, responsive/motion checks, and authenticated API/browser journeys all passed. **No image generation, repair, derivative work, or asset change occurred.** Existing passed images only; V7 artwork remains frozen.
+
+Screenshot follow-up candidates still need route-level confirmation before edits: ONE 2 ONE repeated mentor tools/context warning, Bible Reader audio obstruction, Library card contrast/content, and Home/You scroll density. Do not treat screenshots alone as proof of a runtime defect.
+
+Older release SHA details below are preserved as historical evidence and are superseded by this current production SHA.
+
+---
+
 # V7 RELEASED — 2026-10-17 JST
 
 Production: https://mybiblequest.pages.dev/  
