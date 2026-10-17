@@ -412,6 +412,38 @@ html[data-bq-contrast="strong"] .bq-accessibility-controls select {
   box-shadow: none !important;
 }
 
+/* Calendar's older light surface was white while this theme made its text
+   near-white. Keep the month grid on the same dark, high-contrast palette. */
+.bq-calendar-month {
+  border-color: var(--bq-border) !important;
+  background: var(--bq-surface) !important;
+  color: var(--bq-text) !important;
+  color-scheme: dark;
+}
+
+.bq-calendar-month-toolbar h2,
+.bq-calendar-weekdays,
+.bq-calendar-legend,
+.bq-calendar-grid-event,
+.bq-calendar-grid-more {
+  color: var(--bq-text-secondary) !important;
+}
+
+.bq-calendar-grid-day {
+  border-color: var(--bq-border-strong) !important;
+  background: var(--bq-surface-muted) !important;
+  color: var(--bq-text) !important;
+}
+
+.bq-calendar-grid-day.is-outside {
+  color: var(--bq-text-muted) !important;
+  opacity: 1 !important;
+}
+
+.bq-calendar-grid-day.is-selected {
+  box-shadow: inset 0 0 0 2px var(--bq-brand) !important;
+}
+
 /* Selected/progress states remain visible without turning the UI into a bright dashboard. */
 [aria-current="page"],
 [aria-selected="true"],

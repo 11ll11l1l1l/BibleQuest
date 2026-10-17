@@ -48,6 +48,30 @@ try {
 
   await page.waitForSelector('.bq-calendar-grid-day');
   assert.equal(await page.locator('.bq-calendar-grid-day').count(), 42, 'month view must render exactly 42 day cells');
+  const contrast = await page.evaluate(() => {
+    const luminance = (color) => {
+      const channels = color.match(/[\d.]+/g).slice(0, 3).map(Number).map((value) => {
+        const channel = value / 255;
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+      });
+      return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+    };
+    const ratio = (foreground, background) => {
+      const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+      return (values[0] + 0.05) / (values[1] + 0.05);
+    };
+    const month = document.querySelector('.bq-calendar-month');
+    const day = month.querySelector('.bq-calendar-grid-day:not(.is-outside)');
+    const event = month.querySelector('.bq-calendar-grid-event');
+    return {
+      day: ratio(getComputedStyle(day).color, getComputedStyle(day).backgroundColor),
+      event: ratio(getComputedStyle(event).color, getComputedStyle(month).backgroundColor),
+      monthSurface: getComputedStyle(month).backgroundColor
+    };
+  });
+  assert.ok(contrast.day >= 4.5, `Calendar date labels must meet 4.5:1 contrast: ${contrast.day.toFixed(2)}:1`);
+  assert.ok(contrast.event >= 4.5, `Calendar event labels must meet 4.5:1 contrast: ${contrast.event.toFixed(2)}:1`);
+  assert.notEqual(contrast.monthSurface, 'rgb(255, 255, 255)', 'Dark-theme month surface must not turn the inherited light text invisible');
   assert.equal(await page.locator('.bq-calendar-legend').getByText('Assignment').count(), 1);
   assert.equal(await page.locator('.bq-calendar-legend').getByText('Congregation').count(), 1);
   assert.equal(await page.locator('.bq-calendar-legend').getByText('Personal').count(), 1);
