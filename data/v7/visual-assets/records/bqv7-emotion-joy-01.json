@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "assetId": "bqv7-emotion-joy-01",
   "agentId": "visual-agent-5",
   "createdAt": "2026-10-08T01:07:33+00:00",
@@ -8,7 +8,7 @@
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
-  "contentId": "joy",
+  "contentId": "joyful",
   "concept": "Quiet joy — a spontaneous smile in the open air at the end of the day",
   "usage": [
     "feelings_carousel",
@@ -30,17 +30,27 @@
     "genId": "5c70ef15-f838-4725-8f4a-cde4d9c0871b",
     "prompt": "",
     "description": "A woman in a cream sweater smiles gently with her face tilted toward a luminous sky while seated on a rocky overlook above a sunlit lake and hills.",
-    "notes": "Tool returned an empty prompt string; image generation used conversational context. Source PNG 1254x1254, square crop x=0..900 y=120..1020, resized to 768x768 and encoded as WebP quality 80. Image is an original generated visual, not third-party artwork."
+    "notes": "Tool returned an empty prompt string; image generation used conversational context. Source PNG 1254x1254, square crop x=0..900 y=120..1020, resized to 768x768 and encoded as WebP quality 80. Image is an original generated visual, not third-party artwork.",
+    "derivativeMethod": "Existing CLEAN WebP retained; TYPE professionally typeset from CLEAN with Pillow, Noto Serif Display Regular and Lato Regular, then exported as 1024x1280 WebP; THUMB focal-aware 4:5 raster of exact verified SVG crop."
   },
   "rights": {
     "sourceType": "generated",
     "thirdPartyAsset": false,
     "attributionRequired": false,
-    "notes": "Original AI-generated visual for BibleQuest; no third-party artwork supplied."
+    "notes": "Original AI-generated visual for BibleQuest; no third-party artwork supplied.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "scriptureTextIncluded": false
   },
   "accessibility": {
     "decorative": false,
-    "altText": "A smiling woman looks up toward a glowing sky while seated on a rocky overlook above a lake."
+    "altText": "A smiling woman looks up toward a glowing sky while seated on a rocky overlook above a lake.",
+    "fallback": "CLEAN plus live localized taxonomy label in en/tl/ceb/ilo; TYPE en only",
+    "essentialTextMustRemainLive": true
   },
   "qc": {
     "noBakedText": true,
@@ -50,6 +60,129 @@
     "cropSafe": true,
     "matchesVisualSystem": true,
     "duplicateChecked": true,
-    "notes": "Visually inspected square crop at 768px and 384px. Compared with existing hurt/betrayal record: both use warm outdoor scenery, but this close, face-visible upward smile contrasts with withdrawn head-down pose. Emotion conveys quiet joy, not exuberance. No visible lettering or watermark."
-  }
+    "notes": "Visually inspected square crop at 768px and 384px. Compared with existing hurt/betrayal record: both use warm outdoor scenery, but this close, face-visible upward smile contrasts with withdrawn head-down pose. Emotion conveys quiet joy, not exuberance. No visible lettering or watermark.",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "wordingVerifiedAgainstTaxonomy": true,
+    "fontRightsChecked": true,
+    "builtAppBrowserQA": "pending; local raster TYPE at 320px and THUMB at 96px inspected; not a built-app screenshot",
+    "qaEvidence": "Local PIL WebP decoding; exact source CLEAN SHA-256 matched built artifact; TYPE and THUMB SHA-256 measured after export; exact prior SVG crop reconstructed and independently CairoSVG-rendered with matching SHA-256; editorial spelling and approved reference verified."
+  },
+  "bundleStatus": "complete_three_real_files",
+  "queueConcept": "joy",
+  "canonicalEmotionId": "joyful",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "joyful",
+    "locale": "en",
+    "exactLabel": "Joyful",
+    "reference": "Philippians 4:4",
+    "scriptureTextIncluded": false
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-joy-01.webp",
+      "format": "webp",
+      "width": 768,
+      "height": 768,
+      "fileBytes": 60846,
+      "sha256": "d28f1c3594981ce4dfcd6185196f15c294c00120e11ae70b6db571e405441ffa",
+      "altText": "A smiling woman looks up toward a glowing sky while seated on a rocky overlook above a lake.",
+      "focalPoint": {
+        "x": 0.38,
+        "y": 0.31
+      },
+      "textSafeRegion": "none",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-joy-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 105476,
+      "sha256": "099ba90c52ada76cfe8d7eaddcdbb3d45b72ae129345adf8e9c6679e2d43b1ad",
+      "altText": "A smiling woman sits on a rocky overlook at sunset. Embedded English label Joyful and reference Philippians 4:4.",
+      "focalPoint": {
+        "x": 0.38,
+        "y": 0.25
+      },
+      "textSafeRegion": "bottom",
+      "crop": {
+        "sourceWidth": 768,
+        "sourceHeight": 768,
+        "artworkOutputWidth": 1024,
+        "artworkOutputHeight": 1024,
+        "canvasWidth": 1024,
+        "canvasHeight": 1280,
+        "captionBand": "bottom 256px",
+        "aspect": "4:5"
+      },
+      "embeddedWording": {
+        "label": "Joyful",
+        "scriptureReference": "Philippians 4:4",
+        "scriptureTextIncluded": false
+      },
+      "font": "Noto Serif Display Regular; Lato Regular",
+      "fontLicense": "SIL OFL 1.1",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "scriptureReferenceVerified": true,
+        "noPseudoText": true,
+        "fontRightsChecked": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-joy-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 28614,
+      "sha256": "28517b515f1296db2afd7abbf4cb10418db841838e536e35c6736821f86fb38c",
+      "altText": "A smiling woman looks up toward a glowing evening sky while seated on a rocky overlook.",
+      "focalPoint": {
+        "x": 0.393,
+        "y": 0.31
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceWidth": 768,
+        "sourceHeight": 768,
+        "x": 50.4,
+        "y": 0,
+        "width": 614.4,
+        "height": 768,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true
+      }
+    }
+  ]
 }
