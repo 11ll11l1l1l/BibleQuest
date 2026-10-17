@@ -14,6 +14,8 @@
 
 # BibleQuest V7 Active Status
 
+> **Latest phone-first candidate handoff — 2026-10-17:** PR #1549 head `fc5969fc7b77fdf8cbdaa1cac27c3ce709c5a23e` is live on the Cloudflare Pages preview `https://11a3d0f3.mybiblequest.pages.dev/`. Guest desktop smoke reached Home, Reader, Library, ONE 2 ONE, and You; device-sized matrix results are still pending. The exact-SHA test now covers 50 route/profile cases across 320/390/430/800px, EN/TL/CEB/ILO, control labels/targets, 200% text, Reader audio and final verse clearance, with hashed screenshot/geometry artifacts. On Node 24.19.0 the candidate passes typecheck, 721 V7 tests plus 31-attempt image audit, lint, format, exact build identity, artifact integrity and performance; repository-pinned Node 22 CI, rendered phone matrix, authenticated/API privacy, Android/PWA safe areas and user phone review remain open. Phases 00–15 are IN_PROGRESS; 16–17 are OPEN. No production deployment or phase PASS is claimed.
+
 Updated: **2026-10-14 JST**  
 State: **V7 initial foundation on main; image-first release incomplete; Lane A and Lane D active, Lanes B and C core work closed**  
 Development branch: `v7/development`  
