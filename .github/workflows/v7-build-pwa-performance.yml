@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - docs/v7-postrelease-uiqa-20261017
+      - main
       - v7/development
     paths:
       - "package.json"
