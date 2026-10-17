@@ -66,3 +66,14 @@ test('audited artwork remains optional, and a failed image becomes readable colo
   assert.equal(card.children.length, 1, 'failed approved art is removed from layout and live text remains');
   assert.ok(card.children[0].children.some(node => node.tagName === 'h3' && node.textContent === item.title));
 });
+
+test('compact Library rows show the real title without source tags, summaries or artwork', () => {
+  let opened;
+  const card = createV7LibraryVisualContentCard({ document, item, compact: true, onOpen: row => { opened = row; } });
+  assert.match(card.className, /--compact/);
+  assert.deepEqual(card.children.map(node => node.tagName), ['h3', 'button']);
+  assert.equal(card.children[0].textContent, item.title);
+  assert.equal(card.children[1].attributes['aria-label'], 'Open: ' + item.title);
+  card.children[1].events.click({ stopPropagation() {} });
+  assert.equal(opened.id, item.id);
+});

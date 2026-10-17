@@ -61,7 +61,7 @@ function readingHtml(body) {
 }
 
 // Consumes published Library detail records. This does not publish/import content.
-export function renderDevotional(item, { locale = 'en', translate } = {}) {
+export function renderDevotional(item, { locale = 'en', translate, showTitle = true, showMetadata = true } = {}) {
   if (typeof translate !== 'function') throw new TypeError('Devotional requires the existing localization translator.');
   const requestedLocale = canonicalLocale(locale);
   const t = (key, values = {}) => escapeHtml(translate(key, {
@@ -86,9 +86,9 @@ export function renderDevotional(item, { locale = 'en', translate } = {}) {
     row.labels?.[language] || (translatedHtml ? row.labels?.[locale] : null) || row.labels?.[language.split('-')[0]] || row.labels?.[sourceLocale] || row.labels?.en || row.id);
   const sourceUrl = safeSourceUrl(record.source.uri);
   return '<article data-devotional-reading lang="' + escapeHtml(language) + '" aria-label="' + t('v7.devotional.reading') + '">'
-    + fallback + '<h2>' + escapeHtml(content.title) + '</h2>'
-    + (topics.length ? '<p>' + t('v7.devotional.topics') + ': ' + topics.map(escapeHtml).join(' · ') + '</p>' : '')
+    + fallback + (showTitle ? '<h2>' + escapeHtml(content.title) + '</h2>' : '')
+    + (showMetadata && topics.length ? '<p>' + t('v7.devotional.topics') + ': ' + topics.map(escapeHtml).join(' · ') + '</p>' : '')
     + bodyHtml
-    + (sourceUrl ? '<p><a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + t('v7.devotional.source') + '</a></p>' : '')
+    + (showMetadata && sourceUrl ? '<p><a href="' + escapeHtml(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + t('v7.devotional.source') + '</a></p>' : '')
     + '</article>';
 }

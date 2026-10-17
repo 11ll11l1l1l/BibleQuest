@@ -13,7 +13,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 }[character]));
 
 export function createLibraryPage({
-  service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch,
+  service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
   isContextReady = () => true, subscribeContext = () => () => {},
   visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
@@ -44,17 +44,18 @@ export function createLibraryPage({
       <header class="bq-library__header">
         <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
         <h1>${escapeHtml(t('v7.library.title'))}</h1>
-        <p>${escapeHtml(t('v7.library.intro'))}</p>
+
       </header>
       <form data-library-search>
+        <div class="bq-library-tabs" role="group" aria-label="${escapeHtml(t('v7.library.type'))}">${registry.list().map(type => `<button type="button" data-library-type="${escapeHtml(type.id)}" aria-pressed="false">${escapeHtml(typeLabel(type))}</button>`).join('')}</div>
         <div class="bq-library__search-row">
-          <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
+          <label class="bq-library-visually-hidden" for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
           <div class="bq-library__search-control">
-            <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
-            <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
+            <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off" placeholder="${escapeHtml(t('v7.library.searchLabel'))}">
+
           </div>
         </div>
-        <div class="bq-library__type-row">
+        <div class="bq-library__type-row" hidden>
           <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
           <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
         </div>
@@ -66,10 +67,10 @@ export function createLibraryPage({
             <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
             <div data-library-emotion-discovery-host hidden></div>
           </div>
+          <div data-library-visual-decks hidden></div>
         </details>
         <button type="button" class="bq-library-clear" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
       </form>
-      <div data-library-visual-decks hidden></div>
       <div class="bq-library__result-status">
         <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
         <button type="button" class="bq-secondary-button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
@@ -114,8 +115,11 @@ export function createLibraryPage({
         visualDecks.hidden = !discoveryEnabled;
         if (!discoveryEnabled) { clearVisualDecks(); visualDecks.replaceChildren(); return; }
         const locale = localization.getLocale();
-        const key = locale + ':' + JSON.stringify(discoveryQuery) + ':' + (visualRegistry ? 'audited' : 'fallback');
-        if (key === visualDeckKey) return;
+        const key = locale + ':' + (visualRegistry ? 'audited' : 'fallback');
+        if (key === visualDeckKey) {
+          for (const deck of mountedDecks) deck.setSelected?.(deck.getState().kind === 'emotion' ? discoveryQuery.emotions : discoveryQuery.needs);
+          return;
+        }
         visualDeckKey = key;
         clearVisualDecks();
         visualDecks.replaceChildren();
@@ -209,6 +213,7 @@ export function createLibraryPage({
         (origin || status).focus?.({ preventScroll: true });
         if (Number.isFinite(returnScrollY)) globalThis.window?.scrollTo?.(0, returnScrollY);
       };
+      let renderedItemsKey = null;
       const render = current => {
         if (disposed) return;
         if (started && current.status === 'idle'
@@ -220,7 +225,7 @@ export function createLibraryPage({
           // A filtered route MUST retain its persisted query across a transient
           // signed-in context reset (notably a locale-reload startup), or the
           // resumed read silently broadens to unrelated first-page results.
-          queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
+          queryInput.value = ''; termInput.value = ''; restoredTerm = '';
           discoveryQuery = normalizeLibraryDiscoveryQuery();
           lastDiscoveryRenderKey = '';
           lastRequest = { query: '', contentType: '', taxonomyId: '', includeTaxonomy: true };
@@ -238,8 +243,19 @@ export function createLibraryPage({
         const urgent = current.status === 'error' || Boolean(current.moreError);
         status.textContent = current.loadingMore ? t('v7.library.loadingMore')
           : current.moreError ? t('v7.library.moreError') : messages[current.status] || t('v7.library.unavailable');
-        if (current.status !== 'ready') results.innerHTML = '';
-        else if (results.ownerDocument?.createElement && typeof results.replaceChildren === 'function') {
+        for (const button of page.querySelectorAll?.('[data-library-type]') || []) {
+          button.setAttribute('aria-pressed', String(button.getAttribute('data-library-type') === typeInput.value));
+        }
+        const clear = page.querySelector('[data-library-clear]');
+        if (clear) clear.hidden = !queryInput.value && !termInput.value && !hasDiscoverySelection();
+        if (current.status === 'loading' && results.style) {
+          results.style.minHeight = `${results.getBoundingClientRect().height}px`;
+        }
+        if (!['ready', 'loading'].includes(current.status)) { results.innerHTML = ''; renderedItemsKey = null; }
+        else if (current.status === 'ready' && results.ownerDocument?.createElement && typeof results.replaceChildren === 'function') {
+          const itemsKey = JSON.stringify(current.items.map(item => [item.id, item.title, item.publishedRevisionId]));
+          if (itemsKey !== renderedItemsKey) {
+          renderedItemsKey = itemsKey;
           const rows = [];
           for (const item of current.items) {
             try {
@@ -247,7 +263,7 @@ export function createLibraryPage({
               row.className = 'bq-library-card bq-library-card--visual';
               row.append(createV7LibraryVisualContentCard({
                 document: results.ownerDocument, item, registry: visualRegistry,
-                locale: localization.getLocale(),
+                locale: localization.getLocale(), compact: true,
                 onOpen: ({ id }) => {
                   const currentState = service.getState();
                   stageLibraryReturnFocus(id, Number(globalThis.window?.scrollY ?? globalThis.scrollY));
@@ -265,7 +281,8 @@ export function createLibraryPage({
             }
           }
           results.replaceChildren(...rows);
-        } else results.innerHTML = current.items.map(itemCard).join('');
+          }
+        } else if (current.status === 'ready') results.innerHTML = current.items.map(itemCard).join('');
         if (discoveryEmpty) {
           const showDiscoveryEmpty = discoveryEnabled && current.status === 'empty' && hasDiscoverySelection();
           discoveryEmpty.hidden = !showDiscoveryEmpty;
@@ -276,6 +293,7 @@ export function createLibraryPage({
         status.setAttribute('aria-live', urgent ? 'assertive' : 'polite');
         status.setAttribute('data-library-state', current.status);
         results.setAttribute('aria-busy', String(current.status === 'loading' || Boolean(current.loadingMore)));
+        results.inert = current.status === 'loading';
         retry.hidden = current.status !== 'error';
         more.hidden = current.status !== 'ready' || !current.nextCursor
           || (!discoveryEnabled && typeof service.loadMore !== 'function');
@@ -286,12 +304,18 @@ export function createLibraryPage({
         }
         restoreReturnFocus(current);
       };
+      let searchTimer;
       const submit = () => {
+        clearTimeout(searchTimer);
         returnFocusId = '';
         lastRequest = { query: queryInput.value, contentType: typeInput.value, taxonomyId: termInput.value };
         restoredTerm = termInput.value;
-        navigate({ routeKey: LIBRARY_ROUTE_KEYS.browse, ...lastRequest,
-          ...(discoveryEnabled ? { discoveryQuery } : {}) });
+        const target = { routeKey: LIBRARY_ROUTE_KEYS.browse, ...lastRequest,
+          ...(discoveryEnabled ? { discoveryQuery } : {}) };
+        if (typeof onFiltersChange === 'function') {
+          onFiltersChange(target);
+          void executeWhenReady({ ...lastRequest });
+        } else navigate(target);
       };
       const onSubmit = event => {
         if (event.target !== form) return;
@@ -300,8 +324,13 @@ export function createLibraryPage({
       };
       const onClick = event => {
         const target = event.target instanceof Element
-          ? event.target.closest('[data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
+          ? event.target.closest('[data-library-type], [data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
         if (!target) return;
+        if (target.hasAttribute('data-library-type')) {
+          const selectedType = target.getAttribute('data-library-type');
+          if (typeInput.value !== selectedType) { typeInput.value = selectedType; submit(); }
+          return;
+        }
         if (target.hasAttribute('data-library-retry')) {
           if (!retry.hidden) {
             status.focus({ preventScroll: true });
@@ -320,7 +349,7 @@ export function createLibraryPage({
           return;
         }
         if (target.hasAttribute('data-library-clear')) {
-          queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
+          queryInput.value = ''; termInput.value = ''; restoredTerm = '';
           discoveryQuery = normalizeLibraryDiscoveryQuery();
           lastDiscoveryRenderKey = '';
           updateEmotionDiscovery();
@@ -354,6 +383,19 @@ export function createLibraryPage({
             contentType: current.contentType, taxonomyId: current.taxonomyId || '',
             ...(discoveryEnabled ? { discoveryQuery } : {}) } });
       };
+      const onInput = event => {
+        if (event.target !== queryInput || event.isComposing) return;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(submit, 250);
+      };
+      const onChange = event => {
+        if (event.target === termInput || event.target === typeInput) submit();
+      };
+      if (typeof onFiltersChange === 'function') {
+        form.addEventListener('input', onInput);
+        form.addEventListener('compositionend', onInput);
+        form.addEventListener('change', onChange);
+      }
       form.addEventListener('submit', onSubmit);
       page.addEventListener('click', onClick);
       const unsubscribe = service.subscribe(render);
@@ -381,6 +423,10 @@ export function createLibraryPage({
       void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
+        clearTimeout(searchTimer);
+        form.removeEventListener('input', onInput);
+        form.removeEventListener('compositionend', onInput);
+        form.removeEventListener('change', onChange);
         clearVisualDecks();
         form.removeEventListener('submit', onSubmit);
         page.removeEventListener('click', onClick);

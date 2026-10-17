@@ -191,3 +191,15 @@ On `c6133aafb3cee05fbaa3345fd89ddd75260f1086`, the full Build/PWA/automated-acce
 
 
 Independent follow-up on `f84b93b1b5969fee5965748d65444242f3ebabcc` confirmed the 430px column collapse and actual clipping are gone at all four widths; its full pinned build/phone/PWA gate [39041292141](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39041292141) passed. Screenshot inspection also exposed unused inherited icon-grid columns inside Home stat cells: at 320px, otherwise-visible chapter totals/labels wrapped unnecessarily. Final source makes Home statistic cells block layout so absent icon slots cannot consume text width. All data and values remain unchanged. This final bounded CSS change reruns the same exact-candidate gates; see PR #1549 for its identity/result.
+
+## Owner review follow-up — 2026-10-18: compact Library and quiet live filters
+
+Owner accepted the prior five-screen preview and supplied a phone screenshot of a devotional overwhelmed by source/attribution/usage prose, a duplicate title and raw topic IDs. Requested separate Books/Devotionals, smaller actual-title text entries, automatic click/type filtering and no page remount/scroll reset.
+
+- Library now starts on Devotionals, with direct Books/Devotionals/Teachings buttons. Search is a single quiet field without a submit button; typing debounces 250ms, and type/taxonomy/discovery selections update immediately.
+- Filter changes replace the existing route query in browser history without invoking the router, preserve the mounted form/input, and use the existing latest-request-wins Library service. Pending timers are canceled on disposal. Existing results/height stay in place during reads; pending results are inert rather than replaced by a blank loading page.
+- Feeling/Need decks remain available under Refine results and synchronize selected state without rebuilding their carousel. Unchanged result payloads do not recreate cards. Item/back links retain query/type/taxonomy/discovery and return focus/scroll behavior.
+- Browse rows show the reviewed item title in a compact semantic text row, with no decorative art, generic source tag, repeated description or metadata stack. Publication/rights validation still precedes each card.
+- Devotional detail presents one title and reading body. Source, attribution, usage basis/allowed uses and validated original-source link remain in a collapsed Source and usage details disclosure. Reviewed language fallback notices and all content/rights checks remain intact.
+- Added focused tests for debounced non-navigating updates, result retention, immediate type selection, canceled pending work, compact real-title rows and metadata-free reading. Built browser checks now use the actual type buttons/refine disclosure and verify mounted DOM identity, focus and scroll during live search. Existing localization/contrast/offline checks remain.
+- Local V7 unit/image-ledger, typecheck, lint, format and whitespace pass on Node 24.19.0. Pinned exact-candidate browser/API results and the updated immutable preview are maintained in PR #1549; local static checks do not claim rendered acceptance.

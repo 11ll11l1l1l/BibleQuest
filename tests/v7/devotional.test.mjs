@@ -100,3 +100,11 @@ test('shared detail route renders devotional body and clears it when context res
   dispose();
   assert.equal(subscribed,false);
 });
+
+test('reading mode can omit duplicate headings and technical metadata while retaining the reading', () => {
+  const html = renderDevotional(item(), { translate, showTitle: false, showMetadata: false });
+  assert.ok(html.includes('First paragraph.'));
+  assert.ok(!html.includes('<h2>'));
+  assert.ok(!html.includes('Topics:'));
+  assert.ok(!html.includes('Read the original source'));
+});

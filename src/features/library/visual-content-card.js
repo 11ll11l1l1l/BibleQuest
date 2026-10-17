@@ -9,12 +9,32 @@ const typeNames = Object.freeze({
   ilo: { book: 'Libro', devotional: 'Debosional', past_teaching: 'Pannursuro', action: 'Lukatan', minute: 'min' },
 });
 
-export function createV7LibraryVisualContentCard({ document, item, registry, locale = 'en', onOpen } = {}) {
+export function createV7LibraryVisualContentCard({ document, item, registry, locale = 'en', compact = false, onOpen } = {}) {
   if (!document?.createElement || typeof onOpen !== 'function')
     throw new TypeError('visual card requires a document, titled item and onOpen callback');
   assertV7PublishedVisualCardItem(item);
   const lang = normalizeV7DeckLocale(locale);
   const labels = typeNames[lang] || typeNames.en;
+  if (compact) {
+    const row = document.createElement('article');
+    row.className = 'bq-v7-content-card bq-v7-content-card--text-only bq-v7-content-card--compact';
+    row.dataset.v7ContentId = String(item.id);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'bq-v7-content-card__action';
+    button.setAttribute('aria-label', labels.action + ': ' + item.title);
+    const title = document.createElement('h3');
+    title.className = 'bq-library-title-row';
+    title.textContent = String(item.title);
+    button.dataset.libraryItem = String(item.id);
+    button.textContent = String(item.title);
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
+    });
+    row.append(title, button);
+    return row;
+  }
   const visual = resolveV7LibraryVisual(registry, item.contentType, item.id, {
     locale: lang, title: String(item.title),
   });

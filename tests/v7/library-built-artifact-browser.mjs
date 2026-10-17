@@ -96,6 +96,7 @@ try {
       });
       // Lane B real Library wiring: these are part of the routed page, not a
       // disconnected fixture or an imported-but-unmounted component.
+      await page.locator('[data-library-filter-panel] > summary').click();
       await page.locator('[data-library-visual-decks] [data-v7-deck="emotion"]').waitFor();
       assert.equal(await page.locator('[data-v7-deck="emotion"] [data-v7-deck-id]').count(), 30,
         `${locale}/${width}: Feeling deck must expose all 30 options`);
@@ -115,14 +116,32 @@ try {
       assert.equal(await page.locator('label[for="bq-library-query"]').count(), 1);
       assert.equal(await page.locator('label[for="bq-library-type"]').count(), 1);
       const query = page.locator('#bq-library-query');
+      if (width === 390 && locale === 'en') {
+        await page.evaluate(() => {
+          window.__libraryPageBefore = document.querySelector('[data-library-page]');
+          window.__libraryInputBefore = document.querySelector('#bq-library-query');
+          window.scrollTo(0, 80);
+        });
+        await query.fill('concern');
+        const beforeY = await page.evaluate(() => scrollY);
+        await page.waitForFunction(() => new URLSearchParams(location.hash.split('?')[1]).get('query') === 'concern');
+        const stable = await page.evaluate(() => ({
+          page: window.__libraryPageBefore === document.querySelector('[data-library-page]'),
+          input: window.__libraryInputBefore === document.querySelector('#bq-library-query'),
+          focused: document.activeElement === window.__libraryInputBefore,
+          y: scrollY,
+        }));
+        assert.ok(stable.page && stable.input && stable.focused, 'Live search keeps mounted page/input and keyboard focus');
+        assert.ok(Math.abs(stable.y - beforeY) <= 1, 'Live search does not reset page scroll');
+        await query.fill('prayer');
+        await query.press('Enter');
+      }
+
       assert.equal(await query.inputValue(), 'prayer');
       assert.equal(await page.locator('#bq-library-type').inputValue(), 'book');
       await query.focus();
       await page.keyboard.press('Tab');
-      assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('bq-primary-button')), true,
-        `${locale}/${width}: search action follows the query in keyboard order`);
-      await page.keyboard.press('Tab');
-      assert.equal(await page.evaluate(() => document.activeElement.id), 'bq-library-type');
+      assert.equal(await page.locator('[data-library-filter-panel] > summary').evaluate(el => el === document.activeElement), true, 'filter disclosure follows live search');
       const focus = await page.evaluate(() => {
         const style = getComputedStyle(document.activeElement);
         return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
@@ -134,10 +153,10 @@ try {
         `${locale}/${width}: contrast evidence runs with requested accessibility preferences`
       );
       await assertTextContrast(page.locator('[data-library-page] h1'), `${locale}/${width}: Library heading contrast`);
-      await assertTextContrast(page.locator('[data-library-page] .bq-library__header > p:last-child'), `${locale}/${width}: Library intro contrast`);
+
       await assertTextContrast(page.locator('label[for="bq-library-query"]'), `${locale}/${width}: search label contrast`);
       await assertTextContrast(page.locator('#bq-library-query'), `${locale}/${width}: search control text contrast`);
-      await assertTextContrast(page.locator('[data-library-page] .bq-primary-button'), `${locale}/${width}: primary control text contrast`);
+      await assertTextContrast(page.locator('[data-library-type][aria-pressed="true"]'), `${locale}/${width}: primary control text contrast`);
       await assertTextContrast(page.locator('[data-library-clear]'), `${locale}/${width}: secondary control text contrast`);
       await assertTextContrast(page.locator('[data-library-status]'), `${locale}/${width}: Library status contrast`);
       const unlabeled = await page.locator('[data-library-page]').evaluate(root => [...root.querySelectorAll('button,input,select')]
@@ -146,7 +165,7 @@ try {
         .map(el => el.outerHTML));
       assert.deepEqual(unlabeled, [], `${locale}/${width}: accessible control names`);
       for (const type of ['book', 'devotional', 'past_teaching']) {
-        await page.locator('#bq-library-type').selectOption(type);
+        await page.locator(`[data-library-type="${type}"]`).click();
         await query.fill('prayer');
         await query.press('Enter');
         await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') !== 'loading');
@@ -154,7 +173,7 @@ try {
       }
       await page.locator('[data-library-clear]').click();
       assert.equal(await query.inputValue(), '');
-      assert.equal(await page.locator('#bq-library-type').inputValue(), '');
+      assert.equal(await page.locator('#bq-library-type').inputValue(), 'past_teaching');
       assert.ok(await page.locator('[data-library-status]').textContent());
       const widest = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth));
       assert.ok(widest <= width + 1, `${locale}/${width}: Library overflow ${widest}`);
@@ -162,7 +181,7 @@ try {
       // The real shell language control reloads the app. Submitted discovery
       // must survive that reload, while an unsent search draft must not replace it.
       await query.fill('concern');
-      await page.locator('#bq-library-type').selectOption('devotional');
+      await page.locator('[data-library-type="devotional"]').click();
       await query.press('Enter');
       await page.waitForFunction(() => document.querySelector('[data-library-status]')?.getAttribute('data-library-state') === 'ready');
       assert.ok(await page.locator('[data-library-item]').count() > 0, `${locale}/${width}: reviewed public devotional search returns results`);
@@ -172,7 +191,7 @@ try {
         .evaluateAll(elements => elements.filter(el => !el.getAttribute('src')?.startsWith('/v7/images/')).length);
       assert.equal(disallowedImages, 0, `${locale}/${width}: unapproved external images are forbidden`);
       assert.equal(await page.locator('[data-library-retry]').isHidden(), true, `${locale}/${width}: working public catalog does not expose Retry`);
-      await query.fill('unsent draft');
+
       for (const nextLocale of ['en', 'tl', 'ceb', locale]) {
         if (await page.locator('[data-locale-select]').inputValue() !== nextLocale) {
           await Promise.all([
@@ -196,7 +215,7 @@ try {
       await page.reload({ waitUntil: 'networkidle' });
       await page.locator('[data-library-page]').waitFor();
       assert.equal(await query.inputValue(), '', `${locale}/${width}: Clear survives reload`);
-      assert.equal(await page.locator('#bq-library-type').inputValue(), '');
+      assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
 
       await page.goto(`${baseUrl}/#/library-item`, { waitUntil: 'networkidle' });
       await page.locator('[data-library-detail]').waitFor();

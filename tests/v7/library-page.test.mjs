@@ -196,3 +196,36 @@ test('Load more preserves visible results and is disabled while loading; context
     assert.equal(more.hidden, true);
   } finally { globalThis.Element = priorElement; }
 });
+
+test('live filters debounce in place, retain results while loading and cancel pending search on disposal', async () => {
+  const priorElement = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const f = fixture();
+    const updates = [];
+    let navigations = 0;
+    const dispose = createLibraryPage({ service: f.service, navigate() { navigations++; },
+      onFiltersChange: target => updates.push(target), initialContentType: 'devotional' }).mount(f.root);
+    f.service.emit({ status: 'ready', items: [{ id: 'live-1', contentType: 'devotional', title: 'A real reading title', locale: 'en' }] });
+    const visible = f.nodes['[data-library-results]'].innerHTML;
+    const query = f.nodes['[name="query"]'];
+    query.value = 'ho';
+    f.nodes['[data-library-search]'].listeners.get('input')({ target: query });
+    query.value = 'hope';
+    f.nodes['[data-library-search]'].listeners.get('input')({ target: query });
+    await new Promise(resolve => setTimeout(resolve, 300));
+    assert.equal(f.requests.length, 2, 'rapid typing produces one new read');
+    assert.equal(f.requests[1].query, 'hope');
+    assert.equal(updates[0].query, 'hope');
+    assert.equal(navigations, 0, 'filtering must not remount the route');
+    assert.equal(f.nodes['[data-library-results]'].innerHTML, visible, 'loading keeps existing results visible');
+    f.page.listeners.get('click')({ target: new ElementStub({ 'data-library-type': 'book' }) });
+    assert.equal(f.requests.at(-1).contentType, 'book', 'type selection updates without submit');
+    query.value = 'pending';
+    f.nodes['[data-library-search]'].listeners.get('input')({ target: query });
+    const count = f.requests.length;
+    dispose();
+    await new Promise(resolve => setTimeout(resolve, 300));
+    assert.equal(f.requests.length, count, 'leaving the page cancels pending input');
+  } finally { globalThis.Element = priorElement; }
+});
