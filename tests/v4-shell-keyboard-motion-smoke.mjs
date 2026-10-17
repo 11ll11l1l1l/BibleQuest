@@ -24,7 +24,10 @@ async function run(){
     if(info?.routeLink)order.push(info);
   }
   assert(order.length===5,`Expected to reach all 5 nav links via Tab, reached ${order.length}.`);
-  assert(order.map(o=>o.routeLink).join(',')==='home,learn,play,grow,more','Tab order through primary navigation must match visual left-to-right order.');
+  const routeOrder = order.map(o => o.routeLink).join(',');
+  const v7 = routeOrder === 'home,reader,library,one-to-one,more';
+  assert(v7 || routeOrder === 'home,learn,play,grow,more',
+    'Tab order must match one canonical five-link primary navigation. Got ' + routeOrder);
   for(const info of order){
     assert(info.outlineStyle!=='none'&&parseFloat(info.outlineWidth)>0,`Nav link '${info.routeLink}' has no visible keyboard focus ring.`);
   }
@@ -43,8 +46,11 @@ async function run(){
           value:selected[0]?.getAttribute('aria-current')};
       });
   });
-  const owners={home:'home',library:'learn',reader:'learn',
-    'one-to-one-lesson':'grow',account:'more',play:'play'};
+  const owners = v7
+    ? {home:'home',library:'library',reader:'reader',
+       'one-to-one-lesson':'one-to-one',account:'more',play:'home'}
+    : {home:'home',library:'learn',reader:'learn',
+       'one-to-one-lesson':'grow',account:'more',play:'play'};
   for(const selection of selections){
     const expected=owners[selection.route];
     assert(expected ? selection.count===1&&selection.key===expected&&selection.value==='page'

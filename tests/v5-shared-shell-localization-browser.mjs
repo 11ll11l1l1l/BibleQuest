@@ -37,6 +37,10 @@ try {
   await page.locator('[data-session-label]', { hasText: 'Bisita' }).waitFor();
 
   const labels = await page.evaluate(() => ({
+    bible: document.querySelector('[data-route-link="reader"] small')?.textContent?.trim(),
+    library: document.querySelector('[data-route-link="library"] small')?.textContent?.trim(),
+    groups: document.querySelector('[data-route-link="one-to-one"] small')?.textContent?.trim(),
+    you: document.querySelector('[data-route-link="more"] small')?.textContent?.trim(),
     learn: document.querySelector('[data-route-link="learn"] small')?.textContent?.trim(),
     play: document.querySelector('[data-route-link="play"] small')?.textContent?.trim(),
     grow: document.querySelector('[data-route-link="grow"] small')?.textContent?.trim(),
@@ -55,10 +59,19 @@ try {
     accountHeight: document.querySelector('[data-session-open]')?.getBoundingClientRect().height || 0
   }));
 
-  assert(labels.learn === 'Matuto', `Expected Matuto, got ${labels.learn}.`);
-  assert(labels.play === 'Maglaro', `Expected Maglaro, got ${labels.play}.`);
-  assert(labels.grow === 'Lumago', `Expected Lumago, got ${labels.grow}.`);
-  assert(labels.more === 'Higit pa', `Expected Higit pa, got ${labels.more}.`);
+  if (labels.bible) {
+    assert(labels.bible === 'Biblia', `Expected Biblia, got ${labels.bible}.`);
+    assert(labels.library === 'Aklatan', `Expected Aklatan, got ${labels.library}.`);
+    assert(labels.groups === 'Mga Grupo', `Expected Mga Grupo, got ${labels.groups}.`);
+    assert(labels.you === 'Ikaw', `Expected Ikaw, got ${labels.you}.`);
+    assert(labels.learn === undefined && labels.play === undefined && labels.grow === undefined,
+      'V7 must show no duplicated legacy top-level tabs.');
+  } else {
+    assert(labels.learn === 'Matuto', `Expected Matuto, got ${labels.learn}.`);
+    assert(labels.play === 'Maglaro', `Expected Maglaro, got ${labels.play}.`);
+    assert(labels.grow === 'Lumago', `Expected Lumago, got ${labels.grow}.`);
+    assert(labels.more === 'Higit pa', `Expected Higit pa, got ${labels.more}.`);
+  }
   assert(labels.tagline === 'Magbasa · Matuto · Lumago', 'Tagalog brand tagline missing.');
   assert(labels.navLabel === 'Pangunahing nabigasyon', 'Primary navigation aria-label was not localized.');
   assert(labels.localeLabel === 'Wika', 'Language selector aria-label was not localized.');
