@@ -175,6 +175,12 @@ try {
           `${route.id}/${viewport.width}: top bar is horizontally clipped`);
       }
 
+      const reportLauncher = page.locator('[data-report-open]');
+      if (await reportLauncher.isVisible()) {
+        assert.equal(await reportLauncher.evaluate(element => ['fixed', 'sticky'].includes(getComputedStyle(element).position)), false,
+          `${route.id}/${viewport.width}: reporting must not float over reading or navigation actions`);
+      }
+
       let readerAudio = null;
       let readerBottomClearance = null;
       if (route.id === 'reader') {
