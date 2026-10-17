@@ -70,6 +70,13 @@ try {
           `Home editorial image must decode at its native resolution: ${JSON.stringify(heroImage)}`);
         assert.ok(heroImage.src.endsWith('/bq-home-scripture-study-20261017.webp'), 'Home must use the dedicated Bible-study artwork');
         assert.equal(heroImage.objectFit, 'cover', 'Home art should fill its bounded hero');
+        const clippedStats = await page.locator('.bq-progress-stats b, .bq-progress-stats span').evaluateAll(elements => elements
+          .filter(element => element.scrollWidth > element.clientWidth + 1)
+          .map(element => ({ text: element.textContent, width: element.clientWidth, contentWidth: element.scrollWidth })));
+        assert.deepEqual(clippedStats, [], `${viewport.width}: Home progress labels/numerals must fit their cards`);
+        const journeyColumns = await page.locator('[data-home-bible-quest]').evaluate(element => getComputedStyle(element).gridTemplateColumns.split(' ').length);
+        assert.equal(journeyColumns, 1, 'Journey content must keep a single readable column');
+
       }
 
 

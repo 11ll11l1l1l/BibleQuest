@@ -183,3 +183,8 @@ Earlier dated probe sections are history, not the current execution state. No â€
 ### Rendered phone matrix milestone
 
 Pinned Chromium/Node 22 run [39040624416](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39040624416), source `f6bfab85eaaac5ce9936b58697c11b3e1dc93d0d`: the phone-first correction matrix step PASSED all 50 route/profile cases, including 200% text. This is actual rendered evidence, superseding earlier unrun/blocked statements. It also decodes the dedicated Home artwork and captures English Home at all four widths. The final Report flow/handoff update follows this source and requires its own current-candidate run; no later head is certified by the earlier result. Remaining browser/PWA/convergence results and immutable preview identity are maintained in PR #1549.
+
+
+### Screenshot-driven follow-up after geometry PASS
+
+On `c6133aafb3cee05fbaa3345fd89ddd75260f1086`, the full Build/PWA/automated-accessibility workflow [39040835281](https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39040835281) passed, including 50 phone matrix cases and all nine screenshots. Independent image technical QA confirmed Home study/title/action crop survival at all four widths, but actual screenshot inspection found a separate inherited Home Journey two-column grid at 430px and clipped progress numerals at 320/800px. These were not detected by document-level overflow checks, so visual acceptance was not closed. Follow-up scopes the Journey to one column at every width, removes the forced three-column 320px stats rule, and sizes/wraps progress values within their cards. The browser gate now asserts the actual stat content width and Journey column count, in addition to page overflow. The source asset/hash is unchanged.
