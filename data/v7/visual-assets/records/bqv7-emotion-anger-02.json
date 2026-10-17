@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-anger-02",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-10T16:00:00+09:00",
+  "status": "candidate_ci_verified_awaiting_independent_visual_qa",
+  "bundleStatus": "complete_three_real_files_candidate_not_production",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "anger",
+  "canonicalEmotionId": "angry",
+  "concept": "Two adult neighbors at a community sports-club equipment shed after a disagreement; one looks down while loosening a white towel held in his hands as the other speaks with open hands. No violence.",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-anger-02.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 169548,
+  "sha256": "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+  "gitBlobSha": "833660d022a64ffb092c0d2ea590af81dfc64310",
+  "focalPoint": {
+    "x": 0.5,
+    "y": 0.45
+  },
+  "textSafeRegion": "top TYPE matte band; CLEAN no text",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "angry",
+    "locale": "en",
+    "exactLabel": "Angry",
+    "reference": "James 1:19-20",
+    "scriptureTextIncluded": false,
+    "contextReview": "James 1:19-20 exhorts believers to listen, be slow to speak and slow to anger; human anger does not produce God’s righteousness. The scene illustrates restraint rather than a guaranteed outcome."
+  },
+  "generation": {
+    "sourceOriginalName": "a_realistic_cinematic_natural_light_scene_of_two.png",
+    "sourceBytes": 2213319,
+    "sourceSha256": "905e9928dcd44c7af6ca04d4eb59369ed24f0ecf47aae342d4efb1053c388519",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceCropRect": {
+      "left": 0,
+      "top": 30,
+      "right": 1122,
+      "bottom": 1152
+    },
+    "generationId": "d5110558-1a8f-4d71-9c1e-4ff0e432c998",
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceRevision": "v7/development 445ff5089a8b0c04eefab4adc0352c0343bb6414",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "guidebookSection": "5 / anger",
+    "noExternalSourceArt": true,
+    "capNonverbalStitchRetouch": "OpenCV Telea inpaint, polygon in source coordinates; crop is otherwise unchanged",
+    "typeRepairNote": "Source CLEAN and THUMB unchanged; this TYPE recomposed from the unchanged CLEAN with more spacious matte typography."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest subject to applicable terms; no third-party input image",
+    "fontFamilies": [
+      "Noto Serif"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontFilesRedistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "At a community sports equipment shed, one neighbor loosens a white towel while listening to another adult speak after a disagreement.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "TL, CEB, ILO: CLEAN with live localized taxonomy title/reference; never reuse English TYPE"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-02.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 169548,
+      "sha256": "2189dfc368d659ebae1b9d3b2680948d8178dedf3014c847c9976dcba7926ee7",
+      "gitBlobSha": "833660d022a64ffb092c0d2ea590af81dfc64310",
+      "altText": "At a community sports equipment shed, one neighbor loosens a white towel while listening to another adult speak after a disagreement."
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-02-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 152170,
+      "sha256": "09a13e3e8ac4aef3f6513a04e46f1f461bcfaf5b5bbce3927d4f44a1657416df",
+      "gitBlobSha": "07759906831fbc8368704cad60ff39489f2d4f16",
+      "altText": "At a community sports equipment shed, one neighbor loosens a white towel while listening to another adult speak after a disagreement. English title: Angry; reference James 1:19-20.",
+      "embeddedWording": {
+        "label": "Angry",
+        "scriptureReference": "James 1:19-20",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "method": "Pillow independent CLEAN-to-TYPE composite; 320px charcoal matte; licensed Noto Serif; reference only",
+        "measuredBounds": [
+          {
+            "text": "Angry",
+            "bounds": [
+              373,
+              132,
+              651,
+              219
+            ]
+          },
+          {
+            "text": "James 1:19-20",
+            "bounds": [
+              349,
+              241,
+              675,
+              289
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-anger-02-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 42356,
+      "sha256": "950b3482128c5c75714729d7970c92a074ff0d4cbea20e079a491977e45b7646",
+      "gitBlobSha": "ae70319ccfa23a604e0f4865a9f15a1dd73507ce",
+      "altText": "At a community sports equipment shed, one neighbor loosens a white towel while listening to another adult speak after a disagreement.",
+      "crop": {
+        "sourceRectPixels": {
+          "left": 102,
+          "top": 0,
+          "right": 921,
+          "bottom": 1024
+        },
+        "method": "Pillow Lanczos focal crop from CLEAN"
+      }
+    }
+  ],
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": "local visual check; independent QA pending",
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "localPillowDecodeAndHashesVerified": true,
+    "independentVisualQA": "pending",
+    "builtAppHttpSha": "PASS in exact-head built-preview browser workflow for six draft bundles (38 total image files); per-image artifact report has not been independently inspected; not proof of Cloudflare-served SHA.",
+    "officialNodeAudit": "PASS: exact-head 219f7779b10ef2d0f2f3f7509cbf464231e9f546, V7 Visual Asset Built-Browser QA run 38044997115; canonical audit status PASS; candidate excluded from production.",
+    "productionReady": false,
+    "browserViewportQA": "Exact-head CI PASS 2026-10-10 10:29Z: built Chromium technical check, 38 images, 10 release bundles + 6 draft bundles, 96 TYPE/THUMB screenshots, zero draft technical repairs. Independent pixel QA pending.",
+    "sceneEditorialConcern": "Towel loosening is subtle; independent reviewer must decide whether guidebook action is unambiguous. Do not self-approve.",
+    "typeTypographySpacingRepair": "TYPE original title/ref bbox overlap 6px; replacement has measured >=16px gap, top >=128px; CLEAN and THUMB unchanged.",
+    "remoteCiExactHead": "219f7779b10ef2d0f2f3f7509cbf464231e9f546",
+    "remoteCiEvidence": {
+      "visualBrowserRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38044997115",
+      "visualBrowserJob": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38044997115/job/114192628901",
+      "artifactId": 11667071900,
+      "buildPwaRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38044997092",
+      "integratedCertificationRun": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38044997127",
+      "checkStatus": "all four exact-head workflows success; draft publication remains blocked"
+    }
+  },
+  "productionReady": false,
+  "sceneRevision": "guide-20261010-anger-sports-shed-02",
+  "sceneFingerprint": {
+    "contentId": "anger",
+    "narrativeAction": "listening and deliberately loosening towel after disagreement",
+    "setting": "community sports club equipment shed",
+    "focalObject": "white towel",
+    "peopleCount": 2,
+    "perspective": "waist-up two-shot eye-level",
+    "light": "afternoon sunlight from shed doorway",
+    "palette": "neutral slate and warm amber",
+    "metaphor": "release of anger",
+    "sourceRevision": "taxonomy e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "rejectedPredecessor": {
+    "assetId": "bqv7-emotion-anger-01",
+    "sha256": "822445b73345e5cd280608933ce3d001e61d62d8691c5015ab14b4c1b2e6f0e9",
+    "reason": "Guidebook section 5 scene mismatch (kitchen mugs); typography safe-area failure; no SHA reuse"
+  }
+}
