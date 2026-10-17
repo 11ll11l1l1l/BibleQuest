@@ -1,0 +1,40 @@
+{
+  "role": "rights_wording_provenance",
+  "date": "2026-10-14",
+  "developmentHead": "13f2359d20612eea6464941a4b79b27488024998",
+  "policyBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "verdicts": [
+    {
+      "pr": 1436,
+      "head": "5782f3a51f26cd9cafdd92dbe129ccd1d181f63e",
+      "id": "jealous",
+      "verdict": "HOLD_PROVENANCE_ALT_TEXT_LIVE_COPY",
+      "cleanSha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "typeSha256": "dac57b236a2ff13d85327f4f8a91c1975b562af220d781992dcc44a344cd6734",
+      "recordBlob": "d1752836a54bd4b1809f43b355454ca589bc05bf",
+      "note": "Observed CLEAN text-free, TYPE Jealous / envious — Proverbs 14:30. Original generation input and original PNG missing; 'receiving praise' not independently visible. Live locales and rights unverified."
+    },
+    {
+      "pr": 1452,
+      "head": "5190aae36d3b0683a67953218039e415b6c69dc5",
+      "id": "numb",
+      "verdict": "HOLD_PROVENANCE_LIVE_COPY",
+      "cleanSha256": "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+      "recordBlob": "eaffabd403cc11ae7849e32a3b04d0e68bcc4d52",
+      "note": "Current-head CLEAN hash verified, text-free. Prior rights HOLD exists. Original PNG/input rights and live locale not certified."
+    },
+    {
+      "pr": 1499,
+      "head": "df72c9b66aadbeab9c89a0df2d3e77a6a0218dd7",
+      "id": "tempted",
+      "verdict": "HOLD_PROVENANCE_WORDING_LIVE_COPY",
+      "typeSha256": "0ace3ccd561e94133cab14fe1b29326b42c67ef6e72f65cd7c2364625b278aeb",
+      "recordBlob": "7f05b2400e950a540acaa3f9d32a697fd6f6af1c",
+      "note": "Current-head TYPE hash verified; visible Tempted — 1 Corinthians 10:13. 'Found wallet' unproven in alt; stale font note, missing original source provenance and live locale."
+    }
+  ],
+  "policyMigration": "CLEAN-only Feeling/Need release remains HOLD_POLICY_MIGRATION",
+  "productionApproved": false,
+  "deletedFiles": 0
+}
