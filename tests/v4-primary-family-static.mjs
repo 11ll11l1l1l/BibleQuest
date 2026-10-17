@@ -24,14 +24,26 @@ const more=read('src/features/more/index.js');
 const index=read('index.html');
 const workflow=read('.github/workflows/v3-regression.yml');
 
-const navEntries=[
-  "['home','nav.home','home']",
-  "['learn','nav.learn','learn']",
-  "['play','nav.play','play']",
-  "['grow','nav.grow','grow']",
-  "['more','nav.more','more']"
-];
-for(const entry of navEntries) assert.ok(shell.includes(entry),`Primary shell navigation changed or lost ${entry}.`);
+// Navigation: V7 intentionally moves Learn/Play/Grow under Library/Home/Groups,
+// without removing the legacy router entries or app-family contracts below.
+const navMatch=shell.match(/const NAV\s*=\s*\[([\s\S]*?)\];/);
+assert.ok(navMatch,'Shell must define one five-destination NAV owner.');
+const nav=[...navMatch[1].matchAll(/\[\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*'([^']+)'\s*\]/g)]
+  .map(row=>[row[1],row[2],row[3]]);
+const v4Nav=[['home','nav.home','home'],['learn','nav.learn','learn'],
+  ['play','nav.play','play'],['grow','nav.grow','grow'],['more','nav.more','more']];
+const v7Nav=[['home','nav.home','home'],['reader','nav.bible','bible'],
+  ['library','nav.library','library'],['one-to-one','nav.groups','groups'],
+  ['more','nav.you','user']];
+const asJson=JSON.stringify(nav);
+assert.ok(asJson===JSON.stringify(v4Nav)||asJson===JSON.stringify(v7Nav),
+  'Primary shell must expose exactly one complete localized V4 or V7 five-tab model.');
+if(asJson===JSON.stringify(v7Nav)) {
+  for(const [legacy,owner] of [['learn','library'],['play','home'],['grow','one-to-one']]){
+    assert.ok(shell.includes("'"+legacy+"'")&&shell.includes("return '"+owner+"'"),
+      "V7 must retain legacy "+legacy+" route within "+owner+".");
+  }
+}
 assert.ok(shell.includes("import { localization } from '../app/localization.js';"),'Primary shell localization must use the single reviewed localization owner.');
 assert.equal((shell.match(/data-route-link=/g)||[]).length,1,'Primary navigation must continue to render from the single NAV owner, not a duplicated hard-coded route set.');
 assert.ok(shell.includes('aria-current'),'Primary shell must preserve active-route semantics.');
