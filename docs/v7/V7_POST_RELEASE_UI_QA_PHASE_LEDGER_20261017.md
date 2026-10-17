@@ -135,3 +135,11 @@ For later tasks replace 00 by the desired eligible phase number. If the master o
 ## Final release gate (not yet run)
 
 All remaining P0/P1 defects fixed/evidence-backed non-reproducible, actual automated responsive/browser/role/audio/security checks green, exact candidate CI/releaseReady, verified deployed SHA and full served-file identity, PWA/offline and real-route smoke, rollback preserved. No artwork production is required.
+
+## Owner phone follow-up — 2026-10-17 22:59 JST
+
+The two new phone screenshots confirm actual mixed-theme defects, not merely suspected contrast: You shortcuts combined pale hardcoded card backgrounds with inherited dark-theme light headings; the floating Report launcher had the same mismatch. Fixed at their component sources using existing charcoal/gold/text/border/focus tokens. Phone shortcuts now form one column up to 520px, preserving labels without squeezed two-column text. Reporting dialog/status/input surfaces follow the same theme.
+
+Owner specifically authorized one new Home image. Added original Bible-study/community artwork and removed the unrelated emotion-art replacement. Source/raster/rights/uniqueness/coordinator evidence and exact hash are under `artwork-evidence/home-hero-20261017/`. This exception does not reopen any other artwork queue. No generated words or Scripture quotes appear in the image.
+
+Phases 04/05/07/13 include these corrections. Added computed 4.5:1 contrast assertions for actual You shortcut headings/hints and Report launcher to the route matrix. Existing build/PWA and convergence workflows now include the post-release correction target branch; no security/privacy assertion was removed. Exact CI is now eligible to execute instead of waiting for an unavailable manual dispatch. Local typecheck/lint/format and all 721 V7 tests plus image audit pass. Current-candidate CI/browser/device acceptance is pending; no phase PASS or production promotion is implied.

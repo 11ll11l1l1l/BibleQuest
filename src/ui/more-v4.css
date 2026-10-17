@@ -21,7 +21,7 @@
 .bq-you-intro {
   overflow: hidden;
   padding: clamp(18px,4vw,30px);
-  background: linear-gradient(155deg,#fffefa 4%,#f2f6ef 100%);
+  background:var(--bq-surface,#101212);
 }
 .bq-you-intro h1 { margin: 4px 0 8px; font-family:var(--bq-font-editorial,Georgia,serif); font-size:clamp(1.9rem,5vw,2.5rem); }
 .bq-you-intro > p:not(.bq-eyebrow) { max-width:48ch; line-height:1.6; color:var(--bq-text-secondary,#405047); }
@@ -30,21 +30,21 @@
   display:flex; align-items:center; gap:10px;
   min-height:80px; min-width:0; padding:13px;
   text-decoration:none; color:var(--bq-text,#16211d);
-  background:#fffefa; border:1px solid var(--bq-border-strong,#c8cec9);
+  background:var(--bq-surface-muted,#171a19); border:1px solid var(--bq-border-strong,#3a3f3c);
   border-radius:16px; box-shadow:0 7px 22px rgba(25,63,43,.04);
   transition:transform .16s ease, box-shadow .16s ease;
 }
-.bq-you-shortcut--featured { grid-column:1 / -1; min-height:96px; background:linear-gradient(120deg,#e5f0e8,#f7f3e3); border-color:#a8c1b1; }
-.bq-you-shortcut-icon { display:grid; flex:none; place-items:center; width:38px; height:38px; border-radius:12px; background:#174c38; color:#fff; }
+.bq-you-shortcut--featured { grid-column:1 / -1; min-height:96px; background:var(--bq-brand-soft,#2b2518); border-color:var(--bq-brand,#d7ba72); }
+.bq-you-shortcut-icon { display:grid; flex:none; place-items:center; width:38px; height:38px; border-radius:12px; background:var(--bq-brand-soft,#2b2518); color:var(--bq-brand,#d7ba72); }
 .bq-you-shortcut-copy { display:grid; gap:3px; min-width:0; }
-.bq-you-shortcut-copy strong { font-size:1rem; line-height:1.2; }
-.bq-you-shortcut-copy small { font-size:.85rem; line-height:1.35; color:#43554a; }
-.bq-you-shortcut-arrow { margin-left:auto; font-size:1.3rem; font-weight:700; color:#174c38; }
-.bq-you-shortcut:focus-visible { outline:3px solid #225f9c; outline-offset:3px; }
+.bq-you-shortcut-copy strong { color:var(--bq-text,#f4f3ee); font-size:1rem; line-height:1.3; overflow-wrap:anywhere; }
+.bq-you-shortcut-copy small { font-size:.85rem; line-height:1.35; color:var(--bq-text-secondary,#d2d1ca); }
+.bq-you-shortcut-arrow { margin-left:auto; font-size:1.3rem; font-weight:700; color:var(--bq-brand,#d7ba72); }
+.bq-you-shortcut:focus-visible { outline:3px solid var(--bq-focus,#e6ca82); outline-offset:3px; }
 @media(hover:hover) and (prefers-reduced-motion:no-preference) {
   .bq-you-shortcut:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(25,63,43,.1); }
 }
-@media(max-width:360px) {
+@media(max-width:520px) {
   .bq-you-shortcuts { grid-template-columns:1fr; }
   .bq-you-shortcut--featured { grid-column:auto; }
 }

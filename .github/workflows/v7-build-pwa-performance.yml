@@ -3,6 +3,7 @@ name: V7 Build PWA Performance Gate
 on:
   pull_request:
     branches:
+      - docs/v7-postrelease-uiqa-20261017
       - v7/development
     paths:
       - "package.json"
@@ -14,6 +15,7 @@ on:
       - "_headers"
       - "offline-shell-sw.js"
       - "src/**"
+      - "assets/**"
       - "content/v7/**"
       - "data/v7/**"
       - "packages/db/**"

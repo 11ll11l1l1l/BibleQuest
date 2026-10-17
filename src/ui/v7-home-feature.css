@@ -1,5 +1,5 @@
-/* Lane D image-led Home hero. Approved registry art is optional; the full
-   experience, live labels and primary action remain available offline. */
+/* Dedicated Home editorial art; semantic labels and the reading action remain
+   live UI. Never substitute unrelated Feeling artwork for this scene. */
 .bq-main .bq-hero.bq-v7-home-feature {
   position: relative;
   isolation: isolate;
@@ -39,14 +39,9 @@
   padding: 0;
   margin: 0;
   object-fit: cover;
-  object-position: 50% 50%;
+  object-position: 72% 50%;
   filter: none;
   border-radius: 0;
-}
-.bq-main .bq-hero.bq-v7-home-feature > img[data-art-source="fallback"] {
-  object-fit: contain;
-  object-position: right center;
-  opacity: .37;
 }
 .bq-v7-home-feature .bq-home-welcome {
   position: relative;

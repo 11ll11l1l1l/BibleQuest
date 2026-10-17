@@ -74,7 +74,30 @@ try {
         const links = [...(nav?.querySelectorAll('[data-route-link]') || [])];
         const topbar = document.querySelector('.bq-topbar');
         const primary = document.querySelector('#bq-view');
+        const rgb = value => {
+          const parts = value.match(/[\d.]+/g)?.map(Number) || [];
+          return parts.length >= 3 ? { channels: parts.slice(0, 3), alpha: parts[3] ?? 1 } : null;
+        };
+        const luminance = channels => channels.map(value => {
+          const channel = value / 255;
+          return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
+        }).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+        const contrastSamples = [...document.querySelectorAll('.bq-you-shortcut-copy strong, .bq-you-shortcut-copy small, .bq-report-launcher')]
+          .filter(element => element.getClientRects().length)
+          .map(element => {
+            const foreground = rgb(getComputedStyle(element).color);
+            let ancestor = element;
+            let background = null;
+            while (ancestor && !background) {
+              const candidate = rgb(getComputedStyle(ancestor).backgroundColor);
+              if (candidate?.alpha >= .999) background = candidate;
+              ancestor = ancestor.parentElement;
+            }
+            const values = foreground && background ? [luminance(foreground.channels), luminance(background.channels)].sort((a, b) => b - a) : null;
+            return { text: element.textContent.trim(), ratio: values ? (values[0] + .05) / (values[1] + .05) : 0 };
+          });
         return {
+          contrastSamples,
           viewport: { width: innerWidth, height: innerHeight },
           document: {
             width: Math.max(document.documentElement.scrollWidth, document.body?.scrollWidth || 0),
@@ -117,6 +140,10 @@ try {
         `${route.id}/${viewport.width}: every visible control needs an accessible name`);
       assert.deepEqual(geometry.shortTapTargets, [],
         `${route.id}/${viewport.width}: controls below the 44px tap target minimum`);
+      for (const sample of geometry.contrastSamples) {
+        assert.ok(sample.ratio >= 4.5,
+          `${route.id}/${viewport.width}/${viewport.locale}: ${sample.text} contrast ${sample.ratio.toFixed(2)}:1 is below 4.5:1`);
+      }
       assert.ok(geometry.navigation.left >= -1 && geometry.navigation.right <= viewport.width + 1,
         `${route.id}/${viewport.width}: bottom navigation extends beyond the viewport`);
       assert.ok(geometry.navigation.bottom <= viewport.height + 1,
