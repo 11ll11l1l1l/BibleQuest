@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-17",
+  "reviewer": "biblequest.v7.external-link-metadata-review-v1",
+  "scope": "External-link metadata only; no approval of hosted book text, images, derivatives, translations, or doctrinal claims. Canonical provider landing pages and linking policy independently retrieved on the review date.",
+  "items": [
+    {
+      "itemId": "books.imitation-of-christ",
+      "revision": "books.imitation-of-christ.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/1653",
+      "sourceTitle": "The Imitation of Christ",
+      "sourceCreator": "Thomas à Kempis",
+      "sourceSnapshotSha256": "88478af6effaebde547b8c8664edfb222b1a7270e6ab0fe17b6bf611b3ba98d9",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/1653",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    },
+    {
+      "itemId": "books.holy-war",
+      "revision": "books.holy-war.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/395",
+      "sourceTitle": "The Holy War",
+      "sourceCreator": "John Bunyan",
+      "sourceSnapshotSha256": "dde4784dc74036e9c2fa4e7d6060ecf9bf416232a1facaa7ff96122d7f063e0b",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/395",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    },
+    {
+      "itemId": "books.orthodoxy",
+      "revision": "books.orthodoxy.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/130",
+      "sourceTitle": "Orthodoxy",
+      "sourceCreator": "G. K. Chesterton",
+      "sourceSnapshotSha256": "ca7fef83ab76652d3defd6efac63ed4bce00a4a9b731719268598d58f7761bf0",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/130",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    },
+    {
+      "itemId": "books.confessions-augustine",
+      "revision": "books.confessions-augustine.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/77585",
+      "sourceTitle": "Confessions of St. Augustine",
+      "sourceCreator": "Augustine of Hippo",
+      "sourceSnapshotSha256": "4b244a4e879ee52866bd1f1a4fb92320d883cb224ab09598e2db9d4e87cea19e",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/77585",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    },
+    {
+      "itemId": "books.life-teresa",
+      "revision": "books.life-teresa.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/8120",
+      "sourceTitle": "The Life of St. Teresa of Jesus",
+      "sourceCreator": "Teresa of Ávila",
+      "sourceSnapshotSha256": "e8d6eb0315c8c9eb4ba95f1bd35a6c728c377957df82a04779ffce94d18ba09e",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/8120",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    },
+    {
+      "itemId": "books.everlasting-man",
+      "revision": "books.everlasting-man.r1",
+      "sourceUri": "https://www.gutenberg.org/ebooks/65688",
+      "sourceTitle": "The Everlasting Man",
+      "sourceCreator": "G. K. Chesterton",
+      "sourceSnapshotSha256": "8ef032efe09ef3197f56b4a3e711d140bccbf4ad8cf7a49af2338b7cf7f598eb",
+      "decision": "approved_external_link_only",
+      "checks": {
+        "canonicalLandingPageVerified": true,
+        "titleAndCreatorVerified": true,
+        "linkingPermissionVerified": true,
+        "noHostedTextOrImages": true,
+        "noDirectDownload": true
+      },
+      "evidenceUris": [
+        "https://www.gutenberg.org/ebooks/65688",
+        "https://www.gutenberg.org/policy/linking.html"
+      ]
+    }
+  ]
+}

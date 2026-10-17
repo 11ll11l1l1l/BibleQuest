@@ -1,3 +1,5 @@
+> **2026-10-17 release update:** All eight launch entries have approved external-link metadata. The six expansion decisions are revision/snapshot-bound in `data/v7/curation/launch-books-release-review-20261017.json`, based on independently retrieved canonical provider pages and linking policy. No book prose, image, translation or download is authorized or hosted. The generated public catalog now includes all eight and verifies expansion reviews against their source/rights snapshots. Older pending-review statements below describe the original intake.
+
 # Representative Books catalog
 
 `representative-catalog.json` is a real-source import bundle, not a synthetic fixture or a published seed. Both entries remain `pending_review`. No database writes or publication are performed by loading this file.

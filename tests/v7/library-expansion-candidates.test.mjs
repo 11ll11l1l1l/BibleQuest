@@ -19,11 +19,14 @@ test('A2 expansion candidates stay outside the five-item representative decision
   assert.deepEqual(new Set(enrichment.items.map(item => item.contentId)), expansionIds);
   assert.ok(packet.items.every(item => !expansionIds.has(item.itemId)));
 
-  for (const item of [...books, ...devotionals]) {
+  for (const item of devotionals) {
     assert.equal(item.publicationState, 'pending_review');
     assert.equal(item.review.status, 'pending_review');
   }
   for (const item of books) {
+    assert.equal(item.publicationState, 'published');
+    assert.equal(item.review.status, 'approved');
+    assert.equal(item.review.reviewer, 'biblequest.v7.external-link-metadata-review-v1');
     assert.equal(item.source.kind, 'external');
     assert.deepEqual(item.rights.allowedUses, ['external_link']);
     assert.equal(item.sourceContent.body, undefined);

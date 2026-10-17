@@ -29,15 +29,16 @@ test('all V7 launch books remain fail-closed external-link-only records', () => 
       assert.equal(book.review.status, 'approved');
       assert.equal(book.review.reviewer, 'biblequest.v7.representative-policy-v1');
     } else {
-      assert.equal(book.publicationState, 'pending_review');
-      assert.equal(book.review.status, 'pending_review');
+      assert.equal(book.publicationState, 'published');
+      assert.equal(book.review.status, 'approved');
+      assert.equal(book.review.reviewer, 'biblequest.v7.external-link-metadata-review-v1');
     }
     assert.match(book.source.uri, /^https:\/\/www\.gutenberg\.org\/ebooks\/\d+$/);
   }
 });
 
 test('launch-book summary forbids hosted content and direct downloads', () => {
-  assert.equal(launch.status, 'ready_for_automated_policy_review');
+  assert.equal(launch.status, 'external_link_metadata_review_complete');
   assert.equal(launch.policy.mode, 'external_link_only');
   assert.equal(launch.policy.hostedTextAllowed, false);
   assert.equal(launch.policy.hostedImagesAllowed, false);
@@ -49,5 +50,5 @@ test('launch-book summary forbids hosted content and direct downloads', () => {
   assert.equal(launch.releaseBoundary.allUnhosted, true);
   assert.equal(launch.releaseBoundary.noHumanReviewRequiredForLaneA, true);
   assert.ok(launch.items.every(item => item.policyDecision === 'external_link_only'));
-  assert.ok(launch.items.every(item => item.laneBAutomatedApprovalRequired === true));
+  assert.ok(launch.items.every(item => item.laneBAutomatedApprovalRequired === false));
 });
