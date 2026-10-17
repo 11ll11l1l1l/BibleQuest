@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -18,7 +19,7 @@ async function run(){
     localStorage.setItem('biblequest.v3.locale',JSON.stringify('en'));
   });
   await page.reload({waitUntil:'networkidle'});
-  await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('[data-open-wisdom-situations]').waitFor();
+  await openLegacyRoute(page, 'learn');await page.waitForURL(/#\/learn$/);await page.locator('[data-open-wisdom-situations]').waitFor();
   await page.locator('[data-open-wisdom-situations]').click();await page.waitForURL(/#\/wisdom-situations$/);await page.locator('[data-wisdom-session="hw01"]').waitFor();
 
   assert((await page.locator('[data-wisdom-session="hw01"] h1').textContent())?.includes('Confidentiality or protection?'),'Foundation Wisdom scenario hw01 did not open.');

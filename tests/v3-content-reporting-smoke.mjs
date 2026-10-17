@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -20,7 +21,7 @@ try{
   assert(await page.locator('[data-report-account]').isVisible(),'Signed-out reporting did not expose the explicit account recovery action.');
   await page.locator('.bq-report-close').click();
 
-  await page.locator('[data-route-link="learn"]').click();
+  await openLegacyRoute(page, 'learn');
   await launcher.waitFor({state:'visible',timeout:5000});
   await page.goto(`${BASE}#/reader`,{waitUntil:'networkidle'});
   await page.locator('[data-reader-page]').waitFor({timeout:10000});

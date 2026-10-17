@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -7,7 +8,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('[data-open-study]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await openLegacyRoute(page, 'learn');await page.waitForURL(/#\/learn$/);await page.locator('[data-open-study]').waitFor();
   assert((await page.locator('[data-open-study]').textContent())?.includes('Guided Study'),'Learn page does not expose Guided Study.');
   await page.locator('[data-open-study]').click();await page.waitForURL(/#\/study$/);await page.locator('[data-study-open="good-samaritan"]').waitFor();
   assert(await page.locator('[data-study-open]').count()===3,'Guided Study library must expose three initial Scripture-first studies.');

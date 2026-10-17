@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -21,10 +22,11 @@ async function verify(width,height,isMobile=false){
 
   for(const route of ROUTES){
     if(route!=='home'){
-      await page.locator(`[data-route-link="${route}"]`).click();
+      await openLegacyRoute(page, route);
       await page.waitForURL(new RegExp(`#/${route}$`));
     }
-    await page.locator(`[data-route-link="${route}"][aria-current]`).waitFor();
+    const owner = {learn:'library',play:'home',grow:'one-to-one'}[route] || route;
+    await page.locator(`[data-route-link="${owner}"][aria-current]`).waitFor();
     if(route==='learn') await page.locator('[data-open-reader]').waitFor();
     if(route==='play') await page.locator('[data-games-page] .bq-games-head').waitFor();
     if(route==='grow') await page.locator('[data-progress-page]').waitFor();
@@ -44,19 +46,19 @@ async function verify(width,height,isMobile=false){
     assert(metrics.minNavHeight>=44,`${width}px primary navigation contains a target below 44px.`);
   }
 
-  await page.locator('[data-route-link="learn"]').click();
+  await openLegacyRoute(page, 'learn');
   await page.waitForURL(/#\/learn$/);
   await page.locator('[data-open-reader]').waitFor();
   for(const hook of['[data-open-reader]','[data-open-study]','[data-open-bible-world]','[data-open-open-review]'])
     assert(await page.locator(hook).count()===1,`Learn entry point disappeared at ${width}px: ${hook}`);
 
-  await page.locator('[data-route-link="play"]').click();
+  await openLegacyRoute(page, 'play');
   await page.waitForURL(/#\/play$/);
   await page.locator('[data-games-page] .bq-games-head').waitFor();
   assert((await page.locator('[data-games-page] .bq-games-head h1').textContent())?.trim()==='Bible games for every kind of practice',`Play launcher exposed stale heading at ${width}px.`);
   assert(await page.locator('[data-memory-open]').count()===1&&await page.locator('[data-same-room-open]').count()===1,`Play family entry points disappeared at ${width}px.`);
 
-  await page.locator('[data-route-link="grow"]').click();
+  await openLegacyRoute(page, 'grow');
   await page.waitForURL(/#\/grow$/);
   await page.locator('[data-open-transform]').waitFor();
   for(const hook of['[data-open-transform]','[data-open-personality-profile]','[data-open-psychometrics]','[data-open-avatar-vault]'])

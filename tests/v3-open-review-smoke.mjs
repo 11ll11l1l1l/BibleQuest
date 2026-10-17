@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -9,7 +10,7 @@ const reviewState=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('bible
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('[data-open-open-review]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await openLegacyRoute(page, 'learn');await page.waitForURL(/#\/learn$/);await page.locator('[data-open-open-review]').waitFor();
   assert((await page.locator('main h1').first().textContent())?.trim()==='Learn','Open Review integration broke the stable Learn heading.');assert((await page.locator('[data-open-open-review]').textContent())?.includes('Open Smart Review'),'Learn page does not expose Open Smart Review.');
   await page.locator('[data-open-open-review]').click();await page.waitForURL(/#\/open-review$/);await page.locator('[data-open-review-start]').waitFor();let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-open-review-view] button')].map(node=>node.getBoundingClientRect().height))}));assert(metrics.scrollWidth<=metrics.innerWidth+1,`Open Review overview mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Open Review overview touch target below 44px: ${metrics.minTarget}px.`);
 

@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -14,7 +15,7 @@ async function readDownload(download){
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('[data-open-private-notes]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await openLegacyRoute(page, 'learn');await page.waitForURL(/#\/learn$/);await page.locator('[data-open-private-notes]').waitFor();
   assert((await page.locator('[data-open-private-notes]').textContent())?.includes('Private Notes'),'Learn page does not expose Private Notes.');
   await page.locator('[data-open-private-notes]').click();await page.waitForURL(/#\/private-notes$/);await page.locator('[data-note-new]').waitFor();
   let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-private-notes-view] button')].map(node=>node.getBoundingClientRect().height))}));

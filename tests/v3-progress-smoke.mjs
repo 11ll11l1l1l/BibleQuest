@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
@@ -10,7 +11,7 @@ async function desktopFlow() {
   await page.locator('[data-progress-xp]', { hasText: '0 XP' }).waitFor();
   assert((await page.locator('[data-home-xp]').textContent()).trim() === '0', 'Home must start from the canonical progress snapshot.');
 
-  await page.locator('[data-route-link="learn"]').click();
+  await openLegacyRoute(page, 'learn');
   await page.locator('[data-open-reader]').click();
   await page.waitForURL(/#\/reader$/);
   await page.locator('[data-reader-book]').selectOption('GEN');
@@ -27,7 +28,7 @@ async function desktopFlow() {
   await page.locator('[data-reader-mark]', { hasText: 'Marked read' }).waitFor();
   assert((await page.locator('[data-progress-xp]').textContent()).trim() === '10 XP', 'Reader XP did not persist across reload.');
 
-  await page.locator('[data-route-link="grow"]').click();
+  await openLegacyRoute(page, 'grow');
   await page.waitForURL(/#\/grow$/);
   await page.locator('[data-progress-page]').waitFor();
   assert((await page.locator('[data-progress-page-xp]').textContent()).trim() === '10', 'Grow page XP is not sourced from progress service.');

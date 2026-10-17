@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
@@ -7,7 +8,7 @@ const assert = (condition, message) => { if (!condition) throw new Error(message
 async function desktopFlow() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.goto(BASE, { waitUntil: 'networkidle' });
-  await page.locator('[data-route-link="learn"]').click();
+  await openLegacyRoute(page, 'learn');
   await page.waitForURL(/#\/learn$/);
   await page.locator('h1', { hasText: 'Learn' }).waitFor();
   await page.locator('[data-open-reader]').click();

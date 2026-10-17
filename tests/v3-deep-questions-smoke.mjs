@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const BASE=process.env.BQ_BASE_URL||'http://127.0.0.1:4173/';
@@ -7,7 +8,7 @@ const assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="learn"]').click();await page.waitForURL(/#\/learn$/);await page.locator('[data-open-deep-questions]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await openLegacyRoute(page, 'learn');await page.waitForURL(/#\/learn$/);await page.locator('[data-open-deep-questions]').waitFor();
   assert((await page.locator('main h1').first().textContent())?.trim()==='Learn','Deep Questions integration broke the stable Learn heading.');assert((await page.locator('[data-open-deep-questions]').textContent())?.includes('Deep Questions'),'Learn page does not expose Deep Questions.');
   await page.locator('[data-open-deep-questions]').click();await page.waitForURL(/#\/deep-questions$/);await page.locator('[data-deep-open="p1"]').first().waitFor();
   assert(await page.locator('.bq-deep-card').count()===18,'Deep Questions library must expose all 18 recovered questions.');assert((await page.locator('.bq-deep-featured').textContent())?.includes('ROTATING QUESTION'),'Rotating Deep Question is missing.');
@@ -19,7 +20,7 @@ async function run(){
   await page.locator('[data-deep-advance]').click();await page.locator('.bq-deep-reflection').waitFor();assert((await page.locator('.bq-deep-reflection').textContent())?.includes('repentance'),'Open reflection was not revealed after the response.');assert((await page.locator('.bq-deep-references').textContent())?.includes('Matthew 18:21–35'),'Scripture references were not revealed with the reflection.');
 
   await page.locator('[data-deep-reader="0"]').first().click();await page.waitForURL(/#\/reader$/);await page.locator('[data-reader-book]').waitFor();assert(await page.locator('[data-reader-book]').inputValue()==='MAT','Deep Questions Reader handoff did not open Matthew.');assert(await page.locator('[data-reader-chapter]').inputValue()==='18','Deep Questions Reader handoff did not open Matthew 18.');
-  await page.locator('[data-route-link="learn"]').click();await page.locator('[data-open-deep-questions]').click();await page.waitForURL(/#\/deep-questions$/);await page.locator('[data-deep-open="p1"]').first().click();await page.locator('.bq-deep-reflection').waitFor();assert((await page.locator('.bq-deep-reflection').textContent())?.includes('repentance'),'Deep Questions did not resume after Reader handoff.');
+  await openLegacyRoute(page, 'learn');await page.locator('[data-open-deep-questions]').click();await page.waitForURL(/#\/deep-questions$/);await page.locator('[data-deep-open="p1"]').first().click();await page.locator('.bq-deep-reflection').waitFor();assert((await page.locator('.bq-deep-reflection').textContent())?.includes('repentance'),'Deep Questions did not resume after Reader handoff.');
   await page.locator('[data-deep-advance]').click();await page.locator('[data-deep-note]').fill('Forgiveness can be given while trust may need repentance, wisdom, and time.');await page.locator('[data-deep-note-form] button[type="submit"]').click();await page.locator('.bq-deep-saved').waitFor();assert((await page.locator('.bq-deep-saved').textContent())?.includes('trust may need'),'Private note was not saved.');
   await page.reload({waitUntil:'networkidle'});await page.locator('[data-deep-open="p1"]').first().waitFor();await page.locator('[data-deep-open="p1"]').first().click();await page.locator('.bq-deep-saved').waitFor();assert((await page.locator('.bq-deep-saved').textContent())?.includes('trust may need'),'Private note did not survive reload/return.');
   await page.locator('[data-deep-advance]').click();await page.locator('[data-deep-complete="p1"]').waitFor();const completeText=await page.locator('[data-deep-complete="p1"]').textContent();assert(completeText?.includes('awards no XP'),'Deep Questions completion did not retain the zero-XP contract.');assert(!completeText?.includes('Correct')&&!completeText?.includes('score:'),'Deep Questions completion presented a spiritual score.');
