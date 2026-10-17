@@ -40,7 +40,7 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
 | H01 | P1 | V+S | First hero and large Continue Journey section dominate the top and share a Bible CTA | Make next action obvious; compress only redundant content, preserve hero/reading function | 05 | OPEN |
-| H02 | P1 | V+S | Repetitive visible Genesis 1 Genesis → Revelation journey label | Clear single reading plan/chapter naming; inspect underlying formatting, preserve valid progress | 05 | OPEN |
+| H02 | P1 | V+S | Repetitive visible Genesis 1 Genesis → Revelation journey label | Clear single reading plan/chapter naming; inspect underlying formatting, preserve valid progress | 05 | IN_PROGRESS — heading now says “Next: Genesis 1”; plan and progress remain in supporting text |
 | H03 | P1 | V+S | Home duplicates destinations in Today, rail, bottom tabs, icon shortcuts and tool badges | One or two contextual shortcuts only where useful; route to features retained in their canonical area | 06 | OPEN |
 | H04 | P1 | V+S | Huge vertical stacking: Today, progress, weekly ministry, assignments, multiple shortcut grids | Compress lower-priority sections into digest links/disclosure; maintain accessibility and feature inventory | 06 | OPEN |
 | H05 | P1 | V+T | 'V6 test' content is visible in Today / weekly ministry; may be legitimate fixture/user content | Identify source/account/tenant before removal; block dev fixtures from real production only if confirmed | 06 | OPEN |
