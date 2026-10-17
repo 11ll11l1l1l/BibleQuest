@@ -1,3 +1,5 @@
+> **MANDATORY FIRST READ — V7 RELEASE, 2026-10-17:** Read [the binding functionality-first release plan](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) before ANY V7 work. **No image generation, repairs or derivative production. Only existing passed and production-eligible images; otherwise colored live-text cards/buttons. Features, redesign and P0 motion remain required.** This overrides older artwork instructions below, including manual-generation and image-coverage quotas. Continue the next unfinished release item and record exact evidence; do not restart artwork queues.
+
 # BibleQuest agent instructions
 
 ## V7 single-master visual QA override — 2026-10-11 (highest priority for new artwork)
