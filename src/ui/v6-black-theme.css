@@ -105,6 +105,14 @@ dialog,
   color: #f2f0e8;
 }
 
+.bq-reader-title [data-reader-mark]:disabled {
+  background: var(--bq-brand-soft);
+  border-color: var(--bq-border-strong);
+  color: var(--bq-success);
+  opacity: 1;
+  cursor: default;
+}
+
 /* The inherited Reader stylesheet predates the V6 dark surface and hard-codes
    dark verse text with !important. Override those literals here so Scripture
    remains readable at normal and highlighted/audio-current states. */

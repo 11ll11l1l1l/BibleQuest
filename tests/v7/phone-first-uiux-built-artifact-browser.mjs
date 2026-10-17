@@ -245,10 +245,13 @@ try {
         rootFontSize: parseFloat(getComputedStyle(document.documentElement).fontSize),
         pageWidth: Math.max(document.documentElement.scrollWidth, document.body?.scrollWidth || 0),
         viewportWidth: innerWidth,
+        overflowingElements: [...document.querySelectorAll('#bq-view *')]
+          .filter(element => element.checkVisibility() && element.getBoundingClientRect().right > innerWidth + 1)
+          .slice(0, 16).map(element => ({ tag: element.tagName, className: element.className, text: element.textContent.trim().slice(0, 80), right: element.getBoundingClientRect().right })),
       }));
       assert.ok(scaled.rootFontSize >= 31, `${route.id}/${viewport.width}: 200% text scaling probe did not apply`);
       assert.ok(scaled.pageWidth <= scaled.viewportWidth + 1,
-        `${route.id}/${viewport.width}: horizontal overflow at 200% text (${scaled.pageWidth}/${scaled.viewportWidth})`);
+        `${route.id}/${viewport.width}: horizontal overflow at 200% text (${scaled.pageWidth}/${scaled.viewportWidth}): ${JSON.stringify(scaled.overflowingElements)}`);
       report.observations.at(-1).textScale200 = scaled;
       } catch (error) {
         report.result = 'FAIL';

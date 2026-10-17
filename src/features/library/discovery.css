@@ -1,4 +1,6 @@
 .bq-library {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: grid;
   gap: 18px;
   max-width: 880px;
@@ -80,7 +82,7 @@
 }
 .bq-library-clear {
   justify-self: start;
-  min-height: 40px;
+  min-height: 44px;
   padding: 4px 0;
   border: 0;
   background: transparent;
@@ -123,7 +125,7 @@
 .bq-library-discovery__chip,
 .bq-library-discovery__suggestion {
   flex: 0 0 auto;
-  min-height: 40px;
+  min-height: 44px;
   max-width: min(78vw, 250px);
   padding: 7px 11px;
   border: 1px solid var(--line);
@@ -174,7 +176,7 @@
   color: var(--bq-danger, #db7777);
 }
 .bq-library__result-status [data-library-retry] {
-  min-height: 40px;
+  min-height: 44px;
   padding: 7px 12px;
 }
 .bq-library [data-library-results] {

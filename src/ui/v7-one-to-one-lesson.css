@@ -172,6 +172,8 @@
 
 /* ONE 2 ONE relationship overview: one primary action, supporting tools below. */
 .bq-one2one-home {
+  min-width: 0;
+  overflow-wrap: anywhere;
   max-width: 760px;
   margin-inline: auto;
   padding: clamp(16px, 4.5vw, 28px);

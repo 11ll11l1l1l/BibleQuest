@@ -143,3 +143,27 @@ The two new phone screenshots confirm actual mixed-theme defects, not merely sus
 Owner specifically authorized one new Home image. Added original Bible-study/community artwork and removed the unrelated emotion-art replacement. Source/raster/rights/uniqueness/coordinator evidence and exact hash are under `artwork-evidence/home-hero-20261017/`. This exception does not reopen any other artwork queue. No generated words or Scripture quotes appear in the image.
 
 Phases 04/05/07/13 include these corrections. Added computed 4.5:1 contrast assertions for actual You shortcut headings/hints and Report launcher to the route matrix. Existing build/PWA and convergence workflows now include the post-release correction target branch; no security/privacy assertion was removed. Exact CI is now eligible to execute instead of waiting for an unavailable manual dispatch. Local typecheck/lint/format and all 721 V7 tests plus image audit pass. Current-candidate CI/browser/device acceptance is pending; no phase PASS or production promotion is implied.
+
+
+## Theme reconciliation and remaining implementation — 2026-10-17
+
+The app intentionally uses the existing near-black/gold theme, including when the operating system prefers light mode. The defect was a component mixing hardcoded light surfaces with inherited light text. You shortcuts, Library text-only cards, Report launcher/dialog and their fields now consume the same semantic tokens. This does not introduce a separate light-mode setting.
+
+| Role | Shared token | Active dark value | Use |
+| --- | --- | --- | --- |
+| Page | `--bq-bg` | `#080909` | App canvas |
+| Surface | `--bq-surface` | `#101212` | Panels and dialogs |
+| Raised surface | `--bq-surface-muted` | `#171a19` | Shortcut and fallback cards, fields |
+| Primary text | `--bq-text` | `#f4f3ee` | Headings and control labels |
+| Secondary text | `--bq-text-secondary` | `#d2d1ca` | Hints and metadata |
+| Brand / selected | `--bq-brand` / `--bq-brand-soft` | `#d7ba72` / `#2b2518` | Active/featured emphasis |
+| Focus | `--bq-focus` | `#e6ca82` | Visible keyboard outline |
+| Border | `--bq-border-strong` | `#3a3f3c` | Interactive surface edge |
+| Shape | `--bq-radius-control/surface/hero` | 12 / 16 / 22 px | Existing component hierarchy |
+| Space | `--bq-space-1/2/3/4/6/8/12` | 4 / 8 / 12 / 16 / 24 / 32 / 48 px | Existing spacing scale |
+
+Source: `src/ui/v6-black-theme.css` loaded after the foundation and experience layers; shape/space come from `src/ui/v6-modern-foundation.css`. Actual component contrast is asserted in the rendered phone matrix, rather than inferred solely from this table.
+
+The first pinned 320px matrix on `12cc41e977f7aa9257d61e5cb32a5ed13ae4d919` reproduced a 22px-wide Reader search field, a narrow narrator selector and a 36px audio-download button. Follow-up source correction makes the phone search toolbar wrap, gives the narrator selector a 44px minimum and enlarges the download control. It also removes the remaining fixed-position expanded audio settings and keeps Follow verse visible in the disclosure. The matrix now checks the expanded control container itself, excludes descendants of closed native disclosures using browser visibility, and collects all failing profiles with screenshots while still failing the gate.
+
+Older accessibility/backup/weekly browser fixtures now explicitly open the new disclosures; guest ONE 2 ONE smoke asserts leader-only tools stay hidden, while the authenticated leader fixture exercises both launchers and checks they disappear when switching to a mentee. These changes retain positive and denial coverage. The owner-requested multi-phase execution and one Home image supersede the older one-phase-per-chat/artwork-freeze instructions only for this correction scope.
