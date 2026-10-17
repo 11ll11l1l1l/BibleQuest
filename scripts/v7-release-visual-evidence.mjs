@@ -16,10 +16,12 @@ export const V7_RELEASE_REQUIRED_NEEDS = Object.freeze([
 ]);
 const REQUIRED_FEELINGS = Object.freeze(LIBRARY_EMOTIONS.map(item => item.id));
 
+// The 2026-10-17 owner reset makes art optional. These zero minima are
+// intentional; existing production artwork still must pass binary/rights/browser QA.
 export const V7_RELEASE_ART_MINIMUM = Object.freeze({
-  emotions: 30,
-  needs: 5, // P0 small complementary deck; remaining Needs continue in Lane A.
-  heroes: 1, // P1: Home featured art cannot be a placeholder at release.
+  emotions: 0,
+  needs: 0,
+  heroes: 0,
 });
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const sorted = values => [...values].sort((a, b) => a.localeCompare(b));
@@ -86,12 +88,12 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
           'mobile-width-no-overflow'].every(check => checks.includes(check));
   }
 
-  // Pass only the canonical 30 Feelings, designated five Needs and Home hero.
-  // A passing total from unrelated concepts must never certify this release.
-  const coverageReady = missingLaunchFeelings.length === 0
-    && missingLaunchNeeds.length === 0
-    && homeHeroes >= V7_RELEASE_ART_MINIMUM.heroes;
-  const releaseReady = coverageReady && browserVerified;
+  // Text/color fallback is a first-class V7 release presentation. Missing
+  // images are informational, not a failure. A browser report MUST still
+  // verify every image that is actually published; the populated Library
+  // browser suite separately certifies the text-only fallback.
+  const coverageReady = true;
+  const releaseReady = browserVerified;
   return {
     schemaVersion: 1, candidateSha: sha,
     status: releaseReady ? 'PASS' : 'OPEN',
@@ -110,6 +112,7 @@ export function assessV7VisualRelease({ candidateSha, audit, coverage, browserRe
       pendingNeedDerivatives: coverage.needs.pendingDerivativeBackfills,
     },
     minimum: V7_RELEASE_ART_MINIMUM, coverageReady,
+    presentationPolicy: 'text-first-optional-art',
     builtBrowserVerified: browserVerified,
     builtBrowserEvidenceClass: browserReport ? 'exact-sha-technical-binary-and-layout-only' : 'not-run',
     artisticInspectionClaim: false,
