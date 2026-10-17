@@ -6,7 +6,7 @@ const lesson = { revisionId: 'revision', steps: ['scripture', 'understand', 'dis
   .map((type, index) => ({ id: `step-${index}`, type, content: { text: 'Lesson text' } })) };
 const row = (stepId = 'step-3', response = 'saved') => ({ id: `response-${stepId}`, stepId, lessonRevisionId: 'revision', response, audienceUserIds: [], visibility: 'owner' });
 
-function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false } = {}) {
+function fixture({ userId = 'learner', loadResponses = async () => [], saveResponse, shareCallback, revokeCallback, omitResponseSave = false, omitResponseLoad = false } = {}) {
   const auth = { authenticated: true, user: { id: userId } };
   const active = { congregationId: 'church', userId };
   const log = [], responseWrites = [], progressWrites = [];
@@ -24,6 +24,7 @@ function fixture({ userId = 'learner', loadResponses = async () => [], saveRespo
     async shareResponse(pairId, revisionId, stepId, responseId, options) { log.push(['shareResponse', stepId, responseId, options]); return shareCallback ? shareCallback({pairId,revisionId,stepId,responseId,options}) : [{ id: 'share', response_id: responseId }]; },
     async revokeResponseShare(pairId, revisionId, stepId, responseId) { log.push(['revokeResponseShare', stepId, responseId]); return revokeCallback ? revokeCallback({pairId,revisionId,stepId,responseId}) : { id: 'share', response_id: responseId }; },
   };
+  if (omitResponseLoad) delete service.loadPrivateResponses;
   if (omitResponseSave) delete service.savePrivateResponse;
   const runner = createLessonRunner({ service, session: { getState: () => auth }, membership: { getActive: () => active },
     pairId: 'pair', revisionId: 'revision', now: () => '2026-10-04T10:00:00Z' });
@@ -52,21 +53,34 @@ test('late hydration never overwrites or injects a response edited after the rea
   resolveResponses([row('step-3', 'stale database text')]);
   await pending;
   assert.equal(f.runner.getState().responseDrafts['step-3'], 'fresh local edit');
-  assert.equal(f.runner.getState().responses['step-3'], undefined);
+  assert.equal(f.runner.getState().responses['step-3'].response, 'stale database text',
+    'Saved identity/consent must hydrate, but the local edit remains the draft.');
 });
 
-test('stale hydration cannot win even after the newer local edit has already been saved', async () => {
+test('pending hydration blocks writes until existing sharing is known, then revokes before edit', async () => {
   let resolveResponses;
+  const shared = { ...row('step-0', 'old shared text'), visibility: 'shared', audienceUserIds: ['mentor'] };
   const f = fixture({ loadResponses: () => new Promise(resolve => { resolveResponses = resolve; }) });
   const pending = f.runner.load();
   await tick();
-  f.runner.updateResponse('newer saved text', 'step-0');
+  f.runner.updateResponse('new private draft', 'step-0');
   await f.runner.move(1);
-  assert.equal(f.responseWrites[0].response, 'newer saved text');
-  resolveResponses([row('step-0', 'older database text')]);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 0);
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, 0);
+  assert.equal(f.runner.getState().responseDrafts['step-0'], 'new private draft');
+  resolveResponses([shared]);
   await pending;
-  assert.equal(f.runner.getState().responseDrafts['step-0'], 'newer saved text');
-  assert.equal(f.runner.getState().responses['step-0'].response, 'newer saved text');
+  assert.equal(f.runner.getState().responseStatus, 'ready');
+  assert.equal(f.runner.getState().responseDrafts['step-0'], 'new private draft');
+  assert.equal(f.runner.getState().responses['step-0'].visibility, 'shared');
+  await f.runner.move(1);
+  const operations = f.log.map(item => item[0]);
+  assert.ok(operations.indexOf('revokeResponseShare') < operations.indexOf('savePrivateResponse'));
+  assert.ok(operations.indexOf('savePrivateResponse') < operations.indexOf('saveProgress'));
+  assert.equal(f.runner.getState().responses['step-0'].visibility, 'owner');
+  assert.equal(f.responseWrites.at(-1).response, 'new private draft');
 });
 
 test('a previous hydration request cannot inject data after a reload supersedes it', async () => {
@@ -153,6 +167,14 @@ test('private-response read failure is non-destructive and navigation can still 
   assert.equal(f.runner.getState().responseStatus, 'error');
   await f.runner.move(1);
   assert.equal(f.runner.getState().stepIndex, 1);
+  f.runner.updateResponse('do not overwrite a possibly shared response', 'step-1');
+  const previousProgress = f.progressWrites.length;
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.runner.getState().stepIndex, 1);
+  assert.equal(f.runner.getState().responseDrafts['step-1'], 'do not overwrite a possibly shared response');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, previousProgress);
 });
 
 
@@ -312,4 +334,107 @@ test('unavailable response persistence cannot silently advance lesson progress',
   assert.equal(f.runner.getState().stepIndex, 1);
   assert.equal(f.runner.getState().responseDrafts['step-1'], 'must remain in draft');
   assert.equal(f.progressWrites.length, before);
+});
+
+test('missing response-read API cannot be interpreted as no existing shares', async () => {
+  const f = fixture({ omitResponseLoad: true });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  await f.runner.move(1); // No private draft yet; safe navigation remains available.
+  const progressBefore = f.progressWrites.length;
+  f.runner.updateResponse('private until consent is known', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().stepIndex, 1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
+  await assert.rejects(f.runner.shareResponse('step-1', { confirmed: true }),
+    { code: 'BQ_LESSON_RESPONSE_HYDRATION_REQUIRED' });
+  assert.equal(f.log.some(entry => entry[0] === 'shareResponse'), false);
+});
+
+test('duplicated response rows fail closed before an edit may persist', async () => {
+  const f = fixture({ loadResponses: async () => [
+    row('step-1', 'owner version'),
+    { ...row('step-1', 'conflicting version'), visibility: 'shared', audienceUserIds: ['mentor'] },
+  ] });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.match(f.runner.getState().responseError, /Conflicting saved responses/);
+  assert.deepEqual(f.runner.getState().responses, {});
+  await f.runner.move(1);
+  const progressBefore = f.progressWrites.length;
+  f.runner.updateResponse('would be unsafe', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.responseWrites.length, 0);
+  assert.equal(f.progressWrites.length, progressBefore);
+  assert.equal(f.runner.getState().stepIndex, 1);
+});
+
+test('a response from another lesson revision cannot grant stale sharing', async () => {
+  const f = fixture({ loadResponses: async () => [
+    { ...row('step-1', 'untrusted'), lessonRevisionId: 'other-revision', visibility: 'shared', audienceUserIds: ['mentor'] },
+  ] });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.match(f.runner.getState().responseError, /did not belong/);
+  assert.deepEqual(f.runner.getState().responses, {});
+});
+
+test('retry response hydration preserves an unsaved draft and restores share revocation', async () => {
+  let reads = 0;
+  const shared = { ...row('step-1', 'old mentor-visible answer'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ loadResponses: async () => {
+    reads += 1;
+    if (reads === 1) throw new Error('temporary response read failure');
+    return [shared];
+  } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('private draft after outage', 'step-1');
+  await f.runner.move(1);
+  assert.equal(f.runner.getState().status, 'save-error');
+  const restored = await f.runner.retryResponses();
+  assert.equal(restored.responseStatus, 'ready');
+  assert.equal(restored.status, 'ready');
+  assert.equal(restored.responseDrafts['step-1'], 'private draft after outage');
+  assert.equal(restored.responses['step-1'].visibility, 'shared');
+  await f.runner.move(1);
+  const ops = f.log.map(entry => entry[0]);
+  assert.ok(ops.indexOf('revokeResponseShare') < ops.indexOf('savePrivateResponse'));
+  assert.equal(f.responseWrites.at(-1).response, 'private draft after outage');
+  assert.equal(f.runner.getState().responses['step-1'].visibility, 'owner');
+  assert.equal(f.runner.getState().stepIndex, 2);
+});
+
+test('retry response hydration fails closed after a congregation switch', async () => {
+  const f = fixture({ loadResponses: async () => { throw new Error('offline'); } });
+  await f.runner.load(); await f.runner.move(1);
+  f.runner.updateResponse('scoped response', 'step-1');
+  f.active.congregationId = 'another-church';
+  await f.runner.retryResponses();
+  assert.equal(f.runner.getState().lesson, null);
+  assert.equal(f.runner.getState().status, 'error');
+  assert.deepEqual(f.runner.getState().responseDrafts, {});
+  assert.equal(f.responseWrites.length, 0);
+});
+
+test('mentor response cache disappears immediately when share permissions are revalidated', async () => {
+  let rejectRead;
+  let calls = 0;
+  const shared = { ...row('step-3', 'formerly shared'), visibility: 'shared', audienceUserIds: ['mentor'] };
+  const f = fixture({ userId: 'mentor', loadResponses: () => {
+    calls += 1;
+    if (calls === 1) return Promise.resolve([shared]);
+    return new Promise((resolve, reject) => { rejectRead = reject; });
+  } });
+  await f.runner.load();
+  assert.equal(f.runner.getState().responses['step-3'].response, 'formerly shared');
+  const pending = f.runner.retryResponses();
+  assert.equal(f.runner.getState().responseStatus, 'loading');
+  assert.deepEqual(f.runner.getState().responses, {});
+  rejectRead(new Error('response scope unavailable'));
+  await pending;
+  assert.equal(f.runner.getState().responseStatus, 'error');
+  assert.deepEqual(f.runner.getState().responses, {});
+  assert.deepEqual(f.runner.getState().responseDrafts, {});
 });

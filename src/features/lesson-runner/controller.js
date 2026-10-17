@@ -41,27 +41,37 @@ export function createLessonRunner({ service, session, membership, pairId, revis
   }
   async function hydrateResponses(token, key, lesson) {
     if (typeof service.loadPrivateResponses !== 'function') {
-      return publish({ responseStatus: 'ready', responseError: null });
+      // A missing read API cannot establish whether an existing answer was
+      // shared. Treat the response boundary as unavailable, not empty.
+      return publish({ responseStatus: 'error', responseError: 'Saved response permissions are unavailable. Reload before saving or sharing.' });
     }
     const hydrationVersions = new Map(responseEditVersions);
-    publish({ responseStatus: 'loading', responseError: null });
+    // A mentor's earlier shared-response cache is not fresh permission
+    // evidence. Hide it throughout re-hydration, even if a read later fails.
+    publish({ responseStatus: 'loading', responseError: null,
+      ...(!state.writable ? { responses: snapshot() } : {}) });
     try {
       const rows = await service.loadPrivateResponses(pairId, revisionId); current(token, key);
       if (!Array.isArray(rows)) fail('BQ_LESSON_RESPONSE_INVALID', 'Saved lesson responses were unavailable.');
       const allowedSteps = new Set(lesson.steps.map(step => step.id));
       const responses = { ...state.responses }, drafts = { ...state.responseDrafts };
+      const seenSteps = new Set();
       for (const row of rows) {
-        if (!row?.stepId || !allowedSteps.has(row.stepId)) {
+        if (!row?.stepId || !allowedSteps.has(row.stepId) || (row.lessonRevisionId && row.lessonRevisionId !== revisionId)) {
           fail('BQ_LESSON_RESPONSE_INVALID', 'A saved response did not belong to this lesson revision.');
         }
-        const unchangedSinceRead = (responseEditVersions.get(row.stepId) ?? 0) === (hydrationVersions.get(row.stepId) ?? 0);
+        if (seenSteps.has(row.stepId)) fail('BQ_LESSON_RESPONSE_INVALID', 'Conflicting saved responses for one lesson step.');
+        seenSteps.add(row.stepId);
+        const unchangedSinceRead = !dirtyResponseSteps.has(row.stepId)
+          && (responseEditVersions.get(row.stepId) ?? 0) === (hydrationVersions.get(row.stepId) ?? 0);
         if (!state.writable && (row.visibility !== 'shared' || !Array.isArray(row.audienceUserIds) || !row.audienceUserIds.includes(state.mentorId))) {
           fail('BQ_LESSON_RESPONSE_SCOPE', 'Mentor preview received a response that was not explicitly shared.');
         }
-        if (unchangedSinceRead) {
-          responses[row.stepId] = row;
-          if (state.writable) drafts[row.stepId] = responseText(row.response);
-        }
+        // Preserve the saved row's identity and consent metadata even when
+        // a local draft was typed after the read started. Only the editable
+        // draft is protected from stale hydration.
+        responses[row.stepId] = row;
+        if (unchangedSinceRead && state.writable) drafts[row.stepId] = responseText(row.response);
       }
       return publish({ responses: snapshot(responses), responseDrafts: snapshot(drafts), responseStatus: 'ready', responseError: null });
     } catch (error) {
@@ -70,8 +80,28 @@ export function createLessonRunner({ service, session, membership, pairId, revis
         generation += 1;
         return clearLesson({ status: 'error', error: error.message });
       }
-      return publish({ responseStatus: 'error', responseError: error.message });
+      return publish({ responseStatus: 'error', responseError: error.message,
+        ...(!state.writable ? { responses: snapshot() } : {}) });
     }
+  }
+  async function retryResponses() {
+    if (disposed || !state.lesson || state.responseStatus === 'loading'
+        || state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status)) return state;
+    const token = generation;
+    let key;
+    try {
+      key = context();
+      if (key !== loadedContext) fail('BQ_LESSON_CONTEXT_STALE', 'Reload after your account or congregation changes.');
+    } catch (error) {
+      generation += 1;
+      return clearLesson({ status: 'error', error: error.message });
+    }
+    const recovered = await hydrateResponses(token, key, state.lesson);
+    if (!disposed && token === generation && recovered.responseStatus === 'ready'
+        && recovered.status === 'save-error') {
+      return publish({ status: 'ready', error: null });
+    }
+    return state;
   }
   async function load() {
     if (disposed) return state;
@@ -130,6 +160,11 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     if (!state.writable) return;
     const stepId = state.lesson?.steps?.[stepIndex]?.id;
     if (!stepId || !dirtyResponseSteps.has(stepId)) return;
+    // Never overwrite a potentially shared response before its existing
+    // consent and row identity have been successfully hydrated.
+    if (state.responseStatus !== 'ready') {
+      fail('BQ_LESSON_RESPONSE_HYDRATION_REQUIRED', 'Restore saved responses and sharing permissions before saving this draft.');
+    }
     if (typeof service.savePrivateResponse !== 'function') {
       fail('BQ_LESSON_RESPONSE_UNAVAILABLE', 'Private response saving is unavailable. Your draft was not discarded.');
     }
@@ -173,6 +208,9 @@ export function createLessonRunner({ service, session, membership, pairId, revis
       fail('BQ_LESSON_SHARE_DENIED', 'Scripture steps do not contain a personal response to share.');
     }
     if (shared && confirmed !== true) fail('BQ_LESSON_SHARE_CONFIRMATION_REQUIRED', 'Confirm sharing with your paired mentor.');
+    if (state.responseStatus !== 'ready') {
+      fail('BQ_LESSON_RESPONSE_HYDRATION_REQUIRED', 'Restore saved response permissions before changing sharing.');
+    }
     // Claim the disclosure mutation before any await. Duplicate Share, Revoke
     // and navigation calls cannot run against the same saved response in flight.
     if (state.shareStatus === 'saving' || ['saving', 'saving-response'].includes(state.status)) return state;
@@ -258,7 +296,7 @@ export function createLessonRunner({ service, session, membership, pairId, revis
     }
     return save(state.stepIndex, true);
   }
-  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, move, complete, updateResponse, shareResponse, revokeResponseShare, invalidate,
+  return Object.freeze({ getIdentity: () => Object.freeze({ pairId, revisionId }), getState: () => state, load, retryResponses, move, complete, updateResponse, shareResponse, revokeResponseShare, invalidate,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     dispose() { disposed = true; generation += 1; dirtyResponseSteps.clear(); responseEditVersions.clear(); listeners.clear(); state = Object.freeze({ status: 'disposed', lesson: null }); },
   });
