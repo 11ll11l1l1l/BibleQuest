@@ -1,0 +1,87 @@
+# BibleQuest V7 — Post-release UI QA execution and handoff ledger
+
+Created 2026-10-17 JST. Initial status: DOCUMENTED, NOT IMPLEMENTED. This is a **phase execution tracker**, not a new production release authority. Use the current live V7_ACTIVE_STATUS.md and existing release contracts for actual deployment/certification.
+
+Master specification: V7_POST_RELEASE_UI_QA_CORRECTIONS_20261017.md.
+Defect inventory: V7_POST_RELEASE_UI_QA_DEFECT_LEDGER_20261017.md.
+Initial verified repository main commit: 3df992466fdf3d0fcc7b4c9101f3841125378cdd (Calendar correction PR #1546).
+Production current SHA MUST be rechecked at the start of Phase 00; the initial verified repository commit must not be assumed to remain production forever.
+Documentation is presently authored on docs/v7-postrelease-uiqa-20261017. If still a PR, fetch that branch. Once merged, prefer main.
+
+Allowed state transitions:
+- OPEN -> IN_PROGRESS after inspecting live head and reserving owned surfaces.
+- IN_PROGRESS -> PASS only when code, affected tests, browser evidence (where applicable), reviewed integration and GitHub handoff are documented.
+- IN_PROGRESS -> BLOCKED when exact missing access/CI/browser evidence is named.
+- OPEN/IN_PROGRESS -> NOT_APPLICABLE only with verified current-production evidence, source SHA and rationale.
+- PASS -> OPEN when a later regression demonstrably invalidates acceptance; cite defect.
+- Never enter PASS based solely on 'PR open', agent assertion or static reasoning.
+
+## Phase tracker
+
+| Phase | Task | Dependency | Defect IDs | Status | PR / merged SHA / tests / evidence |
+|---|---|---|---|---|---|
+| 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | OPEN | Not started; screenshots need sanitized built-browser recreation |
+| 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | OPEN | Not started |
+| 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | OPEN | Not started |
+| 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | OPEN | Not started |
+| 04 | Shared type/colors/spacing/components | 03; source CSS audit | R10 H08 Y03 Y07 O09 L09 G02 G03 | OPEN | Not started |
+| 05 | Home primary first viewport | 04 | H01 H02 H07 | OPEN | Not started |
+| 06 | Home lower density/shortcuts | 05 | H03 H04 H05 H06 H08 H09 H10 | OPEN | Not started |
+| 07 | You grouped navigation/role entry | 04 | Y01 Y02 Y03 Y04 Y05 Y06 Y07 | OPEN | Not started |
+| 08 | ONE 2 ONE hero/empty/invite | 04 | O01 O02 O03 O04 O07 | OPEN | Not started |
+| 09 | ONE 2 ONE tools/settings hierarchy | 08 | O05 O06 O08 O09 | OPEN | Not started |
+| 10 | Library compact content cards | 04 | L01 L02 L03 L04 L08 L09 | OPEN | Not started |
+| 11 | Library discovery/detail state | 10 | L05 L06 L07 L08 | OPEN | Not started |
+| 12 | Responsive geometry matrix | 01-11 relevant implementations | G01 G05 G06 R01 R02 L01 | OPEN | Not started |
+| 13 | Accessibility, typography, locales | 12 | G03 G04 G05 G06 R10 Y03 L03 | OPEN | Not started |
+| 14 | Journeys, role and state interactions | 12-13 | R09 H10 Y05 Y06 O07 L06 L07 G07 G08 | OPEN | Not started |
+| 15 | Security, regression, PWA, performance | 14 | O08 G07 G08 G09 | OPEN | Not started |
+| 16 | Exact-SHA candidate and CI | 12-15 PASS | G10 | OPEN | Not started |
+| 17 | Production, deployed smoke, closure | 16 PASS and current release authorization | G10 plus all | OPEN | Not started |
+
+One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if necessary; do not silently skip a required matrix cell or turn old failure into a pass. A follow-up subphase requires its own tracker row and proof.
+
+## Claim/coordination model
+
+- At start, read newest main SHA, this ledger, open UI PRs and the most recently merged related changes.
+- Reserve phase/owned paths in a small ledger commit on the working PR when code work begins. Do not have two independent chats overwrite src/ui/shell.js, theme foundations, Reader style or this canonical ledger concurrently.
+- The single active phase executor owns its scoped selectors until merged/released or its state becomes BLOCKED with exact handoff.
+- Other already-running agents are not assumed idle. Rebase after any concurrent main change, recheck affected tests and use safe merge without force overwrite.
+- Documentation PR is setup only; no feature phase was worked. Do not treat Phase 00 as completed by the initial static screenshot audit.
+
+## Task completion packet — replace bracketed values
+
+Phase: [00-17 or split ID]
+Status: [OPEN/IN_PROGRESS/BLOCKED/PASS/NOT_APPLICABLE]
+Last checked (JST): [date time]
+Current main SHA: [full SHA]
+Owned paths: [file list]
+Defect IDs: [IDs]
+Before evidence: [sanitized screenshot, DOM measurements, reproduction, or NOT RUN]
+Implemented changes: [paths, behavior, preserved callbacks]
+Tests: [commands, CI links, outcome and why targeted]
+Matrix checked: [width x height, locale, theme, text scale, role, offline/auth]
+After evidence: [sanitized screenshot, DOM rects or NOT RUN]
+PR: [url]; merged SHA: [full SHA or NONE]
+Remaining blockers and next exact action: [detail]
+Next eligible phase: [ID]
+
+For Phase 00 use same fields but 'Implemented changes = NONE — baseline only'. For Phase 17 include deployment exact SHA/bytes, live URL, rollback ref and deployed smoke.
+
+## Cross-chat entry command
+
+Continue BibleQuest post-release UI QA Phase 00. Read:
+1. docs/v7/V7_POST_RELEASE_UI_QA_CORRECTIONS_20261017.md
+2. docs/v7/V7_POST_RELEASE_UI_QA_DEFECT_LEDGER_20261017.md
+3. docs/v7/V7_POST_RELEASE_UI_QA_PHASE_LEDGER_20261017.md
+from current main, or the docs/v7-postrelease-uiqa-20261017 branch if not yet merged. Check current repo SHA/PRs, execute just the OPEN phase, run affected QA, integrate safely, update ledger, and report the exact next phase.
+
+For later tasks replace 00 by the desired eligible phase number. If the master or ledger is not in main, do NOT invent that it was merged; read the still-open documentation PR.
+
+## First phase priority
+
+00 -> 01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 07 -> 08 -> 09 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15 -> 16 -> 17. The priority for working implementation is Reader obstruction; style-wide layout cleanup and content browsing follow. If a screen issue no longer reproduces, record NOT_APPLICABLE with browser evidence rather than implementing a speculative visual change.
+
+## Final release gate (not yet run)
+
+All remaining P0/P1 defects fixed/evidence-backed non-reproducible, actual automated responsive/browser/role/audio/security checks green, exact candidate CI/releaseReady, verified deployed SHA and full served-file identity, PWA/offline and real-route smoke, rollback preserved. No artwork production is required.
