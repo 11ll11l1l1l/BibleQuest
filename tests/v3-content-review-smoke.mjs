@@ -78,6 +78,7 @@ try{
 
   const routed=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   await routed.goto(`${BASE}#/more`,{waitUntil:'networkidle'});
+  await routed.locator('[data-more-group="ministry"] > details > summary').click();
   await routed.locator('[data-open-content-review]').waitFor();
   await routed.locator('[data-open-content-review]').click();
   await routed.waitForURL(/#\/content-review$/);
