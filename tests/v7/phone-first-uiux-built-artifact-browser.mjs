@@ -10,6 +10,7 @@ assert.match(candidateSha, /^[a-f0-9]{40}$/, 'BQ_EXACT_SHA must identify the bui
 const viewports = [
   { width: 320, height: 800, locale: 'en', colorScheme: 'dark' },
   { width: 390, height: 844, locale: 'en', colorScheme: 'light' },
+  ...['tl', 'ceb', 'ilo'].map(locale => ({ width: 390, height: 844, locale, colorScheme: 'dark' })),
   { width: 430, height: 932, locale: 'en', colorScheme: 'dark' },
   { width: 800, height: 1024, locale: 'en', colorScheme: 'light' },
 ];
@@ -72,6 +73,7 @@ try {
             width: Math.max(document.documentElement.scrollWidth, document.body?.scrollWidth || 0),
             height: Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight || 0),
           },
+          locale: JSON.parse(localStorage.getItem('biblequest.v3.locale') || '"en"'),
           preferredColorScheme: matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark',
           computedColorScheme: getComputedStyle(document.documentElement).colorScheme,
           topbar: topbar ? rect(topbar) : null,
@@ -136,7 +138,7 @@ try {
             `${viewport.width}: Reader audio player must not overlay Scripture/navigation`);
           assert.match(await page.locator('[data-reader-audio-time]').textContent(), /Duration unavailable|\d+:\d{2}/,
             `${viewport.width}: audio must expose a truthful duration state`);
-          if (viewport.width === 390) {
+          if (viewport.width === 390 && viewport.locale === 'en') {
             const player = await audio.screenshot({ animations: 'disabled' });
             await mkdir('artifacts/v7/phone-first-uiux', { recursive: true });
             const file = 'artifacts/v7/phone-first-uiux/reader-audio-collapsed-390.png';
@@ -185,7 +187,7 @@ try {
         }
       }
 
-      if (viewport.width === 390) {
+      if (viewport.width === 390 && viewport.locale === 'en') {
         await mkdir('artifacts/v7/phone-first-uiux', { recursive: true });
         const file = `artifacts/v7/phone-first-uiux/${route.id}-390.png`;
         await page.screenshot({ path: file, fullPage: true, animations: 'disabled' });
@@ -193,7 +195,7 @@ try {
         report.screenshots.push({ file, sha256: createHash('sha256').update(bytes).digest('hex') });
       }
       assert.deepEqual(errors, [], `${route.id}/${viewport.width}: page errors`);
-      report.observations.push({ route: route.id, ...geometry, readerAudio, readerBottomClearance, pageErrors: errors });
+      report.observations.push({ route: route.id, locale: viewport.locale, ...geometry, readerAudio, readerBottomClearance, pageErrors: errors });
 
       // Apply 200% text scaling to each route; it must stay usable without
       // adding horizontal page overflow. This is a browser zoom proxy, not OS
@@ -225,4 +227,4 @@ try {
   await browser.close();
 }
 
-console.log(`PASS phone-first UI/UX route matrix (${routes.length} routes × ${viewports.map(viewport => viewport.width).join('/')}px; exact SHA ${candidateSha})`);
+console.log(`PASS phone-first UI/UX route matrix (${routes.length} routes × ${viewports.length} viewport/locale profiles; exact SHA ${candidateSha})`);

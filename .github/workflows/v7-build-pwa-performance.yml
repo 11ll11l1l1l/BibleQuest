@@ -211,7 +211,8 @@ jobs:
               'v7-one-to-one-built-artifact-smoke',
               'v7-library-built-artifact-smoke',
               'pwa-built-artifact',
-              'built-artifact-accessibility'
+              'built-artifact-accessibility',
+              'phone-first-uiux-route-matrix'
             ]
           };
           await mkdir('artifacts/v7', { recursive: true });
