@@ -231,6 +231,7 @@
     grid-template-columns: repeat(2,minmax(0,1fr));
   }
   [data-home-progress] .bq-progress-stats > div {
+    display: block;
     padding: 9px 5px;
     text-align: center;
   }

@@ -34,7 +34,7 @@
 .bq-home-journey > * { position: relative; z-index: 1; }
 .bq-home-journey h2 { margin: 4px 0; font-family: var(--bq-font-editorial); font-size: clamp(1.7rem, 7vw, 2.3rem); }
 .bq-home-journey .bq-progress-stats { width: 100%; max-width: 420px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: var(--bq-space-4); }
-.bq-home-journey .bq-progress-stats > div { min-width: 0; padding: 12px 10px; }
+.bq-home-journey .bq-progress-stats > div { display: block; min-width: 0; padding: 12px 10px; }
 .bq-home-journey .bq-progress-stats b { font-size: clamp(1.125rem, 4.8vw, 1.5rem); overflow-wrap: anywhere; }
 .bq-home-journey .bq-progress-stats span { overflow-wrap: anywhere; }
 .bq-home-journey .bq-daily-actions { display: flex; align-items: center; gap: var(--bq-space-2); }
