@@ -19,7 +19,11 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
     locale: lang, title: String(item.title),
   });
   const root = document.createElement('article');
-  root.className = 'bq-v7-content-card';
+  const hasApprovedArt = Boolean(visual.src);
+  root.className = 'bq-v7-content-card' +
+    (hasApprovedArt ? '' : ' bq-v7-content-card--text-only');
+  // Stable IDs create repeatable, subdued color families without an image dependency.
+  root.dataset.v7Tone = String([...String(item.id)].reduce((n, c) => n + c.charCodeAt(0), 0) % 4);
   root.dataset.v7ContentId = String(item.id);
   const cover = document.createElement('div');
   cover.className = 'bq-v7-content-card__cover';
@@ -30,8 +34,16 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
     image.alt = visual.alt;
     image.loading = 'lazy';
     image.decoding = 'async';
-    image.addEventListener('error', () => { image.hidden = true; });
+    image.addEventListener('error', () => {
+      image.hidden = true;
+      root.className += ' bq-v7-content-card--text-only';
+      cover.className += ' bq-v7-content-card__cover--text-only';
+      cover.textContent = labels[item.contentType];
+    });
     cover.append(image);
+  } else {
+    cover.className += ' bq-v7-content-card__cover--text-only';
+    cover.textContent = labels[item.contentType];
   }
   const details = document.createElement('div');
   details.className = 'bq-v7-content-card__details';

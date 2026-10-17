@@ -30,7 +30,9 @@ const candidateBundles = candidateTriage.technicallyVerified.map(row => {
   };
 });
 const singleMasterTriage = await triageV7SingleMasters();
-const bundles = [...publishedBundles, ...candidateBundles];
+// Include published CLEAN-only masters: optional-art release still verifies
+// every actual deployed image in Chromium, not merely complete legacy bundles.
+const bundles = [...audit.manifest.assets, ...candidateBundles];
 const files = new Map();
 // Deployed output must contain ONLY the published audited files.
 for (const asset of audit.manifest.assets) {
@@ -99,8 +101,10 @@ try {
     });
     await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
     for (const asset of bundles) {
-      assert(asset.variants?.some(v => v.kind === 'with_text'), 'Complete bundle needs TYPE: ' + asset.assetId);
-      assert(asset.variants?.some(v => v.kind === 'thumbnail'), 'Complete bundle needs THUMB: ' + asset.assetId);
+      if (asset.candidate || asset.bundleStatus === 'complete') {
+        assert(asset.variants?.some(v => v.kind === 'with_text'), 'Complete bundle needs TYPE: ' + asset.assetId);
+        assert(asset.variants?.some(v => v.kind === 'thumbnail'), 'Complete bundle needs THUMB: ' + asset.assetId);
+      }
       for (const variant of [{ kind: 'clean', src: asset.src, width: asset.width, height: asset.height },
         ...asset.variants]) {
         try {
