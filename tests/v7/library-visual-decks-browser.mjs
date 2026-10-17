@@ -59,7 +59,13 @@ try {
       viewportWidth: innerWidth, cardStyle: ['width','maxWidth','flexBasis'].map(k=>getComputedStyle(el.querySelector('button'))[k]),padding:[getComputedStyle(el).paddingLeft,getComputedStyle(el).paddingRight],
     }));
     assert(stats.scrollWidth > stats.width, width + ': deck cannot swipe');
-    assert(stats.firstWidth >= (width < 720 ? stats.width * 0.75 : 420), width + ': primary feeling art is too small ' + JSON.stringify(stats));
+    assert(stats.firstWidth >= 120 && stats.firstWidth <= Math.min(width, 440), width + ': text-first Feeling selector has unusable width ' + JSON.stringify(stats));
+    assert(await page.locator('[data-v7-deck="emotion"] .bq-v7-visual-deck__card--text-only').count() === 30,
+      'asset-free Feelings must be real text-first cards');
+    assert(await page.locator('[data-v7-deck="need"] .bq-v7-visual-deck__card--text-only').count() === 19,
+      'asset-free Needs must be real text-first cards');
+    const textSize = await page.locator('[data-v7-deck="emotion"] .bq-v7-visual-deck__card--text-only').first().evaluate(el => el.getBoundingClientRect().height);
+    assert(textSize < 240, 'text-only Feeling card must not occupy a full portrait image slot');
     assert(stats.documentWidth <= stats.viewportWidth + 1, width + ': deck creates document overflow');
     assert(await page.locator('[data-v7-deck="emotion"] [data-v7-deck-id]').count() === 30, '30 feelings missing');
     assert(await page.locator('[data-v7-deck="need"] [data-v7-deck-id]').count() === 19, '19 needs missing');
@@ -102,7 +108,8 @@ try {
     assert((await page.evaluate(() => window.__bqLaneBOpenCount)) === 2, 'keyboard activation did not open content exactly once');
     assert((await page.evaluate(() => window.__bqLaneBOpened?.id)) === 'devotional-test', 'visual card did not call onOpen');
     const empty = await page.locator('.bq-v7-content-card__cover img').count();
-    assert(empty === 0, 'no image should create a safe gradient fallback, not a broken image');
+    assert(empty === 0, 'no image should render as a color/text fallback, not a broken image');
+    assert(await page.locator('.bq-v7-content-card--text-only').count() === 1, 'missing cover must use an intentional text-first card');
     // Exercise actual Library components using audited raster bytes and an
     // explicit edge focal fixture. This is component QA, not editorial approval.
     for (const locale of ['en', 'tl', 'ceb', 'ilo']) {
