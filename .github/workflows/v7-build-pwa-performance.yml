@@ -138,6 +138,12 @@ jobs:
           cat /tmp/bq-v7-preview.log
           exit 1
 
+      - name: V7 phone-first UI/UX correction matrix
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+          BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: node tests/v7/phone-first-uiux-built-artifact-browser.mjs
+
       - name: Built artifact Chromium parity
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
@@ -168,12 +174,6 @@ jobs:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
           BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
         run: node tests/v7/release-responsive-accessibility-browser.mjs
-
-      - name: V7 phone-first UI/UX correction matrix
-        env:
-          BQ_PREVIEW_URL: http://127.0.0.1:4173
-          BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
-        run: node tests/v7/phone-first-uiux-built-artifact-browser.mjs
 
       - name: Seal successful exact-SHA certification
         shell: bash

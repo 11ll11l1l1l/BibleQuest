@@ -23,6 +23,7 @@ try{
   });
 
   await page.goto(`${BASE}#/more`,{waitUntil:'networkidle'});
+  await page.locator('[data-more-group="device"] summary').click();
   await page.locator('[data-open-backup]').click();
   await page.waitForURL(/#\/backup$/);
   await page.locator('[data-backup-page] h1',{hasText:'Backup & reset'}).waitFor();
