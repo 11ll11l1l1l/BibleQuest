@@ -9,14 +9,6 @@ export { homeAssignmentItems, homeAssignmentPanelHtml } from './assignment-summa
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
-const HOME_SHORTCUTS = Object.freeze([
-  Object.freeze({ id: 'daily', icon: 'home', label: 'Daily Journey', labelKey: 'home.shortcut.daily', action: 'onMission' }),
-  Object.freeze({ id: 'reader', icon: 'bible', label: 'Reader', labelKey: 'home.shortcut.reader', action: 'onReader' }),
-  Object.freeze({ id: 'assignments', icon: 'assignments', label: 'Assignments', labelKey: 'home.shortcut.assignments', action: 'onAssignments' }),
-  Object.freeze({ id: 'calendar', icon: 'calendar', label: 'Calendar', labelKey: 'home.shortcut.calendar', action: 'onCalendar' }),
-  Object.freeze({ id: 'grow', icon: 'grow', label: 'Progress', labelKey: 'home.shortcut.progress', action: 'onGrow' })
-]);
-
 const HOME_COMPOSITION_COPY = Object.freeze({
   en: Object.freeze({
     'home.composition.noUpcomingEvents': 'No upcoming events yet.',
@@ -81,11 +73,6 @@ const HOME_DAILY_TITLES = Object.freeze({
 });
 
 const dailyPassageTitle=(passage,locale)=>HOME_DAILY_TITLES[locale]?.[`${passage?.code}:${passage?.chapter}`]||passage?.title||'';
-
-function shortcutRailHtml(locale) {
-  const tx = (key, values) => localization.t(key, { locale, values });
-  return `<nav class="bq-home-rail" data-home-rail aria-label="${escapeHtml(tx('home.shortcut.ariaLabel'))}"><ul class="bq-home-rail-track" data-home-rail-track>${HOME_SHORTCUTS.map(item => `<li><button type="button" class="bq-home-rail-item" data-home-rail-item="${item.id}" data-home-rail-action="${item.action}"><span class="bq-home-rail-icon" aria-hidden="true">${iconSvg(item.icon, { size: 22 })}</span><span class="bq-home-rail-label">${escapeHtml(tx(item.labelKey))}</span></button></li>`).join('')}</ul></nav>`;
-}
 
 const firstAgendaEvent = state => state?.agenda?.[0]?.events?.[0] || null;
 const readerSummary = reader => {
@@ -203,7 +190,6 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           </button>
         </section>
       </div>
-      ${shortcutRailHtml(locale)}
       <div class="bq-home-secondary">
         <section class="bq-panel bq-home-tile" data-home-tutorial>
           <button type="button" class="bq-home-tile-button" data-open-tutorial aria-label="${escapeHtml(tx('home.tutorial.ariaLabel'))}">
@@ -233,7 +219,6 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       const transformationButton = root.querySelector('[data-open-home-transformation]');
       const notificationsButton = root.querySelector('[data-open-home-notifications]');
       const congregationButton = root.querySelector('[data-open-congregation-assignments]');
-      const railTrack = root.querySelector('[data-home-rail-track]');
       const onWeeklyToggle = event => {
         const button = event.target.closest?.('[data-weekly-journey-toggle]');
         if (!button || !root.contains(button) || !weeklyJourney?.toggle) return;
@@ -264,22 +249,6 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       const openTransformation = () => onTransformation?.();
       const openNotifications = () => onNotifications?.();
       const openCongregationAssignments = () => congregationRoute === 'assignments' ? onAssignments?.() : requestNavigation('congregation');
-      const railActions = { onMission: () => onMission?.(), onReader: () => onReader?.(), onAssignments: () => onAssignments?.(), onCalendar: () => onCalendar?.(), onGrow: () => onGrow?.() };
-      const onRailClick = event => {
-        const button = event.target.closest('[data-home-rail-item]');
-        if (!button || !railTrack?.contains(button)) return;
-        railActions[button.dataset.homeRailAction]?.();
-      };
-      const onRailKeydown = event => {
-        if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-        const items = Array.from(railTrack?.querySelectorAll('[data-home-rail-item]') || []);
-        const index = items.indexOf(document.activeElement);
-        if (index === -1) return;
-        event.preventDefault();
-        const nextIndex = event.key === 'ArrowRight' ? Math.min(items.length - 1, index + 1) : Math.max(0, index - 1);
-        items[nextIndex]?.focus();
-        items[nextIndex]?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
-      };
       const openAllAssignments = () => onAssignments?.();
       const bindAssignmentActions = () => {
         assignmentHost?.querySelector('[data-home-assignments-all]')?.addEventListener('click', openAllAssignments, {once:true});
@@ -354,8 +323,6 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       transformationButton?.addEventListener('click', openTransformation);
       notificationsButton?.addEventListener('click', openNotifications);
       congregationButton?.addEventListener('click', openCongregationAssignments);
-      railTrack?.addEventListener('click', onRailClick);
-      railTrack?.addEventListener('keydown', onRailKeydown);
       root.addEventListener('click', onWeeklyToggle);
       bindAssignmentActions();
       void loadAssignments();
@@ -390,8 +357,6 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         transformationButton?.removeEventListener('click', openTransformation);
         notificationsButton?.removeEventListener('click', openNotifications);
         congregationButton?.removeEventListener('click', openCongregationAssignments);
-        railTrack?.removeEventListener('click', onRailClick);
-        railTrack?.removeEventListener('keydown', onRailKeydown);
         root.removeEventListener('click', onWeeklyToggle);
       };
     }

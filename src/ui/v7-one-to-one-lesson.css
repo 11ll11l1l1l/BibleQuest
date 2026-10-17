@@ -277,14 +277,24 @@
   font-weight: 800;
 }
 .bq-one2one-home .bq-one2one-home__relationships,
-.bq-one2one-home .bq-one2one-home__tools {
+.bq-one2one-home .bq-one2one-home__tools,
+.bq-one2one-home .bq-one2one-home__context-disclosure {
   padding: 20px 0;
   border-top: 1px solid var(--bq-border);
 }
-.bq-one2one-home :is(.bq-one2one-home__relationships, .bq-one2one-home__tools) h2 {
+.bq-one2one-home :is(.bq-one2one-home__relationships h2, .bq-one2one-home__tools summary, .bq-one2one-home__context-disclosure summary) {
   margin-bottom: 12px;
   color: var(--bq-text);
   font-size: var(--bq-type-section);
+  font-weight: 750;
+  cursor: pointer;
+}
+.bq-one2one-home :is(.bq-one2one-home__tools, .bq-one2one-home__context-disclosure)[hidden] {
+  display: none;
+}
+.bq-one2one-home__tools[open] summary,
+.bq-one2one-home__context-disclosure[open] summary {
+  margin-bottom: 12px;
 }
 .bq-one2one-home [data-pair-status] {
   margin-bottom: 12px;
@@ -318,8 +328,7 @@
   gap: 12px;
 }
 .bq-one2one-home__context {
-  padding-top: 20px;
-  border-top: 1px solid var(--bq-border);
+  padding-top: 12px;
 }
 .bq-one2one-home button {
   min-height: 44px;

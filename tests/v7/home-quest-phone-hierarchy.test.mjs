@@ -16,3 +16,15 @@ test('phone Home quest heading identifies the next chapter without repeating the
   assert.match(quest, /Genesis → Revelation · 0% complete/);
   assert.match(quest, /data-open-bible-quest-continue/);
 });
+
+test('phone Home keeps the full weekly workflow available behind a compact disclosure and removes duplicate shortcut rail', () => {
+  const view = homePage({ weeklyJourney: { snapshot: () => ({ completed: 2, total: 6, nextRoute: 'transform', done: {} }) } });
+  assert.match(view.html, /<details class="bq-home-week-disclosure" data-home-week-disclosure>/);
+  assert.match(view.html, /2\/6 complete/);
+  for (const route of ['recordings', 'reader', 'transform', 'journey-groups', 'assignments', 'calendar']) {
+    assert.match(view.html, new RegExp(`data-weekly-journey-route="${route}"`), `weekly destination ${route} must remain reachable`);
+  }
+  assert.doesNotMatch(view.html, /data-home-rail-track/);
+  assert.match(view.html, /data-open-home-next-event/);
+  assert.match(view.html, /data-open-congregation-assignments/);
+});

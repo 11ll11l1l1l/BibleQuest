@@ -134,6 +134,35 @@ test('taxonomy controls preserve filters for item return and Clear resets discov
   } finally { globalThis.Element = priorElement; }
 });
 
+test('Library detail return preserves search, type, taxonomy and both discovery dimensions', () => {
+  const priorElement = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const f = fixture();
+    let destination;
+    const selected = { emotions: ['anxious'], needs: ['peace'], topics: [], lifeSituations: [] };
+    createLibraryPage({
+      service: f.service,
+      navigate: value => { destination = value; },
+      discoverySearch: request => { f.requests.push(request); return f.service.list(request); },
+      initialQuery: 'quiet hope', initialContentType: 'devotional', initialTaxonomyId: 'topic.prayer',
+      initialDiscoveryQuery: selected,
+    }).mount(f.root);
+    assert.deepEqual(f.requests[0], {
+      query: 'quiet hope', contentType: 'devotional', taxonomyId: 'topic.prayer', includeTaxonomy: true,
+      emotions: ['anxious'], needs: ['peace'], topics: [], lifeSituations: [], locale: 'en',
+    });
+    f.service.emit({ status: 'ready', query: 'quiet hope', contentType: 'devotional', taxonomyId: 'topic.prayer', items: [
+      { id: 'devotional-1', contentType: 'devotional', title: 'A quiet hope', summary: 'A short reflection.', locale: 'en' },
+    ] });
+    f.page.listeners.get('click')({ target: new ElementStub({ 'data-library-item': 'devotional-1' }) });
+    assert.deepEqual(destination.returnTo, {
+      routeKey: 'library', query: 'quiet hope', contentType: 'devotional', taxonomyId: 'topic.prayer',
+      discoveryQuery: selected,
+    });
+  } finally { globalThis.Element = priorElement; }
+});
+
 test('Load more preserves visible results and is disabled while loading; context reset clears terms', () => {
   const priorElement = globalThis.Element;
   globalThis.Element = ElementStub;

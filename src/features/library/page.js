@@ -3,7 +3,7 @@ import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryIte
 import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscoveryTerms } from './discovery.js';
 import { renderLibraryDiscoveryEmptyState, renderLibraryEmotionDiscovery } from './emotion-discovery-panel.js';
 import { normalizeLibraryDiscoveryQuery, toLibraryDiscoveryRequest, toggleLibraryDiscoverySelection } from './emotion-taxonomy.js';
-import { consumeLibraryReturnFocus } from './navigation-focus.js';
+import { consumeLibraryReturnFocus, consumeLibraryReturnScroll, stageLibraryReturnFocus } from './navigation-focus.js';
 import { createV7LibraryDiscoveryDeck } from './visual-decks.js';
 import { createV7LibraryVisualContentCard } from './visual-content-card.js';
 import { loadV7VisualRegistry } from '../../ui/visual-assets.js';
@@ -162,6 +162,7 @@ export function createLibraryPage({
       let started = false;
       let moreFocusPending = false;
       let returnFocusId = consumeLibraryReturnFocus();
+      const returnScrollY = consumeLibraryReturnScroll();
       const syncDiscoverySelection = selected => {
         if (typeof discovery?.querySelectorAll !== 'function') return;
         for (const button of discovery.querySelectorAll('[data-library-discovery-term]')) {
@@ -206,6 +207,7 @@ export function createLibraryPage({
           ? Array.from(results.querySelectorAll('[data-library-item]')) : [];
         const origin = candidates.find(candidate => candidate.getAttribute?.('data-library-item') === itemId);
         (origin || status).focus?.({ preventScroll: true });
+        if (Number.isFinite(returnScrollY)) globalThis.window?.scrollTo?.(0, returnScrollY);
       };
       const render = current => {
         if (disposed) return;
@@ -248,6 +250,7 @@ export function createLibraryPage({
                 locale: localization.getLocale(),
                 onOpen: ({ id }) => {
                   const currentState = service.getState();
+                  stageLibraryReturnFocus(id, Number(globalThis.window?.scrollY ?? globalThis.scrollY));
                   navigate({ routeKey: LIBRARY_ROUTE_KEYS.item, resourceId: id,
                     returnTo: { routeKey: LIBRARY_ROUTE_KEYS.browse, query: currentState.query,
                       contentType: currentState.contentType, taxonomyId: currentState.taxonomyId || '',
@@ -345,6 +348,7 @@ export function createLibraryPage({
           return;
         }
         const current = service.getState();
+        stageLibraryReturnFocus(target.getAttribute('data-library-item'), Number(globalThis.window?.scrollY ?? globalThis.scrollY));
         navigate({ routeKey: LIBRARY_ROUTE_KEYS.item, resourceId: target.getAttribute('data-library-item'),
           returnTo: { routeKey: LIBRARY_ROUTE_KEYS.browse, query: current.query,
             contentType: current.contentType, taxonomyId: current.taxonomyId || '',

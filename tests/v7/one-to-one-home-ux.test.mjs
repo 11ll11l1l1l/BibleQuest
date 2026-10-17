@@ -96,6 +96,41 @@ test('phone ONE 2 ONE overview removes duplicate title and guides the empty stat
   assert.match(locale, /overviewEmpty:'Wala pay relasyon\. Pagdapit og miyembro aron magsugod\.'/);
 });
 
+test('ONE 2 ONE context links are collapsed and mentor tools fail closed until congregation capability is confirmed', () => {
+  const view = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext() { return () => {}; },
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  assert.match(view.html, /<details class="bq-one2one-home__tools" data-pair-mentor-tools hidden>/);
+  assert.match(view.html, /<details class="bq-one2one-home__context-disclosure">/);
+  const mentorTools = { hidden: true };
+  let onContext;
+  const root = { querySelector(selector) {
+    if (selector === '[data-pair-mentor-tools]') return mentorTools;
+    if (selector === '[data-pair-status]') return { textContent: '' };
+    if (selector === '[data-pair-results]') return { innerHTML: '', addEventListener() {}, removeEventListener() {} };
+    return { addEventListener() {}, removeEventListener() {} };
+  } };
+  let allowed = false;
+  const capable = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext(callback) { onContext = callback; return () => { onContext = null; }; },
+    isContextReady: () => false,
+    canUseMentorTools: () => allowed,
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  const dispose = capable.mount(root);
+  assert.equal(mentorTools.hidden, true, 'unconfirmed/member context cannot see mentor tools');
+  allowed = true;
+  onContext();
+  assert.equal(mentorTools.hidden, false, 'a capability update exposes mentor actions');
+  allowed = false;
+  onContext();
+  assert.equal(mentorTools.hidden, true, 'a role/context change hides stale mentor actions');
+  dispose();
+});
+
 test('ONE 2 ONE accepts only a local audited resolver result, never an arbitrary remote or file URL', async () => {
   let submitted = 0;
   let imageCount = 0;

@@ -13,7 +13,8 @@ class Node {
     this.dataset = {};
     this.textContent = '';
   }
-  append(...nodes) { this.children.push(...nodes); }
+  append(...nodes) { for (const node of nodes) { node.parentNode = this; this.children.push(node); } }
+  remove() { if (this.parentNode) this.parentNode.children = this.parentNode.children.filter(node => node !== this); }
   setAttribute(key, value) { this.attributes[key] = value; }
   addEventListener(key, fn) { this.events[key] = fn; }
 }
@@ -21,6 +22,8 @@ const document = { createElement: tag => new Node(tag) };
 const item = {
   id: 'devotional.test.01', contentType: 'devotional',
   title: 'Stay When You Feel Nothing', summary: 'A gentle daily reflection.',
+  readingMinutes: 4, progressLabel: 'Started',
+  taxonomyLinks: [{ kind: 'topic', id: 'topic.hope', labels: { en: 'Hope' } }],
   publicationState: 'published',
   rights: { status: 'verified', allowedUses: ['display'] },
 };
@@ -31,10 +34,10 @@ test('missing artwork produces visible color/text content, preserves action and 
     document, item, registry: null, onOpen: selected => { opened = selected; },
   });
   assert.match(card.className, /bq-v7-content-card--text-only/);
-  const [cover, details] = card.children;
-  assert.match(cover.className, /bq-v7-content-card__cover--text-only/);
-  assert.equal(cover.textContent, 'Devotional');
-  assert.equal(cover.children.length, 0);
+  const [details] = card.children;
+  assert.equal(card.children.length, 1, 'text-only cards do not reserve a decorative cover slot');
+  assert.ok(details.children.some(node => node.className === 'bq-v7-content-card__eyebrow' && node.textContent === 'Devotional'));
+  assert.ok(details.children.some(node => node.className === 'bq-v7-content-card__meta' && node.textContent === 'Hope · 4 min · Started'));
   assert.ok(details.children.some(node => node.tagName === 'h3' && node.textContent === item.title));
   const open = details.children.at(-1);
   assert.equal(open.attributes['aria-label'], 'Open: ' + item.title);
@@ -60,5 +63,6 @@ test('audited artwork remains optional, and a failed image becomes readable colo
   assert.equal(cover.children[0].src, '/v7/images/devotional/approved.webp');
   cover.children[0].events.error();
   assert.match(card.className, /text-only/);
-  assert.equal(cover.textContent, 'Devotional');
+  assert.equal(card.children.length, 1, 'failed approved art is removed from layout and live text remains');
+  assert.ok(card.children[0].children.some(node => node.tagName === 'h3' && node.textContent === item.title));
 });

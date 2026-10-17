@@ -3,10 +3,10 @@ import { assertV7PublishedVisualCardItem, normalizeV7DeckLocale, resolveV7Librar
 import { cardReveal, pressFeedback } from '../../ui/motion.js';
 
 const typeNames = Object.freeze({
-  en: { book: 'Book', devotional: 'Devotional', past_teaching: 'Teaching', action: 'Open' },
-  tl: { book: 'Aklat', devotional: 'Debosyonal', past_teaching: 'Pagtuturo', action: 'Buksan' },
-  ceb: { book: 'Basahon', devotional: 'Debosyonal', past_teaching: 'Pagtulun-an', action: 'Ablihi' },
-  ilo: { book: 'Libro', devotional: 'Debosional', past_teaching: 'Pannursuro', action: 'Lukatan' },
+  en: { book: 'Book', devotional: 'Devotional', past_teaching: 'Teaching', action: 'Open', minute: 'min' },
+  tl: { book: 'Aklat', devotional: 'Debosyonal', past_teaching: 'Pagtuturo', action: 'Buksan', minute: 'min' },
+  ceb: { book: 'Basahon', devotional: 'Debosyonal', past_teaching: 'Pagtulun-an', action: 'Ablihi', minute: 'min' },
+  ilo: { book: 'Libro', devotional: 'Debosional', past_teaching: 'Pannursuro', action: 'Lukatan', minute: 'min' },
 });
 
 export function createV7LibraryVisualContentCard({ document, item, registry, locale = 'en', onOpen } = {}) {
@@ -37,13 +37,11 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
     image.addEventListener('error', () => {
       image.hidden = true;
       root.className += ' bq-v7-content-card--text-only';
-      cover.className += ' bq-v7-content-card__cover--text-only';
-      cover.textContent = labels[item.contentType];
+      cover.remove?.();
     });
     cover.append(image);
   } else {
-    cover.className += ' bq-v7-content-card__cover--text-only';
-    cover.textContent = labels[item.contentType];
+    cover.remove?.();
   }
   const details = document.createElement('div');
   details.className = 'bq-v7-content-card__details';
@@ -57,9 +55,13 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
   const info = document.createElement('p');
   info.className = 'bq-v7-content-card__meta';
   const author = item.source?.creator || item.author || '';
+  const topic = (item.taxonomyLinks || []).find(row => row?.kind === 'topic');
+  const topicLabel = topic
+    ? (topic.labels?.[lang] || topic.labels?.[lang.split('-')[0]] || topic.labels?.en || topic.id || '') : '';
   const duration = Number.isFinite(item.readingMinutes) && item.readingMinutes > 0
-    ? String(item.readingMinutes) + ' min' : '';
-  info.textContent = [author, duration].filter(Boolean).join(' · ');
+    ? String(item.readingMinutes) + ' ' + labels.minute : '';
+  const progress = typeof item.progressLabel === 'string' ? item.progressLabel.trim() : '';
+  info.textContent = [topicLabel, author, duration, progress].filter(Boolean).join(' · ');
   const hint = document.createElement('span');
   hint.className = 'bq-v7-content-card__cta';
   hint.setAttribute('aria-hidden', 'true');
@@ -80,7 +82,7 @@ export function createV7LibraryVisualContentCard({ document, item, registry, loc
     onOpen(Object.freeze({ id: item.id, contentType: item.contentType }));
   });
   details.append(eyebrow, title, description, info, hint, open);
-  root.append(cover, details);
+  root.append(...(hasApprovedArt ? [cover, details] : [details]));
   cardReveal(root, { environment: { document } });
   return root;
 }

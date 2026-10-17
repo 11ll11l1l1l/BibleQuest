@@ -26,14 +26,20 @@ async function defaultOneToOneCover(key) {
   return findV7Visual(registry, [key], localization.getLocale());
 }
 
-export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,onBack,onAuthoring=()=>{},onAssignments=()=>{},onPair=()=>{},onInvite=()=>{},isContextReady=()=>false,coverProvider=defaultOneToOneCover}) {
+export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,onBack,onAuthoring=()=>{},onAssignments=()=>{},onPair=()=>{},onInvite=()=>{},isContextReady=()=>false,canUseMentorTools=()=>false,coverProvider=defaultOneToOneCover}) {
   return {
     title:'ONE 2 ONE',
-    html:`<section class="bq-panel bq-one2one-home"><header class="bq-one2one-home__hero" data-one-to-one-hero data-cover-state="fallback"><div class="bq-one2one-home__art" data-one-to-one-art aria-hidden="true"><span class="bq-one2one-home__art-mark"></span></div><div class="bq-one2one-home__hero-copy"><h1>ONE 2 ONE</h1><p>${copy('overviewIntro')}</p></div></header><div class="bq-one2one-home__primary"><button type="button" class="bq-primary-button" data-pair-invite>${escapeHtml(localization.t('v7.pairing.invite'))}</button></div><section class="bq-one2one-home__relationships" aria-label="${copy('overviewReady')}"><h2>${copy('overviewReady')}</h2><p data-pair-status role="status" aria-live="polite"></p><ul data-pair-results></ul><button type="button" class="bq-secondary-button" data-pair-retry>${copy('reload')}</button></section><section class="bq-one2one-home__tools"><h2>${copy('leaderTools')}</h2><div class="bq-one2one-home__links"><button type="button" class="bq-secondary-button" data-pair-authoring>${escapeHtml(localization.t('v7.authoring.title'))}</button><button type="button" class="bq-secondary-button" data-pair-assignments>${escapeHtml(localization.t('v7.assignment.title'))}</button></div></section><nav class="bq-one2one-home__context" aria-label="${copy('contextTools')}"><button type="button" class="bq-secondary-button" data-pair-account>${copy('account')}</button><button type="button" class="bq-secondary-button" data-pair-congregation>${copy('congregation')}</button><button type="button" class="bq-secondary-button" data-pair-back>${copy('backGrow')}</button></nav></section>`,
+    html:`<section class="bq-panel bq-one2one-home"><header class="bq-one2one-home__hero" data-one-to-one-hero data-cover-state="fallback"><div class="bq-one2one-home__art" data-one-to-one-art aria-hidden="true"><span class="bq-one2one-home__art-mark"></span></div><div class="bq-one2one-home__hero-copy"><h1>ONE 2 ONE</h1><p>${copy('overviewIntro')}</p></div></header><div class="bq-one2one-home__primary"><button type="button" class="bq-primary-button" data-pair-invite>${escapeHtml(localization.t('v7.pairing.invite'))}</button></div><section class="bq-one2one-home__relationships" aria-label="${copy('overviewReady')}"><h2>${copy('overviewReady')}</h2><p data-pair-status role="status" aria-live="polite"></p><ul data-pair-results></ul><button type="button" class="bq-secondary-button" data-pair-retry>${copy('reload')}</button></section><details class="bq-one2one-home__tools" data-pair-mentor-tools hidden><summary>${copy('leaderTools')}</summary><div class="bq-one2one-home__links"><button type="button" class="bq-secondary-button" data-pair-authoring>${escapeHtml(localization.t('v7.authoring.title'))}</button><button type="button" class="bq-secondary-button" data-pair-assignments>${escapeHtml(localization.t('v7.assignment.title'))}</button></div></details><details class="bq-one2one-home__context-disclosure"><summary>${copy('contextTools')}</summary><nav class="bq-one2one-home__context" aria-label="${copy('contextTools')}"><button type="button" class="bq-secondary-button" data-pair-account>${copy('account')}</button><button type="button" class="bq-secondary-button" data-pair-congregation>${copy('congregation')}</button><button type="button" class="bq-secondary-button" data-pair-back>${copy('backGrow')}</button></nav></details></section>`,
     mount(root) {
       const status=root.querySelector('[data-pair-status]'),results=root.querySelector('[data-pair-results]');
       let operation=0,disposed=false;
       const hero=root.querySelector('[data-one-to-one-hero]');
+      const mentorTools=root.querySelector('[data-pair-mentor-tools]');
+      const updateMentorTools=()=>{
+        try{mentorTools.hidden=typeof canUseMentorTools!=='function'||canUseMentorTools()!==true;}
+        catch{mentorTools.hidden=true;}
+      };
+      updateMentorTools();
       // Artwork is decorative and cannot replace the live translated heading.
       // A failed request, revoked image or unapproved URL leaves original CSS art.
       if(typeof coverProvider==='function'&&hero?.querySelector){
@@ -74,7 +80,7 @@ export function oneToOnePage({service,subscribeContext,onAccount,onCongregation,
       for(const [button,fn] of bindings)button.addEventListener('click',fn);
       const openPair=event=>{const button=event.target.closest?.('[data-open-pair]');if(button&&!disposed)onPair(button.getAttribute('data-open-pair'))};
       results.addEventListener('click',openPair);
-      const unsubscribe=subscribeContext(()=>{if(disposed)return;void load();});
+      const unsubscribe=subscribeContext(()=>{if(disposed)return;updateMentorTools();void load();});
       void load();
       return ()=>{disposed=true;operation++;unsubscribe();results.removeEventListener('click',openPair);for(const [button,fn] of bindings)button.removeEventListener('click',fn)};
     }
