@@ -27,11 +27,11 @@ This reverses only the 2026-10-08 image-first *release quota* for 30 Feelings, f
 - Update `scripts/v7-release-visual-evidence.mjs`, `tests/v7/visual-assets-built-browser.mjs`, the strict `.github/workflows/v7-release-convergence.yml` branch, browser fixtures and associated acceptance tests **together**. Do not merely turn off CI.
 - Keep a valid released bundle hash inventory and published-byte testing for any remaining approved assets; do not count candidates or fabricate artistic approval.
 
-The first PR implements the actual Library fallbacks. **This document alone does not alter the strict image-quota release script**; that must be migrated with tests before V7 can be certified text-first.
+The implementation branch also updates `scripts/v7-release-visual-evidence.mjs` to remove only numeric image quotas, and updates the strict browser validation to examine every *published* CLEAN image (including partial bundles), with matching regression tests and a fallback browser pass. The full CI run, merge to development, strict release certification, deployed identity and content/privacy acceptance still require verified PASS before calling V7 released.
 
 ## Minimum finish sequence
 
-1. Integrate accessible text-first fallback cards. Make the same treatment the default for image-free Home and devotional detail, without blank media frames.
+1. Integrate accessible text-first fallback cards. The Library/Feeling/Need fallback implementation is in PR #1540; verify all Home and devotional-detail paths also avoid tall blank media frames.
 2. Complete the release-gate migration above, including deterministic browser checks and strict published-image safety for any retained artwork.
 3. Generate an exact-head content/approval report; fix only failing source/rights/Scripture/locale entries, backfilling eligible content to the 150 threshold. No unlicensed hosted book content.
 4. Run the full authenticated ONE 2 ONE and tenant-denial journeys and close only observed P0 failures.
