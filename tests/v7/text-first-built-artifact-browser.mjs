@@ -64,10 +64,6 @@ try {
       assert.ok(info.text && info.labelVisible && info.name?.includes(info.text),
         `${locale}/${width}: accessible live localized Feeling title`);
       assert.ok(!info.overflow, `${locale}/${width}: no page horizontal overflow`);
-      const select = emotion.locator('[data-v7-deck-id="anxious"]');
-      const before = await select.getAttribute('aria-pressed');
-      await select.click();
-      assert.notEqual(await select.getAttribute('aria-pressed'), before, `${locale}/${width}: Feeling button must work without image`);
       // Real reviewed content must remain navigable; loss of art must never
       // bypass the existing approved-content visibility gate.
       const results = page.locator('[data-library-results] .bq-v7-content-card');
@@ -81,6 +77,10 @@ try {
         'Broken image element present under no-art mode');
       assert.ok((await first.locator('.bq-v7-content-card__action').getAttribute('aria-label'))?.trim(),
         'Accessible open action disappeared');
+      const select = emotion.locator('[data-v7-deck-id="anxious"]');
+      const before = await select.getAttribute('aria-pressed');
+      await select.click();
+      assert.notEqual(await select.getAttribute('aria-pressed'), before, `${locale}/${width}: Feeling button must work without image`);
       assert.deepEqual(exceptions, [], `${locale}/${width}: application errors`);
       checks++;
       await context.close();
