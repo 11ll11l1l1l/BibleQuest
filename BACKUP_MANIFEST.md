@@ -1,3 +1,14 @@
+## V7 current release and rollback — 2026-10-17
+
+| Purpose | Frozen ref | Exact SHA |
+|---|---|---|
+| Production-certified V7 | `release/v7-text-first-20261017` | `172693fc0343bcafa4a87459f6cf1ee8f2f885d1` |
+| Preserved pre-V7 production | `rollback/pre-v7-release-20261017-b01afd94` | `b01afd94d7275d5e1548f4d5936caed0cc471b0b` |
+
+Certification: https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39010364082 — PASS, full 1170-file inventory and live smoke. Older current-production statements below are historical and superseded by this table. Never move frozen release/rollback refs.
+
+---
+
 # BibleQuest Release Backup Manifest
 
 Updated: 2026-10-04 JST

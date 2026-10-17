@@ -1,3 +1,5 @@
+> **RELEASE COMPLETED — 2026-10-17:** Production `172693fc0343bcafa4a87459f6cf1ee8f2f885d1` passed strict release, full deployed-file verification and live smoke: https://github.com/11ll11l1l1l/BibleQuest/actions/runs/39010364082. The sequence below is fulfilled. Keep the artwork freeze; continue only observed regressions unless new scope is authorized. See `V7_ACTIVE_STATUS.md`.
+
 # BibleQuest V7 — functionality-first release reset (owner direction, 2026-10-17)
 
 Status: binding owner-directed V7 release contract; text-first implementation integrated by PR #1540.
