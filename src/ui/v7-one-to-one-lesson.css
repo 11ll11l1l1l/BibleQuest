@@ -184,7 +184,7 @@
   display: grid;
   align-content: end;
   isolation: isolate;
-  min-height: clamp(235px, 65vw, 350px);
+  min-height: clamp(190px, 55vw, 280px);
   overflow: hidden;
   border-radius: var(--bq-radius-surface, 22px);
   background: #173d46;
@@ -253,8 +253,8 @@
   text-wrap: pretty;
 }
 @media (max-width: 360px) {
-  .bq-one2one-home__hero { min-height: 220px; }
-  .bq-one2one-home__hero-copy { padding: 18px; }
+  .bq-one2one-home__hero { min-height: 190px; }
+  .bq-one2one-home__hero-copy { padding: 16px; }
 }
 
 .bq-one2one-home .bq-one2one-home__header h1 {

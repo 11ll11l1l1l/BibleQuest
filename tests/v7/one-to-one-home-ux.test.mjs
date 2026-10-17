@@ -80,6 +80,22 @@ test('ONE 2 ONE hero keeps live text, one primary action and a complete static n
   assert.match(css, /rgba\(12, 27, 35, \.88\)/, 'Contrast scrim must remain even over new artwork.');
 });
 
+test('phone ONE 2 ONE overview removes duplicate title and guides the empty state', () => {
+  const view = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext() { return () => {}; },
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  assert.equal((view.html.match(/<h1>ONE 2 ONE<\/h1>/g) || []).length, 1);
+  assert.doesNotMatch(view.html, /bq-one2one-home__eyebrow/);
+  const css = readFileSync(new URL('../../src/ui/v7-one-to-one-lesson.css', import.meta.url), 'utf8');
+  assert.match(css, /min-height: clamp\(190px, 55vw, 280px\)/);
+  const locale = readFileSync(new URL('../../src/content/locales/v7-pairing.js', import.meta.url), 'utf8');
+  assert.match(locale, /overviewEmpty:'No relationships yet\. Invite a member to start one\.'/);
+  assert.match(locale, /overviewEmpty:'Wala pang ugnayan\. Mag-imbita ng miyembro para magsimula\.'/);
+  assert.match(locale, /overviewEmpty:'Wala pay relasyon\. Pagdapit og miyembro aron magsugod\.'/);
+});
+
 test('ONE 2 ONE accepts only a local audited resolver result, never an arbitrary remote or file URL', async () => {
   let submitted = 0;
   let imageCount = 0;

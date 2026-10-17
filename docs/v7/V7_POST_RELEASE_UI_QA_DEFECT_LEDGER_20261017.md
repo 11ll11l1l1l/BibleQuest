@@ -54,10 +54,10 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| Y01 | P1 | V+S | Many large dark navigation cards extend far down a single narrow column | Group by personal/study/community/leadership/device; compact row treatment, no feature loss | 07 | OPEN |
-| Y02 | P1 | V | Primary personal actions, admin tools and infrequent features look similarly emphasized | Rank personal/account/progress, role-specific and utility functions by frequency/relevance | 07 | OPEN |
+| Y01 | P1 | V+S | Many large dark navigation cards extend far down a single narrow column | Group by personal/study/community/leadership/device; compact row treatment, no feature loss | 07 | IN_PROGRESS — native category disclosures added; phone browser review pending |
+| Y02 | P1 | V | Primary personal actions, admin tools and infrequent features look similarly emphasized | Rank personal/account/progress, role-specific and utility functions by frequency/relevance | 07 | IN_PROGRESS — primary shortcuts remain prominent; role groups are collapsible |
 | Y03 | P1 | V+T | Tiny category labels/descriptions appear hard to read in exported image | Verify actual computed sizes and 200% text; use readable 14-16 secondary text | 04/07/13 | OPEN |
-| Y04 | P1 | V+S | Repeating one gold full-width CTA on each feature amplifies competing actions | Compact icon+label rows, contextual actions only; no all-gold button list | 07 | OPEN |
+| Y04 | P1 | V+S | Repeating one gold full-width CTA on each feature amplifies competing actions | Compact icon+label rows, contextual actions only; no all-gold button list | 07 | IN_PROGRESS — gold CTAs are nested under closed native category disclosures; expanded-card treatment still needs browser review |
 | Y05 | P1 | T | Some features may be unreachable after compaction | Inventory every data-attribute/callback pre/post, make route equivalence test | 07/14 | OPEN |
 | Y06 | P1 | T | Member/leader/admin gating and deep links may differ | Run all roles; settings, Content Review, user tools remain correct and secure | 07/14 | OPEN |
 | Y07 | P2 | V | Icons, section card styles and panel spacing vary | Apply shared icon family, radius/padding and section headings | 04/07 | OPEN |
@@ -66,10 +66,10 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| O01 | P1 | V+S | ONE 2 ONE eyebrow immediately repeats ONE 2 ONE h1 | Distinct overline meaning or remove duplicate while preserving page title/accessibility | 08 | OPEN |
-| O02 | P1 | V+S | Tall teal hero consumes large vertical space before relationships | Short contextual header at small widths, no text overlay or image license risk | 08 | OPEN |
-| O03 | P1 | V+S | 'No relationships in this congregation' has little guidance, before an equally big Reload | Helpful empty state; invite next step if user permitted; retry only as context-appropriate action | 08 | OPEN |
-| O04 | P1 | V+S | Invite a member is prominent but invitation/pairing outcome not explained | Clear contextual copy/CTA and functional invite flow; show permission/context | 08 | OPEN |
+| O01 | P1 | V+S | ONE 2 ONE eyebrow immediately repeats ONE 2 ONE h1 | Distinct overline meaning or remove duplicate while preserving page title/accessibility | 08 | IN_PROGRESS — duplicate visual overline removed |
+| O02 | P1 | V+S | Tall teal hero consumes large vertical space before relationships | Short contextual header at small widths, no text overlay or image license risk | 08 | IN_PROGRESS — phone hero minimum reduced; viewport verification pending |
+| O03 | P1 | V+S | 'No relationships in this congregation' has little guidance, before an equally big Reload | Helpful empty state; invite next step if user permitted; retry only as context-appropriate action | 08 | IN_PROGRESS — EN/TL/CEB empty copy points to Invite; UI-state/browser review pending |
+| O04 | P1 | V+S | Invite a member is prominent but invitation/pairing outcome not explained | Clear contextual copy/CTA and functional invite flow; show permission/context | 08 | IN_PROGRESS — empty guidance points to existing Invite action; authorized-flow verification pending |
 | O05 | P1 | V+S | Curriculum and Prepare lesson assignment look like universal tools | Verify actual role permissions; expose in mentor/leader section only where authorized | 09 | OPEN |
 | O06 | P1 | V+S | Account, Choose congregation, Back to Grow appear as three giant main CTAs | Move into compact navigation/settings; preserve route and context | 09 | OPEN |
 | O07 | P1 | V+T | Relationships count/status may report empty while still fetching | Proper loading, empty, error and retry state, aria-live and stale-request handling | 08 | OPEN |

@@ -20,15 +20,15 @@ Allowed state transitions:
 
 | Phase | Task | Dependency | Defect IDs | Status | PR / merged SHA / tests / evidence |
 |---|---|---|---|---|---|
-| 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | BLOCKED | 2026-10-17 live guest baseline: five routes observed at 1363×936; Reader R01/R02 reproduced. Need 320/390/430/800 device captures, light theme, saved screenshots and exact deployed SHA; current browser cannot emulate mobile and local Chromium is absent. |
-| 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | IN_PROGRESS | Source fix + responsive browser assertions on branch codex/v7-uiux-phase-00-01-20261017; exact browser CI pending. |
-| 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | IN_PROGRESS | Auto-next moved back inside Audio options; unknown duration now has localized unavailable text. Reader browser assertions added; exact browser CI pending; do not mark PASS until Phase 01 checks pass. |
-| 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | BLOCKED | 2026-10-17 live spot check at 1363×936: five labeled tabs are present, Bible is active, locale selector and Guest button fit the topbar, and fixed nav is 68px high with an 8px viewport-bottom gap. Cannot satisfy 320/390/430/800, Android PWA/browser resize or safe-area gates here; Phases 01–02 exact-head checks are also pending. No speculative shell CSS change. R05 remains unresolved pending mobile evidence. |
-| 04 | Shared type/colors/spacing/components | 03; source CSS audit | R10 H08 Y03 Y07 O09 L09 G02 G03 | OPEN | Not started |
+| 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | BLOCKED | User-confirmed phone screenshots inspected: S1 You, S2 ONE 2 ONE, S3 Library, S4 Reader, S5 Home. These establish phone-observed layout issues but do not expose CSS viewport/DPR, deployed SHA, theme metadata for every route, or clean reusable browser fixtures. Keep strict matrix blocked; use screenshot evidence to prioritize visible corrections. |
+| 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | IN_PROGRESS | Screenshot S4 confirms audio player obscures Scripture and bottom navigation covers reading content. Source fix + responsive browser assertions on branch codex/v7-uiux-phase-00-01-20261017; exact browser CI and phone DOM evidence pending. |
+| 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | IN_PROGRESS | Screenshot S4 confirms compressed Auto-next and Audio options labels plus `--:--`. Auto-next moved inside Audio options; duration unavailable has localized copy. Reader browser assertions added; exact browser CI pending; do not mark PASS until Phase 01 checks pass. |
+| 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | BLOCKED | Screenshot S4 shows a top-right selector/control partially obscured by the fixed header region; current evidence is not enough to identify the responsible layer or prove a runtime regression. 1363×936 live spot check showed five labeled tabs and an unclipped topbar only at desktop size. Need phone viewport/PWA/browser resize and safe-area checks; Phases 01–02 exact-head checks pending. |
+| 04 | Shared type/colors/spacing/components | 03; source CSS audit | R10 H08 Y03 Y07 O09 L09 G02 G03 | IN_PROGRESS | Scoped source-token audit for the phone You surface: disclosure surfaces use existing border/radius/accent/focus/spacing tokens; computed contrast, light theme, 200% text, and cross-screen style conflicts remain unverified. |
 | 05 | Home primary first viewport | 04 | H01 H02 H07 | OPEN | Not started |
 | 06 | Home lower density/shortcuts | 05 | H03 H04 H05 H06 H08 H09 H10 | OPEN | Not started |
-| 07 | You grouped navigation/role entry | 04 | Y01 Y02 Y03 Y04 Y05 Y06 Y07 | OPEN | Not started |
-| 08 | ONE 2 ONE hero/empty/invite | 04 | O01 O02 O03 O04 O07 | OPEN | Not started |
+| 07 | You grouped navigation/role entry | 04 | Y01 Y02 Y03 Y04 Y05 Y06 Y07 | IN_PROGRESS | S1 phone screenshot shows a very long stack of similarly prominent feature cards and repeated full-width gold actions. Five feature groups now use native disclosures; existing shortcut routes and action data hooks are retained. Focused test/browser phone interaction and role-gating checks pending; Phase 04 is still in progress, so this phase is not PASS. |
+| 08 | ONE 2 ONE hero/empty/invite | 04 | O01 O02 O03 O04 O07 | IN_PROGRESS | S2 phone screenshot supports the repeated eyebrow/title and oversized hero concern. Removed the duplicate overline, reduced hero min-height for phone widths, and made the localized empty state point to Invite a member. Existing invite and pairing hooks are untouched; loading/error/role/browser checks remain pending, as does Phase 04 acceptance. |
 | 09 | ONE 2 ONE tools/settings hierarchy | 08 | O05 O06 O08 O09 | OPEN | Not started |
 | 10 | Library compact content cards | 04 | L01 L02 L03 L04 L08 L09 | OPEN | Not started |
 | 11 | Library discovery/detail state | 10 | L05 L06 L07 L08 | OPEN | Not started |
@@ -54,6 +54,13 @@ One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if nece
 - Public Reader route, guest, dark theme, 1363×936 CSS px only. Topbar locale selector: x=1054.56, y=10, 65×44; Guest button: x=1125.56, y=10, 70.94×44. Neither is clipped or behind the brand at this width.
 - Primary navigation exposes Home, Bible, Library, Groups and You; Bible is the current route. Nav bounds: x=416.5, y=860, 520×68, bottom=928 (8px from viewport bottom). This is desktop-height evidence only and does not prove device safe-area behavior or no content overlap at smaller heights.
 - Phase 03 entered for this bounded shell evidence check and is now BLOCKED: its dependency phases 01–02 have no exact-head build/browser checks, and the required 320/390/430/800 + Android PWA/resize matrix is unavailable. R05 remains open; do not change shell z-index or spacing until the suspected mobile clipping can be tested.
+
+## User phone screenshot review — 2026-10-17
+
+- Reviewed the five user-confirmed phone screenshots in conversation, mapping to S1 You (1000033118.jpg), S2 ONE 2 ONE (1000033117.jpg), S3 Library (1000033116.jpg), S4 Reader (1000033115.jpg), and S5 Home (1000033114.jpg). Do not treat exported JPEG dimensions as CSS viewport or DPR, and do not commit the personal screenshots or identifiers.
+- S1 supports Y01/Y02/Y04 prioritization: many vertically stacked feature cards repeat high-emphasis gold actions below the personal shortcuts. Source implementation now wraps the five existing tool categories in native details/summary disclosures; all feature action hooks remain in markup.
+- S4 visibly supports the Reader player and control defects already tracked as R01–R04. S2 visually supports a tall introduction and an empty relationship state; S3/S5 exports are too reduced to add reliable typography/contrast measurements.
+- This review adds screenshot-grounded prioritization. It does not establish current production reproduction, exact CSS viewport, app build SHA, contrast, or a PASS for any phase.
 
 ## Claim/coordination model
 

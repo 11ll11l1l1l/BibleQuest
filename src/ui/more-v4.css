@@ -1,21 +1,20 @@
-/* V4 More hub grouping. CSS-only companion to the group-wrapper markup added
-   in src/features/more/index.js. Groups the previous flat 15-section scroll
-   into 5 labeled categories (Ministry & Congregation, Personal Planning,
-   Together, Workspace & Inbox, Device & Settings) per V4_UI_ASSESSMENT_AND_TASKS.md
-   Task 3.2. No data/service/routing change - existing sections and hooks
-   are unchanged, only wrapped and labeled. */
-
-.bq-more-group{margin-top:var(--space-6)}
-.bq-more-group:first-of-type{margin-top:var(--space-4)}
-.bq-more-group-label{margin:0 0 var(--space-2)}
-.bq-more-group>.bq-panel{margin-top:var(--space-3)}
-.bq-more-group>.bq-panel:first-of-type{margin-top:0}
-
+/* Existing More destinations are grouped in native disclosures so the phone
+   page stays scannable while every feature remains discoverable. */
+.bq-more-group{margin-top:var(--bq-space-4)}
+.bq-more-disclosure{border:1px solid var(--bq-border-strong,#343834);border-radius:var(--bq-radius-surface,16px);background:var(--surface-raised,#151715);overflow:clip}
+.bq-more-group-label{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin:0;padding:12px 16px;cursor:pointer;list-style:none;font-size:.95rem;letter-spacing:.02em}
+.bq-more-group-label::-webkit-details-marker{display:none}
+.bq-more-group-label::after{content:"+";flex:none;font-size:1.35rem;line-height:1;color:var(--bq-accent-home,#d8bd72)}
+.bq-more-disclosure[open]>.bq-more-group-label::after{content:"−"}
+.bq-more-group-label:focus-visible{outline:3px solid var(--bq-focus,#e7cd7e);outline-offset:-3px;border-radius:var(--bq-radius-surface,16px)}
+.bq-more-items{display:grid;gap:12px;padding:0 12px 12px}
+.bq-more-items>.bq-panel{margin:0;padding:16px}
+.bq-more-items>.bq-panel p:not(.bq-eyebrow){font-size:1rem;line-height:1.5}
+.bq-more-items>.bq-panel .bq-primary-button{min-height:44px}
 @media(min-width:820px){
-  .bq-more-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3);align-items:start}
-  .bq-more-group-label{grid-column:1/-1;margin-bottom:0}
-  .bq-more-group>.bq-panel{margin-top:0}
+  .bq-more-items{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
 }
+@media(prefers-reduced-motion:reduce){.bq-more-disclosure *{scroll-behavior:auto}}
 
 /* V7 Lane D: content-first personal hub above the inherited advanced More tools.
    Native deep links remain usable without JavaScript gesture handling. */
