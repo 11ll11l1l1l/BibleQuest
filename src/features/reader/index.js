@@ -11,6 +11,17 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&
 const externalAttrs = 'target="_blank" rel="noopener noreferrer"';
 const options = (items, value, key = 'id', label = 'label') => items.map(item => `<option value="${escapeHtml(item[key])}" ${item[key] === value ? 'selected' : ''}>${escapeHtml(item[label])}</option>`).join('');
 const formatAudioTime = value => { const seconds = Math.max(0, Math.floor(Number(value) || 0)); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; };
+const formatAudioPosition = playback => {
+  const duration = Number(playback?.duration);
+  const end = Number.isFinite(duration) && duration > 0
+    ? formatAudioTime(duration)
+    : localization.t('audioDurationUnavailable', { dictionaries: {
+      en: { audioDurationUnavailable: 'Duration unavailable' },
+      tl: { audioDurationUnavailable: 'Hindi matukoy ang haba' },
+      ceb: { audioDurationUnavailable: 'Dili matino ang gitas-on' },
+    } });
+  return `${formatAudioTime(playback?.currentTime)} / ${end}`;
+};
 const offlineStatusHtml = status => {
   if (!status) return '';
   const label = status.available ? 'Available offline' : status.supported ? 'Not available offline' : 'Online required';
@@ -26,7 +37,7 @@ const readerAudioHtml = (audio, state, licensed) => {
   const narratorControl = narrators.length > 1 ? `<label>Narrator<select data-reader-audio-narrator aria-label="Audio narrator">${options(narrators, audio.getNarrator?.(), 'id', 'label')}</select></label>` : '';
   const verseAlignment = Boolean(audio.hasVerseAlignment?.(state.book, state.chapter));
   const verseFollowControl = `<label class="bq-reader-audio__follow"><input type="checkbox" data-reader-audio-follow ${verseAlignment ? 'checked' : 'disabled'}><span>Follow verse</span></label>`;
-  return `<section class="bq-reader-audio" data-reader-audio-player aria-label="BSB Audio Bible"><button type="button" class="bq-reader-audio__play" data-reader-audio-toggle aria-label="${playback?.status === 'playing' ? 'Pause audio' : playback?.status === 'error' ? 'Retry audio' : 'Play chapter audio'}">${playback?.status === 'playing' ? 'Ⅱ' : '▶'}</button><span class="bq-reader-audio__title"><b>${escapeHtml(state.book)} ${state.chapter}</b><small data-reader-audio-status role="status" aria-live="polite">${escapeHtml(status)}</small></span><label class="bq-reader-audio-position"><span data-reader-audio-time>${formatAudioTime(playback?.currentTime)} / ${playback?.duration ? formatAudioTime(playback.duration) : '--:--'}</span><input type="range" min="0" max="${playback?.duration || 0}" step="0.1" value="${playback?.currentTime || 0}" data-reader-audio-position aria-label="Audio position" ${playback?.duration ? '' : 'disabled'}></label><details class="bq-reader-audio__more"><summary>Audio options</summary><div class="bq-reader-audio-controls">${verseFollowControl}${narratorControl}<label>Speed<select data-reader-audio-speed aria-label="Audio playback speed">${[0.75, 1, 1.25, 1.5, 1.75, 2].map(value => `<option value="${value}" ${value === rate ? 'selected' : ''}>${value}×</option>`).join('')}</select></label><label><input type="checkbox" data-reader-audio-auto-next ${playback?.autoNext ? 'checked' : ''}> Auto-next</label><label>Sleep timer<select data-reader-audio-timer aria-label="Audio sleep timer"><option value="0">Off</option>${[15, 30, 60, 90, 120].map(value => `<option value="${value}" ${playback?.sleepTimerMinutes === value ? 'selected' : ''}>${value} min</option>`).join('')}</select></label></div><div class="bq-reader-audio__offline" data-reader-audio-package aria-live="polite"><span>Checking offline audio…</span></div></details></section>`;
+  return `<section class="bq-reader-audio" data-reader-audio-player aria-label="BSB Audio Bible"><button type="button" class="bq-reader-audio__play" data-reader-audio-toggle aria-label="${playback?.status === 'playing' ? 'Pause audio' : playback?.status === 'error' ? 'Retry audio' : 'Play chapter audio'}">${playback?.status === 'playing' ? 'Ⅱ' : '▶'}</button><span class="bq-reader-audio__title"><b>${escapeHtml(state.book)} ${state.chapter}</b><small data-reader-audio-status role="status" aria-live="polite">${escapeHtml(status)}</small></span><label class="bq-reader-audio-position"><span data-reader-audio-time>${formatAudioPosition(playback)</span><input type="range" min="0" max="${playback?.duration || 0}" step="0.1" value="${playback?.currentTime || 0}" data-reader-audio-position aria-label="Audio position" ${playback?.duration ? '' : 'disabled'}></label><details class="bq-reader-audio__more"><summary>Audio options</summary><div class="bq-reader-audio-controls">${verseFollowControl}${narratorControl}<label>Speed<select data-reader-audio-speed aria-label="Audio playback speed">${[0.75, 1, 1.25, 1.5, 1.75, 2].map(value => `<option value="${value}" ${value === rate ? 'selected' : ''}>${value}×</option>`).join('')}</select></label><label><input type="checkbox" data-reader-audio-auto-next ${playback?.autoNext ? 'checked' : ''}> Auto-next</label><label>Sleep timer<select data-reader-audio-timer aria-label="Audio sleep timer"><option value="0">Off</option>${[15, 30, 60, 90, 120].map(value => `<option value="${value}" ${playback?.sleepTimerMinutes === value ? 'selected' : ''}>${value} min</option>`).join('')}</select></label></div><div class="bq-reader-audio__offline" data-reader-audio-package aria-live="polite"><span>Checking offline audio…</span></div></details></section>`;
 };
 
 const readerSpeechHtml = (speech, state, licensed) => {
@@ -198,7 +209,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         if (autoNext && playback) autoNext.checked = playback.autoNext;
         if (timer && playback) timer.value = String(playback.sleepTimerMinutes || 0);
         if (position && playback) { position.max = String(playback.duration || 0); if (!position.matches(':active')) position.value = String(playback.currentTime || 0); position.disabled = !(playback.duration && playback.duration > 0); }
-        if (time && playback) time.textContent = `${formatAudioTime(playback.currentTime)} / ${playback.duration ? formatAudioTime(playback.duration) : '--:--'}`;
+        if (time && playback) time.textContent = formatAudioPosition(playback);
         if (narrator) narrator.value = audio.getNarrator?.() || '';
         if (followVerse && !followVerse.disabled) followVerse.checked = audioFollowVerse;
         let activeVerseNode = null;
@@ -280,8 +291,6 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         if (speechControls) host.querySelector('.bq-reader-settings')?.after(speechControls);
         const sourceLabel = host.querySelector('.bq-reader-source');
         if (sourceLabel) host.querySelector('.bq-reader-settings')?.after(sourceLabel);
-        const autoNextControl = host.querySelector('[data-reader-audio-auto-next]')?.closest('label');
-        if (autoNextControl) host.querySelector('.bq-reader-audio__more')?.before(autoNextControl);
         void renderOfflinePackageControls();
         void refreshAudioPackage();
         void applyFurigana(chapter,japanese);

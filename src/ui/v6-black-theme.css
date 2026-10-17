@@ -187,8 +187,7 @@ dialog,
   color: var(--bq-text-secondary) !important;
 }
 
-/* Keep offline-audio state usable without letting it become a narrow column
-   that turns the sticky player into a tall overlay on phone screens. */
+/* Keep offline-audio state usable inside the compact Reader audio section. */
 .bq-reader-audio__offline {
   grid-column: 1 / -1;
   display: grid;

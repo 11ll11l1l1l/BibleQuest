@@ -146,6 +146,34 @@ async function verifyWidth(width) {
     `${width}px Reader has horizontal overflow: html=${metrics.htmlScrollWidth}, body=${metrics.bodyScrollWidth}.`);
   assert(metrics.layoutRight <= width + 1 && metrics.scriptureRight <= width + 1,
     `${width}px Reader content exceeds the viewport.`);
+  const audioLayout = await page.evaluate(() => {
+    const player = document.querySelector('[data-reader-audio-player]');
+    const verses = [...document.querySelectorAll('[data-verse]')];
+    if (!player || verses.length === 0) return null;
+    const playerRect = player.getBoundingClientRect();
+    const lastVerseRect = verses.at(-1).getBoundingClientRect();
+    return {
+      position: getComputedStyle(player).position,
+      player: { left: playerRect.left, right: playerRect.right, top: playerRect.top, bottom: playerRect.bottom },
+      lastVerse: { top: lastVerseRect.top, bottom: lastVerseRect.bottom },
+    };
+  });
+  if (audioLayout) {
+    assert(audioLayout.position === 'static',
+      `${width}px Reader audio should remain in document flow; got ${audioLayout.position}.`);
+    assert(audioLayout.player.left >= -1 && audioLayout.player.right <= width + 1,
+      `${width}px Reader audio exceeds the viewport: ${JSON.stringify(audioLayout.player)}.`);
+    assert(audioLayout.lastVerse.bottom <= audioLayout.player.top + 1,
+      `${width}px Reader audio overlaps the final Scripture verse: ${JSON.stringify(audioLayout)}.`);
+    await page.locator('[data-reader-audio-player]').scrollIntoViewIfNeeded();
+    const audioNavClearance = await page.evaluate(() => {
+      const player = document.querySelector('[data-reader-audio-player]')?.getBoundingClientRect();
+      const nav = document.querySelector('[aria-label="Primary navigation"]')?.getBoundingClientRect();
+      return player && nav ? nav.top - player.bottom : null;
+    });
+    assert(audioNavClearance !== null && audioNavClearance >= 8,
+      `${width}px Reader audio does not clear the bottom navigation by 8px: ${audioNavClearance}px.`);
+  }
   for (const [name, value] of Object.entries({
     translation: metrics.translationHeight,
     book: metrics.bookHeight,
@@ -266,6 +294,11 @@ async function verifyReaderAudioStateRecovery() {
   await page.getByLabel('Chapter', { exact: true }).selectOption('1');
   const playButton = page.locator('[data-reader-audio-toggle]');
   await playButton.waitFor({ state: 'visible' });
+  const initialAudioTime = (await page.locator('[data-reader-audio-time]').textContent())?.trim();
+  assert(initialAudioTime === '0:00 / Duration unavailable',
+    `Reader invented an unknown duration instead of stating its status: ${initialAudioTime}.`);
+  assert(await page.locator('.bq-reader-audio__more [data-reader-audio-auto-next]').count() === 1,
+    'Reader Auto-next control must remain inside the Audio options disclosure.');
   await page.waitForFunction(() => document.querySelector('[data-reader-audio-download]')?.textContent?.includes('Download chapter audio'));
   assert(await page.locator('[data-reader-audio-download]').count() === 1,
     'Certified OpenBible Hays audio did not expose the explicit chapter download action.');

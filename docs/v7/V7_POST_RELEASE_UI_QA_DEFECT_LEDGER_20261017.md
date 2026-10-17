@@ -24,10 +24,10 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| R01 | P0 | V+S | Large sticky audio player covers central Genesis text; sticky player CSS uses bottom offset and 5-column layout | Verse content including final verse remains scrollable/reachable above player and nav, in collapsed and expanded states | 01 | OPEN |
-| R02 | P0 | V+T | Fixed bottom nav overlaps reading region and audio-player lower edge | Correct bottom safe-area scroll padding, no masked/focus-hidden text or controls | 01/03 | OPEN |
-| R03 | P1 | V+S | Audio controls wrap: Audio options appears in vertically stacked tiny space, Auto-next takes multiple lines | Mini-player responsive structure; options in accessible sheet/details, labels and checkbox remain readable | 02 | OPEN |
-| R04 | P1 | V+S | Playback time shows 0:00 / --:-- but says Ready to play | Explicit loading, ready, duration unavailable, failure and retry states; no misleading progress slider | 02 | OPEN |
+| R01 | P0 | V+S | Large sticky audio player covers central Genesis text; sticky player CSS uses bottom offset and 5-column layout | Verse content including final verse remains scrollable/reachable above player and nav, in collapsed and expanded states | 01 | IN_PROGRESS |
+| R02 | P0 | V+T | Fixed bottom nav overlaps reading region and audio-player lower edge | Correct bottom safe-area scroll padding, no masked/focus-hidden text or controls | 01/03 | IN_PROGRESS |
+| R03 | P1 | V+S | Audio controls wrap: Audio options appears in vertically stacked tiny space, Auto-next takes multiple lines | Mini-player responsive structure; options in accessible sheet/details, labels and checkbox remain readable | 02 | IN_PROGRESS |
+| R04 | P1 | V+S | Playback time shows 0:00 / --:-- but says Ready to play | Explicit loading, ready, duration unavailable, failure and retry states; no misleading progress slider | 02 | IN_PROGRESS |
 | R05 | P1 | V+T | Top-right drop-down/control seems partially hidden underneath brand header | Verify header/dropdown stack and selector focus; never clip or block tap | 03 | OPEN |
 | R06 | P1 | V+S | Genesis 1 repeated as chapter selector/title and audio chapter label; English/BSB/English labels duplicate some context | Keep one navigational chapter selector, one clear reading heading and compact translation/narration metadata | 02/04 | OPEN |
 | R07 | P1 | V+S | Marked read action/status is not visually distinguishable from an actionable button | State-specific accessible action; no repeated XP award, verify persisted completion | 02 | OPEN |

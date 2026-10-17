@@ -20,9 +20,9 @@ Allowed state transitions:
 
 | Phase | Task | Dependency | Defect IDs | Status | PR / merged SHA / tests / evidence |
 |---|---|---|---|---|---|
-| 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | OPEN | Not started; screenshots need sanitized built-browser recreation |
-| 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | OPEN | Not started |
-| 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | OPEN | Not started |
+| 00 | Baseline reproduction / fixture seed | Docs PR available | All IDs, especially R01 R02 G01 | BLOCKED | 2026-10-17 live guest baseline: five routes observed at 1363×936; Reader R01/R02 reproduced. Need 320/390/430/800 device captures, light theme, saved screenshots and exact deployed SHA; current browser cannot emulate mobile and local Chromium is absent. |
+| 01 | Reader player geometry | 00 P0 reproduction or evidence-backed skip | R01 R02 R08 G01 | IN_PROGRESS | Source fix + responsive browser assertions on branch codex/v7-uiux-phase-00-01-20261017; exact browser CI pending. |
+| 02 | Reader player controls and status | 01 | R03 R04 R06 R07 R09 | IN_PROGRESS | Auto-next moved back inside Audio options; unknown duration now has localized unavailable text. Reader browser assertions added; exact browser CI pending; do not mark PASS until Phase 01 checks pass. |
 | 03 | Header, bottom tabs, safe areas | 01; coordinate with 02 | R02 R05 G01 | OPEN | Not started |
 | 04 | Shared type/colors/spacing/components | 03; source CSS audit | R10 H08 Y03 Y07 O09 L09 G02 G03 | OPEN | Not started |
 | 05 | Home primary first viewport | 04 | H01 H02 H07 | OPEN | Not started |
@@ -40,6 +40,14 @@ Allowed state transitions:
 | 17 | Production, deployed smoke, closure | 16 PASS and current release authorization | G10 plus all | OPEN | Not started |
 
 One chat = one row. Large QA phases 12-15 may be broken into 12A/12B etc if necessary; do not silently skip a required matrix cell or turn old failure into a pass. A follow-up subphase requires its own tracker row and proof.
+
+## Phase 00 live evidence snapshot — 2026-10-17
+
+- Source checked: current `main` HEAD `172693fc0343bcafa4a87459f6cf1ee8f2f885d1`; plan PR #1547 remains open on `docs/v7-postrelease-uiqa-20261017`, head `186e63529fe81064fe85f00b7d9d0a737498519a`. Deployed app did not expose a build SHA; production/source identity remains unverified.
+- Guest routes observed: `#/home`, `#/reader`, `#/library`, `#/one-to-one`, `#/more`. The browser viewport was 1363×936 CSS px, dark theme, guest account. No authenticated user data was opened.
+- Reader reproduction: live BSB audio player was 982×166.14 px at x=185.5, y=697.86; primary navigation begins at y=860. The player therefore overlaps the nav by 4 px and visually covers Scripture while scrolling. Its computed position was `sticky` with `bottom: 78px`. Screenshot was observed in the browser but is not retained as a repository file.
+- Exact blocker: the cloud browser cannot set a 320/390/430/800 CSS viewport and the local Playwright Chromium executable is unavailable. The 1363×936 route metrics are useful reproduction evidence, not substitutes for the required mobile/light-theme matrix. Record Phase 00 as BLOCKED until that matrix and sanitized durable screenshots are available. R01/R02 were reproducible and sufficient to begin their bounded Reader fix.
+- Branch work in progress: remove the sticky overlay and use an in-flow two-row mobile audio layout; keep controls reachable; move Auto-next inside its disclosure; replace `--:--` with a localized duration-unavailable status. Targeted reader wiring tests and typecheck passed locally. Local build failed in the worktree at the V6 compatibility hook (`missing the deployable index or root PWA manifest`) under Node 24.19, while the repository requires Node 22.23.2; exact-head CI is pending and is the required build/browser evidence.
 
 ## Claim/coordination model
 
