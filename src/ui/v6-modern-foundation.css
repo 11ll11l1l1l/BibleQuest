@@ -311,7 +311,8 @@ body {
 .bq-nav {
   bottom: max(8px, env(safe-area-inset-bottom));
   width: min(calc(100% - 20px), 520px);
-  height: 68px;
+  height: auto;
+  min-height: 68px;
   padding: 5px;
   border: 1px solid color-mix(in srgb, var(--bq-border) 88%, transparent);
   border-radius: 22px;
@@ -321,6 +322,7 @@ body {
   -webkit-backdrop-filter: blur(22px) saturate(125%);
 }
 .bq-nav a {
+  min-width: 0;
   min-height: var(--bq-tap-target);
   gap: 3px;
   border-radius: 17px;
@@ -328,7 +330,7 @@ body {
   transition: color var(--bq-motion-base) var(--bq-ease), background var(--bq-motion-base) var(--bq-ease), transform var(--bq-motion-fast) var(--bq-ease);
 }
 .bq-nav a > span { font-size: 20px; }
-.bq-nav a small { font-size: .67rem; font-weight: 720; }
+.bq-nav a small { max-width: 100%; font-size: .67rem; font-weight: 720; line-height: 1.15; white-space: normal; overflow-wrap: anywhere; text-align: center; }
 .bq-nav a[aria-current] {
   background: var(--bq-brand-soft);
   color: var(--bq-brand);
@@ -376,7 +378,8 @@ body {
   .bq-surface { border-radius: 15px; }
   .bq-nav {
     width: calc(100% - 12px);
-    height: 64px;
+    height: auto;
+    min-height: 64px;
     bottom: max(6px, env(safe-area-inset-bottom));
   }
 }

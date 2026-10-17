@@ -24,7 +24,10 @@ export function createLibraryItemPage({service,id,onBack,isContextReady=()=>true
         if(state.status==='ready'&&state.selectedItem){
           const item=state.selectedItem;
           const t=key=>escapeHtml(localization.t(key));
-          host.innerHTML=`<h1>${escapeHtml(item.title)}</h1><p>${escapeHtml(item.summary)}</p><p>${t('v7.content.source')}: ${escapeHtml(item.source.title)}</p><p>${t('v7.content.attribution')}: ${escapeHtml(item.rights.attribution)}</p><p>${t('v7.content.license')}: ${escapeHtml(item.rights.basis)}</p><p>${escapeHtml(item.rights.allowedUses.join(' · '))}</p>${item.contentType==='book'?renderBookMetadata(item):''}${renderPastTeachingArticle(item)}${item.contentType==='devotional'?renderDevotional(item,{locale:localization.getLocale(),translate:localization.t}):''}`;
+          const detailsLabel = ({en:'Source and usage details',tl:'Pinagmulan at paggamit',ceb:'Tinubdan ug paggamit'}[localization.getLocale()] || 'Source and usage details');
+          let sourceUrl = '';
+          try { const url = new URL(item.source.uri); if (url.protocol === 'https:' && !url.username && !url.password) sourceUrl = url.href; } catch { /* Source prose remains available without a link. */ }
+          host.innerHTML=`<h1>${escapeHtml(item.title)}</h1>${item.contentType==='book'?renderBookMetadata(item):''}${renderPastTeachingArticle(item)}${item.contentType==='devotional'?renderDevotional(item,{locale:localization.getLocale(),translate:localization.t,showTitle:false,showMetadata:false}):''}<details class="bq-library-source-details"><summary>${escapeHtml(detailsLabel)}</summary><p>${t('v7.content.source')}: ${escapeHtml(item.source.title)}</p><p>${t('v7.content.attribution')}: ${escapeHtml(item.rights.attribution)}</p><p>${t('v7.content.license')}: ${escapeHtml(item.rights.basis)}</p><p>${escapeHtml(item.rights.allowedUses.join(' · '))}</p>${sourceUrl?`<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.source.title)}</a>`:''}</details>`;
         }else{
           const key=state.status==='error'?(globalThis.navigator?.onLine===false?'v7.library.offline':'v7.library.item.error'):state.status==='not-found'?'v7.library.item.unavailable':state.status==='idle'?'v7.library.item.contextChanged':'v7.library.item.loading';
           host.textContent=localization.t(key);

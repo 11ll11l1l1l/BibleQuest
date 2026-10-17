@@ -30,7 +30,7 @@ try {
   });
 
   await assertJourney('en');
-  assert.match((await page.locator('[data-home-week-heading]').textContent()) || '', /Keep your week connected/);
+  assert.match((await page.locator('[data-home-week-disclosure] summary').textContent()) || '', /Keep your week connected/);
   assert.match((await page.locator('[data-weekly-journey-step="service"]').textContent()) || '', /Service/);
   assert.match((await page.locator('[data-weekly-journey-step="scripture"]').textContent()) || '', /Scripture/);
   assert.match((await page.locator('[data-weekly-journey-step="reflect"]').textContent()) || '', /Reflect/);
@@ -57,6 +57,9 @@ try {
 }
 
 async function assertJourney(locale) {
+  const disclosure = page.locator('[data-home-week-disclosure]');
+  assert.equal(await disclosure.getAttribute('open'), null, `${locale} weekly guide should start collapsed`);
+  await disclosure.locator('summary').click();
   const links = page.locator('[data-home-weekly-journey] [data-weekly-journey-route]');
   assert.equal(await links.count(), 6, `${locale} must expose six connected weekly journey steps`);
   const hrefs = await links.evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));

@@ -5,6 +5,7 @@ import { createLibraryItemPage } from '../../src/features/library/item-page.js';
 import {
   clearLibraryReturnFocus,
   consumeLibraryReturnFocus,
+  consumeLibraryReturnScroll,
   stageLibraryReturnFocus,
 } from '../../src/features/library/navigation-focus.js';
 
@@ -109,13 +110,17 @@ test('Library detail Back stages its item as a one-shot browse focus target', ()
   back.listeners.get('click')();
   assert.equal(backCalls, 1);
   assert.equal(consumeLibraryReturnFocus(), 'origin-item');
+  assert.equal(consumeLibraryReturnScroll(), null);
   assert.equal(consumeLibraryReturnFocus(), '');
   dispose();
 });
 
 test('Library browse restores focus to the originating card only after its return reload settles', () => {
+  const priorWindow = globalThis.window;
+  const scrollCalls = [];
+  globalThis.window = { scrollY: 480, scrollTo: (...args) => scrollCalls.push(args) };
   clearLibraryReturnFocus();
-  stageLibraryReturnFocus('origin-item');
+  stageLibraryReturnFocus('origin-item', 480);
   const nodes = Object.fromEntries([
     '[data-library-status]', '[data-library-results]', '[data-library-search]',
     '[name="query"]', '[name="contentType"]', '[name="taxonomyId"]',
@@ -141,6 +146,7 @@ test('Library browse restores focus to the originating card only after its retur
   service.emit({ status: 'ready', items: [], loadingMore: false });
   assert.equal(origin.focused, true);
   assert.deepEqual(origin.focusOptions, { preventScroll: true });
+  assert.deepEqual(scrollCalls, [[0, 480]], 'browse restores its prior vertical position after results settle');
   assert.equal(nodes['[data-library-status]'].focused, false);
 
   origin.focused = false;
@@ -148,6 +154,8 @@ test('Library browse restores focus to the originating card only after its retur
   assert.equal(origin.focused, false);
   dispose();
   clearLibraryReturnFocus();
+  if (priorWindow === undefined) delete globalThis.window;
+  else globalThis.window = priorWindow;
 });
 
 test('Library browse falls back to its persistent status when the return card is no longer rendered', () => {

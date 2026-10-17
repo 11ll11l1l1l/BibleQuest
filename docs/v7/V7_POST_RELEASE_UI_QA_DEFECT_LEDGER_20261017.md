@@ -24,13 +24,13 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| R01 | P0 | V+S | Large sticky audio player covers central Genesis text; sticky player CSS uses bottom offset and 5-column layout | Verse content including final verse remains scrollable/reachable above player and nav, in collapsed and expanded states | 01 | OPEN |
-| R02 | P0 | V+T | Fixed bottom nav overlaps reading region and audio-player lower edge | Correct bottom safe-area scroll padding, no masked/focus-hidden text or controls | 01/03 | OPEN |
-| R03 | P1 | V+S | Audio controls wrap: Audio options appears in vertically stacked tiny space, Auto-next takes multiple lines | Mini-player responsive structure; options in accessible sheet/details, labels and checkbox remain readable | 02 | OPEN |
-| R04 | P1 | V+S | Playback time shows 0:00 / --:-- but says Ready to play | Explicit loading, ready, duration unavailable, failure and retry states; no misleading progress slider | 02 | OPEN |
+| R01 | P0 | V+S | Large sticky audio player covers central Genesis text; sticky player CSS uses bottom offset and 5-column layout | Verse content including final verse remains scrollable/reachable above player and nav, in collapsed and expanded states | 01 | IN_PROGRESS |
+| R02 | P0 | V+T | Fixed bottom nav overlaps reading region and audio-player lower edge | Correct bottom safe-area scroll padding, no masked/focus-hidden text or controls | 01/03 | IN_PROGRESS |
+| R03 | P1 | V+S | Audio controls wrap: Audio options appears in vertically stacked tiny space, Auto-next takes multiple lines | Mini-player responsive structure; options in accessible sheet/details, labels and checkbox remain readable | 02 | IN_PROGRESS |
+| R04 | P1 | V+S | Playback time shows 0:00 / --:-- but says Ready to play | Explicit loading, ready, duration unavailable, failure and retry states; no misleading progress slider | 02 | IN_PROGRESS |
 | R05 | P1 | V+T | Top-right drop-down/control seems partially hidden underneath brand header | Verify header/dropdown stack and selector focus; never clip or block tap | 03 | OPEN |
 | R06 | P1 | V+S | Genesis 1 repeated as chapter selector/title and audio chapter label; English/BSB/English labels duplicate some context | Keep one navigational chapter selector, one clear reading heading and compact translation/narration metadata | 02/04 | OPEN |
-| R07 | P1 | V+S | Marked read action/status is not visually distinguishable from an actionable button | State-specific accessible action; no repeated XP award, verify persisted completion | 02 | OPEN |
+| R07 | P1 | V+S | Marked read action/status is not visually distinguishable from an actionable button | State-specific accessible action; no repeated XP award, verify persisted completion | 02 | IN_PROGRESS — completed chapters now expose a disabled, themed Marked read state; persistence/idempotency regressions retained |
 | R08 | P1 | V+T | Large reader font with other layers may force excess scroll and selection obstruction | Preserve font-size preference and line length; don't shrink Scripture solely to fit audio UI | 01/12 | OPEN |
 | R09 | P1 | S+T | Reader audio and mark read use data-reader-audio-* and data-reader-mark hooks | Restructure without breaking callbacks, audio timers, seek, chapter auto-next or offline | 02/14 | OPEN |
 | R10 | P2 | V | Typography and spacing between title, source, card top and scripture appear inconsistent | Standardized reader heading/metadata rhythm preserving editorial serif for Scripture | 04 | OPEN |
@@ -40,11 +40,11 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
 | H01 | P1 | V+S | First hero and large Continue Journey section dominate the top and share a Bible CTA | Make next action obvious; compress only redundant content, preserve hero/reading function | 05 | OPEN |
-| H02 | P1 | V+S | Repetitive visible Genesis 1 Genesis → Revelation journey label | Clear single reading plan/chapter naming; inspect underlying formatting, preserve valid progress | 05 | OPEN |
-| H03 | P1 | V+S | Home duplicates destinations in Today, rail, bottom tabs, icon shortcuts and tool badges | One or two contextual shortcuts only where useful; route to features retained in their canonical area | 06 | OPEN |
-| H04 | P1 | V+S | Huge vertical stacking: Today, progress, weekly ministry, assignments, multiple shortcut grids | Compress lower-priority sections into digest links/disclosure; maintain accessibility and feature inventory | 06 | OPEN |
+| H02 | P1 | V+S | Repetitive visible Genesis 1 Genesis → Revelation journey label | Clear single reading plan/chapter naming; inspect underlying formatting, preserve valid progress | 05 | IN_PROGRESS — heading now says “Next: Genesis 1”; plan and progress remain in supporting text |
+| H03 | P1 | V+S | Home duplicates destinations in Today, rail, bottom tabs, icon shortcuts and tool badges | One or two contextual shortcuts only where useful; route to features retained in their canonical area | 06 | IN_PROGRESS — duplicate shortcut rail removed; phone review pending |
+| H04 | P1 | V+S | Huge vertical stacking: Today, progress, weekly ministry, assignments, multiple shortcut grids | Compress lower-priority sections into digest links/disclosure; maintain accessibility and feature inventory | 06 | IN_PROGRESS — six-step weekly guide collapsed behind native disclosure with visible completion count; phone review pending |
 | H05 | P1 | V+T | 'V6 test' content is visible in Today / weekly ministry; may be legitimate fixture/user content | Identify source/account/tenant before removal; block dev fixtures from real production only if confirmed | 06 | OPEN |
-| H06 | P1 | V+T | White floating oval near bottom-right appears unrelated to app visual grammar | Identify whether Android/browser/PWA overlay or app element; remove/fix ONLY if source is app and safe | 06/12 | OPEN |
+| H06 | P1 | V+T | White floating oval near bottom-right appears unrelated to app visual grammar | Identify whether Android/browser/PWA overlay or app element; remove/fix ONLY if source is app and safe | 06/12 | IN_PROGRESS — identified as the app Report launcher; themed and moved into page flow to avoid covering actions |
 | H07 | P1 | V+S | XP, chapters, books, percentage, streak and badge numbers are adjacent with weak explanatory labels | Rebalance stat hierarchy and unit labels; never change underlying XP/progress data | 05/06 | OPEN |
 | H08 | P2 | V | Gold CTAs, dark panels, decorative circular images repeat without clear content differentiation | Reserve gold emphasis for current task; semantic surfaces and spacing consistent | 04/06 | OPEN |
 | H09 | P1 | T | Role-specific assignments and ministry tasks could appear to users without context | Verify member, leader and empty/no-congregation variants and context switch | 06/14 | OPEN |
@@ -54,10 +54,10 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| Y01 | P1 | V+S | Many large dark navigation cards extend far down a single narrow column | Group by personal/study/community/leadership/device; compact row treatment, no feature loss | 07 | OPEN |
-| Y02 | P1 | V | Primary personal actions, admin tools and infrequent features look similarly emphasized | Rank personal/account/progress, role-specific and utility functions by frequency/relevance | 07 | OPEN |
+| Y01 | P1 | V+S | Many large dark navigation cards extend far down a single narrow column | Group by personal/study/community/leadership/device; compact row treatment, no feature loss | 07 | IN_PROGRESS — native category disclosures added; phone browser review pending |
+| Y02 | P1 | V | Primary personal actions, admin tools and infrequent features look similarly emphasized | Rank personal/account/progress, role-specific and utility functions by frequency/relevance | 07 | IN_PROGRESS — primary shortcuts remain prominent; role groups are collapsible |
 | Y03 | P1 | V+T | Tiny category labels/descriptions appear hard to read in exported image | Verify actual computed sizes and 200% text; use readable 14-16 secondary text | 04/07/13 | OPEN |
-| Y04 | P1 | V+S | Repeating one gold full-width CTA on each feature amplifies competing actions | Compact icon+label rows, contextual actions only; no all-gold button list | 07 | OPEN |
+| Y04 | P1 | V+S | Repeating one gold full-width CTA on each feature amplifies competing actions | Compact icon+label rows, contextual actions only; no all-gold button list | 07 | IN_PROGRESS — gold CTAs are nested under closed native category disclosures; expanded-card treatment still needs browser review |
 | Y05 | P1 | T | Some features may be unreachable after compaction | Inventory every data-attribute/callback pre/post, make route equivalence test | 07/14 | OPEN |
 | Y06 | P1 | T | Member/leader/admin gating and deep links may differ | Run all roles; settings, Content Review, user tools remain correct and secure | 07/14 | OPEN |
 | Y07 | P2 | V | Icons, section card styles and panel spacing vary | Apply shared icon family, radius/padding and section headings | 04/07 | OPEN |
@@ -66,12 +66,12 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| O01 | P1 | V+S | ONE 2 ONE eyebrow immediately repeats ONE 2 ONE h1 | Distinct overline meaning or remove duplicate while preserving page title/accessibility | 08 | OPEN |
-| O02 | P1 | V+S | Tall teal hero consumes large vertical space before relationships | Short contextual header at small widths, no text overlay or image license risk | 08 | OPEN |
-| O03 | P1 | V+S | 'No relationships in this congregation' has little guidance, before an equally big Reload | Helpful empty state; invite next step if user permitted; retry only as context-appropriate action | 08 | OPEN |
-| O04 | P1 | V+S | Invite a member is prominent but invitation/pairing outcome not explained | Clear contextual copy/CTA and functional invite flow; show permission/context | 08 | OPEN |
-| O05 | P1 | V+S | Curriculum and Prepare lesson assignment look like universal tools | Verify actual role permissions; expose in mentor/leader section only where authorized | 09 | OPEN |
-| O06 | P1 | V+S | Account, Choose congregation, Back to Grow appear as three giant main CTAs | Move into compact navigation/settings; preserve route and context | 09 | OPEN |
+| O01 | P1 | V+S | ONE 2 ONE eyebrow immediately repeats ONE 2 ONE h1 | Distinct overline meaning or remove duplicate while preserving page title/accessibility | 08 | IN_PROGRESS — duplicate visual overline removed |
+| O02 | P1 | V+S | Tall teal hero consumes large vertical space before relationships | Short contextual header at small widths, no text overlay or image license risk | 08 | IN_PROGRESS — phone hero minimum reduced; viewport verification pending |
+| O03 | P1 | V+S | 'No relationships in this congregation' has little guidance, before an equally big Reload | Helpful empty state; invite next step if user permitted; retry only as context-appropriate action | 08 | IN_PROGRESS — EN/TL/CEB empty copy points to Invite; UI-state/browser review pending |
+| O04 | P1 | V+S | Invite a member is prominent but invitation/pairing outcome not explained | Clear contextual copy/CTA and functional invite flow; show permission/context | 08 | IN_PROGRESS — empty guidance points to existing Invite action; authorized-flow verification pending |
+| O05 | P1 | V+S | Curriculum and Prepare lesson assignment look like universal tools | Verify actual role permissions; expose in mentor/leader section only where authorized | 09 | IN_PROGRESS — presentation now requires active congregation ministry capability; server-side authorization remains required |
+| O06 | P1 | V+S | Account, Choose congregation, Back to Grow appear as three giant main CTAs | Move into compact navigation/settings; preserve route and context | 09 | IN_PROGRESS — links grouped under compact native disclosure; route tests pending |
 | O07 | P1 | V+T | Relationships count/status may report empty while still fetching | Proper loading, empty, error and retry state, aria-live and stale-request handling | 08 | OPEN |
 | O08 | P0 | T | Tenant/mentor/mentee privacy or cross-congregation leakage risk after reorganizing actions | Backend access denials, consent, revocation and role checks remain enforced; no CSS-only security | 09/15 | OPEN |
 | O09 | P2 | V | Secondary dark controls and separators are repetitive with excessive gap | Card/section spacing normalized by shared tokens | 04/09 | OPEN |
@@ -80,12 +80,12 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 
 | ID | Pri | Evidence | Observed defect / verification question | Required outcome | Phase | State |
 |---|---|---|---|---|---|---|
-| L01 | P1 | V | Many tall pale text-first tiles create extraordinary page length and wasted vertical area | Compact cards with fixed content structure; featured items may remain visually large | 10 | OPEN |
-| L02 | P1 | V | Thumbnail/featured image treatment differs greatly from text fallback cards | One cohesive component family; image if approved, live-text editorial fallback otherwise | 10 | OPEN |
-| L03 | P1 | V+T | Low readable-text density and potential low-contrast text on pale gradients | Measure real CSS contrast/legibility, improve semantics and title prominence | 10/13 | OPEN |
+| L01 | P1 | V | Many tall pale text-first tiles create extraordinary page length and wasted vertical area | Compact cards with fixed content structure; featured items may remain visually large | 10 | IN_PROGRESS — text-only cards omit decorative cover area; phone geometry pending |
+| L02 | P1 | V | Thumbnail/featured image treatment differs greatly from text fallback cards | One cohesive component family; image if approved, live-text editorial fallback otherwise | 10 | IN_PROGRESS — approved art preserved; failed art is removed without reserving a cover slot |
+| L03 | P1 | V+T | Low readable-text density and potential low-contrast text on pale gradients | Measure real CSS contrast/legibility, improve semantics and title prominence | 10/13 | IN_PROGRESS — text-only cards use dark semantic surfaces with explicit title/body/accent colors and computed contrast assertions |
 | L04 | P1 | V+T | Content categories, duration/progress and next action aren't obvious at reduced view | Type/topic/length/progress metadata and one clearly labeled action | 10 | OPEN |
 | L05 | P1 | T | Search, chips and filtering may be pushed far above results on lengthy listing | Sticky/compact discovery controls as warranted, preserving focus and spacing | 11 | OPEN |
-| L06 | P1 | T | Details/back may drop user search/filter/scroll context | Preserve query serialization, route restoration and saved state | 11/14 | OPEN |
+| L06 | P1 | T | Details/back may drop user search/filter/scroll context | Preserve query serialization, route restoration and saved state | 11/14 | IN_PROGRESS — query/type/taxonomy/Feeling/Need state, originating focus, and vertical position now have source regressions; browser timing evidence pending |
 | L07 | P1 | T | Empty, fetch-error, offline/cache and unavailable illustration states need true coverage | Designed status/retry without blank image frame, no false 'approved' content | 11/14 | OPEN |
 | L08 | P1 | S+T | Catalog includes devotionals, external-link books, teachings; image and rights policy restricts publication | Preserve 300 records, rights/source/translation gating, legal external links and passed artwork only | 10/15 | OPEN |
 | L09 | P2 | V | Card spacing, background hues and font treatment vary without clear taxonomy | Limited coherent type accents, consistent vertical rhythm and semantic labels | 04/10 | OPEN |
@@ -121,3 +121,14 @@ Evidence owner should attach exact URL/route, source SHA, scenario, viewport, th
 ID and state; first observed file/route; reproduced candidate SHA and deployed SHA; fixture/account-role category; CSS viewport x height and DPR; locale/theme/font zoom; element selector; screenshot link/hash; measured rect/contrast when relevant; steps and outcome; source code path; PR/commit SHA; targeted test/run URL; regressions found; residual risk. Use a sanitized test account and do not commit production user identifiers or credentials.
 
 No state transitions were performed by this plan-writing task. Phase 00 must establish the actual live baseline.
+
+
+## Owner follow-up additions — 2026-10-17
+
+| ID | Pri | Confirmed issue | Correction / review boundary |
+| --- | --- | --- | --- |
+| H11 | P1 | Home substituted an unrelated emotional/gratitude photograph | Original dedicated Bible-study community hero, 1672×941 WebP; explicit one-image owner authorization and five independent source QA records under `artwork-evidence/home-hero-20261017/`. Responsive/exact-candidate results are in PR #1549; production approval is separate. |
+| Y08 | P1 | Pale You cards inherited white headings; labels effectively disappeared | Existing dark semantic surfaces, explicit heading/hint colors and one-column phone shortcuts. Actual 390px computed contrast on `42df9b034fdee30e37d19cce795f53591d338196`: heading minimum 13.69:1; hint minimum 9.93:1. Newer candidates rerun the same 4.5:1 assertions. |
+| G11 | P1 | The Report control mixed pale background/light text and covered nearby phone actions | Dark-themed launcher/dialog/fields/statuses; in-flow page-end launcher preserves reporting access without overlaying content. |
+
+Source corrections and automated checks do not close the owner's reserved phone/PWA review or permit removing legitimate assignment/tenant content. See the current PR for candidate-specific results.

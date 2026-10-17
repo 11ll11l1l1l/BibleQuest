@@ -13,6 +13,10 @@ try{
   await page.goto(BASE,{waitUntil:'networkidle'});
   await page.locator('[data-bq-shell="v3"]').waitFor({timeout:10000});
   await page.locator('[data-route-link="more"]').click();
+  const deviceGroup=page.locator('[data-more-group="device"] details');
+  assert(await deviceGroup.getAttribute('open')===null,'Device tools should start collapsed.');
+  await deviceGroup.locator('summary').focus();
+  await page.keyboard.press('Enter');
   await page.locator('[data-open-accessibility]').waitFor({timeout:5000});
   await page.locator('[data-open-accessibility]').click();
   await page.locator('[data-accessibility-page]').waitFor({timeout:5000});

@@ -65,7 +65,8 @@ test('renders chapter and verse presentation as escaped, independently testable 
   const readHtml = renderReaderChapterPresentation(chapter, {
     translationLabel: 'BSB', highlightedVerse: null, isRead: true,
   });
-  assert.match(readHtml, />Marked read</);
+  assert.match(readHtml, /data-reader-mark disabled>Marked read</);
+  assert.doesNotMatch(html, /data-reader-mark disabled/);
   assert.doesNotMatch(readHtml, /is-highlighted/);
 });
 

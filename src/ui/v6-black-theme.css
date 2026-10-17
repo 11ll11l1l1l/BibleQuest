@@ -105,6 +105,14 @@ dialog,
   color: #f2f0e8;
 }
 
+.bq-reader-title [data-reader-mark]:disabled {
+  background: var(--bq-brand-soft);
+  border-color: var(--bq-border-strong);
+  color: var(--bq-success);
+  opacity: 1;
+  cursor: default;
+}
+
 /* The inherited Reader stylesheet predates the V6 dark surface and hard-codes
    dark verse text with !important. Override those literals here so Scripture
    remains readable at normal and highlighted/audio-current states. */
@@ -187,8 +195,7 @@ dialog,
   color: var(--bq-text-secondary) !important;
 }
 
-/* Keep offline-audio state usable without letting it become a narrow column
-   that turns the sticky player into a tall overlay on phone screens. */
+/* Keep offline-audio state usable inside the compact Reader audio section. */
 .bq-reader-audio__offline {
   grid-column: 1 / -1;
   display: grid;
@@ -216,7 +223,7 @@ dialog,
 
 .bq-reader-audio__offline .bq-secondary-button {
   width: auto;
-  min-height: 36px;
+  min-height: 44px;
   padding: 6px 10px;
   white-space: nowrap;
 }
@@ -233,6 +240,18 @@ dialog,
 }
 
 /* Form controls must never flash a white inherited browser surface. */
+.bq-reader-search input,
+.bq-reader-controls select,
+.bq-reader-audio-controls select,
+.bq-reader-toolbar > button {
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  box-shadow: none;
+}
+.bq-reader-toolbar > button { padding: 8px 12px; font: inherit; }
+
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
   border-color: var(--bq-border-strong);
   background: var(--bq-surface-muted);

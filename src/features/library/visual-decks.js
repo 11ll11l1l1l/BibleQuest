@@ -162,6 +162,11 @@ export function createV7LibraryDiscoveryDeck({
   return Object.freeze({
     element: region,
     getState: () => Object.freeze({ kind, activeId: model.entries[active]?.id || '', selectedIds: Object.freeze([...selected]) }),
+    setSelected(ids) {
+      selected.clear();
+      for (const id of ids || []) selected.add(id);
+      update();
+    },
     destroy() {
       destroyed = true;
       cards.forEach(cleanupMotion);

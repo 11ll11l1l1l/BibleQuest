@@ -176,6 +176,7 @@ try {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.goto(baseUrl + '/#/library', { waitUntil: 'networkidle' });
+    await page.locator('[data-library-filter-panel] > summary').click();
     await page.locator('[data-library-visual-decks] [data-v7-deck="emotion"]').waitFor({ state: 'visible' });
     for (const [kind, count] of [['emotion', 30], ['need', 19]]) {
       stage = 'library-decks/390/' + reducedMotion + '/' + kind;
