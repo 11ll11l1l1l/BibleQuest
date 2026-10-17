@@ -360,8 +360,8 @@ try {
   // remains keyboard-focusable without assuming no session-driven rerender.
   await page.locator('#bq-library-query').focus();
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-query');
-  await page.locator('#bq-library-type').focus();
-  assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-type');
+  await page.locator('[data-library-type="devotional"]').focus();
+  assert.equal(await page.evaluate(() => document.activeElement?.dataset.libraryType), 'devotional');
   await assertNoHorizontalOverflow(page, 'mentor public Library');
   checks.push('authenticated-reviewed-public-library-isolation-search-focus-mobile');
 
