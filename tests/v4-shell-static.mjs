@@ -30,9 +30,40 @@ assert.ok(shell.includes("text('app.name')"), 'Shell must render the localized B
 assert.ok(shell.includes("text('shell.brandHomeLabel')"), 'Shell brand control must retain an accessible localized name.');
 assert.ok(!/>BQ<\/strong>/.test(shell), 'Shell must not fall back to a bare "BQ" text mark.');
 
-// All five primary routes present, each wired to a stable localized label key.
-for (const [route, key] of [['home','nav.home'], ['learn','nav.learn'], ['play','nav.play'], ['grow','nav.grow'], ['more','nav.more']]) {
-  assert.ok(shell.includes(`'${route}'`) && shell.includes(`'${key}'`), `Shell navigation is missing the '${route}' route or its localized label key.`);
+// Accept the original V4 shell or the deliberate V7 five-destination redesign.
+// In V7 the legacy Learn/Play/Grow routes still exist, but are owned by
+// Library/Home/Groups instead of consuming separate top-level tabs.
+const navMatch = shell.match(/const NAV\\s*=\\s*\\[([\\s\\S]*?)\\];/);
+assert.ok(navMatch, 'Shell must define its primary navigation.');
+const nav = [...navMatch[1].matchAll(/\\[\\s*'([^']+)'\\s*,\\s*'([^']+)'\\s*,\\s*'([^']+)'\\s*\\]/g)]
+  .map(match => ({ route: match[1], key: match[2], icon: match[3] }));
+assert.equal(nav.length, 5, 'Shell must have exactly five labeled primary destinations');
+const routes = nav.map(row => row.route);
+const v7Routes = ['home', 'reader', 'library', 'one-to-one', 'more'];
+const v4Routes = ['home', 'learn', 'play', 'grow', 'more'];
+if (JSON.stringify(routes) === JSON.stringify(v7Routes)) {
+  for (const [route, key] of [
+    ['home', 'nav.home'], ['reader', 'nav.bible'], ['library', 'nav.library'],
+    ['one-to-one', 'nav.groups'], ['more', 'nav.you']
+  ]) {
+    assert.ok(nav.some(row => row.route === route && row.key === key && row.icon),
+      `V7 primary destination ${route} must have a localized label and icon`);
+  }
+  assert.ok(shell.includes("'learn'") && shell.includes("'library-item'") && shell.includes("return 'library'"),
+    'Legacy Learn/detail routes must remain inside the V7 Library destination');
+  assert.ok(shell.includes("'play'") && shell.includes("return 'home'"),
+    'Legacy Play route must remain owned by Home');
+  assert.ok(shell.includes("route === 'grow'") && shell.includes("return 'one-to-one'"),
+    'Legacy Grow route must remain owned by Groups');
+} else {
+  assert.deepEqual(routes, v4Routes, 'Unrecognized five-destination shell contract');
+  for (const [route, key] of [
+    ['home', 'nav.home'], ['learn', 'nav.learn'], ['play', 'nav.play'],
+    ['grow', 'nav.grow'], ['more', 'nav.more']
+  ]) {
+    assert.ok(nav.some(row => row.route === route && row.key === key && row.icon),
+      `V4 primary destination ${route} must have a localized label and icon`);
+  }
 }
 assert.ok(/aria-current/.test(shell), 'Shell must mark the active route with aria-current for assistive tech.');
 
