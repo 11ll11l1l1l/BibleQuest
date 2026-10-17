@@ -6,7 +6,7 @@ import { morePage } from '../../src/features/more/index.js';
 const source = readFileSync(new URL('../../src/features/more/index.js', import.meta.url), 'utf8');
 const style = readFileSync(new URL('../../src/ui/more-v4.css', import.meta.url), 'utf8');
 
-test('V7 You hub gives one primary and two secondary full-card native deep links', () => {
+test('V7 You hub gives a primary personal link and accessible feature shortcuts', () => {
   assert.match(source, /href="#\/\$\{route\}"/);
   assert.match(source, /shortcut\('my-journey',you\.journey,you\.journeyHint,'grow',true\)/);
   assert.match(source, /shortcut\('account',you\.account,you\.accountHint,'user'\)/);
@@ -29,4 +29,7 @@ test('legacy More tool actions are preserved under the personal entry', () => {
   assert.ok(page.html.includes('href="#/my-journey"'));
   assert.ok(page.html.includes('href="#/account"'));
   assert.ok(page.html.includes('href="#/accessibility"'));
+  assert.ok(page.html.includes('href="#/learn"'));
+  assert.ok(page.html.includes('href="#/play"'));
+  assert.ok(!page.html.includes('undefined'));
 });

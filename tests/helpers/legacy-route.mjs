@@ -1,8 +1,14 @@
-// V7 keeps legacy feature URLs while its five primary tabs have new owners.
-// Use the hash router without reloading so leave/resume state remains under test.
+// V7 keeps legacy feature routes behind visible launchers in its five-tab shell.
+// Exercise the real launchers without reloading so leave/resume stays under test.
 export async function openLegacyRoute(page, route) {
   const tab = page.locator(`[data-route-link="${route}"]`);
   if (await tab.count()) await tab.click();
-  else await page.evaluate(route => { location.hash = '/' + route; }, route);
+  else if (route === 'learn' || route === 'play') {
+    await page.locator('[data-route-link="more"]').click();
+    await page.locator(`[data-v7-you-hub] a[href="#/${route}"]`).click();
+  } else if (route === 'grow') {
+    await page.locator('[data-route-link="home"]').click();
+    await page.locator('[data-home-rail-item="grow"]').click();
+  } else throw new Error(`No tested launcher for retained route: ${route}`);
   await page.waitForURL(url => url.hash === '#/' + route);
 }
