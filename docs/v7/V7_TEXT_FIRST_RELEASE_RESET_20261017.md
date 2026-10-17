@@ -1,6 +1,30 @@
 # BibleQuest V7 — functionality-first release reset (owner direction, 2026-10-17)
 
-Status: implementation proposal on `v7/text-first-release-20261017`; binding after integration into `v7/development`.
+Status: binding owner-directed V7 release contract; text-first implementation integrated by PR #1540.
+
+## Binding release plan — 2026-10-17 owner instruction
+
+This is the mandatory first read for EVERY V7 chat, lane, scheduled task and agent. It supersedes older image-first quotas and instructions to generate/repair artwork. The compromise is artwork coverage only: existing V7 features, redesign and P0 motion requirements remain required.
+
+- STOP image generation, rerendering and derivative production for V7. Use only existing independently passed, rights-cleared immutable image bytes that also pass production registration/served-byte checks. Staged QA PASS is not production approval; until eligible use the color/text fallback. Never promote pending, rejected, quarantined or rights-unknown images to fill a slot.
+- Preserve approved assets and the 300 devotional inventory. Missing art uses deliberate colored cards/buttons with live localized text, metadata and working actions; no broken-image icons, empty media frames or disabled feature because a picture is missing. Future images are deferred to V8+ and require future authorization.
+- Retain the redesign in `V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md` and P0 motion in `V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md`, except requirements that specifically demand image coverage/large photographic layouts incompatible with this text-first decision. Preserve typography, spacing, coherent Home/Library/reader, labeled navigation, responsive states and accessible interaction.
+- Do not silently defer existing V7 feature commitments. If a scope conflict is found, record it explicitly in active status; only artwork is newly deferred by this decision.
+
+### Execution order and completion evidence
+
+1. **Reconcile the actual release candidate.** Start with live `v7/development`, `V7_ACTIVE_STATUS.md`, this file and main-target PR #1541. PR #1540 is MERGED (888ef27b766b3a1d0bf0ee117822c9e495ac2e56); do not rebuild its fallback implementation.
+2. **Close observed blockers.** Assessment baseline 7da68699eab5f5484ddd8b2773748c2117b3960e: V7 Release Convergence passed (run 39001206350), but protected-page acceptance failed (39001206408) and inherited browser regression failed (39001206422). Diagnose failure logs and fix root causes; do not disable checks or call unrelated green jobs proof. Refresh live results before working; these are baseline observations, not permanent open-task claims.
+3. **Prove features and content.** Library browse/search/filter/details/read, eight permitted-use book entries, rights-clear teachings, automated revision-bound Content Review, and ONE 2 ONE pairing/lesson/progress/consent/revocation/privacy/tenant denial must work through real entry routes. Preserve 300 records and prove at least 150 legitimately publishable devotionals with EN/TL/CEB/ILO revision-bound translation, rights and Scripture evidence; report catalog and publishable counts separately.
+4. **Prove the finished redesign.** Built-app Home/Library/reader and primary navigation; loading/empty/error/retry/offline states; 320/390/430/800 widths, EN/TL/CEB/ILO, light/dark, 200% text, keyboard/touch, normal/reduced motion. Test missing art and failed image requests plus retained approved assets. Keep existing performance/PWA/update/offline and V6 regression contracts.
+5. **Certify and release one candidate.** One integration owner serializes merges. Freeze an exact candidate; all required checks and strict releaseReady evidence must match it, including authenticated backend privacy checks and published-image hashes. Preserve rollback identity, promote through the existing production path, then verify deployed identity and essential production smoke. Pre-merge certification and post-deploy verification are separate steps. Any source change creates a new candidate.
+6. **Close with durable evidence.** Update V7_ACTIVE_STATUS.md with candidate/deployed SHA, check links, catalog/publishable counts, observed remaining defects and deferred artwork. A PR, staged image QA or passing units alone does not mean released.
+
+### Cross-chat operating rule
+
+Every new instance reads the live repository plan before work, selects the next unfinished item, checks existing PR ownership, makes a bounded fix and leaves exact SHA/check/next-action evidence. Do not restart image queues, duplicate completed implementation, weaken security/rights/Scripture checks, or silently start V8. Existing scheduled art instructions are superseded by this freeze; they must not generate or repair pixels. Already-passed-image validation is allowed; optional pending-art QA must not delay the release.
+
+This repository contract is the shared handoff. A chat that does not read the repository cannot be technically forced to obey it; never claim universal enforcement from documentation alone.
 
 ## Decision
 
