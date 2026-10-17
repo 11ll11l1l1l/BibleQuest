@@ -55,6 +55,7 @@ try {
         if (message.type() === 'error') errors.push(message.text());
       });
       page.on('pageerror', error => errors.push(error.message));
+      try {
       await page.goto(`${baseUrl}/#/${route.id}`, { waitUntil: 'networkidle' });
       await page.locator(route.selector).first().waitFor({ state: 'visible', timeout: 15000 });
       await page.locator('.bq-nav').waitFor({ state: 'visible' });
@@ -115,14 +116,14 @@ try {
             ...rect(link),
           })),
           unlabeledControls: [...document.querySelectorAll('#bq-view button, #bq-view a[href], #bq-view input, #bq-view select, #bq-view textarea, #bq-view summary')]
-            .filter(element => element.getClientRects().length && !element.closest('[hidden]'))
+            .filter(element => element.checkVisibility() && !element.closest('[hidden]'))
             .filter(element => !(element.getAttribute('aria-label')
               || element.labels?.[0]?.textContent?.trim()
               || element.textContent?.trim()
               || element.getAttribute('title')))
             .map(element => element.outerHTML),
           shortTapTargets: [...document.querySelectorAll('#bq-view button, #bq-view input, #bq-view select, #bq-view textarea, #bq-view summary')]
-            .filter(element => element.getClientRects().length && !element.closest('[hidden]'))
+            .filter(element => element.checkVisibility() && !element.closest('[hidden]'))
             .map(element => {
               // Native checkbox/radio labels are part of their clickable area.
               const target = element.matches('input[type="checkbox"], input[type="radio"]')
@@ -187,7 +188,8 @@ try {
           assert.equal(await more.getAttribute('open') !== null, true, `${viewport.width}: audio options disclosure opens`);
           assert.equal(await more.locator('[data-reader-audio-auto-next]').count(), 1,
             `${viewport.width}: Auto-next remains available inside audio options`);
-          const expandedTargets = await more.locator('summary, select, label:has(input[type="checkbox"])').evaluateAll(elements => elements
+          assert.equal(await more.locator('.bq-reader-audio-controls').evaluate(element => ['fixed', 'sticky'].includes(getComputedStyle(element).position)), false, `${viewport.width}: expanded controls must remain in document flow`);
+          const expandedTargets = await more.locator('summary, select, button, label:has(input[type="checkbox"])').evaluateAll(elements => elements
             .filter(element => element.getClientRects().length)
             .map(element => {
               const bounds = element.getBoundingClientRect();
@@ -248,13 +250,23 @@ try {
       assert.ok(scaled.pageWidth <= scaled.viewportWidth + 1,
         `${route.id}/${viewport.width}: horizontal overflow at 200% text (${scaled.pageWidth}/${scaled.viewportWidth})`);
       report.observations.at(-1).textScale200 = scaled;
-      await page.close();
+      } catch (error) {
+        report.result = 'FAIL';
+        report.failures ||= [];
+        report.failures.push({ route: route.id, profile: viewport, error: String(error?.stack || error) });
+        await mkdir('artifacts/v7/phone-first-uiux', { recursive: true });
+        const file = `artifacts/v7/phone-first-uiux/failure-${route.id}-${viewport.width}-${viewport.locale}.png`;
+        await page.screenshot({ path: file, fullPage: true, animations: 'disabled' }).catch(() => {});
+      } finally {
+        await page.close();
+      }
     }
     await context.close();
   }
 
   await mkdir('artifacts/v7', { recursive: true });
   await writeFile('artifacts/v7/phone-first-uiux-geometry.json', `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  assert.equal(report.result, 'PASS', JSON.stringify(report.failures, null, 2));
 } catch (error) {
   report.result = 'FAIL';
   report.failure = String(error?.stack || error);
