@@ -73,7 +73,13 @@ try {
         parent: element.parentElement?.className,
         styles: [...document.styleSheets].map(sheet => sheet.href || '').filter(url => url.includes('home') || url.includes('v7')),
       }));
-      assert.ok(heroMetrics.rect >= 280, 'image-first Home feature has usable visual height: ' + JSON.stringify(heroMetrics));
+      // The text-first V7 release intentionally reduces the mobile hero so
+      // the real Quest continuation is visible in the opening viewport.
+      // Keep sufficient space for the semantic Home title and Bible action.
+      assert.ok(heroMetrics.rect >= (width <= 430 ? 260 : 280),
+        'text-first Home feature has insufficient usable height: ' + JSON.stringify(heroMetrics));
+      if (width <= 430) assert.ok(heroMetrics.rect <= 320,
+        'mobile text-first Home hero obscures the Quest continuation: ' + JSON.stringify(heroMetrics));
       assert.equal(await heroAction.count(), 1, 'one clear reading action in feature artwork');
       assert.ok((await heroAction.getAttribute('aria-label'))?.trim(), 'live translated button semantics');
       assert.ok((await heroCover.getAttribute('src'))?.trim(), 'offline-friendly static or approved art');
