@@ -56,6 +56,9 @@ export function createV7LibraryDiscoveryDeck({
     const visual = doc.createElement('span');
     visual.className = 'bq-v7-visual-deck__image';
     visual.dataset.fallback = entry.visual.fallback;
+    // An unapproved/missing image renders as an intentional color selector,
+    // never as a tall empty artwork placeholder.
+    if (!entry.visual.src) card.className += ' bq-v7-visual-deck__card--text-only';
     if (entry.visual.src) {
       const image = doc.createElement('img');
       image.src = entry.visual.src;
@@ -63,7 +66,10 @@ export function createV7LibraryDiscoveryDeck({
       image.alt = entry.visual.alt; // a decorative image uses alt="", with a live card label
       image.loading = 'lazy';
       image.decoding = 'async';
-      image.addEventListener('error', () => { image.hidden = true; });
+      image.addEventListener('error', () => {
+        image.hidden = true;
+        card.className += ' bq-v7-visual-deck__card--text-only';
+      });
       visual.append(image);
     }
     const label = doc.createElement('span');
