@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildLaneBAutomatedApprovalEvidence } from '../../scripts/v7-release-automated-approval-evidence.mjs';
+import { buildLaneBAutomatedApprovalEvidence, collectReleaseFactory } from '../../scripts/v7-release-automated-approval-evidence.mjs';
+import { collectReleaseApprovalEntries } from '../../scripts/v7-release-automated-approval-decisions.mjs';
 import {
   V7_LIBRARY_APPROVAL_POLICY_ID,
   V7_LIBRARY_APPROVAL_POLICY_VERSION,
@@ -80,3 +81,14 @@ test('Lane D approval evidence passes only exact-policy decisions with independe
   assert.equal(report.counts.approvedDevotionalDeficit, 0);
   assert.equal(report.machineWork.releaseFloorSatisfied, true);
 });
+
+test('factory evidence and automated approval ledger include all 300 release items including backfills', async () => {
+  const [factory, approvals] = await Promise.all([collectReleaseFactory(), collectReleaseApprovalEntries()]);
+  const releaseIds = factory.map(item => item.id).sort();
+  const decisionIds = approvals.map(row => row.item.id).sort();
+  assert.equal(factory.length, 300);
+  assert.equal(approvals.length, 300);
+  assert.deepEqual(releaseIds, decisionIds);
+  assert.ok(releaseIds.includes('devotional.biblequest.guilt.11'));
+});
+

@@ -14,6 +14,9 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { writeArtifactIntegrityManifest } from './scripts/v6-artifact-integrity.mjs';
 import { generateScripturePackageManifests } from './scripts/v6-generate-scripture-manifests.mjs';
+import { writeV7PublicLibraryCatalog } from './scripts/v7-generate-public-library-catalog.mjs';
+import { publishV7VisualAssets } from './scripts/v7-publish-visual-assets.mjs';
+import { mayCopyCompatibilityData } from './scripts/v7-build-draft-isolation.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const outDir = resolve(root, 'dist-v6');
@@ -64,15 +67,18 @@ function walkFiles(directory) {
 function copyLegacyRuntime() {
   return {
     name: 'biblequest-v5-runtime-compatibility-copy',
-    closeBundle() {
+    async closeBundle() {
       mkdirSync(outDir, { recursive: true });
+      // Also remove drafts left by an older local build before the final seal.
+      rmSync(join(outDir, 'data/v7/visual-assets/qa-candidates'), { recursive: true, force: true });
 
       for (const entry of readdirSync(root, { withFileTypes: true })) {
         if (entry.isDirectory() && compatibilityDirectories.has(entry.name)) {
           const source = join(root, entry.name);
           const target = join(outDir, entry.name);
           if (existsSync(source)) {
-            cpSync(source, target, { recursive: true, force: true });
+            cpSync(source, target, { recursive: true, force: true,
+              filter: path => mayCopyCompatibilityData(path, root) });
           }
           continue;
         }
@@ -92,6 +98,11 @@ function copyLegacyRuntime() {
       generateScripturePackageManifests({
         root,
         outputDirectory: join(outDir, 'data', 'v6-scripture-manifests'),
+      });
+
+      await writeV7PublicLibraryCatalog({
+        candidateSha: buildSha,
+        outputPath: join(outDir, 'data', 'v7', 'library-public-catalog.json'),
       });
 
       writeFileSync(
@@ -127,6 +138,12 @@ function copyLegacyRuntime() {
         '<link rel="manifest" href="manifest.webmanifest">',
       );
       writeFileSync(indexPath, normalizedIndex, 'utf8');
+
+      // Publish only audited Lane A production-ready art before final integrity seal.
+      await publishV7VisualAssets({ root, outDir });
+      // closeBundle hooks otherwise run concurrently: seal only after the
+      // compatibility copy and audited publication have finished.
+      await collectPrivateSourceMaps().closeBundle();
     },
   };
 }
@@ -180,7 +197,7 @@ export default defineConfig({
   define: {
     __BQ_BUILD_SHA__: JSON.stringify(buildSha),
   },
-  plugins: [copyLegacyRuntime(), collectPrivateSourceMaps()],
+  plugins: [copyLegacyRuntime()],
   build: {
     outDir,
     emptyOutDir: true,

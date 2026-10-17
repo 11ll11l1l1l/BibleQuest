@@ -4,6 +4,9 @@ import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscove
 import { renderLibraryDiscoveryEmptyState, renderLibraryEmotionDiscovery } from './emotion-discovery-panel.js';
 import { normalizeLibraryDiscoveryQuery, toLibraryDiscoveryRequest, toggleLibraryDiscoverySelection } from './emotion-taxonomy.js';
 import { consumeLibraryReturnFocus } from './navigation-focus.js';
+import { createV7LibraryDiscoveryDeck } from './visual-decks.js';
+import { createV7LibraryVisualContentCard } from './visual-content-card.js';
+import { loadV7VisualRegistry } from '../../ui/visual-assets.js';
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -12,6 +15,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 export function createLibraryPage({
   service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch,
   isContextReady = () => true, subscribeContext = () => () => {},
+  visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
 } = {}) {
   if (typeof service?.list !== 'function' || typeof service?.getState !== 'function' || typeof service?.subscribe !== 'function') {
@@ -19,6 +23,7 @@ export function createLibraryPage({
   }
   if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
   const t = (key, values) => localization.t(key, { values });
+  const filterLabel = ({ en: 'Refine results', tl: 'Salain ang resulta', ceb: 'Pinoha ang resulta', ilo: 'Pasayaaten dagiti resulta' }[localization.getLocale()] || 'Refine results');
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
     ? t('v7.library.type.' + type.id) : type.label;
   const typeOptions = () => registry.list().map(type =>
@@ -36,25 +41,39 @@ export function createLibraryPage({
   return Object.freeze({
     title: t('v7.library.title'),
     html: `<main class="bq-panel bq-library" data-library-page>
-      <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
-      <h1>${escapeHtml(t('v7.library.title'))}</h1>
-      <p>${escapeHtml(t('v7.library.intro'))}</p>
-      <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
-      <div data-library-emotion-discovery-host hidden></div>
+      <header class="bq-library__header">
+        <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
+        <h1>${escapeHtml(t('v7.library.title'))}</h1>
+        <p>${escapeHtml(t('v7.library.intro'))}</p>
+      </header>
       <form data-library-search>
-        <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
-        <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
-        <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
-        <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
-        <label for="bq-library-taxonomy">${escapeHtml(t('v7.library.taxonomy'))}</label>
-        <select id="bq-library-taxonomy" name="taxonomyId"><option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option></select>
-        <div class="bq-actions">
-          <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
-          <button type="button" class="bq-secondary-button" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
+        <div class="bq-library__search-row">
+          <label for="bq-library-query">${escapeHtml(t('v7.library.searchLabel'))}</label>
+          <div class="bq-library__search-control">
+            <input id="bq-library-query" name="query" type="search" maxlength="120" autocomplete="off">
+            <button type="submit" class="bq-primary-button">${escapeHtml(t('v7.library.search'))}</button>
+          </div>
         </div>
+        <div class="bq-library__type-row">
+          <label for="bq-library-type">${escapeHtml(t('v7.library.type'))}</label>
+          <select id="bq-library-type" name="contentType"><option value="">${escapeHtml(t('v7.library.allTypes'))}</option>${typeOptions()}</select>
+        </div>
+        <details class="bq-library-filter-panel" data-library-filter-panel>
+          <summary>${escapeHtml(filterLabel)}</summary>
+          <div class="bq-library-filter-panel__body">
+            <label for="bq-library-taxonomy">${escapeHtml(t('v7.library.taxonomy'))}</label>
+            <select id="bq-library-taxonomy" name="taxonomyId"><option value="">${escapeHtml(t('v7.library.allTaxonomy'))}</option></select>
+            <div class="bq-library-discovery" data-library-discovery aria-label="${escapeHtml(t('v7.library.taxonomy'))}" hidden></div>
+            <div data-library-emotion-discovery-host hidden></div>
+          </div>
+        </details>
+        <button type="button" class="bq-library-clear" data-library-clear>${escapeHtml(t('v7.library.clear'))}</button>
       </form>
-      <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
-      <button type="button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
+      <div data-library-visual-decks hidden></div>
+      <div class="bq-library__result-status">
+        <p data-library-status role="status" aria-live="polite" tabindex="-1">${escapeHtml(t('v7.library.loading'))}</p>
+        <button type="button" class="bq-secondary-button" data-library-retry hidden>${escapeHtml(t('v7.library.retry'))}</button>
+      </div>
       <ul data-library-results aria-label="${escapeHtml(t('v7.library.items'))}"></ul>
       <div data-library-discovery-empty-host hidden></div>
       <button type="button" class="bq-secondary-button" data-library-more hidden>${escapeHtml(t('v7.library.more'))}</button>
@@ -70,6 +89,8 @@ export function createLibraryPage({
       const termInput = page.querySelector('[name="taxonomyId"]');
       const discovery = page.querySelector('[data-library-discovery]');
       const emotionDiscovery = page.querySelector('[data-library-emotion-discovery-host]');
+      const visualDecks = page.querySelector('[data-library-visual-decks]');
+      const deckDomReady = Boolean(visualDecks?.ownerDocument?.createElement && visualDecks?.replaceChildren);
       const discoveryEmpty = page.querySelector('[data-library-discovery-empty-host]');
       const retry = page.querySelector('[data-library-retry]');
       const more = page.querySelector('[data-library-more]');
@@ -81,6 +102,39 @@ export function createLibraryPage({
       const discoveryEnabled = typeof discoverySearch === 'function';
       let discoveryQuery = normalizeLibraryDiscoveryQuery(initialDiscoveryQuery);
       let lastDiscoveryRenderKey = '';
+      let visualRegistry = null;
+      let visualDeckKey = '';
+      let mountedDecks = [];
+      const clearVisualDecks = () => {
+        for (const deck of mountedDecks) deck.destroy();
+        mountedDecks = [];
+      };
+      const updateVisualDecks = () => {
+        if (!deckDomReady) return;
+        visualDecks.hidden = !discoveryEnabled;
+        if (!discoveryEnabled) { clearVisualDecks(); visualDecks.replaceChildren(); return; }
+        const locale = localization.getLocale();
+        const key = locale + ':' + JSON.stringify(discoveryQuery) + ':' + (visualRegistry ? 'audited' : 'fallback');
+        if (key === visualDeckKey) return;
+        visualDeckKey = key;
+        clearVisualDecks();
+        visualDecks.replaceChildren();
+        for (const [kind, selectedIds] of [
+          ['emotion', discoveryQuery.emotions],
+          ['need', discoveryQuery.needs],
+        ]) {
+          const host = visualDecks.ownerDocument.createElement('div');
+          visualDecks.append(host);
+          mountedDecks.push(createV7LibraryDiscoveryDeck({
+            root: host, kind, locale, registry: visualRegistry, selectedIds,
+            onSelect: ({ kind: chosenKind, id }) => {
+              if (disposed) return;
+              discoveryQuery = toggleLibraryDiscoverySelection(discoveryQuery, chosenKind, id);
+              submit();
+            },
+          }));
+        }
+      };
       const hasDiscoverySelection = () => Object.values(discoveryQuery).some(values => values.length > 0);
       const withDiscovery = request => discoveryEnabled
         ? { ...request, ...toLibraryDiscoveryRequest(discoveryQuery, localization.getLocale()) }
@@ -155,7 +209,15 @@ export function createLibraryPage({
       };
       const render = current => {
         if (disposed) return;
-        if (started && current.status === 'idle') {
+        if (started && current.status === 'idle'
+          && !String(initialQuery || '').trim()
+          && !String(initialContentType || '').trim()
+          && !String(initialTaxonomyId || '').trim()
+          && !Object.values(normalizeLibraryDiscoveryQuery(initialDiscoveryQuery)).some(ids => ids.length)) {
+          // An unfiltered browse may reset after a real account switch.
+          // A filtered route MUST retain its persisted query across a transient
+          // signed-in context reset (notably a locale-reload startup), or the
+          // resumed read silently broadens to unrelated first-page results.
           queryInput.value = ''; typeInput.value = ''; termInput.value = ''; restoredTerm = '';
           discoveryQuery = normalizeLibraryDiscoveryQuery();
           lastDiscoveryRenderKey = '';
@@ -163,6 +225,7 @@ export function createLibraryPage({
         }
         updateTerms(current);
         updateEmotionDiscovery();
+        updateVisualDecks();
         syncDiscoverySelection(termInput.value);
         const messages = {
           idle: t('v7.library.intro'), loading: t('v7.library.loading'),
@@ -173,7 +236,33 @@ export function createLibraryPage({
         const urgent = current.status === 'error' || Boolean(current.moreError);
         status.textContent = current.loadingMore ? t('v7.library.loadingMore')
           : current.moreError ? t('v7.library.moreError') : messages[current.status] || t('v7.library.unavailable');
-        results.innerHTML = current.status === 'ready' ? current.items.map(itemCard).join('') : '';
+        if (current.status !== 'ready') results.innerHTML = '';
+        else if (results.ownerDocument?.createElement && typeof results.replaceChildren === 'function') {
+          const rows = [];
+          for (const item of current.items) {
+            try {
+              const row = results.ownerDocument.createElement('li');
+              row.className = 'bq-library-card bq-library-card--visual';
+              row.append(createV7LibraryVisualContentCard({
+                document: results.ownerDocument, item, registry: visualRegistry,
+                locale: localization.getLocale(),
+                onOpen: ({ id }) => {
+                  const currentState = service.getState();
+                  navigate({ routeKey: LIBRARY_ROUTE_KEYS.item, resourceId: id,
+                    returnTo: { routeKey: LIBRARY_ROUTE_KEYS.browse, query: currentState.query,
+                      contentType: currentState.contentType, taxonomyId: currentState.taxonomyId || '',
+                      ...(discoveryEnabled ? { discoveryQuery } : {}) } });
+                },
+              }));
+              rows.push(row);
+            } catch {
+              // Never fall back to a clickable card for an unapproved revision.
+              // The existing repository contract should already reject invalid
+              // records before this point.
+            }
+          }
+          results.replaceChildren(...rows);
+        } else results.innerHTML = current.items.map(itemCard).join('');
         if (discoveryEmpty) {
           const showDiscoveryEmpty = discoveryEnabled && current.status === 'empty' && hasDiscoverySelection();
           discoveryEmpty.hidden = !showDiscoveryEmpty;
@@ -274,9 +363,21 @@ export function createLibraryPage({
       });
       render(service.getState());
       started = true;
+      if (deckDomReady && discoveryEnabled) {
+        Promise.resolve().then(() => visualRegistryLoader()).then(approved => {
+          if (disposed) return;
+          visualRegistry = approved;
+          visualDeckKey = '';
+          updateVisualDecks();
+          render(service.getState());
+        }).catch(() => {
+          // Audited imagery is optional: the accessible live-text cards remain.
+        });
+      }
       void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
+        clearVisualDecks();
         form.removeEventListener('submit', onSubmit);
         page.removeEventListener('click', onClick);
         unsubscribe();

@@ -12,7 +12,7 @@ import { buildV7LibraryMachineWorkQueue } from '../src/v7/content/automated-repa
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const CURATION_DIR = join(ROOT, 'data/v7/curation');
 const DEFAULT_LEDGER = join(CURATION_DIR, 'release-automated-approval-decisions.json');
-const BATCH_PATTERN = /^release-content-batch-\d+-summary\.json$/;
+const BATCH_PATTERN = /^release-content-batch-\d+(?:-backfill)?-summary\.json$/;
 const MINIMUM_DEVOTIONALS = 150;
 
 function clean(value) {

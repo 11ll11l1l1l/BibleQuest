@@ -1,3 +1,4 @@
+import { openLegacyRoute } from './helpers/legacy-route.mjs';
 import { chromium } from 'playwright';
 
 const assert=(condition,message)=>{if(!condition)throw new Error(message)};
@@ -9,8 +10,8 @@ try{
     const errors=[];
     page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
     page.on('pageerror',error=>errors.push(error.message));
-    await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
-    await page.locator('[data-route-link="play"]').click();
+    await page.goto(process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+    await openLegacyRoute(page, 'play');
     await page.waitForURL(/#\/play$/);
     await page.locator('[data-memory-open]').waitFor({state:'visible',timeout:10000});
     const gameWidth=await page.locator('[data-games-page]').evaluate(el=>Math.round(el.getBoundingClientRect().width));

@@ -1,0 +1,169 @@
+{
+  "role": "technical_responsive",
+  "reviewer": "independent-technical-qa",
+  "overallVerdict": "PASS",
+  "releaseApproval": false,
+  "scope": "Independent staged technical role for immutable native masters and source-bound QA-only presentation profiles, with repaired build staging isolation.",
+  "candidates": [
+    {
+      "attemptId": "manual-hurt-betrayal03-20261014-r1",
+      "contentId": "devotional.biblequest.hurt_betrayal.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-hurt-betrayal03-20261014-r1.webp",
+      "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 218178,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Actualc075 live320CEB/thumb320CEB/live390TL/live430ILO/live800EN per candidate, unchanged profile geometry then final6236 actual100px320CEB reinspection plus exact final reportbindings.",
+        "observed": "Face/action and props preserved: bowl/stool,hands/sleeve/ribbon,flower/jar/hands. Bowl crack tinyat100px but bowl inspection clear. Titles wrap/readable at200%; no observed crop or horizontal clipping defect."
+      }
+    },
+    {
+      "attemptId": "manual-impatience-waiting03-20261014-r1",
+      "contentId": "devotional.biblequest.impatience_waiting.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-impatience-waiting03-20261014-r1.webp",
+      "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 215200,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Actualc075 live320CEB/thumb320CEB/live390TL/live430ILO/live800EN per candidate, unchanged profile geometry then final6236 actual100px320CEB reinspection plus exact final reportbindings.",
+        "observed": "Face/action and props preserved: bowl/stool,hands/sleeve/ribbon,flower/jar/hands. Bowl crack tinyat100px but bowl inspection clear. Titles wrap/readable at200%; no observed crop or horizontal clipping defect."
+      }
+    },
+    {
+      "attemptId": "manual-numbness-emptiness03-20261014-r1",
+      "contentId": "devotional.biblequest.numbness_emptiness.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-numbness-emptiness03-20261014-r1.webp",
+      "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 178260,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Actualc075 live320CEB/thumb320CEB/live390TL/live430ILO/live800EN per candidate, unchanged profile geometry then final6236 actual100px320CEB reinspection plus exact final reportbindings.",
+        "observed": "Face/action and props preserved: bowl/stool,hands/sleeve/ribbon,flower/jar/hands. Bowl crack tinyat100px but bowl inspection clear. Titles wrap/readable at200%; no observed crop or horizontal clipping defect."
+      }
+    }
+  ],
+  "productionVerdict": "HOLD",
+  "productionHolds": [
+    "Production registration/component certification",
+    "Deployed HTTP/offline served-byte proof",
+    "Publication release gates"
+  ],
+  "ciEvidence": {
+    "head": "6236b3d13f9a144667629be5b7ee909d7f841065",
+    "visualWorkflow": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38512111686",
+    "artifactId": 11871075238,
+    "zipSha256": "4510c4a80cf471b912bd9eaf638a3d87b2a03b048232d962d9ab54fb6ce13a8b",
+    "reportPath": "artifacts/v7/devotional-ci-6236/report.json",
+    "reportSha256": "3dbc9f626d5ab04a0a72b757917a2de1dc812dfc11a8fc4ae4e227b32234a5dc",
+    "rejected": [],
+    "deliveryScope": "QA-only exact-source routing"
+  },
+  "buildIsolationEvidence": {
+    "workflow": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38512111671",
+    "integrityManifest": "artifacts/v7/build-6236/dist-v6/bq-artifact-integrity.json",
+    "sourceSha": "6236b3d13f9a144667629be5b7ee909d7f841065",
+    "qaCandidatePaths": 0,
+    "imageBytes": 30720220,
+    "budgetBytes": 33554432,
+    "verdict": "PASS"
+  }
+}

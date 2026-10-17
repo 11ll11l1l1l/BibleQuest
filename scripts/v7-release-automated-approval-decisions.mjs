@@ -14,7 +14,7 @@ import { parseBibleReference } from '../src/core/bible.js';
 
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const CURATION_DIR = join(ROOT, 'data/v7/curation');
-const BATCH_PATTERN = /^release-content-batch-\d+-summary\.json$/;
+const BATCH_PATTERN = /^release-content-batch-\d+(?:-backfill)?-summary\.json$/;
 const REQUIRED_QA_DIMENSIONS = Object.freeze([
   'semanticFidelity',
   'theologicalDrift',

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-anxiety-worry-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-08T11:03:24+09:00",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-anxiety-worry-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "anxiety_worry",
+  "concept": "Quiet anxiety during a sleepless evening",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 50182,
+  "sha256": "675f2d1aefc74edec328f21a47109b37be77d53fcc0d6c53f3e23d0292db5d61",
+  "focalPoint": {
+    "x": 0.52,
+    "y": 0.42
+  },
+  "textSafeRegion": "bottom",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "prompt": "Create one original square 1:1 cinematic editorial photograph for BibleQuest V7 anxiety_worry emotion tile. A young Asian man sits hunched on a rumpled bed in a modest contemporary bedroom, one hand resting naturally in his hair, brows drawn and gaze lowered in a recognizable quiet moment of worry. Cool blue twilight from the window balances a soft amber bedside lamp; subdued blue-gray and warm neutral palette, shallow depth of field, believable natural anatomy, skin and fabric textures. Frame a strong central upper-half focal point readable at 100px, keep face and hands safely away from edges, reserve lower area for potential live UI. Emotion must read as anxiety rather than generic sadness. No text, logos, watermark, fake signage, Bible, crosses, mountain sunset, overdramatization, or copied app imagery. Premium cinematic editorial realism with quiet spiritual warmth.",
+    "notes": "Original generated asset; no third-party artwork. Second candidate selected after rejecting a sunset mountain composition as near-duplicate."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated visual for BibleQuest."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A worried young man sits on his bed at dusk, leaning forward with one hand in his hair as warm lamplight contrasts with a cool window."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "notes": "Rejected initial cliffside sunset candidate due to similarity to existing artwork; accepted distinct indoor bedroom scene. Face, gesture and lighting read at 100px."
+  }
+}

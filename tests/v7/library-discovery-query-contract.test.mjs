@@ -30,7 +30,7 @@ test('A3 normalizes aliases before persistence and exposes exact query semantics
     pagination: 'updated_at_desc_then_id_asc',
   });
   assert.deepEqual(toLibraryDiscoveryTaxonomyFilters(request), {
-    emotions: ['emotion.afraid', 'emotion.anxious'],
+    emotions: ['emotion.fear', 'emotion.anxiety_worry'],
     needs: ['need.peace'],
     topics: ['topic.daily_faith', 'topic.prayer'],
     lifeSituations: ['life_situation.work_stress'],

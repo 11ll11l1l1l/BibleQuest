@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-confusion-uncertainty-01",
+  "agentId": "visual-agent-3",
+  "contentId": "confusion_uncertainty",
+  "status": "bundle_complete",
+  "createdAt": "2026-10-08T15:11:43+09:00",
+  "visualRole": "emotion_tile",
+  "family": "emotion",
+  "masterRecord": "data/v7/visual-assets/records/bqv7-emotion-confusion-uncertainty-01.json",
+  "generation": {
+    "sourceType": "generated",
+    "sourceMasterGenId": "b2deaa5f-0f97-488f-97a9-cab1206e72d6",
+    "prompt": null,
+    "promptAvailability": "generation provider returned empty prompt",
+    "derivativeMethod": "Pillow 4:5 crop and programmatic licensed-font typography; no new image generation"
+  },
+  "sourceWording": {
+    "canonicalContentId": "confused",
+    "contentId": "confusion_uncertainty",
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceGitBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "locale": "en",
+    "exactLabel": "Confused / uncertain",
+    "reference": "James 1:5",
+    "referenceSource": "same taxonomy entry",
+    "scriptureTextIncluded": false,
+    "translation": null,
+    "scriptureRevision": null
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "fonts": [
+      {
+        "family": "EB Garamond",
+        "styles": [
+          "Regular",
+          "Italic"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-ebgaramond-extra/copyright"
+      },
+      {
+        "family": "Lato",
+        "styles": [
+          "Regular"
+        ],
+        "license": "SIL OFL-1.1",
+        "licenseEvidence": "/usr/share/doc/fonts-lato/copyright"
+      }
+    ],
+    "fontFilesDistributed": false,
+    "scriptureQuoteRights": "not_applicable_reference_only"
+  },
+  "fallback": "CLEAN with localized live text; TYPE is en only; essential label and Scripture reference remain semantic live UI",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 112688,
+      "sha256": "b022f3dd750d75056318fadd9e96bb4dc3b67273b325309af8f3bb012f1cc8b2",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "altText": "A commuter stands between two opposite city walkways beneath blank directional signs at dusk.",
+      "decorative": false,
+      "qc": {
+        "verifiedAgainstExistingMasterRecord": true,
+        "noText": true,
+        "sourceIntegrityVerified": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01-with-text-en.webp",
+      "format": "webp",
+      "width": 960,
+      "height": 1200,
+      "fileBytes": 111034,
+      "sha256": "4cf085ed61be03a186e409da2a6f05c91e9dc3859d8c22da1ded029d02151be5",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.37
+      },
+      "textSafeRegion": "bottom",
+      "crop": {
+        "sourceRect": {
+          "x": 102,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "embeddedWording": {
+        "label": "Confused / uncertain",
+        "reference": "James 1:5"
+      },
+      "altText": "A commuter hesitates at a fork in an urban walkway. Embedded English label: Confused / uncertain; reference: James 1:5.",
+      "decorative": true,
+      "qc": {
+        "textComposedProgrammatically": true,
+        "exactWordingFromTaxonomy": true,
+        "noGeneratedPseudoText": true,
+        "scriptureTextIncluded": false,
+        "fontLicenseVerified": true,
+        "contrastReviewed": true,
+        "cropSafe": true,
+        "noLogos": true,
+        "visualInspection": "passed 960x1200 render; label/reference spelling, contrast, anatomy and crop inspected",
+        "phoneWidthReadability": "reviewed at nominal 320px: large label legible; small reference supplemental and semantic live UI required"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-confusion-uncertainty-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 34634,
+      "sha256": "b33b098f9b21c4a77cba87e37e978d7a331c5f40537ea647d302e69ec51d7e26",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.42
+      },
+      "textSafeRegion": "none",
+      "crop": {
+        "sourceRect": {
+          "x": 102,
+          "y": 0,
+          "width": 820,
+          "height": 1024
+        },
+        "outputAspectRatio": "4:5"
+      },
+      "altText": "A commuter stands at two diverging city walkways, uncertain which way to go.",
+      "decorative": false,
+      "qc": {
+        "focalCropVerified": true,
+        "noBakedText": true,
+        "thumbnailPreviouslyInspected": true,
+        "noLogos": true,
+        "visualInspection": "passed 384x480 render and 100px subject/sign readability"
+      }
+    }
+  ],
+  "notes": "No new scene generated: source CLEAN was already accepted and committed. Prior staged TYPE used noncanonical noun wording and was replaced with exact English taxonomy label. THUMB reused from accepted previous output. Do not mark locale variants other than en complete."
+}

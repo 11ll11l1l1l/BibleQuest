@@ -2,7 +2,8 @@ import { chromium } from 'playwright';
 
 const BASE = process.env.BQ_BASE_URL || 'http://127.0.0.1:4173/';
 const WIDTHS = [320, 360, 390, 412, 430];
-const PRIMARY_ROUTES = ['home', 'learn', 'play', 'grow', 'more'];
+const V4_ROUTES = ['home', 'learn', 'play', 'grow', 'more'];
+const V7_ROUTES = ['home', 'reader', 'library', 'one-to-one', 'more'];
 const assert = (condition, message) => { if (!condition) throw new Error(message); };
 const browser = await chromium.launch({ headless: true });
 
@@ -42,6 +43,7 @@ async function verifyWidth(width) {
       account: rect(document.querySelector('[data-session-open]')),
       nav: rect(document.querySelector('.bq-nav')),
       navCount: navLinks.length,
+      navRoutes: navLinks.map(link => link.dataset.routeLink),
       navWidths: navLinks.map(link => rect(link)?.width || 0),
       navHeights: navLinks.map(link => rect(link)?.height || 0),
       navLabelFonts: navLabels.map(font),
@@ -69,7 +71,13 @@ async function verifyWidth(width) {
   assert(home.progressChip?.width > 0, `${width}px progress status chip is missing.`);
 
   assert(home.navCount === 5, `${width}px current v3 shell must retain five primary nav destinations, got ${home.navCount}.`);
-  assert(home.navLabels.join('|') === 'Home|Learn|Play|Grow|More', `${width}px current v3 primary navigation labels changed: ${home.navLabels.join('|')}.`);
+  // V7 intentionally exposes five different primary destinations. Preserve
+  // the V3/V4 layout bounds while honoring either supported navigation model.
+  const v4 = home.navLabels.join('|') === 'Home|Learn|Play|Grow|More';
+  const v7 = home.navLabels.join('|') === 'Home|Bible|Library|Groups|You';
+  assert(v4 || v7, `${width}px unexpected primary navigation labels: ${home.navLabels.join('|')}.`);
+  assert(JSON.stringify(home.navRoutes) === JSON.stringify(v7 ? V7_ROUTES : V4_ROUTES),
+    `${width}px navigation routes and visible labels disagree.`);
   assert(approxEqual(home.navWidths), `${width}px primary navigation columns are not equal: ${home.navWidths.join(', ')}.`);
   assert(home.navHeights.every(value => value >= 44), `${width}px primary navigation contains a target below 44px: ${home.navHeights.join(', ')}.`);
   assert(home.navLabelFonts.every(value => value >= 10), `${width}px primary navigation label fell below 10px: ${home.navLabelFonts.join(', ')}.`);
@@ -86,7 +94,7 @@ async function verifyWidth(width) {
   assert(home.quest.top <= home.daily.top, `${width}px Main Bible Quest must appear before Daily Journey.`);
   assert(home.heroSupportFont >= 12 && home.questSupportFont >= 12 && home.dailySupportFont >= 12 && home.bodyFont >= 14, `${width}px critical supporting/body text is too small: hero=${home.heroSupportFont}, quest=${home.questSupportFont}, daily=${home.dailySupportFont}, body=${home.bodyFont}.`);
 
-  for (const route of PRIMARY_ROUTES) {
+  for (const route of home.navRoutes) {
     await page.goto(`${BASE}#/${route}`, { waitUntil: 'networkidle' });
     await page.locator(`[data-route-link="${route}"][aria-current]`).waitFor();
     const routeMetrics = await page.evaluate(() => ({

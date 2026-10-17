@@ -13,10 +13,11 @@ assert.match(candidateSha, /^[a-f0-9]{40}$/);
 const baseUrl = process.env.BQ_PREVIEW_URL || 'http://bq.localhost:4173';
 assert.equal(new URL(baseUrl).hostname.endsWith('.localhost'), true);
 const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
-const scopeA = '10000000-0000-4000-8000-000000000001';
+const scopeA = randomUUID(); // An isolated rights-valid test tenant, not the shared V6 seed.
 const marker = randomUUID();
 const scopeB = randomUUID();
 const checks = [];
+const backendReads = []; // Status-only diagnostics; never record response data or access tokens.
 let stage = 'bootstrap';
 
 async function request(path, token, method = 'GET', body, prefer = 'return=representation') {
@@ -51,13 +52,6 @@ async function actor(label, role) {
   const user = await request('/auth/v1/admin/users', status.SERVICE_ROLE_KEY, 'POST', { email, password, email_confirm: true });
   assert.ok(user.id);
   await insert('bible_app_access', status.SERVICE_ROLE_KEY, { user_id: user.id, role, active: true });
-  await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-    congregation_id: scopeA,
-    user_id: user.id,
-    role,
-    display_name: `V7 Browser ${label}`,
-    active: true,
-  });
   const session = await request('/auth/v1/token?grant_type=password', status.ANON_KEY, 'POST', { email, password }, null);
   assert.equal(session.user.id, user.id);
   return Object.freeze({ id: user.id, email, password, token: session.access_token });
@@ -72,6 +66,16 @@ async function installDisposableBackend(context) {
     if ((headers.authorization || '').includes('sb_publishable_')) headers.authorization = `Bearer ${status.ANON_KEY}`;
     delete headers.host;
     const response = await route.fetch({ url: target.href, headers });
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+      let returnedRows = null;
+      try { const body = await response.json(); returnedRows = Array.isArray(body) ? body.length : null; } catch {}
+      backendReads.push({
+        resource: source.pathname.split('/').pop(),
+        status: response.status(),
+        returnedRows,
+        authMode: /^Bearer eyJ/i.test(headers.authorization || '') ? 'signed-jwt' : 'anonymous-or-publishable',
+      });
+    }
     await route.fulfill({ response });
   });
 }
@@ -143,16 +147,34 @@ stage = 'synthetic-actors';
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
 const foreign = await actor('foreign', 'member');
-await insert('bible_congregations', status.SERVICE_ROLE_KEY, {
-  id: scopeB, owner_id: mentor.id, name: `Lane C alternate ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo',
-});
-await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-  congregation_id: scopeB, user_id: mentor.id, role: 'leader', display_name: 'V7 Browser mentor alternate', active: true,
-});
-await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
-  congregation_id: scopeB, user_id: mentee.id, role: 'member', display_name: 'V7 Browser mentee alternate', active: true,
-});
-checks.push('synthetic-three-user-two-congregation-password-auth-fixture');
+// Create congregations owned by this test's real signed-in leader before
+// granting membership. No fixture inherits a V6 seed owner's permissions.
+for (const [id, label] of [[scopeA, 'primary'], [scopeB, 'alternate']]) {
+  await insert('bible_congregations', status.SERVICE_ROLE_KEY, {
+    id, owner_id: mentor.id, name: `Lane C ${label} ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo', active: true,
+  });
+}
+for (const [id, member, role, label] of [
+  [scopeA, mentor, 'leader', 'mentor'],
+  [scopeA, mentee, 'member', 'mentee'],
+  [scopeA, foreign, 'member', 'foreign'],
+  [scopeB, mentor, 'leader', 'mentor alternate'],
+  [scopeB, mentee, 'member', 'mentee alternate'],
+]) {
+  await insert('bible_congregation_members', status.SERVICE_ROLE_KEY, {
+    congregation_id: id, user_id: member.id, role, display_name: `V7 Browser ${label}`, active: true,
+  });
+}
+// Verify service-role writes are actually visible under each user's JWT,
+// including the congregation record required by the real application UI.
+for (const member of [mentor, mentee, foreign]) {
+  const memberships = await select('bible_congregation_members', member.token, `user_id=eq.${member.id}&active=eq.true`);
+  const expectedIds = member.id === foreign.id ? [scopeA] : [scopeA, scopeB];
+  assert.deepEqual(memberships.map(row => row.congregation_id).sort(), expectedIds.slice().sort(), 'Authenticated membership RLS visibility');
+  const congregations = await select('bible_congregations', member.token, `id=in.(${expectedIds.join(',')})&active=eq.true`);
+  assert.deepEqual(congregations.map(row => row.id).sort(), expectedIds.slice().sort(), 'Authenticated congregation RLS visibility');
+}
+checks.push('isolated-two-congregation-password-auth-and-real-jwt-rls-fixture');
 
 stage = 'browser-launch';
 const browser = await chromium.launch({ headless: true });
@@ -171,6 +193,33 @@ try {
 
   stage = 'mentor-congregation';
   await chooseCongregation(mentorPage);
+
+  stage = 'mentor-one-to-one-visual-entry';
+  await mentorPage.goto(`${baseUrl}/#/one-to-one`, { waitUntil: 'networkidle' });
+  const hero = mentorPage.locator('[data-one-to-one-hero]');
+  await hero.waitFor({ state: 'visible' });
+  assert.equal((await hero.locator('h1').innerText()).trim(), 'ONE 2 ONE');
+  assert.match(await hero.getAttribute('data-cover-state'), /^(fallback|ready)$/);
+  await mentorPage.locator('.bq-one2one-home__primary [data-pair-invite]').waitFor({ state: 'visible' });
+  for (const width of [320, 390, 430]) {
+    await mentorPage.setViewportSize({ width, height: 900 });
+    const metrics = await hero.evaluate(element => {
+      const bounds = element.getBoundingClientRect();
+      const cta = document.querySelector('.bq-one2one-home__primary [data-pair-invite]')?.getBoundingClientRect();
+      const image = element.querySelector('img.bq-one2one-home__cover-image');
+      return { viewport: innerWidth, left: bounds.left, right: bounds.right,
+        documentWidth: document.documentElement.scrollWidth, buttonHeight: cta?.height,
+        imageDecorative: !image || (image.alt === '' && image.getAttribute('aria-hidden') === 'true'),
+      };
+    });
+    assert.equal(metrics.viewport, width);
+    assert.ok(metrics.left >= -1 && metrics.right <= width + 1, `ONE 2 ONE hero clips at ${width}px`);
+    assert.ok(metrics.documentWidth <= width + 1, `ONE 2 ONE home overflows at ${width}px`);
+    assert.ok(metrics.buttonHeight >= 44, `ONE 2 ONE primary invitation is not touch-safe at ${width}px`);
+    assert.equal(metrics.imageDecorative, true);
+  }
+  await mentorPage.setViewportSize({ width: 390, height: 900 });
+  checks.push('authenticated-image-first-one-to-one-hero-and-audited-static-fallback-at-mobile-widths');
 
   stage = 'mentor-invite';
   await mentorPage.goto(`${baseUrl}/#/one-to-one-pair`, { waitUntil: 'networkidle' });
@@ -331,8 +380,28 @@ try {
   stage = 'mentee-private-response';
   await menteePage.locator('[data-lesson-next]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="understand"]').waitFor({ state: 'visible' });
+  stage = 'mentee-private-editor-focus-continuity';
+  // Real typing must not unmount the textarea after the first keystroke. A
+  // fill() alone dispatches one input event and misses this mobile IME bug.
+  const privateEditor = menteePage.locator('[data-lesson-response]');
+  await privateEditor.focus();
+  await privateEditor.pressSequentially('Type continuously', { delay: 15 });
+  const editorContinuity = await privateEditor.evaluate(node => ({
+    focused: document.activeElement === node,
+    value: node.value,
+    cursor: node.selectionStart,
+    sameNode: document.querySelector('[data-lesson-response]') === node,
+  }));
+  assert.equal(editorContinuity.focused, true, 'Typing should not detach the focused editor.');
+  assert.equal(editorContinuity.sameNode, true);
+  assert.equal(editorContinuity.value, 'Type continuously');
+  assert.equal(editorContinuity.cursor, editorContinuity.value.length);
+  assert.equal(await menteePage.locator('[data-lesson-share]').isEnabled(), true,
+    'Nonempty local drafts enable optional explicit-sharing action, never auto-share.');
+  checks.push('private-response-mobile-continuous-typing-retains-focus-caret-and-consent');
+  stage = 'mentee-private-response';
   const privateText = `Browser private response ${marker}`;
-  await menteePage.locator('[data-lesson-response]').fill(privateText);
+  await privateEditor.fill(privateText);
   await menteePage.locator('[data-lesson-next]').click();
   await menteePage.locator('[data-lesson-heading][data-step-type="discuss"]').waitFor({ state: 'visible' });
   const persistedPrivate = await waitForBackend(async () => {
@@ -420,6 +489,90 @@ try {
   await menteePage.waitForLoadState('networkidle');
   await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
   checks.push('supported-locales-en-tl-ceb-with-deep-link-preservation-on-mobile-width');
+
+  stage = 'mentee-mobile-responsive-reading';
+  for (const width of [320, 390, 430]) {
+    await menteePage.setViewportSize({ width, height: 900 });
+    const metrics = await menteePage.locator('[data-lesson-runner]').evaluate(root => {
+      const reading = root.querySelector('.bq-lesson-reading')?.getBoundingClientRect();
+      const response = root.querySelector('[data-lesson-response]')?.getBoundingClientRect();
+      const primary = root.querySelector('[data-lesson-next], [data-lesson-complete]')?.getBoundingClientRect();
+      const copy = root.querySelector('.bq-lesson-copy');
+      return {
+        width: innerWidth, documentWidth: document.documentElement.scrollWidth,
+        readingLeft: reading?.left, readingRight: reading?.right, readingWidth: reading?.width,
+        responseLeft: response?.left, responseRight: response?.right,
+        primaryHeight: primary?.height, primaryLeft: primary?.left, primaryRight: primary?.right,
+        copyFontSize: copy ? parseFloat(getComputedStyle(copy).fontSize) : 0,
+      };
+    });
+    assert.equal(metrics.width, width, 'Unexpected mobile viewport width.');
+    assert.ok(metrics.documentWidth <= width + 1, `Lesson overflows the ${width}px viewport.`);
+    assert.ok(metrics.readingWidth >= 200 && metrics.readingLeft >= -1 && metrics.readingRight <= width + 1,
+      `Lesson reading card clips at ${width}px.`);
+    assert.ok(metrics.responseLeft >= -1 && metrics.responseRight <= width + 1, `Private-response editor clips at ${width}px.`);
+    assert.ok(metrics.primaryHeight >= 44 && metrics.primaryLeft >= -1 && metrics.primaryRight <= width + 1,
+      `Next-step action is not touch-safe at ${width}px.`);
+    assert.ok(metrics.copyFontSize >= 16, `Lesson text is too small at ${width}px.`);
+  }
+  await menteePage.setViewportSize({ width: 390, height: 900 });
+  checks.push('authenticated-320-390-430-reading-editor-and-primary-action-layout');
+
+  stage = 'mentee-motion-and-focus-contract';
+  // Exercise the actual built-app styles, not merely a source regex. The
+  // semantic step and saved responses must not depend on animation completion.
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
+  const normalMotion = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    const header = heading.closest('.bq-lesson-header');
+    const root = document.documentElement;
+    const before = root.getAttribute('data-bq-effective-motion');
+    const beforeOff = root.getAttribute('data-bq-motion');
+    root.removeAttribute('data-bq-effective-motion');
+    root.removeAttribute('data-bq-motion');
+    header.setAttribute('data-step-arriving', '');
+    const name = getComputedStyle(heading).animationName;
+    const passage = getComputedStyle(document.querySelector('.bq-lesson-copy')).animationName;
+    const response = getComputedStyle(document.querySelector('[data-lesson-response]')).animationName;
+    header.removeAttribute('data-step-arriving');
+    if (before !== null) root.setAttribute('data-bq-effective-motion', before);
+    if (beforeOff !== null) root.setAttribute('data-bq-motion', beforeOff);
+    return { name, passage, response };
+  });
+  assert.match(normalMotion.name, /bq-one2one-step-arrive/, 'Normal mode should animate only the step heading.');
+  assert.equal(normalMotion.passage, 'none');
+  assert.equal(normalMotion.response, 'none');
+  await menteePage.emulateMedia({ reducedMotion: 'reduce' });
+  const osReduced = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    heading.closest('.bq-lesson-header').setAttribute('data-step-arriving', '');
+    return getComputedStyle(heading).animationName;
+  });
+  assert.equal(osReduced, 'none', 'OS-level reduced motion must stop step animation.');
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
+  const appReduced = await menteePage.locator('[data-lesson-heading]').evaluate(heading => {
+    const root = document.documentElement;
+    const original = root.getAttribute('data-bq-effective-motion');
+    root.setAttribute('data-bq-effective-motion', 'reduce');
+    const reduced = getComputedStyle(heading).animationName;
+    if (original === null) root.removeAttribute('data-bq-effective-motion');
+    else root.setAttribute('data-bq-effective-motion', original);
+    heading.closest('.bq-lesson-header').removeAttribute('data-step-arriving');
+    return reduced;
+  });
+  assert.equal(appReduced, 'none', 'App-level reduced motion must stop step animation.');
+  await menteePage.emulateMedia({ reducedMotion: 'reduce' });
+  await menteePage.locator('[data-lesson-previous]').click();
+  await menteePage.locator('[data-lesson-heading][data-step-type="reflect"]').waitFor({ state: 'visible' });
+  await menteePage.locator('[data-lesson-next]').click();
+  await menteePage.locator('[data-lesson-heading][data-step-type="apply"]').waitFor({ state: 'visible' });
+  await menteePage.waitForFunction(() => document.activeElement?.hasAttribute('data-lesson-heading') === true);
+  const focus = await menteePage.evaluate(() => ({
+    type: document.querySelector('[data-lesson-heading]')?.getAttribute('data-step-type'),
+    active: document.activeElement?.hasAttribute('data-lesson-heading'),
+  }));
+  assert.equal(focus.type, 'apply');
+  assert.equal(focus.active, true, 'Keyboard focus follows a completed step transition.');
+  await menteePage.emulateMedia({ reducedMotion: 'no-preference' });
+  checks.push('authenticated-normal-os-reduced-and-app-reduced-step-motion-with-stable-focus-and-live-text');
 
   stage = 'mentee-complete-seven-step-journey';
   for (const [type, next] of [['apply', true], ['pray', true], ['action', false]]) {
@@ -517,6 +670,7 @@ try {
     error: error?.stack || error?.message || String(error),
     checks,
     browserErrors: { mentor: mentorErrors.errors, mentee: menteeErrors.errors },
+    backendReads: backendReads.slice(-40),
     mentor: await pageSummary(mentorPage),
     mentee: await pageSummary(menteePage),
   };

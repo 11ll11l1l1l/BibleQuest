@@ -1,0 +1,313 @@
+{
+  "role": "technical_responsive",
+  "reviewer": "independent-technical-qa",
+  "overallVerdict": "PASS",
+  "releaseApproval": false,
+  "scope": "Independent staged technical role only: native RGB raster integrity and exact-head QA-only source-bound responsive presentation profiles.",
+  "candidates": [
+    {
+      "attemptId": "manual-contentment03-20261014-r4",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 174880,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Repair action/screwdriver at mid-height; face above, lamp extends right.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    },
+    {
+      "attemptId": "manual-weariness03-20261014-r4",
+      "contentId": "devotional.biblequest.tiredness_weariness.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 217804,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Resting face at right upper-middle; torso and hands at middle.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    },
+    {
+      "attemptId": "manual-anger03-20261014-r4",
+      "contentId": "devotional.biblequest.anger.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 158650,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Two faces at upper-middle and open hands lower-middle; squared thumb must preserve conversational relation.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    },
+    {
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "contentId": "devotional.biblequest.gratitude.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 151090,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Elder face at upper-right and meal handoff at mid-height.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    },
+    {
+      "attemptId": "manual-fear03-20261014-r1",
+      "contentId": "devotional.biblequest.fear.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 326890,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Two faces upper-middle, linked hands lower-middle; linked hands potentially crop-sensitive.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    },
+    {
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "contentId": "devotional.biblequest.loneliness.03",
+      "path": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 188400,
+      "format": "WEBP",
+      "mode": "RGB",
+      "fullRasterDecoded": true,
+      "minimumMet": true,
+      "ratio": 0.8002853067047075,
+      "ratioWithinTolerance": true,
+      "measuredMatchesLedger": true,
+      "nativeGeometryMatchesClaim": true,
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "focalInBounds": true,
+      "verdict": "PASS",
+      "missingEvidence": [],
+      "fullMasterVisualInspection": "Welcoming face upper-left; inviting hand and chair middle/lower; thumb must keep invitation identifiable.",
+      "responsiveEvidence": {
+        "screenshotCount": 32,
+        "viewports": [
+          320,
+          390,
+          430,
+          800
+        ],
+        "locales": [
+          "en",
+          "tl",
+          "ceb",
+          "ilo"
+        ],
+        "profiles": [
+          "live-title",
+          "thumbnail"
+        ],
+        "textScale": 2,
+        "visuallyInspected": "Final CI live-title at320CEB/390TL/430ILO/800EN and100px thumbnail at320CEB; provisional unchanged100px EN additionally inspected.",
+        "observed": "Critical faces/action retained. Localized live titles wrap clearly on adjacent pale background at200% text with readable reference. No horizontal text clipping or crop defect observed."
+      },
+      "nativeGeometryCaveat": "Decoded source equals claimed generator-native geometry; generation provenance approval belongs to rights role."
+    }
+  ],
+  "productionVerdict": "HOLD",
+  "productionHolds": [
+    "Actual production component certification",
+    "Production served-byte/offline proof",
+    "Release publication gates"
+  ],
+  "ciEvidence": {
+    "head": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+    "workflowUrl": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38472837495",
+    "artifactId": 11852727674,
+    "zipSha256": "4d1ba70c923a7981c763e3d71efaba6af933f1fc70ee791146bd35bea23342ba",
+    "reportPath": "artifacts/v7/devotional-ci-539829/report.json",
+    "reportSha256": "3d6d44c5bfd7f26b49bf20f6a7079bfef7c1f0272ecc24bbe02da398d1bb243d",
+    "rejected": [],
+    "deliveryScope": "QA-only routed staging bytes, not deployed production HTTP"
+  }
+}

@@ -22,6 +22,15 @@ const ICONS = Object.freeze({
     <path d="M12 13c-4.2 0-7-2.8-7-7 4.2 0 7 2.8 7 7Z"/>
     <path d="M12 15c4.2 0 7-2.8 7-7-4.2 0-7 2.8-7 7Z"/>
   `,
+  groups: `
+    <circle cx="8" cy="8" r="3"/>
+    <path d="M2.5 19v-1.2A5.8 5.8 0 0 1 8.3 12h.4a5.8 5.8 0 0 1 5.8 5.8V19"/>
+    <path d="M16 5a3 3 0 0 1 0 6M17 12.5a5.5 5.5 0 0 1 4.5 5.4V19"/>
+  `,
+  user: `
+    <circle cx="12" cy="8" r="3.4"/>
+    <path d="M5 20v-1.8a7 7 0 0 1 14 0V20"/>
+  `,
   more: `
     <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/>
     <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>

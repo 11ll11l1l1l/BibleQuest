@@ -35,7 +35,9 @@ test('bootstrap connects Library reset to account lifecycle and disposal', () =>
   assert.match(source, /unsubscribeLibrarySession=store\.subscribe/);
   assert.match(source, /JSON\.stringify\(\[current\.authenticated===true,current\.user\?\.id/);
   assert.match(source, /unsubscribeLibrarySession\(\);library\.reset\(\)/);
-  assert.match(source, /const libraryContextReady=\(\)=>session\.getState\(\)\?\.authenticated===true\?v7ContextReady\(\):true/);
+  // Public Library must not require an active private congregation after sign-in.
+  assert.match(source, /const libraryContextReady=\(\)=>true/);
+  assert.doesNotMatch(source, /const libraryContextReady=\(\)=>session\.getState/);
   assert.match(source, /library:\(\)=>libraryPage\(\{service:library,[\s\S]*isContextReady:libraryContextReady,subscribeContext:subscribeV7Context/);
   assert.match(source, /'library-item':\(\)=>libraryItemPage\(\{service:library,[\s\S]*isContextReady:libraryContextReady,subscribeContext:subscribeV7Context/);
 });
@@ -45,4 +47,15 @@ test('bootstrap preserves Library taxonomy through browse, item, reload, and ret
   assert.match(source, /if\(context\.taxonomyId\)params\.set\('taxonomyId',context\.taxonomyId\)/);
   assert.match(source, /initialTaxonomyId:libraryParams\(\)\.get\('taxonomyId'\)\|\|''/);
   assert.match(source, /'library-item':\(\)=>libraryItemPage\([\s\S]*taxonomyId:libraryParams\(\)\.get\('taxonomyId'\)\|\|''/);
+});
+
+test('guest and signed-in-without-congregation public Library share the same approved static repository', () => {
+  const source = readFileSync(new URL('../../src/app/bootstrap.js', import.meta.url), 'utf8');
+  assert.match(source, /createLibraryService\(\{repository:createLibraryStaticRepository\(\)\}\)/);
+  assert.match(source, /library:\(\)=>libraryPage\(\{service:library,[\s\S]*?isContextReady:libraryContextReady/);
+  assert.match(source, /'library-item':\(\)=>libraryItemPage\(\{service:library,[\s\S]*?isContextReady:libraryContextReady/);
+  assert.match(source, /const libraryContextReady=\(\)=>true/);
+  assert.match(source, /const v7ContextReady=\(\)=>/);
+  // Protected discipleship continues to rely on the congregation-specific gate.
+  assert.match(source, /oneToOnePage\(\{service:discipleship,isContextReady:v7ContextReady/);
 });

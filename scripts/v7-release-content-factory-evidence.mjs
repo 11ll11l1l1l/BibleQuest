@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const CURATION_DIR = join(ROOT, 'data/v7/curation');
-const BATCH_PATTERN = /^release-content-batch-\d+-summary\.json$/;
+const BATCH_PATTERN = /^release-content-batch-\d+(?:-backfill)?-summary\.json$/;
 const REQUIRED_LOCALES = Object.freeze(['en', 'tl', 'ceb', 'ilo']);
 const REQUIRED_TRANSLATIONS = Object.freeze(['tl', 'ceb', 'ilo']);
 const SHA256 = /^sha256:[0-9a-f]{64}$/i;

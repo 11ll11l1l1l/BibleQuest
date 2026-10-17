@@ -1,0 +1,544 @@
+/* V7 Lane C: feature-scoped ONE 2 ONE reading and response presentation. */
+.bq-one2one-lesson {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(16px, 4.5vw, 28px);
+  overflow-wrap: anywhere;
+}
+.bq-one2one-lesson button {
+  min-height: 44px;
+  font: inherit;
+  font-weight: 730;
+}
+.bq-one2one-lesson .bq-lesson-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+.bq-one2one-lesson .bq-lesson-toolbar button { width: auto; }
+.bq-one2one-lesson .bq-lesson-header { margin-bottom: 24px; }
+.bq-one2one-lesson .bq-lesson-overline {
+  margin: 0 0 8px;
+  color: var(--bq-text-secondary);
+  font-size: .875rem;
+  font-weight: 750;
+}
+.bq-one2one-lesson .bq-lesson-header h1 {
+  margin: 0 0 12px;
+  color: var(--bq-text);
+  font-size: var(--bq-type-page);
+  line-height: 1.24;
+}
+.bq-one2one-lesson .bq-lesson-counter {
+  margin: 0 0 8px;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bq-one2one-lesson .bq-lesson-progress {
+  display: block;
+  width: 100%;
+  height: 10px;
+  accent-color: var(--bq-brand);
+}
+.bq-one2one-lesson .bq-lesson-reading {
+  padding: clamp(16px, 4vw, 26px);
+  border: 1px solid var(--bq-border);
+  border-radius: var(--bq-radius-surface);
+  background: var(--bq-surface-muted);
+}
+.bq-one2one-lesson .bq-lesson-copy {
+  margin: 0;
+  color: var(--bq-text);
+  font-family: var(--bq-font-editorial);
+  font-size: clamp(1rem, 3.8vw, 1.2rem);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-lesson .bq-lesson-response-editor,
+.bq-one2one-lesson .bq-lesson-mentor-response {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 24px;
+}
+.bq-one2one-lesson .bq-lesson-response-editor > label {
+  font-size: 1rem;
+  font-weight: 780;
+  color: var(--bq-text);
+}
+.bq-one2one-lesson .bq-lesson-response-editor textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 144px;
+  padding: 12px;
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface);
+  color: var(--bq-text);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+.bq-one2one-lesson .bq-help,
+.bq-one2one-lesson .bq-lesson-sharing > p {
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.bq-one2one-lesson .bq-lesson-sharing {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--bq-border);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+}
+.bq-one2one-lesson .bq-lesson-share-consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--bq-text);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.bq-one2one-lesson .bq-lesson-share-consent input {
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  flex: none;
+  accent-color: var(--bq-brand);
+}
+.bq-one2one-lesson .bq-lesson-readonly { margin-top: 20px; }
+.bq-one2one-lesson .bq-lesson-references {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.bq-one2one-lesson .bq-lesson-references:empty { display: none; }
+.bq-one2one-lesson .bq-lesson-live {
+  min-height: 0;
+  margin: 20px 0;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+}
+.bq-one2one-lesson .bq-lesson-live:empty { display: none; }
+.bq-one2one-lesson .bq-lesson-footer {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-lesson .bq-lesson-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 12px;
+}
+.bq-one2one-lesson .bq-lesson-actions .bq-primary-button {
+  border: 1px solid var(--bq-brand);
+  background: var(--bq-brand);
+  color: var(--bq-surface);
+}
+.bq-one2one-lesson button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+.bq-one2one-lesson :is(button, textarea, input):focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 3px;
+}
+.bq-one2one-lesson .bq-lesson-empty {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 24px 0;
+}
+@media (max-width: 390px) {
+  .bq-one2one-lesson .bq-lesson-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bq-one2one-lesson .bq-lesson-actions .bq-primary-button { grid-row: 1; }
+  .bq-one2one-lesson .bq-lesson-actions .bq-secondary-button { grid-row: 2; }
+  .bq-one2one-lesson .bq-lesson-toolbar { margin-bottom: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-one2one-lesson * { scroll-behavior: auto; }
+}
+
+/* ONE 2 ONE relationship overview: one primary action, supporting tools below. */
+.bq-one2one-home {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(16px, 4.5vw, 28px);
+}
+/* A purposeful feature-local cover: keeps the invitation reachable, uses
+   source-backed art only when Lane D supplies it, and has a complete offline
+   fallback without confusing decorative visuals with Bible passages. */
+.bq-one2one-home__hero {
+  position: relative;
+  display: grid;
+  align-content: end;
+  isolation: isolate;
+  min-height: clamp(235px, 65vw, 350px);
+  overflow: hidden;
+  border-radius: var(--bq-radius-surface, 22px);
+  background: #173d46;
+  color: #fff;
+}
+.bq-one2one-home__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 82% 25%, rgba(215, 206, 164, .63), transparent 45%),
+    radial-gradient(ellipse at 22% 4%, rgba(87, 150, 153, .92), transparent 50%),
+    linear-gradient(139deg, #27646b 0%, #294b54 43%, #19323f 100%);
+}
+.bq-one2one-home__art-mark {
+  position: absolute;
+  width: min(75%, 345px);
+  aspect-ratio: 1;
+  top: -30%;
+  right: -5%;
+  border: 2px solid rgba(255, 245, 201, .28);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255, 245, 201, .045), 0 0 0 82px rgba(255, 245, 201, .035);
+}
+.bq-one2one-home__cover-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+}
+.bq-one2one-home__hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 4%, rgba(11, 27, 36, .35) 45%, rgba(12, 27, 35, .88) 100%);
+}
+.bq-one2one-home__hero-copy {
+  position: relative;
+  z-index: 1;
+  padding: clamp(20px, 5vw, 35px);
+  max-width: 62ch;
+}
+.bq-one2one-home__eyebrow {
+  margin: 0 0 6px;
+  color: #ffedc2;
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: .085em;
+}
+.bq-one2one-home .bq-one2one-home__hero h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  font-size: clamp(2rem, 8vw, 3.4rem);
+  line-height: 1.1;
+}
+.bq-one2one-home .bq-one2one-home__hero p:not(.bq-one2one-home__eyebrow) {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1rem, 3.7vw, 1.1rem);
+  line-height: 1.52;
+  text-wrap: pretty;
+}
+@media (max-width: 360px) {
+  .bq-one2one-home__hero { min-height: 220px; }
+  .bq-one2one-home__hero-copy { padding: 18px; }
+}
+
+.bq-one2one-home .bq-one2one-home__header h1 {
+  margin-bottom: 10px;
+  color: var(--bq-text);
+}
+.bq-one2one-home .bq-one2one-home__header p {
+  max-width: 56ch;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+  line-height: 1.58;
+}
+.bq-one2one-home .bq-one2one-home__primary { margin-block: 24px; }
+.bq-one2one-home .bq-one2one-home__primary button {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--bq-brand);
+  background: var(--bq-brand);
+  color: var(--bq-surface);
+  font-weight: 800;
+}
+.bq-one2one-home .bq-one2one-home__relationships,
+.bq-one2one-home .bq-one2one-home__tools {
+  padding: 20px 0;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-home :is(.bq-one2one-home__relationships, .bq-one2one-home__tools) h2 {
+  margin-bottom: 12px;
+  color: var(--bq-text);
+  font-size: var(--bq-type-section);
+}
+.bq-one2one-home [data-pair-status] {
+  margin-bottom: 12px;
+  color: var(--bq-text-secondary);
+  font-size: 1rem;
+}
+.bq-one2one-home [data-pair-results] {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.bq-one2one-home__pair button {
+  width: 100%;
+  min-height: 60px;
+  padding: 14px;
+  border: 1px solid var(--bq-border-strong);
+  border-radius: var(--bq-radius-control);
+  background: var(--bq-surface-muted);
+  color: var(--bq-text);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-home :is(.bq-one2one-home__links, .bq-one2one-home__context) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.bq-one2one-home__context {
+  padding-top: 20px;
+  border-top: 1px solid var(--bq-border);
+}
+.bq-one2one-home button {
+  min-height: 44px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.bq-one2one-home :is(button, a):focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 390px) {
+  .bq-one2one-home :is(.bq-one2one-home__links, .bq-one2one-home__context) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/*
+ * Lane C feature-owned motion. D remains the authority for shared timing tokens;
+ * these fallbacks permit independent shipping while D finalizes the shared API.
+ * Only short headings, counters and actionable cards move. Reading passages,
+ * response drafts, consent controls and shared/private text remain stationary.
+ */
+@keyframes bq-one2one-step-arrive {
+  from { opacity: .65; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+  animation: bq-one2one-step-arrive var(--bq-v7-motion-standard, 220ms) var(--bq-v7-ease, ease-out) both;
+}
+.bq-one2one-lesson .bq-lesson-header[data-step-arriving] .bq-lesson-counter {
+  animation-delay: 40ms;
+}
+.bq-one2one-home .bq-one2one-home__pair button,
+.bq-one2one-home .bq-one2one-home__primary button {
+  transition:
+    background-color var(--bq-v7-motion-micro, 150ms) ease,
+    border-color var(--bq-v7-motion-micro, 150ms) ease,
+    transform var(--bq-v7-motion-micro, 150ms) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .bq-one2one-home .bq-one2one-home__pair button:not(:disabled):hover {
+    transform: translateY(-2px);
+    border-color: var(--bq-brand);
+  }
+}
+.bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button):not(:disabled):active {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+  .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button) {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* The shared app preference has priority even if the OS requests motion.
+   Never animate lesson text, editors, consent, or data-saving status. */
+:root[data-bq-effective-motion="reduce"] .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter),
+:root[data-bq-motion="off"] .bq-one2one-lesson .bq-lesson-header[data-step-arriving] :is(h1, .bq-lesson-counter) {
+  animation: none;
+  transform: none;
+  opacity: 1;
+}
+:root[data-bq-effective-motion="reduce"] .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button),
+:root[data-bq-motion="off"] .bq-one2one-home :is(.bq-one2one-home__pair button, .bq-one2one-home__primary button) {
+  transition: none;
+  transform: none;
+}
+
+/* Lane C assigned curriculum: the track/module/lesson hierarchy is one
+   keyboard-accessible image-capable card deck. Actual pixels are accepted only
+   from the audited visual registry; fallback remains usable offline. */
+.bq-assigned-curriculum {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: clamp(16px, 4vw, 28px);
+}
+.bq-assigned-curriculum h1 { color: var(--bq-text); }
+.bq-assigned-curriculum__parent {
+  margin: 18px 0;
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  color: var(--bq-text);
+  overflow-wrap: anywhere;
+}
+.bq-assigned-curriculum [data-assigned-status] {
+  min-height: 0;
+  color: var(--bq-text-secondary);
+}
+.bq-assigned-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin: 18px 0 24px;
+  padding: 0;
+  list-style: none;
+}
+.bq-assigned-cards__item { min-width: 0; }
+.bq-assigned-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  min-height: 188px;
+  padding: clamp(18px, 5vw, 24px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: var(--bq-radius-surface, 18px);
+  background: #19444d;
+  color: #fff;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.bq-assigned-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(0deg, rgba(6,19,28,.92), rgba(6,19,28,.55) 48%, rgba(6,19,28,.12));
+}
+.bq-assigned-card__art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 78% 22%, #74929c, transparent 53%), linear-gradient(145deg, #3e6d73, #133946);
+}
+.bq-assigned-card--module .bq-assigned-card__art {
+  background: radial-gradient(ellipse at 78% 28%, #ba916b, transparent 48%), linear-gradient(150deg, #756351, #393c54);
+}
+.bq-assigned-card--lesson .bq-assigned-card__art {
+  background: radial-gradient(ellipse at 80% 24%, #a7a079, transparent 51%), linear-gradient(145deg, #4b725e, #243f49);
+}
+.bq-assigned-cards__item:nth-child(3n + 2) .bq-assigned-card__art { filter: hue-rotate(18deg); }
+.bq-assigned-cards__item:nth-child(3n + 3) .bq-assigned-card__art { filter: hue-rotate(-16deg); }
+.bq-assigned-card__halo {
+  position: absolute;
+  inset: -48% -12% auto auto;
+  width: min(67%, 280px);
+  aspect-ratio: 1;
+  border: 2px solid rgba(255,244,211,.22);
+  border-radius: 50%;
+  box-shadow: 0 0 0 32px rgba(255,244,211,.055), 0 0 0 80px rgba(255,244,211,.035);
+}
+.bq-assigned-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bq-assigned-card__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bq-assigned-card__kind {
+  color: #fff0ca;
+  font-size: .8125rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.bq-assigned-card__title {
+  font-family: var(--bq-font-editorial, Georgia, serif);
+  font-size: clamp(1.35rem, 5vw, 1.9rem);
+  font-weight: 720;
+  line-height: 1.2;
+  color: #fff;
+}
+.bq-assigned-card__open {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 760;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.bq-assigned-card:hover:not(:disabled) {
+  border-color: rgba(255,255,255,.45);
+}
+.bq-assigned-card:focus-visible {
+  outline: 3px solid var(--bq-focus);
+  outline-offset: 4px;
+}
+.bq-assigned-curriculum [data-assigned-action] {
+  min-height: 44px;
+  margin: 4px 8px 4px 0;
+}
+@media (min-width: 660px) {
+  .bq-assigned-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px) {
+  .bq-assigned-card { min-height: 170px; padding: 18px; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .bq-assigned-card__art {
+    transition: transform var(--bq-v7-motion-standard, 220ms) var(--bq-v7-ease, ease-out);
+  }
+  .bq-assigned-card:hover:not(:disabled) .bq-assigned-card__art {
+    transform: scale(1.025);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-assigned-card__art { transition: none; transform: none; }
+}
+:root[data-bq-effective-motion="reduce"] .bq-assigned-card__art,
+:root[data-bq-motion="off"] .bq-assigned-card__art {
+  transition: none;
+  transform: none !important;
+}

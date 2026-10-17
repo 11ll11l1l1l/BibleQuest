@@ -1,0 +1,48 @@
+/* Lane D shared V7 motion and consistent selection contract.
+   Safe without JS; no essential content begins hidden or unclickable. */
+:root {
+  --bq-v7-motion-micro: 150ms;
+  --bq-v7-motion-standard: 220ms;
+  --bq-v7-motion-page: 300ms;
+  --bq-v7-motion-card: 280ms;
+  --bq-v7-ease: cubic-bezier(.2,.8,.2,1);
+  --bq-v7-spring-ease: cubic-bezier(.22,1.2,.36,1);
+}
+.bq-nav [data-route-link] {
+  position: relative;
+  transition: color var(--bq-v7-motion-standard) var(--bq-v7-ease),
+    background-color var(--bq-v7-motion-standard) var(--bq-v7-ease);
+}
+.bq-nav [data-route-link]::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 24%;
+  right: 24%;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scaleX(.7);
+  transition: opacity var(--bq-v7-motion-standard) ease,
+    transform var(--bq-v7-motion-standard) var(--bq-v7-ease);
+  pointer-events: none;
+}
+.bq-nav [data-route-link][aria-current="page"]::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.bq-nav [data-route-link]:focus-visible {
+  outline: 3px solid var(--bq-brand, #215c42);
+  outline-offset: -3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq-nav [data-route-link],
+  .bq-nav [data-route-link]::before {
+    transition: none !important;
+  }
+}
+:root[data-bq-effective-motion="reduce"] .bq-nav [data-route-link],
+:root[data-bq-effective-motion="reduce"] .bq-nav [data-route-link]::before {
+  transition: none !important;
+}

@@ -183,3 +183,171 @@ test('evaluation timestamps are mandatory audit evidence', () => {
     /evaluatedAt must be a valid timestamp/
   );
 });
+
+function reviewedVisualAsset(patch = {}) {
+  return {
+    id: 'devotional-cover',
+    source: { uri: 'https://example.com/cover.png' },
+    provenance: { evidenceRefs: ['evidence:asset-generation'] },
+    rights: { status: 'verified', allowedUses: ['display'], evidenceRefs: ['evidence:asset-license'] },
+    altText: 'A sunrise over the hills',
+    fallback: 'theme-gradient',
+    ...patch
+  };
+}
+
+test('attached visual assets must carry independent source and permitted-use evidence', () => {
+  const valid = item('devotional', { visualAssets: [reviewedVisualAsset()] });
+  const approved = evaluateV7LibraryApproval({
+    item: valid, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(approved.outcome, 'auto_approved');
+  assert.equal(canAutoPublishV7LibraryDecision(approved, valid), true);
+
+  const missingRights = item('devotional', { visualAssets: [reviewedVisualAsset({ rights: { status: 'unknown', allowedUses: ['display'] } })] });
+  const rejected = evaluateV7LibraryApproval({
+    item: missingRights, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(rejected.outcome, 'rejected');
+  assert.ok(rejected.rejectionReasons.includes('visual_asset_0_rights_unverified'));
+  assert.equal(canAutoPublishV7LibraryDecision(rejected, missingRights), false);
+
+  const unknownSource = item('devotional', { visualAssets: [reviewedVisualAsset({ provenance: { evidenceRefs: [] } })] });
+  const unproven = evaluateV7LibraryApproval({
+    item: unknownSource, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+  });
+  assert.equal(unproven.outcome, 'rejected');
+  assert.ok(unproven.rejectionReasons.includes('visual_asset_0_provenance_unverified'));
+});
+
+test('missing visual alt text or fallback enters automated repair rather than publication', () => {
+  for (const [field, reason] of [['altText', 'visual_asset_0_alt_missing'], ['fallback', 'visual_asset_0_fallback_missing']]) {
+    const target = item('devotional', { visualAssets: [reviewedVisualAsset({ [field]: '' })] });
+    const decision = evaluateV7LibraryApproval({
+      item: target, evaluations: passingEvaluations('devotional'), secondPass: secondPass()
+    });
+    assert.equal(decision.outcome, 'needs_repair');
+    assert.ok(decision.repairReasons.includes(reason));
+    assert.equal(canAutoPublishV7LibraryDecision(decision, target), false);
+  }
+});
+
+test('an approved decision cannot publish an attached visual asset whose rights change', () => {
+  const original = item('book', { visualAssets: [reviewedVisualAsset()] });
+  const approval = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass()
+  });
+  const changed = item('book', { visualAssets: [reviewedVisualAsset({ rights: { status: 'unknown', allowedUses: [] } })] });
+  assert.equal(canAutoPublishV7LibraryDecision(approval, changed), false);
+});
+
+test('auto-publish fails closed when a previously approved image manifest is removed', () => {
+  const original = item('book', { visualAssets: [reviewedVisualAsset()] });
+  const decision = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass(),
+  });
+  assert.equal(decision.outcome, 'auto_approved');
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, { ...original, visualAssets: undefined }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, { ...original, visualAssets: [] }), false);
+});
+
+test('auto-publish cannot reuse current-revision approval after rights change', () => {
+  const original = item('book');
+  const decision = evaluateV7LibraryApproval({
+    item: original, evaluations: passingEvaluations('book'), secondPass: secondPass(),
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'unknown', allowedUses: ['display'] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'verified', allowedUses: ['link'] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { status: 'verified', allowedUses: [] },
+  }), false);
+  assert.equal(canAutoPublishV7LibraryDecision({ ...decision, rightsEvidenceSnapshot: undefined }, original), false);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, {
+    ...original, rights: { ...original.rights, attribution: 'changed without review' },
+  }), false);
+});
+
+test('stored approval cannot be replayed after criteria or second-pass evidence is corrupted', () => {
+  const target = item('devotional');
+  const original = evaluateV7LibraryApproval({
+    item: target, evaluations: passingEvaluations('devotional'),
+    secondPass: secondPass(), decidedAt: EVALUATED_AT,
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(original, target), true);
+  const invalidMutations = [
+    ['wrong criterion ID', d => { d.criteria[0].id = 'invented_rule'; }],
+    ['duplicate criterion ID', d => { d.criteria[1].id = d.criteria[0].id; }],
+    ['altered hard gate', d => { d.criteria[0].hard = false; }],
+    ['altered terminal gate', d => { d.criteria[0].terminal = true; }],
+    ['missing primary evidence', d => { d.criteria[0].evidenceRefs = []; }],
+    ['duplicate primary evidence', d => { d.criteria[0].evidenceRefs = ['same', 'same']; }],
+    ['missing primary evaluator', d => { d.criteria[0].evaluator = ''; }],
+    ['stale criterion time', d => { d.criteria[0].evaluatedAt = 'invalid'; }],
+    ['forged second-pass result', d => { d.secondPass.result = 'fail'; d.secondPass.ready = true; }],
+    ['wrong second-pass revision', d => { d.secondPass.revision = 'r0'; }],
+    ['non-independent second-pass evaluator', d => { d.secondPass.evaluator = 'policy-primary'; }],
+    ['missing independent QA evidence', d => { d.secondPass.evidenceRefs = []; }],
+    ['duplicate independent QA evidence', d => { d.secondPass.evidenceRefs = ['same','same']; }],
+    ['invalid second-pass time', d => { d.secondPass.evaluatedAt = 'invalid'; }],
+    ['contradictory rejection reason', d => { d.rejectionReasons = ['rights_not_verified']; }],
+    ['contradictory repair reason', d => { d.repairReasons = ['translation_completeness']; }],
+    ['invalid decision time', d => { d.decidedAt = 'invalid'; }],
+  ];
+  for (const [label, mutate] of invalidMutations) {
+    const replay = structuredClone(original);
+    mutate(replay);
+    assert.equal(canAutoPublishV7LibraryDecision(replay, target), false, label);
+  }
+});
+
+test('reusing approval after reviewed content changes fails closed even with same ID and revision', () => {
+  const original = item('devotional', {
+    source: { kind: 'first_party', checksum: 'sha256:original', creator: 'BibleQuest' },
+    sourceContent: { title: 'Anchored in Hope', body: 'A source devotional with context.' },
+    translations: [{
+      locale: 'fil', translatedFromRevision: 'r1',
+      content: { title: 'Pag-asang Matatag', body: 'Isang debosyonal sa Tagalog.' }
+    }],
+    taxonomyLinks: [{ kind: 'emotion', id: 'emotion.hopeful' }],
+    bsbReferences: ['Romans 15:13'],
+  });
+  const decision = evaluateV7LibraryApproval({
+    item: original,
+    evaluations: passingEvaluations('devotional'),
+    secondPass: secondPass(),
+    decidedAt: EVALUATED_AT,
+  });
+  assert.equal(canAutoPublishV7LibraryDecision(decision, original), true);
+  assert.equal(canAutoPublishV7LibraryDecision(decision, Object.fromEntries(
+    Object.entries(original).reverse()
+  )), true, 'ordinary JSON object key order must not change the review identity');
+
+  const mutations = [
+    ['fixture substitution', i => { i.source.kind = 'fixture'; }],
+    ['changed source checksum', i => { i.source.checksum = 'sha256:changed'; }],
+    ['modified devotional body', i => { i.sourceContent.body += ' Unauthorized change.'; }],
+    ['modified devotional title', i => { i.sourceContent.title = 'Edited without review'; }],
+    ['modified translation', i => { i.translations[0].content.body += ' Changed.'; }],
+    ['changed Scripture reference', i => { i.bsbReferences = ['Romans 15:12']; }],
+    ['changed taxonomy', i => { i.taxonomyLinks[0].id = 'emotion.afraid'; }],
+    ['changed content type', i => { i.type = 'book'; }],
+  ];
+  for (const [label, mutate] of mutations) {
+    const itemCopy = structuredClone(original);
+    mutate(itemCopy);
+    assert.equal(canAutoPublishV7LibraryDecision(decision, itemCopy), false, label);
+  }
+
+  assert.equal(canAutoPublishV7LibraryDecision({
+    ...decision, reviewedContentEvidenceSnapshot: undefined,
+  }, original), false, 'legacy decision without complete source evidence needs fresh review');
+  assert.equal(canAutoPublishV7LibraryDecision({
+    ...decision, reviewedContentEvidenceSnapshot: 'forged',
+  }, original), false, 'forged source evidence cannot publish');
+});

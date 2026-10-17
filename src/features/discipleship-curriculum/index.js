@@ -1,10 +1,39 @@
 import { localization } from '../../app/localization.js';
+import { loadV7VisualRegistry, findV7Visual } from '../../ui/visual-assets.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const COPY = {
-  en:{title:'Assigned lessons',loading:'Loading assigned lessons…',empty:'No lessons have been assigned yet.',error:'This assigned path is unavailable. Check your account and congregation, then reload.',changed:'Account or congregation changed. Reload assigned lessons.',reload:'Reload',back:'Back',account:'Account',congregation:'Choose congregation'},
-  tl:{title:'Mga nakatalagang aralin',loading:'Nilo-load ang mga nakatalagang aralin…',empty:'Wala pang nakatalagang aralin.',error:'Hindi mabuksan ang nakatalagang landas. Suriin ang account at kongregasyon, saka i-load muli.',changed:'Nagbago ang account o kongregasyon. I-load muli ang mga aralin.',reload:'I-load muli',back:'Bumalik',account:'Account',congregation:'Pumili ng kongregasyon'},
-  ceb:{title:'Gitudlo nga mga leksyon',loading:'Gi-load ang gitudlo nga mga leksyon…',empty:'Wala pay gitudlo nga mga leksyon.',error:'Dili maablihan ang gitudlo nga agianan. Susiha ang account ug kongregasyon, unya i-load pag-usab.',changed:'Nausab ang account o kongregasyon. I-load pag-usab ang mga leksyon.',reload:'I-load pag-usab',back:'Balik',account:'Account',congregation:'Pagpili og kongregasyon'},
+  en:{title:'Assigned lessons',loading:'Loading assigned lessons…',empty:'No lessons have been assigned yet.',error:'This assigned path is unavailable. Check your account and congregation, then reload.',changed:'Account or congregation changed. Reload assigned lessons.',reload:'Reload',back:'Back',account:'Account',congregation:'Choose congregation',track:'Track',module:'Module',lesson:'Lesson',open:'Open'},
+  tl:{title:'Mga nakatalagang aralin',loading:'Nilo-load ang mga nakatalagang aralin…',empty:'Wala pang nakatalagang aralin.',error:'Hindi mabuksan ang nakatalagang landas. Suriin ang account at kongregasyon, saka i-load muli.',changed:'Nagbago ang account o kongregasyon. I-load muli ang mga aralin.',reload:'I-load muli',back:'Bumalik',account:'Account',congregation:'Pumili ng kongregasyon',track:'Track',module:'Modyul',lesson:'Aralin',open:'Buksan'},
+  ceb:{title:'Gitudlo nga mga leksyon',loading:'Gi-load ang gitudlo nga mga leksyon…',empty:'Wala pay gitudlo nga mga leksyon.',error:'Dili maablihan ang gitudlo nga agianan. Susiha ang account ug kongregasyon, unya i-load pag-usab.',changed:'Nausab ang account o kongregasyon. I-load pag-usab ang mga leksyon.',reload:'I-load pag-usab',back:'Balik',account:'Account',congregation:'Pagpili og kongregasyon',track:'Track',module:'Modyul',lesson:'Leksiyon',open:'Ablihi'},
 };
+
+// Only approved, public stage artwork is requested. Never use private pair/tenant/lesson IDs as asset keys.
+export function safeAssignedCover(asset) {
+  if (!asset || typeof asset !== 'object') return null;
+  const src = String(asset.src || ''), assetId = String(asset.assetId || '');
+  if (!/^\/v7\/images\/[a-z0-9-]+\/[a-z0-9-]+\.(?:webp|png|jpe?g)$/i.test(src) || !/^bqv7-[a-z0-9-]+$/.test(assetId)) return null;
+  const x = Number(asset.focalPoint?.x), y = Number(asset.focalPoint?.y);
+  return Object.freeze({
+    src, assetId,
+    x: Number.isFinite(x) && x >= 0 && x <= 1 ? x : .5,
+    y: Number.isFinite(y) && y >= 0 && y <= 1 ? y : .5,
+  });
+}
+
+async function defaultAssignedCover(kind) {
+  const registry = await loadV7VisualRegistry();
+  return findV7Visual(registry, [`hero:one-to-one-${kind}`], localization.getLocale());
+}
+
+export function renderAssignedCards(path, t) {
+  const kind = ['track','module','lesson'].includes(path?.kind) ? path.kind : 'lesson';
+  return `${path?.title ? `<h2 class="bq-assigned-curriculum__parent">${escape(path.title)}</h2>` : ''}
+    <ul class="bq-assigned-cards">${(path?.rows || []).map((row, index) =>
+      `<li class="bq-assigned-cards__item"><button type="button" class="bq-assigned-card bq-assigned-card--${kind}" data-assigned-index="${index}">
+        <span class="bq-assigned-card__art" data-assigned-media="${index}" aria-hidden="true"><span class="bq-assigned-card__halo"></span></span>
+        <span class="bq-assigned-card__content"><span class="bq-assigned-card__kind">${t(kind)}</span><strong class="bq-assigned-card__title">${escape(row.title)}</strong><span class="bq-assigned-card__open">${t('open')} <span aria-hidden="true">→</span></span></span>
+      </button></li>`).join('')}</ul>`;
+}
 export function assignedPath(tracks, {view,trackId,moduleId}) {
   if(view==='track'&&!trackId)return {title:null,rows:tracks,kind:'track'};
   const track=tracks.find(row=>row.id===trackId);
@@ -14,11 +43,33 @@ export function assignedPath(tracks, {view,trackId,moduleId}) {
   if(view!=='module'||!module)throw new Error('Assigned module unavailable.');
   return {title:module.title,rows:module.lessons,kind:'lesson'};
 }
-export function assignedCurriculumPage({service,view,pairId,trackId='',moduleId='',isContextReady=()=>false,subscribeContext,onNavigate,onBack,onAccount,onCongregation}) {
+export function assignedCurriculumPage({service,view,pairId,trackId='',moduleId='',isContextReady=()=>false,subscribeContext,onNavigate,onBack,onAccount,onCongregation,coverProvider=defaultAssignedCover}) {
   const t=key=>escape(localization.t(key,{dictionaries:COPY}));
-  return {title:localization.t('title',{dictionaries:COPY}),html:`<section class="bq-panel" data-assigned-curriculum><h1>${t('title')}</h1><p role="status" aria-live="polite" data-assigned-status></p><div data-assigned-rows></div><button type="button" data-assigned-action="reload">${t('reload')}</button><button type="button" data-assigned-action="back">${t('back')}</button><button type="button" data-assigned-action="account">${t('account')}</button><button type="button" data-assigned-action="congregation">${t('congregation')}</button></section>`,mount(root){
+  return {title:localization.t('title',{dictionaries:COPY}),html:`<section class="bq-panel bq-assigned-curriculum" data-assigned-curriculum><h1>${t('title')}</h1><p role="status" aria-live="polite" data-assigned-status></p><div data-assigned-rows></div><button type="button" data-assigned-action="reload">${t('reload')}</button><button type="button" data-assigned-action="back">${t('back')}</button><button type="button" data-assigned-action="account">${t('account')}</button><button type="button" data-assigned-action="congregation">${t('congregation')}</button></section>`,mount(root){
     const page=root.querySelector('[data-assigned-curriculum]'),status=page.querySelector('[data-assigned-status]'),host=page.querySelector('[data-assigned-rows]');
     let generation=0,disposed=false,path=null;
+    async function paintAuditedCover(kind,token) {
+  if(typeof coverProvider!=='function')return;
+  try {
+    const asset=safeAssignedCover(await coverProvider(kind));
+    if(!asset||disposed||token!==generation||typeof host.querySelectorAll!=='function')return;
+    for(const target of host.querySelectorAll('[data-assigned-media]')) {
+      if(!target?.ownerDocument?.createElement)continue;
+      const image=target.ownerDocument.createElement('img');
+      image.className='bq-assigned-card__image';
+      image.alt='';
+      image.setAttribute('aria-hidden','true');
+      image.loading='lazy';
+      image.decoding='async';
+      image.style.objectPosition=`${Math.round(asset.x*100)}% ${Math.round(asset.y*100)}%`;
+      image.addEventListener('error',()=>image.remove());
+      image.addEventListener('load',()=>{if(disposed||token!==generation)image.remove();});
+      image.src=asset.src;
+      target.prepend(image);
+    }
+  } catch { /* Keep a complete static card when audit media is absent. */ }
+}
+
     async function load(){
       const token=++generation;path=null;host.innerHTML='';status.textContent=localization.t('loading',{dictionaries:COPY});
       try{
@@ -26,7 +77,8 @@ export function assignedCurriculumPage({service,view,pairId,trackId='',moduleId=
         if(disposed||token!==generation)return;
         path=assignedPath(tracks,{view,trackId,moduleId});
         status.textContent=path.rows.length?'':localization.t('empty',{dictionaries:COPY});
-        host.innerHTML=`${path.title?`<h2>${escape(path.title)}</h2>`:''}<ul>${path.rows.map((row,index)=>`<li><button type="button" data-assigned-index="${index}">${escape(row.title)}</button></li>`).join('')}</ul>`;
+        host.innerHTML=renderAssignedCards(path,t);
+        void paintAuditedCover(path.kind,token);
       }catch{if(!disposed&&token===generation){path=null;host.innerHTML='';status.textContent=localization.t('error',{dictionaries:COPY});}}
     }
     const click=event=>{

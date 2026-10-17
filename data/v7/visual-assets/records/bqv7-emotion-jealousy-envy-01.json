@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-jealousy-envy-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-08T23:08:50+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "family": "emotion",
+  "contentType": "emotion",
+  "contentId": "jealousy_envy",
+  "canonicalEmotionId": "jealous",
+  "visualRole": "emotion_tile",
+  "concept": "A quiet comparison wound: an artist envies a peer receiving public recognition for her work.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-jealousy-envy-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 108318,
+  "sha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+  "focalPoint": {
+    "x": 0.31,
+    "y": 0.29
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-jealousy-envy-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 108318,
+      "sha256": "66adee6a5ae68b8f07d27a98fdd014ad72ed2d9230a4122ee870740ffcf9236d",
+      "focalPoint": {
+        "x": 0.31,
+        "y": 0.29
+      },
+      "cropIntent": "square source with distinct foreground artist and admired colleague",
+      "embeddedWording": null,
+      "altText": "An artist in a sage cardigan looks toward a colleague receiving praise for a sculpture, her expression showing envy and longing.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRendered": true,
+        "builtAppBrowserQA": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-jealousy-envy-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 138500,
+      "sha256": "e8d458e8ed806265875b2a58914b39daa5f10dbd4fd7e714665888b92365b1d0",
+      "focalPoint": {
+        "x": 0.31,
+        "y": 0.29
+      },
+      "cropIntent": "4:5 editorial card; complete scene above separate lower title scrim",
+      "embeddedWording": {
+        "label": "Jealous / envious",
+        "scriptureReference": "Proverbs 14:30",
+        "scriptureTextIncluded": false
+      },
+      "altText": "An artist in a sage cardigan looks toward a colleague receiving praise for a sculpture, her expression showing envy and longing. Embedded English title: Jealous / envious; reference: Proverbs 14:30.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRendered": true,
+        "builtAppBrowserQA": false,
+        "noBakedText": false,
+        "cropReviewed": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "referenceCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "fontLicenseVerified": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-jealousy-envy-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 30986,
+      "sha256": "10b3ff834acd515b95b3d3b0899b6e1345f82ffa8ebfee04449b7d8534b476f5",
+      "focalPoint": {
+        "x": 0.31,
+        "y": 0.32
+      },
+      "cropIntent": "4:5 crop from original square retaining both envious artist and praised colleague",
+      "embeddedWording": null,
+      "altText": "An artist in a sage cardigan looks toward a colleague receiving praise for a sculpture, her expression showing envy and longing.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "isolatedChromiumRendered": true,
+        "builtAppBrowserQA": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "jealous",
+    "locale": "en",
+    "exactLabel": "Jealous / envious",
+    "reference": "Proverbs 14:30",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "618e0597-c5e0-4623-acc8-37098da0b122",
+    "source": "Original image generated in a preceding Visual Agent 4 turn; no external photo or book cover used.",
+    "derivatives": "CLEAN optimized WebP, TYPE independently raster-typeset with PIL, THUMB focal-aware cropped and independently encoded WebP."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "image": "Original generated image, no third-party reference image supplied.",
+    "fontFamilies": [
+      "Noto Serif Display SemiBold",
+      "Lato Medium"
+    ],
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "fontGlyphsRasterized": true,
+    "scripture": "Reference only, no Bible prose."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "An artist in a sage cardigan looks toward a colleague receiving praise for a sculpture, her expression showing envy and longing.",
+    "essentialTextRemainsLive": true,
+    "fallback": "CLEAN plus accessible live localized label for TL, CEB, ILO and missing TYPE."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "type320pxVisualInspected": true,
+    "isolatedChromiumAllVariantsDecoded": true,
+    "isolatedChromiumWidths": [
+      320,
+      390,
+      430
+    ],
+    "builtAppBrowserQA": "pending",
+    "visualAuditScript": "not_run_no_local_repo",
+    "reasonNotProductionReady": "Built-app browser review and official repository Node audit have not run; do not publish TYPE/THUMB to release registry."
+  }
+}

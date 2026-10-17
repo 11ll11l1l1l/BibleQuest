@@ -24,9 +24,38 @@ async function run(){
     if(info?.routeLink)order.push(info);
   }
   assert(order.length===5,`Expected to reach all 5 nav links via Tab, reached ${order.length}.`);
-  assert(order.map(o=>o.routeLink).join(',')==='home,learn,play,grow,more','Tab order through primary navigation must match visual left-to-right order.');
+  const routeOrder = order.map(o => o.routeLink).join(',');
+  const v7 = routeOrder === 'home,reader,library,one-to-one,more';
+  assert(v7 || routeOrder === 'home,learn,play,grow,more',
+    'Tab order must match one canonical five-link primary navigation. Got ' + routeOrder);
   for(const info of order){
     assert(info.outlineStyle!=='none'&&parseFloat(info.outlineWidth)>0,`Nav link '${info.routeLink}' has no visible keyboard focus ring.`);
+  }
+
+  // Each nested destination has one semantic selected primary item, even
+  // before its asynchronous feature page loads. No second selection survives.
+  const selections=await page.evaluate(async()=>{
+    const {mountShell}=await import('/src/ui/shell.js');
+    const detached=document.createElement('div');
+    const shell=mountShell(detached,{onNavigate:()=>{},onAccountOpen:()=>{}});
+    return ['home','library','reader','one-to-one-lesson','account','play','not-found']
+      .map(route=>{
+        shell.render(route,{title:'Test',html:'<p>Test route</p>'});
+        const selected=[...detached.querySelectorAll('.bq-nav [aria-current]')];
+        return {route,count:selected.length,key:selected[0]?.getAttribute('data-route-link'),
+          value:selected[0]?.getAttribute('aria-current')};
+      });
+  });
+  const owners = v7
+    ? {home:'home',library:'library',reader:'reader',
+       'one-to-one-lesson':'one-to-one',account:'more',play:'home'}
+    : {home:'home',library:'learn',reader:'learn',
+       'one-to-one-lesson':'grow',account:'more',play:'play'};
+  for(const selection of selections){
+    const expected=owners[selection.route];
+    assert(expected ? selection.count===1&&selection.key===expected&&selection.value==='page'
+      : selection.count===0,
+      `Invalid selected primary navigation for ${selection.route}: ${JSON.stringify(selection)}`);
   }
 
   // Reduced motion: with the OS preference set, shell transition/animation

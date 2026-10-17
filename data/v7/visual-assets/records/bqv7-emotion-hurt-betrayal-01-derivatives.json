@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 2,
+  "recordType": "derivative_bundle",
+  "assetId": "bqv7-emotion-hurt-betrayal-01-derivatives",
+  "sourceMasterAssetId": "bqv7-emotion-hurt-betrayal-01",
+  "agentId": "visual-agent-2",
+  "status": "three_files_present_render_qa_pending",
+  "contentType": "emotion",
+  "contentId": "hurt_betrayal",
+  "family": "emotion",
+  "visualRole": "emotion_tile_derivatives",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 146831,
+  "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
+  "sourceType": "generated",
+  "focalPoint": {
+    "x": 0.31,
+    "y": 0.63
+  },
+  "textSafeRegion": "top",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "sourceMaster": {
+    "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01.webp",
+    "sha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+    "format": "webp",
+    "width": 1024,
+    "height": 1024,
+    "bytes": 108974
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 108974,
+      "sha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+      "sourceType": "generated",
+      "locale": null,
+      "altText": "A woman sits with her head lowered on a rocky overlook at sunset, with a lake and mountains beyond.",
+      "qc": {
+        "noBakedText": true,
+        "noLogo": true,
+        "anatomyAcceptable": true,
+        "subjectReadableAtThumbnail": true,
+        "cropSafe": true,
+        "matchesVisualSystem": true,
+        "duplicateChecked": true,
+        "notes": "Visual inspection of source and square WebP crop; existing visual-assets records directory was absent before this first asset. Emotion is communicated as quiet hurt/withdrawal rather than literal betrayal."
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 146831,
+      "sha256": "002ac5199bccadeb19e65b7c9a3ea9f225f15de4d4277ae2616e55036f5840b5",
+      "sourceType": "generated",
+      "locale": "en",
+      "includedWording": "Hurt / betrayed",
+      "includedReference": "Psalm 55:12-14",
+      "includedScriptureText": null,
+      "wordingSource": {
+        "path": "src/features/library/emotion-taxonomy.js",
+        "blobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+        "emotionId": "hurt",
+        "locale": "en"
+      },
+      "typography": {
+        "method": "Self-contained SVG editorial portrait with embedded original WebP",
+        "fontFamily": "Georgia / Times New Roman, italic serif accent",
+        "fontFilesDistributed": false,
+        "fontLicenseEvidence": "No font files embedded or redistributed; system font rendering requires browser QA",
+        "referenceFontPxAtNative": 48,
+        "referenceNominalPxAt320": 15,
+        "referenceBaselineY": 342,
+        "referenceMobileReadability": "render_qa_pending",
+        "geometryAdjustment": "Raised reference font from 26 to 48 native px and moved baseline 315 to 342; nominal 15px at 320px-wide card. Actual browser font rendering and visual legibility not certified."
+      },
+      "focalPoint": {
+        "x": 0.31,
+        "y": 0.63
+      },
+      "textSafeRegion": "top",
+      "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed. Psalm 55:12–14.",
+      "decorative": true,
+      "fallback": "CLEAN with localized live text",
+      "qc": {
+        "masterSourceVerified": true,
+        "wordingVerified": true,
+        "referenceVerified": true,
+        "noGeneratedPseudoText": true,
+        "geometryReviewed": true,
+        "svgEmbeddedImage": true,
+        "svgTextEditable": true,
+        "visualRenderQA": "pending",
+        "noScriptureQuote": true,
+        "sourceEmbeddedWebpSha256Verified": true,
+        "sourceEmbeddedWebpBytesVerified": true,
+        "svgSafetyInspected": true,
+        "typeReadableAt320px": "pending",
+        "fontRenderQA": "pending",
+        "referenceGeometryReviewed": true
+      },
+      "embeddedWording": {
+        "label": "Hurt / betrayed",
+        "scriptureReference": "Psalm 55:12-14",
+        "scriptureTextIncluded": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01-thumbnail.svg",
+      "format": "svg",
+      "width": 512,
+      "height": 640,
+      "fileBytes": 145630,
+      "sha256": "342b2bbdbcae6d90e22fcff0ca5f78f96d93afa43638a18456950a3423a0ec86",
+      "sourceType": "generated",
+      "locale": null,
+      "focalPoint": {
+        "x": 0.38,
+        "y": 0.54
+      },
+      "textSafeRegion": "none",
+      "altText": "A withdrawn woman sits alone on a rocky overlook at sunset.",
+      "decorative": false,
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0.025,
+          "y": 0,
+          "width": 0.8,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "SVG embedded WebP at 640px height with 512px clipping viewport"
+      },
+      "fallback": "CLEAN",
+      "qc": {
+        "masterSourceVerified": true,
+        "noEmbeddedText": true,
+        "clipGeometryVerified": true,
+        "visualRenderQA": "pending"
+      }
+    }
+  ],
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated visual for BibleQuest; no third-party source imagery supplied."
+  },
+  "accessibility": {
+    "decorative": true,
+    "altText": "A woman sits withdrawn on a rocky overlook at sunset. Text: Hurt / betrayed; Psalm 55:12–14."
+  },
+  "wordingSource": {
+    "recordOriginalBlobSha": "2691f008f104fab718dcf455cda9078d3c31aace",
+    "taxonomyBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2"
+  },
+  "qa": {
+    "embeddedTextVerified": true,
+    "referenceVerified": true,
+    "originalMasterPreserved": true,
+    "variantHashesMeasured": true,
+    "visualRenderQA": "pending",
+    "rasterOptimization": "pending",
+    "notes": "TYPE Scripture-reference lettering increased for nominal mobile readability. Existing CLEAN master preserved; SVG source image identity previously checked. Exact browser rendering and THUMB crop QA still pending; candidate not production certified."
+  },
+  "productionCertified": false,
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "hurt",
+    "locale": "en",
+    "exactLabel": "Hurt / betrayed",
+    "reference": "Psalm 55:12-14",
+    "scriptureTextIncluded": false
+  }
+}

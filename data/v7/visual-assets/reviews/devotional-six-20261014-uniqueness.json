@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_uniqueness_qa",
+  "role": "uniqueness",
+  "reviewedAt": "2026-10-13T21:40:23.393245+00:00",
+  "baselineGitHead": "a660c639b542b50dd18c7fbcf846725488c4b616",
+  "reviewMethod": "Actual full-frame view_image inspection of six staged immutable WebPs and three additional merged comparators; retained prior full-pixel comparison evidence for relevant seven prior merged/open comparators and Peace pair. All six compared against one another. No pixel generation, editing, cropping/export or git mutation.",
+  "releaseApproved": false,
+  "comparatorsInspected": [
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-impatience-waiting-01.webp",
+      "sha256": "3b0b2787daa10230a1446235a481fb01f2cdb5a581e176c73827c218e5984386",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Waiting-room impatience with watch and frown"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-sadness-01.webp",
+      "sha256": "f46446612f0d6a7876bbb43fe8724fd98476cd3083dd2c92b7827f89d791b6ea",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Curled distressed outdoor woman"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-loneliness-01.webp",
+      "sha256": "cb3760f023375653bcbb3cc71d61a1a2e95b4f9dd76d1911b510aa8e6d8d99de",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Isolated older man holding mug at communal table"
+    },
+    {
+      "path": "public/v7/images/devotional/bqv7-devotional-one-concern-at-a-time-01.png",
+      "sha256": "83f34ce98901645b2a3932f2ab3cacbb3a436f4ad0aacaf5ff1ec37d8b51a71f",
+      "pixelInspection": "full-frame view_image",
+      "observed": "Close hands sorting blank concern cards at kitchen table"
+    },
+    {
+      "path": "public/v7/images/need/bqv7-need-comfort-01.webp",
+      "sha256": "4b9ab4801217719e07d8b1a34c1c44b10a03a0123e5f6d0debcb8db93b7d96e8",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Two adult women listening after difficult news in evening center; distinct from mother/child in busy office."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-tired-01.webp",
+      "sha256": "79c9ca6ecf640a14a21fe4becb78ddec6128efe7c646f67c17fdfffbd9e037ad",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Resting male baker in work apron at bakery bench; distinct from contented woman at home with mug."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-stressed-01.webp",
+      "sha256": "0a46606fa5c8652f83c23ae16f8cf742703badf396ef34fca3834cf7621a6cd4",
+      "pr": 1504,
+      "prHead": "000540cb7a105df20cdb648e2e8063c7d1c38571",
+      "pixelInspection": "GitHub fetch_file base64 image forwarded directly for full-frame inspection",
+      "observed": "Standing cook at metal kitchen pass with coworker; different action/environment from both candidates."
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-gratitude-01.webp",
+      "sha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Flowers and hug"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-fear-01.webp",
+      "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Woman frightened behind door"
+    },
+    {
+      "path": "public/v7/images/emotion/bqv7-emotion-love-connection-01.webp",
+      "sha256": "44aa89412c29931296f101ac4e4bede31d9081eee7ced2e1e7a2a872157bc824",
+      "pixelInspection": "full-frame view_image in this review",
+      "observed": "Two adults repairing bowl together"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Mother child attentive in busy office"
+    },
+    {
+      "path": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "pixelInspection": "Full actual pixels inspected in preceding independent review in same agent context",
+      "observed": "Contented woman holding mug in armchair"
+    }
+  ],
+  "reviews": [
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "attemptId": "manual-contentment03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Mechanical hinge adjustment with screwdriver clearly meeting hinge and other hand stabilizing lamp arm; loose unplugged plug visible. Hands/faces coherent, no exposed live wiring.",
+        "Calm adult maintaining existing possession while companion prepares cups makes ordinary presence/relationships visible. Distinct from still armchair Peaceful and ceramic-bowl relationship artwork.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.tiredness_weariness.03",
+          "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+        },
+        {
+          "contentId": "devotional.biblequest.anger.03",
+          "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+        },
+        {
+          "contentId": "devotional.biblequest.gratitude.03",
+          "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+        },
+        {
+          "contentId": "devotional.biblequest.fear.03",
+          "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+        },
+        {
+          "contentId": "devotional.biblequest.loneliness.03",
+          "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.tiredness_weariness.03",
+      "attemptId": "manual-weariness03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Adult reclines in ordinary sofa with hands resting naturally on thighs, eyes partly open, no forced smile; adjacent bed, water and towel support restoration context.",
+        "Similar man/casting to repair scene, but no mug/tool/companion, full body restful posture and bedroom view yield separate narrative; unlike weary baker in workplace and contented woman in armchair.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.peace_contentment.03",
+          "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+        },
+        {
+          "contentId": "devotional.biblequest.anger.03",
+          "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+        },
+        {
+          "contentId": "devotional.biblequest.gratitude.03",
+          "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+        },
+        {
+          "contentId": "devotional.biblequest.fear.03",
+          "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+        },
+        {
+          "contentId": "devotional.biblequest.loneliness.03",
+          "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.anger.03",
+      "attemptId": "manual-anger03-20261014-r4",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Two lab coworkers calmly discussing disconnected prototype with open palms; plausible palms/fingers, screwdriver/tray and small board, no hot iron or exposed mains supply in use.",
+        "Workplace de-escalation differs from solitary domestic repair; not duplicated board repair close-up or relationship bowl scene.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.peace_contentment.03",
+          "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+        },
+        {
+          "contentId": "devotional.biblequest.tiredness_weariness.03",
+          "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+        },
+        {
+          "contentId": "devotional.biblequest.gratitude.03",
+          "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+        },
+        {
+          "contentId": "devotional.biblequest.fear.03",
+          "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+        },
+        {
+          "contentId": "devotional.biblequest.loneliness.03",
+          "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.gratitude.03",
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Older neighbor receives plain food container; both pairs of hands support it with credible overlaps/occlusion. Warm face, doorway and ordinary clothing coherent.",
+        "Handoff of provisions differs from gratitude flowers/hug and each other five scenes; not forced celebration.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.peace_contentment.03",
+          "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+        },
+        {
+          "contentId": "devotional.biblequest.tiredness_weariness.03",
+          "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+        },
+        {
+          "contentId": "devotional.biblequest.anger.03",
+          "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+        },
+        {
+          "contentId": "devotional.biblequest.fear.03",
+          "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+        },
+        {
+          "contentId": "devotional.biblequest.loneliness.03",
+          "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.fear.03",
+      "attemptId": "manual-fear03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Two adults move together on wide grated gangway enclosed by bilateral railing; cautious adult holds rail and companion stays beside her. Plausible limbs/shoes/hand railing contact.",
+        "Harbor water and boat show transport environment rather than dangerous stunt; cautious forward movement differs from old fear behind door and indoor listening/care scenes.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.peace_contentment.03",
+          "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+        },
+        {
+          "contentId": "devotional.biblequest.tiredness_weariness.03",
+          "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+        },
+        {
+          "contentId": "devotional.biblequest.anger.03",
+          "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+        },
+        {
+          "contentId": "devotional.biblequest.gratitude.03",
+          "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+        },
+        {
+          "contentId": "devotional.biblequest.loneliness.03",
+          "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.03",
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
+      "verdict": "PASS",
+      "verdictScope": "Independent uniqueness/anatomy/visual role within directly inspected relevant comparator collection, including all six pairwise. Not complete artwork or release acceptance.",
+      "observedEvidence": [
+        "Seated regular makes inviting eye contact and grips empty chair back for arriving adult; hand/finger placement and chair perspective plausible, unoccupied seat readable.",
+        "Dinner invitation reverses old lonely elder at communal table; differs from adult comfort pair already seated together, food handoff and mother/child waiting room.",
+        "Single contemporary coherent scene; no visible generated text, logos, watermarks or collage."
+      ],
+      "peerCandidatesInspected": [
+        {
+          "contentId": "devotional.biblequest.peace_contentment.03",
+          "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+        },
+        {
+          "contentId": "devotional.biblequest.tiredness_weariness.03",
+          "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+        },
+        {
+          "contentId": "devotional.biblequest.anger.03",
+          "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+        },
+        {
+          "contentId": "devotional.biblequest.gratitude.03",
+          "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+        },
+        {
+          "contentId": "devotional.biblequest.fear.03",
+          "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+        }
+      ],
+      "presentationAssessment": "4:5 essentially native. 1:1 crop at y=.43 removes roughly120px top/160px bottom; core faces and central action remain in frame; harbor loses lower shoe detail but retains body/rail/safe-step narrative. Exact browser thumbnail/live title review remains technical role.",
+      "limits": [
+        "Real-world identity, exact occupation, inner emotion and ongoing movement cannot be proven from still image.",
+        "No guarantee of internet-wide exclusivity; source/provenance and Scripture are separate reviewers."
+      ]
+    }
+  ],
+  "collectionObservation": "Repair/rest/invitation men share similar age, hair and styling. Recurring plausible cast is disclosed; distinct props, posture, action, location and camera prevent scene duplication. No face-identity exclusivity or unseen collection comparison asserted.",
+  "residualLimits": [
+    "Actual browser 100px/320/390/430/800 presentations not inspected by this role.",
+    "No claim all300-cover collection or all open PR pixels inspected; bounded relevant collection scope.",
+    "Scene actions are visually source-grounded; canonical Scripture interpretation is scene reviewer responsibility."
+  ]
+}

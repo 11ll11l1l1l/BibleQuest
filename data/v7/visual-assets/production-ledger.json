@@ -1,0 +1,1783 @@
+{
+  "schemaVersion": 1,
+  "updatedBy": "v7-image-work-ledger",
+  "entries": [
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.anxiety_worry.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-1",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-one-concern-at-a-time-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.fear.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-2",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-courage-next-step-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.sadness.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-3",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-make-room-for-sorrow-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.grief_loss.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-4",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-love-remembers-01.json"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.01",
+      "variant": "CLEAN",
+      "attemptId": "legacy-z-1476-5",
+      "producer": "manual-chat-lane-z",
+      "sourceRevision": "r1",
+      "sceneRevision": "20261010-pr1476-original",
+      "status": "external_pending",
+      "claimedAt": "2026-10-10T11:10:00+09:00",
+      "externalPr": "https://github.com/11ll11l1l1l/BibleQuest/pull/1476",
+      "qa": {},
+      "note": "Merged candidate_qa_pending from PR #1476; inspect actual existing imagePath/sidecar. Never regenerate automatically.",
+      "externalRecordPath": "data/v7/visual-assets/records/bqv7-devotional-do-not-disappear-01.json"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-01",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v1",
+      "shotFingerprint": {
+        "narrativeAction": "Adult arrives to begin first safe craft workshop task",
+        "setting": "modest neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety gear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "eye-level over-shoulder toward entry work area",
+        "light": "soft natural side-window light",
+        "palette": "neutral workshop with muted earth colors",
+        "metaphor": "concrete first step"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:07:02.025Z",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Triptych biblical-era altar/help/hill instead of contemporary adult workshop."
+        }
+      },
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
+      "failedSha256": "b45c3abd0d299b960e64920f10c6fc1ff685350543fee7975997e3925fd702b2",
+      "localFileDeleted": true,
+      "failedAt": "2026-10-10T16:08:36.260Z",
+      "rejectionReason": "Triptych biblical-era altar/help/hill instead of contemporary adult workshop.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-02",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v2",
+      "shotFingerprint": {
+        "narrativeAction": "Adult arrives to begin first safe craft workshop task",
+        "setting": "modest neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety gear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "one continuous frame eye-level at door threshold, adult in protective eyewear and work apron at nearby first practical craft task",
+        "light": "neutral daylight from workshop windows",
+        "palette": "neutral workshop with muted earth colors",
+        "metaphor": "concrete first step"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:08:36.260Z",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Triptych teacher/mountain prayer/woodworker instead of required single Courage workshop scene."
+        }
+      },
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
+      "failedSha256": "5174efdf84e6e27381e335ccbcc4327786c5961f2d87c6d6d6e95b7fcdebfa36",
+      "localFileDeleted": true,
+      "failedAt": "2026-10-10T16:10:11.839Z",
+      "rejectionReason": "Triptych teacher/mountain prayer/woodworker instead of required single Courage workshop scene.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
+    },
+    {
+      "family": "need",
+      "contentId": "courage",
+      "variant": "CLEAN",
+      "attemptId": "manual-20261011-need-courage-clean-03",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide20261011-s6-courage-workshop-v3",
+      "shotFingerprint": {
+        "narrativeAction": "Adult arrives to begin first safe craft workshop task",
+        "setting": "modest neighborhood adult-learning workshop",
+        "focalObject": "properly worn safety gear and beginner workbench",
+        "peopleCount": 2,
+        "perspective": "one continuous frame eye-level at door threshold, adult in protective eyewear and work apron at nearby first practical craft task",
+        "light": "neutral daylight from workshop windows",
+        "palette": "neutral workshop with muted earth colors",
+        "metaphor": "concrete first step"
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "producer": "user-invoked-interactive-chat-20261011",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:10:11.839Z",
+      "qa": {
+        "producerPreflight": {
+          "verdict": "FAIL",
+          "reason": "Composite shepherd/prayer/fishermen, not workshop and not portrait single-scene art."
+        }
+      },
+      "note": "Tool returned mixed-scene composition; not valid final CLEAN. Local pixel bytes were deleted, hash tombstone retained. No independent QA performed.",
+      "failedSha256": "92e7bf4343acacecefc252f244016ae02e7e69fb0fae01eedbe00ae7f0855fff",
+      "localFileDeleted": true,
+      "rejectionReason": "Composite shepherd/prayer/fishermen, not workshop and not portrait single-scene art.",
+      "measuredWidth": 1536,
+      "measuredHeight": 1024,
+      "failStage": "producer-preflight; before QA or GitHub image upload"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.insecurity_unworthiness.10",
+      "variant": "CLEAN",
+      "attemptId": "bq7-insecurity10-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-insecurity10-p5dkdl",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-10b.json",
+      "sourceChecksum": "sha256:9e708a357c2e49979de40505970b6e5d866a530989380627a1942b943977b44c",
+      "guidePath": "docs/v7/unfinished-artwork-guide/10-remembrance-cue-shots.md",
+      "notes": "REJECTED before QA. Generator returned unrelated ancient biblical landscape; no valid image stored, no candidate path, local generated bytes deleted. Retry with new scene revision; slot unclaimed.",
+      "reason": "Source/shot mismatch: rendered ancient robed praying figure, disciples and sunset hillside instead of mandatory junior architect at workbench with neutral paperweight; 1536x1024 landscape vs 4:5 portrait. Rejected before QA and not uploaded.",
+      "failedMeasuredBytesSha256": "89acc6704bec523c6644b9cc34b385ca913aca8bf580a14693c9e4e12d0e123a",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:10:17.848Z",
+      "generatorId": "e04c258a-05e2-48ab-8c9c-07a6b3a81ce1"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.tiredness_weariness.08",
+      "variant": "CLEAN",
+      "attemptId": "bq7-tiredness08-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-tiredness08-p5dkdl",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-08b.json",
+      "sourceChecksum": "sha256:19dba18049a3c7725aa577a2c341551780b9b9149e4fa48f9e8ce619dd80d067",
+      "guidePath": "docs/v7/unfinished-artwork-guide/08-prayer-moments-shots.md",
+      "notes": "REJECTED before QA. Generator returned unrelated ancient biblical landscape; no valid image stored, no candidate path, local generated bytes deleted. Retry with new scene revision; slot unclaimed.",
+      "reason": "Wrong scene and ratio: biblical-era praying man by sunset tree/lake, no exhausted parent, stool, folded towel or laundry room; PNG 1536x1024 landscape, required 4:5; local candidate deleted and never submitted.",
+      "failedMeasuredBytesSha256": "c72571923cf11e4aec14c11018fb4ddf00f91b38687eeafae9ede21cc6d2cc7f",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:13:00.353Z",
+      "generatorId": "be9196a8-924f-448a-9422-399e77e713a2"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.overwhelm.09",
+      "variant": "CLEAN",
+      "attemptId": "bq7-overwhelm09-p5dkdl",
+      "producer": "manual-chat-v7-p4-p5dkdl",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-overwhelm09-p5dkdl",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T16:08:50.593Z",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-09b.json",
+      "sourceChecksum": "sha256:da2a8a9712fd94fdfce37b67ca9064020aed4ff6b5d617722b2ff463564051db",
+      "guidePath": "docs/v7/unfinished-artwork-guide/09-trustworthy-sharing-shots.md",
+      "notes": "REJECTED before QA. Generator returned unrelated ancient biblical landscape; no valid image stored, no candidate path, local generated bytes deleted. Retry with new scene revision; slot unclaimed.",
+      "reason": "Wrong scene and ratio: lone biblical-era man viewing mountain sunset, no parent, relative, children's supplies or delegation; PNG 1536x1024 landscape; local candidate deleted and never submitted.",
+      "failedMeasuredBytesSha256": "84da710b38d38504a1e89a0f51389e27b9789d2a3cb2d66133e1deca3b822048",
+      "failedWidth": 1536,
+      "failedHeight": 1024,
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T16:13:00.353Z",
+      "generatorId": "2d65d2ee-74f6-43ca-b2a8-45c58de3ac15"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "bq7-doubt03-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-doubt03-iigauc",
+      "status": "rejected",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "notes": "Rejected at producer preflight, before GitHub image upload or five-role QA. Candidate deleted locally; shot cannot be reused. The exact content slot is free for a new sceneRevision.",
+      "reason": "Wrong source-locked action: generator returned three-panel montage of unrelated home studio, laundry, family supplies; does not show adult comparing reference books in public library. Triptych forbidden even though native pixels near 4:5.",
+      "failedMeasuredBytesSha256": "aa5911808c7c66619d43a5bd2d3c1f72e21d6a0e357d06f3e10f9e69c64d6bfb",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2316993,
+      "failedFormat": "png",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-11T07:43:00+09:00",
+      "generatorId": "a735a45a-cb64-44be-8b08-0d2d7db94d1b"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.06",
+      "variant": "CLEAN",
+      "attemptId": "bq7-peace06-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-peace06-iigauc",
+      "status": "rejected",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-06c.json",
+      "sourceChecksum": "sha256:bba7a81eb97df154aed7ac33fdb9bd2ecad6ebbb92fa0c29988f6471baf9ee0e",
+      "guidePath": "docs/v7/unfinished-artwork-guide/06-faithful-action-shots.md",
+      "notes": "Rejected at producer preflight, before GitHub image upload or five-role QA. Candidate deleted locally; shot cannot be reused. The exact content slot is free for a new sceneRevision.",
+      "reason": "Wrong source-locked action and aspect: unrelated three-panel studio/laundry/family montage instead of adult calmly continuing neighborhood walk without looking for purchases on phone; landscape 1402x1122, required 4:5.",
+      "failedMeasuredBytesSha256": "70e9a11943a34866035ebd4c842cd21d2cfe9810423b3564808947dfbad18192",
+      "failedWidth": 1402,
+      "failedHeight": 1122,
+      "failedByteCount": 2246807,
+      "failedFormat": "png",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-11T07:43:00+09:00",
+      "generatorId": "2c6f4102-583c-446a-aab7-692668c2e228"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.shame.11",
+      "variant": "CLEAN",
+      "attemptId": "bq7-shame11-iigauc",
+      "producer": "manual-chat-v7-batch-iigauc",
+      "sourceRevision": "r1",
+      "sceneRevision": "guide-20261011-shame11-iigauc",
+      "status": "rejected",
+      "claimedAt": "2026-10-11T07:43:00+09:00",
+      "qa": {},
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-11-backfill.json",
+      "sourceChecksum": "sha256:36db3b9a6b63fc5e0c72a3110bfb93be39932605cd3134aeecf221a3ceefe733",
+      "guidePath": "docs/v7/unfinished-artwork-guide/11-original-backfill-shots.md",
+      "notes": "Rejected at producer preflight, before GitHub image upload or five-role QA. Candidate deleted locally; shot cannot be reused. The exact content slot is free for a new sceneRevision.",
+      "reason": "Wrong source-locked action and aspect: another three-panel family montage; no adult removing blank name-tag from project box in craft classroom; landscape 1402x1122.",
+      "failedMeasuredBytesSha256": "44796f48d953098cb947c5c789908d987c84825ee5b912b9d60adc49776260a8",
+      "failedWidth": 1402,
+      "failedHeight": 1122,
+      "failedByteCount": 2231543,
+      "failedFormat": "png",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-11T07:43:00+09:00",
+      "generatorId": "46705231-1f21-4808-b865-14d5841825b1"
+    },
+    {
+      "family": "need",
+      "contentId": "strength",
+      "variant": "CLEAN",
+      "attemptId": "bq7-strength-rrgfgb",
+      "producer": "manual-chat-single-strength-20261011",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "guide-20261011-s6-strength-door-jig-rrgfgb",
+      "status": "rejected",
+      "claimedAt": "2026-10-10T23:18:46.037Z",
+      "qa": {},
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md#6-p1--p5-needs-fixed-nonoverlapping-scenes-and-reference-guardrails",
+      "note": "ONE manual-chat generated CLEAN for P1 need Strength. Scene four modern adult repair volunteers carefully stabilize wooden door on repair jig while fourth aligns hinge. No other content ID; no TYPE/THUMB produced in this request.",
+      "reason": "Producer source/scene mismatch: image depicts a solitary modern student writing in a bedroom study under desk lamp. Required four adult volunteers stabilizing a heavy wooden door and aligning hinges in modern community workshop. No repair jig or door visible; 4:5 geometry/photorealism alone cannot compensate for wrong scene. No candidate image uploaded.",
+      "failedMeasuredBytesSha256": "b65d6f7da7c77ca0bc12ba98186285df8f0db888c0bda9fb5d3e32d7ce0cf71a",
+      "failedWidth": 1122,
+      "failedHeight": 1402,
+      "failedByteCount": 2027782,
+      "failedFormat": "png",
+      "generatorId": "866c7fda-0fbc-47ed-a9b2-10c770bf75f1",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-10T23:20:04.027Z",
+      "notes": "Rejected immediately at single-image producer preflight; original bytes were deleted from local sandbox after measured decode and SHA. NO five-agent QA candidate submitted; slot is released. Next attempt must use fresh sceneRevision; investigate generator prompt contamination."
+    },
+    {
+      "family": "need",
+      "contentId": "peace",
+      "variant": "CLEAN",
+      "attemptId": "manual-peace-20261013-r3",
+      "producer": "manual-chat-20261013",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "housing-office-peace-r3",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T11:55:49.109Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "scope": "one-original-clean-master-live-text-focal-crop",
+      "note": "Replacing unusable SVG candidate only; preserve accepted masters and all real QA-pending candidates. Need Peace: #1421 SVG, no eligible raster. Peaceful: merged -01 SVG, no eligible raster. No independent QA verdict assigned.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 174990,
+        "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239"
+      },
+      "sha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "reference": "John 14:27",
+      "altText": "A calm mother listens to her daughter amid a busy municipal waiting room.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "e54c9185a4aa9f6f3a61571a75f1a74ca4c0aaf81a283fd6e1f2f14cbff9d9ef",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality 91; no crop, resize, upscale, text or scene edits"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Mother and child converse calmly in a populated contemporary office waiting room.",
+        "noBakedText": true,
+        "singleScene": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Settled attentive presence in a noisy circumstance, not a promise to remove hardship.",
+      "productionEligibility": "HOLD_POLICY_MIGRATION",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+      "technicalEvidenceRun": 38395756325
+    },
+    {
+      "family": "emotion",
+      "contentId": "peaceful",
+      "variant": "CLEAN",
+      "attemptId": "manual-peaceful-20261013-r3",
+      "producer": "manual-chat-20261013",
+      "sourceRevision": "taxonomy-e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "sceneRevision": "modern-armchair-contentment-r3",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T11:55:49.185Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-peace-single-masters-20261013/data/v7/visual-assets/reviews/peace-20261013-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "src/features/library/emotion-taxonomy.js",
+      "sourceChecksum": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "guidePath": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+      "scope": "one-original-clean-master-live-text-focal-crop",
+      "note": "Replacing unusable SVG candidate only; preserve accepted masters and all real QA-pending candidates. Need Peace: #1421 SVG, no eligible raster. Peaceful: merged -01 SVG, no eligible raster. No independent QA verdict assigned.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1254,
+        "height": 1254,
+        "bytes": 213416,
+        "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd"
+      },
+      "sha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "focalPoint": {
+        "x": 0.6,
+        "y": 0.45
+      },
+      "textSafeRegion": "bottom",
+      "reference": "Philippians 4:11-12",
+      "altText": "A woman rests contentedly in a modest apartment, holding a plain mug.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "80d2f8aa3edb4506525d4569bd4e3e8fb13f2754e7b69a3b61d1622c658c62f6",
+        "nativeWidth": 1254,
+        "nativeHeight": 1254,
+        "export": "WebP quality 91; no crop, resize, upscale, text or scene edits"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Woman rests in an ordinary armchair holding a mug; modest apartment, natural daylight.",
+        "noBakedText": true,
+        "singleScene": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Contentment in ordinary circumstances rather than luxury or acquiring possessions.",
+      "productionEligibility": "HOLD_POLICY_MIGRATION",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "ec40a720afa5f7e84b8f74a29049b74430b7f4ac",
+      "technicalEvidenceRun": 38395756325
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.peace_contentment.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-contentment03-20261014-r4",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "lamp-repair-20261014-r4",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:21:12.087Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:f7f9ebe483e5aac0f444c1c55d33258b30a2325ee5cd5b34d9fad77dbcb7044e",
+      "sourceContent": {
+        "title": "Practice contentment with presence",
+        "body": "Contentment is stronger when it rests on presence rather than possessions. Hebrews 13:5 connects freedom from the love of money with God's promise not to leave his people. Notice what money or achievement cannot provide, then receive the relationships and presence already available today."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "c0b4afebcef1df2fc94a20dae4d837aa2b1e94cded7e5f113c0e4d7d62b6ce42",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "right",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult repairs an unplugged existing lamp; companion prepares cups in background.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-contentment03-20261014-r4.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 174880,
+        "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb"
+      },
+      "sha256": "0bce83abba9160a0e66b0bf09d5d6c40b51a1dcaa4b3ff599b5d193a5a310edb",
+      "reference": "Hebrews 13:5",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.tiredness_weariness.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-weariness03-20261014-r4",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "recovery-sofa-20261014-r4",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:21:12.159Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:27ec73d78a70e22778948d608c017eb0a30f4597831b866b53c8862636b24af1",
+      "sourceContent": {
+        "title": "Receive strength instead of manufacturing it",
+        "body": "Weariness can make you work harder simply because you feel weak. Isaiah 40:29 describes God giving strength to the weary. Ask what restoration actually requires: sleep, food, help, quiet, or prayer. Strength received can be wiser than effort forced."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "68c97aba1766eb937657dca02c8a79bcc6ce8ca53fe09e57fb53d3bd55d39958",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "left",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Weary adult rests on sofa; off hallway lamp and bedside water/towel visible.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-weariness03-20261014-r4.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 217804,
+        "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96"
+      },
+      "sha256": "745acbf36b324643e909d14c3e38fac018dfdfa2ed9bbbc06e30d349ea681e96",
+      "reference": "Isaiah 40:29",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.anger.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-anger03-20261014-r4",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "electronics-lab-20261014-r4",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:21:12.233Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:42b41e6a946294d5dde344b2a67743fcf28bba7ea0a138cc6e8549fc66aeb714",
+      "sourceContent": {
+        "title": "Do not give anger a room overnight",
+        "body": "Anger can be a signal without becoming a permanent resident. Ephesians 4:26-27 warns against letting anger remain and gain ground. Before the day closes, identify what must be addressed, what must be released, and what conversation needs a calmer time."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "e544b44e159ac19ce5a632c6b39b51f7392232c1eae41e18e3e2bde72330cc01",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Technician opens palms beside low-voltage prototype while calmly discussing with colleague.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-anger03-20261014-r4.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 158650,
+        "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316"
+      },
+      "sha256": "5e45aa2bfee33b2a4b2f4d98f042e9a9b27b62153c1fd7d2073a334e2a6a6316",
+      "reference": "Ephesians 4:26-27",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.gratitude.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-gratitude03-20261014-r1",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "neighbor-food-thanks-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:34:55.596Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:41060bf5f7662a129c627241da40eda315ba1e16f1f6b48583696a31f66cfabc",
+      "sourceContent": {
+        "title": "Do not forget the benefits",
+        "body": "Gratitude weakens when good gifts become background noise. Psalm 103:2 tells the soul not to forget God's benefits. Review the last seven days and name three provisions you almost stopped noticing. Remembering turns ordinary goodness back into received grace."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8f9b90af07dbb477efa4d70d58419b5f8273932ed38dd978ef74c1197734f5aa",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "left",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Commuter shares homemade food with an older neighbor in a modest apartment doorway.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-gratitude03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 151090,
+        "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01"
+      },
+      "sha256": "ee855de4087d5510f976874ffec69865e72e2b86e7f1a06843ec4796d09c0a01",
+      "reference": "Psalm 103:2",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.fear.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-fear03-20261014-r1",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "harbor-safe-step-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:34:55.667Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:a4826d9b009dae74195842b7a37a20179158f0c2ad1319b4e352fba75791cffc",
+      "sourceContent": {
+        "title": "Courage can move while fear remains",
+        "body": "Fear does not have to disappear before obedience begins. Joshua 1:9 ties courage to God's presence, not to a fearless feeling. Name the next faithful action, take it at a manageable size, and let courage be movement with God rather than the absence of fear."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "6c53fec75ab1b41838c448785ff0d1ff7cfb68725f055b700722f61727ffdce1",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Cautious adult walks a sturdy railed harbor gangway beside an attentive companion.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-fear03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 326890,
+        "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc"
+      },
+      "sha256": "724a18fe532de64fd6154f7026e2b20e460775a5f77b540863eca027c49cc4fc",
+      "reference": "Joshua 1:9",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.loneliness.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-loneliness03-20261014-r1",
+      "producer": "manual-chat-20261014",
+      "sourceRevision": "r1",
+      "sceneRevision": "diner-invitation-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T20:34:55.738Z",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-devotional-three-masters-20261014/data/v7/visual-assets/reviews/devotional-six-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:1ea781300d70f238c5c4f37593b221e337fa300dc289b2e527d887dbfbcec3c2",
+      "sourceContent": {
+        "title": "Tell God the ache of being alone",
+        "body": "Loneliness can make silence feel like proof that nobody sees you. Psalm 25:16 turns loneliness itself into prayer. Tell God exactly where isolation hurts, then choose one human connection you can pursue rather than waiting for connection to happen accidentally."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "note": "Five independent exact-SHA roles PASS for staged source and QA-only presentation profiles; not production registration or release.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "bddce1354229b8c520e02095118978a5d6754024cf23bcbb442a6a3d1b4d121a",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "focalPoint": {
+        "x": 0.52,
+        "y": 0.43
+      },
+      "textSafeRegion": "bottom",
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Diner regular offers an empty chair to a newly arrived neighbor.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-loneliness03-20261014-r1.webp",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 188400,
+        "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957"
+      },
+      "sha256": "700f01f55eea13f58b0e6245f5db53965882be2b9297819dcbeb42e2f4168957",
+      "reference": "Psalm 25:16",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "539829172ba2bbad3cadd84c1602bcfe2913440e",
+      "technicalEvidenceRun": 38472837495
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-reference-study-20261014-r2",
+      "status": "rejected",
+      "claimedAt": "2026-10-13T22:22:15.756698+00:00",
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.6
+      },
+      "sceneFingerprint": {
+        "action": "library-reference-study",
+        "setting": "public library",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Missing canonical cover; claim registered before generation. Prior doubt triptych rejected; single continuous library scene required. Five independent QA pending.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8df5b7d8c1b799accbe1f8213454a4c567d9f3d4dfb31f4b1ae3e6643015dfaf",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights QA FAIL: baked letter-like paragraphs on open book pages; no readable quotation or proven copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:27:18.531427+00:00",
+      "failedMeasuredBytesSha256": "e2df122aded38b4e89f3af8ad2ef1d3d7c63b1a74c0ed2a54679feb783780c45"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.frustration.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-frustration03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "garden-hose-reroute-20261014-r2",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:22:15.763670+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:a0370cab8213cffbdaf93a53e244735c10d9441a03f55a655e2a89f3569ca328",
+      "sourceContent": {
+        "title": "Let patience outlast irritation",
+        "body": "Frustration wants an immediate ending, even when haste would make the situation worse. Ecclesiastes 7:8-9 praises patience and warns against quick anger. Slow the decision down just enough to distinguish a real obstacle from wounded pride, then respond to the actual problem."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Ecclesiastes 7:8-9",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "sceneFingerprint": {
+        "action": "garden-hose-reroute",
+        "setting": "community garden",
+        "peopleCount": 1,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-frustration03-20261014-r2.webp",
+      "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 462366,
+        "sha256": "797879ee6b4b41cceb4b6241eea53d13777aea2c1f73e440814c9930bf2843f2"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "12a91c0d0429ef3da9193a522bbf64deba8a14890e1e523f27f764ab823e566d",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "THEMATIC_ALTERNATIVE",
+        "observed": "Gardener calmly guides a curved irrigation hose beside a loose stone rather than yanking it.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Visible calm practical hose adjustment beside a stone expresses patient response to an obstacle. Blockage, prior irritation and before/after recovery are not asserted.",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.joy.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-joy03-20261014-r2",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "school-custodian-mural-20261014-r2",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:22:15.773188+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:698c25915f59d4570b283043c96bb87893281ba7c1ac76c9de0d62ee0b98fa5b",
+      "sourceContent": {
+        "title": "Let joy become strength",
+        "body": "Joy is more than a pleasant break from serious life. Nehemiah 8:10 connects the joy of the Lord with strength. Receive good things deeply enough that they restore energy for obedience, service, and endurance. Celebration can prepare you for faithful work."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Nehemiah 8:10",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.35
+      },
+      "sceneFingerprint": {
+        "action": "school-custodian-mural",
+        "setting": "school corridor",
+        "peopleCount": 4,
+        "perspective": "restrained eye-height environmental portrait",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-joy03-20261014-r2.webp",
+      "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 211942,
+        "sha256": "a50c96626017b9529fcedcd583d782dd6216473a9e0a78c334383d148447b322"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "3ce616e4efbf5188e9abdcc41650af71bbd0fadac58761b1cfbd598b8bc5ace7",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Custodian smiles alongside three students appreciating an abstract school mural.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r3",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-photographic-atlas-overhead-20261014-r3",
+      "status": "rejected",
+      "claimedAt": "2026-10-13T22:27:18.531485+00:00",
+      "qa": {
+        "rights": {
+          "verdict": "FAIL",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r3-20261014-rights.json"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.4,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "compare three photograph-only reference atlases",
+        "setting": "public library study table",
+        "peopleCount": 1,
+        "perspective": "high three-quarter over shoulder",
+        "sourceRevision": "r1"
+      },
+      "note": "New native source after r2 pseudoletter FAIL. Different older male cast, overhead camera, photograph-only atlas pages and comparison action. No paragraphs/letters/page numbers.",
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "99662a92a05fb6eda6d9264d5b06fead7e54e4394b8fa8687e63e12dea2a65fd",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "reason": "Independent rights FAIL: background book-spine pseudoletters; foreground photo pages corrected. No copied work asserted.",
+      "deletedLocalCandidate": true,
+      "deletedAt": "2026-10-13T22:30:17.528984+00:00",
+      "failedMeasuredBytesSha256": "2580424d11e7acc0e6031dd6af6a64368120db1977d5b648c0747e41d861c0d7"
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.doubt.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-doubt03-20261014-r4",
+      "producer": "manual-chat-20261014-next",
+      "sourceRevision": "r1",
+      "sceneRevision": "library-carrel-shelf-free-photo-study-20261014-r4",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T22:30:17.529002+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-doubt-r4-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-20261014/data/v7/visual-assets/reviews/devotional-next-three-b-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03b.json",
+      "sourceChecksum": "sha256:3cffa33d30ee0b6a4be47f3c78fa4ea9e296200c59fd5c634a9595cb05d9e94b",
+      "sourceContent": {
+        "title": "Turn doubt into careful examination",
+        "body": "Doubt can either isolate you or make you more careful with truth. Acts 17:11 commends people who examined the Scriptures to test what they heard. Write the question clearly, separate evidence from assumption, and investigate without deciding the answer in advance."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Acts 17:11",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "sceneFingerprint": {
+        "action": "compare photograph-only atlases in shelf-free carrel",
+        "setting": "library individual study carrel with plain partitions",
+        "peopleCount": 1,
+        "perspective": "side environmental eye-height",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for immutable source and QA-only presentation profiles; not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-doubt03-20261014-r4.webp",
+      "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 323018,
+        "sha256": "4609c79a113aedaf6ba5f47f660b559699d34711b6e91a74f0caeb5c55a44713"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "5bbb88a35d603d230bc1df52f610df819a85c57467ddec5a44554f69382d9618",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult compares three photograph-only reference books and geometric question sketch in shelf-free library study carrel; no page/spine text observed.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "bff1a644e9af318e9610ea9e0ab3c053127176cd",
+      "technicalEvidenceRun": 38478979308
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.hurt_betrayal.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-hurt-betrayal03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "pottery-bowl-empty-stool-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T23:53:42.263462+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:304f5b29af92906c31bd645e783908b7cfc7bfbac2cbd6782b370abd8d766972",
+      "sourceContent": {
+        "title": "Grieve the broken trust honestly",
+        "body": "Betrayal hurts differently because the wound comes through relationship. Psalm 55:12-14 names the pain of being harmed by someone once close. Do not minimize the breach. Grieve what was lost, protect what needs protection, and let future trust be rebuilt by truth rather than pressure."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Psalm 55:12-14",
+      "textSafeRegion": "right",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "sceneFingerprint": {
+        "action": "pottery-bowl-empty-stool",
+        "setting": "quiet pottery studio",
+        "peopleCount": 1,
+        "perspective": "over shoulder",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for staged source and actual QA presentation profiles. Build isolation verified. Not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-hurt-betrayal03-20261014-r1.webp",
+      "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 218178,
+        "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "113d1427f07e2d56745fb1b471877f83cb27ae1992dbc8ac7c9de9e5d500f3a8",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Adult studies a visibly cracked whole bowl beside an empty stool in a pottery studio.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "6236b3d13f9a144667629be5b7ee909d7f841065",
+      "technicalEvidenceRun": 38512111686
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.impatience_waiting.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-impatience-waiting03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "tailor-pause-jacket-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T23:53:42.271902+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:99afed045919c0ca8fa1f2b4dcbf72a7798c23e1e44e77926adb73474c5e451b",
+      "sourceContent": {
+        "title": "Let patience have a practice",
+        "body": "Waiting becomes harder when patience is only an idea. James 5:7-8 compares waiting to a farmer who continues through seasons before harvest. Give patience a form today: prepare something useful, keep one promise, or refuse one shortcut while the larger answer is still delayed."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "James 5:7-8",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "sceneFingerprint": {
+        "action": "tailor-pause-jacket",
+        "setting": "tailoring workroom",
+        "peopleCount": 1,
+        "perspective": "low seated eye height",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for staged source and actual QA presentation profiles. Build isolation verified. Not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-impatience-waiting03-20261014-r1.webp",
+      "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 215200,
+        "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "fa6bf717eb2323c0c9f213aa27bc9c37ca9b15231512f403a44d4729d798e920",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "THEMATIC_ALTERNATIVE",
+        "observed": "Tailor pauses beside an unfinished pinned jacket; a plain unmarked cloth ribbon rests on the bench.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "semanticAnchor": "Visible pause beside an unfinished pinned jacket expresses diligent preparation and patience. Plain ribbon is not asserted as a numbered measuring tape; fabric settling or preceding pinning is not observable.",
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "6236b3d13f9a144667629be5b7ee909d7f841065",
+      "technicalEvidenceRun": 38512111686
+    },
+    {
+      "family": "devotional",
+      "contentId": "devotional.biblequest.numbness_emptiness.03",
+      "variant": "CLEAN",
+      "attemptId": "manual-numbness-emptiness03-20261014-r1",
+      "producer": "manual-chat-20261014-c",
+      "sourceRevision": "r1",
+      "sceneRevision": "breakfast-nook-flower-20261014-r1",
+      "status": "qa_passed",
+      "claimedAt": "2026-10-13T23:53:42.279200+00:00",
+      "qa": {
+        "scene": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-scene.json",
+          "reviewer": "/root/peace_scene_qa",
+          "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "rights": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-rights.json",
+          "reviewer": "/root/peace_rights_qa",
+          "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "technical": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-technical.json",
+          "reviewer": "/root/peace_technical_qa",
+          "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "uniqueness": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-uniqueness.json",
+          "reviewer": "/root/peace_uniqueness_qa",
+          "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        },
+        "coordinator": {
+          "verdict": "PASS",
+          "evidence": "https://github.com/11ll11l1l1l/BibleQuest/blob/art/v7-next-three-c-20261014/data/v7/visual-assets/reviews/devotional-next-three-c-20261014-coordinator.json",
+          "reviewer": "/root/peace_coordinator_qa",
+          "candidateSha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+          "scope": "immutable-source-and-QA-presentation-profiles-only"
+        }
+      },
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:1f3638734c78fe23fea150ac39fd1b338c174d6a739d8a8541f1aca59123fabd",
+      "sourceContent": {
+        "title": "Ask for a renewed heart",
+        "body": "Numbness can make you assume that nothing inside will change. Psalm 51:10 is a prayer for a clean heart and renewed spirit. If you cannot produce feeling, ask for renewal. Keep one honest practice open so that change has somewhere to enter."
+      },
+      "guidePath": "docs/v7/unfinished-artwork-guide/03-third-narrative-shots.md",
+      "reference": "Psalm 51:10",
+      "textSafeRegion": "left",
+      "focalPoint": {
+        "x": 0.5,
+        "y": 0.55
+      },
+      "sceneFingerprint": {
+        "action": "breakfast-nook-flower",
+        "setting": "faded apartment breakfast nook",
+        "peopleCount": 1,
+        "perspective": "medium environmental eye height",
+        "sourceRevision": "r1"
+      },
+      "note": "Five independent roles PASS for staged source and actual QA presentation profiles. Build isolation verified. Not production registration or release.",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-numbness-emptiness03-20261014-r1.webp",
+      "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+      "measured": {
+        "format": "webp",
+        "width": 1122,
+        "height": 1402,
+        "bytes": 178260,
+        "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3"
+      },
+      "generation": {
+        "provider": "OpenAI image generation",
+        "mode": "built-in interactive",
+        "thirdPartyInputs": false,
+        "originalSha256": "8b00856e92dcf137c7eba7972ef500a41bd3cc62d6a0790f0283bbfe9f7d89e5",
+        "nativeWidth": 1122,
+        "nativeHeight": 1402,
+        "export": "WebP quality91; no crop/resize/upscale/text"
+      },
+      "producerPreflight": {
+        "scene": "EXACT_SCENE",
+        "observed": "Reserved adult gently places a single fresh flower into a jar at a faded breakfast nook.",
+        "singleScene": true,
+        "noBakedText": true,
+        "publicationApproved": false
+      },
+      "productionEligibility": "HOLD_REGISTRATION_AND_RELEASE",
+      "publicationApproved": false,
+      "technicalEvidenceHead": "6236b3d13f9a144667629be5b7ee909d7f841065",
+      "technicalEvidenceRun": 38512111686
+    }
+  ]
+}

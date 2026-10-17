@@ -1,5 +1,6 @@
 import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
+import { createLibraryStaticRepository } from '../features/library/static-adapter.js';
 import { parseLibraryDiscoveryQuery, serializeLibraryDiscoveryQuery } from '../features/library/emotion-taxonomy.js';
 import { createStore } from './store.js';
 import { createLazyPage } from './lazy-page.js';
@@ -302,10 +303,9 @@ function boot(root){
   const psychometrics=createPsychometricsService({engine:psychometricsEngine,storage:privateStorage,session});
   const transform=createTransformService({engine:transformEngine,progress,personalityProfile});
   const recordingsMediaRuntime=createRecordingsMediaRuntime({document,visibilityTarget:document,pageTarget:window,sessionOwner:()=>{const sessionSnapshot=session.getState();return sessionSnapshot?.authenticated&&sessionSnapshot?.user?.id?`account:${sessionSnapshot.user.id}`:'guest'},storage:privateStorage});
-  const library=createLibraryService({repository:{
-    async listPublished(options){return (await api.library.createRepository()).listPublished(options)},
-    async getPublishedById(id){return (await api.library.createRepository()).getPublishedById(id)}
-  }});
+  // Public Library browsing is release-versioned and does not require an account.
+  // Content Review continues to use the protected Supabase repository separately.
+  const library=createLibraryService({repository:createLibraryStaticRepository()});
   const v7ContextListeners=new Set();
   const notifyV7Context=()=>{for(const listener of v7ContextListeners)listener()};
   const subscribeV7Context=listener=>{v7ContextListeners.add(listener);return ()=>v7ContextListeners.delete(listener)};
@@ -364,7 +364,9 @@ function boot(root){
   const libraryParams=()=>readNavigationParams();
   const libraryDiscoveryQuery=()=>parseLibraryDiscoveryQuery(libraryParams());
   const v7ContextReady=()=>{const auth=session.getState(),active=congregation.getActive();return Boolean(auth?.authenticated&&auth.user?.id&&active?.congregationId&&(!active.userId||active.userId===auth.user.id));};
-  const libraryContextReady=()=>session.getState()?.authenticated===true?v7ContextReady():true;
+  // Public Library reads only the approved static catalog; no tenant JWT, membership or congregation is required.
+  // Private Content Review and ONE 2 ONE retain their independent scoped access gates.
+  const libraryContextReady=()=>true;
   const assignedPage=view=>{
     const context=Object.fromEntries(['pairId','trackId','moduleId'].map(key=>[key,libraryParams().get(key)||'']));
     const back=view==='module'?{routeKey:'one-to-one-track',pairId:context.pairId,trackId:context.trackId}:context.trackId?{routeKey:'one-to-one-track',pairId:context.pairId}:{routeKey:'one-to-one-pair',pairId:context.pairId};
@@ -497,7 +499,8 @@ function boot(root){
       explorer:explorerCloudSync,
       'leaderboard-delivery':progressLeaderboardBridge
     }),
-    ()=>router.navigate(router.current()),
+    // Account resume must preserve the deep-link query and discovery filters.
+    ()=>router.navigate(readNavigationTarget().replace(/^#\/?/, '')),
     (owner,error)=>console.warn('Resume unavailable',owner,error)
   );
   let adminAccessSessionKey='';
@@ -541,7 +544,7 @@ function boot(root){
     // the browser route before async session hydration resolves on a full page reload.
     const discipleshipTarget=initialDiscipleshipTarget||discipleshipHydrationTarget(readNavigationTarget());
     if(session.isAuthenticated()&&discipleshipTarget)router.navigate(discipleshipTarget);
-    else if(session.isAuthenticated())router.navigate(router.current());
+    else if(session.isAuthenticated())router.navigate(readNavigationTarget().replace(/^#\/?/, ''));
     presence.start().catch(error=>console.warn('Presence unavailable',error));
     if(session.isAuthenticated())account.ensureCurrentDevice().catch(error=>console.warn('Device registration failed',error));
   }).catch(error=>console.error('Session boot failed',error));

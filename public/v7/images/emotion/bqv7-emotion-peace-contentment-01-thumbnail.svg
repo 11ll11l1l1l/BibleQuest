@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="480" viewBox="250 55 670 837.5" role="img" aria-label="A relaxed woman holding a warm mug while sitting in an armchair near a window.">
+
+<defs>
+ <linearGradient id="wall" x2=".9" y2="1"><stop stop-color="#d6e1db"/><stop offset=".55" stop-color="#c6d5d0"/><stop offset="1" stop-color="#b1c3bc"/></linearGradient>
+ <linearGradient id="sun" x2="1" y2="1"><stop stop-color="#f6eddb"/><stop offset="1" stop-color="#d2dfd3"/></linearGradient>
+ <linearGradient id="floor" x2=".8" y2="1"><stop stop-color="#b38f78"/><stop offset="1" stop-color="#8c6d5d"/></linearGradient>
+ <linearGradient id="sofa" x2="1" y2="1"><stop stop-color="#ddbc9f"/><stop offset="1" stop-color="#ab816d"/></linearGradient>
+ <linearGradient id="sweater" x2=".7" y2="1"><stop stop-color="#e9d7b6"/><stop offset="1" stop-color="#c1a88d"/></linearGradient>
+ <linearGradient id="skin" x2="1" y2=".8"><stop stop-color="#e6af8b"/><stop offset="1" stop-color="#a76c58"/></linearGradient>
+ <linearGradient id="pants" x2="1" y2="1"><stop stop-color="#687c7a"/><stop offset="1" stop-color="#344c50"/></linearGradient>
+ <linearGradient id="plant" x2="1" y2="1"><stop stop-color="#66876f"/><stop offset="1" stop-color="#31534b"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#fff3da" stop-opacity=".65"/><stop offset="1" stop-color="#fff3da" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="20"/></filter>
+ <filter id="smallblur"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<!-- quiet lived-in room, morning after rain; no sky/sunset landscape -->
+<rect width="1024" height="1024" fill="url(#wall)"/>
+<path d="M0 727 L1024 693 L1024 1024 L0 1024 Z" fill="url(#floor)"/>
+<path d="M0 731 L1024 696" stroke="#f0dfce" stroke-opacity=".4" stroke-width="9"/>
+<!-- arched window and soft courtyard light -->
+<path d="M73 139 Q73 74 145 74 H373 Q444 74 444 145 V639 H73 Z" fill="#718c84"/>
+<path d="M93 148 Q93 95 149 95 H368 Q424 95 424 148 V617 H93 Z" fill="url(#sun)"/>
+<path d="M93 461 C171 418 208 449 276 418 C341 386 384 418 424 395 V617 H93 Z" fill="#b1c5b5" opacity=".8"/>
+<path d="M93 521 C169 490 218 513 282 481 C348 448 391 483 424 462 V617 H93 Z" fill="#8ca99c" opacity=".7"/>
+<path d="M107 615 C131 550 153 529 169 473 C193 513 194 551 214 610 Z" fill="#648776" opacity=".6"/>
+<path d="M325 617 C346 542 370 520 378 465 C404 518 413 560 424 616 Z" fill="#648776" opacity=".55"/>
+<path d="M259 95 V617 M93 333 H424" stroke="#8b9b8d" stroke-width="15" opacity=".95"/>
+<path d="M73 139 Q73 74 145 74 H373 Q444 74 444 145 V639 H73 Z" fill="none" stroke="#eee7d6" stroke-width="23"/>
+<path d="M93 148 Q93 95 149 95 H368 Q424 95 424 148 V617 H93 Z" fill="none" stroke="#7e978d" stroke-width="5"/>
+<rect x="51" y="634" width="416" height="27" rx="9" fill="#e8ddc9"/>
+<!-- long daylight stripes -->
+<path d="M90 658 L302 658 L504 1024 L301 1024 Z" fill="#f6e6c6" opacity=".19"/>
+<ellipse cx="248" cy="456" rx="350" ry="450" fill="url(#glow)"/>
+<!-- low cabinet with ceramic pottery and closed book -->
+<rect x="23" y="692" width="350" height="115" rx="13" fill="#7b8e83"/>
+<rect x="33" y="692" width="336" height="19" rx="9" fill="#b0aa8d"/>
+<path d="M40 810 V852 M347 810 V852" stroke="#526c65" stroke-width="17" stroke-linecap="round"/>
+<rect x="95" y="679" width="122" height="15" rx="5" fill="#e6d8b8"/>
+<rect x="96" y="669" width="125" height="12" rx="4" fill="#9e7d73"/>
+<path d="M275 694 C258 676 264 646 269 633 H316 C323 658 329 683 307 694Z" fill="#b98d7a"/>
+<path d="M280 635 Q291 624 305 636" fill="none" stroke="#e3bda3" stroke-width="6"/>
+<!-- soft woven rug -->
+<ellipse cx="680" cy="930" rx="403" ry="91" fill="#514c47" opacity=".14" filter="url(#blur)"/>
+<path d="M293 855 Q548 782 914 847 Q1015 894 931 965 Q651 1042 358 964 Q273 929 293 855 Z" fill="#e0cfb4"/>
+<path d="M328 868 Q579 807 896 868 Q946 895 902 946 Q658 1006 379 943 Q316 923 328 868 Z" fill="none" stroke="#f2e4cb" stroke-width="11" opacity=".65"/>
+<!-- cozy chair, asymmetrical form -->
+<path d="M540 441 Q553 385 610 382 H844 Q915 391 926 468 L935 751 Q929 808 870 823 H565 Q498 806 499 744 Z" fill="#7f766c" opacity=".2" filter="url(#smallblur)"/>
+<path d="M542 430 Q561 375 615 378 H824 Q890 381 905 458 L908 741 Q904 794 852 801 H571 Q519 783 515 734 Z" fill="url(#sofa)"/>
+<path d="M569 449 Q573 409 615 404 H809 Q856 413 866 455 V679 H568 Z" fill="#dfc0a3"/>
+<path d="M542 640 Q513 631 497 666 V778 Q505 804 544 802 H879 Q926 789 922 752 L917 682 Q913 640 883 646 Z" fill="#b98d77"/>
+<path d="M547 783 L533 889 M872 787 L891 884" stroke="#6c6761" stroke-width="26" stroke-linecap="round"/>
+<!-- background pillow -->
+<path d="M774 478 Q810 457 848 476 L865 616 Q835 643 786 626 Z" fill="#829b8c"/>
+<path d="M780 493 L852 605" stroke="#d7cbb1" stroke-opacity=".4" stroke-width="8"/>
+<!-- person: relaxed posture, full figure and clean hands -->
+<!-- hair silhouette behind neck -->
+<path d="M655 407 Q602 357 613 300 Q621 243 676 224 Q743 206 781 255 Q803 282 796 344 Q786 402 746 442 L709 480 Z" fill="#3c4545"/>
+<path d="M644 378 Q610 399 608 449 Q610 480 648 485 Q678 477 685 448" fill="#3c4545"/>
+<!-- legs cross loosely on chair -->
+<path d="M627 666 Q689 637 769 655 Q831 678 836 738 Q831 775 783 779 L628 772 Q569 750 590 704Z" fill="url(#pants)"/>
+<path d="M692 697 Q631 711 621 754 Q636 791 686 787 L821 756 Q850 740 827 716Z" fill="#4e6768"/>
+<path d="M665 768 Q642 791 605 799 Q583 802 581 818 Q588 837 634 834 L705 815 Q713 794 691 779Z" fill="#c2b29c"/>
+<!-- torso sweater relaxed -->
+<path d="M663 430 Q605 433 587 487 L575 632 Q575 682 623 706 L779 697 Q820 679 806 633 L786 472 Q773 434 734 427 Z" fill="url(#sweater)"/>
+<path d="M669 444 Q693 472 734 445" fill="none" stroke="#a78f7c" stroke-width="10" opacity=".6"/>
+<path d="M603 503 Q588 570 602 641 M790 504 Q806 581 795 650" stroke="#eadac0" stroke-width="12" opacity=".45" fill="none"/>
+<!-- neck -->
+<path d="M689 399 L692 448 Q710 466 737 441 L735 391Z" fill="#bc8168"/>
+<!-- face slight three-quarter left -->
+<path d="M654 277 Q665 249 705 249 Q754 250 767 289 Q772 331 755 372 Q736 414 702 420 Q663 407 649 363 Q641 331 654 277 Z" fill="url(#skin)"/>
+<!-- hair front sweep, no impossible anatomy -->
+<path d="M646 312 Q628 278 648 250 Q677 216 719 229 Q769 232 782 277 Q753 273 738 262 Q699 292 662 284 Z" fill="#343e3d"/>
+<path d="M648 310 Q639 346 649 381 Q632 371 630 339Z" fill="#3d4644"/>
+<!-- subtle facial expression, lowered peaceful eyelids -->
+<path d="M673 332 Q684 337 695 333 M718 330 Q728 335 739 330" fill="none" stroke="#754f4b" stroke-width="4" stroke-linecap="round"/>
+<path d="M708 339 Q704 354 709 359" fill="none" stroke="#aa6e5d" stroke-width="3"/>
+<path d="M695 376 Q708 381 720 373" fill="none" stroke="#8e5b54" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M662 295 Q679 282 690 288" stroke="#4d4943" stroke-width="6" stroke-linecap="round" fill="none"/>
+<!-- arms loosely holding ceramic cup -->
+<path d="M604 503 Q570 544 598 604 Q621 631 682 619 L686 594 Q631 589 629 569 L649 525Z" fill="#e1c9a9"/>
+<path d="M779 504 Q820 535 794 591 Q783 614 737 619 L732 593 Q764 584 762 567 L738 529Z" fill="#cfb294"/>
+<!-- forearms and fingers around mug -->
+<path d="M674 593 Q681 579 694 578 L713 596 Q704 619 684 619 Q669 614 674 593Z" fill="#d39a7a"/>
+<path d="M741 591 Q730 578 719 583 L712 603 Q725 622 739 615 Q746 608 741 591Z" fill="#d69d7b"/>
+<!-- mug -->
+<path d="M684 559 H743 L736 619 Q715 631 693 620 Z" fill="#637d7a"/>
+<path d="M742 569 Q775 560 773 584 Q772 605 738 602" fill="none" stroke="#637d7a" stroke-width="12"/>
+<ellipse cx="713" cy="560" rx="30" ry="7" fill="#d1d6c6"/>
+<ellipse cx="713" cy="560" rx="22" ry="4" fill="#7c675a"/>
+<path d="M700 550 Q691 530 700 514 M721 549 Q728 529 720 509" stroke="#f9f1dc" stroke-opacity=".55" stroke-width="5" stroke-linecap="round" fill="none"/>
+<!-- tiny botanical accent on right, distinct from stock landscape -->
+<path d="M953 821 Q953 679 950 539" stroke="#587a68" stroke-width="12" fill="none"/>
+<path d="M952 704 Q900 694 892 639 Q944 639 952 704 M953 647 Q997 620 997 580 Q958 588 953 647 M951 768 Q902 766 887 721 Q930 718 951 768" fill="url(#plant)"/>
+<path d="M918 801 L990 801 L979 868 Q949 887 930 868 Z" fill="#a77564"/>
+<!-- soft edge vignette -->
+<rect width="1024" height="1024" fill="none" stroke="#41564d" stroke-opacity=".1" stroke-width="45"/>
+</svg>

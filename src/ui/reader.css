@@ -19,3 +19,106 @@
   .bq-reader-controls>.bq-reader-audio-player,
   .bq-reader-controls>[data-reader-offline-package]{grid-column:1/-1;min-width:0}
 }
+
+
+/* V7 mobile usability: keep audio useful without covering the chapter. */
+.bq-reader-audio {
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 10px;
+  padding: 10px;
+}
+.bq-reader-audio__play {
+  grid-row: 1 / span 2;
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  min-height: 48px;
+  border-radius: 999px;
+}
+.bq-reader-audio__title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.bq-reader-audio-position {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: auto minmax(72px, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.bq-reader-audio-position > span {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.bq-reader-audio-position > input {
+  min-width: 0;
+  min-height: 34px;
+}
+.bq-reader-audio__more {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding-top: 4px;
+}
+.bq-reader-audio__more > summary {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  cursor: pointer;
+  font-weight: 750;
+}
+.bq-reader-audio__more[open] > summary {
+  margin-bottom: 8px;
+}
+.bq-reader-audio-controls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.bq-reader-audio__follow {
+  grid-column: 1 / -1;
+}
+.bq-reader-audio__offline {
+  margin-top: 8px;
+}
+
+@media(max-width:720px){
+  .bq-reader-head.bq-panel { padding: 12px 14px; }
+  .bq-reader-controls { gap: 8px; padding: 12px; }
+  .bq-scripture-panel.bq-panel { padding: 12px; }
+  .bq-reader-title h2 { margin-bottom: 4px; }
+  .bq-verse-list { margin-top: 4px; }
+  .bq-verse {
+    grid-template-columns: 24px minmax(0,1fr);
+    gap: 7px;
+    padding: 7px 4px;
+  }
+  .bq-verse p {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
+
+@media(max-width:430px){
+  .bq-reader-controls {
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  }
+  .bq-reader-audio {
+    grid-template-columns: 44px minmax(0, 1fr);
+    padding: 9px;
+  }
+  .bq-reader-audio__play {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+  }
+  .bq-reader-audio-position {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .bq-reader-audio-position > input { min-height: 30px; }
+  .bq-reader-audio-controls { grid-template-columns: 1fr; }
+  .bq-reader-audio-controls > label { grid-column: 1; }
+}

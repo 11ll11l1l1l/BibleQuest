@@ -1,12 +1,14 @@
 import { iconSvg } from './icons.js';
+import { pressFeedback, pageTransition, cardReveal } from './motion.js';
 import { localization } from '../app/localization.js';
 
+// Routes remain canonical; old feature hub URLs stay routable via the owner map.
 const NAV = [
-  ['home','nav.home','home'],
-  ['learn','nav.learn','learn'],
-  ['play','nav.play','play'],
-  ['grow','nav.grow','grow'],
-  ['more','nav.more','more']
+  ['home', 'nav.home', 'home'],
+  ['reader', 'nav.bible', 'bible'],
+  ['library', 'nav.library', 'library'],
+  ['one-to-one', 'nav.groups', 'groups'],
+  ['more', 'nav.you', 'user']
 ];
 
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -18,6 +20,25 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const locale = localization.getLocale();
   const text = (key, values) => localization.t(key, { locale, values });
   const optionSelected = value => value === locale ? ' selected' : '';
+  // Keep five stable destinations while marking the owning destination of
+  // nested routes. Older V3/V4 routes remain navigable during V7 redesign.
+  const primaryOwner = route => {
+    if (NAV.some(([id]) => id === route)) return route;
+    // A legacy detail route selects its V7 owning destination.
+    if (['bible-quest', 'audio', 'offline-scripture'].includes(route)) return 'reader';
+    if (['library-item', 'learn', 'study', 'deep-questions',
+         'story-journey', 'wisdom-situations', 'bible-world',
+         'explorer', 'adaptive-learning', 'open-review',
+         'private-notes', 'cloud-notes'].includes(route)) return 'library';
+    if (route === 'grow' || route.startsWith('one-to-one-')
+        || ['community', 'journey-groups'].includes(route)) return 'one-to-one';
+    if (['account', 'my-journey', 'transform', 'personality-profile',
+         'psychometrics', 'avatar-vault', 'accessibility', 'backup',
+         'help', 'content-review', 'congregation', 'leader-center',
+         'ministry-hub', 'team-center', 'workspace', 'calendar'].includes(route)) return 'more';
+    if (['play', 'games'].includes(route)) return 'home';
+    return null;
+  };
 
   root.innerHTML = `
     <div class="bq-shell" data-bq-shell="v3" data-ui-version="4" data-locale="${escapeHtml(locale)}">
@@ -29,9 +50,9 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
         <div class="bq-top-actions">
           <span class="bq-progress-chip" data-progress-chip aria-label="${escapeHtml(text('shell.progressLabel'))}"><b data-progress-xp>0 XP</b><small data-progress-streak>${escapeHtml(text('shell.streak.other', { count: 0 }))}</small></span>
           <select class="bq-session-chip bq-locale-select" data-locale-select aria-label="${escapeHtml(text('locale.label'))}">
-            <option value="en"${optionSelected('en')}>${escapeHtml(text('locale.english'))}</option>
-            <option value="tl"${optionSelected('tl')}>${escapeHtml(text('locale.tagalog'))}</option>
-            <option value="ceb"${optionSelected('ceb')}>${escapeHtml(text('locale.cebuano'))}</option>
+            <option value="en"${optionSelected('en')} aria-label="${escapeHtml(text('locale.english'))}">EN</option>
+            <option value="tl"${optionSelected('tl')} aria-label="${escapeHtml(text('locale.tagalog'))}">TL</option>
+            <option value="ceb"${optionSelected('ceb')} aria-label="${escapeHtml(text('locale.cebuano'))}">CEB</option>
           </select>
           <button type="button" class="bq-session-chip" data-session-open aria-label="${escapeHtml(text('shell.accountOpenLabel'))}">
             <span data-session-dot aria-hidden="true"></span>
@@ -48,6 +69,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   root.querySelectorAll('[data-route-link]').forEach(link => {
     link.addEventListener('click', event => {
       event.preventDefault();
+      pressFeedback(link);
       onNavigate(link.dataset.routeLink);
     });
   });
@@ -69,8 +91,11 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   const progressXp = root.querySelector('[data-progress-xp]');
   const progressStreak = root.querySelector('[data-progress-streak]');
   let cleanupPage = null;
+  let cleanupVisual = null;
 
   const releasePage = () => {
+    cleanupVisual?.();
+    cleanupVisual = null;
     const cleanup = cleanupPage;
     cleanupPage = null;
     cleanup?.();
@@ -79,12 +104,19 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
   return Object.freeze({
     render(route, page) {
       releasePage();
-      root.querySelectorAll('.bq-nav [data-route-link]').forEach(link => link.toggleAttribute('aria-current', link.dataset.routeLink === route));
+      const activePrimary = primaryOwner(route);
+      root.querySelectorAll('.bq-nav [data-route-link]').forEach(link => {
+        if (link.dataset.routeLink === activePrimary) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
       view.innerHTML = page.html;
       document.title = page.title ? `${page.title} · BibleQuest` : 'BibleQuest';
       const cleanup = page.mount?.(view);
       if (typeof cleanup === 'function') cleanupPage = cleanup;
       view.focus({ preventScroll: true });
+      const cancelPage = pageTransition(view);
+      const cancelHero = route === 'home' ? cardReveal(view.querySelector('.bq-hero')) : () => {};
+      cleanupVisual = () => { cancelPage(); cancelHero(); };
     },
     updateSession(session) {
       if (!sessionLabel || !sessionChip) return;
@@ -123,6 +155,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
         homeButton?.removeEventListener('click', home);
       };
       view.focus({ preventScroll: true });
+      cleanupVisual = pageTransition(view);
     },
     updateRecoveryDiagnostic(id, diagnostic) {
       const panel=view.querySelector('[data-recovery-id]');

@@ -16,6 +16,7 @@ const performanceRef={getEntriesByType(type){assert(type==='resource','Offline o
   {name:'https://example.test/app/src/app/bootstrap.js',initiatorType:'script'},
   {name:'https://example.test/app/src/ui/app.css',initiatorType:'link'},
   {name:'https://example.test/app/pwa-icon-192.png',initiatorType:'img'},
+  {name:'https://example.test/app/_v6/lazy-chunk-ABC123.js',initiatorType:'other'},
   {name:'https://example.test/app/data/packs/bible/GEN/1.json',initiatorType:'fetch'},
   {name:'https://cdn.example.test/library.js',initiatorType:'script'}
 ]}};
@@ -30,6 +31,7 @@ assert(posted?.type==='BIBLEQUEST_WARM_SHELL','Offline owner must use the bounde
 assert(posted.urls.includes('https://example.test/app/'),'Current document must be warmed as a fragmentless navigation fallback.');
 assert(!posted.urls.some(url=>url.includes('#')),'Offline shell warm URLs must not retain client-side route fragments.');
 assert(posted.urls.includes('https://example.test/app/src/app/bootstrap.js')&&posted.urls.includes('https://example.test/app/src/ui/app.css'),'Loaded same-origin shell resources must be warmed.');
+assert(posted.urls.includes('https://example.test/app/_v6/lazy-chunk-ABC123.js'),'Built Vite chunks must be warmed even when browser initiator metadata is not script/link/css/img.');
 assert(!posted.urls.some(url=>url.includes('/data/packs/')),'#98 must not warm Bible pack fetches reserved for #99.');
 assert(!posted.urls.some(url=>url.includes('cdn.example.test')),'#98 must not warm cross-origin resources.');
 await service.start();assert(registerCalls===1,'Repeated start must reuse the same lifecycle promise.');
@@ -85,7 +87,7 @@ controllerChangeHandler?.();
 assert(reloadCalls===1,'Disposed offline-shell owner must not trigger an additional update reload.');
 
 const workerSource=fs.readFileSync(new URL('../offline-shell-sw.js',import.meta.url),'utf8');
-assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v3`;"),'Offline shell cache generation must rotate after the deployable module-graph warmup fix.');
+assert(workerSource.includes("const CACHE_NAME=`${CACHE_PREFIX}v7`;"),'Offline shell cache generation must rotate after deployed dynamic-chunk warmup hardening.');
 for(const token of[
   "const staleNames=names.filter(name=>name.startsWith(CACHE_PREFIX)&&name!==CACHE_NAME)",
   "const upgrading=staleNames.length>0",
@@ -96,13 +98,21 @@ for(const token of[
   assert(workerSource.includes(token),'Offline shell worker missing installed-client upgrade refresh contract: '+token);
 }
 assert((workerSource.match(/url\.hash=''/g)||[]).length>=2,'Offline shell worker must normalize warmed URLs before cache lookup/write.');
-assert(workerSource.includes("ignoreSearch:request.mode==='navigate',ignoreVary:true"),'Offline shell fetch fallback must ignore response Vary headers for warmed shell resources.');
+assert(workerSource.includes("const matchCached=()=>cache.match(url.href,{ignoreSearch:request.mode==='navigate',ignoreVary:true})"),'Offline shell fetch fallback must match warmed resources by normalized URL and ignore response Vary headers.');
+assert(workerSource.includes("const isBuildAsset=url=>sameOriginInScope(url)&&url.pathname.includes('/_v6/')"),'All same-origin hashed Vite chunks must be classified as offline shell assets independent of request destination metadata.');
+assert(workerSource.includes("||isBuildAsset(url)"),'Offline shell request classification must include hashed Vite chunks even when browser destination metadata is empty.');
+assert(workerSource.includes("if(isBuildAsset(url))"),'Immutable deployable build assets must be checked in Cache Storage before attempting the network.');
+assert(workerSource.includes("if(immutable)return immutable"),'Cached immutable build assets must short-circuit network access during offline reload.');
 assert(workerSource.includes("ignoreSearch:true,ignoreVary:true"),'Offline navigation root fallback must ignore response Vary headers.');
 assert(workerSource.includes("/\\.(?:[cm]?js|tsx?)$/i.test(url.pathname)"),'Offline recursive warm must traverse JavaScript and TypeScript module URLs.');
 assert(workerSource.includes("(?:import|export)(?!\\s*\\()\\s*"),'Offline recursive warm must recognize minified static import/export syntax.');
 assert(workerSource.includes("async function manifestGraphUrls(seedUrls)"),'Offline shell worker must derive deterministic deployable dependencies from the Vite manifest.');
+assert(workerSource.includes('MANIFEST_SHELL_EXTENSIONS')&&workerSource.includes('manifestUrls')&&workerSource.includes('cache.match(raw,{ignoreVary:true})'),'Offline shell worker must validate every Vite JS/CSS cache entry before signaling success.');
+assert(workerSource.includes("const PUBLIC_V7_OFFLINE_ARTIFACTS=['data/v7/library-public-catalog.json','data/v7/visual-assets.json'];"),'Public V7 Library and audited visual index must be declared for offline installation.');
+assert(workerSource.includes('isPublicV7Artifact(url)')&&workerSource.includes('reviewedPublicUrls')&&workerSource.includes('...manifestUrls,...reviewedPublicUrls'),'Fresh offline install must prewarm and cache-check only public reviewed V7 files.');
 assert(workerSource.includes("vite-manifest.json"),'Offline shell worker must read the deployable Vite manifest.');
 assert(workerSource.includes("record?.isEntry")&&workerSource.includes("record.imports"),'Offline shell Vite-manifest warm must traverse entry/static import records.');
+assert(workerSource.includes("record.dynamicImports"),'Offline shell Vite-manifest warm must traverse dynamic import records for route/startup chunks.');
 for(const token of['function staticImportUrls(source,baseUrl)','while(pending.length)','staticImportUrls(await response.clone().text(),url.href)','for(const imports of discovered)for(const imported of imports)enqueue(imported)']){
   assert(workerSource.includes(token),'Offline shell worker missing recursive module-graph contract: '+token);
 }

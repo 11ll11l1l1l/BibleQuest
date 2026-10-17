@@ -10,6 +10,8 @@ const viewports = [
   { width: 320, height: 800 },
   { width: 390, height: 844 },
   { width: 430, height: 932 },
+  // Same 800px tablet breakpoint already measured by the V7 motion browser.
+  { width: 800, height: 1024 },
 ];
 
 function contrastRatio(rgbA, rgbB) {
@@ -153,7 +155,7 @@ try {
     result: 'PASS',
     observedAt: new Date().toISOString(),
     checks: [
-      'responsive-320-390-430',
+      'responsive-320-390-430-800-tablet',
       'accessible-control-labels',
       'xlarge-text-preference',
       'strong-contrast-primary-text',

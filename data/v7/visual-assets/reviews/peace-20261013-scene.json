@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_scene_qa",
+  "role": "scene",
+  "reviewedAt": "2026-10-13T12:02:32.501706+00:00",
+  "reviewMethod": "Independent full-frame view_image inspection of both exact staged WebPs; complete current taxonomy read, AGENTS, single-master QA contract, automation policy and guidebook sections 5/6 read; newest two ledger rows checked.",
+  "sourcePath": "src/features/library/emotion-taxonomy.js",
+  "sourceBlob": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "scriptureSources": [
+    {
+      "url": "https://biblehub.com/bsb/john/14.htm",
+      "contextRead": "John 14:25-31",
+      "purpose": "BSB primary translation context for Need Peace"
+    },
+    {
+      "url": "https://biblehub.com/bsb/philippians/4.htm",
+      "contextRead": "Philippians 4:6-7 and 4:10-14",
+      "purpose": "BSB primary translation context for peace and contentment"
+    }
+  ],
+  "releaseApproved": false,
+  "reviews": [
+    {
+      "family": "need",
+      "contentId": "peace",
+      "attemptId": "manual-peace-20261013-r3",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peace-20261013-r3.webp",
+      "candidateSha256": "5f93f84a65a30008e4ff524b41f332a64350806f2086866e928ac9ac8d6f0239",
+      "sourceBlob": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "verdict": "PASS",
+      "classification": "EXACT_SCENE",
+      "reference": "John 14:27",
+      "permittedReferences": [
+        "John 14:27",
+        "Philippians 4:7"
+      ],
+      "observedEvidence": [
+        "A contemporary mother and child sit together in a populated office waiting room with service desks and other waiting adults behind them.",
+        "The mother turns toward the child with relaxed shoulders and attentive expression; the child looks up speaking, rather than either person showing distress.",
+        "Settled attentive presence coexists with visible public-office activity; the scene does not imply circumstances must disappear to experience peace.",
+        "One coherent scene, no visible Bible text, generated title, logo or watermark."
+      ],
+      "scriptureContext": "John 14:25-31 has Jesus reassuring his disciples about his departure, the Advocate and his own peace while adversity remains. A calm attentive adult amid public-office activity illustrates peace in circumstance; it does not replace Christ with breathing as the source of divine peace. Philippians 4:6-7 similarly locates peace in prayer and Christ.",
+      "limitations": [
+        "Noise, housing-office purpose and an actual breath cannot be independently heard or proved from these still pixels; populated municipal-style office and listening are visibly supported.",
+        "The child\u2019s exact question and the people\u2019s faith are not inferable from pixels.",
+        "Scene role only: no rights, generated-source provenance, browser crop, title-overlay or release acceptance is asserted."
+      ]
+    },
+    {
+      "family": "emotion",
+      "contentId": "peaceful",
+      "attemptId": "manual-peaceful-20261013-r3",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-peaceful-20261013-r3.webp",
+      "candidateSha256": "c3b388114899bf93036be517c2cf80fd95758926da222fa793f9e73e506b25dd",
+      "sourceBlob": "gitblob:e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "verdict": "PASS",
+      "classification": "THEMATIC_ALTERNATIVE",
+      "reference": "Philippians 4:11-12",
+      "permittedReferences": [
+        "Philippians 4:11-12",
+        "John 14:27"
+      ],
+      "observedEvidence": [
+        "A contemporary woman sits naturally in a visibly worn green armchair in an ordinary apartment, holding a plain mug with both hands.",
+        "Closed eyes, slight relaxed smile and settled posture visibly communicate peaceful contentment; modest furniture, ordinary knitwear and no luxury display support ordinary sufficiency.",
+        "One coherent photographic scene, no visible Scripture, rendered title, logo or watermark.",
+        "This is a thematic contemporary illustration, not a depiction of Paul or a historical biblical event."
+      ],
+      "scriptureContext": "Philippians 4:10-14 addresses Paul receiving support and having learned contentment in plenty and need through Christ. An ordinary contented person is a permissible illustration; the mug or armchair is not presented as the source of spiritual contentment, nor as a promise of material prosperity.",
+      "limitations": [
+        "The still image alone cannot demonstrate learned contentment through deprivation; the application must retain the approved source reference/context.",
+        "Overall uniqueness against all other artworks belongs to a separate independent reviewer.",
+        "Scene role only: no rights, generated-source provenance, browser crop, title-overlay or release acceptance is asserted."
+      ]
+    }
+  ]
+}

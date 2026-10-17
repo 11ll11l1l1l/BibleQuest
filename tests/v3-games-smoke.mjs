@@ -8,7 +8,10 @@ async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
   await page.addInitScript(()=>{globalThis.__bqOriginalRandom=Math.random;Math.random=()=>0});
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.evaluate(()=>{Math.random=globalThis.__bqOriginalRandom;delete globalThis.__bqOriginalRandom});await page.locator('[data-route-link="play"]').click();await page.waitForURL(/#\/play$/);await page.locator('[data-game-launch="quick-recall"]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await page.evaluate(()=>{Math.random=globalThis.__bqOriginalRandom;delete globalThis.__bqOriginalRandom});// V7 keeps the Play route but moves it below Home to retain five tabs.
+  if(await page.locator('[data-route-link="play"]').count()) await page.locator('[data-route-link="play"]').click();
+  else await page.goto(new URL('#/play', BASE).href, {waitUntil:'networkidle'});
+  await page.waitForURL(/#\/play$/);await page.locator('[data-game-launch="quick-recall"]').waitFor();
   assert(await page.locator('[data-game-launch]').count()===6,'Games launcher must expose six modes through Timeline.');
   const heights=await page.locator('[data-game-launch]').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().height));assert(Math.min(...heights)>=44,'Games launcher touch target is below 44px.');
 

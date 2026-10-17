@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-fear-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-08T13:03:16+09:00",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-fear-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "fear",
+  "concept": "Immediate fear — a woman recoils behind an apartment door",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 75334,
+  "sha256": "b0ab2d3fd81de045c857a6c777b3f7b3643123afd952508446ce105e73f9fac5",
+  "focalPoint": {
+    "x": 0.55,
+    "y": 0.36
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "09da9913-bd5c-4462-ae0f-109b07a0f1d4",
+    "prompt": null,
+    "description": "A tense, cinematic night scene shows a terrified young woman crouched behind a partly open wooden door, gripping its frame and peering over her shoulder into the room. Cool blue-gray shadows shape her anxious face while a blurred, ominous figure stands in a warm amber-lit doorway behind her, with sparse furniture and deep focus creating a suspenseful thriller atmosphere.",
+    "notes": "Tool returned an empty prompt string; exact prompt unavailable. Generated source 1536x1024 PNG, cropped to left 960x960 to remove the ominous background figure, then resized to 1024x1024 and encoded as WebP quality 87. Three candidate generations in run; initial cave scene and final near-duplicate cave scene rejected."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated image; no third-party source image or artist imitation."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A frightened woman grips the edge of a wooden door and glances anxiously over her shoulder in a dim apartment."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "rightsClear": true,
+    "notes": "Inspected 1024px square and 100px thumbnail. Cropping excludes the threatening silhouette, reducing horror tone while retaining clearly readable fear through eyes, brows, tense posture and grip. No text/logos; anatomy plausible; visually distinct from existing bedroom anxiety, sunset emotion art and rainy-window reflection."
+  }
+}

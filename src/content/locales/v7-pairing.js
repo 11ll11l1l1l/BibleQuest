@@ -1,5 +1,5 @@
 const en = {
-  overviewIntro:'Your mentor and mentee relationships in the selected congregation.', overviewLoading:'Loading relationships…', overviewReady:'Your relationships', overviewEmpty:'No relationships in this congregation.', overviewChanged:'Account or congregation changed. Reload relationships.', backGrow:'Back to Grow',
+  overviewIntro:'Your mentor and mentee relationships in the selected congregation.', overviewLoading:'Loading relationships…', overviewReady:'Your relationships', leaderTools:'For mentors and leaders', contextTools:'Account and congregation', overviewEmpty:'No relationships in this congregation.', overviewChanged:'Account or congregation changed. Reload relationships.', backGrow:'Back to Grow',
   title:'ONE 2 ONE relationship', intro:'Both participants must accept before lessons can begin.',
   invite:'Invite a member', member:'Congregation member', choose:'Choose a member', role:'Your role', mentor:'Mentor', mentee:'Mentee',
   send:'Create invitation', empty:'No eligible members are available.', reload:'Reload', back:'Back to ONE 2 ONE',
@@ -10,7 +10,7 @@ const en = {
   lessons:'Open assigned lessons', invited:'Invitation pending', active:'Active', declined:'Declined', suspended:'Suspended', ended:'Ended',
 };
 const tl = {
-  overviewIntro:'Ang iyong mga ugnayan bilang mentor at inaalalayan sa napiling kongregasyon.', overviewLoading:'Nilo-load ang mga ugnayan…', overviewReady:'Ang iyong mga ugnayan', overviewEmpty:'Walang ugnayan sa kongregasyong ito.', overviewChanged:'Nagbago ang account o kongregasyon. I-load muli ang mga ugnayan.', backGrow:'Bumalik sa Grow',
+  overviewIntro:'Ang iyong mga ugnayan bilang mentor at inaalalayan sa napiling kongregasyon.', overviewLoading:'Nilo-load ang mga ugnayan…', overviewReady:'Ang iyong mga ugnayan', leaderTools:'Para sa mga mentor at lider', contextTools:'Account at kongregasyon', overviewEmpty:'Walang ugnayan sa kongregasyong ito.', overviewChanged:'Nagbago ang account o kongregasyon. I-load muli ang mga ugnayan.', backGrow:'Bumalik sa Grow',
   title:'Ugnayang ONE 2 ONE', intro:'Kailangang tanggapin ng parehong kalahok bago magsimula ang mga aralin.',
   invite:'Mag-imbita ng miyembro', member:'Miyembro ng kongregasyon', choose:'Pumili ng miyembro', role:'Iyong papel', mentor:'Mentor', mentee:'Inaalalayan',
   send:'Gumawa ng imbitasyon', empty:'Walang maaaring imbitahang miyembro.', reload:'I-load muli', back:'Bumalik sa ONE 2 ONE',
@@ -21,7 +21,7 @@ const tl = {
   lessons:'Buksan ang mga nakatalagang aralin', invited:'Naghihintay ang imbitasyon', active:'Aktibo', declined:'Tinanggihan', suspended:'Nakasuspinde', ended:'Natapos',
 };
 const ceb = {
-  overviewIntro:'Imong mga relasyon isip mentor ug gialalayan sa gipiling kongregasyon.', overviewLoading:'Gi-load ang mga relasyon…', overviewReady:'Imong mga relasyon', overviewEmpty:'Walay mga relasyon niining kongregasyon.', overviewChanged:'Nausab ang account o kongregasyon. I-load pag-usab ang mga relasyon.', backGrow:'Balik sa Grow',
+  overviewIntro:'Imong mga relasyon isip mentor ug gialalayan sa gipiling kongregasyon.', overviewLoading:'Gi-load ang mga relasyon…', overviewReady:'Imong mga relasyon', leaderTools:'Alang sa mga mentor ug lider', contextTools:'Account ug kongregasyon', overviewEmpty:'Walay mga relasyon niining kongregasyon.', overviewChanged:'Nausab ang account o kongregasyon. I-load pag-usab ang mga relasyon.', backGrow:'Balik sa Grow',
   title:'Relasyon sa ONE 2 ONE', intro:'Kinahanglang modawat ang duha ka partisipante sa dili pa magsugod ang mga leksyon.',
   invite:'Pagdapit og miyembro', member:'Miyembro sa kongregasyon', choose:'Pagpili og miyembro', role:'Imong papel', mentor:'Mentor', mentee:'Gialalayan',
   send:'Paghimo og imbitasyon', empty:'Walay angay dapiton nga miyembro.', reload:'I-load pag-usab', back:'Balik sa ONE 2 ONE',

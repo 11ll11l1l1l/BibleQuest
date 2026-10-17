@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-gratitude-01",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-08T13:07:00+09:00",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-gratitude-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "gratitude",
+  "concept": "A heartfelt thank-you hug and flowers between generations at home",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 94646,
+  "sha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+  "focalPoint": {
+    "x": 0.57,
+    "y": 0.29
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "34a0b0c7-fb72-4e1b-935d-365f78eda61f",
+    "prompt": null,
+    "description": "In a warmly lit kitchen-dining space, a younger woman in an olive top hugs an older gray-haired woman while offering a kraft-paper bouquet of sunflowers, daisies, yellow filler blooms, and eucalyptus, her eyes closed in a joyful, grateful smile. Soft daylight, wooden surfaces, a mug, plants, and gently blurred kitchen details create an intimate, lived-in backdrop that highlights the tender family-like moment.",
+    "notes": "Generation tool returned an empty prompt string; exact original prompt unavailable. This description is tool-returned, not a reconstructed prompt. Original 1536x1024 PNG cropped x=240..1264, y=0..1024; encoded WebP quality 80."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated BibleQuest editorial artwork; no supplied third-party source or brand imitation."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A smiling younger woman embraces an older woman in a kitchen while offering a bouquet of sunflowers and daisies in a heartfelt expression of thanks."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "rightsClear": true,
+    "notes": "Accepted first candidate after inspection at 1024px and 100px. Distinct indoor two-person gratitude interaction; not a lone sunset portrait. Faces, embrace and bouquet remain legible; no baked text, logos, or evident anatomical issues. Compared with all six existing emotion records."
+  }
+}

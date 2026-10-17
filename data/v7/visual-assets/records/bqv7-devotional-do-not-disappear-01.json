@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-devotional-do-not-disappear-01",
+  "agentId": "codex-lane-z-manual",
+  "createdAt": "2026-10-10T11:10:00+09:00",
+  "status": "candidate_qa_pending",
+  "family": "devotional",
+  "visualRole": "devotional_cover",
+  "contentType": "devotional",
+  "contentId": "devotional.biblequest.loneliness.01",
+  "sourcePath": "content/v7/devotionals/biblequest-original-emotions-01a.json",
+  "sourceRevision": "r1",
+  "sourceTitle": "Do not disappear",
+  "sourceBody": "Loneliness can persuade you that withdrawing is safer than reaching out. Psalm 68:6 reminds us that God cares about belonging and community. Send one message, accept one invitation, or tell one trusted person how you are really doing. Connection often begins with a very small opening.",
+  "concept": "At early evening, one adult opens an apartment door while a trusted friend waits patiently outside, making a small, genuine opening for connection.",
+  "usage": [
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/devotional/bqv7-devotional-do-not-disappear-01.png",
+  "width": 1122,
+  "height": 1402,
+  "fileBytes": 1934576,
+  "sha256": "df7a7fb10271f6bd0452c2e236915e36fb761fac96c8258e0c83c07caf2ea107",
+  "gitBlobSha": "382ce6605ff1d39a7de93ae6fd15c4b0bc05d54b",
+  "format": "png",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.59,
+    "y": 0.38
+  },
+  "textSafeRegion": "left",
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated original scene for BibleQuest; no third-party source image supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A person opens their apartment door to a friend waiting patiently in the evening.",
+    "essentialLiveTextRequired": true
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "sourceOriginalName": "exec-1109fc49-62f1-4710-bf3d-6d4a521d8fd3.png",
+    "sourceBytes": 1934576,
+    "sourceSha256": "df7a7fb10271f6bd0452c2e236915e36fb761fac96c8258e0c83c07caf2ea107",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceRevision": "v7/development bfbd5256b8c3277ded1711dd4b804dabef23bb41",
+    "noExternalSourceArt": true,
+    "noTextOrScriptureBakedIn": true,
+    "prompt": "Use case: photorealistic-natural. Asset type: original 4:5 portrait devotional cover candidate for BibleQuest V7. Primary request: A contemporary editorial image for “Do not disappear.” Full source: “Loneliness can persuade you that withdrawing is safer than reaching out. Psalm 68:6 reminds us that God cares about belonging and community. Send one message, accept one invitation, or tell one trusted person how you are really doing. Connection often begins with a very small opening.” Scene: A small apartment entryway in early evening, warm light spilling into a quiet hallway. Subject: One adult opens the door to a trusted friend standing just outside; they share a small, hesitant but genuine smile, the person inside keeps one hand on the doorknob, making the opening gesture central. The friend waits patiently, not intruding. Style: cinematic everyday editorial realism, inclusive and natural, believable faces, hands, clothing and home details. Composition: vertical 4:5, doorway and people on the right third, calm soft-focus wall on left for live localized title overlay; modest beginning of connection. Lighting: warm home light against cool evening hallway, hopeful but understated. Constraints: no text, letters, phone screen writing, Bible, verse quotation/reference, UI, logos, watermark, church or cross. No fabricated cure or instant resolution. Avoid party crowd, exaggerated joy, staged handshake, prayer clichés, dramatic sunbeams, split frame, collage, extra arms, unnatural hands."
+  },
+  "qc": {
+    "standaloneSingleScene": true,
+    "noVisibleBakedText": true,
+    "singleImageSha256Measured": true,
+    "dimensionsMeasured": true,
+    "initialVisualScreen": "passed: one scene, concept matches source, no visible text; alt and focal point recorded",
+    "independentVisualQA": "pending",
+    "scriptureContextQA": "pending final review; no Bible wording rendered in image",
+    "builtAppBrowser320390430": false,
+    "servedHTTPSha256": false,
+    "releaseCertified": false
+  }
+}

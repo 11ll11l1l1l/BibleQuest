@@ -1,0 +1,65 @@
+name: V7 Lane X Raster Preflight
+
+on:
+  pull_request:
+    branches: [v7/development]
+    paths:
+      - "public/v7/images/emotion/**"
+      - "public/v7/images/need/**"
+      - "public/v7/images/hero/**"
+      - "scripts/v7_lane_x_raster_preflight.py"
+      - "tests/v7/test_lane_x_raster_preflight.py"
+      - ".github/workflows/v7-lane-x-raster-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  new-clean-images:
+    name: Reject non-raster or multi-panel new CLEAN images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install raster decoder
+        run: python -m pip install 'Pillow==12.0.0'
+      - name: Run lane X technical preflight regression suite
+        run: PYTHONPATH=. python -m unittest discover -s tests/v7 -p 'test_lane_x_raster_preflight.py' -v
+      - name: Examine all newly added P1 master files
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e "${BASE}^{commit}"
+          while IFS= read -r path; do
+            case "$path" in
+              public/v7/images/emotion/bqv7-emotion-*|public/v7/images/need/bqv7-need-*|public/v7/images/hero/bqv7-hero-*) ;;
+              *) continue ;;
+            esac
+            case "$path" in
+              *-thumbnail.*|*-with-text-*) continue ;;
+            esac
+            case "$path" in
+              public/v7/images/emotion/*) family=emotion ;;
+              public/v7/images/need/*) family=need ;;
+              public/v7/images/hero/*) family=hero ;;
+            esac
+            case "$path" in
+              *.png|*.webp|*.svg|*.jpg|*.jpeg) ;;
+              *) echo "Unsupported newly added image format: $path"; exit 1 ;;
+            esac
+            echo "Checking new $family CLEAN source: $path"
+            python scripts/v7_lane_x_raster_preflight.py "$path" --family "$family"
+          done < <(git diff --diff-filter=A --name-only "$BASE" HEAD -- public/v7/images/)
+      - name: Explain gate scope
+        run: |
+          echo "Technical PASS does not mean scene identity, rights, typography, originality or independent aesthetic QA."
+          echo "Legacy CLEAN files are not rescored by this additive-file preflight."

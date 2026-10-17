@@ -26,8 +26,19 @@ for (const action of ['onMission?.()', 'onTutorial?.()', 'onRecordings?.()', 'on
 
 // The locked hero contract (separately enforced by v3-home-visual-polish-static.mjs)
 // must still be present verbatim.
-assert.ok(home.includes('<section class="bq-hero">'), 'Home must retain the bq-hero structure.');
-assert.ok(home.includes('<img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">'), 'Home must retain the hero asset path and decorative accessibility contract.');
+const v7Home = home.includes('class="bq-hero bq-v7-home-feature"');
+assert.ok(v7Home || home.includes('<section class="bq-hero">'),
+  'Home must retain its hero structure, including the V7 editorial version.');
+if (v7Home) {
+  assert.ok(home.includes('data-home-feature') && home.includes('data-home-hero-reader') &&
+    home.includes('aria-label="${escapeHtml(tx(\'nav.bible\'))}"'),
+    'V7 hero must keep a meaningful labeled Bible/Continue action.');
+  assert.ok(home.includes('data-home-cover data-art-source="fallback" src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true"'),
+    'V7 hero must preserve the rights-safe decorative fallback SVG.');
+} else {
+  assert.ok(home.includes('<img src="assets/bq-pinoy-japan-hero.svg" alt="" aria-hidden="true">'),
+    'Legacy hero must retain its decorative accessibility contract.');
+}
 
 // Dashboard composition: Tutorial/Recordings/Media must now be compact tiles
 // grouped together, not three separate full-panel sections with their own

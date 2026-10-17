@@ -1,6 +1,6 @@
 # BibleQuest V7 starting point
 
-Updated: 2026-10-04 JST
+Updated: 2026-10-08 JST
 
 ## Baseline
 
@@ -15,7 +15,7 @@ Development preparation includes V6 closeout evidence followed by repository doc
 
 ## V7 objective
 
-**V7 is a focused Library + ONE 2 ONE discipleship release.**
+**V7 is a Library + ONE 2 ONE discipleship release with a release-blocking whole-app UI/UX overhaul.**
 
 Start new V7 work from the live `v7/development` head and use the exact starting SHA in each task handoff. Do not use the superseded full-product-overhaul interpretation of V7.
 
@@ -33,7 +33,8 @@ In scope:
 - progress/reflection/prayer/action/completion state;
 - QR/deep links and bounded reuse of existing V6 capabilities;
 - minimum app-shell/content/media integration needed by those features;
-- multilingual-ready contracts without a full Ilocano rollout.
+- multilingual-ready contracts without a full Ilocano rollout;
+- whole-app UI/UX overhaul covering information hierarchy, primary navigation, typography, color/contrast, original iconography, image-led content cards, Home/Library/reader surfaces and designed loading/empty/offline/error states per `docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md`.
 
 Explicitly deferred to V8:
 
@@ -43,7 +44,8 @@ Explicitly deferred to V8:
 - bulk devotional/Past Teachings/Books ingestion;
 - Couples expansion;
 - advanced recommendation/discovery;
-- unrelated whole-app redesign.
+
+The 2026-10-08 UI/UX scope override supersedes earlier language that deferred a whole-app visual redesign to V8. This does **not** re-enable unrelated V8 feature systems.
 
 `docs/v7/V7_FREE_MEDIA_FILE_STORAGE.md` is retained as historical planning input only. It is not an active V7 requirement.
 

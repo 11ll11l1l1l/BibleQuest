@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "reviewerIdentity": "/root/peace_coordinator_qa",
+  "role": "coordination",
+  "reviewedAt": "2026-10-14T04:42:31.890494+00:00",
+  "overallVerdict": "PASS",
+  "verdictScope": "Immutable staged native master and QA-only source-bound presentation profiles; not production registration or release",
+  "publicationApproved": false,
+  "releaseApproved": false,
+  "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE",
+  "reviews": [
+    {
+      "attemptId": "manual-hurt-betrayal03-20261014-r1",
+      "contentId": "devotional.biblequest.hurt_betrayal.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-hurt-betrayal03-20261014-r1.webp",
+      "sha256": "ea10edebfa1e9dee0dde592aee84565f8e16e98d283ef7127ea98191f0a411b7",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 218178,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03a.json",
+      "sourceChecksum": "sha256:304f5b29af92906c31bd645e783908b7cfc7bfbac2cbd6782b370abd8d766972",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "343d8b7e8a35d3acdb86d1d68c88debef0035494",
+      "sourceLabels": {
+        "en": "Grieve the broken trust honestly",
+        "tl": "Ipagdalamhati nang tapat ang nasirang tiwala",
+        "ceb": "Banguti sa tinuod ang nabungkag nga pagsalig",
+        "ilo": "Iladingit a sipupudno ti nadadael a panagtalek"
+      },
+      "reference": "Psalm 55:12-14",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-impatience-waiting03-20261014-r1",
+      "contentId": "devotional.biblequest.impatience_waiting.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-impatience-waiting03-20261014-r1.webp",
+      "sha256": "1ab8c325c74749bbb653a29f94a5e56ccb8c4c4ffa3987c964bbdbd68d0b42d7",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 215200,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:99afed045919c0ca8fa1f2b4dcbf72a7798c23e1e44e77926adb73474c5e451b",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceLabels": {
+        "en": "Let patience have a practice",
+        "tl": "Bigyan ng gawain ang pasensya",
+        "ceb": "Hatagi ug buhat ang pagpailub",
+        "ilo": "Ikkan iti aramid ti anus"
+      },
+      "reference": "James 5:7-8",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    },
+    {
+      "attemptId": "manual-numbness-emptiness03-20261014-r1",
+      "contentId": "devotional.biblequest.numbness_emptiness.03",
+      "candidatePath": "data/v7/visual-assets/qa-candidates/manual-numbness-emptiness03-20261014-r1.webp",
+      "sha256": "7fd86b1155174ec8db52078d0837211992018a458dd27a2c1deb3e6f0836f8a3",
+      "width": 1122,
+      "height": 1402,
+      "bytes": 178260,
+      "sourcePath": "content/v7/devotionals/biblequest-original-emotions-03c.json",
+      "sourceChecksum": "sha256:1f3638734c78fe23fea150ac39fd1b338c174d6a739d8a8541f1aca59123fabd",
+      "sourceRevision": "r1",
+      "sourceFileGitBlob": "86f218c1bec5f7a243a4055ea91ebd8962e9d002",
+      "sourceLabels": {
+        "en": "Ask for a renewed heart",
+        "tl": "Humingi ng panibagong puso",
+        "ceb": "Pangayo ug nabag-ong kasingkasing",
+        "ilo": "Agdawat iti nabaro a puso"
+      },
+      "reference": "Psalm 51:10",
+      "canonicalBindingVerified": true,
+      "verdict": "PASS",
+      "roleVerdicts": {
+        "scene": "PASS",
+        "rights": "PASS",
+        "technical": "PASS",
+        "uniqueness": "PASS",
+        "coordination": "PASS"
+      },
+      "productionVerdict": "HOLD_REGISTRATION_AND_RELEASE"
+    }
+  ],
+  "missingEvidence": [],
+  "observedEvidence": [
+    "All three actual immutable WebPs viewed independently",
+    "All three fully decoded and SHA/native dimensions compared to ledger",
+    "All three canonical full English source prose, IDs/revisions/checksums/sourceContent read and matched; source four locale titles read",
+    "Producer exact prompts/provenance/export declarations read from DEVOTIONAL_NEXT_THREE_C_20261014.md"
+  ],
+  "limitations": [
+    "No pixels generated or modified; no ledger/source edits",
+    "Production registration, production component/offline behavior and Lane D exact release eligibility remain separate",
+    "Five-role PASS applies to staged immutable sources and QA-only routed presentation profiles, not production components/deployed HTTP/offline inclusion.",
+    "Source content certification releaseReady in build is separate from this artwork registration/release eligibility."
+  ],
+  "reviewerIdentities": [
+    "/root/peace_scene_qa",
+    "independent-rights-wording-agent",
+    "independent-technical-qa",
+    "/root/peace_uniqueness_qa",
+    "/root/peace_coordinator_qa"
+  ],
+  "ciEvidence": {
+    "head": "6236b3d13f9a144667629be5b7ee909d7f841065",
+    "visualWorkflow": "https://github.com/11ll11l1l1l/BibleQuest/actions/runs/38512111686",
+    "artifactId": 11871075238,
+    "zipSha256": "4510c4a80cf471b912bd9eaf638a3d87b2a03b048232d962d9ab54fb6ce13a8b",
+    "reportPath": "artifacts/v7/devotional-ci-6236/report.json",
+    "reportSha256": "3dbc9f626d5ab04a0a72b757917a2de1dc812dfc11a8fc4ae4e227b32234a5dc",
+    "rejected": [],
+    "deliveryScope": "QA-only exact-source routing",
+    "activeBatchScreenshotCount": 96
+  },
+  "independentCoordinatorPixelInspection": "All three full immutable masters plus final exact6236 CI all three320px Cebuano live-title and100px English thumbnails at200% text inspected; narratives retained, titles/reference readable and wrapping without clipping.",
+  "buildIsolationEvidence": {
+    "integrityPath": "artifacts/v7/build-6236/dist-v6/bq-artifact-integrity.json",
+    "integritySha256": "f7c38c5a709a9ff558555b53d6b1711dc30a33e587ef5117580fe8dd0fca7f86",
+    "certificationPath": "artifacts/v7/build-6236/artifacts/v7/certification.json",
+    "certificationSha256": "949fe9e97ee84ccf3cf8a692750b65e04b7a2a3e4c2049a167b4300e726efdcc",
+    "sourceSha": "6236b3d13f9a144667629be5b7ee909d7f841065",
+    "artifactSha256": "fcc40a7b2109dba5cf8678437e1f094e853899747baeabe481b57919d6e62d71",
+    "stagingPaths": 0,
+    "imageBytes": 30720220,
+    "unchangedBudgetBytes": 33554432,
+    "scope": "Independently read downloaded exact-head artifact integrity and matching certification; draft isolation is not candidate publication."
+  },
+  "roleEvidencePaths": [
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-scene.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-rights.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-technical.json",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-uniqueness.json"
+  ],
+  "roleEvidenceSha256": {
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-scene.json": "863a74aa8f95ac3e3b9f15acd41b2311d98492bb34ebd99299d260c8a681c99b",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-rights.json": "0447edde36f924b075c627e15ba8e219c3b65a2a92cc2183c6ab629178fccadb",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-technical.json": "4d6aabcdee5917ee2fb7f882020d2c3676f88e0269b1c6eace65efce7d5cb44a",
+    "data/v7/visual-assets/reviews/devotional-next-three-c-20261014-uniqueness.json": "9816abd823eadd77e4d27a467f118325893c58f5fc62695cda8b523f2e5a3536"
+  }
+}

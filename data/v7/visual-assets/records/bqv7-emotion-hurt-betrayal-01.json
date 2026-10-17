@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-hurt-betrayal-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-08T00:05:07.356Z",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hurt-betrayal-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "hurt_betrayal",
+  "concept": "Quiet relational hurt — a woman in solitary reflection at sunset",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 108974,
+  "sha256": "a62aa4bc1634457a97feb705bedb072f13f0d4fc59990c1a73642dc9ff30957c",
+  "focalPoint": {
+    "x": 0.31,
+    "y": 0.54
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "400eab14-c318-44f5-906f-dd4ed7898e84",
+    "prompt": null,
+    "description": "A cinematic sunset vista shows a lone young woman curled up on a rugged rock at the left foreground, her face hidden, wearing a soft neutral sweater, dark pants, and pale sneakers as she gazes downward in quiet solitude. Beyond her, a hazy valley and reflective lake stretch toward layered mountains beneath glowing peach-and-gold clouds, with warm rim light on her hair and clothing, cool shadows, and an atmosphere that feels peaceful yet deeply melancholic.",
+    "notes": "Image-generation tool used contextual instructions; an exact submitted prompt string was not provided by the tool. The description is tool-returned, not a fabricated prompt. Original output was 1536x1024 PNG; cropped to 1024x1024 at source x=230..1254 and optimized to WebP quality 86."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated visual for BibleQuest; no third-party source imagery supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman sits with her head lowered on a rocky overlook at sunset, with a lake and mountains beyond."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "notes": "Visual inspection of source and square WebP crop; existing visual-assets records directory was absent before this first asset. Emotion is communicated as quiet hurt/withdrawal rather than literal betrayal."
+  }
+}

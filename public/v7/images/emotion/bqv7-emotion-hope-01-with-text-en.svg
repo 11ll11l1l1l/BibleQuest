@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1280" viewBox="0 0 1024 1280"><defs>
+<linearGradient id="wall" x2="1" y2="1"><stop stop-color="#dce9e0"/><stop offset="1" stop-color="#8daea0"/></linearGradient>
+<linearGradient id="glass" x2="1" y2="1"><stop stop-color="#f0f4dc"/><stop offset=".48" stop-color="#c4dcd4"/><stop offset="1" stop-color="#87b2b5"/></linearGradient>
+<linearGradient id="coat" x2="1" y2="1"><stop stop-color="#7da093"/><stop offset="1" stop-color="#2c5754"/></linearGradient>
+<linearGradient id="skin" x2="1" y2="1"><stop stop-color="#f2d0ae"/><stop offset="1" stop-color="#bd836b"/></linearGradient>
+<linearGradient id="wood" x2=".5" y2="1"><stop stop-color="#c7a17b"/><stop offset="1" stop-color="#715541"/></linearGradient>
+<linearGradient id="pot" x2="1" y2="1"><stop stop-color="#e4a174"/><stop offset="1" stop-color="#9d5845"/></linearGradient>
+<linearGradient id="leaf" x2="1" y2="1"><stop stop-color="#a5ce80"/><stop offset="1" stop-color="#397b59"/></linearGradient>
+</defs><rect width="1024" height="1280" fill="#eef1e5"/><g transform="translate(0 256)"><rect width="1024" height="1024" fill="url(#wall)"/>
+<rect x="55" y="42" width="910" height="600" rx="14" fill="#4a7169"/>
+<rect x="75" y="60" width="870" height="560" fill="url(#glass)"/>
+<g opacity=".22" fill="#668c8c"><rect x="105" y="348" width="92" height="260"/><rect x="210" y="292" width="65" height="315"/><rect x="284" y="373" width="116" height="235"/><rect x="690" y="332" width="84" height="275"/><rect x="780" y="292" width="68" height="315"/><rect x="858" y="368" width="80" height="239"/></g>
+<path d="M75 525Q260 476 430 525T945 497V621H75Z" fill="#79a495" opacity=".5"/>
+<path d="M75 60H395L615 620H480Z" fill="#fff6ce" opacity=".25"/>
+<path d="M510 60V621M75 362H945" stroke="#436b65" stroke-width="23"/>
+<path d="M512 60V621M75 363H945" stroke="#dceadd" stroke-width="4" opacity=".5"/>
+<g fill="#f7fff4" opacity=".62"><ellipse cx="145" cy="173" rx="3" ry="13"/><ellipse cx="305" cy="275" rx="3" ry="10"/><ellipse cx="422" cy="132" rx="2" ry="10"/><ellipse cx="572" cy="217" rx="3" ry="11"/><ellipse cx="718" cy="128" rx="2" ry="9"/><ellipse cx="872" cy="235" rx="3" ry="12"/></g>
+<g fill="#4e8264"><path d="M86 0Q145 115 75 278Q127 190 170 209Q132 161 103 175Q149 112 163 100Q116 94 101 133Z"/><path d="M95 130Q37 100 13 117Q42 162 98 161Z"/><path d="M91 226Q23 201 5 243Q40 279 88 258Z"/></g>
+<path d="M85 0Q131 150 72 302" stroke="#366c54" stroke-width="5" fill="none"/>
+<rect x="90" y="612" width="837" height="18" fill="#6d897b" opacity=".9"/>
+<g opacity=".65"><path d="M116 612L126 561H181L190 612Z" fill="#b27a5c"/><path d="M137 565Q101 506 137 489Q168 521 153 564" fill="#43845f"/><path d="M149 563Q163 508 199 519Q195 552 161 574" fill="#7da879"/><path d="M811 613L820 551H879L890 613Z" fill="#bc8060"/><path d="M850 553Q820 493 853 472Q876 509 855 553" fill="#4e8d6b"/></g>
+<path d="M0 740L1024 701V1024H0Z" fill="url(#wood)"/>
+<path d="M0 767L1024 730M0 898L1024 858" stroke="#e2b88e" stroke-width="5" opacity=".45"/>
+<path d="M45 880Q80 823 179 834L240 944L88 996Z" fill="#cdbba7"/>
+<path d="M46 888Q123 907 229 945" stroke="#9f8b78" stroke-width="6" opacity=".5"/>
+<path d="M730 896L951 821L970 842L748 924Z" fill="#63796e"/>
+<path d="M921 825L981 786Q1007 784 1002 809L969 846Z" fill="#d1b58b"/>
+<!-- figure: woman leaning toward seedling in greenhouse -->
+<path d="M678 555Q764 503 857 542Q957 577 1030 717V1024H675Q619 854 678 555Z" fill="url(#coat)"/>
+<path d="M691 625Q661 718 688 865L747 935" stroke="#a0b6a7" stroke-width="8" opacity=".45" fill="none"/>
+<path d="M774 524L766 586Q802 620 850 575L837 512Z" fill="url(#skin)"/>
+<path d="M708 249Q748 181 841 212Q913 236 925 327Q933 410 878 485Q883 528 853 544L724 521Q691 466 690 394Q675 309 708 249Z" fill="#302e2b"/>
+<path d="M703 347Q696 249 770 225Q846 208 885 267Q891 319 870 374L846 441L740 467Z" fill="url(#skin)"/>
+<path d="M719 303Q759 253 819 260Q789 287 777 335Q752 395 733 433Q715 394 719 303Z" fill="#f7d9b7" opacity=".5"/>
+<path d="M693 334Q696 231 780 213Q858 200 899 284Q856 276 825 244Q792 294 734 303Q715 345 693 356Z" fill="#292827"/>
+<path d="M873 290Q913 366 878 469L844 528Q896 514 917 435Q941 330 884 266Z" fill="#36302d"/>
+<path d="M745 379Q758 370 773 376M743 414Q752 420 762 413" stroke="#704c43" stroke-width="4" stroke-linecap="round" fill="none"/>
+<path d="M696 418Q679 407 684 433Q688 450 708 449Z" fill="#d9a688"/>
+<path d="M688 638Q646 644 595 714L548 788Q557 830 608 832Q681 770 745 708Z" fill="#557a70"/>
+<path d="M597 721Q560 749 527 789L544 811Q575 799 613 764Z" fill="url(#skin)"/>
+<path d="M541 786Q528 774 509 779Q494 788 513 801L527 809Q514 813 518 822Q526 830 538 827Q539 837 550 835Q557 833 557 825Q566 835 572 827Q575 817 562 802Z" fill="#d9ab8a" stroke="#a57560" stroke-width="2"/>
+<!-- pot and emerging leaves -->
+<ellipse cx="470" cy="765" rx="153" ry="36" fill="#534d3b" opacity=".2"/>
+<path d="M334 747L370 941Q471 988 571 940L605 747Z" fill="url(#pot)"/>
+<path d="M357 758Q377 865 397 945" stroke="#f5bd94" stroke-width="11" opacity=".26" fill="none"/>
+<ellipse cx="470" cy="746" rx="146" ry="37" fill="#bf7c55"/>
+<ellipse cx="470" cy="742" rx="129" ry="26" fill="#463b2e"/>
+<path d="M320 742Q470 793 619 742L612 775Q470 821 326 775Z" fill="#d9986e"/>
+<path d="M341 774Q469 811 603 774" stroke="#f0bd97" stroke-width="5" opacity=".6" fill="none"/>
+<path d="M473 744Q472 664 490 580Q499 548 491 510" stroke="#397c55" stroke-width="12" stroke-linecap="round" fill="none"/>
+<path d="M489 613Q427 573 395 593Q405 657 482 643Z" fill="url(#leaf)" stroke="#3b7d57" stroke-width="3"/>
+<path d="M495 575Q544 519 593 536Q591 598 492 602Z" fill="url(#leaf)" stroke="#3b7d57" stroke-width="3"/>
+<path d="M492 526Q453 488 458 437Q507 455 513 509Z" fill="url(#leaf)" stroke="#3b7d57" stroke-width="3"/>
+<path d="M478 642Q441 611 413 613M496 601Q543 568 573 556M500 502Q483 477 471 458" stroke="#d6e6a9" stroke-width="4" opacity=".65" fill="none"/>
+<path d="M-10 1016Q56 893 116 931Q107 1001 47 1024Z" fill="#376f55" opacity=".85"/>
+<path d="M986 1014Q914 929 878 971Q896 1015 935 1024Z" fill="#315b4b" opacity=".65"/></g><rect x="0" y="0" width="1024" height="256" fill="#eff2e8"/><text x="512" y="132" text-anchor="middle" font-family="Georgia,serif" font-size="112" font-weight="bold" fill="#25463e">Hopeful</text><text x="512" y="194" text-anchor="middle" font-family="Georgia,serif" font-size="40" fill="#506958">Romans 15:13</text><path d="M195 224H404M620 224H830" stroke="#8e9b7b" stroke-width="2"/><path d="M452 223Q478 206 512 224Q544 207 571 223" stroke="#719274" stroke-width="3" fill="none"/></svg>

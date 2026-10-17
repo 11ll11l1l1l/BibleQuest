@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-emotion-rejection-01",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-08T01:12:49.452Z",
+  "status": "production_ready",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-rejection-01.webp",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "rejection",
+  "concept": "Feeling excluded — a young man sits apart from a nearby group of friends",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 65046,
+  "sha256": "851925b93ad108f90aa1f0943259debcd9aef4db9181e488029a782882d2b448",
+  "focalPoint": {
+    "x": 0.34,
+    "y": 0.34
+  },
+  "textSafeRegion": "none",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "d4c10115-d2dd-4397-be9d-6f458f38b2b0",
+    "prompt": "A cinematic, photorealistic golden-hour scene shows a troubled young Asian man sitting hunched on a concrete ledge in the left foreground, his hand at his forehead and his downcast expression suggesting hurt, betrayal, or deep contemplation. In soft focus to the right, a small group of friends chat and laugh on nearby steps, their warmth contrasting with his isolation amid blurred trees, city haze, and sunset light.",
+    "notes": "Original generated image; square-cropped from 1268×1241 source to 1241×1241, resized to 1024×1024, WebP quality 82. Generation tool metadata reported an empty prompt field; this records the actual text submitted in the generation call."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original AI-generated visual for BibleQuest; no third-party source artwork supplied."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young man sits apart from a group of friends on outdoor steps, looking down with one hand resting against his forehead."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "emotionMatches": true,
+    "notes": "Reviewed 1024px asset and 100px thumbnail. Foreground subject visibly isolated from blurred friends; no legible text or logos, hands plausible, square crop safe. Distinct from existing solitary-woman sunset overlook asset."
+  }
+}

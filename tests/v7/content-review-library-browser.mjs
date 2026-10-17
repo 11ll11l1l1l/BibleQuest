@@ -22,6 +22,10 @@ async function mountedLibraryReview() {
     document.getElementById('review-test-root')?.remove();
     const root = document.createElement('main');
     root.id = 'review-test-root';
+    // Exercise the protected Content Review surface in an isolated mobile viewport.
+    // The running app shell uses fixed navigation; without an overlay the app can
+    // intercept real Playwright pointer events on review pagination controls.
+    root.style.cssText = 'position:fixed;inset:0;z-index:2147483647;box-sizing:border-box;overflow:auto;padding:8px;background:var(--paper,#fff);color:var(--ink,#172b2b);';
     document.body.append(root);
     const { contentReviewPage } = await import(moduleUrl);
 
@@ -38,7 +42,26 @@ async function mountedLibraryReview() {
       reviewedAt: '2026-10-07T00:00:00Z',
       policyId: 'biblequest.v7.library-release',
       policyVersion: '1.0.0',
-      reviewEvidence: { scriptureRefs: ['Philippians 4:6-7'] },
+      reviewEvidence: { scriptureRefs: ['Philippians 4:6-7'], visualAssets: [{
+        id: 'cover-1', imagePath: '/v7/images/devotional/cover-1.webp',
+        sourceUri: 'https://example.com/cover', rightsStatus: 'verified',
+        altText: 'A calm sunrise', fallback: 'solid-gradient', sha256: 'a'.repeat(64),
+        variants: [
+          { kind: 'with_text', locale: 'en', text: 'Audited Devotional',
+            imagePath: '/v7/images/devotional/cover-1-with-text-en.webp',
+            rights: { status: 'verified' }, altText: 'The title Audited Devotional over a sunrise',
+            fallback: 'solid-gradient', sourceRevision: 'r1', sha256: 'b'.repeat(64),
+            width: 1024, height: 1280,
+            integrity: { sha256Verified: true, dimensionsVerified: true },
+            typographyQa: { result: 'pass', observedText: 'Audited Devotional', fontLicense: { status: 'verified' } }
+          },
+          { kind: 'thumbnail', imagePath: '/v7/images/devotional/cover-1-thumbnail.webp',
+            rights: { status: 'verified' }, altText: 'Small sunrise crop',
+            fallback: 'solid-gradient', sha256: 'c'.repeat(64), width: 320, height: 400,
+            integrity: { sha256Verified: true, dimensionsVerified: true }
+          }
+        ]
+      }] },
       source: {
         kind: 'external',
         title: 'Rights-clear source',
@@ -109,7 +132,8 @@ async function mountedLibraryReview() {
     let items = Object.freeze([
       make('book', 'revision-book', 'Audited Book'),
       make('devotional', 'revision-devotional', 'Audited Devotional'),
-      make('past_teaching', 'revision-teaching', 'Audited Teaching')
+      make('past_teaching', 'revision-teaching', 'Audited Teaching'),
+      ...Array.from({ length: 24 }, (_, index) => make('devotional', `revision-extra-${index}`, `Extra Devotional ${index}`))
     ]);
     let state = {
       status: 'ready',
@@ -202,9 +226,31 @@ try {
     assert(text?.includes('Philippians 4:6-7'), `${tab}: Scripture evidence missing`);
     assert(text?.includes('Policy biblequest.v7.library-release @ 1.0.0'), `${tab}: policy identity missing`);
     assert(text?.includes('Independent second pass'), `${tab}: independent QA evidence missing`);
+    assert(text?.includes('Visual assets and accessibility'), `${tab}: image evidence section missing`);
+    assert(text?.includes('A calm sunrise'), `${tab}: visual alt text missing`);
+    assert(text?.includes('CLEAN / TYPE / THUMB variants (2)'), `${tab}: image variants not listed`);
+    assert(text?.includes('Observed embedded lettering'), `${tab}: TYPE audit evidence missing`);
+    const variants = card.locator('[data-library-visual-variant]');
+    assert(await variants.count() === 2, `${tab}: expected TYPE and THUMB previews`);
+    const previews = card.locator('img');
+    assert(await previews.count() === 3, `${tab}: expected CLEAN, TYPE and THUMB image previews`);
+    assert((await previews.first().getAttribute('src'))?.startsWith('/v7/images/'), `${tab}: unsafe preview URL`);
+    assert((await previews.first().getAttribute('loading')) === 'lazy', `${tab}: previews must lazy-load`);
   }
 
   await page.locator('[data-content-review-tab="devotionals"]').click();
+  assert(await page.locator('[data-library-review-item]').count() === 12, 'Devotional queue should render at most 12 cards on mobile');
+  await page.locator('[data-content-review-page="next"]').click();
+  assert(await page.locator('[data-library-review-item]').count() === 12, 'Next audit page should contain 12 items');
+  assert(await page.locator('[data-library-review-item="revision-extra-11"]').count() === 1, 'Pagination did not advance to the next review items');
+  await page.locator('[data-content-review-page="previous"]').click();
+  assert(await page.locator('[data-library-review-item="revision-devotional"]').count() === 1, 'Previous page did not restore the first review item');
+  const searchBox=page.locator('[data-content-review-search]');
+  await searchBox.fill('');
+  await searchBox.pressSequentially('Audited Devotional');
+  assert(await page.locator('[data-content-review-search]').inputValue() === 'Audited Devotional', 'Typing into search lost keyboard focus');
+  assert(await page.locator('[data-library-review-item]').count() === 1, 'Search should filter Library audit cards');
+  await page.locator('[data-content-review-search]').fill('');
   await page.locator('[data-library-review-rationale="revision-devotional"]').fill('Translation wording needs another pass.');
   await page.locator('[data-library-review-decide="request_changes"][data-revision-id="revision-devotional"]').click();
   await page.locator('[data-content-review-message]').waitFor();

@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-wisdom-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-09T18:00:00+09:00",
+  "status": "production_ready",
+  "bundleStatus": "complete_three_real_files",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "wisdom",
+  "canonicalNeedId": "wisdom",
+  "concept": "Young adult pauses thoughtfully while studying an open book at a warm sunlit home desk, considering what to learn and how to act.",
+  "usage": [
+    "needs_deck",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-wisdom-01.webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 129266,
+  "sha256": "ec43fda9c132b475214ebe55e24096b651e7926aeaef65d9db13d3684898ec1e",
+  "gitBlobSha": "b6602ae5c09e20d98ed966e1b6550e29bcaf0048",
+  "format": "webp",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.52,
+    "y": 0.41
+  },
+  "textSafeRegion": "bottom",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "wisdom",
+    "locale": "en",
+    "exactLabel": "Wisdom",
+    "reference": "James 1:5",
+    "scriptureTextIncluded": false,
+    "contextReview": "James 1:2-8 addresses believers facing trials, urging them to ask God for wisdom in faith; the image suggests attentive discernment, not an unconditional promise of worldly success."
+  },
+  "generation": {
+    "sourceOriginalName": "a_warm_cozy_realistic_indoor_study_workspace_sce.png",
+    "sourceBytes": 2094868,
+    "sourceSha256": "59127d9834c3e6eee490332a43da42b0f3c26e03210395c3a9f7b110dedf16dd",
+    "sourceWidth": 1402,
+    "sourceHeight": 1122,
+    "sourceCropRect": {
+      "left": 350,
+      "top": 0,
+      "right": 1248,
+      "bottom": 1122
+    },
+    "generationId": "bbce49d8-6c09-4be3-8ef5-1214b3a67159",
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "prompt": "not exposed by tool; prompt metadata empty",
+    "sourceRevision": "v7/development d061418560e524429f33979efa0a0b269a1d0b44",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source supplied",
+    "fontFamilies": [
+      "Noto Serif"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright",
+    "fontFilesRedistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A thoughtful young man studies an open book at a sunlit home desk, pausing to reflect beside notebooks and plants.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "TL Karunungan, CEB Kaalam, ILO Sirib: CLEAN image plus live localized label and reference; English TYPE not used in non-English locales."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-wisdom-01.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 129266,
+      "sha256": "ec43fda9c132b475214ebe55e24096b651e7926aeaef65d9db13d3684898ec1e",
+      "gitBlobSha": "b6602ae5c09e20d98ed966e1b6550e29bcaf0048",
+      "format": "webp",
+      "altText": "A thoughtful young man studies an open book at a sunlit home desk, pausing to reflect beside notebooks and plants.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "anatomyAcceptable": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/need/bqv7-need-wisdom-01-with-text-en.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 115722,
+      "sha256": "29bedc484e83ba06b165733d1f47f6ed25ffc87cee903052853fedc4dc59c055",
+      "gitBlobSha": "2a50b31503233e6046045222946e23053222c2ec",
+      "format": "webp",
+      "altText": "A young man thoughtfully studies at a sunlit desk; English artwork text reads Wisdom and James 1:5.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": false,
+        "cropReviewed": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Wisdom",
+        "scriptureReference": "James 1:5",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontFilesRedistributed": false,
+        "method": "Pillow rasterized exact English label and reference on 256px matte title band"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-wisdom-01-thumbnail.webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 32516,
+      "sha256": "098f157bb0241abae11650d7a7422e06f1420e2aeab75db1a746ab872e9a7bd4",
+      "gitBlobSha": "fbd41d2bc02103a0b385e7df1a6b612a740ecbe4",
+      "format": "webp",
+      "altText": "Close crop of a young man considering an open book at a sunlit wooden desk.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "subjectReadableAtThumbnail": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 100,
+          "top": 100,
+          "right": 900,
+          "bottom": 1100
+        },
+        "targetAspectRatio": "4:5",
+        "method": "Pillow Lanczos focal-aware crop from CLEAN"
+      }
+    }
+  ],
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": true,
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "localPillowDecodeAndHashesVerified": true,
+    "independentVisualQA": "independent_exact_three_blob_visual_inspection_2026-10-10",
+    "builtAppHttpSha": "pending_exact_head_ci",
+    "officialNodeAudit": "pending_exact_head_ci",
+    "localChromiumHttpFixture": {
+      "engine": "Chromium via Playwright",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "allNineVariantViewportChecksPassed": false,
+      "servedHttpHashesMatchedLocalSource": false,
+      "scope": "Standalone local HTTP image fixture only, not BibleQuest built-app or deployed HTTP hash",
+      "blockedReason": "ERR_BLOCKED_BY_ADMINISTRATOR for 127.0.0.1 navigation; no browser checks passed; direct Python HTTP SHA matched CLEAN before block; built-app HTTP SHA not attempted"
+    },
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "localPillowType320390430PreviewOnly": true,
+    "visualReviewEvidence": {
+      "source": "exact 3 Git-blob images visually inspected; measured hashes/dimensions must still pass branch audit",
+      "imageConcept": "young man considering an open book at home; authentic everyday wisdom metaphor",
+      "clean": "no visible baked title or Bible quotation, single scene and believable hands",
+      "type": "exact rendered words Wisdom; James 1:5, high-contrast lower type-safe band; no Bible text quoted",
+      "thumb": "distinct focal crop with face, hand and open book intact, no baked text",
+      "scriptureContext": "James 1:2-8 discusses asking God for wisdom amid trials, not guaranteed worldly outcomes",
+      "otherLocales": "CLEAN plus live localized labels for tl/ceb/ilo",
+      "remainingGate": "exact-head GitHub Actions canonical SHA/HTTP/browser/PWA/release checks before PR merge"
+    }
+  }
+}

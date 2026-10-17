@@ -184,7 +184,7 @@ test('discovery filters use OR within dimensions and independent inner joins acr
 
   assert.ok(calls[0].filters.some(([kind, column, values]) =>
     kind === 'in' && column === 'revision.filter_emotion_links.taxonomy_id'
-      && JSON.stringify(values) === JSON.stringify(['emotion.afraid', 'emotion.anxious'])));
+      && JSON.stringify(values) === JSON.stringify(['emotion.fear', 'emotion.anxiety_worry'])));
   assert.ok(calls[0].filters.some(([kind, column, values]) =>
     kind === 'in' && column === 'revision.filter_need_links.taxonomy_id'
       && JSON.stringify(values) === JSON.stringify(['need.peace'])));

@@ -15,10 +15,11 @@ const baseUrl = process.env.BQ_PREVIEW_URL || 'http://127.0.0.2:4173';
 assert.equal(new URL(baseUrl).hostname, '127.0.0.2');
 
 const productionSupabaseOrigin = 'https://zkfmgezvzugchcwppreq.supabase.co';
-const scope = '10000000-0000-4000-8000-000000000001';
+const scope = randomUUID(); // Per-run tenant: do not inherit V6 seed ownership or memberships.
 const marker = randomUUID();
 const now = new Date().toISOString();
 const checks = [];
+const backendMembershipReads = []; // Redacted request status only; never persist tokens or response bodies.
 let stage = 'seed-disposable-data';
 
 async function request(path, token, method = 'GET', body, prefer = 'return=representation') {
@@ -42,6 +43,7 @@ async function request(path, token, method = 'GET', body, prefer = 'return=repre
 
 const insert = (table, row) => request(`/rest/v1/${table}`, status.SERVICE_ROLE_KEY, 'POST', row);
 const update = (table, filter, row) => request(`/rest/v1/${table}?${filter}`, status.SERVICE_ROLE_KEY, 'PATCH', row);
+const select = (table, token, filter) => request(`/rest/v1/${table}?${filter}`, token);
 
 async function actor(label, role) {
   const password = `${randomUUID()}!A9`;
@@ -53,18 +55,29 @@ async function actor(label, role) {
   });
   assert.ok(user.id);
   await insert('bible_app_access', { user_id: user.id, role, active: true });
-  await insert('bible_congregation_members', {
-    congregation_id: scope,
-    user_id: user.id,
-    role,
-    display_name: `V7 browser ${label}`,
-    active: true,
-  });
-  return { id: user.id, email, password, congregationId: scope };
+  const session = await request('/auth/v1/token?grant_type=password', status.ANON_KEY, 'POST', { email, password }, null);
+  assert.equal(session.user?.id, user.id, 'Disposable real-password auth must return the intended user.');
+  return { id: user.id, email, password, token: session.access_token, congregationId: scope };
 }
 
 const mentor = await actor('mentor', 'leader');
 const mentee = await actor('mentee', 'member');
+// The fixture owns exactly one fresh congregation. Privileged writes establish
+// synthetic membership; real user JWT reads below prove production RLS behavior.
+await insert('bible_congregations', {
+  id: scope, owner_id: mentor.id, name: `V7 integrated browser ${marker.slice(0, 8)}`, timezone: 'Asia/Tokyo', active: true,
+});
+for (const [member, role, label] of [[mentor, 'leader', 'mentor'], [mentee, 'member', 'mentee']]) {
+  await insert('bible_congregation_members', {
+    congregation_id: scope, user_id: member.id, role, display_name: `V7 browser ${label}`, active: true,
+  });
+  const memberships = await select('bible_congregation_members', member.token, `congregation_id=eq.${scope}&user_id=eq.${member.id}&active=eq.true`);
+  assert.equal(memberships.length, 1, `${label} must see own authenticated active membership under RLS.`);
+  assert.equal(memberships[0].role, role);
+  const congregations = await select('bible_congregations', member.token, `id=eq.${scope}&active=eq.true`);
+  assert.equal(congregations.length, 1, `${label} must see the active congregation under RLS.`);
+}
+checks.push('isolated-owned-congregation-and-authenticated-mentor-mentee-rls-visibility');
 
 const libraryItemId = randomUUID();
 const libraryRevisionId = randomUUID();
@@ -211,6 +224,14 @@ async function installDisposableBackendRoute(context) {
       postData: requestRecord.postDataBuffer() || undefined,
       timeout: 15000,
     });
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+      let rowCount = null;
+      try { const body = await response.json(); rowCount = Array.isArray(body) ? body.length : null; } catch {}
+      backendMembershipReads.push({
+        resource: source.pathname.split('/').pop(), status: response.status(), rowCount,
+        authMode: /^Bearer\s+eyJ/i.test(headers.authorization || '') ? 'signed-jwt' : 'anonymous-or-publishable',
+      });
+    }
     await route.fulfill({ response });
   });
 }
@@ -224,7 +245,12 @@ async function openRoute(page, route, selector) {
 async function activateCongregation(page, congregationId) {
   await openRoute(page, 'congregation', '[data-congregation-view]');
   const row = page.locator(`[data-congregation-row="${congregationId}"]`);
-  await row.waitFor({ state: 'visible' });
+  try {
+    await row.waitFor({ state: 'visible' });
+  } catch (error) {
+    const state = await page.locator('[data-congregation-list]').innerText().catch(() => 'congregation list unavailable');
+    throw new Error(`Authenticated congregation selection failed: ${state.slice(0, 180)}; reads=${JSON.stringify(backendMembershipReads.slice(-8))}`, { cause: error });
+  }
   const switchButton = row.locator('[data-congregation-switch]');
   if (await switchButton.count()) {
     await switchButton.click();
@@ -238,9 +264,11 @@ async function login(page, actorRecord) {
   await page.locator('[data-account-login] input[name="email"]').fill(actorRecord.email);
   await page.locator('[data-account-login] input[name="password"]').fill(actorRecord.password);
   await page.locator('[data-account-login] button[type="submit"]').click();
-  // Successful sign-in navigates Home. Wait for Account to unmount, then reopen it
-  // to assert the persisted authenticated session before selecting the seeded tenant.
-  await page.locator('[data-account-login]').waitFor({ state: 'detached', timeout: 30000 });
+  // Account can re-render its guest form during the intermediate
+  // `authenticating` state, before Supabase credentials are verified. Form
+  // detachment alone is not a successful sign-in signal and races a reload.
+  // The account page only calls onHome() after await account.signIn() succeeds.
+  await page.waitForURL(url => url.hash === '#/home', { timeout: 30000 });
   await openRoute(page, 'account', '[data-account-signout]');
   assert.ok((await page.locator('.bq-account-signed-hero').textContent()).includes(actorRecord.email));
   await activateCongregation(page, actorRecord.congregationId);
@@ -273,6 +301,7 @@ async function writeEvidence(result, error = null) {
     viewport: '390x900',
     evidenceClass: 'authenticated-built-browser-disposable-backend',
     checks,
+    backendMembershipReads: backendMembershipReads.slice(-30),
     ...(error ? { error: { name: error.name || 'Error', message: String(error.message || error) } } : {}),
     exclusions: [
       'production-backend',
@@ -300,26 +329,41 @@ try {
   await login(page, mentor);
   checks.push('mentor-real-password-browser-sign-in');
 
-  stage = 'mentor-populated-library';
-  await openRoute(page, 'library', '[data-library-page]');
+  stage = 'mentor-public-library-and-backend-isolation';
+  // V7 intentionally browses the signed-out approved static catalog even
+  // after authentication. Disposable Supabase fixtures must remain protected,
+  // never leak into the public reader to make this journey superficially pass.
+  const seededLibraryRows = await request(
+    `/rest/v1/v7_library_items?select=id,current_revision_id&id=eq.${libraryItemId}`,
+    status.SERVICE_ROLE_KEY,
+  );
+  assert.equal(seededLibraryRows.length, 1, 'synthetic protected record was not seeded');
+  assert.equal(seededLibraryRows[0].current_revision_id, libraryRevisionId);
+
+  const approvedPublicItemId = 'devotional.biblequest.anxiety_worry.01';
+  await openRoute(page, 'library?query=concern&contentType=devotional&emotion=anxious', '[data-library-page]');
   await page.waitForFunction(() => ['ready', 'empty', 'error'].includes(document.querySelector('[data-library-status]')?.dataset.libraryState || ''));
   const libraryState = await page.locator('[data-library-status]').evaluate(node => ({
     state: node.dataset.libraryState || '',
     text: node.textContent || '',
   }));
-  assert.equal(libraryState.state, 'ready', `Populated Library did not become ready: ${libraryState.state} — ${libraryState.text}`);
-  const libraryCard = page.locator(`[data-library-item="${libraryItemId}"]`);
+  assert.equal(libraryState.state, 'ready', `Reviewed public Library did not become ready: ${libraryState.state} — ${libraryState.text}`);
+  const libraryCard = page.locator(`[data-library-item="${approvedPublicItemId}"]`);
   await libraryCard.waitFor({ state: 'visible' });
-  assert.ok((await libraryCard.textContent()).includes('V7 CI Populated Library Book'));
-  await page.locator('#bq-library-taxonomy').selectOption(taxonomyId);
-  await page.locator('[data-library-search]').evaluate(form => form.requestSubmit());
-  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
-  await libraryCard.waitFor({ state: 'visible' });
+  assert.ok((await libraryCard.textContent()).includes('One concern at a time'));
+  assert.equal(await page.locator(`[data-library-item="${libraryItemId}"]`).count(), 0,
+    'private disposable tenant fixture leaked into the approved public catalog');
+  assert.equal(await page.locator('#bq-library-query').inputValue(), 'concern');
+  assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
+  // Public browse's full Tab sequence is exercised separately across
+  // 320–430px and locales. In this authenticated journey assert each input
+  // remains keyboard-focusable without assuming no session-driven rerender.
   await page.locator('#bq-library-query').focus();
-  await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-query');
+  await page.locator('#bq-library-type').focus();
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'bq-library-type');
-  await assertNoHorizontalOverflow(page, 'mentor populated Library');
-  checks.push('authenticated-populated-library-filter-keyboard-mobile');
+  await assertNoHorizontalOverflow(page, 'mentor public Library');
+  checks.push('authenticated-reviewed-public-library-isolation-search-focus-mobile');
 
   stage = 'library-locale-reload';
   await Promise.all([
@@ -327,10 +371,41 @@ try {
     page.locator('[data-locale-select]').selectOption('tl'),
   ]);
   await page.locator('[data-library-page]').waitFor({ state: 'visible' });
-  await page.waitForFunction(() => document.querySelector('[data-library-status]')?.dataset.libraryState === 'ready');
+  // A locale-triggered full reload can display a ready snapshot just before
+  // session hydration re-mounts the filtered catalog. Observe the restored
+  // search form and its reviewed result together rather than sampling a
+  // transient DOM between the route and session render passes.
+  await page.waitForFunction(itemId => {
+    const library = document.querySelector('[data-library-page]');
+    const routedQuery = new URLSearchParams(location.hash.split('?').slice(1).join('?')).get('query');
+    return Boolean(library
+      && routedQuery === 'concern'
+      && library.querySelector('[data-library-status]')?.dataset.libraryState === 'ready'
+      && library.querySelector('#bq-library-query')?.value === 'concern'
+      && library.querySelector('#bq-library-type')?.value === 'devotional'
+      && Array.from(library.querySelectorAll('[data-library-results] [data-library-item]'))
+        .some(node => node.getAttribute('data-library-item') === itemId));
+  }, approvedPublicItemId, { timeout: 30000 });
+  const reloadEvidence = await page.evaluate(() => ({
+    route: location.hash,
+    language: document.querySelector('[data-locale-select]')?.value,
+    query: document.querySelector('#bq-library-query')?.value,
+    contentType: document.querySelector('#bq-library-type')?.value,
+    resultIds: Array.from(document.querySelectorAll('[data-library-results] [data-library-item]'))
+      .slice(0, 25).map(node => node.getAttribute('data-library-item')),
+    status: document.querySelector('[data-library-status]')?.textContent?.trim(),
+  }));
+  assert.equal(new URLSearchParams(reloadEvidence.route.split('?').slice(1).join('?')).get('query'), 'concern',
+    'Authenticated locale reload must retain the routed public Library query: ' + JSON.stringify(reloadEvidence));
+  assert.equal(reloadEvidence.query, 'concern');
+  assert.equal(reloadEvidence.contentType, 'devotional');
+  assert.ok(reloadEvidence.resultIds.includes(approvedPublicItemId),
+    'Reviewed public Library card missing after locale reload: ' + JSON.stringify(reloadEvidence));
   await libraryCard.waitFor({ state: 'visible' });
   assert.equal(await page.locator('[data-locale-select]').inputValue(), 'tl');
-  checks.push('authenticated-library-locale-reload');
+  assert.notEqual((await libraryCard.textContent()).includes('One concern at a time'), true,
+    'reviewed Tagalog localization must update the public catalog after reload');
+  checks.push('authenticated-public-library-reviewed-translation-reload');
 
   stage = 'mentor-one-to-one-surfaces';
   await openRoute(page, 'one-to-one', '[data-pair-results]');
