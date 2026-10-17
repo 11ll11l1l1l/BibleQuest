@@ -38,7 +38,7 @@ const make = (feelings=30, needs=5, heroes=1) => {
   return {audit,coverage,browserReport};
 };
 
-test('exact-SHA source plus full P0 art and Chromium evidence can certify',()=>{
+test('exact-SHA source plus verified published artwork and Chromium evidence can certify',()=>{
   const report=assessV7VisualRelease({candidateSha:sha,...make()});
   assert.equal(report.releaseReady,true);
   assert.equal(report.status,'PASS');
@@ -48,43 +48,43 @@ test('exact-SHA source plus full P0 art and Chromium evidence can certify',()=>{
   assert.equal(report.draftCandidatesCountedTowardRelease,0);
 });
 
-test('development run records incomplete artwork instead of calling it a release pass',()=>{
+test('development run still needs built browser proof even when missing artwork is allowed',()=>{
   const report=assessV7VisualRelease({candidateSha:sha,...make(29,4,0),browserReport:null});
   assert.equal(report.releaseReady,false);
   assert.equal(report.status,'OPEN');
-  assert.equal(report.coverageReady,false);
+  assert.equal(report.coverageReady,true);
   assert.equal(report.builtBrowserVerified,false);
 });
 
-test('five unrelated Need concepts do not substitute for the five launch Needs',()=>{
+test('unused launch Need image IDs are reported but do not block text-first release',()=>{
   const fixture=make();
   fixture.audit.manifest.assets.find(a=>a.contentType==='need' && a.canonicalContentId==='strength')
     .canonicalContentId='wisdom';
   const result=assessV7VisualRelease({candidateSha:sha,...fixture});
   assert.equal(result.coverage.needComplete,5);
-  assert.equal(result.coverageReady,false);
+  assert.equal(result.coverageReady,true);
   assert.deepEqual(result.coverage.missingLaunchNeeds,['strength']);
-  assert.equal(result.status,'OPEN');
+  assert.equal(result.status,'PASS');
 });
 
-test('thirty unrelated Feeling IDs do not certify the canonical Feeling set',()=>{
+test('missing canonical Feeling art is informational when colored selectors are available',()=>{
   const fixture=make();
   fixture.audit.manifest.assets.find(a=>a.contentType==='emotion' && a.canonicalContentId==='connected')
     .canonicalContentId='invented-feeling';
   const result=assessV7VisualRelease({candidateSha:sha,...fixture});
   assert.equal(result.coverage.emotionComplete,30);
-  assert.equal(result.coverageReady,false);
+  assert.equal(result.coverageReady,true);
   assert.deepEqual(result.coverage.missingLaunchFeelings,['connected']);
-  assert.equal(result.status,'OPEN');
+  assert.equal(result.status,'PASS');
 });
 
-test('non-Home hero artwork cannot fulfill the required Home hero milestone',()=>{
+test('missing Home hero art may use the editorial color/text hero',()=>{
   const fixture=make();
   fixture.audit.manifest.assets.find(a=>a.contentType==='hero').canonicalContentId='library-banner';
   const result=assessV7VisualRelease({candidateSha:sha,...fixture});
   assert.equal(result.coverage.heroComplete,0);
-  assert.equal(result.coverageReady,false);
-  assert.equal(result.status,'OPEN');
+  assert.equal(result.coverageReady,true);
+  assert.equal(result.status,'PASS');
 });
 
 test('a passing source audit without built visual evidence is not release proof',()=>{
@@ -105,7 +105,7 @@ test('stale candidate/browser report, omitted files and falsified coverage fail 
     coverage:{...fixture.coverage,summary:{...fixture.coverage.summary,completeThreeFileBundles:99}}}),/do not match/);
 });
 
-test('missing one viewport or missing decode proof prevents an image-first release',()=>{
+test('missing browser viewport or decode proof blocks any published images',()=>{
   const fixture=make();
   const report=assessV7VisualRelease({candidateSha:sha,...fixture,
     browserReport:{...fixture.browserReport,viewports:[320,390]}});
@@ -116,6 +116,35 @@ test('missing one viewport or missing decode proof prevents an image-first relea
   assert.equal(report2.status,'OPEN');
 });
 
+
+test('zero published artwork can release with a fully verified text fallback, not fabricated image files', () => {
+  const fixture = make(0, 0, 0);
+  const report = assessV7VisualRelease({ candidateSha: sha, ...fixture });
+  assert.equal(report.releaseReady, true);
+  assert.equal(report.coverageReady, true);
+  assert.equal(report.auditedAssetCount, 0);
+  assert.equal(report.verifiedPublishedFileCount, 0);
+  assert.equal(report.presentationPolicy, 'text-first-optional-art');
+  assert.equal(report.coverage.missingLaunchFeelings.length, 30);
+  assert.equal(report.coverage.missingLaunchNeeds.length, 5);
+  assert.deepEqual(report.minimum, { emotions: 0, needs: 0, heroes: 0 });
+  const bad = { ...fixture.browserReport, verifiedServedFiles: [{ path: '/v7/images/unknown.webp', sha256: binary, bytes: 1 }] };
+  assert.throws(() => assessV7VisualRelease({ candidateSha: sha, audit: fixture.audit, coverage: fixture.coverage, browserReport: bad }),
+    /every published release image/);
+});
+
+test('CLEAN-only published images remain verifiable instead of forcing generated derivative files', () => {
+  const fixture = make(0, 0, 0);
+  const clean = { ...asset('emotion',0), bundleStatus:'partial', variants:[] };
+  fixture.audit.manifest.assets.push(clean);
+  fixture.coverage.summary.auditedAssetCount = 1;
+  fixture.browserReport.sourceAuditProductionReady = 1;
+  fixture.browserReport.verifiedServedFiles = [{ path: clean.src, sha256: clean.sha256, bytes:1234 }];
+  const report = assessV7VisualRelease({ candidateSha: sha, ...fixture });
+  assert.equal(report.releaseReady, true);
+  assert.equal(report.verifiedPublishedFileCount, 1);
+  assert.equal(report.coverage.emotionComplete, 0);
+});
 const png = Buffer.concat([Buffer.from('89504e470d0a1a0a', 'hex'), Buffer.alloc(32)]);
 const withShots = () => {
   const fixture = make(1, 1, 1);
