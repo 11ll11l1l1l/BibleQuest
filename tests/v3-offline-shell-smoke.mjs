@@ -99,7 +99,7 @@ try{
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Offline mobile reload overflowed horizontally: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);
   // Offline media/API probes may fail by design, but core JS/CSS may not.
   const coreFailures=failed.filter(item=>item.whileOffline &&
-    /\\.(?:js|mjs|css)(?:\\?|$)/i.test(new URL(item.url).pathname));
+    /\.(?:js|mjs|css)$/i.test(new URL(item.url).pathname));
   assert(coreFailures.length===0,`Offline core asset failures: ${JSON.stringify(coreFailures)}`);
   assert(errors.length===0,`Offline shell browser errors: ${errors.join(' | ')}`);
   console.log('BibleQuest v3 offline shell mobile browser regression passed.');
