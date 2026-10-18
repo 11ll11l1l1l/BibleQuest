@@ -11,9 +11,9 @@ export const HARD_EXPERT=Object.freeze({
     "best": 3,
     "why": "Testing a reversible working arrangement respects competing bonds even though it may cost the career opening.",
     "cost2": [
-      "you may later regret missing your parent’s final years",
+      "you could lose the final months of daily contact with your parent",
       "you may resent losing an opportunity you both planned",
-      "you could be blamed if a sibling’s care arrangement fails",
+      "you could lose the sibling's trust after imposing a duty they resisted",
       "you may lose the employer’s confidence in your commitment"
     ],
     "basis": [
@@ -82,9 +82,9 @@ export const HARD_EXPERT=Object.freeze({
     "why": "Materially misleading reliance warrants candid qualification, at the actual risk of revenue and internal confidence.",
     "cost2": [
       "your standing with management may suffer irreversibly",
-      "you may be blamed for violating customer trust later",
+      "you could lose the customer's trust when the manual process emerges",
       "you may lose the only chance to explain the actual process",
-      "you may be judged personally responsible for a misleading answer"
+      "you could lose control of your professional credibility in a disputed audit"
     ],
     "basis": [
       "The manual verification provides meaningful protection; the slide was prepared by another division.",
@@ -105,9 +105,9 @@ export const HARD_EXPERT=Object.freeze({
     "why": "Independent review can weigh credibility without making private reconciliation a substitute for evidence, though waiting itself harms the community.",
     "cost2": [
       "you may lose trust with people fearing ongoing harm",
-      "you may be blamed if another witness feels pressured",
-      "you could face criticism for the review’s long delay",
-      "you may be judged for pushing vulnerable members into silence"
+      "you could lose the witnesses' trust and access to further evidence",
+      "you could lose the congregation's confidence during a drawn-out review",
+      "you could lose the trust of people reporting harm"
     ],
     "basis": [
       "An immediate administrative leave is standard for witness safety and does not imply guilt.",
@@ -128,8 +128,8 @@ export const HARD_EXPERT=Object.freeze({
     "why": "A meeting without children tests the relationship before requesting their participation, though it postpones reconciliation they may want.",
     "cost2": [
       "you may feel you exposed loved ones too soon",
-      "you may be blamed for refusing to restore family bonds",
-      "you may carry regret if the relationship never recovers",
+      "you could lose the relative's willingness to attempt reconciliation",
+      "you could lose a realistic opportunity to rebuild family ties",
       "you may lose control if fear escalates in a public venue"
     ],
     "basis": [
@@ -150,8 +150,8 @@ export const HARD_EXPERT=Object.freeze({
     "best": 3,
     "why": "Partial participation may communicate presence without making a public statement beyond conscience, but can still wound the child.",
     "cost2": [
-      "you could face criticism from your faith community",
-      "you may carry regret over a widening family distance",
+      "you could lose a cherished role in your faith community",
+      "you could lose access to future milestones in your adult child's life",
       "you may lose your child’s trust during a defining moment",
       "you may still disappoint your child and strain your beliefs"
     ],
@@ -173,10 +173,10 @@ export const HARD_EXPERT=Object.freeze({
     "best": 1,
     "why": "Privacy can be a non-negotiable interest even when it materially reduces the money raised and disappoints beneficiaries.",
     "cost2": [
-      "you may later feel responsible for breaching a promise",
-      "you may have to explain why the match disappeared",
-      "you may be accused of manufacturing a false testimony",
-      "you may be blamed for failing to raise critical funding"
+      "you could lose the family's trust after disregarding their privacy request",
+      "you could lose the donor's confidence for failing to unlock the match",
+      "you could lose your standing with viewers who suspect a fabricated account",
+      "you could lose future support from donors who expected public reporting"
     ],
     "basis": [
       "The family previously consented to filming but now expresses genuine second thoughts.",
@@ -198,7 +198,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may be held responsible if licensing is audited",
       "you may lose the trust of people excluded by the software",
-      "you may be blamed for wasting the community’s preparation",
+      "you could lose families' trust after they arranged travel at their own expense",
       "you may risk your own family’s financial security"
     ],
     "basis": [
@@ -221,8 +221,8 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "your credibility may suffer under a conflict inquiry",
       "you may personally answer for costly repair delays",
-      "you may be accused of misusing donors’ limited funds",
-      "you may be blamed if informal influence persists"
+      "you could lose the confidence of donors after spending funds reserved for relief",
+      "you could lose board credibility when informal pressure changes the outcome"
     ],
     "basis": [
       "The family firm is a certified emergency supplier with a transparent fixed-price contract.",
@@ -243,8 +243,8 @@ export const HARD_EXPERT=Object.freeze({
     "why": "Confidential testimony may secure fair review without forcing a public display of reconciliation; it can also fail to repair public harm.",
     "cost2": [
       "you may relive the pain in a public confrontation",
-      "you may be blamed if the statement is never released",
-      "you may regret allowing injustice to go unchallenged",
+      "you could lose trust with the accused person's family if the evidence remains sealed",
+      "you could lose a chance to stop a serious injustice while you still hold the facts",
       "you may lose the friend’s trust if their account differs"
     ],
     "basis": [
@@ -313,7 +313,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may be drawn into prolonged litigation",
       "you may be viewed as protecting yourself over the injured",
-      "you may be blamed for avoiding public accountability",
+      "you could lose the injured person's confidence in a fair investigation",
       "you may lose the injured person’s trust through silence"
     ],
     "basis": [
@@ -336,7 +336,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may lose the loyalty of the remaining workforce",
       "you could lose vital talent to employers offering stability",
-      "you may be blamed for a broader collapse if demand stays weak",
+      "you could lose your role and leave your colleagues unemployed after a cash collapse",
       "you may face dismissal if the company cannot service debt"
     ],
     "basis": [
@@ -358,8 +358,8 @@ export const HARD_EXPERT=Object.freeze({
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
     "cost2": [
       "you may lose the candidate’s respect and trust",
-      "you may regret denying evidence of real improvement",
-      "you may be blamed if the new employer struggles",
+      "you could lose a meaningful chance to support someone's recovery",
+      "you could lose credibility if the conditional endorsement is used as a guarantee",
       "you may risk your own professional standing if questioned"
     ],
     "basis": [
@@ -406,7 +406,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may be known as someone whose convictions are for sale",
       "you may bear responsibility for canceled youth sessions",
-      "you may be accused of hiding financial influence",
+      "you could lose parents' trust when sponsorship influences the lessons",
       "you may lose leverage with future donors as well"
     ],
     "basis": [
@@ -429,7 +429,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may come to resent someone who still spends freely",
       "you may bear the emotional burden of an unresolved debt",
-      "you may be accused of pressuring a family in medical crisis",
+      "you could permanently fracture an old friendship over collection timing",
       "you may become responsible for a second open-ended promise"
     ],
     "basis": [
@@ -451,7 +451,7 @@ export const HARD_EXPERT=Object.freeze({
     "why": "Self-reporting lets the student take responsibility for a consequential breach without avoiding the scholarship risk.",
     "cost2": [
       "you may lose your child’s trust for months",
-      "you may regret silencing the possibility of accountability",
+      "you could lose your child's trust in your willingness to let them take responsibility",
       "you may feel complicit in an unfair scholarship decision",
       "you may face questions about inconsistent family standards"
     ],
@@ -474,9 +474,9 @@ export const HARD_EXPERT=Object.freeze({
     "why": "Independent oversight avoids treating a confession as either a private therapy issue or automatic public spectacle.",
     "cost2": [
       "you may become the target of rumors you cannot answer",
-      "you may regret exposing children to an adult’s wrongdoing",
+      "you could sever relationships with children exposed by public disclosure",
       "you may lose the trust of both pastor and congregation",
-      "you may be criticized if the hidden issue emerges later"
+      "you could lose elders' confidence if sustained deception becomes known"
     ],
     "basis": [
       "The pastor has broken written leadership standards and agrees to a confidential leave.",
@@ -522,7 +522,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "you may be held personally accountable for a yield collapse",
       "you may lose credibility if rivals achieve the gain",
-      "you may be blamed for missing an irreversible launch",
+      "you could lose executive trust and future responsibility for production launches",
       "you may be unable to explain failures in mixed settings"
     ],
     "basis": [
@@ -544,9 +544,9 @@ export const HARD_EXPERT=Object.freeze({
     "why": "A direct private warning to the person at risk can reduce immediate harm without assuming that every family dispute belongs on public trial.",
     "cost2": [
       "you may fracture your relationship with the elder",
-      "you may be blamed if others continue following the claim",
-      "you may be seen as starting a family power struggle",
-      "you may carry regret if a relative acts before tomorrow"
+      "you could lose trust with relatives who receive no warning",
+      "you could fracture your relationship with the group's administrator",
+      "you could lose a relative's confidence if the claim is forwarded again"
     ],
     "basis": [
       "Several relatives have already repeated the claim, and only a public correction reaches them tonight.",
