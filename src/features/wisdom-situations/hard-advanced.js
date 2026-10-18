@@ -374,7 +374,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Disclose the AI contribution; protect trust but risk losing the contract and bonus.",
       "Certify responsibility for the final deliverable; preserve the project and bonus but invite questions about tool disclosure.",
       "Ask the client for a disclosure ruling; build consent but risk missing the submission deadline.",
-      "Disclose verified tools and note AI-assisted drafting; avoid unsupported claims but risk losing recognition for your revisions."
+      "Disclose the AI draft and verified tools; be transparent but risk losing credit for extensive revisions."
     ],
     "best": 0,
     "why": "Explicit provenance is a defensible professional standard when client expectations are unclear, even if the disclosure costs the deal.",
