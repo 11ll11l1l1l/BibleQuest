@@ -12,8 +12,8 @@ export const HARD_FOUNDATION=Object.freeze({
     "why": "A specialist call can test urgency without broadcasting unverified allegations; it still costs trust and may not avert harm.",
     "cost2": [
       "you may lose the only friend who trusted you",
-      "you will carry the fear of a preventable delay",
-      "you may be blamed for involving the wrong person",
+      "you could lose the threatened person's trust for postponing a warning",
+      "you could lose your friend and the relative's trust after the disclosure",
       "you will bear guilt if the threat worsens overnight"
     ],
     "basis": [
@@ -129,7 +129,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "cost2": [
       "you may miss the only chance for timely correction",
       "your reputation may become tied to a public dispute",
-      "you may be accused of controlling the church’s message",
+      "you could lose your place on the media team for delaying release",
       "you may have to live with a foreseeable public error"
     ],
     "basis": [
@@ -152,7 +152,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "cost2": [
       "you may lose the respect of the dissenting families",
       "you could be held responsible for losing the meeting place",
-      "you may be accused of hiding behind a flawed process",
+      "you could lose the group's confidence in your ability to lead fairly",
       "you may damage your standing with the majority"
     ],
     "basis": [
@@ -219,10 +219,10 @@ export const HARD_FOUNDATION=Object.freeze({
     "best": 1,
     "why": "Evidence without a forced conclusion honors agency under time pressure, though the friend may not recognize its urgency.",
     "cost2": [
-      "you may be blamed if your judgment proves wrong",
-      "you may still be blamed for not expressing the urgency",
-      "you could be accused of exposing someone’s private finances",
-      "you may carry the shame of having withheld a warning"
+      "you could lose a friendship built on trust in your judgment",
+      "you could lose the chance to protect your friend's lifelong savings",
+      "you could lose the expert's and your friend's trust for sharing private records",
+      "you could lose the friendship when the hidden risk later becomes known"
     ],
     "basis": [
       "The flaw is based on documents your friend has not received and the deadline is near.",
@@ -244,7 +244,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "cost2": [
       "you might never receive another promotion offer",
       "you may damage a partnership needed for future work",
-      "you may be seen as manipulating a fair hiring process",
+      "you could lose management's trust in your judgment about hiring fairness",
       "your manager may distrust your behind-the-scenes advocacy"
     ],
     "basis": [
@@ -266,9 +266,9 @@ export const HARD_FOUNDATION=Object.freeze({
     "why": "An anonymous limited gift preserves a meaningful responsibility to both sides even though it sacrifices the matching benefit.",
     "cost2": [
       "you may lack cash when your own emergency arrives",
-      "you may regret losing the opportunity to multiply the gift",
+      "you could lose the chance to secure matched relief for families in crisis",
       "you may have to default if income falls unexpectedly",
-      "you may face judgment for giving time instead of cash"
+      "you could lose meaningful influence with donors who needed your support"
     ],
     "basis": [
       "The named-donor list is used by a major employer to unlock a public matching pool.",
@@ -288,9 +288,9 @@ export const HARD_FOUNDATION=Object.freeze({
     "best": 0,
     "why": "Containment before certainty is expensive but can prevent irreversible downstream exposure; it deserves the highest weight under the stated deadline.",
     "cost2": [
-      "you may be blamed for shutting down the shift",
-      "you may be blamed for detecting the defect too late",
-      "you may be accused of avoiding your own accountability",
+      "you could lose your shift-lead position after the stoppage",
+      "you could face suspension for failing a required containment deadline",
+      "you could lose certification for a knowingly incomplete escalation",
       "your name could be tied to an expensive customer failure"
     ],
     "basis": [
@@ -335,9 +335,9 @@ export const HARD_FOUNDATION=Object.freeze({
     "why": "A meeting buys legitimate context before identifying a vulnerable child, even while it puts the reporting family at disciplinary risk.",
     "cost2": [
       "you may permanently damage trust with your own child",
-      "you may be blamed for withholding serious information",
+      "you could lose the school's trust in your signed account",
       "your child may face discipline for delaying the report",
-      "you may be accused of disguising your child’s deception"
+      "your child could lose school standing because you omitted material facts"
     ],
     "basis": [
       "The school's policy requires an accurate signed account before any investigation can begin.",
@@ -360,7 +360,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may lose the trust of the person whose messages leak",
       "your livelihood could suffer from an unanswered allegation",
       "you may be forced into weeks of public uncertainty",
-      "you may be criticized for releasing an incomplete defense"
+      "your family could face a prolonged public dispute over incomplete proof"
     ],
     "basis": [
       "The allegations threaten your livelihood and the third party already consented to disclosure.",
@@ -382,8 +382,8 @@ export const HARD_FOUNDATION=Object.freeze({
     "cost2": [
       "you risk exclusion from your own circle of friends",
       "you may lose the newcomer’s trust for staying silent",
-      "you may be accused of making the newcomer speak for you",
-      "you may be remembered as someone who avoided the issue"
+      "you could lose your only local friendship for questioning the group",
+      "the newcomer may stop trusting you with a concern again"
     ],
     "basis": [
       "The newcomer later told you the joke felt hostile but feared creating a scene.",
@@ -474,8 +474,8 @@ export const HARD_FOUNDATION=Object.freeze({
     "why": "Urgency can justify an imperfect settlement when delay inflicts its own injustice, but it should never be disguised as full fairness.",
     "cost2": [
       "your integrity may be challenged by the losing side",
-      "you may be blamed for worsening the injured party’s need",
-      "you may be seen as trading principle for a quick resolution",
+      "you could lose the injured person's trust after delaying their settlement",
+      "you could lose credibility if the confidential payout hides repeated harm",
       "you may lose your chance to secure any agreement"
     ],
     "basis": [
@@ -496,7 +496,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "best": 2,
     "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty.",
     "cost2": [
-      "you may regret rushing your family into instability",
+      "you could lose the stability your own child needs most",
       "you may resent the needs that limited your vocation",
       "you may lose the opportunity that brought you hope",
       "you may begin blaming your spouse for the outcome"
@@ -521,8 +521,8 @@ export const HARD_FOUNDATION=Object.freeze({
     "cost2": [
       "you may be treated as an enemy by the wider group",
       "you may share responsibility for any overnight spread",
-      "you may look evasive to those who saw the original post",
-      "you may be accused of sabotaging a friend’s livelihood"
+      "you could lose your friend's trust while failing to stop the original claim",
+      "you could lose access to a colleague who relied on your discretion"
     ],
     "basis": [
       "The claim will reach an international audience tomorrow, and the evidence is decisive.",
@@ -542,9 +542,9 @@ export const HARD_FOUNDATION=Object.freeze({
     "best": 2,
     "why": "A public correction request gives the worthy cause a chance to remain truthful, though the funding loss is a foreseeable price.",
     "cost2": [
-      "you may be portrayed as disloyal to urgent charity",
+      "you could lose a vital donor relationship and future ability to help",
       "you may permanently compromise your own public credibility",
-      "you may be blamed if beneficiaries lose their funding",
+      "you could lose trusted standing with the families expecting this funding",
       "you may lose your influence to reform the campaign"
     ],
     "basis": [
