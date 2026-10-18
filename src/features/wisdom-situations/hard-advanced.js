@@ -6,7 +6,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Approve the full purchase; honor a long-standing promise but increase your household’s exposure to an emergency.",
       "Maintain the emergency target; safeguard dependents but reinforce your spouse’s fear that enjoyment will never come.",
       "Buy the smaller model tonight; preserve some reward but disappoint your spouse and still reduce the safety margin.",
-      "Put the decision to a coin toss; avoid unilateral control but replace accountability with chance on a shared obligation."
+      "Set a firm purchase date after six months; preserve reserves but risk your spouse feeling deferred once again."
     ],
     "best": 2,
     "why": "A smaller purchase can respect the promise without treating the entire reserve as untouchable; the disappointment and diminished buffer remain real."
@@ -39,7 +39,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Send your child with a self-defense plan; preserve attendance but place a heavy safety burden on them.",
       "Keep the child home; protect them tomorrow but sacrifice the assessment and possibly validate the intimidation.",
       "Insist on an adult escort and attend yourself; improve safety but miss work and risk escalating tensions.",
-      "Permit the child to confront the bully with peers; offer social protection but risk turning a threat into a fight."
+      "Send your child with trusted friends; maintain attendance but leave the school’s responsibility inadequately addressed."
     ],
     "best": 2,
     "why": "An adult presence makes protection a parental and institutional responsibility, though it carries serious costs and cannot eliminate every risk."
@@ -83,7 +83,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Keep the line stopped; protect the safety boundary but jeopardize wages for colleagues already struggling.",
       "Run a reduced-speed supervised shift; preserve pay but normalize bypassing a control during pressure.",
       "Transfer the work to a slower backup line; avoid bypassing but risk missing the order and losing the customer.",
-      "Ask operators to vote on the bypass; respect those affected but shift safety accountability onto pressured staff."
+      "Seek an emergency engineering waiver; preserve oversight but risk a delay that makes payroll difficult."
     ],
     "best": 0,
     "why": "A safety boundary cannot be justified by past luck; the painful financial consequence should be treated as real, not rhetorical."
