@@ -443,7 +443,9 @@ try {
 
   stage = 'v7-1-two-phone-session';
   await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption('en')]);
-  await openRoute(page,'one-to-one','[data-pair-results]');
+  await openRoute(page,'account','[data-account-signout]');
+  await activateCongregation(page,mentor.congregationId);
+  await openRoute(page,'one-to-one','[data-pair-conversation]');
   await page.locator('[data-pair-conversation]').click();
   await page.locator('[data-live-room-create]').waitFor({state:'visible'});
   await page.locator('[data-live-room-create] button[type=submit]').click();
