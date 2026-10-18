@@ -74,7 +74,7 @@ export const HARD_EXPERT=Object.freeze({
     "context": "The customer audit begins in one hour. Your company’s process meets the written limit, but a presentation suggested automated checks that are actually manual.",
     "options": [
       "Disclose the manual step unprompted; protect customer understanding but risk a major commercial penalty.",
-      "Answer only direct questions; respect audit scope but allow reliance on a misleading presentation.",
+      "Correct the record within the audit's defined scope; respect the agenda but risk the customer missing implications.",
       "Ask to revise the presentation first; correct the record but delay the audit and strain trust.",
       "Request your manager lead the explanation; follow authority but sacrifice control over the accuracy of the answer."
     ],
@@ -165,7 +165,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw56": {
     "context": "A televised gift could trigger major matching donations. The family receiving help asks for privacy; the broadcaster says anonymity will cancel the segment.",
     "options": [
-      "Allow the public gift; unlock funding but expose a vulnerable family to lifelong attention.",
+      "Ask a second consenting family to join the public segment; unlock matching funds but expose them to long-term attention.",
       "Give privately without matching funds; protect dignity but reduce the total support delivered.",
       "Use a clearly labeled reenactment; preserve privacy but risk viewers discounting a story they cannot verify.",
       "Use only your own public testimony; keep families private but likely lose the broadcaster’s match."
@@ -173,23 +173,24 @@ export const HARD_EXPERT=Object.freeze({
     "best": 1,
     "why": "Privacy can be a non-negotiable interest even when it materially reduces the money raised and disappoints beneficiaries.",
     "cost2": [
-      "you could lose the family's trust after disregarding their privacy request",
+      "you may lose the second family's trust if public attention later harms them",
       "you could lose the donor's confidence for failing to unlock the match",
       "you could lose your standing with viewers who suspect a fabricated account",
       "you could lose future support from donors who expected public reporting"
     ],
     "basis": [
-      "The family previously consented to filming but now expresses genuine second thoughts.",
+      "Another beneficiary family has independently volunteered for a public story after hearing the privacy risks.",
       "The funding match is substantial yet the family explicitly regards anonymity as essential.",
       "The broadcaster can label a reenactment clearly; viewers know it is not direct testimony.",
       "The donor may reconsider a segment featuring only your experiences without identifying recipients."
-    ]
+    ],
+    "scene": "A televised giving segment could unlock major matching donations. The family originally chosen for filming has withdrawn consent to be identified. The broadcaster will cancel the segment if no family can appear publicly. Another beneficiary family has independently volunteered to participate with informed consent, though none can know how long the footage will circulate. Other ways to raise money may fall short."
   },
   "hw57": {
     "context": "The youth event requires a paid software license tomorrow, and the budget is exhausted. A volunteer offers an unauthorized copy, while using a free tool will reduce accessibility.",
     "options": [
       "Borrow licensed equipment from a nearby church; avoid piracy but risk failures and late cancellation.",
-      "Use free software; respect creators but exclude some participants who need accessibility features.",
+      "Use free software with assisted accessibility support; respect licensing but give some participants an inferior experience.",
       "Postpone the session for fundraising; fund proper access but disappoint families who reserved travel.",
       "Pay for a license from your own income; preserve access but sacrifice savings your family allocated elsewhere."
     ],
@@ -203,7 +204,7 @@ export const HARD_EXPERT=Object.freeze({
     ],
     "basis": [
       "A neighboring church has a valid transferable equipment rental agreement.",
-      "The free tool works for most participants, but two need a feature only paid software provides.",
+      "Volunteers can provide assisted participation offline, though two families will not have the same features.",
       "The venue agreed to hold a later date for accessibility if families approve rescheduling.",
       "The license is affordable out of your personal funds only by postponing a planned household expense."
     ]
@@ -236,7 +237,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Speak on their behalf publicly; correct injustice but invite fresh scrutiny of your own pain.",
       "Provide a confidential statement; aid due process but risk the truth never reaching the public.",
-      "Remain silent publicly; protect your own recovery but leave a serious false allegation mostly unchallenged.",
+      "Give evidence only through a representative; protect your recovery but leave public correction uncertain.",
       "Ask a mutual friend to speak; avoid direct exposure but dilute firsthand evidence and shift the burden."
     ],
     "best": 1,
@@ -250,7 +251,7 @@ export const HARD_EXPERT=Object.freeze({
     "basis": [
       "The false claim risks the accused person's employment, and you possess decisive evidence.",
       "A confidential adjudicator has power to reverse the decision without publishing your history.",
-      "The accused person's representative has access to equivalent records that you are not obliged to revisit.",
+      "A trusted representative is able to submit authenticated documents while you avoid direct exposure.",
       "The mutual friend is an authenticated eyewitness who can testify without repeating rumors."
     ]
   },
@@ -306,7 +307,7 @@ export const HARD_EXPERT=Object.freeze({
       "Apologize publicly with responsibility; honor the injured person but increase legal exposure before facts are settled.",
       "Express compassion without admitting cause; provide care but risk sounding evasive and self-protective.",
       "Offer practical assistance privately; help recovery but leave public trust and accountability unresolved.",
-      "Wait for the investigation; preserve legal clarity but allow avoidable isolation of the injured person."
+      "Arrange counsel-facilitated contact after initial review; protect legal clarity but delay needed reassurance."
     ],
     "best": 1,
     "why": "Compassionate contact does not require pretending the factual account is already settled; it remains vulnerable to being perceived as evasive.",
@@ -352,7 +353,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
-      "Assess only the requested recent period; recognize real progress but risk missing earlier failures."
+      "Assess only the requested recent period; recognize improvement but omit older issues still relevant."
     ],
     "best": 0,
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
@@ -538,7 +539,7 @@ export const HARD_EXPERT=Object.freeze({
       "Correct the source publicly; protect relatives from the claim but threaten an elder’s dignity.",
       "Call the endangered relative privately; target immediate harm but leave misinformation circulating.",
       "Ask the group admin to post a correction; reduce personal conflict but turn moderation into a family power struggle.",
-      "Confirm a clinician call tomorrow and pause forwarding; preserve elder's dignity but risk the claim resurfacing overnight."
+      "Ask the admin to pause the chat until clinician review; preserve dignity but delay a warning others may need."
     ],
     "best": 1,
     "why": "A direct private warning to the person at risk can reduce immediate harm without assuming that every family dispute belongs on public trial.",
@@ -552,7 +553,7 @@ export const HARD_EXPERT=Object.freeze({
       "Several relatives have already repeated the claim, and only a public correction reaches them tonight.",
       "The elder will answer a direct call from you and has previously changed course when approached gently.",
       "The administrator is a medical professional trusted across family factions.",
-      "The elder has stopped the harmful action for now and is waiting to speak with a clinician tomorrow."
+      "The group administrator can temporarily pause new messages, and the clinician can review the claim early tomorrow."
     ],
     "scene": "A false medical claim is spreading in your family's group chat. An older relative briefly followed it but has paused pending a clinician call arranged for tomorrow. The claim's author is influential and might be humiliated by public correction; meanwhile several other family members continue forwarding the claim."
   }
