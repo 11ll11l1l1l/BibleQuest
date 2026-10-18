@@ -291,7 +291,7 @@ async function login(page, actorRecord) {
 async function signOut(page) {
   await openRoute(page, 'account', '[data-account-signout]');
   await page.locator('[data-account-signout]').click();
-  await page.locator('[data-account-login]').waitFor({ state: 'visible' });
+  try{await page.locator('[data-account-login]').waitFor({state:'visible'})}catch(error){const visible=await page.locator('#bq-view').innerText().catch(()=>'view unavailable');throw new Error(`Sign-out did not finish: ${visible.slice(0,500)}; redacted backend=${JSON.stringify(backendMembershipReads.slice(-10))}`,{cause:error})}
 }
 
 async function assertNoHorizontalOverflow(page, label) {
@@ -443,8 +443,11 @@ try {
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
 
   stage = 'v7-1-two-phone-session';
-  await signOut(page);
-  await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption('en')]);
+  {
+  const hostContext=await browser.newContext({viewport:{width:390,height:900},serviceWorkers:'block'});
+  await installDisposableBackendRoute(hostContext);
+  const page=await hostContext.newPage();
+  page.on('pageerror',error=>pageErrors.push(error.message));
   await login(page,mentor);
   await openRoute(page,'one-to-one','[data-pair-conversation]');
   await page.locator('[data-pair-conversation]').click();
@@ -530,7 +533,9 @@ try {
   await page.locator('[data-live-room-end]').click();
   await participant.locator('[data-deck-current]').waitFor({state:'detached',timeout:20000});
   await participantContext.close();
+  await hostContext.close();
   checks.push('v7-1-two-phone-explicit-preview-send-late-join-reload-reconnect-keyboard-swipe-locales-reader-ended-focus-stability');
+  }
 
   stage = 'account-switch-to-mentee';
   await signOut(page);
