@@ -3,12 +3,13 @@ import { HARD_FOUNDATION } from './hard-foundation.js';
 import { HARD_ADVANCED } from './hard-advanced.js';
 import { HARD_EXPERT } from './hard-expert.js';
 import { EXPERT_WISDOM_ROWS } from './expert-content.js';
-import { TL_WISDOM_BASE } from './locales/tl-base.js';
-import { TL_WISDOM_ADVANCED } from './locales/tl-advanced.js';
-import { TL_WISDOM_EXPERT } from './locales/tl-expert.js';
-import { CEB_WISDOM_BASE } from './locales/ceb-base.js';
-import { CEB_WISDOM_ADVANCED } from './locales/ceb-advanced.js';
-import { CEB_WISDOM_EXPERT } from './locales/ceb-expert.js';
+import { HARD_TL_FOUNDATION } from './locales/hard-tl-foundation.js';
+import { HARD_TL_ADVANCED } from './locales/hard-tl-advanced.js';
+import { HARD_TL_EXPERT } from './locales/hard-tl-expert.js';
+import { HARD_CEB_FOUNDATION } from './locales/hard-ceb-foundation.js';
+import { HARD_CEB_ADVANCED } from './locales/hard-ceb-advanced.js';
+import { HARD_CEB_EXPERT } from './locales/hard-ceb-expert.js';
+import { HARD_WISDOM_HEADINGS } from './locales/hard-headings.js';
 
 const foundationRows = [
   {id:'hw01',title:'Confidentiality or protection?',tension:'Confidentiality × preventing harm',scenario:'A close friend tells you in confidence that another person is being pressured and threatened at home. Your friend insists that you promise not to tell anyone because disclosure may destroy the relationship and make the situation worse. You do not know whether there is immediate physical danger.',options:['Keep the confidence completely unless the threatened person personally asks for help.','Immediately tell as many trusted people as possible so responsibility is shared.','Clarify the level of danger, encourage direct help-seeking, and involve appropriate support if credible risk remains even if confidentiality must be limited.','Confront the suspected aggressor privately first so they have a chance to explain before anyone else is involved.'],best:2,why:'Confidentiality matters, but it is not absolute when credible harm may be occurring. The strongest response preserves truth, limits unnecessary disclosure, checks urgency, and seeks proportionate help rather than choosing secrecy or uncontrolled exposure.',rationales:['Protects trust, but may turn confidentiality into complicity if real danger is present.','Takes danger seriously, but broad disclosure can create new harm and ignore proportionality.','Balances care, truth, safety, and limited disclosure according to the actual risk.','Could be appropriate in lower-risk conflict, but may increase danger when coercion or threats are involved.'],refs:['Proverbs 11:13','Proverbs 24:11–12','Matthew 18:15–16'],difficulty:5},
@@ -67,16 +68,35 @@ const applyHardCase=raw=>{
   };
 };
 const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS].map(applyHardCase));
-const TL_BY_ID=Object.freeze({...TL_WISDOM_BASE,...TL_WISDOM_ADVANCED,...TL_WISDOM_EXPERT});
-const CEB_BY_ID=Object.freeze({...CEB_WISDOM_BASE,...CEB_WISDOM_ADVANCED,...CEB_WISDOM_EXPERT});
-const LOCALES=Object.freeze({tl:TL_BY_ID,ceb:CEB_BY_ID});
-
+const HARD_LOCALIZED=Object.freeze({
+  tl:Object.freeze({...HARD_TL_FOUNDATION,...HARD_TL_ADVANCED,...HARD_TL_EXPERT}),
+  ceb:Object.freeze({...HARD_CEB_FOUNDATION,...HARD_CEB_ADVANCED,...HARD_CEB_EXPERT})
+});
+const LOCALIZED_OUTCOME_KEYS=Object.freeze(['action','benefit','cost1','cost2','basis']);
+function localizedRecord(item,locale){
+  const source=HARD_LOCALIZED[locale]?.[item.id];
+  const heading=HARD_WISDOM_HEADINGS[locale]?.[item.id];
+  if(!source||!heading||typeof source[0]!=='string'||!Array.isArray(source[1])||source[1].length!==4)throw new Error(`Wisdom Situations missing ${locale} case: ${item.id}`);
+  const pieces=source[1].map((line,index)=>{
+    const cells=String(line).split('§').map(value=>value.trim());
+    if(cells.length!==5||cells.some(value=>value.length<8))throw new Error(`Wisdom Situations invalid ${locale} outcome: ${item.id}/${index}`);
+    return Object.freeze(Object.fromEntries(LOCALIZED_OUTCOME_KEYS.map((key,i)=>[key,cells[i]])));
+  });
+  const options=Object.freeze(pieces.map(({action,benefit,cost1,cost2})=>formatHardChoice({action,benefit,cost1,cost2})));
+  const basis=Object.freeze(pieces.map(piece=>piece.basis));
+  const tl=locale==='tl';
+  const rationales=Object.freeze(pieces.map(({basis:reason,benefit,cost1,cost2})=>tl
+    ?`Maaaring piliin dahil: ${reason} Mabuting maidudulot: ${benefit}. Pinsala o sakripisyo: ${cost1}. Direktang personal na halaga: ${cost2}.`
+    :`Mahimong pilion tungod kay: ${reason} Maayong resulta: ${benefit}. Kadaot o sakripisyo: ${cost1}. Direktang personal nga gasto: ${cost2}.`));
+  const recommended=pieces[item.best];
+  const why=tl
+    ?`Sa sitwasyong ito, maaaring piliin ang ${recommended.action} dahil ${recommended.basis} Ngunit may kapalit: ${recommended.cost1}; ${recommended.cost2}.`
+    :`Sa niining sitwasyona, mahimong pili-on ang ${recommended.action} tungod kay ${recommended.basis} Apan adunay kapalit: ${recommended.cost1}; ${recommended.cost2}.`;
+  return Object.freeze({...item,title:heading.title,tension:heading.tension,scenario:source[0],options,basis,rationales,why});
+}
 export function localizeWisdomSituation(item,locale='en'){
-  void locale;
-  // The previous TL/CEB alternatives no longer match the English scenario, ordering,
-  // or preferred response. Until reviewed translations are complete, preserve the
-  // identical English dilemma rather than serving unsafe mismatched answer indices.
-  return item;
+  const normalized=String(locale||'en').toLowerCase().split(/[-_]/)[0];
+  return normalized==='tl'||normalized==='ceb'?localizedRecord(item,normalized):item;
 }
 
 function freezeSituation(raw) {
@@ -99,9 +119,13 @@ function freezeSituation(raw) {
 export const WISDOM_SITUATIONS=Object.freeze(rows.map(freezeSituation));
 
 if(WISDOM_SITUATIONS.length!==72)throw new Error(`Wisdom Situations content invariant failed: expected 72, found ${WISDOM_SITUATIONS.length}.`);
-for(const locale of ['tl','ceb'])for(const item of WISDOM_SITUATIONS){
-  const translated=LOCALES[locale]?.[item.id];
-  if(!translated||translated.options?.length!==4||translated.rationales?.length!==4)throw new Error(`Wisdom Situations ${locale} translation incomplete for ${item.id}.`);
+for(const locale of ['tl','ceb']){
+  const keys=Object.keys(HARD_LOCALIZED[locale]);
+  if(keys.length!==72)throw new Error(`Wisdom Situations ${locale}: expected 72 localized cases; found ${keys.length}`);
+  for(const item of WISDOM_SITUATIONS){
+    const localized=localizedRecord(item,locale);
+    if(localized.options.length!==4||localized.basis.length!==4||localized.rationales.length!==4||localized.scenario===item.scenario)throw new Error(`Wisdom Situations ${locale} localization incomplete for ${item.id}`);
+  }
 }
 
 export function getWisdomSituation(id){
