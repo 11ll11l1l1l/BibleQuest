@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-numbness-emptiness-01",
+  "agentId": "visual-agent-4",
+  "createdAt": "2026-10-09T07:06:38+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "three_real_files_local_qa_passed_built_app_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "numbness_emptiness",
+  "queueConcept": "numbness_emptiness",
+  "canonicalEmotionId": "numb",
+  "concept": "Emotional numbness amid a warm family birthday celebration; the foreground adult cannot share the surrounding joy.",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-numbness-emptiness-01.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 91154,
+  "sha256": "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+  "focalPoint": {
+    "x": 0.39,
+    "y": 0.39
+  },
+  "textSafeRegion": "top",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-numbness-emptiness-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 91154,
+      "sha256": "effab9e61da0438a9110d954edb4f9074496344b219162989962eacb97d22b17",
+      "focalPoint": {
+        "x": 0.39,
+        "y": 0.39
+      },
+      "cropIntent": "Original square, text-free master",
+      "textSafeRegion": "none",
+      "embeddedWording": null,
+      "altText": "At a family birthday gathering, a man sits with an emotionally distant, blank expression while relatives celebrate behind him.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "cropReviewed": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": null,
+        "spellingCheckedAgainstTaxonomy": false,
+        "typeReadableAt320px": null,
+        "browserAppPending": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-numbness-emptiness-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 102710,
+      "sha256": "c73c8ed4d12014329e905aac9efd88677e931f647b7d1957677a603b0272b7b0",
+      "focalPoint": {
+        "x": 0.39,
+        "y": 0.39
+      },
+      "cropIntent": "Editorial header above uncropped master; verified reference only",
+      "textSafeRegion": "top",
+      "embeddedWording": {
+        "label": "Numb / empty",
+        "scriptureReference": "Psalm 42:5",
+        "scriptureTextIncluded": false
+      },
+      "altText": "At a family birthday gathering, a man sits with an emotionally distant, blank expression while relatives celebrate behind him. Embedded English heading: Numb / empty; Psalm 42:5.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "cropReviewed": true,
+        "noBakedText": false,
+        "subjectReadableAtThumbnail": null,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true,
+        "browserAppPending": true
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/emotion/bqv7-emotion-numbness-emptiness-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 23966,
+      "sha256": "9d2597b031dacfa59a2e4112b77ff5f6134388f9af39c0ccdd641efe5bb5f0d1",
+      "focalPoint": {
+        "x": 0.39,
+        "y": 0.39
+      },
+      "cropIntent": "4:5 focal crop retaining expression and contrasting family celebration",
+      "textSafeRegion": "none",
+      "embeddedWording": null,
+      "altText": "At a family birthday gathering, a man sits with an emotionally distant, blank expression while relatives celebrate behind him.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "cropReviewed": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "spellingCheckedAgainstTaxonomy": false,
+        "typeReadableAt320px": null,
+        "browserAppPending": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "numb",
+    "locale": "en",
+    "exactLabel": "Numb / empty",
+    "reference": "Psalm 42:5",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "36a07ec0-2c03-4bfd-a24d-c2b6b161819e",
+    "originalSourceFile": "indoor_domestic_birthday_party_scene_in_a_photo_re.png",
+    "notes": "Original generated image; earlier swimming-pool attempt rejected as too similar to tiredness. The accepted candidate contrasts emotional flatness with an active family celebration."
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "image": "Original generated for BibleQuest; no third-party reference photo.",
+    "fontFamilies": [
+      "Noto Serif Display",
+      "EB Garamond 12 Italic",
+      "Lato"
+    ],
+    "fontLicense": "SIL OFL 1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright",
+      "/usr/share/doc/fonts-lato/copyright"
+    ],
+    "fontFilesDistributed": false,
+    "fontGlyphsRasterized": true,
+    "scripture": "Reference only, no Bible prose."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "At a family birthday gathering, a man sits with an emotionally distant, blank expression while relatives celebrate behind him.",
+    "essentialTextRemainsLive": true,
+    "fallback": "CLEAN plus live localized label for tl, ceb, ilo and any missing TYPE."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "builtAppBrowserQA": "candidate_ci_passed_release_http_unverified",
+    "visualAuditScript": "not_run_no_local_repo",
+    "productionReady": false,
+    "type320pxVisualInspected": true,
+    "isolatedChromiumRendering": "timed_out"
+  },
+  "candidateExactHeadCiEvidence": {
+    "commitSha": "1451cfaadc8181fd4addbada25ab776e4c4f5eab",
+    "checks": [
+      {
+        "name": "V7 Visual Asset Built-Browser QA",
+        "runId": 37970850606,
+        "conclusion": "success"
+      },
+      {
+        "name": "V6 PR Serialization Guard",
+        "runId": 37970850602,
+        "conclusion": "success"
+      },
+      {
+        "name": "V7 Build PWA Performance Gate",
+        "runId": 37970850598,
+        "conclusion": "success"
+      },
+      {
+        "name": "V7 Release Convergence",
+        "runId": 37970850599,
+        "conclusion": "success"
+      }
+    ],
+    "visualBrowserArtifactId": 11634819117,
+    "buildArtifactId": 11634719682,
+    "meaning": "CI passed for candidate. Browser tests may intercept draft images; not independent visual QA or release-served HTTP byte certification.",
+    "independentVisualQA": "pending",
+    "releaseServedHttpSha256": "not_verified",
+    "productionPublicationAllowed": false
+  }
+}
