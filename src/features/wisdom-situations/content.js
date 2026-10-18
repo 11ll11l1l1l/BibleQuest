@@ -44,7 +44,8 @@ const applyHardCase=raw=>{
   // Each option names both an action worth defending and the price of taking it.
   const rationales=hard.options.map(option=>{
     const tradeoff=option.split('; ').slice(1).join('; ').replace(/[.]$/,'');
-    return `Benefit and sacrifice: ${tradeoff}.`;
+    const [benefit,...cost]=tradeoff.split(' but ');
+    return `Potential benefit: ${benefit}. Potential cost: ${cost.join(' but ')}.`;
   });
   return {
     ...raw,
@@ -84,7 +85,7 @@ function freezeSituation(raw) {
   const refs=Object.freeze([...raw.refs]);
   const step=Object.freeze({
     id:'judgment',type:'choice',prompt:raw.scenario,choices:options,answer:raw.best,
-    reference:refs.join(' · '),feedback:Object.freeze({correct:'Strong judgment.',incorrect:'A stronger judgment is available.'})
+    reference:refs.join(' · '),feedback:Object.freeze({correct:'Trade-off examined.',incorrect:'Trade-off examined.'})
   });
   const number=Number(String(raw.id).replace(/^hw/,''));
   const pack=number<=24?'foundation':number<=48?'advanced':'expert';
