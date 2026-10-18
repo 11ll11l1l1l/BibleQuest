@@ -5,7 +5,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Approve the full purchase; honor a long-standing promise but increase your household’s exposure to an emergency.",
       "Maintain the emergency target; safeguard dependents but reinforce your spouse’s fear that enjoyment will never come.",
-      "Buy the smaller model tonight; preserve some reward but disappoint your spouse and still reduce the safety margin.",
+      "Buy the smaller model tonight; preserve some reward but disappoint your spouse and also reduce the safety margin.",
       "Set a firm purchase date after six months; preserve reserves but risk your spouse feeling deferred once again."
     ],
     "best": 2,
@@ -60,7 +60,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Sign a statement of support; defend the leader’s past service but risk alienating complainants.",
       "Withdraw public support; reassure complainants but risk judging the leader before all evidence arrives.",
-      "Offer practical aid to the affected team; preserve operations but be criticized for refusing to take a side.",
+      "Offer practical aid directly to the affected team; preserve operations but be criticized for refusing to take a side.",
       "Ask for a public suspension; reduce perceived pressure but damage the leader’s reputation if allegations fail."
     ],
     "best": 2,
@@ -136,7 +136,7 @@ export const HARD_ADVANCED=Object.freeze({
     "context": "The offender returned what they took and apologized, but the disciplinary ruling is tomorrow. Reversing it would help their household while weakening confidence in team standards.",
     "options": [
       "Keep the sanction; maintain fairness to others but prolong hardship after real repentance.",
-      "Reduce the sanction; affirm change but risk sending a message that consequences are negotiable.",
+      "Reduce the sanction now; affirm change but risk sending a message that consequences are negotiable.",
       "Delay the ruling for testimony; gather context but leave the person and the team in uncertainty.",
       "Reverse it completely; remove immediate hardship but risk diminished trust among earlier victims."
     ],
@@ -148,7 +148,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Report the upper estimate; prioritize protection but possibly trigger rejection of good product.",
       "Report the observed failures only; remain strictly factual but understate plausible downstream exposure.",
-      "Report a bounded estimate; equip the buyer but risk losing the contract through disclosed uncertainty.",
+      "Report a clear bounded estimate; equip the buyer but risk losing the contract through disclosed uncertainty.",
       "Ask for a one-day hold; improve testing but miss the contractual window and incur penalties."
     ],
     "best": 2,
@@ -213,7 +213,7 @@ export const HARD_ADVANCED=Object.freeze({
     "context": "A former employee asks for a reference tomorrow. Their performance improved recently but remains uneven; refusing to recommend them may mean they lose housing.",
     "options": [
       "Give an enthusiastic endorsement; protect their opportunity but expose a new employer to predictable failures.",
-      "Give a factual, qualified reference; help appropriately but risk eliminating the candidate from consideration.",
+      "Give a factual, qualified reference; help fairly and appropriately but risk eliminating the candidate from consideration.",
       "Refuse the request; protect yourself from misstatement but abandon someone who legitimately improved.",
       "Describe only their recent strengths; provide encouraging facts but hide a performance pattern that may matter."
     ],
