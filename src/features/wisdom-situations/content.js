@@ -43,7 +43,7 @@ const applyHardCase=raw=>{
   if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or invalid: ${raw.id}`);
   // Each option names both an action worth defending and the price of taking it.
   const rationales=hard.options.map(option=>{
-    const tradeoff=option.split('; ').slice(1).join('; ').replace(/\\.$/,'');
+    const tradeoff=option.split('; ').slice(1).join('; ').replace(/[.]$/,'');
     return `Benefit and sacrifice: ${tradeoff}.`;
   });
   return {
