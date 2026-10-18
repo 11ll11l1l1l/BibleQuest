@@ -104,7 +104,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Co-sign the full loan; prevent immediate housing loss but place your family’s planned home at risk.",
       "Offer a smaller cash loan; preserve some help but reduce your own reserve without solving eligibility.",
-      "Refuse and help search for rentals; preserve future savings but force a difficult temporary relocation.",
+      "Help search for rentals; preserve home savings but force a difficult move on the borrower.",
       "Sign only if another relative co-signs too; share risk but entangle more households in one default."
     ],
     "best": 2,
@@ -116,7 +116,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Repost with a note of uncertainty; alert participants but amplify a potentially misleading narrative.",
       "Do not share it; avoid misinformation but weaken immediate accountability if the harm was real.",
       "Post only the witness’s competing account; add nuance but risk minimizing a serious abuse.",
-      "Ask organizers to pause use of the clip; improve accuracy but undermine solidarity during a critical moment."
+      "Ask to pause use of the clip; improve accuracy but risk weakening solidarity at the rally."
     ],
     "best": 3,
     "why": "Asking for a temporary pause respects urgency and evidentiary uncertainty without claiming the accusation is either proven or false."
@@ -126,7 +126,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Accept the board seat; preserve program access but give a wealthy person outsized control.",
       "Decline the funding; defend independent governance but turn away families counting on the program.",
-      "Offer an advisory role instead; protect votes but risk losing the pledge and disappointing the donor.",
+      "Offer an advisory role; preserve board independence but risk the donor withdrawing support.",
       "Accept conditional funding for six months; buy time but normalize influence tied to giving."
     ],
     "best": 2,
@@ -148,7 +148,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Report the upper estimate; prioritize protection but possibly trigger rejection of good product.",
       "Report the observed failures only; remain strictly factual but understate plausible downstream exposure.",
-      "Report a bounded estimate and assumptions; equip the buyer but risk losing the contract from disclosed uncertainty.",
+      "Report a reasoned range; equip the buyer but risk the contract due to uncertainty.",
       "Ask for a one-day hold; improve testing but miss the contractual window and incur penalties."
     ],
     "best": 2,
@@ -179,7 +179,7 @@ export const HARD_ADVANCED=Object.freeze({
   "hw41": {
     "context": "You substantially rewrote an AI draft, but the client contract is ambiguous about disclosure. Claiming full authorship earns a bonus; disclosure may make the client reject the project.",
     "options": [
-      "List AI assistance in the submission; preserve provenance but risk losing a contract others depend upon.",
+      "Disclose the AI contribution; protect trust but risk losing the contract and bonus.",
       "Claim sole authorship; protect the project and bonus but invite future questions about transparency.",
       "Ask the client for a disclosure ruling; build consent but risk missing the submission deadline.",
       "Credit only the tools you verified; avoid overstatement but leave the original draft’s AI role unclear."
@@ -191,7 +191,7 @@ export const HARD_ADVANCED=Object.freeze({
     "context": "A mentee calls every evening and is making progress, but your spouse says your availability is harming home life. No other suitable mentor is immediately available.",
     "options": [
       "Continue daily contact; provide stable care but make your spouse carry an unchosen emotional cost.",
-      "Move to scheduled weekly calls; build independence but risk leaving the mentee isolated during a fragile period.",
+      "Set weekly calls; encourage independence but risk the mentee feeling isolated between them.",
       "Transfer support to a peer group; diversify care but risk a perceived abandonment at an important moment.",
       "Pause the mentoring role; restore family attention but disrupt a relationship that was producing growth."
     ],
@@ -225,7 +225,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Pay from joint savings now; limit interest but absorb the loss before rebuilding financial trust.",
       "Require full account access first; protect transparency but delay repayment while charges continue.",
-      "Seek a private financial adviser; gain a realistic plan but incur fees and expose a painful marital issue.",
+      "Seek confidential advice; gain a repayment plan but pay fees and expose a marital secret.",
       "Ask relatives to cover the balance; lower interest risk but invite outside control over your marriage."
     ],
     "best": 2,
@@ -237,7 +237,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Share the full uncertain story; model candor but potentially extinguish hope among fragile listeners.",
       "Present only the improvement; inspire the room but create a misleading picture of recovery.",
       "Decline to speak; avoid confusion but withhold a testimony that could comfort other patients.",
-      "Share the improvement with a clear treatment update; offer hope but accept public vulnerability and misunderstanding."
+      "Share progress with treatment status; encourage others but expose your uncertain recovery."
     ],
     "best": 3,
     "why": "A truthful partial recovery can still encourage, while inviting people to see uncertainty rather than guaranteed healing."
@@ -245,7 +245,7 @@ export const HARD_ADVANCED=Object.freeze({
   "hw47": {
     "context": "You possess evidence favoring a colleague who previously damaged your reputation. Giving it may also reveal your own involvement in an unrelated policy violation.",
     "options": [
-      "Submit all relevant evidence; protect a potentially innocent person but open your own conduct to scrutiny.",
+      "Submit the relevant evidence; protect an innocent person but invite scrutiny of your own violation.",
       "Give only a witness statement; support the colleague but invite doubts from withholding documents.",
       "Keep the evidence private; protect yourself but allow a likely injustice to proceed.",
       "Send the evidence anonymously; help the investigation but weaken provenance and invite suspicion."
@@ -256,7 +256,7 @@ export const HARD_ADVANCED=Object.freeze({
   "hw48": {
     "context": "Your confidential evidence suggests a critical compliance failure. An internal report could cost your position; going outside could misidentify an innocent manager and trigger shutdown.",
     "options": [
-      "Submit a protected internal report; enable investigation but expose yourself to retaliation and delayed protection.",
+      "File a protected report; enable investigation but risk your career and a slow response.",
       "Contact an external authority now; force independent scrutiny but risk amplifying uncertain facts.",
       "Collect more records quietly; improve certainty but potentially allow harm to continue during the delay.",
       "Confront the manager first; seek clarification but risk pressure and loss of the limited evidence."
