@@ -237,7 +237,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Accept tonight; serve the waiting community but uproot your child without a clear plan.",
       "Decline tonight; protect current family stability but leave urgent ministry needs unmet.",
       "Ask for a two-week extension; gain discernment time but likely lose the invitation.",
-      "Choose the option your spouse favors; respect their judgment but risk burdening them with responsibility for the outcome."
+      "Follow your spouse’s preference; honor their voice but risk assigning them blame if things go badly."
     ],
     "best": 2,
     "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty."
