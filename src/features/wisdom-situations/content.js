@@ -53,15 +53,16 @@ const formatHardChoice=({action,benefit,cost1,cost2})=>
   `${action}. Benefit: ${benefit}. Cost 1: ${cost1}. Cost 2: ${cost2}.`;
 const applyHardCase=raw=>{
   const hard=HARD_CASES[raw.id];
-  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Array.isArray(hard.cost2)||hard.cost2.length!==4||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or invalid: ${raw.id}`);
+  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Array.isArray(hard.cost2)||hard.cost2.length!==4||!Array.isArray(hard.basis)||hard.basis.length!==4||hard.basis.some(value=>String(value).length<35)||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or without grounded alternatives: ${raw.id}`);
   const outcomes=hard.options.map((option,index)=>splitHardChoice(option,hard.cost2[index]));
   return {
     ...raw,
-    scenario:`${raw.scenario} DECISION CONSTRAINTS: ${hard.context}`,
+    scenario:hard.scene||`${raw.scenario}\n\nDecision constraints: ${hard.context}`,
     options:outcomes.map(formatHardChoice),
+    basis:hard.basis,
     best:hard.best,
     why:hard.why,
-    rationales:outcomes.map(({benefit,cost1,cost2})=>`Benefit: ${benefit}. First sacrifice: ${cost1}. Second sacrifice: ${cost2}.`),
+    rationales:outcomes.map(({benefit,cost1,cost2},i)=>`Why a Christian could choose this: ${hard.basis[i]} Benefit: ${benefit}. First sacrifice: ${cost1}. Second sacrifice: ${cost2}.`),
     difficulty:8
   };
 };
@@ -79,17 +80,16 @@ function freezeLocalized(raw){
 }
 
 export function localizeWisdomSituation(item,locale='en'){
-  const normalized=String(locale||'en').toLowerCase().split(/[-_]/)[0];
-  if(normalized==='en')return item;
-  const translated=LOCALES[normalized]?.[item.id];
-  if(!translated)return item;
-  const copy=freezeLocalized(translated);
-  return Object.freeze({...item,...copy});
+  // The previous TL/CEB alternatives no longer match the English scenario, ordering,
+  // or preferred response. Until reviewed translations are complete, preserve the
+  // identical English dilemma rather than serving unsafe mismatched answer indices.
+  return item;
 }
 
 function freezeSituation(raw) {
   const options=Object.freeze([...raw.options]);
   const rationales=Object.freeze([...raw.rationales]);
+  const basis=Object.freeze([...raw.basis]);
   const refs=Object.freeze([...raw.refs]);
   const step=Object.freeze({
     id:'judgment',type:'choice',prompt:raw.scenario,choices:options,answer:raw.best,
@@ -98,7 +98,7 @@ function freezeSituation(raw) {
   const number=Number(String(raw.id).replace(/^hw/,''));
   const pack=number<=24?'foundation':number<=48?'advanced':'expert';
   return Object.freeze({
-    id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
+    id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,basis,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
     definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:2,title:raw.title,steps:Object.freeze([step])})
   });
 }
