@@ -113,7 +113,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw11": {
     "context": "The promotion decision is tomorrow. A coworker needs the role to avoid losing a work visa; your own household cannot afford another year at your current salary.",
     "options": [
-      "Withdraw your candidacy; help their visa prospects but deny your family the income it needs.",
+      "Withdraw from contention; protect a colleague’s visa but deny your household the pay increase it needs.",
       "Compete openly and document your achievements; preserve merit but may indirectly cause a family to relocate.",
       "Recommend a split role; protect both interests but risk losing the position entirely to an external hire.",
       "Privately alert management to their visa risk; seek compassion but introduce personal circumstances into merit review."
@@ -213,7 +213,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "context": "You can accept a visible ministry role tomorrow. Your teaching is useful, but you also know public admiration is becoming a major motivation.",
     "options": [
       "Accept as lead; give the community your skill but strengthen an unhealthy hunger for recognition.",
-      "Serve offstage instead; protect your character but leave a real leadership gap.",
+      "Serve offstage instead; protect your motives but leave a visible leadership gap others must carry.",
       "Accept with shared credit; serve the community but risk disguising your hunger for recognition.",
       "Decline for a year; impose discipline on yourself but make others carry work you could competently do."
     ],
