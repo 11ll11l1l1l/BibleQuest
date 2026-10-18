@@ -23,7 +23,7 @@ export const HARD_TL_EXPERT=Object.freeze({
     [
       "Gumamit ng emergency ministry funds§May pagkain ngayong gabi§Maaaring lumabag sa authorization§Maaari kang ma-audit at mawalan ng role§Malapit nang magsara ang nag-iisang accessible store.",
       "Mag-advance ng sariling savings§Maaalagaan ang financial controls§Panganib sa dependents ang pera§Maaaring hindi mo mabayaran ang sariling essentials§Pumayag dati ang spouse sa personal relief ngunit may gamot kayong kailangang bilhin.",
-      "Hintayin ang proper authorization§Mawawalang kontrol ang gastos§May pamilyang magugutom ngayong gabi§Maaari kang mawalan ng kanilang tiwala§May charity na makapaghahatid kinabukasan, ngunit walang dinner ngayong gabi.",
+      "Hintayin ang proper authorization§Mapapanatili ang wastong spending controls§May pamilyang magugutom ngayong gabi§Maaari kang mawalan ng kanilang tiwala§May charity na makapaghahatid kinabukasan, ngunit walang dinner ngayong gabi.",
       "Bumili nang hiwalay para sa magkakaibang needs§May mabilis at valid supplies§Maaari pa ring i-question ng auditors§Maaari kang ma-suspend sa procurement review§Pinapayagan ang legit orders para sa magkahiwalay na pangangailangan."
     ]
   ],
