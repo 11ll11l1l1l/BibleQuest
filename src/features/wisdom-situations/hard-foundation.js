@@ -168,7 +168,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Accept with an internal objection; fund treatment but lend your credibility to the questionable claims.",
       "Decline immediately; protect conscience but delay the treatment your parent presently needs.",
       "Negotiate a non-sales role first; preserve opportunity but risk losing the only available offer.",
-      "Take the role for one quarter; reduce family pressure but normalize conduct you already distrust."
+      "Take a ninety-day role with written limits on claims; fund urgent care but stay associated with uncertain marketing."
     ],
     "best": 2,
     "why": "A time-limited role negotiation tests whether provision and truthful work can coexist, while genuinely risking the offer.",
@@ -182,7 +182,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "The income would immediately fund a parent's urgent care, and claims are legally permitted.",
       "Your parent values your truthful work and has rejected income earned through questionable claims.",
       "An operations vacancy may open, but asking would forfeit a guaranteed offer tonight.",
-      "Your manager has promised a ninety-day trial with the option to resign without penalty."
+      "Your manager will honor a written refusal to repeat unsubstantiated claims during a ninety-day trial."
     ]
   },
   "hw09": {
@@ -537,7 +537,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Withdraw your support publicly; protect credibility but risk depriving beneficiaries of urgent funding.",
       "Condition your endorsement on a visible caveat; keep access to funding but risk readers missing the qualification.",
       "Ask the organizer to publish a corrected number; keep the cause but risk losing the donor before launch.",
-      "Support the fundraiser privately; help recipients but avoid publicly challenging the damaging method."
+      "Give directly to recipients outside the campaign; fund urgent transport but leave its misleading public figure uncorrected."
     ],
     "best": 2,
     "why": "A public correction request gives the worthy cause a chance to remain truthful, though the funding loss is a foreseeable price.",
@@ -551,7 +551,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "The statistic's distortion threatens the credibility of other appeals you publicly endorse.",
       "The sponsor has said an explicit caveat preserves funding if visible in the campaign materials.",
       "The organizer can replace the number without changing the campaign's underlying purpose.",
-      "Beneficiaries will lose transport today without a quiet contribution even if you refuse publicity."
+      "A trusted local provider can transfer your private contribution directly to beneficiaries today."
     ]
   }
 });
