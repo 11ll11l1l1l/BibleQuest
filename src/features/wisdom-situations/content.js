@@ -38,22 +38,30 @@ const foundationRows = [
 ];
 
 const HARD_CASES=Object.freeze({...HARD_FOUNDATION,...HARD_ADVANCED,...HARD_EXPERT});
+const splitHardChoice=(source,cost2)=>{
+  const divider=source.indexOf('; ');
+  const tradeoff=source.indexOf(' but ',divider+2);
+  if(divider<0||tradeoff<0||!cost2)throw new Error('Every Wisdom option needs a meaningful benefit and two costs.');
+  return Object.freeze({
+    action:source.slice(0,divider),
+    benefit:source.slice(divider+2,tradeoff),
+    cost1:source.slice(tradeoff+5).replace(/[.]$/,''),
+    cost2:String(cost2).replace(/[.]$/,'')
+  });
+};
+const formatHardChoice=({action,benefit,cost1,cost2})=>
+  `${action}. Benefit: ${benefit}. Cost 1: ${cost1}. Cost 2: ${cost2}.`;
 const applyHardCase=raw=>{
   const hard=HARD_CASES[raw.id];
-  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or invalid: ${raw.id}`);
-  // Each option names both an action worth defending and the price of taking it.
-  const rationales=hard.options.map(option=>{
-    const tradeoff=option.split('; ').slice(1).join('; ').replace(/[.]$/,'');
-    const [benefit,...cost]=tradeoff.split(' but ');
-    return `Potential benefit: ${benefit}. Potential cost: ${cost.join(' but ')}.`;
-  });
+  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Array.isArray(hard.cost2)||hard.cost2.length!==4||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or invalid: ${raw.id}`);
+  const outcomes=hard.options.map((option,index)=>splitHardChoice(option,hard.cost2[index]));
   return {
     ...raw,
     scenario:`${raw.scenario} DECISION CONSTRAINTS: ${hard.context}`,
-    options:[...hard.options],
+    options:outcomes.map(formatHardChoice),
     best:hard.best,
     why:hard.why,
-    rationales,
+    rationales:outcomes.map(({benefit,cost1,cost2})=>`Benefit: ${benefit}. First sacrifice: ${cost1}. Second sacrifice: ${cost2}.`),
     difficulty:8
   };
 };
