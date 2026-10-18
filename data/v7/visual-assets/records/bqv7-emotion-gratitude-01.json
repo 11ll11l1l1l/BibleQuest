@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "assetId": "bqv7-emotion-gratitude-01",
   "agentId": "visual-agent-5",
   "createdAt": "2026-10-08T13:07:00+09:00",
@@ -8,7 +8,7 @@
   "family": "emotion",
   "visualRole": "emotion_tile",
   "contentType": "emotion",
-  "contentId": "gratitude",
+  "contentId": "grateful",
   "concept": "A heartfelt thank-you hug and flowers between generations at home",
   "usage": [
     "feelings_carousel",
@@ -30,17 +30,24 @@
     "genId": "34a0b0c7-fb72-4e1b-935d-365f78eda61f",
     "prompt": null,
     "description": "In a warmly lit kitchen-dining space, a younger woman in an olive top hugs an older gray-haired woman while offering a kraft-paper bouquet of sunflowers, daisies, yellow filler blooms, and eucalyptus, her eyes closed in a joyful, grateful smile. Soft daylight, wooden surfaces, a mug, plants, and gently blurred kitchen details create an intimate, lived-in backdrop that highlights the tender family-like moment.",
-    "notes": "Generation tool returned an empty prompt string; exact original prompt unavailable. This description is tool-returned, not a reconstructed prompt. Original 1536x1024 PNG cropped x=240..1264, y=0..1024; encoded WebP quality 80."
+    "notes": "Generation tool returned an empty prompt string; exact original prompt unavailable. This description is tool-returned, not a reconstructed prompt. Original 1536x1024 PNG cropped x=240..1264, y=0..1024; encoded WebP quality 80.",
+    "derivatives": "TYPE and THUMB rendered from canonical CLEAN using Pillow and licensed Noto Serif Display; exact binary hashes independently checked 2026-10-08"
   },
   "rights": {
     "sourceType": "generated",
     "thirdPartyAsset": false,
     "attributionRequired": false,
-    "notes": "Original generated BibleQuest editorial artwork; no supplied third-party source or brand imitation."
+    "notes": "Original generated BibleQuest editorial artwork; no supplied third-party source or brand imitation.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": "Debian fonts-noto-core copyright file (License: OFL-1.1); rasterized lettering only; no font binaries embedded",
+    "fontFilesDistributed": false,
+    "scriptureTextIncluded": false
   },
   "accessibility": {
     "decorative": false,
-    "altText": "A smiling younger woman embraces an older woman in a kitchen while offering a bouquet of sunflowers and daisies in a heartfelt expression of thanks."
+    "altText": "A smiling younger woman embraces an older woman in a kitchen while offering a bouquet of sunflowers and daisies in a heartfelt expression of thanks.",
+    "fallback": "CLEAN plus live localized emotion title in en/tl/ceb/ilo; TYPE restricted to en",
+    "essentialTextMustRemainLive": true
   },
   "qc": {
     "noBakedText": true,
@@ -52,6 +59,139 @@
     "duplicateChecked": true,
     "conceptAccurate": true,
     "rightsClear": true,
-    "notes": "Accepted first candidate after inspection at 1024px and 100px. Distinct indoor two-person gratitude interaction; not a lone sunset portrait. Faces, embrace and bouquet remain legible; no baked text, logos, or evident anatomical issues. Compared with all six existing emotion records."
+    "notes": "Accepted first candidate after inspection at 1024px and 100px. Distinct indoor two-person gratitude interaction; not a lone sunset portrait. Faces, embrace and bouquet remain legible; no baked text, logos, or evident anatomical issues. Compared with all six existing emotion records.",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "sourceRevisionChecked": true,
+    "independentBinaryHashAndDimensionsChecked": true,
+    "typographyLabelChecked": "Grateful",
+    "typeReadableAt320px": true,
+    "thumbnailCropReviewed": true,
+    "scriptureTextIncluded": false,
+    "browserBuiltAppQA": "pending; local decoded image previews inspected"
+  },
+  "bundleStatus": "complete_three_real_files",
+  "queueConcept": "gratitude",
+  "canonicalEmotionId": "grateful",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-gratitude-01.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 94646,
+      "sha256": "1d2ad29403652cacfd02b25efda39aa0c8638643ae78ac8e40d5e7c4c3827f69",
+      "altText": "A smiling younger woman embraces an older woman in a kitchen while offering a bouquet of sunflowers and daisies in a heartfelt expression of thanks.",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.29
+      },
+      "textSafeRegion": "none",
+      "qa": {
+        "sourceIntegrityVerified": true,
+        "noBakedText": true,
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "anatomyAcceptable": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-gratitude-01-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 118048,
+      "sha256": "46fa88f869fe62391aeab6c0d48c61c60d02cda08f07de9cfa5cbfb97f59f699",
+      "altText": "Two women share a grateful embrace beside a bouquet of flowers in a kitchen. Embedded English word: Grateful.",
+      "locale": "en",
+      "includedWording": "Grateful",
+      "wordingSource": "src/features/library/emotion-taxonomy.js@e64366970838d62c11ea602dd606e0acfe5b0cb2; entry emotion/grateful; labels.en",
+      "wordingRevision": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+      "scriptureText": null,
+      "scriptureReference": null,
+      "font": "Noto Serif Display SemiBold",
+      "fontLicense": "SIL Open Font License 1.1",
+      "fontDistribution": "glyphs rasterized into embedded WebP; no font file embedded",
+      "focalPoint": {
+        "x": 0.57,
+        "y": 0.29
+      },
+      "textSafeRegion": "bottom",
+      "crop": {
+        "source": "master 1024x1024; full source retained at y=0..1024 on 1024x1280 canvas; lower region generated from resized blurred master",
+        "aspect": "4:5"
+      },
+      "qa": {
+        "spellingVerifiedAgainstSource": true,
+        "rasterTextBaked": true,
+        "scriptureTextOmitted": true,
+        "noFakeText": true,
+        "fontRightsChecked": true,
+        "thumbnailReviewed": true,
+        "renderQA": "Raster WebP visually inspected at full and thumbnail size; built-app browser rendering not yet tested",
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": true
+      },
+      "embeddedWording": {
+        "label": "Grateful",
+        "scriptureReference": null,
+        "scriptureTextIncluded": false
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-gratitude-01-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 33142,
+      "sha256": "c5854a280bff4ce330c1c0f4fd7fd88eadb449b439656c2ed9bd4934441067aa",
+      "altText": "A younger woman smiles as she embraces an older woman and holds a bouquet of flowers.",
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 143,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      },
+      "focalPoint": {
+        "x": 0.54,
+        "y": 0.29
+      },
+      "textSafeRegion": "none",
+      "qa": {
+        "cropGeometryVerified": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "renderQA": "Raster WebP visually inspected at full and thumbnail size; built-app browser rendering not yet tested",
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "cropReviewed": true
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "grateful",
+    "locale": "en",
+    "exactLabel": "Grateful",
+    "reference": null,
+    "scriptureTextIncluded": false
   }
 }
