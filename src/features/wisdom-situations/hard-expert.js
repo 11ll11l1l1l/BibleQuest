@@ -221,7 +221,7 @@ export const HARD_EXPERT=Object.freeze({
     "cost2": [
       "your credibility may suffer under a conflict inquiry",
       "you may personally answer for costly repair delays",
-      "you could lose the confidence of donors after spending funds reserved for relief",
+      "you could lose donors' trust over higher repair spending",
       "you could lose board credibility when informal pressure changes the outcome"
     ],
     "basis": [
@@ -242,7 +242,7 @@ export const HARD_EXPERT=Object.freeze({
     "best": 1,
     "why": "Confidential testimony may secure fair review without forcing a public display of reconciliation; it can also fail to repair public harm.",
     "cost2": [
-      "you may relive the pain in a public confrontation",
+      "you may relive the public humiliation and lose trust in your own community",
       "you could lose trust with the accused person's family if the evidence remains sealed",
       "you could lose a chance to stop a serious injustice while you still hold the facts",
       "you may lose the friend’s trust if their account differs"
@@ -543,7 +543,7 @@ export const HARD_EXPERT=Object.freeze({
     "best": 1,
     "why": "A direct private warning to the person at risk can reduce immediate harm without assuming that every family dispute belongs on public trial.",
     "cost2": [
-      "you may fracture your relationship with the elder",
+      "you may fracture the elder's trust and lose access to future health decisions",
       "you could lose trust with relatives who receive no warning",
       "you could fracture your relationship with the group's administrator",
       "you could lose a relative's confidence if the claim is forwarded again"
