@@ -208,17 +208,17 @@ await insert('v7_pair_assignments', {
 checks.push('synthetic-populated-library-and-one-to-one-seed');
 
 async function installDisposableBackendRoute(context) {
-  const realtimeEvidence={roomChanges:0};
+  const realtimeEvidence={roomChanges:0,opens:0,errors:0,closes:[],frames:0,events:{},subscribed:0};
   // Bridge actual Realtime traffic to the disposable stack; no fabricated events.
   await context.routeWebSocket('wss://zkfmgezvzugchcwppreq.supabase.co/**', socket=>{
     const source=new URL(socket.url()),target=new URL(source.pathname+source.search,endpoint);
     target.protocol='ws:';target.searchParams.set('apikey',status.ANON_KEY);
     const upstream=new WebSocket(target);const pending=[];
     socket.onMessage(message=>{if(upstream.readyState===WebSocket.OPEN)upstream.send(message);else if(upstream.readyState===WebSocket.CONNECTING)pending.push(message)});
-    upstream.addEventListener('open',()=>{for(const message of pending)upstream.send(message);pending.length=0});
-    upstream.addEventListener('message',event=>{try{const message=JSON.parse(event.data);if(message.event==='postgres_changes'&&message.payload?.data?.table==='bible_shared_sessions')realtimeEvidence.roomChanges++}catch{}socket.send(event.data)});
-    upstream.addEventListener('error',()=>socket.close());
-    upstream.addEventListener('close',()=>socket.close());
+    upstream.addEventListener('open',()=>{realtimeEvidence.opens++;for(const message of pending)upstream.send(message);pending.length=0});
+    upstream.addEventListener('message',event=>{try{const raw=JSON.parse(event.data),message=Array.isArray(raw)?{event:raw[3],payload:raw[4]}:raw;realtimeEvidence.frames++;const name=['phx_reply','postgres_changes','system','phx_error','phx_close'].includes(message.event)?message.event:'other';realtimeEvidence.events[name]=(realtimeEvidence.events[name]||0)+1;if(message.event==='phx_reply'&&message.payload?.status==='ok'&&message.payload.response?.postgres_changes?.length)realtimeEvidence.subscribed++;if(message.event==='postgres_changes'&&message.payload?.data?.table==='bible_shared_sessions')realtimeEvidence.roomChanges++}catch{}socket.send(event.data)});
+    upstream.addEventListener('error',()=>{realtimeEvidence.errors++;socket.close()});
+    upstream.addEventListener('close',event=>{realtimeEvidence.closes.push(event.code);socket.close()});
     socket.onClose(()=>upstream.close());
   });
   await context.route(`${productionSupabaseOrigin}/**`, async route => {
@@ -474,12 +474,14 @@ try {
   await page.keyboard.press('ArrowRight');
   assert.match(await page.locator('[data-deck-preview]').textContent(),/Courage to obey/);
   assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  for(let attempt=0;attempt<100&&!participantRealtime.subscribed;attempt++)await new Promise(resolve=>setTimeout(resolve,100));
+  assert.ok(participantRealtime.subscribed,'Participant Realtime subscription must acknowledge: '+JSON.stringify(participantRealtime));
   const realtimeBefore=participantRealtime.roomChanges;
   await page.locator('[data-deck-send]').focus();
   await page.keyboard.press('Enter');
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
   assert.equal(await page.evaluate(()=>document.activeElement?.hasAttribute('data-deck-send')),true,'Sending must preserve keyboard focus');
-  assert.ok(participantRealtime.roomChanges>realtimeBefore,'Participant must receive an actual disposable Supabase Realtime room event');
+  assert.ok(participantRealtime.roomChanges>realtimeBefore,'Participant must receive an actual disposable Supabase Realtime room event: '+JSON.stringify(participantRealtime));
   await participant.reload();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
   await participant.locator('[data-live-room-reconnect]').click();
