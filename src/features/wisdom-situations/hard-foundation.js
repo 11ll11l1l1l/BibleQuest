@@ -17,7 +17,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Sign and record reservations privately; protect your income but attach your name to an impression you doubt.",
       "Decline your signature tonight; protect personal credibility but put the team and your family income at risk.",
       "Escalate to the manager before lock; offer a fair warning but may be accused of sabotaging the team.",
-      "Add a factual qualification to your section; protect accuracy but risk an unauthorized change that damages trust."
+      "Qualify your report; protect accuracy but risk defying the team’s agreed wording and losing their trust."
     ],
     "best": 3,
     "why": "A narrow, accurate qualification avoids a known false impression while accepting a measurable professional cost."
@@ -48,7 +48,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "context": "Your debt interest rises next month. The overtime offer expires tonight; your spouse already asked you to attend two fixed weekly family commitments.",
     "options": [
       "Accept every shift; cut interest costs fast but miss irreplaceable family routines for six months.",
-      "Accept three extra shifts weekly; reduce debt more slowly but still leave your spouse carrying difficult evenings.",
+      "Accept three extra shifts; reduce debt but leave your spouse handling some difficult evenings alone.",
       "Decline the offer; protect family stability but pay much more interest and delay emergency savings.",
       "Take weekend shifts only; preserve weekday routines but sacrifice your shared recovery and worship time."
     ],
@@ -159,7 +159,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "options": [
       "Submit the whole story; protect school truthfulness but risk exposing the other child to severe punishment.",
       "Describe only what your child did; preserve some privacy but leave the school with an incomplete account.",
-      "Refuse to sign pending a meeting; protect the children temporarily but risk disciplinary action against your own child.",
+      "Request a meeting before signing; protect the children briefly but risk school discipline against your child.",
       "Sign the school’s current version; close the dispute but teach your child that an incomplete story is acceptable."
     ],
     "best": 2,
@@ -171,7 +171,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Publish the screenshots; restore your reputation but violate a third person’s confidence.",
       "Respond without evidence; keep confidentiality but risk appearing evasive and losing public trust.",
       "Seek a private correction from the accuser; reduce public harm but let the allegation keep spreading.",
-      "Issue a narrow public timeline; defend yourself but expose only part of the evidence and invite doubt."
+      "Issue a short public timeline; defend yourself but expose incomplete evidence and invite doubt."
     ],
     "best": 3,
     "why": "A bounded timeline corrects what can be publicly established without treating a third party’s private conversation as disposable."
@@ -214,7 +214,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "options": [
       "Accept as lead; give the community your skill but strengthen an unhealthy hunger for recognition.",
       "Serve offstage instead; protect your character but leave a real leadership gap.",
-      "Accept with shared public credit; meet the need but risk secretly treating the partnership as self-protection.",
+      "Accept with shared credit; serve the community but risk disguising your hunger for recognition.",
       "Decline for a year; impose discipline on yourself but make others carry work you could competently do."
     ],
     "best": 2,
@@ -223,7 +223,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw21": {
     "context": "Both sides in a dispute have lost something real. You must sign one of two settlement offers today, and the injured party cannot afford another month of delay.",
     "options": [
-      "Accept a slightly unequal settlement now; end immediate harm but endorse an outcome someone experiences as unfair.",
+      "Accept the unequal settlement; relieve urgent harm but endorse an outcome one party resents.",
       "Reject both and seek mediation; defend process fairness but expose the injured party to further hardship.",
       "Accept the larger payout with secrecy; secure compensation but prevent accountability and a public lesson.",
       "Propose a smaller public agreement; restore transparency but risk losing the settlement altogether."
