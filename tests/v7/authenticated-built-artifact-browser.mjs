@@ -325,6 +325,7 @@ async function writeEvidence(result, error = null) {
       'production-promotion',
     ],
     notes: [
+      'Service workers are blocked only in this network-routed disposable auth harness (Playwright recommendation); existing exact-built PWA/offline certification remains separate and unchanged.',
       'The application build is unchanged. Browser routing redirects only the configured production Supabase origin to the disposable loopback stack and substitutes its anonymous key.',
       'Synthetic reviewed content is test data only and is not representative-content release evidence.',
     ],
@@ -334,7 +335,7 @@ async function writeEvidence(result, error = null) {
 const browser = await chromium.launch({ headless: true });
 try {
   stage = 'mentor-sign-in';
-  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 }, serviceWorkers:'block' });
   await installDisposableBackendRoute(context);
   const page = await context.newPage();
   const pageErrors = [];
@@ -457,7 +458,7 @@ try {
   assert.match(await page.locator('[data-deck-current]').textContent(),/Waiting/);
   await page.locator('[data-deck-send]').click();
   await page.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor();
-  const participantContext=await browser.newContext({viewport:{width:320,height:760}});
+  const participantContext=await browser.newContext({viewport:{width:320,height:760},serviceWorkers:'block'});
   const participantRealtime=await installDisposableBackendRoute(participantContext);
   const participant=await participantContext.newPage();
   participant.on('pageerror',error=>pageErrors.push(error.message));
