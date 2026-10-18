@@ -67,7 +67,8 @@ export const HARD_EXPERT=Object.freeze({
       "Your spouse has previously approved using savings for urgent relief, but the fund covers medication.",
       "A neighboring organization can supply meals tomorrow morning, though some households will go hungry tonight.",
       "The policy permits several independent vendors for separate needs, but audit staff will scrutinize splitting."
-    ]
+    ],
+    "scene": "A storm has cut access to food for several isolated families, including infants, tonight. The designated second signatory for emergency spending is unreachable, and the main store closes soon. Purchases for genuinely separate needs through approved vendors are allowed; splitting one expense to evade the single-purchase threshold is prohibited."
   },
   "hw52": {
     "context": "The customer audit begins in one hour. Your company’s process meets the written limit, but a presentation suggested automated checks that are actually manual.",
@@ -371,25 +372,26 @@ export const HARD_EXPERT=Object.freeze({
   "hw65": {
     "context": "The landlord demands a signed guarantee or two months' rent tonight. Your friend has a signed job offer, but missed payments would consume the tuition payment due for your own child next week. A verified family shelter has a private unit available tonight with transport to the children's school; your spouse permits only one month of guests at home.",
     "options": [
-      "Guarantee the loan; protect the relative’s home but place your child’s education fund at risk.",
-      "Pay two months of rent outright; give breathing room but erase savings without securing long-term housing.",
-      "Offer a room in your home; prevent homelessness but strain your marriage and living space.",
-      "Decline funding and arrange verified emergency shelter; protect your child's tuition but displace the family from its home tonight."
+      "Guarantee your friend's rent; preserve the current home but expose your child's tuition payment to default.",
+      "Prepay two months directly; keep the family housed briefly but consume reserves without ensuring renewal.",
+      "Host the family for one month; prevent displacement to a shelter but crowd your spouse and child at home.",
+      "Arrange the verified family shelter; preserve the tuition obligation but force the family from its familiar home."
     ],
     "best": 2,
-    "why": "Direct shelter refuses to pretend that a guarantee has no beneficiaries who could be harmed, yet the household disruption is severe.",
+    "why": "The editorial lean toward temporary hosting is highly conditional: it presumes household consent and no child safety concern. Securing verified family accommodation while protecting a binding duty to your child is also a fully defensible Christian judgment; a different tolerance for household disruption could favor it.",
     "cost2": [
       "you may lose money your child depends on",
       "you may drain savings needed for your own household",
       "you may struggle with conflict and crowding for months",
-      "you may blame yourself if the family loses housing"
+      "you may lose your friend's trust when they feel you chose your child's security over their stability"
     ],
     "basis": [
       "The friend starts a signed new job soon; the landlord will accept a documented guarantee tonight.",
       "The landlord will accept two months' direct rent as a temporary extension without signing a guarantee.",
       "Your spouse consents to housing the family for one month, though your own child needs quiet study space.",
       "A verified family shelter has a confirmed private unit tonight and school transport, while your child's tuition is contractually due next week."
-    ]
+    ],
+    "scene": "A close friend and their two children may be evicted tomorrow after lost income. The landlord will accept a documented rental guarantee or two months of prepaid rent. Your friend has a signed job offer starting soon but repayment is not guaranteed. If you guarantee the rent and payments fail, the tuition installment for your own child, due next week, will be lost. Your spouse is willing to host the family for one month despite severe space constraints. A verified family shelter with private rooms and school transport also has confirmed availability tonight."
   },
   "hw66": {
     "context": "A sponsor offers full funding if its preferred message appears in the youth program. The message is not false but would displace material on a sensitive topic.",
@@ -504,7 +506,8 @@ export const HARD_EXPERT=Object.freeze({
       "A credible credit facility can fund initial housing until designated relief donations arrive.",
       "The payroll reserve includes funds legally available for emergency reallocations by the board.",
       "The board is empowered to authorize a restricted-fund loan only if donors already consented in advance."
-    ]
+    ],
+    "scene": "A charity has restricted donations in its account while families displaced by a disaster need shelter tonight. Donors cannot be reached. Some agreements may already permit short-term bridging when formally authorized, but those records are not immediately accessible. Outside emergency credit would be expensive; unrestricted payroll reserves are temporarily available. Donor restrictions cannot simply be ignored."
   },
   "hw71": {
     "context": "An AI tool predicts a quality improvement, but only half the proposed change can be tested before a costly launch tomorrow. Full rollout is difficult to reverse.",
@@ -550,6 +553,7 @@ export const HARD_EXPERT=Object.freeze({
       "The elder will answer a direct call from you and has previously changed course when approached gently.",
       "The administrator is a medical professional trusted across family factions.",
       "The elder has stopped the harmful action for now and is waiting to speak with a clinician tomorrow."
-    ]
+    ],
+    "scene": "A false medical claim is spreading in your family's group chat. An older relative briefly followed it but has paused pending a clinician call arranged for tomorrow. The claim's author is influential and might be humiliated by public correction; meanwhile several other family members continue forwarding the claim."
   }
 });
