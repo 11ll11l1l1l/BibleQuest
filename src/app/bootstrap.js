@@ -170,7 +170,8 @@ const couplesFamilyPage = args => lazyFeaturePage('couples-family', 'couplesFami
 const couplesCloudPage = args => lazyFeaturePage('couples-cloud', 'couplesCloudPage', args);
 const journeyGroupsPage = args => lazyFeaturePage('journey-groups', 'journeyGroupsPage', args);
 const encouragementsPage = args => lazyFeaturePage('encouragements', 'encouragementsPage', args);
-const liveRoomsPage = args => lazyFeaturePage('live-rooms', 'liveRoomsPage', args);
+const liveRoomsPage = args => lazyFeaturePage('conversation-deck', 'liveRoomsWithDeck', args);
+const conversationDeckPage = args => lazyFeaturePage('conversation-deck', 'conversationDeckPage', args);
 const communityPage = args => lazyFeaturePage('community', 'communityPage', args);
 const ministryHubPage = args => lazyFeaturePage('ministry-hub', 'ministryHubPage', args);
 const ministryAnnouncementsPage = args => lazyFeaturePage('ministry-announcements', 'ministryAnnouncementsPage', args);
@@ -428,7 +429,7 @@ function boot(root){
     encouragements:()=>encouragementsPage({encouragements,onBack:()=>router.navigate('journey-groups'),onAccount:()=>router.navigate('account')}),
     community:()=>communityPage({bridge:communityBridge,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account')}),
     'live-rooms':()=>liveRoomsPage({liveRooms,subscribeContext:subscribeV7Context,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onConversation:()=>router.navigate('conversation-deck')}),
-    'conversation-deck':()=>liveRoomsPage({liveRooms,subscribeContext:subscribeV7Context,conversationMode:true,initialCode:libraryParams().get('code')||'',onRoom:code=>router.replace(`conversation-deck${code?'?'+new URLSearchParams({code}):''}`),onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onScripture:card=>{bibleQuest.deactivate();reader.setBook(card.code,card.chapter);router.navigate('reader')}}),
+    'conversation-deck':()=>conversationDeckPage({liveRooms,subscribeContext:subscribeV7Context,conversationMode:true,initialCode:libraryParams().get('code')||'',onRoom:code=>router.replace(`conversation-deck${code?'?'+new URLSearchParams({code}):''}`),onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onScripture:card=>{bibleQuest.deactivate();reader.setBook(card.code,card.chapter);router.navigate('reader')}}),
     'ministry-hub':()=>ministryHubPage({hub:ministryHub,onNavigate:navigateGeneral,onBack:()=>router.navigate('more'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     'leader-center':()=>leaderCenterPage({leaderCenter,onBack:()=>router.navigate('ministry-hub'),onAccount:()=>router.navigate('account'),onAssignments:()=>router.navigate('assignments'),onCalendar:()=>router.navigate('calendar'),onJourneyGroups:()=>router.navigate('journey-groups'),onTeamCenter:()=>router.navigate('team-center'),onAnnouncements:()=>router.navigate('ministry-announcements'),onContentReview:()=>router.navigate('content-review'),onCongregation:()=>router.navigate('congregation'),onConversation:()=>router.navigate('conversation-deck')}),
     'ministry-announcements':()=>ministryAnnouncementsPage({announcements:ministryAnnouncements,onBack:()=>router.navigate('leader-center')}),

@@ -15,3 +15,5 @@
 .bq-deck-gesture:focus-visible { outline:3px solid var(--bq-brand,#d7bc72); outline-offset:3px; }
 .bq-conversation-deck [data-deck-message]:empty { display:none; }
 .bq-group-session-entry { margin:20px 0; }
+
+[data-live-room-active] summary { min-height:44px; display:flex; align-items:center; cursor:pointer; }

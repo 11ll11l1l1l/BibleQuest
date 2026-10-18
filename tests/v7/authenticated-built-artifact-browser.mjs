@@ -477,6 +477,8 @@ try {
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
   await participant.locator('[data-live-room-reconnect]').click();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
+  await participant.locator('[data-live-room-reconnect]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
   await page.reload();
   await page.locator('[data-deck-send]').waitFor();
   assert.match(await page.locator('[data-deck-current]').textContent(),/Courage to obey/);
@@ -487,6 +489,19 @@ try {
   await gesture.dispatchEvent('pointerdown',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:150});
   await gesture.dispatchEvent('pointerup',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:50});
   await participant.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor({timeout:20000});
+  await page.locator('[data-deck-setup] summary').click();
+  await page.locator('[data-deck-series]').selectOption('together');
+  await page.locator('[data-deck-choices] input').last().uncheck();
+  assert.match(await page.locator('[data-deck-position]').textContent(),/of 2/);
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  await page.locator('[data-deck-send]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Listen before answering'}).waitFor({timeout:20000});
+  await page.locator('[data-deck-series]').selectOption('trust');
+  await page.locator('[data-deck-next]').click();
+  await page.locator('[data-deck-send]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor({timeout:20000});
+  const targets=await page.locator('[data-live-rooms-view] button,[data-live-rooms-view] summary,[data-live-rooms-view] select').evaluateAll(nodes=>nodes.filter(n=>n.getClientRects().length).map(n=>({text:n.textContent.trim().slice(0,32),height:n.getBoundingClientRect().height})));
+  assert.deepEqual(targets.filter(t=>t.height<44),[],'V7.1 phone targets must be 44px');
   await page.setViewportSize({width:320,height:760});
   await page.evaluate(()=>document.documentElement.style.fontSize='200%');
   await assertNoHorizontalOverflow(page,'V7.1 host 320px 200%');
