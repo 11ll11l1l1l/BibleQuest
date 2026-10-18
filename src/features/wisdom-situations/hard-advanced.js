@@ -487,7 +487,7 @@ export const HARD_ADVANCED=Object.freeze({
     "context": "Your friend wants your health testimony onstage tomorrow, but treatment is continuing and your symptoms have recently returned. The church hopes it will encourage others.",
     "options": [
       "Share the full uncertain story; model candor but potentially extinguish hope among fragile listeners.",
-      "Describe only verified improvement with a clear status note; offer hope but risk audiences overlooking ongoing treatment.",
+      "Describe verified improvement and continuing care; offer hope but risk listeners overlooking ongoing treatment.",
       "Decline to speak; avoid confusion but withhold a testimony that could comfort other patients.",
       "Share progress with treatment status; encourage others but expose your uncertain recovery."
     ],
