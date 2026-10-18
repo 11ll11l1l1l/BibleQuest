@@ -15,6 +15,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may resent losing an opportunity you both planned",
       "you could be blamed if a sibling’s care arrangement fails",
       "you may lose the employer’s confidence in your commitment"
+    ],
+    "basis": [
+      "The overseas salary pays for skilled home care, and your parent understands the financial stakes.",
+      "Your parent explicitly prefers your presence, while your spouse can find another local opportunity.",
+      "Your sibling has offered part-time caregiving before and wants to discuss a fair division.",
+      "The company already permits remote work in rare cases for employees with documented caregiving duties."
     ]
   },
   "hw50": {
@@ -32,15 +38,21 @@ export const HARD_EXPERT=Object.freeze({
       "you may permanently lose a close friend’s trust",
       "you may lose the only relationship through which they sought help",
       "you could be drawn into a disclosure that harms your own family"
+    ],
+    "basis": [
+      "The spouse plans to sign a major shared debt tomorrow without knowing about the affair.",
+      "The betrayed spouse deserves agency over intimate and financial commitments made on false assumptions.",
+      "Your friend has disclosed severe distress, and abrupt withdrawal could interrupt needed support.",
+      "The counselor has an appointment today and a clear process for supported disclosure."
     ]
   },
   "hw51": {
-    "context": "A storm has cut access to food tonight. The second signatory is unreachable; the largest emergency purchase would break policy and could be rejected for reimbursement.",
+    "context": "A storm has isolated households from food tonight. The second signatory is unreachable and the single-purchase threshold applies; separate vendor purchases can be legitimate if each serves a distinct need, but artificial splitting to evade controls is prohibited.",
     "options": [
       "Buy the food with ministry funds; feed households tonight but risk an audit finding and dismissal.",
       "Advance your personal savings; avoid breaking controls but expose your own dependents to a loss.",
       "Wait until morning authorization; preserve governance but leave affected households without dinner.",
-      "Divide purchases below the threshold; provide fast help but weaken control through deliberate transaction splitting."
+      "Make separate authorized purchases for distinct urgent needs; feed households promptly but invite audit concern over fragmentation."
     ],
     "best": 0,
     "why": "A recorded emergency exception openly confronts governance risk instead of evading it, while immediate human need remains real.",
@@ -49,6 +61,12 @@ export const HARD_EXPERT=Object.freeze({
       "your savings may be unavailable in your own emergency",
       "you may live with guilt for the delay’s consequences",
       "you may lose the trust of donors when splitting is discovered"
+    ],
+    "basis": [
+      "Families include infants, and the only accessible store closes before a second signer returns.",
+      "Your spouse has previously approved using savings for urgent relief, but the fund covers medication.",
+      "A neighboring organization can supply meals tomorrow morning, though some households will go hungry tonight.",
+      "The policy permits several independent vendors for separate needs, but audit staff will scrutinize splitting."
     ]
   },
   "hw52": {
@@ -66,6 +84,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be blamed for violating customer trust later",
       "you may lose the only chance to explain the actual process",
       "you may be judged personally responsible for a misleading answer"
+    ],
+    "basis": [
+      "The manual verification provides meaningful protection; the slide was prepared by another division.",
+      "The audit agenda explicitly limits questions, and you are not the authorized presenter.",
+      "The customer has agreed to correct submitted material before live discussion when errors emerge.",
+      "Your manager is accountable for official process claims and has led similar difficult disclosures."
     ]
   },
   "hw53": {
@@ -74,7 +98,7 @@ export const HARD_EXPERT=Object.freeze({
       "Suspend the leader during inquiry; protect possible victims but damage reputation before findings.",
       "Leave them in office with oversight; preserve stability but risk undue influence over witnesses.",
       "Commission an outside review; improve fairness but incur expense and months of uncertainty.",
-      "Seek private mediation first; reduce public rupture but risk pressuring people who reported harm."
+      "Offer voluntary mediated listening with safeguarding; reduce rupture but risk witnesses feeling pressured by proximity."
     ],
     "best": 2,
     "why": "Independent review can weigh credibility without making private reconciliation a substitute for evidence, though waiting itself harms the community.",
@@ -83,6 +107,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be blamed if another witness feels pressured",
       "you could face criticism for the review’s long delay",
       "you may be judged for pushing vulnerable members into silence"
+    ],
+    "basis": [
+      "An immediate administrative leave is standard for witness safety and does not imply guilt.",
+      "Independent monitoring is possible without allowing the leader to contact witnesses.",
+      "An outside investigator is already vetted and can make a preliminary safety decision quickly.",
+      "Reporters have requested a private, voluntary reconciliation process but reject coercive mediation."
     ]
   },
   "hw54": {
@@ -100,6 +130,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be blamed for refusing to restore family bonds",
       "you may carry regret if the relationship never recovers",
       "you may lose control if fear escalates in a public venue"
+    ],
+    "basis": [
+      "The child has asked for a supervised meeting and a counselor offers to attend.",
+      "The children report recurring nightmares, making an adults-only trust test safer for now.",
+      "The relative recognizes prior harm and accepts that forgiveness need not mean access.",
+      "A neutral setting allows immediate departure and has a separate quiet area for the children."
     ]
   },
   "hw55": {
@@ -117,6 +153,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may carry regret over a widening family distance",
       "you may lose your child’s trust during a defining moment",
       "you may still disappoint your child and strain your beliefs"
+    ],
+    "basis": [
+      "Your adult child explicitly describes your presence as love, not agreement with every belief.",
+      "A public role in the event would contradict a specific promise you made in conscience.",
+      "The child has agreed to a serious personal conversation and values honest respect afterward.",
+      "The event has a separate family celebration without the symbolic act you cannot affirm."
     ]
   },
   "hw56": {
@@ -124,7 +166,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Allow the public gift; unlock funding but expose a vulnerable family to lifelong attention.",
       "Give privately without matching funds; protect dignity but reduce the total support delivered.",
-      "Feature an actor reenactment; preserve privacy but risk misleading viewers about the story.",
+      "Use a clearly labeled reenactment; preserve privacy but risk viewers discounting a story they cannot verify.",
       "Use only your own public testimony; keep families private but likely lose the broadcaster’s match."
     ],
     "best": 1,
@@ -134,6 +176,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may have to explain why the match disappeared",
       "you may be accused of manufacturing a false testimony",
       "you may be blamed for failing to raise critical funding"
+    ],
+    "basis": [
+      "The family previously consented to filming but now expresses genuine second thoughts.",
+      "The funding match is substantial yet the family explicitly regards anonymity as essential.",
+      "The broadcaster can label a reenactment clearly; viewers know it is not direct testimony.",
+      "The donor may reconsider a segment featuring only your experiences without identifying recipients."
     ]
   },
   "hw57": {
@@ -151,6 +199,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may lose the trust of people excluded by the software",
       "you may be blamed for wasting the community’s preparation",
       "you may risk your own family’s financial security"
+    ],
+    "basis": [
+      "A neighboring church has a valid transferable equipment rental agreement.",
+      "The free tool works for most participants, but two need a feature only paid software provides.",
+      "The venue agreed to hold a later date for accessibility if families approve rescheduling.",
+      "The license is affordable out of your personal funds only by postponing a planned household expense."
     ]
   },
   "hw58": {
@@ -168,6 +222,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may personally answer for costly repair delays",
       "you may be accused of misusing donors’ limited funds",
       "you may be blamed if informal influence persists"
+    ],
+    "basis": [
+      "The family firm is a certified emergency supplier with a transparent fixed-price contract.",
+      "The organization previously adopted an independent conflict-review rule for related-party bids.",
+      "The next bidder has excellent safety records and can begin only one day later.",
+      "The board retains a majority of independent voters able to supervise the entire procurement."
     ]
   },
   "hw59": {
@@ -185,6 +245,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be blamed if the statement is never released",
       "you may regret allowing injustice to go unchallenged",
       "you may lose the friend’s trust if their account differs"
+    ],
+    "basis": [
+      "The false claim risks the accused person's employment, and you possess decisive evidence.",
+      "A confidential adjudicator has power to reverse the decision without publishing your history.",
+      "The accused person's representative has access to equivalent records that you are not obliged to revisit.",
+      "The mutual friend is an authenticated eyewitness who can testify without repeating rumors."
     ]
   },
   "hw60": {
@@ -202,6 +268,12 @@ export const HARD_EXPERT=Object.freeze({
       "you could become responsible for a spouse’s lost purpose",
       "you may carry guilt if either commitment is neglected",
       "you may lose career stability needed by your household"
+    ],
+    "basis": [
+      "Your spouse was asked to lead because young people have no other consistent mentor.",
+      "Your child has documented support needs that cannot reasonably be deferred.",
+      "Both ministry and school can tolerate a planned rotating calendar but not weekly uncertainty.",
+      "Your employer has formally offered reversible reduced hours for caregivers."
     ]
   },
   "hw61": {
@@ -219,6 +291,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may struggle with unrelenting home conflict",
       "you may spend years policing reluctant family members",
       "you may lose income needed to care for both generations"
+    ],
+    "basis": [
+      "The home-care provider is skilled and available immediately if you can cover its cost.",
+      "Your parent strongly wishes to live with family instead of a residential facility.",
+      "Two siblings have agreed in writing to specific shifts and contingency cover.",
+      "Your employer has a family-care leave program that protects the role but reduces salary."
     ]
   },
   "hw62": {
@@ -236,6 +314,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be viewed as protecting yourself over the injured",
       "you may be blamed for avoiding public accountability",
       "you may lose the injured person’s trust through silence"
+    ],
+    "basis": [
+      "You directly observed the harmful act and are certain your contribution caused injury.",
+      "The initial findings remain disputed, and the victim has asked primarily for compassion.",
+      "The injured employee needs transport and therapy more urgently than a public statement.",
+      "A neutral mediator is booked tomorrow and will facilitate factual and compassionate contact."
     ]
   },
   "hw63": {
@@ -253,6 +337,12 @@ export const HARD_EXPERT=Object.freeze({
       "you could lose vital talent to employers offering stability",
       "you may be blamed for a broader collapse if demand stays weak",
       "you may face dismissal if the company cannot service debt"
+    ],
+    "basis": [
+      "A transparent severance and retraining package is funded, and immediate cuts preserve many jobs.",
+      "Managers can take a larger reduction while protecting minimum living wages for junior staff.",
+      "Major customers have paid for retraining before and some demand may recover after certification.",
+      "A lender offers capped interest and a fixed maturity, but the board rejects a second bailout."
     ]
   },
   "hw64": {
@@ -261,7 +351,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
-      "Discuss only recent improvement; acknowledge genuine progress but conceal a pattern of failures."
+      "Provide the requested recent-period assessment; acknowledge genuine progress but risk omitting earlier relevant failures."
     ],
     "best": 0,
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
@@ -270,15 +360,21 @@ export const HARD_EXPERT=Object.freeze({
       "you may regret denying evidence of real improvement",
       "you may be blamed if the new employer struggles",
       "you may risk your own professional standing if questioned"
+    ],
+    "basis": [
+      "The manager asked for specific documented incidents, and you have accurate records of improvement.",
+      "The candidate has been offered other references, and yours may be misconstrued without context.",
+      "A probationary plan with transparent milestones is standard practice at the hiring firm.",
+      "The hiring manager requested a recent six-month assessment rather than lifelong performance history."
     ]
   },
   "hw65": {
-    "context": "A housing deadline arrives tomorrow. Co-signing will prevent eviction, but if your relative misses two payments your own child’s tuition plan will collapse.",
+    "context": "The landlord demands a signed guarantee or two months' rent tonight. Your friend has a signed job offer, but missed payments would consume the tuition payment due for your own child next week. A verified family shelter has a private unit available tonight with transport to the children's school; your spouse permits only one month of guests at home.",
     "options": [
       "Guarantee the loan; protect the relative’s home but place your child’s education fund at risk.",
       "Pay two months of rent outright; give breathing room but erase savings without securing long-term housing.",
       "Offer a room in your home; prevent homelessness but strain your marriage and living space.",
-      "Refuse financial help and seek public aid; preserve commitments but leave the family exposed to eviction."
+      "Decline funding and arrange verified emergency shelter; protect your child's tuition but displace the family from its home tonight."
     ],
     "best": 2,
     "why": "Direct shelter refuses to pretend that a guarantee has no beneficiaries who could be harmed, yet the household disruption is severe.",
@@ -287,6 +383,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may drain savings needed for your own household",
       "you may struggle with conflict and crowding for months",
       "you may blame yourself if the family loses housing"
+    ],
+    "basis": [
+      "The friend starts a signed new job soon; the landlord will accept a documented guarantee tonight.",
+      "The landlord will accept two months' direct rent as a temporary extension without signing a guarantee.",
+      "Your spouse consents to housing the family for one month, though your own child needs quiet study space.",
+      "A verified family shelter has a confirmed private unit tonight and school transport, while your child's tuition is contractually due next week."
     ]
   },
   "hw66": {
@@ -304,6 +406,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may bear responsibility for canceled youth sessions",
       "you may be accused of hiding financial influence",
       "you may lose leverage with future donors as well"
+    ],
+    "basis": [
+      "The proposed sponsor lesson is factually accurate and has been taught previously by your elders.",
+      "Previous donors pledged to protect church teaching from financial conditions.",
+      "Families are informed when sponsors influence educational materials and may opt out.",
+      "The sponsor previously accepted ordinary acknowledgments, leaving room for genuine negotiation."
     ]
   },
   "hw67": {
@@ -321,6 +429,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may bear the emotional burden of an unresolved debt",
       "you may be accused of pressuring a family in medical crisis",
       "you may become responsible for a second open-ended promise"
+    ],
+    "basis": [
+      "The debtor has caring responsibilities and asked for explicit forgiveness, not a new loan.",
+      "A written collection pause preserves mutual clarity without depriving anyone of urgent treatment.",
+      "The borrower has paid for vacations while ignoring repayment promises, harming trust.",
+      "The hospital accepts direct charitable payments, which can be documented without a further loan."
     ]
   },
   "hw68": {
@@ -338,6 +452,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may regret silencing the possibility of accountability",
       "you may feel complicit in an unfair scholarship decision",
       "you may face questions about inconsistent family standards"
+    ],
+    "basis": [
+      "The teenager wants to make their own confession and has already drafted it.",
+      "The school offers confidential reporting by parents when minors fear retaliation.",
+      "An alternative assessment is available to all students under a published remediation policy.",
+      "The teacher accepts a signed disclosure note with an unchanged grading penalty."
     ]
   },
   "hw69": {
@@ -355,15 +475,21 @@ export const HARD_EXPERT=Object.freeze({
       "you may regret exposing children to an adult’s wrongdoing",
       "you may lose the trust of both pastor and congregation",
       "you may be criticized if the hidden issue emerges later"
+    ],
+    "basis": [
+      "The pastor has broken written leadership standards and agrees to a confidential leave.",
+      "The congregation's covenant expressly promises disclosure of sustained public hypocrisy.",
+      "The eldership includes disinterested members who can apply established disciplinary procedures.",
+      "The undisclosed wrongdoing ended, restitution was made, and all affected parties accepted counseling."
     ]
   },
   "hw70": {
-    "context": "Restricted donations are available while disaster victims urgently need shelter. The donors cannot be reached today and unrelated operating reserves will not cover the immediate cost.",
+    "context": "Restricted donations exist while displaced families need shelter tonight. A board-approved bridge using restricted funds would be permitted only where donors pre-authorized it; records may not be accessible before beds are released. Separate emergency credit and unrestricted but payroll-allocated funds are available at steep costs.",
     "options": [
       "Urgently ask donors to release restrictions; respect consent but lose hours needed for immediate shelter.",
       "Refuse transfer and seek emergency credit; honor restrictions but create debt the charity may not repay.",
       "Use unrestricted funds intended for payroll; respond tonight but risk not paying employees.",
-      "Ask the board for exceptional authorization; add accountability but risk losing the short emergency window."
+      "Request board-approved temporary restricted-fund bridging; accelerate relief but risk delay if pre-consent documentation is missing."
     ],
     "best": 1,
     "why": "Emergency credit preserves entrusted limits while permitting relief, though repayment can materially harm future recipients.",
@@ -372,12 +498,18 @@ export const HARD_EXPERT=Object.freeze({
       "you may carry responsibility for debt after the disaster",
       "you may struggle to keep your own staff employed",
       "you may lose trust with families denied urgent shelter"
+    ],
+    "basis": [
+      "Donor representatives can respond within an hour, and shelter suppliers will reserve beds briefly.",
+      "A credible credit facility can fund initial housing until designated relief donations arrive.",
+      "The payroll reserve includes funds legally available for emergency reallocations by the board.",
+      "The board is empowered to authorize a restricted-fund loan only if donors already consented in advance."
     ]
   },
   "hw71": {
     "context": "An AI tool predicts a quality improvement, but only half the proposed change can be tested before a costly launch tomorrow. Full rollout is difficult to reverse.",
     "options": [
-      "Launch the new settings now; seize potential savings but place untested production yield at risk.",
+      "Launch after applying sister-line validation; seize potential savings but risk a different line's untested interactions.",
       "Reject the recommendation; protect proven settings but surrender a competitive opportunity.",
       "Run a small production pilot; gather evidence but miss the launch and disrupt established schedules.",
       "Apply only the tested half; capture some gains but risk unintended interactions with the unchanged process."
@@ -389,15 +521,21 @@ export const HARD_EXPERT=Object.freeze({
       "you may lose credibility if rivals achieve the gain",
       "you may be blamed for missing an irreversible launch",
       "you may be unable to explain failures in mixed settings"
+    ],
+    "basis": [
+      "The new setting has passed controlled tests on a sister line running the same hardware.",
+      "The tested baseline has an excellent safety history, and failure would scrap an irreplaceable lot.",
+      "A pilot can run in isolation with limited cost but may miss a rare launch commitment.",
+      "The tested half affects a separable subsystem with independent safeguards and live rollback."
     ]
   },
   "hw72": {
-    "context": "A family chat repeats a false medical claim. An elder has begun following it; a public correction will probably humiliate its author and polarize the family.",
+    "context": "A false medical claim circulates in the family chat. A relative has begun following it but has paused until tomorrow's scheduled clinician conversation; tonight the group continues discussing it. Public correction may humiliate the author and deepen division.",
     "options": [
       "Correct the source publicly; protect relatives from the claim but threaten an elder’s dignity.",
       "Call the endangered relative privately; target immediate harm but leave misinformation circulating.",
       "Ask the group admin to post a correction; reduce personal conflict but turn moderation into a family power struggle.",
-      "Wait until the gathering tomorrow; preserve relationships but risk another day of harmful decisions."
+      "Confirm a clinician call tomorrow and pause forwarding; preserve elder's dignity but risk the claim resurfacing overnight."
     ],
     "best": 1,
     "why": "A direct private warning to the person at risk can reduce immediate harm without assuming that every family dispute belongs on public trial.",
@@ -406,6 +544,12 @@ export const HARD_EXPERT=Object.freeze({
       "you may be blamed if others continue following the claim",
       "you may be seen as starting a family power struggle",
       "you may carry regret if a relative acts before tomorrow"
+    ],
+    "basis": [
+      "Several relatives have already repeated the claim, and only a public correction reaches them tonight.",
+      "The elder will answer a direct call from you and has previously changed course when approached gently.",
+      "The administrator is a medical professional trusted across family factions.",
+      "The elder has stopped the harmful action for now and is waiting to speak with a clinician tomorrow."
     ]
   }
 });
