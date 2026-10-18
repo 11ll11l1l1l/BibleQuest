@@ -172,6 +172,8 @@
 
 /* ONE 2 ONE relationship overview: one primary action, supporting tools below. */
 .bq-one2one-home {
+  min-width: 0;
+  overflow-wrap: anywhere;
   max-width: 760px;
   margin-inline: auto;
   padding: clamp(16px, 4.5vw, 28px);
@@ -184,7 +186,7 @@
   display: grid;
   align-content: end;
   isolation: isolate;
-  min-height: clamp(235px, 65vw, 350px);
+  min-height: clamp(190px, 55vw, 280px);
   overflow: hidden;
   border-radius: var(--bq-radius-surface, 22px);
   background: #173d46;
@@ -253,8 +255,8 @@
   text-wrap: pretty;
 }
 @media (max-width: 360px) {
-  .bq-one2one-home__hero { min-height: 220px; }
-  .bq-one2one-home__hero-copy { padding: 18px; }
+  .bq-one2one-home__hero { min-height: 190px; }
+  .bq-one2one-home__hero-copy { padding: 16px; }
 }
 
 .bq-one2one-home .bq-one2one-home__header h1 {
@@ -277,14 +279,29 @@
   font-weight: 800;
 }
 .bq-one2one-home .bq-one2one-home__relationships,
-.bq-one2one-home .bq-one2one-home__tools {
+.bq-one2one-home .bq-one2one-home__tools,
+.bq-one2one-home .bq-one2one-home__context-disclosure {
   padding: 20px 0;
   border-top: 1px solid var(--bq-border);
 }
-.bq-one2one-home :is(.bq-one2one-home__relationships, .bq-one2one-home__tools) h2 {
+.bq-one2one-home :is(.bq-one2one-home__relationships h2, .bq-one2one-home__tools summary, .bq-one2one-home__context-disclosure summary) {
   margin-bottom: 12px;
   color: var(--bq-text);
   font-size: var(--bq-type-section);
+  font-weight: 750;
+  cursor: pointer;
+}
+.bq-one2one-home :is(.bq-one2one-home__tools summary, .bq-one2one-home__context-disclosure summary) {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+}
+.bq-one2one-home :is(.bq-one2one-home__tools, .bq-one2one-home__context-disclosure)[hidden] {
+  display: none;
+}
+.bq-one2one-home__tools[open] summary,
+.bq-one2one-home__context-disclosure[open] summary {
+  margin-bottom: 12px;
 }
 .bq-one2one-home [data-pair-status] {
   margin-bottom: 12px;
@@ -318,8 +335,7 @@
   gap: 12px;
 }
 .bq-one2one-home__context {
-  padding-top: 20px;
-  border-top: 1px solid var(--bq-border);
+  padding-top: 12px;
 }
 .bq-one2one-home button {
   min-height: 44px;

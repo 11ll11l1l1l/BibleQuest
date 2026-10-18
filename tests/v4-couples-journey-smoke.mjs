@@ -9,6 +9,7 @@ async function openCouples(page){
   await page.goto(BASE,{waitUntil:'networkidle'});
   await page.locator('[data-route-link="more"]').click();
   await page.waitForURL(/#\/more$/);
+  await page.locator('[data-more-group="together"] > details > summary').click();
   await page.locator('[data-open-couples-family]').click();
   await page.waitForURL(/#\/couples-family$/);
   await page.locator('[data-couples-mode="journey"]').waitFor({state:'visible'});

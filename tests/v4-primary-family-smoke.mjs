@@ -13,10 +13,11 @@ async function verify(width,height,isMobile=false){
   page.on('pageerror',error=>errors.push(`page: ${error.message}`));
   await page.goto(`${BASE}#/home`,{waitUntil:'networkidle'});
   await page.locator('[data-bq-shell="v3"]').waitFor();
-  await page.locator('[data-home-rail]').waitFor();
+  await page.locator('[data-home-feature]').waitFor();
 
-  const railLabels=await page.locator('[data-home-rail-item] .bq-home-rail-label').allTextContents();
-  assert(railLabels.join('|')==='Daily Journey|Reader|Assignments|Calendar|Progress',`Home shortcut rail order changed at ${width}px: ${railLabels.join('|')}`);
+  for (const hook of ['[data-home-hero-reader]', '[data-open-daily]', '[data-open-congregation-assignments]', '[data-open-home-next-event]', '[data-home-progress]'])
+    assert(await page.locator(hook).count() > 0, `Home destination/progress surface missing at ${width}px: ${hook}`);
+  assert(await page.locator('[data-home-rail-action]').count() === 0, 'Duplicate Home rail must remain removed.');
   assert(await page.locator('[data-home-daily]').count()===1,`Home lost Daily Journey surface at ${width}px.`);
   assert(await page.locator('[data-home-assignments]').count()===1,`Home lost Assignments surface at ${width}px.`);
 

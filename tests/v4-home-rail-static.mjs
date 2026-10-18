@@ -11,6 +11,18 @@ const home = fs.readFileSync(path.join(root, 'src', 'features', 'home', 'index.j
 const css = fs.readFileSync(path.join(root, 'src', 'ui', 'home-rail-v4.css'), 'utf8');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 
+if (home.includes('data-home-bible-quest')) {
+  // Owner-approved V7 phone hierarchy removes the duplicate rail; real
+  // destinations remain in Today, the Bible hero and the Progress panel.
+  assert.ok(!home.includes('data-home-rail-action'), 'V7 must not restore duplicate rail buttons.');
+  for (const hook of ['data-home-hero-reader', 'data-open-daily', 'data-open-congregation-assignments', 'data-open-home-next-event', 'data-home-progress'])
+    assert.ok(home.includes(hook), `V7 Home lost the reachable destination or progress surface ${hook}.`);
+  for (const label of ["tx('nav.bible')", "tx('home.today.heading')", "tx('nav.assignments')", "tx('nav.calendar')", "tx('home.progress.eyebrow')"])
+    assert.ok(home.includes(label), `V7 Home destination lost its localized label ${label}.`);
+  for (const action of ['onReader?.()', 'onMission?.()', 'onAssignments?.()', 'onCalendar?.()'])
+    assert.ok(home.includes(action), `V7 Home lost the existing callback ${action}.`);
+  assert.ok(home.includes('type="button" class="bq-home-today-row"'), 'Today actions must remain native keyboard buttons.');
+} else {
 assert.ok(index.includes('href="src/ui/home-rail-v4.css"'), 'home-rail-v4.css must be linked from index.html.');
 
 // Rail markup: a nav landmark with a localized accessible name and labeled scroll track.
@@ -54,3 +66,5 @@ assert.ok(/@media\(prefers-reduced-motion:reduce\)/.test(css), 'Rail must respec
 assert.ok(/@media\(max-width:340px\)/.test(css), 'Rail must have an explicit small-width (down to ~320px) fallback.');
 
 console.log('BibleQuest v4 Home shortcut rail contract passed.');
+
+}

@@ -43,3 +43,7 @@ For rollback or forensic comparison, use the exact SHA from this manifest rather
 | V4 rollback before V5 | `rollback/v4-pre-v5-production-20260918` | `95d45c18aed3dbb9862749d73749b571fceaa66e` |
 
 `main` currently points to the released V6 SHA. V7 starts from `v7/development`, including V6 closeout evidence and repository cleanup. Earlier V5 starting instructions above are historical.
+
+## Before phone UI correction release — 2026-10-18 JST
+
+Rollback branch `rollback/v7-pre-phone-ui-20261018` preserves production source `3df992466fdf3d0fcc7b4c9101f3841125378cdd`. Verify the remote ref before promoting PR #1549. Do not move this rollback branch.

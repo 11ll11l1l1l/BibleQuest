@@ -7,8 +7,9 @@ export async function openLegacyRoute(page, route) {
     await page.locator('[data-route-link="more"]').click();
     await page.locator(`[data-v7-you-hub] a[href="#/${route}"]`).click();
   } else if (route === 'grow') {
-    await page.locator('[data-route-link="home"]').click();
-    await page.locator('[data-home-rail-item="grow"]').click();
+    await page.locator('[data-route-link="more"]').click();
+    await page.locator('[data-v7-you-hub] a[href="#/my-journey"]').click();
+    await page.locator('[data-my-journey-back]').click();
   } else throw new Error(`No tested launcher for retained route: ${route}`);
   await page.waitForURL(url => url.hash === '#/' + route);
 }

@@ -58,6 +58,14 @@ export function createRouter({ routes, onRoute }) {
       resolve(true);
     },
     navigate,
+    // Update filters on the current mounted page without routing or scrolling.
+    replace(route) {
+      const target = normalize(route);
+      if (target !== normalize(readNavigationTarget())) throw new Error('Quiet URL updates must stay on the current route.');
+      const params = new URLSearchParams(String(route || '').split('?').slice(1).join('?'));
+      history.replaceState(null, '', `#/${target}${params.size ? `?${params}` : ''}`);
+      lastResolvedUrl = location.href;
+    },
     current() { return normalize(readNavigationTarget()); }
   });
 }

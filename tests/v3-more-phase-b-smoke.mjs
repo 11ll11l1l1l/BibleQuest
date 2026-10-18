@@ -8,6 +8,7 @@ try{
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(`${BASE}#/more`,{waitUntil:'networkidle'});
+  for (const summary of await page.locator('[data-more-group] > details > summary').all()) await summary.click();
   await page.locator('[data-more-workspace]').waitFor();
 
   const asset=await page.request.get(`${BASE}assets/more-feature-icons.svg`);

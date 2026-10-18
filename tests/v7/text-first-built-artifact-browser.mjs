@@ -37,6 +37,7 @@ try {
       await page.waitForFunction(() => ['ready', 'empty', 'error'].includes(
         document.querySelector('[data-library-status]')?.getAttribute('data-library-state')
       ));
+      await page.locator('[data-library-filter-panel] > summary').click();
       const emotion = page.locator('[data-v7-deck="emotion"]');
       const need = page.locator('[data-v7-deck="need"]');
       await emotion.waitFor();

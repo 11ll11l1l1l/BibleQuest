@@ -33,3 +33,20 @@ test('legacy More tool actions are preserved under the personal entry', () => {
   assert.ok(page.html.includes('href="#/play"'));
   assert.ok(!page.html.includes('undefined'));
 });
+
+test('phone feature groups use native disclosures and retain each original destination hook', () => {
+  const page = morePage({});
+  assert.equal((page.html.match(/<details class="bq-more-disclosure">/g) || []).length, 5);
+  assert.equal((page.html.match(/<summary class="bq-more-group-label">/g) || []).length, 5);
+  for (const group of ['ministry', 'planning', 'together', 'workspace-inbox', 'device']) {
+    assert.ok(page.html.includes(`data-more-group="${group}"`), `${group} group lost`);
+  }
+  for (const hook of [
+    'data-open-ministry-hub', 'data-open-congregation', 'data-open-team-center',
+    'data-open-content-review', 'data-open-community', 'data-open-calendar',
+    'data-open-mission', 'data-open-challenges', 'data-open-couples-family',
+    'data-open-couples-cloud', 'data-open-journey-groups', 'data-open-workspace',
+    'data-open-notification-center', 'data-open-accessibility', 'data-open-backup',
+    'data-open-help', 'data-install-app'
+  ]) assert.ok(page.html.includes(hook), `${hook} lost from the feature groups`);
+});

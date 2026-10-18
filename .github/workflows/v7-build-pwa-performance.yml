@@ -3,6 +3,8 @@ name: V7 Build PWA Performance Gate
 on:
   pull_request:
     branches:
+      - docs/v7-postrelease-uiqa-20261017
+      - main
       - v7/development
     paths:
       - "package.json"
@@ -14,6 +16,7 @@ on:
       - "_headers"
       - "offline-shell-sw.js"
       - "src/**"
+      - "assets/**"
       - "content/v7/**"
       - "data/v7/**"
       - "packages/db/**"
@@ -136,6 +139,12 @@ jobs:
           cat /tmp/bq-v7-preview.log
           exit 1
 
+      - name: V7 phone-first UI/UX correction matrix
+        env:
+          BQ_PREVIEW_URL: http://127.0.0.1:4173
+          BQ_EXACT_SHA: ${{ env.BQ_EXACT_SHA }}
+        run: node tests/v7/phone-first-uiux-built-artifact-browser.mjs
+
       - name: Built artifact Chromium parity
         env:
           BQ_PREVIEW_URL: http://127.0.0.1:4173
@@ -205,7 +214,8 @@ jobs:
               'v7-one-to-one-built-artifact-smoke',
               'v7-library-built-artifact-smoke',
               'pwa-built-artifact',
-              'built-artifact-accessibility'
+              'built-artifact-accessibility',
+              'phone-first-uiux-route-matrix'
             ]
           };
           await mkdir('artifacts/v7', { recursive: true });
@@ -229,5 +239,7 @@ jobs:
             artifacts/v7/content-report.json
             artifacts/v7/certification.json
             artifacts/v7/release-responsive-accessibility.json
+            artifacts/v7/phone-first-uiux-geometry.json
+            artifacts/v7/phone-first-uiux/
             artifacts/v7/evidence.sha256
             dist-v6/

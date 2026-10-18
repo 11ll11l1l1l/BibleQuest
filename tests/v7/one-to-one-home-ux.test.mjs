@@ -80,6 +80,57 @@ test('ONE 2 ONE hero keeps live text, one primary action and a complete static n
   assert.match(css, /rgba\(12, 27, 35, \.88\)/, 'Contrast scrim must remain even over new artwork.');
 });
 
+test('phone ONE 2 ONE overview removes duplicate title and guides the empty state', () => {
+  const view = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext() { return () => {}; },
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  assert.equal((view.html.match(/<h1>ONE 2 ONE<\/h1>/g) || []).length, 1);
+  assert.doesNotMatch(view.html, /bq-one2one-home__eyebrow/);
+  const css = readFileSync(new URL('../../src/ui/v7-one-to-one-lesson.css', import.meta.url), 'utf8');
+  assert.match(css, /min-height: clamp\(190px, 55vw, 280px\)/);
+  const locale = readFileSync(new URL('../../src/content/locales/v7-pairing.js', import.meta.url), 'utf8');
+  assert.match(locale, /overviewEmpty:'No relationships yet\. Invite a member to start one\.'/);
+  assert.match(locale, /overviewEmpty:'Wala pang ugnayan\. Mag-imbita ng miyembro para magsimula\.'/);
+  assert.match(locale, /overviewEmpty:'Wala pay relasyon\. Pagdapit og miyembro aron magsugod\.'/);
+});
+
+test('ONE 2 ONE context links are collapsed and mentor tools fail closed until congregation capability is confirmed', () => {
+  const view = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext() { return () => {}; },
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  assert.match(view.html, /<details class="bq-one2one-home__tools" data-pair-mentor-tools hidden>/);
+  assert.match(view.html, /<details class="bq-one2one-home__context-disclosure">/);
+  const mentorTools = { hidden: true };
+  let onContext;
+  const root = { querySelector(selector) {
+    if (selector === '[data-pair-mentor-tools]') return mentorTools;
+    if (selector === '[data-pair-status]') return { textContent: '' };
+    if (selector === '[data-pair-results]') return { innerHTML: '', addEventListener() {}, removeEventListener() {} };
+    return { addEventListener() {}, removeEventListener() {} };
+  } };
+  let allowed = false;
+  const capable = oneToOnePage({
+    service: { async listPairs() { return []; } },
+    subscribeContext(callback) { onContext = callback; return () => { onContext = null; }; },
+    isContextReady: () => false,
+    canUseMentorTools: () => allowed,
+    onAccount() {}, onCongregation() {}, onBack() {},
+  });
+  const dispose = capable.mount(root);
+  assert.equal(mentorTools.hidden, true, 'unconfirmed/member context cannot see mentor tools');
+  allowed = true;
+  onContext();
+  assert.equal(mentorTools.hidden, false, 'a capability update exposes mentor actions');
+  allowed = false;
+  onContext();
+  assert.equal(mentorTools.hidden, true, 'a role/context change hides stale mentor actions');
+  dispose();
+});
+
 test('ONE 2 ONE accepts only a local audited resolver result, never an arbitrary remote or file URL', async () => {
   let submitted = 0;
   let imageCount = 0;

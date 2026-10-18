@@ -17,6 +17,7 @@ async function run(){
     localStorage.removeItem('biblequest.v3.auth.bq-personal-challenges-sync-owner-v1');
   });
   await page.goto(BASE+'#/more',{waitUntil:'networkidle'});
+  await page.locator('[data-more-group="planning"] > details > summary').click();
   await page.locator('[data-open-challenges]').waitFor();
   await page.locator('[data-open-challenges]').click();
   await page.waitForURL(/#\/challenges$/);

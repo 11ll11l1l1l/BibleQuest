@@ -109,17 +109,21 @@ export function weeklyJourneyHtml(locale, weeklyState = null) {
 
 export function homeThisWeekIntroHtml(locale,{leaderAnchor=null,weeklyState=null}={}) {
   const calendarLabel = localization.t('home.shortcut.calendar', { locale });
-  return `<header class="bq-home-week-heading" data-home-week-heading>
+  const progress = weeklyState ? `<span class="bq-home-week-disclosure__progress">${weeklyState.completed}/${weeklyState.total} ${escapeHtml(localText(locale, 'home.week.progressSuffix'))}</span>` : '';
+  return `<details class="bq-home-week-disclosure" data-home-week-disclosure>
+    <summary><span class="bq-eyebrow">${escapeHtml(localText(locale, 'home.week.eyebrow'))}</span><strong>${escapeHtml(localText(locale, 'home.week.heading'))}</strong>${progress}</summary>
+    <div class="bq-home-week-disclosure__content">
+    <header class="bq-home-week-heading" data-home-week-heading>
     <div>
-      <p class="bq-eyebrow">${escapeHtml(localText(locale, 'home.week.eyebrow'))}</p>
-      <h2>${escapeHtml(localText(locale, 'home.week.heading'))}</h2>
       <p>${escapeHtml(localText(locale, 'home.week.description'))}</p>
     </div>
     <button type="button" class="bq-secondary-button" data-open-this-week-calendar aria-label="${escapeHtml(calendarLabel)}">
       <span aria-hidden="true">${iconSvg('calendar', { size: 18 })}</span>
       <span>${escapeHtml(calendarLabel)}</span>
     </button>
-  </header>${leaderAnchor?`<aside class="bq-panel bq-progress-note" data-home-weekly-leader-anchor><p class="bq-eyebrow">WEEKLY MINISTRY ANCHOR</p><h3>${escapeHtml(leaderAnchor.title)}</h3>${leaderAnchor.instructions?`<p>${escapeHtml(leaderAnchor.instructions)}</p>`:''}<a href="#/assignments" data-weekly-journey-route="assignments">Open leader assignment</a></aside>`:''}${weeklyJourneyHtml(locale,weeklyState)}`;
+    </header>${leaderAnchor?`<aside class="bq-panel bq-progress-note" data-home-weekly-leader-anchor><p class="bq-eyebrow">WEEKLY MINISTRY ANCHOR</p><h3>${escapeHtml(leaderAnchor.title)}</h3>${leaderAnchor.instructions?`<p>${escapeHtml(leaderAnchor.instructions)}</p>`:''}<a href="#/assignments" data-weekly-journey-route="assignments">Open leader assignment</a></aside>`:''}${weeklyJourneyHtml(locale,weeklyState)}
+    </div>
+  </details>`;
 }
 
 export const HOME_WEEK_LOCALES = Object.freeze(Object.keys(HOME_WEEK_COPY));

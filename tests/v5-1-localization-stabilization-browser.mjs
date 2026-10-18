@@ -21,7 +21,7 @@ try{
     '[data-open-tutorial]'
   ];
   const iconState=await page.evaluate(selectors=>selectors.map(selector=>{
-    const icon=document.querySelector(`${selector} .bq-home-tile-icon .bq-icon`);
+    const icon=document.querySelector(`${selector} .bq-icon`);
     const style=icon?getComputedStyle(icon):null;
     const box=icon?.getBoundingClientRect();
     return{selector,exists:Boolean(icon),display:style?.display,visibility:style?.visibility,opacity:style?.opacity,width:box?.width||0,height:box?.height||0,html:icon?.innerHTML||''};
@@ -52,6 +52,7 @@ try{
   await page.getByText('Mga Sitwasyon ng Karunungan',{exact:true}).waitFor();
 
   await page.goto(new URL('#/more',BASE).href,{waitUntil:'networkidle'});
+  for (const group of ['ministry', 'planning']) await page.locator(`[data-more-group="${group}"] > details > summary`).click();
   await page.getByText('Sentro ng Ministeryo',{exact:true}).waitFor();
   await page.getByText('Mga Personal na Hamon',{exact:true}).waitFor();
 
@@ -69,6 +70,7 @@ try{
   await page.getByText('Mga Tawo ug Lugar',{exact:true}).waitFor();
 
   await page.goto(new URL('#/more',BASE).href,{waitUntil:'networkidle'});
+  for (const group of ['ministry', 'planning']) await page.locator(`[data-more-group="${group}"] > details > summary`).click();
   await page.getByText('Sentro sa Ministeryo',{exact:true}).waitFor();
   await page.getByText('Personal nga mga Hagit',{exact:true}).waitFor();
 

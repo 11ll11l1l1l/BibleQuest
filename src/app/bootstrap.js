@@ -380,7 +380,8 @@ function boot(root){
     if(context.contentType)params.set('contentType',context.contentType);
     if(context.taxonomyId)params.set('taxonomyId',context.taxonomyId);
     if(context.discoveryQuery)serializeLibraryDiscoveryQuery(context.discoveryQuery,params);
-    router.navigate(`${target.routeKey}?${params}`);
+    if(target.replace)router.replace(`${target.routeKey}?${params}`);
+    else router.navigate(`${target.routeKey}?${params}`);
   };
   const openCouplesScripture=card=>{bibleQuest.deactivate();reader.setTranslation('bsb');reader.setBook(card.code,card.chapter);router.navigate('reader')};
   const openChallengeScripture=target=>{bibleQuest.deactivate();reader.setBook(target.code,target.chapter);router.navigate('reader')};
@@ -399,10 +400,10 @@ function boot(root){
       const view=libraryParams().get('view');
       const navigation={subscribeContext:subscribeV7Context,onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')};
       if(view==='authoring'||view==='assignment')return oneToOneWorkspacePage({api,view,session,membership:congregation,service:discipleship,...navigation,onBack:()=>router.navigate('one-to-one')});
-      return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair')});
+      return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,canUseMentorTools:()=>{const active=congregation.getActive();return Boolean(active?.congregationId&&congregation.can(active.congregationId,'ministry'));},...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair')});
     },
     'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
-    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),onFiltersChange:target=>navigateLibrary({...target,replace:true}),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'devotional',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
     'one-to-one-track':()=>assignedPage('track'),
     'one-to-one-module':()=>assignedPage('module'),
     'one-to-one-lesson':()=>{

@@ -123,5 +123,5 @@ export function renderReaderChapterPresentation(
     const highlighted = verse.verse === highlightedVerse ? ' is-highlighted' : '';
     return `<button type="button" class="bq-verse${highlighted}" data-verse="${verse.verse}"><span>${escapeHtml(verse.label)}</span><p data-reader-verse-text>${escapeHtml(verse.text)}</p></button>`;
   }).join('');
-  return `<div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(translationLabel)}</p><h2>${escapeHtml(chapter.heading)}</h2></div><button type="button" class="bq-secondary-button" data-reader-mark>${options.isRead ? 'Marked read' : 'Mark read'}</button></div><div class="bq-verse-list">${verses}</div>`;
+  return `<div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(translationLabel)}</p><h2>${escapeHtml(chapter.heading)}</h2></div><button type="button" class="bq-secondary-button" data-reader-mark ${options.isRead ? 'disabled' : ''}>${options.isRead ? 'Marked read' : 'Mark read'}</button></div><div class="bq-verse-list">${verses}</div>`;
 }

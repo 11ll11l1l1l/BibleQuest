@@ -9,7 +9,7 @@ const localState=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('bibleq
 async function run(){
   const page=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
-  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="more"]').click();await page.waitForURL(/#\/more$/);await page.locator('[data-open-couples-family]').waitFor();
+  await page.goto(BASE,{waitUntil:'networkidle'});await page.locator('[data-route-link="more"]').click();await page.waitForURL(/#\/more$/);await page.locator('[data-more-group="together"] > details > summary').click();await page.locator('[data-open-couples-family]').waitFor();
   await page.locator('[data-open-couples-family]').click();await page.waitForURL(/#\/couples-family$/);await page.locator('[data-couples-mode="card"]').waitFor();
   const overview=(await page.locator('[data-couples-view]').textContent())||'';
   assert(overview.includes('Couples cloud remains separate'),'Couples local UI must state its cloud boundary.');

@@ -21,7 +21,8 @@ async function desktopFlow() {
   await page.locator('[data-progress-xp]', { hasText: '10 XP' }).waitFor();
   assert((await page.locator('[data-progress-streak]').textContent()).includes('1 day streak'), 'First meaningful reader event must start streak.');
 
-  await page.locator('[data-reader-mark]').click();
+  assert(await page.locator('[data-reader-mark]').isDisabled(), 'Read chapters must expose a completed, disabled action.');
+  await page.locator('[data-reader-mark]').dispatchEvent('click');
   await page.locator('[data-reader-message]', { hasText: 'Already marked read' }).waitFor();
   assert((await page.locator('[data-progress-xp]').textContent()).trim() === '10 XP', 'Repeated mark-read click duplicated XP.');
   await page.reload({ waitUntil: 'networkidle' });
