@@ -67,7 +67,8 @@ export const HARD_FOUNDATION=Object.freeze({
       "The landlord confirmed that a partial payment buys forty-eight hours for another arrangement.",
       "Previous cash assistance was spent elsewhere, while the landlord accepts direct payment.",
       "Your spouse has consented to a temporary stay, though the household has very little space."
-    ]
+    ],
+    "scene": "A relative with children faces losing their rental tomorrow after earlier cash help was spent on other needs. The landlord accepts either partial payment or direct payment, but the relative would find direct payment humiliating. You have one month of emergency savings. Your spouse permits a temporary stay but your household has very little space."
   },
   "hw04": {
     "context": "The finance committee votes tomorrow. The former treasurer’s apology is credible, but no other experienced volunteer is available for the role.",
@@ -435,7 +436,8 @@ export const HARD_FOUNDATION=Object.freeze({
       "A clear refusal may prevent a dangerous impression that your personal opinion is medical advice.",
       "A registered after-hours nurse can assess symptoms and connect them to immediate care.",
       "The prescribing clinician has agreed to a morning consultation, with emergency help if symptoms worsen."
-    ]
+    ],
+    "scene": "A colleague experiencing frightening side effects asks whether to stop prescribed medication. They trust your opinion more than a clinician's and might act on it tonight. A registered nurse line is available now; the prescriber offers an appointment tomorrow. You cannot personally determine whether the symptoms require urgent care."
   },
   "hw20": {
     "context": "You can accept a visible ministry role tomorrow. Your teaching is useful, but you also know public admiration is becoming a major motivation.",
