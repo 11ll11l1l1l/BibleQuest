@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-self-control-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-09T22:00:54+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "bundleStatus": "complete_three_real_files",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "self_control",
+  "canonicalNeedId": "self_control",
+  "concept": "A young adult turns a distracting smartphone face-down and returns to sketching at a window-lit home worktable, showing intentional attention.",
+  "usage": [
+    "needs_deck",
+    "devotional_discovery",
+    "image_first_featured_cards"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-self-control-01.webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 148110,
+  "sha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
+  "gitBlobSha": "a8a9c6a50f7174a432e2dbe0c65604b6ff832998",
+  "format": "webp",
+  "aspectRatio": "4:5",
+  "focalPoint": {
+    "x": 0.49,
+    "y": 0.34
+  },
+  "textSafeRegion": "bottom",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "self_control",
+    "locale": "en",
+    "exactLabel": "Self-control",
+    "reference": "Galatians 5:22-23",
+    "scriptureTextIncluded": false,
+    "contextReview": "Galatians 5:22-23 describes self-control as fruit of the Spirit within Paul’s contrast between flesh and Spirit (Galatians 5:16-26); the scene represents choosing disciplined attention, not claiming self-sufficiency or an unconditional reward."
+  },
+  "generation": {
+    "sourceOriginalName": "turning_away_to_create.png",
+    "sourceBytes": 2115556,
+    "sourceSha256": "5d7436de2e998b306391879da517f12ef2356313fb66522c6a3c05ff0bc72d25",
+    "sourceWidth": 1122,
+    "sourceHeight": 1402,
+    "sourceCropRect": {
+      "left": 1,
+      "top": 1,
+      "right": 1121,
+      "bottom": 1401
+    },
+    "generationId": "4d415523-9fcb-4b81-b1b9-92baf6fe8c8d",
+    "provider": "OpenAI image generation",
+    "model": "not exposed by tool; unverified",
+    "prompt": "not exposed by tool; prompt metadata empty",
+    "sourceRevision": "v7/development ac4b6c1568931272698b8823522f558c1375b102",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source supplied",
+    "fontFamilies": [
+      "Noto Serif"
+    ],
+    "fontLicense": "SIL OFL-1.1",
+    "fontLicenseEvidence": "/usr/share/doc/fonts-noto-core/copyright",
+    "fontFilesRedistributed": false,
+    "scriptureQuoteRights": "reference_only_no_quote"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A young man turns his phone face-down and continues sketching at a sunlit home desk, choosing focused creative work over distraction.",
+    "essentialLiveTextRequired": true,
+    "localizedFallback": "TL Pagpipigil sa sarili, CEB Pagpugong sa kaugalingon, ILO Panagtengngel iti bagi: CLEAN image plus live localized label and reference; English TYPE not used in non-English locales."
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-self-control-01.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 148110,
+      "sha256": "21dc2a27704e126e81c1b9d36af8e522b1c9a493b0d77558881e3f40b7596e1f",
+      "gitBlobSha": "a8a9c6a50f7174a432e2dbe0c65604b6ff832998",
+      "format": "webp",
+      "altText": "A young man turns his phone face-down and continues sketching at a sunlit home desk, choosing focused creative work over distraction.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/need/bqv7-need-self-control-01-with-text-en.webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 170026,
+      "sha256": "4001a52d236c0fbfb0b3a02385a69c5f4b3687c44a0ffa93abb9d789b3d77947",
+      "gitBlobSha": "a9ea683931c386c40d8412320d834ef6c8762027",
+      "format": "webp",
+      "altText": "A young man sketching by a window with a face-down phone; English artwork text reads Self-control and Galatians 5:22-23.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": false,
+        "cropReviewed": true
+      },
+      "embeddedWording": {
+        "label": "Self-control",
+        "scriptureReference": "Galatians 5:22-23",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamilies": [
+          "Noto Serif"
+        ],
+        "fontLicense": "SIL OFL-1.1",
+        "fontFilesRedistributed": false,
+        "method": "Pillow rasterized exact English label and reference over a lower dark translucent gradient; no Scripture prose"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-self-control-01-thumbnail.webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 37094,
+      "sha256": "bce73968813af484c1f703d1c35c1606daf09832486ec8e0dbf075e5507358de",
+      "gitBlobSha": "2d422f4a745360971ccc0d9fc1594089b007fcb0",
+      "format": "webp",
+      "altText": "A young man turns his phone face-down and continues sketching at a sunlit home desk, choosing focused creative work over distraction.",
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "browserRenderedAt320390430": false,
+        "noBakedText": true,
+        "cropReviewed": true
+      },
+      "crop": {
+        "sourceRectPixels": {
+          "left": 75,
+          "top": 65,
+          "right": 915,
+          "bottom": 1115
+        },
+        "targetAspectRatio": "4:5",
+        "method": "Pillow Lanczos focal-aware crop from CLEAN retaining face, phone and drawing"
+      }
+    }
+  ],
+  "qc": {
+    "sourceIsStandaloneSingleScene": true,
+    "cleanNoBakedText": true,
+    "typeOnlyEnglishLabelAndReference": true,
+    "threePhysicalFilesMeasured": true,
+    "localPillowDecodeAndHashesVerified": true,
+    "independentVisualQA": "pending",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "not_run",
+    "productionReady": false,
+    "localChromiumHttpFixture": {
+      "engine": "Chromium via Playwright",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "allNineVariantViewportChecksPassed": false,
+      "servedHttpHashesMatchedLocalSource": false,
+      "scope": "Standalone local HTTP fixture attempted; not built app",
+      "blockedReason": "ERR_BLOCKED_BY_ADMINISTRATOR for 127.0.0.1 navigation; all 9 checks blocked, zero browser passes"
+    },
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true
+  }
+}
