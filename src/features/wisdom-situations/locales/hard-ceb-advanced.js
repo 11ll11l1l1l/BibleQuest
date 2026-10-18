@@ -201,9 +201,9 @@ export const HARD_CEB_ADVANCED=Object.freeze({
   "hw47": [
     "Aduna kay evidence nga makatabang sa coworker nga kaniadto nidaot sa imong reputation. Ang file mahimong magpakita sa imong separate policy violation.",
     [
-      "Submit relevant document§Protect innocent colleague§Mahimong ma-investigate imong record§Mahimo ka ma-dismiss§Authenticated ang timestamp.",
+      "Submit relevant document§Protect innocent colleague§Mahimong ma-investigate imong record§Mahimo ka ma-dismiss§Authenticated ang timestamp sa dokumento ug may direct relevance sa disciplinary allegation.",
       "Witness-only statement§May important facts§Mahimong kulang ang documentary proof§Mahimo ka pagdudahan sa withheld files§Witness evidence could establish key events.",
-      "Legal counsel before submission§Maprotektahan imong rights§Mahimo magdesisyon ang investigator§Mahimo mawala ang coworker's trust§Lawyer can submit securely.",
+      "Legal counsel before submission§Maprotektahan imong rights§Mahimo magdesisyon ang investigator§Mahimo mawala ang coworker's trust§Ang legal counsel makahatag og private advice ug secure submission sa investigator.",
       "Authenticated anonymous evidence§May lead ang investigators§Mahimong weak ang provenance§Mawala imong credibility kon mailhan§Acceptable ang verified anonymous leads."
     ]
   ],
