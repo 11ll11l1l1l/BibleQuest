@@ -18,10 +18,14 @@ Unit/contract checks cover canonical content, host/tenant/account/race denial an
 
 Implementation is complete in [production PR #1550](https://github.com/11ll11l1l1l/BibleQuest/pull/1550). That PR maintains the current frozen candidate, exact-source CI, promotion SHA and deployed certification links; a new source change requires new certification. No physical-device acceptance is claimed.
 
-Local checks: 732 V7 unit cases and image ledger; existing Live Rooms active-tenant edge regression; original V4 relational presentation contract (kept byte-exact); architecture; typecheck; lint/format; production build. Required pinned CI, real-JWT API/RLS checks, two-browser Realtime and full served-artifact checks remain release gates.
+Automated checks include 733 V7 unit cases and image ledger; existing Live Rooms active-tenant edge regression; original V4 relational presentation contract (kept byte-exact); architecture; typecheck; lint/format; production build. Required pinned CI, real-JWT API/RLS checks, two-browser Realtime and full served-artifact checks remain release gates.
 
 Rollback verified remotely: `rollback/v7-pre-7-1-20261018` → `c16278602c097087792dd8c31876b3645b37ed8b`. Existing V7 production evidence remains PR #1549.
 
 The new feature is a separate lazy module. The frozen original Live Rooms owner and its tests remain unchanged; the Live Rooms entry is added by a navigation wrapper. Host/participant updates preserve deck DOM and focus. Permission changes are enforced by existing database RLS; no schema changes are required.
 
 The first revised-candidate certification (`6e8ab9a8a031ffcefc5d97bfb83941130319fdec`) passed all eleven PR workflows, including strict convergence run 39090460150, real-JWT API checks and the two-phone flow. Final certification also explicitly asserts participant Realtime events. The disposable CI prerequisite overlay reproduces the two existing hosted publication memberships, verified via read-only `pg_publication_tables` on 2026-10-18; no production mutation/migration is introduced. The phone screenshot is retained in convergence artifacts.
+
+Phone screenshot inspection additionally caught inherited low-contrast Community heading styles. The session now owns a scoped dark header/code treatment with computed 4.5:1 text checks, and a collapsed Session details disclosure keeps prompts near the top of the phone. The legacy Live Rooms page remains byte-exact.
+
+The real-database journey also exposed a pre-existing sign-out hang when push cleanup awaited a service worker that never installed. Cleanup now queries the existing registration without waiting; readiness waits are bounded. Its regression and existing push lifecycle/storage/onboarding tests pass. Candidate `8793a7e33f78c65cb1d9abebf6fb117a36142ca7` passed the complete authenticated API and browser journey, including actual protocol-2 Realtime delivery, locale/reload/reconnect and account switching, before the final scoped phone contrast/layout correction. All required release gates still apply to the final PR head.

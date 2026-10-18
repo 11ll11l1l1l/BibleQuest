@@ -454,6 +454,10 @@ try {
   await page.locator('[data-live-room-create]').waitFor({state:'visible'});
   await page.locator('[data-live-room-create] button[type=submit]').click();
   await page.locator('[data-deck-next]').waitFor({state:'visible'});
+  const headerColors=await page.locator('.bq-conversation-session .bq-community-head').evaluate(node=>({background:getComputedStyle(node).backgroundColor,colors:[node.querySelector('h1'),node.querySelector('[data-live-room-connection]')].map(n=>getComputedStyle(n).color)}));
+  const luminance=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4});return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722};
+  for(const color of headerColors.colors){const levels=[luminance(color),luminance(headerColors.background)].sort((a,b)=>b-a);assert.ok((levels[0]+0.05)/(levels[1]+0.05)>=4.5,'Session header text must retain 4.5:1 contrast');}
+
   const sessionCode=new URLSearchParams((await page.evaluate(()=>location.hash)).split('?')[1]).get('code');
   assert.match(sessionCode,/^[A-Z0-9]{4,8}$/);
   await page.locator('[data-deck-next]').click();
@@ -488,8 +492,10 @@ try {
   assert.ok(participantRealtime.roomChanges>realtimeBefore,'Participant must receive an actual disposable Supabase Realtime room event: '+JSON.stringify(participantRealtime));
   await participant.reload();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  if(!await participant.locator('[data-live-room-details]').evaluate(node=>node.open))await participant.locator('[data-live-room-details] summary').click();
   await participant.locator('[data-live-room-reconnect]').click();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
+  if(!await participant.locator('[data-live-room-details]').evaluate(node=>node.open))await participant.locator('[data-live-room-details] summary').click();
   await participant.locator('[data-live-room-reconnect]').click();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
   await page.reload();
@@ -530,6 +536,7 @@ try {
   await participant.locator('[data-deck-read]').click();
   await participant.waitForURL('**/#/reader');
   await openRoute(participant,`conversation-deck?code=${sessionCode}`,'[data-deck-current] h3');
+  await page.locator('[data-live-room-details] summary').click();
   await page.locator('[data-live-room-end]').click();
   await participant.locator('[data-deck-current]').waitFor({state:'detached',timeout:20000});
   await participantContext.close();

@@ -17,3 +17,12 @@
 .bq-group-session-entry { margin:20px 0; }
 
 [data-live-room-active] summary { min-height:44px; display:flex; align-items:center; cursor:pointer; }
+
+.bq-community.bq-conversation-session .bq-community-head { background:var(--bq-surface-muted,#151917); color:var(--bq-text,#f5f5ef); padding:16px; gap:12px; box-shadow:none; }
+.bq-community.bq-conversation-session .bq-community-head h1 { color:var(--bq-text,#f5f5ef); font-size:1.5rem; line-height:1.25; margin:8px 0; overflow-wrap:anywhere; }
+.bq-community.bq-conversation-session .bq-community-head .bq-eyebrow { color:var(--bq-brand,#d7bc72); }
+.bq-community.bq-conversation-session [data-live-room-connection] { color:var(--bq-text-secondary,#d2d4cc); margin:8px 0 0; }
+.bq-community.bq-conversation-session [data-live-room-active] { background:var(--bq-surface-muted,#151917); padding:16px; margin-bottom:16px; border:1px solid var(--bq-border,#364039); }
+.bq-community.bq-conversation-session [data-live-room-active] > p { margin:0 0 8px; }
+.bq-community.bq-conversation-session [data-live-room-code] { background:var(--bq-surface,#101412); color:var(--bq-brand,#d7bc72); font-size:1rem; border:1px solid var(--bq-border-strong,#6e776e); padding:8px; }
+.bq-community.bq-conversation-session [data-live-room-details] summary { flex-wrap:wrap; gap:4px; }
