@@ -158,9 +158,9 @@ export const HARD_FOUNDATION=Object.freeze({
     "context": "Your child lied to protect a friend whose parents punish harshly. The school demands a signed account tomorrow; your child asks you not to identify the friend.",
     "options": [
       "Submit the whole story; protect school truthfulness but risk exposing the other child to severe punishment.",
-      "Describe only what your child did; preserve some privacy but leave the school with an incomplete account.",
+      "Meet the teacher privately tonight; clarify family context but risk exposing the other child’s home circumstances.",
       "Request a meeting before signing; protect the children briefly but risk school discipline against your child.",
-      "Sign the school’s current version; close the dispute but teach your child that an incomplete story is acceptable."
+      "Submit a partial written account; preserve the friend’s privacy but risk the school missing an essential fact."
     ],
     "best": 2,
     "why": "A meeting buys legitimate context before identifying a vulnerable child, even while it puts the reporting family at disciplinary risk."
@@ -190,7 +190,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw18": {
     "context": "You promised to host a relative for two months. After a week their behavior is frightening your child, but they have no affordable alternative housing.",
     "options": [
-      "Honor the full promise; protect the relative from homelessness but expose your child to continued fear.",
+      "Move your child to grandparents briefly; preserve the hosting promise but displace your child and strain trust.",
       "End the stay tomorrow; protect your child but abandon a dependent relative to an urgent housing crisis.",
       "Offer one supervised week while finding alternatives; buy time but put a continuing burden on your household.",
       "Pay for a short hotel stay; separate the households but use savings reserved for your own emergency."
@@ -201,7 +201,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw19": {
     "context": "A colleague asks your advice on stopping prescribed treatment. They trust you more than professionals and will act tonight if you offer a confident answer.",
     "options": [
-      "Give your personal experience; meet their need for guidance but risk harm from advice beyond your competence.",
+      "Share published treatment information; support informed choice but risk your friend misreading urgent symptoms.",
       "Decline any opinion; avoid false authority but leave them alone during an anxious decision.",
       "Help them reach a qualified service now; improve safety but risk being seen as withholding needed friendship.",
       "Ask them to wait until tomorrow; prevent impulsive action but leave serious symptoms untreated overnight."
@@ -237,7 +237,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Accept tonight; serve the waiting community but uproot your child without a clear plan.",
       "Decline tonight; protect current family stability but leave urgent ministry needs unmet.",
       "Ask for a two-week extension; gain discernment time but likely lose the invitation.",
-      "Ask your spouse to decide; honor their view but transfer the burden of uncertainty to them."
+      "Choose the option your spouse favors; respect their judgment but risk burdening them with responsibility for the outcome."
     ],
     "best": 2,
     "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty."
