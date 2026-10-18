@@ -17,7 +17,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give your friend a week to confess; preserve agency but prolong the spouse’s decisions under false information.",
       "Tell the spouse today; protect informed consent but destroy your friend’s trust and control over disclosure.",
       "Refuse to keep speaking until confession; avoid complicity but abandon a friend in a dangerous emotional state.",
-      "Bring the friend to a counselor now; support responsible disclosure but risk delays and professional exposure."
+      "Bring the friend directly to a counselor now; support responsible disclosure but risk delays and professional exposure."
     ],
     "best": 3,
     "why": "Third-party counsel preserves a route toward truthful disclosure without claiming the confidant can resolve the crisis alone."
@@ -94,7 +94,7 @@ export const HARD_EXPERT=Object.freeze({
       "Borrow licensed equipment from a nearby church; avoid piracy but risk failures and late cancellation.",
       "Use free software; respect creators but exclude some participants who need accessibility features.",
       "Postpone the session for fundraising; fund proper access but disappoint families who reserved travel.",
-      "Pay for a license personally; preserve access but sacrifice savings your family allocated elsewhere."
+      "Pay for a license from your own income; preserve access but sacrifice savings your family allocated elsewhere."
     ],
     "best": 3,
     "why": "Personal funding avoids transferring the legal cost to participants, while it imposes a real and possibly unfair household sacrifice."
@@ -212,7 +212,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw68": {
     "context": "Your teenager copied major coursework. Reporting it may cost a scholarship; staying silent may reward dishonesty over classmates who did their own work.",
     "options": [
-      "Require self-reporting tonight; teach accountability but risk the scholarship and your child’s future trust.",
+      "Require self-reporting tonight; teach true accountability but risk the scholarship and your child’s future trust.",
       "Report directly to the school; protect fairness but remove the teenager’s agency in repair.",
       "Request a confidential redo from the teacher; restore learning but risk unequal treatment of classmates.",
       "Allow submission with a confession note; retain some credit but expose your child to unpredictable discipline."
