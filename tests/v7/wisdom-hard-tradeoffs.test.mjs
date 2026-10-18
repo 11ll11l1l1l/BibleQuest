@@ -28,9 +28,21 @@ for(const item of WISDOM_SITUATIONS){
   }
   for(const locale of ['tl','ceb']){
     const translated=localizeWisdomSituation(item,locale);
-    assert(translated.options.length===4,`${item.id} ${locale} answer count regressed`);
-    assert(translated.options.every((option,i)=>option===item.options[i]),`${item.id} ${locale} must not serve mismatched historical choices`);
-    assert(translated.scenario===item.scenario,`${item.id} ${locale} must not serve a historical scene with new scoring`);
+    assert(translated.options.length===4&&new Set(translated.options).size===4,`${item.id} ${locale} choices missing or duplicated`);
+    assert(translated.basis.length===4&&translated.rationales.length===4,`${item.id} ${locale} missing justified choices`);
+    assert(translated.scenario!==item.scenario&&translated.scenario.length>=85,`${item.id} ${locale} is not an authored translated scene`);
+    assert(translated.why!==item.why&&translated.title,`${item.id} ${locale} missing translated explanations/title`);
+    assert(translated.best===item.best&&translated.id===item.id,`${item.id} ${locale} canonical answer/index changed`);
+    for(let i=0;i<4;i++){
+      const parts=translated.options[i].match(/^(.+?)[.] Benefit: (.+?)[.] Cost 1: (.+?)[.] Cost 2: (.+?)[.]$/);
+      assert(parts&&parts.slice(1).every(value=>value.trim().length>=6),`${item.id} ${locale}/${i} must contain an action, one gain and two losses`);
+      assert(translated.options[i]!==item.options[i],`${item.id} ${locale}/${i} still uses an English choice`);
+      assert(translated.basis[i].length>=30&&translated.basis[i]!==item.basis[i],`${item.id} ${locale}/${i} basis missing or untranslated`);
+      assert(translated.rationales[i].includes(translated.basis[i]),`${item.id} ${locale}/${i} outcome and explanation misaligned`);
+      assert(translated.rationales[i].includes(parts[2])&&translated.rationales[i].includes(parts[3])&&translated.rationales[i].includes(parts[4]),`${item.id} ${locale}/${i} omitted a consequence`);
+    }
+    const alternate=localizeWisdomSituation(item,locale==='tl'?'tl-PH':'ceb_PH');
+    assert(alternate.scenario===translated.scenario,`${item.id} ${locale} locale variant mismatch`);
   }
 }
 assert(ids.size===72,'exactly 72 unique dilemmas required');
@@ -41,3 +53,19 @@ assert(WISDOM_SITUATIONS.filter(x=>x.pack==='advanced').length===24,'advanced pa
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='expert').length===24,'expert pack changed');
 assert(getWisdomSituation('hw72').id==='hw72','last case missing');
 console.log(`Hard wisdom structural QA passed: 72 cases, 288 choices with a concrete defense, one benefit and two meaningful costs; stored editorial option longest ${preferredLongest}/72, shortest ${preferredShortest}/72.`);
+
+// Case-specific safeguarding, parity and least-attractive-choice regression guards.
+const housing=getWisdomSituation('hw65');
+for(const locale of ['en','tl','ceb']){
+  const case65=localizeWisdomSituation(housing,locale);
+  assert(case65.options[3].length>40&&case65.basis[3].length>30,`${locale} housing refusal must be a viable, specific alternative`);
+  assert(case65.options[2].length>40,`${locale} hosting option must retain material costs`);
+}
+const safety=getWisdomSituation('hw32');
+assert(!safety.options.some(option=>/bypass an? (interlock|safety control)/i.test(option)), 'No alternative may endorse bypassing mandatory safety protections');
+const license=getWisdomSituation('hw57');
+assert(!license.options.some(option=>/use the cracked copy/i.test(option)), 'No alternative may endorse pirated software');
+const report=getWisdomSituation('hw53');
+assert(report.options.length===4&&report.basis.every(reason=>reason.length>=35),'Safeguarding judgment needs four serious factual defenses');
+assert(localizeWisdomSituation(housing,'fr')===housing,'Unsupported locale must not change canonical answer');
+console.log('Wisdom localization QA passed: 72 aligned scenes × EN/TL/CEB, 864 options with 1 benefit/2 costs, 576 localized grounds.');
