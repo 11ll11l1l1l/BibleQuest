@@ -383,7 +383,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "you risk exclusion from your own circle of friends",
       "you may lose the newcomer’s trust for staying silent",
       "you could lose your only local friendship for questioning the group",
-      "the newcomer may stop trusting you with a concern again"
+      "you may lose the newcomer's trust when another hurtful joke occurs"
     ],
     "basis": [
       "The newcomer later told you the joke felt hostile but feared creating a scene.",
