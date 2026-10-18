@@ -36,7 +36,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw04": {
     "context": "The finance committee votes tomorrow. The former treasurer’s apology is credible, but no other experienced volunteer is available for the role.",
     "options": [
-      "Restore shared access with a cosigner; keep the ministry staffed but place funds and relationships at renewed risk.",
+      "Restore shared access with a cosigner; keep the ministry staffed but still place funds and relationships at renewed risk.",
       "Keep the role vacant for a quarter; protect assets but delay services that families currently depend on.",
       "Move the person to nonfinancial service; preserve belonging but signal mistrust and lose their strongest skill.",
       "Restore full control during probation; demonstrate trust but expose donors to damage that cannot easily be reversed."
@@ -72,7 +72,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Vote for the quick compromise; keep the room but leave important objections publicly unresolved.",
       "Postpone the vote and lose the lease; respect dissent but fracture a group already short of gathering space.",
       "Hold a secret ballot tonight; protect individual freedom but risk a result that feels procedurally manipulative.",
-      "Invite the dissenters to propose one amendment; build ownership but risk the deadline and continued conflict."
+      "Invite the dissenters to propose one joint amendment; build ownership but risk the deadline and continued conflict."
     ],
     "best": 3,
     "why": "A tightly bounded amendment invites affected members to share responsibility while accepting the real possibility of losing the lease."
@@ -92,7 +92,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "context": "Your friend will miss a professional licensing deadline tomorrow unless you finish part of their work. This is their third emergency, and your own family expects you home.",
     "options": [
       "Finish the task tonight; preserve their qualification but sacrifice home commitments and deepen dependence.",
-      "Review their draft for one hour; give useful help but risk being blamed when they still miss the deadline.",
+      "Review their draft for one difficult hour; give useful help but risk being blamed when they still miss the deadline.",
       "Refuse to assist; stop the rescuing pattern but jeopardize their livelihood and your friendship.",
       "Ask your spouse to cover home duties; support your friend but transfer the cost to someone who never agreed."
     ],
@@ -135,7 +135,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw13": {
     "context": "A teammate’s process error may invalidate the lot; the customer review starts in ninety minutes. Disclosing it may close the shift and cost everyone a bonus.",
     "options": [
-      "Pause the lot and disclose uncertainty; protect the customer but expose colleagues to a large financial loss.",
+      "Pause the lot and disclose uncertainty now; protect the customer but expose colleagues to a large financial loss.",
       "Quietly recheck the measurements; gather certainty but lose the window for full containment.",
       "Tell only the shift manager; respect reporting lines but risk a decision made without the customer’s knowledge.",
       "Approve shipment with a caveat; preserve schedules but transfer the unresolved risk to the customer."
@@ -203,7 +203,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "options": [
       "Share published treatment information; support informed choice but risk your friend misreading urgent symptoms.",
       "Decline any opinion; avoid false authority but leave them alone during an anxious decision.",
-      "Help them reach a qualified service now; improve safety but risk being seen as withholding needed friendship.",
+      "Help them reach a qualified service today; improve safety but risk being seen as withholding needed friendship.",
       "Ask them to wait until tomorrow; prevent impulsive action but leave serious symptoms untreated overnight."
     ],
     "best": 2,
