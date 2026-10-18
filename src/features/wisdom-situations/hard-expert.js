@@ -353,7 +353,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
-      "Submit an explicitly limited recent-period appraisal; recognize improvement but leave important earlier performance unclear."
+      "Provide limited recent results; note improvement but leave earlier failures unexplained."
     ],
     "best": 0,
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
