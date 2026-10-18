@@ -208,6 +208,7 @@ await insert('v7_pair_assignments', {
 checks.push('synthetic-populated-library-and-one-to-one-seed');
 
 async function installDisposableBackendRoute(context) {
+  const realtimeEvidence={roomChanges:0};
   // Bridge actual Realtime traffic to the disposable stack; no fabricated events.
   await context.routeWebSocket('wss://zkfmgezvzugchcwppreq.supabase.co/**', socket=>{
     const source=new URL(socket.url()),target=new URL(source.pathname+source.search,endpoint);
@@ -215,7 +216,7 @@ async function installDisposableBackendRoute(context) {
     const upstream=new WebSocket(target);const pending=[];
     socket.onMessage(message=>{if(upstream.readyState===WebSocket.OPEN)upstream.send(message);else if(upstream.readyState===WebSocket.CONNECTING)pending.push(message)});
     upstream.addEventListener('open',()=>{for(const message of pending)upstream.send(message);pending.length=0});
-    upstream.addEventListener('message',event=>socket.send(event.data));
+    upstream.addEventListener('message',event=>{try{const message=JSON.parse(event.data);if(message.event==='postgres_changes'&&message.payload?.data?.table==='bible_shared_sessions')realtimeEvidence.roomChanges++}catch{}socket.send(event.data)});
     upstream.addEventListener('error',()=>socket.close());
     upstream.addEventListener('close',()=>socket.close());
     socket.onClose(()=>upstream.close());
@@ -246,6 +247,7 @@ async function installDisposableBackendRoute(context) {
     }
     await route.fulfill({ response });
   });
+  return realtimeEvidence;
 }
 
 async function openRoute(page, route, selector) {
@@ -440,7 +442,7 @@ try {
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
 
   stage = 'v7-1-two-phone-session';
-  await page.locator('[data-locale-select]').selectOption('en');
+  await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption('en')]);
   await openRoute(page,'one-to-one','[data-pair-results]');
   await page.locator('[data-pair-conversation]').click();
   await page.locator('[data-live-room-create]').waitFor({state:'visible'});
@@ -454,7 +456,7 @@ try {
   await page.locator('[data-deck-send]').click();
   await page.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor();
   const participantContext=await browser.newContext({viewport:{width:320,height:760}});
-  await installDisposableBackendRoute(participantContext);
+  const participantRealtime=await installDisposableBackendRoute(participantContext);
   const participant=await participantContext.newPage();
   participant.on('pageerror',error=>pageErrors.push(error.message));
   await login(participant,mentee);
@@ -470,9 +472,12 @@ try {
   await page.keyboard.press('ArrowRight');
   assert.match(await page.locator('[data-deck-preview]').textContent(),/Courage to obey/);
   assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  const realtimeBefore=participantRealtime.roomChanges;
   await page.locator('[data-deck-send]').focus();
   await page.keyboard.press('Enter');
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  assert.equal(await page.evaluate(()=>document.activeElement?.hasAttribute('data-deck-send')),true,'Sending must preserve keyboard focus');
+  assert.ok(participantRealtime.roomChanges>realtimeBefore,'Participant must receive an actual disposable Supabase Realtime room event');
   await participant.reload();
   await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
   await participant.locator('[data-live-room-reconnect]').click();
@@ -508,7 +513,7 @@ try {
   await page.evaluate(()=>document.documentElement.style.fontSize='');
   await page.setViewportSize({width:390,height:900});
   for(const [locale,title] of [['tl','Idalangin ito'],['ceb','Dad-a kini sa pag-ampo'],['en','Bring it into prayer']]){
-    await page.locator('[data-locale-select]').selectOption(locale);
+    await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption(locale)]);
     await page.locator('[data-deck-current] h3').filter({hasText:title}).waitFor();
     await assertNoHorizontalOverflow(page,`V7.1 ${locale}`);
   }

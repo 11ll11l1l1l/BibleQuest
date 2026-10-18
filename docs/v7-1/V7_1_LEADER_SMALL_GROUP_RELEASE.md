@@ -16,4 +16,12 @@ Owner authorized implementation and direct release on 2026-10-18. Baseline: prod
 
 Unit/contract checks cover canonical content, host/tenant/account/race denial and quiet preview. Disposable-database authenticated API checks prove host publication and member/cross-tenant denial. Built browser checks prove two-phone host/participant selection, join-late/reconnect, narrow layout, focus stability, localization and keyboard/swipe actions. Run existing exact-source strict release, security, inherited, phone/PWA/offline and deployed full-file certification before reporting released. Record actual candidate, PR, workflow and deployed SHA below; no physical-device PASS is inferred.
 
-Status: IMPLEMENTING. Release evidence will be maintained in the production PR and this workstream's handoff.
+Implementation is complete in [production PR #1550](https://github.com/11ll11l1l1l/BibleQuest/pull/1550). That PR maintains the current frozen candidate, exact-source CI, promotion SHA and deployed certification links; a new source change requires new certification. No physical-device acceptance is claimed.
+
+Local checks: 732 V7 unit cases and image ledger; existing Live Rooms active-tenant edge regression; original V4 relational presentation contract (kept byte-exact); architecture; typecheck; lint/format; production build. Required pinned CI, real-JWT API/RLS checks, two-browser Realtime and full served-artifact checks remain release gates.
+
+Rollback verified remotely: `rollback/v7-pre-7-1-20261018` → `c16278602c097087792dd8c31876b3645b37ed8b`. Existing V7 production evidence remains PR #1549.
+
+The new feature is a separate lazy module. The frozen original Live Rooms owner and its tests remain unchanged; the Live Rooms entry is added by a navigation wrapper. Host/participant updates preserve deck DOM and focus. Permission changes are enforced by existing database RLS; no schema changes are required.
+
+The first revised-candidate certification (`6e8ab9a8a031ffcefc5d97bfb83941130319fdec`) passed all eleven PR workflows, including strict convergence run 39090460150, real-JWT API checks and the two-phone flow. Final certification also explicitly asserts participant Realtime events. The disposable CI prerequisite overlay reproduces the two existing hosted publication memberships, verified via read-only `pg_publication_tables` on 2026-10-18; no production mutation/migration is introduced. The phone screenshot is retained in convergence artifacts.

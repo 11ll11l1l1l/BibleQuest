@@ -451,6 +451,7 @@ jobs:
             artifacts/v7/motion-*.png
             artifacts/v7/authenticated-api-journey.json
             artifacts/v7/authenticated-built-browser-journey.json
+            artifacts/v7/v7-1-host-phone.png
             artifacts/v7/release-convergence.json
             artifacts/v7/release-evidence.sha256
             artifacts/v7/production-deployment-verification.json
