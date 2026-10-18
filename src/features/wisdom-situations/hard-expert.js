@@ -122,7 +122,7 @@ export const HARD_EXPERT=Object.freeze({
       "Host a supervised visit; offer reconciliation but expose children to a stressful reunion.",
       "Meet alone first; test trust gradually but deny the children a possible family repair.",
       "Decline the holiday invitation; prioritize healing but risk deepening a genuine separation.",
-      "Attend at a neutral venue briefly; preserve a family bond but leave the children little space to withdraw."
+      "Attend briefly at a neutral venue; preserve a family bond but unsettle children still unsure they want contact."
     ],
     "best": 1,
     "why": "A meeting without children tests the relationship before requesting their participation, though it postpones reconciliation they may want.",
@@ -353,7 +353,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
-      "Assess only the requested recent period; recognize improvement but omit older issues still relevant."
+      "Submit an explicitly limited recent-period appraisal; recognize improvement but leave important earlier performance unclear."
     ],
     "best": 0,
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
@@ -469,7 +469,7 @@ export const HARD_EXPERT=Object.freeze({
       "Ask them to step down privately; protect institutional integrity but create suspicion without explanation.",
       "Require a public account; restore transparency but expose uninvolved relatives to lasting harm.",
       "Arrange independent elder review; limit unilateral judgment but risk leaks and prolonged uncertainty.",
-      "Provide confidential counseling only; support change but leave authority unaffected by a serious deception."
+      "Begin confidential counseling with a dated elder review; support repentance but delay formal oversight of deception."
     ],
     "best": 2,
     "why": "Independent oversight avoids treating a confession as either a private therapy issue or automatic public spectacle.",
@@ -483,7 +483,7 @@ export const HARD_EXPERT=Object.freeze({
       "The pastor has broken written leadership standards and agrees to a confidential leave.",
       "The congregation's covenant expressly promises disclosure of sustained public hypocrisy.",
       "The eldership includes disinterested members who can apply established disciplinary procedures.",
-      "The undisclosed wrongdoing ended, restitution was made, and all affected parties accepted counseling."
+      "The wrongdoing ended, restitution was made, and affected parties accepted counseling before a confidential elder review."
     ]
   },
   "hw70": {
