@@ -91,7 +91,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw57": {
     "context": "The youth event requires a paid software license tomorrow, and the budget is exhausted. A volunteer offers an unauthorized copy, while using a free tool will reduce accessibility.",
     "options": [
-      "Use the unauthorized copy once; deliver the event but make ministry depend on an unlawful shortcut.",
+      "Borrow licensed equipment from a nearby church; avoid piracy but risk failures and late cancellation.",
       "Use free software; respect creators but exclude some participants who need accessibility features.",
       "Postpone the session for fundraising; fund proper access but disappoint families who reserved travel.",
       "Pay for a license personally; preserve access but sacrifice savings your family allocated elsewhere."
@@ -214,7 +214,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Require self-reporting tonight; teach accountability but risk the scholarship and your child’s future trust.",
       "Report directly to the school; protect fairness but remove the teenager’s agency in repair.",
-      "Have the work redone privately; restore learning but conceal the violation from evaluators.",
+      "Request a confidential redo from the teacher; restore learning but risk unequal treatment of classmates.",
       "Allow submission with a confession note; retain some credit but expose your child to unpredictable discipline."
     ],
     "best": 0,
@@ -234,7 +234,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw70": {
     "context": "Restricted donations are available while disaster victims urgently need shelter. The donors cannot be reached today and unrelated operating reserves will not cover the immediate cost.",
     "options": [
-      "Redirect the gifts for shelter; help victims but violate donor restrictions that support long-term trust.",
+      "Urgently ask donors to release restrictions; respect consent but lose hours needed for immediate shelter.",
       "Refuse transfer and seek emergency credit; honor restrictions but create debt the charity may not repay.",
       "Use unrestricted funds intended for payroll; respond tonight but risk not paying employees.",
       "Ask the board for exceptional authorization; add accountability but risk losing the short emergency window."
