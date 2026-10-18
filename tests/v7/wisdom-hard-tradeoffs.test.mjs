@@ -16,7 +16,7 @@ for(const item of WISDOM_SITUATIONS){
   if(lengths[item.best]===max)preferredLongest++;
   if(lengths[item.best]===min)preferredShortest++;
   for(let i=0;i<4;i++){
-    const pattern=/^(.+?)\\. Benefit: (.+?)\\. Cost 1: (.+?)\\. Cost 2: (.+?)\\.$/;
+    const pattern=/^(.+?)[.] Benefit: (.+?)[.] Cost 1: (.+?)[.] Cost 2: (.+?)[.]$/;
     const parts=item.options[i].match(pattern);
     assert(parts&&parts.slice(1).every(value=>value.trim().length>=8),`${item.id} option ${i} must include an action, a real benefit and two distinct costs`);
     assert(parts[3]!==parts[4],`${item.id} option ${i} repeats the same cost`);
