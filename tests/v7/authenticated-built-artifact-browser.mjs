@@ -208,6 +208,18 @@ await insert('v7_pair_assignments', {
 checks.push('synthetic-populated-library-and-one-to-one-seed');
 
 async function installDisposableBackendRoute(context) {
+  // Bridge actual Realtime traffic to the disposable stack; no fabricated events.
+  await context.routeWebSocket('wss://zkfmgezvzugchcwppreq.supabase.co/**', socket=>{
+    const source=new URL(socket.url()),target=new URL(source.pathname+source.search,endpoint);
+    target.protocol='ws:';target.searchParams.set('apikey',status.ANON_KEY);
+    const upstream=new WebSocket(target);const pending=[];
+    socket.onMessage(message=>{if(upstream.readyState===WebSocket.OPEN)upstream.send(message);else if(upstream.readyState===WebSocket.CONNECTING)pending.push(message)});
+    upstream.addEventListener('open',()=>{for(const message of pending)upstream.send(message);pending.length=0});
+    upstream.addEventListener('message',event=>socket.send(event.data));
+    upstream.addEventListener('error',()=>socket.close());
+    upstream.addEventListener('close',()=>socket.close());
+    socket.onClose(()=>upstream.close());
+  });
   await context.route(`${productionSupabaseOrigin}/**`, async route => {
     const requestRecord = route.request();
     const source = new URL(requestRecord.url());
@@ -426,6 +438,74 @@ try {
   assert.equal(await page.evaluate(() => location.hash), '#/one-to-one?view=assignment');
   await assertNoHorizontalOverflow(page, 'mentor assignment preparation');
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
+
+  stage = 'v7-1-two-phone-session';
+  await page.locator('[data-locale-select]').selectOption('en');
+  await openRoute(page,'one-to-one','[data-pair-results]');
+  await page.locator('[data-pair-conversation]').click();
+  await page.locator('[data-live-room-create]').waitFor({state:'visible'});
+  await page.locator('[data-live-room-create] button[type=submit]').click();
+  await page.locator('[data-deck-next]').waitFor({state:'visible'});
+  const sessionCode=new URLSearchParams((await page.evaluate(()=>location.hash)).split('?')[1]).get('code');
+  assert.match(sessionCode,/^[A-Z0-9]{4,8}$/);
+  await page.locator('[data-deck-next]').click();
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Bring it into prayer/);
+  assert.match(await page.locator('[data-deck-current]').textContent(),/Waiting/);
+  await page.locator('[data-deck-send]').click();
+  await page.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor();
+  const participantContext=await browser.newContext({viewport:{width:320,height:760}});
+  await installDisposableBackendRoute(participantContext);
+  const participant=await participantContext.newPage();
+  participant.on('pageerror',error=>pageErrors.push(error.message));
+  await login(participant,mentee);
+  await openRoute(participant,`conversation-deck?code=${sessionCode}`,'[data-deck-current] h3');
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  assert.equal(await participant.locator('[data-deck-send]').count(),0);
+  await assertNoHorizontalOverflow(participant,'V7.1 participant 320px');
+  // Keep the host controls mounted across presence/recovery updates.
+  await page.locator('[data-deck-send]').evaluate(node=>{node.dataset.focusSentinel='same-node'});
+  await page.locator('[data-deck-refresh]').click();
+  assert.equal(await page.locator('[data-deck-send]').getAttribute('data-focus-sentinel'),'same-node');
+  await page.locator('[data-deck-gesture]').focus();
+  await page.keyboard.press('ArrowRight');
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Courage to obey/);
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  await page.locator('[data-deck-send]').focus();
+  await page.keyboard.press('Enter');
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  await participant.reload();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  await participant.locator('[data-live-room-reconnect]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
+  await page.reload();
+  await page.locator('[data-deck-send]').waitFor();
+  assert.match(await page.locator('[data-deck-current]').textContent(),/Courage to obey/);
+  const gesture=page.locator('[data-deck-gesture]');
+  await gesture.dispatchEvent('pointerdown',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:150});
+  await gesture.dispatchEvent('pointerup',{pointerId:1,isPrimary:true,button:0,clientX:200,clientY:150});
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Bring it into prayer/);
+  await gesture.dispatchEvent('pointerdown',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:150});
+  await gesture.dispatchEvent('pointerup',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:50});
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor({timeout:20000});
+  await page.setViewportSize({width:320,height:760});
+  await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+  await assertNoHorizontalOverflow(page,'V7.1 host 320px 200%');
+  await page.evaluate(()=>document.documentElement.style.fontSize='');
+  await page.setViewportSize({width:390,height:900});
+  for(const [locale,title] of [['tl','Idalangin ito'],['ceb','Dad-a kini sa pag-ampo'],['en','Bring it into prayer']]){
+    await page.locator('[data-locale-select]').selectOption(locale);
+    await page.locator('[data-deck-current] h3').filter({hasText:title}).waitFor();
+    await assertNoHorizontalOverflow(page,`V7.1 ${locale}`);
+  }
+  await mkdir('artifacts/v7',{recursive:true});
+  await page.screenshot({path:'artifacts/v7/v7-1-host-phone.png',fullPage:true});
+  await participant.locator('[data-deck-read]').click();
+  await participant.waitForURL('**/#/reader');
+  await openRoute(participant,`conversation-deck?code=${sessionCode}`,'[data-deck-current] h3');
+  await page.locator('[data-live-room-end]').click();
+  await participant.locator('[data-deck-current]').waitFor({state:'detached',timeout:20000});
+  await participantContext.close();
+  checks.push('v7-1-two-phone-explicit-preview-send-late-join-reload-reconnect-keyboard-swipe-locales-reader-ended-focus-stability');
 
   stage = 'account-switch-to-mentee';
   await signOut(page);

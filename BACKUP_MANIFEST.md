@@ -4,6 +4,10 @@ Updated: 2026-10-04 JST
 
 This file is the canonical map of preserved BibleQuest release backups. Archive branches are **read-only by project policy**: never develop on them, force-move them, or use them as active integration branches.
 
+## V7.1 rollback
+
+Before V7.1 promotion, preserved remote branch `rollback/v7-pre-7-1-20261018` at `c16278602c097087792dd8c31876b3645b37ed8b`, the certified V7 phone UI release (PR #1549). Frozen rollback; never develop on or move it.
+
 ## Historical canonical backups
 
 | Version | Purpose | Branch | Exact SHA |
