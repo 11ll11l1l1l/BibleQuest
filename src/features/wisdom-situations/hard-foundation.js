@@ -349,7 +349,7 @@ export const HARD_FOUNDATION=Object.freeze({
   "hw16": {
     "context": "A public allegation about you is factually incomplete. You have screenshots that refute it but expose an unrelated private conversation if published.",
     "options": [
-      "Publish the screenshots; restore your reputation but violate a third person’s confidence.",
+      "Release consented excerpts of the record; rebut the allegation but expose sensitive context to public misinterpretation.",
       "Respond without evidence; keep confidentiality but risk appearing evasive and losing public trust.",
       "Seek a private correction from the accuser; reduce public harm but let the allegation keep spreading.",
       "Issue a short public timeline; defend yourself but expose incomplete evidence and invite doubt."
@@ -357,7 +357,7 @@ export const HARD_FOUNDATION=Object.freeze({
     "best": 3,
     "why": "A bounded timeline corrects what can be publicly established without treating a third party’s private conversation as disposable.",
     "cost2": [
-      "you may lose the trust of the person whose messages leak",
+      "you may lose control over personal evidence once screenshots spread",
       "your livelihood could suffer from an unanswered allegation",
       "you may be forced into weeks of public uncertainty",
       "your family could face a prolonged public dispute over incomplete proof"
