@@ -52,7 +52,7 @@ export const HARD_EXPERT=Object.freeze({
       "Buy the food with ministry funds; feed households tonight but risk an audit finding and dismissal.",
       "Advance your personal savings; avoid breaking controls but expose your own dependents to a loss.",
       "Wait until morning authorization; preserve governance but leave affected households without dinner.",
-      "Make separate authorized purchases for distinct urgent needs; feed households promptly but invite audit concern over fragmentation."
+      "Use separate approved emergency orders; supply urgent needs but invite scrutiny of emergency purchasing."
     ],
     "best": 0,
     "why": "A recorded emergency exception openly confronts governance risk instead of evading it, while immediate human need remains real.",
@@ -352,7 +352,7 @@ export const HARD_EXPERT=Object.freeze({
       "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
-      "Provide the requested recent-period assessment; acknowledge genuine progress but risk omitting earlier relevant failures."
+      "Assess only the requested recent period; recognize real progress but risk missing earlier failures."
     ],
     "best": 0,
     "why": "A mixed account gives decision-makers both improvement and documented concern, paying the personal cost of disappointing a vulnerable former worker.",
@@ -383,7 +383,7 @@ export const HARD_EXPERT=Object.freeze({
       "you may lose money your child depends on",
       "you may drain savings needed for your own household",
       "you may struggle with conflict and crowding for months",
-      "you may lose your friend's trust when they feel you chose your child's security over their stability"
+      "you may lose a friend who expected you to protect their familiar home"
     ],
     "basis": [
       "The friend starts a signed new job soon; the landlord will accept a documented guarantee tonight.",
@@ -491,7 +491,7 @@ export const HARD_EXPERT=Object.freeze({
       "Urgently ask donors to release restrictions; respect consent but lose hours needed for immediate shelter.",
       "Refuse transfer and seek emergency credit; honor restrictions but create debt the charity may not repay.",
       "Use unrestricted funds intended for payroll; respond tonight but risk not paying employees.",
-      "Request board-approved temporary restricted-fund bridging; accelerate relief but risk delay if pre-consent documentation is missing."
+      "Seek preauthorized board bridging; accelerate relief but risk delay while checking donor consent."
     ],
     "best": 1,
     "why": "Emergency credit preserves entrusted limits while permitting relief, though repayment can materially harm future recipients.",
