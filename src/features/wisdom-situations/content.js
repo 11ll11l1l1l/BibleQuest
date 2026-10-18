@@ -71,15 +71,8 @@ const TL_BY_ID=Object.freeze({...TL_WISDOM_BASE,...TL_WISDOM_ADVANCED,...TL_WISD
 const CEB_BY_ID=Object.freeze({...CEB_WISDOM_BASE,...CEB_WISDOM_ADVANCED,...CEB_WISDOM_EXPERT});
 const LOCALES=Object.freeze({tl:TL_BY_ID,ceb:CEB_BY_ID});
 
-function freezeLocalized(raw){
-  return Object.freeze({
-    title:String(raw.title||''),tension:String(raw.tension||''),scenario:String(raw.scenario||''),
-    options:Object.freeze([...(raw.options||[])]),why:String(raw.why||''),
-    rationales:Object.freeze([...(raw.rationales||[])])
-  });
-}
-
 export function localizeWisdomSituation(item,locale='en'){
+  void locale;
   // The previous TL/CEB alternatives no longer match the English scenario, ordering,
   // or preferred response. Until reviewed translations are complete, preserve the
   // identical English dilemma rather than serving unsafe mismatched answer indices.
