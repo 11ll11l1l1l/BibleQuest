@@ -25,8 +25,8 @@ for(const item of WISDOM_SITUATIONS){
   }
 }
 assert(ids.size===72,'exactly 72 unique dilemmas required');
-assert(preferredLongest<=12,`longest answer still a useful clue (${preferredLongest}/72)`);
-assert(preferredShortest<=26,`shortest answer is now a useful clue (${preferredShortest}/72)`);
+assert(preferredLongest>=12&&preferredLongest<=24,`longest answer remains an exploitable length clue (${preferredLongest}/72)`);
+assert(preferredShortest>=12&&preferredShortest<=26,`shortest answer remains an exploitable length clue (${preferredShortest}/72)`);
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='foundation').length===24,'foundation pack changed');
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='advanced').length===24,'advanced pack changed');
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='expert').length===24,'expert pack changed');
