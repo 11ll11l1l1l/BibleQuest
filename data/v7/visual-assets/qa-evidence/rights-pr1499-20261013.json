@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "role": "rights",
+  "verdict": "HOLD",
+  "contentType": "emotion",
+  "canonicalId": "tempted",
+  "reviewedPr": 1499,
+  "reviewedPrHead": "dfa9977e6ae22934e163e9aafd04f7eb8d611ab6",
+  "canonicalTaxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "singleMasterContractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "sourceRecordBlob": "2c01015e4a4fd6fcefa8c674c9bd3302d77d8930",
+  "derivativeRecordBlob": "7f05b2400e950a540acaa3f9d32a697fd6f6af1c",
+  "actualRasterPixelInspection": true,
+  "sha256IndependentlyRecomputed": true,
+  "verifiedSha256": {
+    "CLEAN": "51bc3448770b8b69677db1e58c1a40f941506742777a583fbf85c3b462c5b675",
+    "TYPE": "0ace3ccd561e94133cab14fe1b29326b42c67ef6e72f65cd7c2364625b278aeb"
+  },
+  "observedEnglishTitle": "Tempted",
+  "observedReference": "1 Corinthians 10:13",
+  "scriptureQuotationObserved": false,
+  "cleanBakedTitleObserved": false,
+  "languageClaim": "English TYPE only; translated UI not certified",
+  "rightsStatus": "first-party generated claimed by source sidecar; original generation/input rights not independently verified",
+  "missingEvidence": "Corrected TYPE now matches canonical title/reference, but original generation prompt is explicitly unavailable and source record retains historical contentId=temptation vs canonical tempted. Verify provenance and live identity resolver/localized rendering.",
+  "release": "HOLD_POLICY_MIGRATION for CLEAN-only Feeling",
+  "proofUrl": "https://github.com/11ll11l1l1l/BibleQuest/pull/1499",
+  "noApproval": true,
+  "noMergeOrDeploy": true
+}
