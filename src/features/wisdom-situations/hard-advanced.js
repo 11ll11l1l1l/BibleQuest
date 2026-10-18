@@ -72,10 +72,10 @@ export const HARD_ADVANCED=Object.freeze({
   "hw28": {
     "context": "The school has not assigned supervision for tomorrow’s sports event. Your child must attend or miss an important assessment, and the bully has made a specific threat.",
     "options": [
-      "Send your child with a self-defense plan; preserve attendance but place a heavy safety burden on them.",
+      "Arrange a direct handoff to the coach; preserve attendance but leave gaps where school supervision is absent.",
       "Keep the child home; protect them tomorrow but sacrifice the assessment and possibly validate the intimidation.",
       "Insist on an adult escort and attend yourself; improve safety but miss work and risk escalating tensions.",
-      "Send your child with trusted friends; maintain attendance but leave the school’s responsibility inadequately addressed."
+      "Arrange a trusted adult escort from the parent group; preserve attendance but leave official school responsibility unresolved."
     ],
     "best": 2,
     "why": "An adult presence makes protection a parental and institutional responsibility, though it carries serious costs and cannot eliminate every risk.",
@@ -440,7 +440,7 @@ export const HARD_ADVANCED=Object.freeze({
   "hw44": {
     "context": "A former employee asks for a reference tomorrow. Their performance improved recently but remains uneven; refusing to recommend them may mean they lose housing.",
     "options": [
-      "Give an enthusiastic endorsement; protect their opportunity but expose a new employer to predictable failures.",
+      "Endorse the applicant's verified recent progress; protect their opportunity but risk an employer overgeneralizing improvement.",
       "Give a factual, qualified reference; help fairly and appropriately but risk eliminating the candidate from consideration.",
       "Refuse the request; protect yourself from misstatement but abandon someone who legitimately improved.",
       "Describe only their recent strengths; provide encouraging facts but hide a performance pattern that may matter."
