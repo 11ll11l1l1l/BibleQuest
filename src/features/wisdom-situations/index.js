@@ -8,7 +8,7 @@ const WISDOM_SOURCE=sourceLabel(getContentProvenance('bq-wisdom'),{compact:true}
 // All options carry the same one-gain/two-cost presentation. Other locales retain
 // their existing rendering until the translated hard-choice bank is complete.
 const displayHardChoice=option=>{
-  const outcome=String(option).match(/^(.+?)\\. Benefit: (.+?)\\. Cost 1: (.+?)\\. Cost 2: (.+?)\\.$/);
+  const outcome=String(option).match(/^(.+?)[.] Benefit: (.+?)[.] Cost 1: (.+?)[.] Cost 2: (.+?)[.]$/);
   if(!outcome)return `<b>${escapeHtml(option)}</b>`;
   const line=value=>`<span style="display:block;font-weight:400;margin-top:0.3em">${escapeHtml(value)}</span>`;
   return `<b>${escapeHtml(outcome[1])}${line('Benefit: '+outcome[2])}${line('Cost: '+outcome[3])}${line('Personal cost: '+outcome[4])}</b>`;
