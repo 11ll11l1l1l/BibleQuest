@@ -115,7 +115,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Speak on their behalf publicly; correct injustice but invite fresh scrutiny of your own pain.",
       "Provide a confidential statement; aid due process but risk the truth never reaching the public.",
-      "Remain silent; protect recovery but leave a false allegation mostly unchallenged.",
+      "Remain silent publicly; protect your own recovery but leave a serious false allegation mostly unchallenged.",
       "Ask a mutual friend to speak; avoid direct exposure but dilute firsthand evidence and shift the burden."
     ],
     "best": 1,
@@ -245,7 +245,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw71": {
     "context": "An AI tool predicts a quality improvement, but only half the proposed change can be tested before a costly launch tomorrow. Full rollout is difficult to reverse.",
     "options": [
-      "Launch the new settings; seize possible savings but place untested yield at risk.",
+      "Launch the new settings now; seize potential savings but place untested production yield at risk.",
       "Reject the recommendation; protect proven settings but surrender a competitive opportunity.",
       "Run a small production pilot; gather evidence but miss the launch and disrupt established schedules.",
       "Apply only the tested half; capture some gains but risk unintended interactions with the unchanged process."
