@@ -8,15 +8,15 @@ const WISDOM_SOURCE=sourceLabel(getContentProvenance('bq-wisdom'),{compact:true}
 const COPY=Object.freeze({
   en:Object.freeze({
     back:'Back to Learn',eyebrow:'SITUATIONS & WISDOM',mode:'HARD JUDGMENT MODE',difficulty:'Difficulty',seen:'Seen this cycle',
-    strong:'Strong judgment',stronger:'A stronger judgment is available',strongest:'Strongest supported option',plausible:'Plausible but weaker',choice:'Your choice',
-    refs:'References',warning:'This is a wisdom exercise about the strongest supported judgment in a complex case, not a declaration that every real-life case has one universally binding response.',
-    choose:'Choose the strongest supported judgment, not the answer that merely sounds most religious. All four options are intentionally plausible and may contain a defensible argument.',
+    strong:'Decision examined',stronger:'Decision examined',strongest:'Editorial preference for these circumstances',plausible:'Defensible alternative',choice:'Your choice',
+    refs:'References',warning:'Every available choice protects something and costs something. The highlighted approach is one editorial recommendation under these facts, not an absolute answer.',
+    choose:'Choose the responsibility and sacrifice you can best defend. There is no cost-free option; the editorial recommendation appears only after you choose.',
     another:'Another hard situation',restart:'Try this situation again',retry:'Try another situation',error:'Wisdom Situation could not continue',
     xp:'+8 XP',reviewed:'Reviewed · no extra XP',foundation:'Foundation',advanced:'Advanced',expert:'Expert'
   }),
   tl:Object.freeze({
     back:'Bumalik sa Learn',eyebrow:'SITUATIONS & WISDOM',mode:'MAHIRAP NA PAGHATOL',difficulty:'Hirap',seen:'Nakita sa cycle',
-    strong:'Matibay na paghatol',stronger:'May mas matibay na paghatol',strongest:'Pinakamatibay na suportadong sagot',plausible:'Posible pero mas mahina',choice:'Pinili mo',
+    strong:'Nasuri ang pasya',stronger:'Nasuri ang pasya',strongest:'Mas piniling pasya sa sitwasyong ito',plausible:'Mapagtatanggol na pagpipilian',choice:'Pinili mo',
     refs:'Mga Sanggunian',warning:'Wisdom exercise ito tungkol sa pinakamatibay na suportadong paghatol sa komplikadong sitwasyon. Hindi nito sinasabing iisa lamang ang obligadong sagot sa lahat ng tunay na kaso.',
     choose:'Piliin ang pinakamatibay na suportadong paghatol, hindi ang sagot na pinaka-relihiyoso pakinggan. Sadyang plausible ang lahat ng apat na sagot at bawat isa ay may argumentong maaaring ipagtanggol.',
     another:'Isa pang mahirap na sitwasyon',restart:'Subukan ulit ang sitwasyong ito',retry:'Subukan ang ibang sitwasyon',error:'Hindi maipagpatuloy ang Wisdom Situation',
@@ -24,7 +24,7 @@ const COPY=Object.freeze({
   }),
   ceb:Object.freeze({
     back:'Balik sa Learn',eyebrow:'SITUATIONS & WISDOM',mode:'LISOD NGA PAGHUKOM',difficulty:'Kalisod',seen:'Nakita niini nga cycle',
-    strong:'Lig-on nga paghukom',stronger:'Adunay mas lig-on nga paghukom',strongest:'Pinakalig-on nga suportadong tubag',plausible:'Posible pero mas huyang',choice:'Imong gipili',
+    strong:'Nasusi ang pasya',stronger:'Nasusi ang pasya',strongest:'Gipalabi nga paghukom dinhi',plausible:'Makatarunganong laing pagpili',choice:'Imong gipili',
     refs:'Mga Reperensya',warning:'Wisdom exercise kini bahin sa pinakalig-on nga suportadong paghukom sa komplikadong sitwasyon. Dili kini nagpasabot nga usa ra ka obligadong tubag ang sakto sa tanang real-life cases.',
     choose:'Pilia ang pinakalig-on nga suportadong paghukom, dili lang ang tubag nga pinakarelihiyoso paminawon. Tinuyo nga plausible ang upat ka choices ug matag usa adunay depensableng argumento.',
     another:'Laing lisod nga sitwasyon',restart:'Sulayi pag-usab kini nga sitwasyon',retry:'Sulayi laing sitwasyon',error:'Dili mapadayon ang Wisdom Situation',
@@ -45,7 +45,7 @@ export function wisdomSituationsPage({wisdom,onLearn}){
       const render=result=>{
         if(disposed)return;
         const t=copy(),{situation,answered,selected,cycle}=result;
-        const correct=answered?result.feedback?.correct===true||result.state.feedback.judgment?.correct===true:false;
+        const correct=false; // Deliberately do not rank people as correct/incorrect in context-sensitive wisdom judgments.
         const safetyNotice=doctrinalNotice(situation.safety,{compact:true});
         const meta=`${packLabel(t,situation.pack)} · ${t.difficulty} ${situation.difficulty}/8 · ${t.seen} ${cycle.seen}/${cycle.total}`;
         if(answered){
