@@ -6,7 +6,7 @@ The previous 72 questions showed a repeated grammatical solution: the preferred 
 ## Revision delivered on this branch
 - Exactly **72 cases** (24 Foundation, 24 Advanced, 24 Expert); English questions now have an authored deadline / irreversibility / resource or trust constraint.
 - **288 new English alternatives**, each naming a defensible benefit and a cost. Most decisions endanger at least one of employment, reputation, family stability, financial security, safety, duty or human relationships.
-- Most comprehensive-option shortcut removed; QA checks longest preferred choice at <=12 of 72 and maximum per-question choice length ratio <=1.251 (current: 5/72 and 1.25).
+- Most comprehensive-option shortcut removed; QA checks longest preferred choice at 12–24 of 72 (near the 25% chance expectation), maximum per-question choice length ratio <=1.251 (current: 17/72 and 1.25).
 - Each case now has a fresh, narrower explanation for the editorial preference. Post-selection cards distinguish the *potential benefit* and *potential cost* of each answer.
 - All 72 English scenarios use 8/8 difficulty and Lesson definition v2 to prevent showing a past answer against changed choices. Selector storage v3 restarts the 72-case cycle. XP still uses the v1 event key to prevent duplicate lifetime XP for previously completed cases.
 - UI no longer marks the person as morally correct or incorrect; the highlighted answer is expressly an **editorial preference under stated circumstances**, not universally binding doctrine.
