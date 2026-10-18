@@ -16,8 +16,12 @@ for(const item of WISDOM_SITUATIONS){
   if(lengths[item.best]===max)preferredLongest++;
   if(lengths[item.best]===min)preferredShortest++;
   for(let i=0;i<4;i++){
-    assert(item.options[i].includes('; ')&&item.options[i].includes(' but '),`${item.id} option ${i} lacks an explicit gain/cost trade-off`);
-    assert(/Potential benefit:/.test(item.rationales[i])&&/Potential cost:/.test(item.rationales[i]),`${item.id} option ${i} feedback lacks gains and losses`);
+    const pattern=/^(.+?)\\. Benefit: (.+?)\\. Cost 1: (.+?)\\. Cost 2: (.+?)\\.$/;
+    const parts=item.options[i].match(pattern);
+    assert(parts&&parts.slice(1).every(value=>value.trim().length>=8),`${item.id} option ${i} must include an action, a real benefit and two distinct costs`);
+    assert(parts[3]!==parts[4],`${item.id} option ${i} repeats the same cost`);
+    assert(/^(you|your)\\b/i.test(parts[4]),`${item.id} option ${i} does not impose a cost on the decision-maker`);
+    assert(/Benefit:/.test(item.rationales[i])&&/First sacrifice:/.test(item.rationales[i])&&/Second sacrifice:/.test(item.rationales[i]),`${item.id} option ${i} explanation lacks all three consequences`);
   }
   for(const locale of ['tl','ceb']){
     const translated=localizeWisdomSituation(item,locale);
@@ -31,4 +35,4 @@ assert(WISDOM_SITUATIONS.filter(x=>x.pack==='foundation').length===24,'foundatio
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='advanced').length===24,'advanced pack changed');
 assert(WISDOM_SITUATIONS.filter(x=>x.pack==='expert').length===24,'expert pack changed');
 assert(getWisdomSituation('hw72').id==='hw72','last case missing');
-console.log(`Hard wisdom editorial QA passed: 72 cases, 288 costly options, longest editorial option ${preferredLongest}/72, shortest ${preferredShortest}/72.`);
+console.log(`Hard wisdom editorial QA passed: 72 cases, 288 choices each with one benefit and two losses, longest editorial option ${preferredLongest}/72, shortest ${preferredShortest}/72.`);
