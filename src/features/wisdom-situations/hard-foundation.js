@@ -9,7 +9,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Keep confidence until morning; protect the only trust channel but bear responsibility if the danger grows."
     ],
     "best": 0,
-    "why": "A specialist call can test urgency without broadcasting unverified allegations; it still costs trust and may not avert harm."
+    "why": "A specialist call can test urgency without broadcasting unverified allegations; it still costs trust and may not avert harm.",
+    "cost2": [
+      "you may lose the only friend who trusted you",
+      "you will carry the fear of a preventable delay",
+      "you may be blamed for involving the wrong person",
+      "you will bear guilt if the threat worsens overnight"
+    ]
   },
   "hw02": {
     "context": "The monthly report locks in forty minutes. You have no replacement job, and the misleading figure is not explicitly prohibited. Your signature will appear on the report.",
@@ -20,7 +26,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Qualify your report; protect accuracy but risk defying the team’s agreed wording and losing their trust."
     ],
     "best": 3,
-    "why": "A narrow, accurate qualification avoids a known false impression while accepting a measurable professional cost."
+    "why": "A narrow, accurate qualification avoids a known false impression while accepting a measurable professional cost.",
+    "cost2": [
+      "your professional record may be used against you later",
+      "you risk losing the income your family depends on",
+      "you may lose your manager’s confidence before review",
+      "you risk direct retaliation for changing approved wording"
+    ]
   },
   "hw03": {
     "context": "The rent is due tomorrow. Your own emergency fund covers only one month, and the relative refuses noncash help. Their children could lose housing.",
@@ -31,7 +43,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Decline the loan but arrange a temporary stay; preserve savings but uproot the children and burden your home."
     ],
     "best": 2,
-    "why": "Direct payment serves the verified urgent need without silently financing the repeated spending pattern, at a serious relational cost."
+    "why": "Direct payment serves the verified urgent need without silently financing the repeated spending pattern, at a serious relational cost.",
+    "cost2": [
+      "your own household will be left financially exposed",
+      "you may become responsible for the remaining shortfall",
+      "your relative may never trust your judgment again",
+      "you will lose privacy and space in your own home"
+    ]
   },
   "hw04": {
     "context": "The finance committee votes tomorrow. The former treasurer’s apology is credible, but no other experienced volunteer is available for the role.",
@@ -42,7 +60,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Restore full control during probation; demonstrate trust but expose donors to damage that cannot easily be reversed."
     ],
     "best": 0,
-    "why": "Shared access faces both the staffing shortage and the loss of trust, without pretending the prior deception no longer matters."
+    "why": "Shared access faces both the staffing shortage and the loss of trust, without pretending the prior deception no longer matters.",
+    "cost2": [
+      "your judgment will be questioned after any new error",
+      "you will personally face families denied assistance",
+      "you risk losing a valued volunteer relationship",
+      "you will bear the blame if another loss occurs"
+    ]
   },
   "hw05": {
     "context": "Your debt interest rises next month. The overtime offer expires tonight; your spouse already asked you to attend two fixed weekly family commitments.",
@@ -53,7 +77,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Take weekend shifts only; preserve weekday routines but sacrifice your shared recovery and worship time."
     ],
     "best": 1,
-    "why": "The middle workload remains costly on both sides but preserves some payment capacity and some family presence under a fixed deadline."
+    "why": "The middle workload remains costly on both sides but preserves some payment capacity and some family presence under a fixed deadline.",
+    "cost2": [
+      "you may burn out before the debt is fully paid",
+      "your marriage may carry resentment beyond six months",
+      "you will keep carrying the escalating interest burden",
+      "you may have no time left for physical recovery"
+    ]
   },
   "hw06": {
     "context": "The recording goes public in an hour. You can show the leader the exact misleading quote now, but they may refuse to amend it.",
@@ -64,7 +94,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Send the leader a written objection; preserve evidence but let an uncertain message circulate unchallenged."
     ],
     "best": 2,
-    "why": "A temporary publication delay is disruptive yet reversible and lets the factual disagreement be evaluated before it spreads."
+    "why": "A temporary publication delay is disruptive yet reversible and lets the factual disagreement be evaluated before it spreads.",
+    "cost2": [
+      "you may miss the only chance for timely correction",
+      "your reputation may become tied to a public dispute",
+      "you may be accused of controlling the church’s message",
+      "you may have to live with a foreseeable public error"
+    ]
   },
   "hw07": {
     "context": "The group must decide tonight because the rented meeting room will otherwise be lost. Two families threaten to leave if the vote goes against them.",
@@ -75,7 +111,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Invite the dissenters to propose one joint amendment; build ownership but risk the deadline and continued conflict."
     ],
     "best": 3,
-    "why": "A tightly bounded amendment invites affected members to share responsibility while accepting the real possibility of losing the lease."
+    "why": "A tightly bounded amendment invites affected members to share responsibility while accepting the real possibility of losing the lease.",
+    "cost2": [
+      "you may lose the respect of the dissenting families",
+      "you could be held responsible for losing the meeting place",
+      "you may be accused of hiding behind a flawed process",
+      "you may damage your standing with the majority"
+    ]
   },
   "hw08": {
     "context": "A salary increase would cover your parent’s treatment. The new role is legal but involves selling a product with persuasive claims you cannot fully substantiate.",
@@ -86,7 +128,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Take the role for one quarter; reduce family pressure but normalize conduct you already distrust."
     ],
     "best": 2,
-    "why": "A time-limited role negotiation tests whether provision and truthful work can coexist, while genuinely risking the offer."
+    "why": "A time-limited role negotiation tests whether provision and truthful work can coexist, while genuinely risking the offer.",
+    "cost2": [
+      "your conscience could be strained every workday",
+      "you may be unable to pay for your parent’s care",
+      "you could lose the entire opportunity without recourse",
+      "your work reputation may become attached to that product"
+    ]
   },
   "hw09": {
     "context": "Your friend will miss a professional licensing deadline tomorrow unless you finish part of their work. This is their third emergency, and your own family expects you home.",
@@ -97,7 +145,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Ask your spouse to cover home duties; support your friend but transfer the cost to someone who never agreed."
     ],
     "best": 1,
-    "why": "Limited review offers substantial help without taking ownership of the work, and still risks both a damaged friendship and an imperfect outcome."
+    "why": "Limited review offers substantial help without taking ownership of the work, and still risks both a damaged friendship and an imperfect outcome.",
+    "cost2": [
+      "you may be unable to keep your own family’s commitment",
+      "your friend may resent what you refused to complete",
+      "you may lose an important long-standing friendship",
+      "you may create lasting resentment with your spouse"
+    ]
   },
   "hw10": {
     "context": "A friend has invested most of their savings in a business. You discovered a serious flaw, but the investment becomes irreversible at noon.",
@@ -108,7 +162,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Wait until they ask for feedback; respect autonomy but knowingly surrender the last useful warning."
     ],
     "best": 1,
-    "why": "Evidence without a forced conclusion honors agency under time pressure, though the friend may not recognize its urgency."
+    "why": "Evidence without a forced conclusion honors agency under time pressure, though the friend may not recognize its urgency.",
+    "cost2": [
+      "you may be blamed if your judgment proves wrong",
+      "you may still be blamed for not expressing the urgency",
+      "you could be accused of exposing someone’s private finances",
+      "you may carry the shame of having withheld a warning"
+    ]
   },
   "hw11": {
     "context": "The promotion decision is tomorrow. A coworker needs the role to avoid losing a work visa; your own household cannot afford another year at your current salary.",
@@ -119,7 +179,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Privately alert management to their visa risk; seek compassion but introduce personal circumstances into merit review."
     ],
     "best": 1,
-    "why": "Fair competition does not require treating a colleague as an opponent without needs; it nonetheless accepts a severe collateral cost."
+    "why": "Fair competition does not require treating a colleague as an opponent without needs; it nonetheless accepts a severe collateral cost.",
+    "cost2": [
+      "you might never receive another promotion offer",
+      "you may damage a partnership needed for future work",
+      "you may be seen as manipulating a fair hiring process",
+      "your manager may distrust your behind-the-scenes advocacy"
+    ]
   },
   "hw12": {
     "context": "A relief campaign ends tonight. The exact gift requested would cancel your household’s only month of emergency savings; the group will publish donor names.",
@@ -130,7 +196,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Decline this appeal and provide labor; avoid cash risk but fail to deliver immediate money others need."
     ],
     "best": 1,
-    "why": "An anonymous limited gift preserves a meaningful responsibility to both sides even though it sacrifices the matching benefit."
+    "why": "An anonymous limited gift preserves a meaningful responsibility to both sides even though it sacrifices the matching benefit.",
+    "cost2": [
+      "you may lack cash when your own emergency arrives",
+      "you may regret losing the opportunity to multiply the gift",
+      "you may have to default if income falls unexpectedly",
+      "you may face judgment for giving time instead of cash"
+    ]
   },
   "hw13": {
     "context": "A teammate’s process error may invalidate the lot; the customer review starts in ninety minutes. Disclosing it may close the shift and cost everyone a bonus.",
@@ -141,7 +213,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Approve shipment with a caveat; preserve schedules but transfer the unresolved risk to the customer."
     ],
     "best": 0,
-    "why": "Containment before certainty is expensive but can prevent irreversible downstream exposure; it deserves the highest weight under the stated deadline."
+    "why": "Containment before certainty is expensive but can prevent irreversible downstream exposure; it deserves the highest weight under the stated deadline.",
+    "cost2": [
+      "you may be blamed for shutting down the shift",
+      "you may be blamed for detecting the defect too late",
+      "you may be accused of avoiding your own accountability",
+      "your name could be tied to an expensive customer failure"
+    ]
   },
   "hw14": {
     "context": "A youth event starts in an hour. No one can lead without you, but you have slept four hours nightly and snapped at your child yesterday.",
@@ -152,7 +230,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Ask your spouse to take your duties tomorrow; honor tonight’s commitment but move exhaustion onto your household."
     ],
     "best": 2,
-    "why": "A limited role shares the cost openly and keeps the essential event, without claiming that exhausted service is free."
+    "why": "A limited role shares the cost openly and keeps the essential event, without claiming that exhausted service is free.",
+    "cost2": [
+      "you could begin resenting the people you serve",
+      "you may lose credibility with the youth and their families",
+      "you may damage a volunteer relationship through pressure",
+      "you could strain the promises made to your spouse"
+    ]
   },
   "hw15": {
     "context": "Your child lied to protect a friend whose parents punish harshly. The school demands a signed account tomorrow; your child asks you not to identify the friend.",
@@ -163,7 +247,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Submit a partial written account; preserve the friend’s privacy but risk the school missing an essential fact."
     ],
     "best": 2,
-    "why": "A meeting buys legitimate context before identifying a vulnerable child, even while it puts the reporting family at disciplinary risk."
+    "why": "A meeting buys legitimate context before identifying a vulnerable child, even while it puts the reporting family at disciplinary risk.",
+    "cost2": [
+      "you may permanently damage trust with your own child",
+      "you may be blamed for withholding serious information",
+      "your child may face discipline for delaying the report",
+      "you may be accused of disguising your child’s deception"
+    ]
   },
   "hw16": {
     "context": "A public allegation about you is factually incomplete. You have screenshots that refute it but expose an unrelated private conversation if published.",
@@ -174,7 +264,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Issue a short public timeline; defend yourself but expose incomplete evidence and invite doubt."
     ],
     "best": 3,
-    "why": "A bounded timeline corrects what can be publicly established without treating a third party’s private conversation as disposable."
+    "why": "A bounded timeline corrects what can be publicly established without treating a third party’s private conversation as disposable.",
+    "cost2": [
+      "you may lose the trust of the person whose messages leak",
+      "your livelihood could suffer from an unanswered allegation",
+      "you may be forced into weeks of public uncertainty",
+      "you may be criticized for releasing an incomplete defense"
+    ]
   },
   "hw17": {
     "context": "A joke targets a newcomer who laughs along but later leaves early. The host is your only local friend and could stop inviting your family.",
@@ -185,7 +281,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Change the subject immediately; stop the moment but allow the offender to believe no harm occurred."
     ],
     "best": 2,
-    "why": "Checking the person most affected avoids using them as a symbol, despite the real risk that silence appears indifferent."
+    "why": "Checking the person most affected avoids using them as a symbol, despite the real risk that silence appears indifferent.",
+    "cost2": [
+      "you risk exclusion from your own circle of friends",
+      "you may lose the newcomer’s trust for staying silent",
+      "you may be accused of making the newcomer speak for you",
+      "you may be remembered as someone who avoided the issue"
+    ]
   },
   "hw18": {
     "context": "You promised to host a relative for two months. After a week their behavior is frightening your child, but they have no affordable alternative housing.",
@@ -196,7 +298,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Pay for a short hotel stay; separate the households but use savings reserved for your own emergency."
     ],
     "best": 3,
-    "why": "Short-term outside housing separates immediate safety from the longer housing obligation, at an actual cost to household security."
+    "why": "Short-term outside housing separates immediate safety from the longer housing obligation, at an actual cost to household security.",
+    "cost2": [
+      "you may damage your child’s sense of safety at home",
+      "you may rupture a family relationship for years",
+      "you may carry anxiety through an uncertain extra week",
+      "you may be unable to fund a future household emergency"
+    ]
   },
   "hw19": {
     "context": "A colleague asks your advice on stopping prescribed treatment. They trust you more than professionals and will act tonight if you offer a confident answer.",
@@ -207,7 +315,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Ask them to wait until tomorrow; prevent impulsive action but leave serious symptoms untreated overnight."
     ],
     "best": 2,
-    "why": "Connecting them with qualified help is a concrete action, not an easy escape; the risk is damaged trust at the most vulnerable moment."
+    "why": "Connecting them with qualified help is a concrete action, not an easy escape; the risk is damaged trust at the most vulnerable moment.",
+    "cost2": [
+      "you may be held responsible if the information misleads",
+      "you may lose a friendship that relied on your support",
+      "you may be resented for delegating an intimate conversation",
+      "you may miss the chance to respond to a true emergency"
+    ]
   },
   "hw20": {
     "context": "You can accept a visible ministry role tomorrow. Your teaching is useful, but you also know public admiration is becoming a major motivation.",
@@ -218,7 +332,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Decline for a year; impose discipline on yourself but make others carry work you could competently do."
     ],
     "best": 2,
-    "why": "Shared credit imposes an external check while allowing contribution, though it cannot guarantee transformed motives."
+    "why": "Shared credit imposes an external check while allowing contribution, though it cannot guarantee transformed motives.",
+    "cost2": [
+      "your motives may become harder to examine honestly",
+      "you may quietly resent the person who takes the role",
+      "you may still become dependent on recognition from peers",
+      "you may lose meaningful opportunities to serve others"
+    ]
   },
   "hw21": {
     "context": "Both sides in a dispute have lost something real. You must sign one of two settlement offers today, and the injured party cannot afford another month of delay.",
@@ -229,7 +349,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Propose a smaller public agreement; restore transparency but risk losing the settlement altogether."
     ],
     "best": 0,
-    "why": "Urgency can justify an imperfect settlement when delay inflicts its own injustice, but it should never be disguised as full fairness."
+    "why": "Urgency can justify an imperfect settlement when delay inflicts its own injustice, but it should never be disguised as full fairness.",
+    "cost2": [
+      "your integrity may be challenged by the losing side",
+      "you may be blamed for worsening the injured party’s need",
+      "you may be seen as trading principle for a quick resolution",
+      "you may lose your chance to secure any agreement"
+    ]
   },
   "hw22": {
     "context": "A decision on relocating for ministry expires at midnight. Prayer has clarified no direction; accepting helps one community but disrupts your child’s stable care.",
@@ -240,7 +366,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Follow your spouse’s preference; honor their voice but risk assigning them blame if things go badly."
     ],
     "best": 2,
-    "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty."
+    "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty.",
+    "cost2": [
+      "you may regret rushing your family into instability",
+      "you may resent the needs that limited your vocation",
+      "you may lose the opportunity that brought you hope",
+      "you may begin blaming your spouse for the outcome"
+    ]
   },
   "hw23": {
     "context": "A friend posted a false claim linked to their identity and livelihood. An event tomorrow may amplify it; a public correction will be searchable for years.",
@@ -251,7 +383,13 @@ export const HARD_FOUNDATION=Object.freeze({
       "Contact the event organizer quietly; prevent amplification but risk damaging your friend’s professional standing."
     ],
     "best": 1,
-    "why": "A time-bounded private request gives the original speaker real responsibility for correcting the record while accepting exposure risk."
+    "why": "A time-bounded private request gives the original speaker real responsibility for correcting the record while accepting exposure risk.",
+    "cost2": [
+      "you may be treated as an enemy by the wider group",
+      "you may share responsibility for any overnight spread",
+      "you may look evasive to those who saw the original post",
+      "you may be accused of sabotaging a friend’s livelihood"
+    ]
   },
   "hw24": {
     "context": "A charity campaign uses an inflated statistic. The launch begins in two hours; pulling your endorsement may cost the campaign a critical matching donor.",
@@ -262,6 +400,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "Support the fundraiser privately; help recipients but avoid publicly challenging the damaging method."
     ],
     "best": 2,
-    "why": "A public correction request gives the worthy cause a chance to remain truthful, though the funding loss is a foreseeable price."
+    "why": "A public correction request gives the worthy cause a chance to remain truthful, though the funding loss is a foreseeable price.",
+    "cost2": [
+      "you may be portrayed as disloyal to urgent charity",
+      "you may permanently compromise your own public credibility",
+      "you may be blamed if beneficiaries lose their funding",
+      "you may lose your influence to reform the campaign"
+    ]
   }
 });
