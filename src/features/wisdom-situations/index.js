@@ -5,13 +5,17 @@ import { doctrinalNotice } from '../../ui/doctrinal-safety.js';
 
 const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const WISDOM_SOURCE=sourceLabel(getContentProvenance('bq-wisdom'),{compact:true});
-// All options carry the same one-gain/two-cost presentation. Other locales retain
-// their existing rendering until the translated hard-choice bank is complete.
-const displayHardChoice=(option,basis)=>{
+const HARD_CHOICE_LABELS=Object.freeze({
+  en:Object.freeze({reason:'Why this is defensible',benefit:'Protects',cost:'Sacrifice',personal:'Personal cost'}),
+  tl:Object.freeze({reason:'Dahilan kung bakit makatuwiran',benefit:'Pinoprotektahan',cost:'Sakripisyo',personal:'Personal na kapalit'}),
+  ceb:Object.freeze({reason:'Rason nganong depensable',benefit:'Gipanalipdan',cost:'Sakripisyo',personal:'Personal nga kapalit'})
+});
+const displayHardChoice=(option,basis,locale='en')=>{
+  const labels=HARD_CHOICE_LABELS[locale]||HARD_CHOICE_LABELS.en;
   const outcome=String(option).match(/^(.+?)[.] Benefit: (.+?)[.] Cost 1: (.+?)[.] Cost 2: (.+?)[.]$/);
   if(!outcome)return `<b>${escapeHtml(option)}</b>`;
-  const line=value=>`<span style="display:block;font-weight:400;margin-top:0.3em">${escapeHtml(value)}</span>`;
-  return `<b>${escapeHtml(outcome[1])}</b>${line('Why a thoughtful Christian might choose this: '+basis)}${line('Protects: '+outcome[2])}${line('Sacrifices: '+outcome[3])}${line('Personal cost: '+outcome[4])}`;
+  const line=(label,value)=>`<span style="display:block;font-weight:400;margin-top:0.3em"><strong>${escapeHtml(label)}:</strong> ${escapeHtml(value)}</span>`;
+  return `<b>${escapeHtml(outcome[1])}</b>${line(labels.reason,basis)}${line(labels.benefit,outcome[2])}${line(labels.cost,outcome[3])}${line(labels.personal,outcome[4])}`;
 };
 const COPY=Object.freeze({
   en:Object.freeze({
@@ -45,7 +49,7 @@ const packLabel=(t,pack)=>t[pack]||pack;
 
 export function wisdomSituationsPage({wisdom,onLearn}){
   return{
-    title:'Wisdom Situations',
+    title:copy().eyebrow,
     html:'<section data-wisdom-page></section>',
     mount(root){
       const host=root.querySelector('[data-wisdom-page]');
@@ -61,7 +65,7 @@ export function wisdomSituationsPage({wisdom,onLearn}){
           host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-wisdom-learn>${escapeHtml(t.back)}</button><span>${escapeHtml(meta)}</span></section><section class="bq-panel bq-wisdom-session" data-wisdom-complete="${escapeHtml(situation.id)}"><p class="bq-eyebrow">${escapeHtml(t.eyebrow)}</p><h1>${escapeHtml(situation.title)}</h1><span class="bq-wisdom-tension">${escapeHtml(situation.tension)}</span><div class="bq-wisdom-result is-reflection"><strong>${escapeHtml(t.strong)}</strong><span>${escapeHtml(xpAwarded?t.xp:t.reviewed)}</span><p>${escapeHtml(t.reflection)}</p></div><div class="bq-wisdom-rationales">${situation.options.map((option,index)=>`<article class="${index===selected?'is-selected':''}"><b>${String.fromCharCode(65+index)} · ${escapeHtml(index===selected?t.choice:t.plausible)}</b><p>${escapeHtml(situation.rationales[index])}</p></article>`).join('')}</div><p class="bq-wisdom-refs">${escapeHtml(t.refs)}: ${situation.refs.map(escapeHtml).join(' · ')}</p><p class="bq-wisdom-warning">${escapeHtml(t.warning)}</p>${safetyNotice}${WISDOM_SOURCE}<div class="bq-wisdom-actions"><button type="button" class="bq-primary-button" data-wisdom-another>${escapeHtml(t.another)}</button><button type="button" class="bq-secondary-button" data-wisdom-restart>${escapeHtml(t.restart)}</button><button type="button" class="bq-secondary-button" data-wisdom-learn>${escapeHtml(t.back)}</button></div></section>`;
           return;
         }
-        host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-wisdom-learn>${escapeHtml(t.back)}</button><span>${escapeHtml(meta)}</span></section><section class="bq-panel bq-wisdom-session" data-wisdom-session="${escapeHtml(situation.id)}"><p class="bq-eyebrow">${escapeHtml(t.mode)}</p><h1>${escapeHtml(situation.title)}</h1><span class="bq-wisdom-tension">${escapeHtml(situation.tension)}</span><p class="bq-wisdom-scenario">${escapeHtml(situation.scenario)}</p><div class="bq-wisdom-options">${situation.options.map((option,index)=>`<button type="button" class="bq-game-choice" data-wisdom-choice="${index}"><span aria-hidden="true">${String.fromCharCode(65+index)}</span>${displayHardChoice(option,situation.basis?.[index]||'')}</button>`).join('')}</div><p class="bq-wisdom-warning">${escapeHtml(t.choose)}</p>${safetyNotice}${WISDOM_SOURCE}</section>`;
+        host.innerHTML=`<section class="bq-game-topline"><button type="button" class="bq-secondary-button" data-wisdom-learn>${escapeHtml(t.back)}</button><span>${escapeHtml(meta)}</span></section><section class="bq-panel bq-wisdom-session" data-wisdom-session="${escapeHtml(situation.id)}"><p class="bq-eyebrow">${escapeHtml(t.mode)}</p><h1>${escapeHtml(situation.title)}</h1><span class="bq-wisdom-tension">${escapeHtml(situation.tension)}</span><p class="bq-wisdom-scenario">${escapeHtml(situation.scenario)}</p><div class="bq-wisdom-options">${situation.options.map((option,index)=>`<button type="button" class="bq-game-choice" data-wisdom-choice="${index}"><span aria-hidden="true">${String.fromCharCode(65+index)}</span>${displayHardChoice(option,situation.basis?.[index]||'',localization.getLocale())}</button>`).join('')}</div><p class="bq-wisdom-warning">${escapeHtml(t.choose)}</p>${safetyNotice}${WISDOM_SOURCE}</section>`;
       };
 
       const showError=error=>{
