@@ -20,7 +20,7 @@ for(const item of WISDOM_SITUATIONS){
     const parts=item.options[i].match(pattern);
     assert(parts&&parts.slice(1).every(value=>value.trim().length>=8),`${item.id} option ${i} must include an action, a real benefit and two distinct costs`);
     assert(parts[3]!==parts[4],`${item.id} option ${i} repeats the same cost`);
-    assert(/^(you|your)\\b/i.test(parts[4]),`${item.id} option ${i} does not impose a cost on the decision-maker`);
+    assert(/^(?:you|your)(?: |$)/i.test(parts[4]),`${item.id} option ${i} does not impose a cost on the decision-maker`);
     assert(/Benefit:/.test(item.rationales[i])&&/First sacrifice:/.test(item.rationales[i])&&/Second sacrifice:/.test(item.rationales[i]),`${item.id} option ${i} explanation lacks all three consequences`);
   }
   for(const locale of ['tl','ceb']){
