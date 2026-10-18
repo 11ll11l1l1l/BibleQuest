@@ -13,7 +13,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may begin to fear every unexpected bill",
       "you may damage your spouse’s confidence in your promises",
-      "you may feel responsible if the substitute disappoints",
+      "you may strain a promise your spouse waited years to see fulfilled",
       "you may keep reopening the same dispute each month"
     ],
     "basis": [
@@ -36,7 +36,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may be branded difficult by future collaborators",
       "you may lose a promotion you helped make possible",
-      "you could be blamed for a late, disputed account",
+      "you could lose the promotion while defending a disputed credit record",
       "you may still be overlooked when promotion is decided"
     ],
     "basis": [
@@ -57,9 +57,9 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 1,
     "why": "An immediate, respectful limit stops foreseeable disclosure while paying the genuine relational cost of interrupting a vulnerable speaker.",
     "cost2": [
-      "you may be blamed if private details travel further",
+      "you could lose the couple's trust to receive private prayer requests",
       "you could lose the sharer’s confidence and friendship",
-      "you may be accused of avoiding a difficult public boundary",
+      "you could lose the couple's confidence in your leadership",
       "you may lose the group’s trust as a responsible leader"
     ],
     "basis": [
@@ -103,7 +103,7 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 0,
     "why": "Formal disclosure addresses the principal integrity risk without disguising the price of perceived influence.",
     "cost2": [
-      "your next vendor decision may look compromised",
+      "you could be removed from future supplier selections over apparent conflict",
       "you may lose supplier access your team needs",
       "you could bear responsibility for disputed procurement",
       "you may damage your standing with both negotiating teams"
@@ -127,7 +127,7 @@ export const HARD_ADVANCED=Object.freeze({
     "why": "Practical continuity without pre-deciding guilt acknowledges both present need and the limits of incomplete evidence.",
     "cost2": [
       "you may be viewed as defending the accused blindly",
-      "you may regret judging a leader before findings emerge",
+      "you could lose a long-standing friendship with the accused leader",
       "you could be condemned as evasive by both factions",
       "you may help create a reputation that cannot be repaired"
     ],
@@ -174,8 +174,8 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may be held responsible for a severe lost contract",
       "you may be accountable if the bypass injures someone",
-      "you may be blamed for the costlier production route",
-      "you may be criticized for seeking a slow exception"
+      "you could lose the customer's confidence in your team's reliability",
+      "you could forfeit responsibility for future safety exception decisions"
     ],
     "basis": [
       "The stop procedure preserves all mandatory interlocks, and the team has used it before.",
@@ -219,7 +219,7 @@ export const HARD_ADVANCED=Object.freeze({
     "why": "A difficult rental search offers aid without binding another family to a debt it cannot absorb, at a serious cost to the borrower.",
     "cost2": [
       "you could lose the deposit your family has saved",
-      "you may be blamed if the smaller gift achieves nothing",
+      "you could lose cash needed for your own home deposit",
       "you may suffer guilt for refusing a reliable friend",
       "you may be drawn into a debt dispute among relatives"
     ],
@@ -241,9 +241,9 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 3,
     "why": "Asking for a temporary pause respects urgency and evidentiary uncertainty without claiming the accusation is either proven or false.",
     "cost2": [
-      "you may be discredited if the video proves misleading",
-      "you may be judged indifferent if the harm proves real",
-      "you may look like an apologist for the official involved",
+      "you could lose credibility with witnesses needed for future investigations",
+      "you could lose the victims' trust in your willingness to speak when needed",
+      "you could lose cooperation from affected demonstrators",
       "you may lose standing with fellow campaign supporters"
     ],
     "basis": [
@@ -266,7 +266,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may become dependent on a powerful funder’s favor",
       "you will answer to families whose sessions disappear",
-      "you may be accused of sidelining an important donor",
+      "you could lose the donor's relationship and future youth-program support",
       "you may bear responsibility when funding ends suddenly"
     ],
     "basis": [
@@ -310,7 +310,7 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 2,
     "why": "A range with assumptions communicates material uncertainty while forcing both parties to confront the real cost of a cautious decision.",
     "cost2": [
-      "you may be blamed for an unnecessary contract loss",
+      "you could lose authority over future technical reports after the contract falls",
       "you may face responsibility for failures left unmentioned",
       "you may become the focus of a commercial dispute",
       "you may be held responsible for shipment delay costs"
@@ -335,7 +335,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may feel trapped between two family loyalties",
       "your child may never again trust you with painful news",
-      "you may be blamed for keeping another parent outside",
+      "you could lose your spouse's confidence in your handling of child safety",
       "you could lose trust in your ability to support your child"
     ],
     "basis": [
@@ -359,7 +359,7 @@ export const HARD_ADVANCED=Object.freeze({
       "you may have to apologize again for a missed event",
       "you could lose a gifted friend from the ministry team",
       "you may be resented by the overburdened co-leader",
-      "you may be blamed for reducing a cherished program"
+      "you could lose families' enrollment and a valued place for vulnerable children"
     ],
     "basis": [
       "The lead has crucial expertise for a group that would otherwise lack qualified supervision.",
@@ -381,7 +381,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may face professional suspicion beyond this project",
       "you risk reputational damage when the draft is traced",
-      "you may be blamed for missing a binding deadline",
+      "you could lose the entire contract and the income it supports",
       "you may lose the ability to defend your own contribution"
     ],
     "basis": [
@@ -403,9 +403,9 @@ export const HARD_ADVANCED=Object.freeze({
     "why": "A predictable schedule changes the dependency pattern while preserving contact; the loss of immediate availability is real.",
     "cost2": [
       "you may become too exhausted to guide anyone well",
-      "you may feel guilt when an urgent call goes unanswered",
+      "you could lose a mentee's trust while trying to maintain family boundaries",
       "you may lose a close relationship built through trust",
-      "you may be judged as abandoning a vulnerable person"
+      "you could lose the relationship built through months of support"
     ],
     "basis": [
       "The mentee is in a major transition and has no close contacts beyond your calls.",
@@ -427,7 +427,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may be linked to misuse if controls fail",
       "you may exhaust yourself maintaining parallel distribution",
-      "you may be blamed when hungry families are turned away",
+      "you could lose trust with families who go without needed meals",
       "you may damage relationships by demanding special treatment"
     ],
     "basis": [
@@ -449,8 +449,8 @@ export const HARD_ADVANCED=Object.freeze({
     "why": "Specific qualified evidence gives the candidate a fair voice without making the hiring organization bear a concealed risk.",
     "cost2": [
       "you may lose your former colleague’s friendship",
-      "you may regret refusing to support real improvement",
-      "you could be blamed if the new hire struggles",
+      "you could lose a mentee relationship with the applicant after declining support",
+      "you could lose your standing as a fair professional reference",
       "you may carry guilt if omitted history later causes harm"
     ],
     "basis": [
@@ -497,7 +497,7 @@ export const HARD_ADVANCED=Object.freeze({
       "you may feel exposed when your health changes later",
       "you may feel complicit if listeners expect guaranteed healing",
       "you may lose the chance to help someone else through fear",
-      "you may have to explain a future setback publicly"
+      "you could lose personal privacy when later symptoms become public"
     ],
     "basis": [
       "Your measured improvement was real and may encourage patients who feel abandoned.",
@@ -519,7 +519,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may face discipline for your own policy violation",
       "you may lose credibility when documents are requested",
-      "you may carry regret if an innocent person is sanctioned",
+      "you could lose the colleague's trust when the evidence emerges too late",
       "you may be suspected of trying to evade accountability"
     ],
     "basis": [
@@ -541,7 +541,7 @@ export const HARD_ADVANCED=Object.freeze({
     "why": "A protected factual report starts scrutiny without publicly declaring uncertain guilt, though employer retaliation remains an authentic threat.",
     "cost2": [
       "you may face workplace retaliation before protection arrives",
-      "you may be accused of reckless allegations if proved wrong",
+      "you could lose your license or employment through an unverified accusation",
       "you may carry responsibility for harms during the delay",
       "you may lose control of evidence and become vulnerable"
     ],
