@@ -6,7 +6,7 @@ export const HARD_EXPERT=Object.freeze({
       "Accept the overseas role; finance future care but lose the everyday presence your parent quietly values.",
       "Decline the role; stay available for care but force your spouse to give up a long-planned move.",
       "Accept only if a sibling takes over care; preserve the move but load a reluctant relative with responsibility.",
-      "Ask for a one-year remote arrangement; preserve options but risk having the employer withdraw the offer entirely."
+      "Request a year of remote work; preserve care options but risk the employer withdrawing the offer."
     ],
     "best": 3,
     "why": "Testing a reversible working arrangement respects competing bonds even though it may cost the career opening."
@@ -49,7 +49,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Suspend the leader during inquiry; protect possible victims but damage reputation before findings.",
       "Leave them in office with oversight; preserve stability but risk undue influence over witnesses.",
-      "Commission an outside review; improve independence but impose expense and a long period of uncertainty.",
+      "Commission an outside review; improve fairness but incur expense and months of uncertainty.",
       "Seek private mediation first; reduce public rupture but risk pressuring people who reported harm."
     ],
     "best": 2,
@@ -81,7 +81,7 @@ export const HARD_EXPERT=Object.freeze({
     "context": "A televised gift could trigger major matching donations. The family receiving help asks for privacy; the broadcaster says anonymity will cancel the segment.",
     "options": [
       "Allow the public gift; unlock funding but expose a vulnerable family to lifelong attention.",
-      "Give privately without the match; protect dignity but significantly reduce the assistance available.",
+      "Give privately without matching funds; protect dignity but reduce the total support delivered.",
       "Feature an actor reenactment; preserve privacy but risk misleading viewers about the story.",
       "Use only your own public testimony; keep families private but likely lose the broadcaster’s match."
     ],
@@ -126,7 +126,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Support the leadership role; honor your spouse’s purpose but carry more unpaid child-care work.",
       "Ask them to decline the role; protect child support but risk resentment over constrained service.",
-      "Alternate months of service; split commitments but leave both the ministry and your child with inconsistency.",
+      "Alternate service months; share duties but make both family and ministry routines less stable.",
       "Reduce your own work hours; support both obligations but weaken household income and career development."
     ],
     "best": 2,
@@ -137,7 +137,7 @@ export const HARD_EXPERT=Object.freeze({
     "options": [
       "Take extra work and hire support; maintain care but lose presence for your children.",
       "Move the parent into your home; provide closeness but interrupt everyone’s routines and space.",
-      "Ask siblings for a strict care rota; distribute tasks but risk resentment and uneven reliability.",
+      "Request sibling care shifts; share the duties but risk resentment and uneven follow-through.",
       "Reduce your working hours; provide direct care but strain the money needed for both generations."
     ],
     "best": 2,
@@ -168,7 +168,7 @@ export const HARD_EXPERT=Object.freeze({
   "hw64": {
     "context": "A candidate performed poorly while caring for a sick parent. You know they improved late, but the hiring manager will treat silence about prior errors as an endorsement.",
     "options": [
-      "Give a candid mixed reference; protect hiring accuracy but risk the candidate losing a rare opportunity.",
+      "Give a mixed reference; protect hiring integrity but risk the applicant’s rare opportunity.",
       "Decline the reference; avoid harming them with facts but deny them your account of improvement.",
       "Recommend them conditionally; support recovery but shift performance risk to the next employer.",
       "Discuss only recent improvement; acknowledge genuine progress but conceal a pattern of failures."
@@ -193,7 +193,7 @@ export const HARD_EXPERT=Object.freeze({
       "Accept the sponsor’s wording; keep the program open but yield pastoral priorities to financial influence.",
       "Reject the deal; protect independence but cancel sessions some young people rely on.",
       "Publish the sponsorship openly; preserve transparency but still let money shape the lesson.",
-      "Offer neutral sponsor recognition only; hold editorial control but risk losing the grant and many sessions."
+      "Offer sponsor credit without content control; preserve integrity but risk funding and sessions."
     ],
     "best": 3,
     "why": "Recognition without editorial control offers a principled negotiation point, but could still cost youth access to the entire program."
