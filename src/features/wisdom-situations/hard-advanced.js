@@ -9,7 +9,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Set a firm purchase date after six months; preserve reserves but risk your spouse feeling deferred once again."
     ],
     "best": 2,
-    "why": "A smaller purchase can respect the promise without treating the entire reserve as untouchable; the disappointment and diminished buffer remain real."
+    "why": "A smaller purchase can respect the promise without treating the entire reserve as untouchable; the disappointment and diminished buffer remain real.",
+    "cost2": [
+      "you may begin to fear every unexpected bill",
+      "you may damage your spouse’s confidence in your promises",
+      "you may feel responsible if the substitute disappoints",
+      "you may keep reopening the same dispute each month"
+    ]
   },
   "hw26": {
     "context": "Promotion files close tomorrow; your coworker has asked you not to challenge the public project-credit narrative. You have evidence of your rescue work, and both of you need the promotion.",
@@ -20,7 +26,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Submit a short statement about your work; protect some credit but leave other important contributions unrecorded."
     ],
     "best": 3,
-    "why": "A limited factual record serves promotion fairness with less personal exposure than a full dispute, yet may not correct everything."
+    "why": "A limited factual record serves promotion fairness with less personal exposure than a full dispute, yet may not correct everything.",
+    "cost2": [
+      "you may be branded difficult by future collaborators",
+      "you may lose a promotion you helped make possible",
+      "you could be blamed for a late, disputed account",
+      "you may still be overlooked when promotion is decided"
+    ]
   },
   "hw27": {
     "context": "The person sharing the prayer request is grieving and will feel publicly shamed if stopped. The couple’s private situation could spread to people outside the group tonight.",
@@ -31,7 +43,13 @@ export const HARD_ADVANCED=Object.freeze({
       "End the meeting early; prevent further details but deprive the group of needed support and fellowship."
     ],
     "best": 1,
-    "why": "An immediate, respectful limit stops foreseeable disclosure while paying the genuine relational cost of interrupting a vulnerable speaker."
+    "why": "An immediate, respectful limit stops foreseeable disclosure while paying the genuine relational cost of interrupting a vulnerable speaker.",
+    "cost2": [
+      "you may be blamed if private details travel further",
+      "you could lose the sharer’s confidence and friendship",
+      "you may be accused of avoiding a difficult public boundary",
+      "you may lose the group’s trust as a responsible leader"
+    ]
   },
   "hw28": {
     "context": "The school has not assigned supervision for tomorrow’s sports event. Your child must attend or miss an important assessment, and the bully has made a specific threat.",
@@ -42,7 +60,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Send your child with trusted friends; maintain attendance but leave the school’s responsibility inadequately addressed."
     ],
     "best": 2,
-    "why": "An adult presence makes protection a parental and institutional responsibility, though it carries serious costs and cannot eliminate every risk."
+    "why": "An adult presence makes protection a parental and institutional responsibility, though it carries serious costs and cannot eliminate every risk.",
+    "cost2": [
+      "you may be unable to forgive yourself after an injury",
+      "you may struggle to repair the lost school opportunity",
+      "you may risk your job for repeated emergency absences",
+      "you may lose your child’s confidence in your judgment"
+    ]
   },
   "hw29": {
     "context": "A supplier offers a gift to your whole team tonight. Refusing could jeopardize next year’s supply allocation; accepting is allowed by policy but may compromise perceived independence.",
@@ -53,7 +77,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Request an equivalent discount instead; benefit the organization but risk pressuring the supplier during negotiations."
     ],
     "best": 0,
-    "why": "Formal disclosure addresses the principal integrity risk without disguising the price of perceived influence."
+    "why": "Formal disclosure addresses the principal integrity risk without disguising the price of perceived influence.",
+    "cost2": [
+      "your next vendor decision may look compromised",
+      "you may lose supplier access your team needs",
+      "you could bear responsibility for disputed procurement",
+      "you may damage your standing with both negotiating teams"
+    ]
   },
   "hw30": {
     "context": "An investigation report will reach staff tomorrow. You know the leader has helped many people, but several complainants may lose trust if you remain publicly supportive.",
@@ -64,7 +94,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Ask for a public suspension; reduce perceived pressure but damage the leader’s reputation if allegations fail."
     ],
     "best": 2,
-    "why": "Practical continuity without pre-deciding guilt acknowledges both present need and the limits of incomplete evidence."
+    "why": "Practical continuity without pre-deciding guilt acknowledges both present need and the limits of incomplete evidence.",
+    "cost2": [
+      "you may be viewed as defending the accused blindly",
+      "you may regret judging a leader before findings emerge",
+      "you could be condemned as evasive by both factions",
+      "you may help create a reputation that cannot be repaired"
+    ]
   },
   "hw31": {
     "context": "A divorcing friend asks you to testify at a hearing in three days. You witnessed a few arguments but not the incidents behind their central accusation.",
@@ -75,7 +111,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Ask your friend to postpone your involvement; preserve trust but lose a chance to correct misleading claims."
     ],
     "best": 0,
-    "why": "Firsthand testimony preserves a useful distinction between experience and allegation despite damaging a valued personal relationship."
+    "why": "Firsthand testimony preserves a useful distinction between experience and allegation despite damaging a valued personal relationship.",
+    "cost2": [
+      "you could lose a friend who expected unconditional loyalty",
+      "you may feel complicit if your evidence was important",
+      "you may be challenged for claiming more than you know",
+      "your refusal could permanently fracture the friendship"
+    ]
   },
   "hw32": {
     "context": "A safety interlock bypass would meet tonight’s delivery. No accident has occurred, but the alternative stops production and risks missing payroll next week.",
@@ -86,7 +128,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Seek an emergency engineering waiver; preserve oversight but risk a delay that makes payroll difficult."
     ],
     "best": 0,
-    "why": "A safety boundary cannot be justified by past luck; the painful financial consequence should be treated as real, not rhetorical."
+    "why": "A safety boundary cannot be justified by past luck; the painful financial consequence should be treated as real, not rhetorical.",
+    "cost2": [
+      "you may be held responsible for a severe lost contract",
+      "you may be accountable if the bypass injures someone",
+      "you may be blamed for the costlier production route",
+      "you may be criticized for seeking a slow exception"
+    ]
   },
   "hw33": {
     "context": "A parent has recurring but manageable mobility problems. A paid caregiver is available, yet moving home would mean losing your children’s school stability and your spouse’s job.",
@@ -97,7 +145,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Invite the parent to live with you; keep them close but remove them from community and independence."
     ],
     "best": 1,
-    "why": "Paid local care can preserve two households, though its expense and imperfect personal attention are substantial losses."
+    "why": "Paid local care can preserve two households, though its expense and imperfect personal attention are substantial losses.",
+    "cost2": [
+      "you may feel absent during your parent’s decline",
+      "you may carry the stress of ongoing care expenses",
+      "you may resent siblings who miss their assigned shifts",
+      "you may lose the personal space needed for recovery"
+    ]
   },
   "hw34": {
     "context": "The borrower has one week to qualify for housing. You trust their effort but know a default would cost your own family its home deposit.",
@@ -108,7 +162,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Sign only if another relative co-signs too; share risk but entangle more households in one default."
     ],
     "best": 2,
-    "why": "A difficult rental search offers aid without binding another family to a debt it cannot absorb, at a serious cost to the borrower."
+    "why": "A difficult rental search offers aid without binding another family to a debt it cannot absorb, at a serious cost to the borrower.",
+    "cost2": [
+      "you could lose the deposit your family has saved",
+      "you may be blamed if the smaller gift achieves nothing",
+      "you may suffer guilt for refusing a reliable friend",
+      "you may be drawn into a debt dispute among relatives"
+    ]
   },
   "hw35": {
     "context": "A video appears to show an official harming a protester. A credible witness says the clip is incomplete; a rally starts in twenty minutes.",
@@ -119,7 +179,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Ask to pause use of the clip; improve accuracy but risk weakening solidarity at the rally."
     ],
     "best": 3,
-    "why": "Asking for a temporary pause respects urgency and evidentiary uncertainty without claiming the accusation is either proven or false."
+    "why": "Asking for a temporary pause respects urgency and evidentiary uncertainty without claiming the accusation is either proven or false.",
+    "cost2": [
+      "you may be discredited if the video proves misleading",
+      "you may be judged indifferent if the harm proves real",
+      "you may look like an apologist for the official involved",
+      "you may lose standing with fellow campaign supporters"
+    ]
   },
   "hw36": {
     "context": "A donor can fund the youth program for a year but insists on a board seat. Rejecting the condition means canceling half the planned sessions.",
@@ -130,7 +196,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Accept conditional funding for six months; buy time but normalize influence tied to giving."
     ],
     "best": 2,
-    "why": "An advisory role takes the donor’s wish for involvement seriously without equating a donation with a governing mandate."
+    "why": "An advisory role takes the donor’s wish for involvement seriously without equating a donation with a governing mandate.",
+    "cost2": [
+      "you may become dependent on a powerful funder’s favor",
+      "you will answer to families whose sessions disappear",
+      "you may be accused of sidelining an important donor",
+      "you may bear responsibility when funding ends suddenly"
+    ]
   },
   "hw37": {
     "context": "The offender returned what they took and apologized, but the disciplinary ruling is tomorrow. Reversing it would help their household while weakening confidence in team standards.",
@@ -141,7 +213,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Reverse it completely; remove immediate hardship but risk diminished trust among earlier victims."
     ],
     "best": 1,
-    "why": "Proportional reduction can recognize repair without erasing the breach, even when colleagues interpret it as inconsistency."
+    "why": "Proportional reduction can recognize repair without erasing the breach, even when colleagues interpret it as inconsistency.",
+    "cost2": [
+      "you may alienate someone whose repentance seems genuine",
+      "you could lose colleagues’ trust in your consistency",
+      "you may become the target of both sides’ suspicions",
+      "you may be held responsible if the misconduct repeats"
+    ]
   },
   "hw38": {
     "context": "The defect rate estimate is uncertain, and the customer must decide a shipment by noon. The sales director warns that a higher estimate could cancel the contract.",
@@ -152,7 +230,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Ask for a one-day hold; improve testing but miss the contractual window and incur penalties."
     ],
     "best": 2,
-    "why": "A range with assumptions communicates material uncertainty while forcing both parties to confront the real cost of a cautious decision."
+    "why": "A range with assumptions communicates material uncertainty while forcing both parties to confront the real cost of a cautious decision.",
+    "cost2": [
+      "you may be blamed for an unnecessary contract loss",
+      "you may face responsibility for failures left unmentioned",
+      "you may become the focus of a commercial dispute",
+      "you may be held responsible for shipment delay costs"
+    ]
   },
   "hw39": {
     "context": "Your teenager discloses an incident affecting their safety and asks you not to tell your spouse. There is no immediate danger; your spouse has reacted harshly before.",
@@ -163,7 +247,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Involve a school counselor first; create support but expose intimate family matters outside the home."
     ],
     "best": 2,
-    "why": "A near-term plan shares control with the teenager without treating long-term concealment as the price of trust."
+    "why": "A near-term plan shares control with the teenager without treating long-term concealment as the price of trust.",
+    "cost2": [
+      "you may feel trapped between two family loyalties",
+      "your child may never again trust you with painful news",
+      "you may be blamed for keeping another parent outside",
+      "you could lose trust in your ability to support your child"
+    ]
   },
   "hw40": {
     "context": "The volunteer is beloved and uniquely skilled. Replacing them would delay a monthly program for children, but their three late cancellations have exhausted everyone else.",
@@ -174,7 +264,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Reduce the program frequency; spare staff but disappoint families who arranged their schedules."
     ],
     "best": 2,
-    "why": "A co-lead shares authority at a genuine staffing cost rather than treating excellence or reliability as the only real obligation."
+    "why": "A co-lead shares authority at a genuine staffing cost rather than treating excellence or reliability as the only real obligation.",
+    "cost2": [
+      "you may have to apologize again for a missed event",
+      "you could lose a gifted friend from the ministry team",
+      "you may be resented by the overburdened co-leader",
+      "you may be blamed for reducing a cherished program"
+    ]
   },
   "hw41": {
     "context": "You substantially rewrote an AI draft, but the client contract is ambiguous about disclosure. Claiming full authorship earns a bonus; disclosure may make the client reject the project.",
@@ -185,7 +281,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Credit only the tools you verified; avoid overstatement but leave the original draft’s AI role unclear."
     ],
     "best": 0,
-    "why": "Explicit provenance is a defensible professional standard when client expectations are unclear, even if the disclosure costs the deal."
+    "why": "Explicit provenance is a defensible professional standard when client expectations are unclear, even if the disclosure costs the deal.",
+    "cost2": [
+      "you may face professional suspicion beyond this project",
+      "you risk reputational damage when the draft is traced",
+      "you may be blamed for missing a binding deadline",
+      "you may lose the ability to defend your own contribution"
+    ]
   },
   "hw42": {
     "context": "A mentee calls every evening and is making progress, but your spouse says your availability is harming home life. No other suitable mentor is immediately available.",
@@ -196,7 +298,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Pause the mentoring role; restore family attention but disrupt a relationship that was producing growth."
     ],
     "best": 1,
-    "why": "A predictable schedule changes the dependency pattern while preserving contact; the loss of immediate availability is real."
+    "why": "A predictable schedule changes the dependency pattern while preserving contact; the loss of immediate availability is real.",
+    "cost2": [
+      "you may become too exhausted to guide anyone well",
+      "you may feel guilt when an urgent call goes unanswered",
+      "you may lose a close relationship built through trust",
+      "you may be judged as abandoning a vulnerable person"
+    ]
   },
   "hw43": {
     "context": "The ministry serves vulnerable families, but its receipts are incomplete. You have enough money to fund three months of meals and cannot inspect the records before tomorrow.",
@@ -207,7 +315,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Provide funds restricted to meals; protect intent but still rely on controls you cannot verify."
     ],
     "best": 1,
-    "why": "Independent supplies serve beneficiaries without a blank check, but the logistical friction can mean fewer people helped."
+    "why": "Independent supplies serve beneficiaries without a blank check, but the logistical friction can mean fewer people helped.",
+    "cost2": [
+      "you may be linked to misuse if controls fail",
+      "you may exhaust yourself maintaining parallel distribution",
+      "you may be blamed when hungry families are turned away",
+      "you may damage relationships by demanding special treatment"
+    ]
   },
   "hw44": {
     "context": "A former employee asks for a reference tomorrow. Their performance improved recently but remains uneven; refusing to recommend them may mean they lose housing.",
@@ -218,7 +332,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Describe only their recent strengths; provide encouraging facts but hide a performance pattern that may matter."
     ],
     "best": 1,
-    "why": "Specific qualified evidence gives the candidate a fair voice without making the hiring organization bear a concealed risk."
+    "why": "Specific qualified evidence gives the candidate a fair voice without making the hiring organization bear a concealed risk.",
+    "cost2": [
+      "you may lose your former colleague’s friendship",
+      "you may regret refusing to support real improvement",
+      "you could be blamed if the new hire struggles",
+      "you may carry guilt if omitted history later causes harm"
+    ]
   },
   "hw45": {
     "context": "Your spouse admits a hidden loan tonight. The interest is escalating, and revealing the debt to extended family could unlock help but destroy your spouse’s privacy.",
@@ -229,7 +349,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Ask relatives to cover the balance; lower interest risk but invite outside control over your marriage."
     ],
     "best": 2,
-    "why": "A confidential adviser can make hidden obligations measurable without automatically transferring power to relatives, though it is costly and intrusive."
+    "why": "A confidential adviser can make hidden obligations measurable without automatically transferring power to relatives, though it is costly and intrusive.",
+    "cost2": [
+      "you may feel pressured to forgive without rebuilding trust",
+      "you may resent monitoring rather than partnering",
+      "you may fear that others now know your marriage’s struggles",
+      "you may lose autonomy in decisions about your own family"
+    ]
   },
   "hw46": {
     "context": "Your friend wants your health testimony onstage tomorrow, but treatment is continuing and your symptoms have recently returned. The church hopes it will encourage others.",
@@ -240,7 +366,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Share progress with treatment status; encourage others but expose your uncertain recovery."
     ],
     "best": 3,
-    "why": "A truthful partial recovery can still encourage, while inviting people to see uncertainty rather than guaranteed healing."
+    "why": "A truthful partial recovery can still encourage, while inviting people to see uncertainty rather than guaranteed healing.",
+    "cost2": [
+      "you may feel exposed when your health changes later",
+      "you may feel complicit if listeners expect guaranteed healing",
+      "you may lose the chance to help someone else through fear",
+      "you may have to explain a future setback publicly"
+    ]
   },
   "hw47": {
     "context": "You possess evidence favoring a colleague who previously damaged your reputation. Giving it may also reveal your own involvement in an unrelated policy violation.",
@@ -251,7 +383,13 @@ export const HARD_ADVANCED=Object.freeze({
       "Send the evidence anonymously; help the investigation but weaken provenance and invite suspicion."
     ],
     "best": 0,
-    "why": "Material evidence should not vanish because its custodian dislikes the accused; the cost of self-exposure remains serious."
+    "why": "Material evidence should not vanish because its custodian dislikes the accused; the cost of self-exposure remains serious.",
+    "cost2": [
+      "you may face discipline for your own policy violation",
+      "you may lose credibility when documents are requested",
+      "you may carry regret if an innocent person is sanctioned",
+      "you may be suspected of trying to evade accountability"
+    ]
   },
   "hw48": {
     "context": "Your confidential evidence suggests a critical compliance failure. An internal report could cost your position; going outside could misidentify an innocent manager and trigger shutdown.",
@@ -262,6 +400,12 @@ export const HARD_ADVANCED=Object.freeze({
       "Confront the manager first; seek clarification but risk pressure and loss of the limited evidence."
     ],
     "best": 0,
-    "why": "A protected factual report starts scrutiny without publicly declaring uncertain guilt, though employer retaliation remains an authentic threat."
+    "why": "A protected factual report starts scrutiny without publicly declaring uncertain guilt, though employer retaliation remains an authentic threat.",
+    "cost2": [
+      "you may face workplace retaliation before protection arrives",
+      "you may be accused of reckless allegations if proved wrong",
+      "you may carry responsibility for harms during the delay",
+      "you may lose control of evidence and become vulnerable"
+    ]
   }
 });
