@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-overwhelm-01",
+  "agentId": "manual-x",
+  "status": "candidate_qa_pending",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "overwhelm",
+  "queueConcept": "overwhelm",
+  "canonicalEmotionId": "overwhelmed",
+  "concept": "Guidebook §5: a school-festival organizer delegates coiled extension cables and folded chairs to colleagues in a safe community hall.",
+  "imagePath": "/v7/images/emotion/bqv7-emotion-overwhelm-01.webp",
+  "format": "webp",
+  "width": 1254,
+  "height": 1254,
+  "aspectRatio": "1:1",
+  "fileBytes": 299768,
+  "sha256": "1cf2dd8bde10a376bb76edcb1b8cee8306b1bcdc5088137e1c087c599325d03f",
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "overwhelmed",
+    "locale": "en",
+    "exactLabel": "Overwhelmed",
+    "proposedReference": "Matthew 11:28",
+    "scriptureTextIncluded": false
+  },
+  "provenance": {
+    "sourceType": "generated",
+    "generator": "OpenAI ImageGen built-in",
+    "sourcePNGPath": "generated_images/exec-a2d9c33b-3359-4b3a-a92c-6fc4d04d96ab.png",
+    "sourcePNGBytes": 2192456,
+    "sourcePNGSha256": "55aa53b46b3dee0fd223550bd80b8ad99dd02c516b1b7733651ffa5537dc3d3a",
+    "export": "RGB WebP, quality 94; native pixel dimensions retained; no upscaling"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original generated scene; rights and artistic suitability remain pending independent review."
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A school-festival organizer delegates coiled cables and folded chairs to two colleagues in a community hall.",
+    "localizedFallback": "CLEAN with live localized text"
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": null,
+    "subjectReadableAtThumbnail": null,
+    "cropSafe": null,
+    "matchesVisualSystem": null,
+    "duplicateChecked": false,
+    "officialNodeAudit": "not_run",
+    "builtAppBrowserQA": "pending",
+    "editorialReview": "pending"
+  },
+  "note": "CLEAN-only candidate. No TYPE or THUMB has been created. Candidate pending independent user/visual/rights QA; do not count as production-ready or merge into production.",
+  "constructionSource": {
+    "path": "docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md",
+    "blobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd",
+    "integrationBaseSha": "0395b0237be9e22d6c81ecff17d21f2c7ec86060"
+  }
+}
