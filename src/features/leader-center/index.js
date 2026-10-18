@@ -5,7 +5,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp
 // BibleQuest V5 Phase 1: Leader Center. Presentation/navigation only - every
 // figure shown here is read directly from leader-center.js's composition of
 // already-authorized owners. This page never queries Supabase itself.
-export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onAnnouncements, onContentReview, onCongregation } = {}) {
+export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignments, onCalendar, onJourneyGroups, onTeamCenter, onAnnouncements, onContentReview, onCongregation, onConversation } = {}) {
   const locale = localization.getLocale();
   const tr = (key, values) => localization.t(key, { locale, values });
   return {
@@ -26,6 +26,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
         view.querySelector('[data-leader-retry]')?.addEventListener('click', load, { once: true });
         view.querySelector('[data-leader-open-assignments]')?.addEventListener('click', () => onAssignments?.(), { once: true });
         view.querySelector('[data-leader-open-calendar]')?.addEventListener('click', () => onCalendar?.(), { once: true });
+        view.querySelector('[data-leader-open-conversation]')?.addEventListener('click', () => onConversation?.(), { once: true });
         view.querySelector('[data-leader-open-groups]')?.addEventListener('click', () => onJourneyGroups?.(), { once: true });
         view.querySelector('[data-leader-open-teams]')?.addEventListener('click', () => onTeamCenter?.(), { once: true });
         view.querySelector('[data-leader-open-announcements]')?.addEventListener('click', () => onAnnouncements?.(), { once: true });
@@ -104,7 +105,7 @@ export function leaderCenterPage({ leaderCenter, onBack, onAccount, onAssignment
             <section class="bq-panel" data-leader-groups-teams>
               <p class="bq-eyebrow">${esc(tr('leaderCenter.spaces.eyebrow'))}</p><h2>${esc(tr('leaderCenter.spaces.heading'))}</h2>
               ${directoryReady ? `<div class="bq-two-column"><div><h3>${esc(tr('leaderCenter.groups.heading'))}</h3>${listHtml(state.groups || [], tr('leaderCenter.groups.empty'), group => `<div class="bq-list-row"><b>${esc(group.label)}</b></div>`)}</div><div><h3>${esc(tr('leaderCenter.teams.heading'))}</h3>${listHtml(state.teams || [], tr('leaderCenter.teams.empty'), team => `<div class="bq-list-row"><div><b>${esc(team.label)}</b>${team.type ? `<small>${esc(team.type)}</small>` : ''}</div></div>`)}</div></div>` : `<p>${esc(tr('leaderCenter.spaces.unavailable'))}</p>`}
-              <div class="bq-recording-actions"><button type="button" class="bq-secondary-button" data-leader-open-groups>${esc(tr('leaderCenter.groups.open'))}</button><button type="button" class="bq-secondary-button" data-leader-open-teams>${esc(tr('leaderCenter.teams.open'))}</button></div>
+              <div class="bq-recording-actions">${onConversation?`<button type="button" class="bq-primary-button" data-leader-open-conversation>${esc(({en:'Small-group session',tl:'Sesyon ng maliit na grupo',ceb:'Sesyon sa gamay nga grupo'}[locale]||'Small-group session'))}</button>`:''}<button type="button" class="bq-secondary-button" data-leader-open-groups>${esc(tr('leaderCenter.groups.open'))}</button><button type="button" class="bq-secondary-button" data-leader-open-teams>${esc(tr('leaderCenter.teams.open'))}</button></div>
             </section>`;
         }
         bind();

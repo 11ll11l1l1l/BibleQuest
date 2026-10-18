@@ -35,9 +35,21 @@ export function createPushSubscriptionService({
   let operation = Promise.resolve();
   const readOwner = () => { try { return clean(ownerStorage?.getItem?.(ownerKey)); } catch { return ''; } };
   const writeOwner = userId => { try { userId ? ownerStorage?.setItem?.(ownerKey, userId) : ownerStorage?.removeItem?.(ownerKey); } catch {} };
-  const registration = async () => {
+  const registration = async ({ existingOnly = false } = {}) => {
     if (!serviceWorker?.ready) throw new Error('Service workers are not available on this device.');
-    const ready = await serviceWorker.ready;
+    let ready;
+    if (existingOnly && typeof serviceWorker.getRegistration === 'function') {
+      // Cleanup must not wait for a worker that was blocked or failed to install.
+      ready = await serviceWorker.getRegistration();
+    } else {
+      let timer;
+      try {
+        ready = await Promise.race([
+          serviceWorker.ready,
+          new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Service worker is not ready.')), 5000); }),
+        ]);
+      } finally { clearTimeout(timer); }
+    }
     if (!ready?.pushManager) throw new Error('Web Push is not available on this device.');
     return ready;
   };
@@ -51,7 +63,7 @@ export function createPushSubscriptionService({
     try { return await subscription.unsubscribe(); } catch { return false; }
   };
   async function cleanup() {
-    const ready = await registration().catch(() => null);
+    const ready = await registration({ existingOnly: true }).catch(() => null);
     const subscription = ready ? await ready.pushManager.getSubscription().catch(() => null) : null;
     if (subscription) {
       try { await persistence.remove(subscription); } catch {}

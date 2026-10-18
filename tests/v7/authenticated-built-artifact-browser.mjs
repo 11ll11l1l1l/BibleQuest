@@ -208,6 +208,19 @@ await insert('v7_pair_assignments', {
 checks.push('synthetic-populated-library-and-one-to-one-seed');
 
 async function installDisposableBackendRoute(context) {
+  const realtimeEvidence={roomChanges:0,opens:0,errors:0,closes:[],frames:0,events:{},subscribed:0};
+  // Bridge actual Realtime traffic to the disposable stack; no fabricated events.
+  await context.routeWebSocket('wss://zkfmgezvzugchcwppreq.supabase.co/**', socket=>{
+    const source=new URL(socket.url()),target=new URL(source.pathname+source.search,endpoint);
+    target.protocol='ws:';target.searchParams.set('apikey',status.ANON_KEY);
+    const upstream=new WebSocket(target);const pending=[];
+    socket.onMessage(message=>{if(upstream.readyState===WebSocket.OPEN)upstream.send(message);else if(upstream.readyState===WebSocket.CONNECTING)pending.push(message)});
+    upstream.addEventListener('open',()=>{realtimeEvidence.opens++;for(const message of pending)upstream.send(message);pending.length=0});
+    upstream.addEventListener('message',event=>{try{const raw=JSON.parse(event.data),message=Array.isArray(raw)?{event:raw[3],payload:raw[4]}:raw;realtimeEvidence.frames++;const name=['phx_reply','postgres_changes','system','phx_error','phx_close'].includes(message.event)?message.event:'other';realtimeEvidence.events[name]=(realtimeEvidence.events[name]||0)+1;if(message.event==='phx_reply'&&message.payload?.status==='ok'&&message.payload.response?.postgres_changes?.length)realtimeEvidence.subscribed++;if(message.event==='postgres_changes'&&message.payload?.data?.table==='bible_shared_sessions')realtimeEvidence.roomChanges++}catch{}socket.send(event.data)});
+    upstream.addEventListener('error',()=>{realtimeEvidence.errors++;socket.close()});
+    upstream.addEventListener('close',event=>{realtimeEvidence.closes.push(event.code);socket.close()});
+    socket.onClose(()=>upstream.close());
+  });
   await context.route(`${productionSupabaseOrigin}/**`, async route => {
     const requestRecord = route.request();
     const source = new URL(requestRecord.url());
@@ -224,7 +237,7 @@ async function installDisposableBackendRoute(context) {
       postData: requestRecord.postDataBuffer() || undefined,
       timeout: 15000,
     });
-    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations', '/auth/v1/user', '/auth/v1/token', '/auth/v1/logout'].includes(source.pathname)) {
       let rowCount = null;
       try { const body = await response.json(); rowCount = Array.isArray(body) ? body.length : null; } catch {}
       backendMembershipReads.push({
@@ -234,11 +247,12 @@ async function installDisposableBackendRoute(context) {
     }
     await route.fulfill({ response });
   });
+  return realtimeEvidence;
 }
 
 async function openRoute(page, route, selector) {
   await page.goto(`${baseUrl}/#/${route}`, { waitUntil: 'domcontentloaded' });
-  await page.locator(selector).waitFor({ state: 'visible' });
+  try{await page.locator(selector).waitFor({ state: 'visible' })}catch(error){const visible=await page.locator('#bq-view').innerText().catch(()=>'view unavailable');throw new Error(`${route} missing ${selector}: ${visible.slice(0,500)}; redacted backend=${JSON.stringify(backendMembershipReads.slice(-10))}`,{cause:error})}
   if (await page.locator('[data-startup-failure]').count()) throw new Error(`${route}: startup failure`);
 }
 
@@ -277,7 +291,7 @@ async function login(page, actorRecord) {
 async function signOut(page) {
   await openRoute(page, 'account', '[data-account-signout]');
   await page.locator('[data-account-signout]').click();
-  await page.locator('[data-account-login]').waitFor({ state: 'visible' });
+  try{await page.locator('[data-account-login]').waitFor({state:'visible'})}catch(error){const visible=await page.locator('#bq-view').innerText().catch(()=>'view unavailable');throw new Error(`Sign-out did not finish: ${visible.slice(0,500)}; redacted backend=${JSON.stringify(backendMembershipReads.slice(-10))}`,{cause:error})}
 }
 
 async function assertNoHorizontalOverflow(page, label) {
@@ -311,6 +325,7 @@ async function writeEvidence(result, error = null) {
       'production-promotion',
     ],
     notes: [
+      'Service workers are blocked only in this network-routed disposable auth harness (Playwright recommendation); existing exact-built PWA/offline certification remains separate and unchanged.',
       'The application build is unchanged. Browser routing redirects only the configured production Supabase origin to the disposable loopback stack and substitutes its anonymous key.',
       'Synthetic reviewed content is test data only and is not representative-content release evidence.',
     ],
@@ -320,7 +335,7 @@ async function writeEvidence(result, error = null) {
 const browser = await chromium.launch({ headless: true });
 try {
   stage = 'mentor-sign-in';
-  const context = await browser.newContext({ viewport: { width: 390, height: 900 } });
+  const context = await browser.newContext({ viewport: { width: 390, height: 900 }, serviceWorkers:'block' });
   await installDisposableBackendRoute(context);
   const page = await context.newPage();
   const pageErrors = [];
@@ -426,6 +441,108 @@ try {
   assert.equal(await page.evaluate(() => location.hash), '#/one-to-one?view=assignment');
   await assertNoHorizontalOverflow(page, 'mentor assignment preparation');
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
+
+  stage = 'v7-1-two-phone-session';
+  {
+  const hostContext=await browser.newContext({viewport:{width:390,height:900},serviceWorkers:'block'});
+  await installDisposableBackendRoute(hostContext);
+  const page=await hostContext.newPage();
+  page.on('pageerror',error=>pageErrors.push(error.message));
+  await login(page,mentor);
+  await openRoute(page,'one-to-one','[data-pair-conversation]');
+  await page.locator('[data-pair-conversation]').click();
+  await page.locator('[data-live-room-create]').waitFor({state:'visible'});
+  await page.locator('[data-live-room-create] button[type=submit]').click();
+  await page.locator('[data-deck-next]').waitFor({state:'visible'});
+  const headerColors=await page.locator('.bq-conversation-session .bq-community-head').evaluate(node=>({background:getComputedStyle(node).backgroundColor,colors:[node.querySelector('h1'),node.querySelector('[data-live-room-connection]')].map(n=>getComputedStyle(n).color)}));
+  const luminance=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4});return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722};
+  for(const color of headerColors.colors){const levels=[luminance(color),luminance(headerColors.background)].sort((a,b)=>b-a);assert.ok((levels[0]+0.05)/(levels[1]+0.05)>=4.5,'Session header text must retain 4.5:1 contrast');}
+
+  const sessionCode=new URLSearchParams((await page.evaluate(()=>location.hash)).split('?')[1]).get('code');
+  assert.match(sessionCode,/^[A-Z0-9]{4,8}$/);
+  await page.locator('[data-deck-next]').click();
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Bring it into prayer/);
+  assert.match(await page.locator('[data-deck-current]').textContent(),/Waiting/);
+  await page.locator('[data-deck-send]').click();
+  await page.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor();
+  const participantContext=await browser.newContext({viewport:{width:320,height:760},serviceWorkers:'block'});
+  const participantRealtime=await installDisposableBackendRoute(participantContext);
+  const participant=await participantContext.newPage();
+  participant.on('pageerror',error=>pageErrors.push(error.message));
+  await login(participant,mentee);
+  await openRoute(participant,`conversation-deck?code=${sessionCode}`,'[data-deck-current] h3');
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  assert.equal(await participant.locator('[data-deck-send]').count(),0);
+  await assertNoHorizontalOverflow(participant,'V7.1 participant 320px');
+  // Keep the host controls mounted across presence/recovery updates.
+  await page.locator('[data-deck-send]').evaluate(node=>{node.dataset.focusSentinel='same-node'});
+  await page.locator('[data-deck-refresh]').click();
+  assert.equal(await page.locator('[data-deck-send]').getAttribute('data-focus-sentinel'),'same-node');
+  await page.locator('[data-deck-gesture]').focus();
+  await page.keyboard.press('ArrowRight');
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Courage to obey/);
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  for(let attempt=0;attempt<100&&!participantRealtime.subscribed;attempt++)await new Promise(resolve=>setTimeout(resolve,100));
+  assert.ok(participantRealtime.subscribed,'Participant Realtime subscription must acknowledge: '+JSON.stringify(participantRealtime));
+  const realtimeBefore=participantRealtime.roomChanges;
+  await page.locator('[data-deck-send]').focus();
+  await page.keyboard.press('Enter');
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  assert.equal(await page.evaluate(()=>document.activeElement?.hasAttribute('data-deck-send')),true,'Sending must preserve keyboard focus');
+  assert.ok(participantRealtime.roomChanges>realtimeBefore,'Participant must receive an actual disposable Supabase Realtime room event: '+JSON.stringify(participantRealtime));
+  await participant.reload();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor({timeout:20000});
+  if(!await participant.locator('[data-live-room-details]').evaluate(node=>node.open))await participant.locator('[data-live-room-details] summary').click();
+  await participant.locator('[data-live-room-reconnect]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
+  if(!await participant.locator('[data-live-room-details]').evaluate(node=>node.open))await participant.locator('[data-live-room-details] summary').click();
+  await participant.locator('[data-live-room-reconnect]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Courage to obey'}).waitFor();
+  await page.reload();
+  await page.locator('[data-deck-send]').waitFor();
+  assert.match(await page.locator('[data-deck-current]').textContent(),/Courage to obey/);
+  const gesture=page.locator('[data-deck-gesture]');
+  await gesture.dispatchEvent('pointerdown',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:150});
+  await gesture.dispatchEvent('pointerup',{pointerId:1,isPrimary:true,button:0,clientX:200,clientY:150});
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Bring it into prayer/);
+  await gesture.dispatchEvent('pointerdown',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:150});
+  await gesture.dispatchEvent('pointerup',{pointerId:1,isPrimary:true,button:0,clientX:100,clientY:50});
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor({timeout:20000});
+  await page.locator('[data-deck-setup] summary').click();
+  await page.locator('[data-deck-series]').selectOption('together');
+  await page.locator('[data-deck-choices] input').last().uncheck();
+  assert.match(await page.locator('[data-deck-position]').textContent(),/of 2/);
+  assert.match(await participant.locator('[data-deck-current]').textContent(),/Bring it into prayer/);
+  await page.locator('[data-deck-send]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Listen before answering'}).waitFor({timeout:20000});
+  await page.locator('[data-deck-series]').selectOption('trust');
+  await page.locator('[data-deck-next]').click();
+  await page.locator('[data-deck-send]').click();
+  await participant.locator('[data-deck-current] h3').filter({hasText:'Bring it into prayer'}).waitFor({timeout:20000});
+  const targets=await page.locator('[data-live-rooms-view] button,[data-live-rooms-view] summary,[data-live-rooms-view] select').evaluateAll(nodes=>nodes.filter(n=>n.getClientRects().length).map(n=>({text:n.textContent.trim().slice(0,32),height:n.getBoundingClientRect().height})));
+  assert.deepEqual(targets.filter(t=>t.height<44),[],'V7.1 phone targets must be 44px');
+  await page.setViewportSize({width:320,height:760});
+  await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+  await assertNoHorizontalOverflow(page,'V7.1 host 320px 200%');
+  await page.evaluate(()=>document.documentElement.style.fontSize='');
+  await page.setViewportSize({width:390,height:900});
+  for(const [locale,title] of [['tl','Idalangin ito'],['ceb','Dad-a kini sa pag-ampo'],['en','Bring it into prayer']]){
+    await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption(locale)]);
+    await page.locator('[data-deck-current] h3').filter({hasText:title}).waitFor();
+    await assertNoHorizontalOverflow(page,`V7.1 ${locale}`);
+  }
+  await mkdir('artifacts/v7',{recursive:true});
+  await page.screenshot({path:'artifacts/v7/v7-1-host-phone.png',fullPage:true});
+  await participant.locator('[data-deck-read]').click();
+  await participant.waitForURL('**/#/reader');
+  await openRoute(participant,`conversation-deck?code=${sessionCode}`,'[data-deck-current] h3');
+  await page.locator('[data-live-room-details] summary').click();
+  await page.locator('[data-live-room-end]').click();
+  await participant.locator('[data-deck-current]').waitFor({state:'detached',timeout:20000});
+  await participantContext.close();
+  await hostContext.close();
+  checks.push('v7-1-two-phone-explicit-preview-send-late-join-reload-reconnect-keyboard-swipe-locales-reader-ended-focus-stability');
+  }
 
   stage = 'account-switch-to-mentee';
   await signOut(page);

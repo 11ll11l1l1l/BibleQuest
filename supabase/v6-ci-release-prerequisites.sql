@@ -26,3 +26,19 @@ revoke all on table public.bible_congregation_invites from anon, authenticated;
 -- Admin/auth parity is provided by the existing idempotent
 -- 20260905_admin_auth_schema_parity.sql and is injected ahead of historical
 -- permission hardening by the V6 local-baseline builder.
+
+-- V7.1 disposable Realtime parity, verified read-only against hosted
+-- pg_publication_tables on 2026-10-18. These tables are already published in
+-- production; the historical innovation SQL records that step only in a comment.
+-- Reproduce it locally so browser certification proves actual Postgres Changes,
+-- not just the recovery poll. This overlay is never deployed to production.
+do $$ begin
+  begin
+    alter publication supabase_realtime add table public.bible_shared_sessions;
+  exception when duplicate_object then null;
+  end;
+  begin
+    alter publication supabase_realtime add table public.bible_session_participants;
+  exception when duplicate_object then null;
+  end;
+end $$;

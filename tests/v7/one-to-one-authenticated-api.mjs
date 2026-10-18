@@ -84,6 +84,28 @@ const mentee = await actor('mentee', 'member', scopeA);
 const foreign = await actor('foreign-leader', 'leader', scopeB);
 checks.push('real-password-authentication-and-user-validation');
 
+// V7.1 uses the existing congregation session boundary, not pair-private data.
+const roomId=randomUUID();
+const sharedDeck={activity:'conversation-deck',version:1,seriesId:'trust',cardIds:['trust-worry','trust-prayer'],activeCardId:'trust-prayer'};
+const [createdRoom]=await insert('bible_shared_sessions',mentor.token,{id:roomId,congregation_id:scopeA,created_by:mentor.id,session_type:'live-room',room_code:marker.replaceAll('-','').slice(0,6).toUpperCase(),title:'V7.1 synthetic session',status:'lobby',state:{activity:'conversation-deck'}});
+const roomFilter=`id=eq.${roomId}&congregation_id=eq.${scopeA}&created_by=eq.${mentor.id}&session_type=eq.live-room&status=neq.ended`;
+const nextTime=new Date(Date.parse(createdRoom.updated_at)+1000).toISOString();
+const [sentRoom]=await update('bible_shared_sessions',mentor.token,`${roomFilter}&updated_at=eq.${encodeURIComponent(createdRoom.updated_at)}`,{state:sharedDeck,status:'active',updated_at:nextTime});
+assert.deepEqual(sentRoom.state,sharedDeck);
+assert.deepEqual((await select('bible_shared_sessions',mentee.token,`id=eq.${roomId}`))[0].state,sharedDeck);
+assert.deepEqual(await select('bible_shared_sessions',foreign.token,`id=eq.${roomId}`),[]);
+for(const token of [mentee.token,foreign.token])assert.deepEqual(await update('bible_shared_sessions',token,`id=eq.${roomId}`,{state:{activity:'lobby'}}),[]);
+await denied('/rest/v1/bible_shared_sessions',mentee.token,'POST',{congregation_id:scopeA,created_by:mentee.id,session_type:'live-room',room_code:'DENY71',title:'Denied',status:'lobby',state:{}});
+assert.deepEqual(await update('bible_shared_sessions',mentor.token,`${roomFilter}&updated_at=eq.${encodeURIComponent(createdRoom.updated_at)}`,{state:{activity:'lobby'}}),[]);
+await denied(`/rest/v1/bible_shared_sessions?id=eq.${roomId}`,mentor.token,'PATCH',{congregation_id:scopeB});
+await update('bible_congregation_members',status.SERVICE_ROLE_KEY,`congregation_id=eq.${scopeA}&user_id=eq.${mentor.id}`,{role:'member'});
+await denied(`/rest/v1/bible_shared_sessions?id=eq.${roomId}`,mentor.token,'PATCH',{state:{activity:'lobby'}});
+await update('bible_congregation_members',status.SERVICE_ROLE_KEY,`congregation_id=eq.${scopeA}&user_id=eq.${mentor.id}`,{role:'leader'});
+await update('bible_shared_sessions',mentor.token,`id=eq.${roomId}`,{status:'ended'});
+assert.deepEqual(await update('bible_shared_sessions',mentor.token,roomFilter,{state:sharedDeck}),[]);
+checks.push('v7-1-real-host-publication-member-late-read-role-tenant-denial-cas-and-ended-filter');
+
+
 const ids = Object.fromEntries(['pair', 'track', 'trackRevision', 'module', 'moduleRevision', 'lesson', 'lessonVersion', 'revision'].map(name => [name, randomUUID()]));
 const types = ['scripture', 'understand', 'discuss', 'reflect', 'apply', 'pray', 'action'];
 const steps = types.map((type, position) => ({

@@ -676,6 +676,17 @@ export function createApi() {
       if(directoryError)throw directoryError;
       return {participants:rows,directory:directory||[]};
     },
+    async publishState(roomId,userId,congregationId,state,expectedUpdatedAt) {
+      const tenantId=String(congregationId||'').trim();if(!tenantId||!userId||!roomId)return null;
+      const client=await getClient();
+      const previous=Date.parse(expectedUpdatedAt);
+      const now=new Date(Math.max(Date.now(),Number.isFinite(previous)?previous+1:0)).toISOString();
+      let query=client.from('bible_shared_sessions').update({state,status:'active',updated_at:now})
+        .eq('id',roomId).eq('congregation_id',tenantId).eq('created_by',userId).eq('session_type','live-room').neq('status','ended');
+      query=expectedUpdatedAt?query.eq('updated_at',expectedUpdatedAt):query.is('updated_at',null);
+      const {data,error}=await query.select(LIVE_ROOM_FIELDS).maybeSingle();
+      if(error)throw error;return data||null;
+    },
     async endRoom(roomId,userId,congregationId) {
       const tenantId=String(congregationId||'').trim();if(!tenantId)return null;
       const client=await getClient(),now=new Date().toISOString();

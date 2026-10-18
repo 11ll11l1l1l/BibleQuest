@@ -1,3 +1,4 @@
+import { normalizeConversationDeck } from '../content/conversation-decks.js';
 const ROOM_CODE=/^[A-Z0-9]{4,8}$/;
 const ROOM_STATUSES=new Set(['lobby','active','ended']);
 const ROOM_ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -25,7 +26,7 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
   const contextCurrent=(userId,congregationId=contextCongregationId)=>accountCurrent(userId)&&Boolean(congregationId)&&contextCongregationId===String(congregationId)&&activeCongregationId()===String(congregationId);
   const identity=()=>{const state=sessionState();if(!state.authenticated||!state.user?.id)throw roomError('Sign in to use Live Rooms.','BQ_LIVE_ROOMS_AUTH_REQUIRED');if(state.remoteAvailable===false)throw roomError('Live Rooms are unavailable in local preview.','BQ_LIVE_ROOMS_REMOTE_DISABLED');return String(state.user.id)};
   const visibleContext=()=>!contextUserId||(contextUserId===currentUserId()&&(!contextCongregationId||contextCongregationId===activeCongregationId()));
-  const snapshot=()=>{const state=sessionState(),visible=visibleContext();return Object.freeze({authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,activeCongregationId:activeCongregationId(),loadedCongregationId:visible?contextCongregationId:'',memberships:visible?memberships.slice():[],room:visible?room:null,participants:visible?participants.slice():[],isHost:Boolean(visible&&room&&room.createdBy===String(state.user?.id||'')),connected:visible?connected:false,connectionStatus:visible?connectionStatus:'idle'})};
+  const snapshot=()=>{const state=sessionState(),visible=visibleContext();return Object.freeze({userId:currentUserId(),activeRole:String(congregation.getActive?.()?.role||''),authenticated:state.authenticated===true,remoteAvailable:state.remoteAvailable!==false,activeCongregationId:activeCongregationId(),loadedCongregationId:visible?contextCongregationId:'',memberships:visible?memberships.slice():[],room:visible?room:null,participants:visible?participants.slice():[],isHost:Boolean(visible&&room&&room.createdBy===String(state.user?.id||'')),connected:visible?connected:false,connectionStatus:visible?connectionStatus:'idle'})};
   const emit=()=>{const state=snapshot();for(const listener of listeners)listener(state);return state};
   const disconnect=()=>{if(stopChannel)stopChannel();stopChannel=null;connected=false;connectionStatus=room?'disconnected':'idle';return emit()};
   const clearRoom=()=>{roomGeneration++;participantRequest++;if(stopChannel)stopChannel();stopChannel=null;room=null;participants=Object.freeze([]);connected=false;connectionStatus='idle'};
@@ -74,7 +75,7 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
     const cleanup=await api.subscribe(roomId,room.congregationId,event=>{
       if(!contextCurrent(userId)||generation!==roomGeneration||!room||room.id!==roomId)return;
       if(event?.type==='room'){
-        try{const next=normalizeRoom(event.room);if(next.id!==room.id||next.congregationId!==contextCongregationId)return;room=next;if(room.status==='ended'){if(stopChannel)stopChannel();stopChannel=null;connected=false;connectionStatus='ended'}emit()}catch{connected=false;connectionStatus='error';emit()}
+        try{const next=normalizeRoom(event.room);if(next.id!==room.id||next.congregationId!==contextCongregationId)return;acceptRoom(next);if(room.status==='ended'){if(stopChannel)stopChannel();stopChannel=null;connected=false;connectionStatus='ended'}emit()}catch{connected=false;connectionStatus='error';emit()}
       }else if(event?.type==='participants'){void refreshParticipants().catch(()=>{if(contextCurrent(userId)&&generation===roomGeneration&&room?.id===roomId){connected=false;connectionStatus='error';emit()}})}
       else if(event?.type==='connection'){connectionStatus=String(event.status||'').toLowerCase();connected=event.status==='SUBSCRIBED';emit()}
     });
@@ -99,9 +100,9 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
     try{await ensureMemberships()}catch(error){if(error?.code==='BQ_LIVE_ROOMS_AUTH_REQUIRED'||error?.code==='BQ_LIVE_ROOMS_REMOTE_DISABLED'){clearContext();emit()}throw error}
     if(room)await reconnect();else emit();return snapshot();
   }
-  async function create({congregationId,title='BibleQuest Live'}={}){
+  async function create({congregationId,title='BibleQuest Live',activity='lobby'}={}){
     const userId=identity();await ensureMemberships();const id=String(congregationId||''),tenantId=contextCongregationId;if(!tenantId)throw roomError('Choose an active congregation before creating a Live Room.','BQ_LIVE_ROOMS_CONGREGATION');if(id!==tenantId)throw staleContext();congregation.assert(id,'ministry');const name=cleanText(title,80)||'BibleQuest Live',roomCode=normalizeCode(codeFactory());if(!ROOM_CODE.test(roomCode))throw roomError('Live Rooms could not create a valid room code.','BQ_LIVE_ROOMS_CODE');
-    const created=await api.create(id,{created_by:userId,session_type:'live-room',title:name,room_code:roomCode,status:'lobby',state:{round:0,activity:'lobby'},metadata:{version:1}});
+    const created=await api.create(id,{created_by:userId,session_type:'live-room',title:name,room_code:roomCode,status:'lobby',state:{round:0,activity:activity==='conversation-deck'?'conversation-deck':'lobby'},metadata:{version:1}});
     if(!contextCurrent(userId,tenantId))throw staleContext();
     return activate(created);
   }
@@ -111,9 +112,51 @@ export function createLiveRoomsService({api,session,congregation,codeFactory=sec
   async function reconnect(){
     const userId=identity();if(!room)throw roomError('There is no Live Room to reconnect.','BQ_LIVE_ROOMS_NO_ACTIVE');await ensureMemberships();const tenantId=contextCongregationId;if(!contextCurrent(userId,tenantId)||!room||room.congregationId!==tenantId)throw staleContext();const roomId=room.id;const fresh=await api.loadRoom(roomId,tenantId);if(!contextCurrent(userId,tenantId)||room?.id!==roomId)throw staleContext();if(!fresh){clearRoom();emit();throw roomError('This Live Room is no longer available.','BQ_LIVE_ROOMS_NOT_FOUND')}try{return await activate(fresh)}catch(error){if(error?.code==='BQ_LIVE_ROOMS_ENDED')emit();throw error}
   }
+  let refreshing=false,publishing=false;
+  const acceptRoom=next=>{
+    const currentTime=Date.parse(room?.updatedAt),nextTime=Date.parse(next.updatedAt);
+    if(Number.isFinite(currentTime)&&Number.isFinite(nextTime)&&nextTime<currentTime)return false;
+    room=next;return true;
+  };
+  async function refresh(){
+    if(refreshing||!room)return snapshot();
+    const userId=identity(),tenantId=contextCongregationId,id=room.id,generation=roomGeneration;
+    if(!contextCurrent(userId,tenantId)){clearContext();emit();throw staleContext()}
+    refreshing=true;
+    try{
+      const row=await api.loadRoom(id,tenantId);
+      if(!contextCurrent(userId,tenantId)||generation!==roomGeneration||room?.id!==id)throw staleContext();
+      if(!row){clearRoom();return emit()}
+      const next=normalizeRoom(row);
+      if(next.id!==id||next.congregationId!==tenantId)throw staleContext();
+      if(next.status==='ended'){clearRoom();return emit()}
+      acceptRoom(next);return emit();
+    }finally{refreshing=false}
+  }
+  async function publishDeck(value){
+    if(publishing)throw roomError('Wait for the current card to finish sending.','BQ_LIVE_ROOMS_BUSY');
+    const userId=identity();await ensureMemberships();
+    const tenantId=contextCongregationId,id=room?.id,generation=roomGeneration;
+    if(!contextCurrent(userId,tenantId))throw staleContext();
+    if(!room||room.createdBy!==userId||room.status==='ended')throw roomError('Only the current room host can send cards.','BQ_LIVE_ROOMS_PERMISSION');
+    congregation.assert(tenantId,'ministry');
+    const deck=normalizeConversationDeck(value);
+    if(!deck)throw roomError('Choose valid cards from one series.','BQ_LIVE_ROOMS_DECK');
+    const expected=room.updatedAt;
+    if(publishing)throw roomError('Wait for the current card to finish sending.','BQ_LIVE_ROOMS_BUSY');
+    publishing=true;
+    try{
+      const row=await api.publishState(id,userId,tenantId,deck,expected);
+      if(!contextCurrent(userId,tenantId)||generation!==roomGeneration||room?.id!==id)throw staleContext();
+      if(!row)throw roomError('The room changed. Refresh before sending again.','BQ_LIVE_ROOMS_CONFLICT');
+      const next=normalizeRoom(row);
+      if(next.id!==id||next.congregationId!==tenantId||next.createdBy!==userId)throw staleContext();
+      acceptRoom(next);return emit();
+    }finally{publishing=false}
+  }
   function leave(){clearRoom();return emit()}
   async function end(){const userId=identity(),tenantId=contextCongregationId;if(!contextCurrent(userId,tenantId))throw staleContext();if(!room||room.congregationId!==tenantId||room.createdBy!==userId)throw roomError('Only the room host can end this Live Room.','BQ_LIVE_ROOMS_PERMISSION');const roomId=room.id,generation=roomGeneration;const ended=await api.endRoom(roomId,userId,tenantId);if(!contextCurrent(userId,tenantId)||generation!==roomGeneration||room?.id!==roomId)throw staleContext();if(!ended)throw roomError('Live Room could not be ended.','BQ_LIVE_ROOMS_NOT_FOUND');const normalized=normalizeRoom(ended);if(normalized.congregationId!==tenantId)throw roomError('Live Room response escaped the active congregation.','BQ_LIVE_ROOMS_SCOPE');clearRoom();return emit()}
   function clear(){clearContext();emit()}
   function subscribe(listener){if(typeof listener!=='function')return()=>{};listeners.add(listener);listener(snapshot());return()=>listeners.delete(listener)}
-  return Object.freeze({snapshot,load,create,join,reconnect,disconnect,leave,end,clear,subscribe});
+  return Object.freeze({snapshot,load,create,join,reconnect,refresh,publishDeck,disconnect,leave,end,clear,subscribe});
 }
