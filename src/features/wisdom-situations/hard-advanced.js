@@ -103,7 +103,7 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 0,
     "why": "Formal disclosure addresses the principal integrity risk without disguising the price of perceived influence.",
     "cost2": [
-      "you could be removed from future supplier selections over apparent conflict",
+      "you could lose your role in future supplier selections",
       "you may lose supplier access your team needs",
       "you could bear responsibility for disputed procurement",
       "you may damage your standing with both negotiating teams"
@@ -241,7 +241,7 @@ export const HARD_ADVANCED=Object.freeze({
     "best": 3,
     "why": "Asking for a temporary pause respects urgency and evidentiary uncertainty without claiming the accusation is either proven or false.",
     "cost2": [
-      "you could lose credibility with witnesses needed for future investigations",
+      "you could lose the witnesses' trust for future inquiries",
       "you could lose the victims' trust in your willingness to speak when needed",
       "you could lose cooperation from affected demonstrators",
       "you may lose standing with fellow campaign supporters"
@@ -519,7 +519,7 @@ export const HARD_ADVANCED=Object.freeze({
     "cost2": [
       "you may face discipline for your own policy violation",
       "you may lose credibility when documents are requested",
-      "you could lose the colleague's trust when the evidence emerges too late",
+      "you could lose the colleague's trust if the evidence arrives too late",
       "you may be suspected of trying to evade accountability"
     ],
     "basis": [
