@@ -1,11 +1,11 @@
 import { WISDOM_SITUATIONS, getWisdomSituation, localizeWisdomSituation } from '../features/wisdom-situations/content.js';
 import { assertNeutralAssessment, reviewNeutralContent } from '../core/doctrinal-safety.js';
 
-const SELECTOR_KEY='wisdom-situations-cycle-v2';
+const SELECTOR_KEY='wisdom-situations-cycle-v3';
 const hasOwn=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 const byId=new Map(WISDOM_SITUATIONS.map(item=>[item.id,item]));
 const safetyFor=item=>{
-  const safety=reviewNeutralContent({q:item.scenario,a:item.why,ref:item.refs.join(' · ')},{reason:'Wisdom Situations compares plausible applied judgments; its preferred option is not a declaration of universally binding doctrine.'});
+  const safety=reviewNeutralContent({q:item.scenario,a:item.why,ref:item.refs.join(' · ')},{reason:'Wisdom Situations compares plausible applied judgments; each option is a potentially defensible judgment under competing Christian duties, not a binding moral verdict.'});
   assertNeutralAssessment({safety},`Wisdom Situation ${item.id}`);
   return safety;
 };
@@ -24,13 +24,13 @@ const displayOrderFor=(item,state)=>{
   }
   return order;
 };
-const emptySelector=()=>({version:2,cycle:0,seen:[],currentId:'',lastId:''});
+const emptySelector=()=>({version:3,cycle:0,seen:[],currentId:'',lastId:''});
 function normalizeSelector(input){
-  const source=input&&typeof input==='object'&&!Array.isArray(input)&&Number(input.version)===2?input:{};
+  const source=input&&typeof input==='object'&&!Array.isArray(input)&&Number(input.version)===3?input:{};
   const valid=id=>byId.has(String(id||''))?String(id):'';
   const seen=[...new Set((Array.isArray(source.seen)?source.seen:[]).map(String).filter(id=>byId.has(id)))];
   return {
-    version:2,
+    version:3,
     cycle:Math.max(0,Number.isSafeInteger(Number(source.cycle))?Number(source.cycle):0),
     seen,
     currentId:valid(source.currentId),
@@ -44,7 +44,7 @@ function publicSituation(item,state,reveal=false,locale='en'){
   const options=Object.freeze(order.map(index=>localized.options[index]));
   const base={
     id:item.id,domain:item.domain,pack:item.pack,title:localized.title,tension:localized.tension,scenario:localized.scenario,
-    options,difficulty:item.difficulty,safety:safetyFor(item)
+    options,basis:Object.freeze(order.map(index=>localized.basis?.[index]||'')),difficulty:item.difficulty,safety:safetyFor(item)
   };
   if(!reveal)return Object.freeze(base);
   return Object.freeze({
@@ -75,7 +75,7 @@ export function createWisdomSituationsService({lesson,progress,storage,random=Ma
     if(!activeId)throw new Error('Open a Wisdom Situation before using Wisdom Situations.');
     return getWisdomSituation(activeId);
   };
-  const eventId=(item,state)=>`wisdom-situation:${item.id}:v${state.definitionVersion}`;
+  const eventId=item=>`wisdom-situation:${item.id}:v1`;
   const reconcile=(item,state)=>{
     if(!hasOwn(state.responses,'judgment'))return null;
     return progress.record({id:eventId(item,state),type:'wisdom-situation.complete',xp:8,meaningful:true,metrics:{situations:1}});
