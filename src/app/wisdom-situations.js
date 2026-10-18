@@ -5,7 +5,7 @@ const SELECTOR_KEY='wisdom-situations-cycle-v3';
 const hasOwn=(object,key)=>Object.prototype.hasOwnProperty.call(object,key);
 const byId=new Map(WISDOM_SITUATIONS.map(item=>[item.id,item]));
 const safetyFor=item=>{
-  const safety=reviewNeutralContent({q:item.scenario,a:item.why,ref:item.refs.join(' · ')},{reason:'Wisdom Situations compares plausible applied judgments; its preferred option is not a declaration of universally binding doctrine.'});
+  const safety=reviewNeutralContent({q:item.scenario,a:item.why,ref:item.refs.join(' · ')},{reason:'Wisdom Situations compares plausible applied judgments; each option is a potentially defensible judgment under competing Christian duties, not a binding moral verdict.'});
   assertNeutralAssessment({safety},`Wisdom Situation ${item.id}`);
   return safety;
 };
@@ -26,7 +26,7 @@ const displayOrderFor=(item,state)=>{
 };
 const emptySelector=()=>({version:3,cycle:0,seen:[],currentId:'',lastId:''});
 function normalizeSelector(input){
-  const source=input&&typeof input==='object'&&!Array.isArray(input)&&Number(input.version)===2?input:{};
+  const source=input&&typeof input==='object'&&!Array.isArray(input)&&Number(input.version)===3?input:{};
   const valid=id=>byId.has(String(id||''))?String(id):'';
   const seen=[...new Set((Array.isArray(source.seen)?source.seen:[]).map(String).filter(id=>byId.has(id)))];
   return {
@@ -44,7 +44,7 @@ function publicSituation(item,state,reveal=false,locale='en'){
   const options=Object.freeze(order.map(index=>localized.options[index]));
   const base={
     id:item.id,domain:item.domain,pack:item.pack,title:localized.title,tension:localized.tension,scenario:localized.scenario,
-    options,difficulty:item.difficulty,safety:safetyFor(item)
+    options,basis:Object.freeze(order.map(index=>localized.basis?.[index]||'')),difficulty:item.difficulty,safety:safetyFor(item)
   };
   if(!reveal)return Object.freeze(base);
   return Object.freeze({
