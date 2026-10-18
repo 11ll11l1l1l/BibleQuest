@@ -30,6 +30,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A trusted relative has previously helped this household resolve an immediate emergency.
 - **D can be defended because:** Your friend remains the only person still able to communicate safely with the threatened adult.
 
+
 **Hardest red-team challenge:** Is confidentiality protected without treating uncertain coercive harm as an acceptable cost of friendship?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -42,6 +43,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your income covers a dependent's treatment, and replacement work is unavailable this quarter.
 - **C can be defended because:** The manager asked for concerns before final submission, despite intense team pressure.
 - **D can be defended because:** The report permits an uncertainty footnote, but your department promised a clean summary.
+
 
 **Hardest red-team challenge:** Does the report's actual audit policy make every response truthful, or does signing still amount to deception?
 
@@ -56,6 +58,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Previous cash assistance was spent elsewhere, while the landlord accepts direct payment.
 - **D can be defended because:** Your spouse has consented to a temporary stay, though the household has very little space.
 
+
 **Hardest red-team challenge:** Are direct rent, partial rent and temporary shelter genuinely available, rather than invented escape routes?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -68,6 +71,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The organization can use a certified outside bookkeeper, but only at considerable cost.
 - **C can be defended because:** The person has valuable pastoral skills and has asked for a way to rebuild trust.
 - **D can be defended because:** A time-limited petty-cash role would allow restitution, but even small losses hurt recipients.
+
 
 **Hardest red-team challenge:** Does supervised re-entry protect entrusted funds without confusing repentance with automatic reinstatement?
 
@@ -82,6 +86,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Your child is in a short-lived developmental season and has requested your presence.
 - **D can be defended because:** Your employer needs weekend coverage most urgently and pays a much larger premium.
 
+
 **Hardest red-team challenge:** Does the middle-shift option still look uniquely prudent because it is explicitly a compromise?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -94,6 +99,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Listeners will circulate clips before a leader could acknowledge a private concern.
 - **C can be defended because:** The media editor has established authority to pause an upload to verify quotations.
 - **D can be defended because:** A formal written objection activates a church accountability process with a record.
+
 
 **Hardest red-team challenge:** Who has authority to pause the recording, and which mistaken teaching would create irreversible harm?
 
@@ -108,6 +114,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Several members have confided that open voting exposes them to pressure from donors.
 - **D can be defended because:** The dissenters have already drafted a revision that many undecided members respect.
 
+
 **Hardest red-team challenge:** Are procedural fairness, access to meeting space and dissent all equally tangible rather than vaguely reputational?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -119,7 +126,8 @@ The most common failure was an option with obvious Christian compassion or hones
 - **A can be defended because:** The income would immediately fund a parent's urgent care, and claims are legally permitted.
 - **B can be defended because:** Your parent values your truthful work and has rejected income earned through questionable claims.
 - **C can be defended because:** An operations vacancy may open, but asking would forfeit a guaranteed offer tonight.
-- **D can be defended because:** Your manager has promised a ninety-day trial with the option to resign without penalty.
+- **D can be defended because:** Your manager will honor a written refusal to repeat unsubstantiated claims during a ninety-day trial.
+
 
 **Hardest red-team challenge:** Are persuasive sales claims actually false or merely uncertain; where does truthful professional participation end?
 
@@ -134,6 +142,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Repeated rescue has caused a serious financial crisis in your own marriage.
 - **D can be defended because:** Your spouse has offered to exchange this evening for a future weekend together.
 
+
 **Hardest red-team challenge:** Is assisting with a licensing submission permitted, and did the spouse genuinely consent to the family cost?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -146,6 +155,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your friend has asked for facts rather than advice because earlier counsel felt controlling.
 - **C can be defended because:** An independent professional already holds the relevant documents and can call confidentially.
 - **D can be defended because:** Your friend has repeatedly required permission before financial advice after a past betrayal.
+
 
 **Hardest red-team challenge:** Will a privacy-first delay imperil an irreversible decision without a credible reason for respecting boundaries?
 
@@ -160,6 +170,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The division can split two responsibilities but might reject both applicants as unsuitable.
 - **D can be defended because:** Company policy allows extraordinary personal hardship to be considered in assignment.
 
+
 **Hardest red-team challenge:** Would disclosing a colleague's immigration situation violate their consent even if meant compassionately?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -172,6 +183,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** You already pledged to keep one month's emergency savings for your dependents.
 - **C can be defended because:** The charity has successfully collected written installment pledges from donors before.
 - **D can be defended because:** Your practical skill could repair essential distribution equipment before tomorrow.
+
 
 **Hardest red-team challenge:** Does publicly named giving pressure donors, and is the matching threshold independently verified?
 
@@ -186,6 +198,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The shift manager has authority to quarantine lots while keeping technicians anonymous.
 - **D can be defended because:** The customer permits conditional acceptance of isolated lots with traceability requirements.
 
+
 **Hardest red-team challenge:** Does every path honor non-negotiable safety and customer-disclosure rules even under payroll pressure?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -198,6 +211,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** A trained backup facilitator can deliver an abbreviated gathering if you cancel.
 - **C can be defended because:** The assistant leader offered to take over if you can orient them in twenty minutes.
 - **D can be defended because:** Your spouse explicitly offered a recovery day later, but your household is already strained.
+
 
 **Hardest red-team challenge:** Can a supposedly unprepared volunteer actually take charge without increasing risks for the youth?
 
@@ -212,6 +226,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A scheduled safeguarding officer can meet both children first if paperwork is postponed.
 - **D can be defended because:** School rules allow a protected statement omitting identities until a safeguarding meeting.
 
+
 **Hardest red-team challenge:** Are mandatory safeguarding disclosures distinguished from disclosures that expose a child to harsh punishment?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -224,6 +239,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The third party has expressly refused publication and has no way to defend the privacy breach.
 - **C can be defended because:** The accuser previously corrected a mistaken claim privately when given reliable evidence.
 - **D can be defended because:** A dated public timeline can establish a key fact without exposing the protected messages.
+
 
 **Hardest red-team challenge:** Is third-party consent explicit and narrow enough to justify publishing screenshots that persist indefinitely?
 
@@ -238,6 +254,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The newcomer asked to be heard before others speak on their behalf.
 - **D can be defended because:** The gathering is ending, and stopping the laughter may be the only non-public intervention.
 
+
 **Hardest red-team challenge:** Is changing the subject an intervention with a realistic benefit, not merely avoidance dressed as kindness?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -250,6 +267,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The relative has refused agreed safety boundaries even after being warned.
 - **C can be defended because:** A supervised final week is supported by another adult who can be present continuously.
 - **D can be defended because:** A hotel near medical services has offered a reduced rate for urgent family separation.
+
 
 **Hardest red-team challenge:** Could the relative's behavior threaten the child sufficiently that further exposure is categorically unacceptable?
 
@@ -264,6 +282,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A registered after-hours nurse can assess symptoms and connect them to immediate care.
 - **D can be defended because:** The prescribing clinician has agreed to a morning consultation, with emergency help if symptoms worsen.
 
+
 **Hardest red-team challenge:** Does every option avoid practicing medicine without a license and preserve urgent symptom escalation?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -276,6 +295,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** A gifted junior leader can step up if you accept an intentionally hidden supporting role.
 - **C can be defended because:** A peer mentor has agreed to confront you if you confuse applause with spiritual fruit.
 - **D can be defended because:** A sabbatical would let a wounded relationship heal before you resume a public platform.
+
 
 **Hardest red-team challenge:** Could modest shared-credit language hide pride rather than force a genuinely costly inner decision?
 
@@ -290,6 +310,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The injured party wants confidentiality to avoid fresh harassment and keep the settlement usable.
 - **D can be defended because:** A public record would protect future victims, and the opposing side might still agree.
 
+
 **Hardest red-team challenge:** Does confidential settlement protect the harmed person's autonomy or conceal preventable wrongdoing?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -302,6 +323,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your child is undergoing care that cannot safely transfer at short notice.
 - **C can be defended because:** The inviting organization understands that serious decisions require joint discernment.
 - **D can be defended because:** Your spouse has experienced the unmet needs firsthand and has a coherent, informed preference.
+
 
 **Hardest red-team challenge:** Does an extension merely make delay the obvious compromise, and is the child's care continuity real?
 
@@ -316,6 +338,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The independent source is understandable without naming the person who shared the claim.
 - **D can be defended because:** The organizer has a clear correction policy and can remove an inaccurate slide before the event.
 
+
 **Hardest red-team challenge:** How much verified misinformation can circulate before privately protecting a friend's reputation becomes complicity?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -327,7 +350,8 @@ The most common failure was an option with obvious Christian compassion or hones
 - **A can be defended because:** The statistic's distortion threatens the credibility of other appeals you publicly endorse.
 - **B can be defended because:** The sponsor has said an explicit caveat preserves funding if visible in the campaign materials.
 - **C can be defended because:** The organizer can replace the number without changing the campaign's underlying purpose.
-- **D can be defended because:** Beneficiaries will lose transport today without a quiet contribution even if you refuse publicity.
+- **D can be defended because:** A trusted local provider can transfer your private contribution directly to beneficiaries today.
+
 
 **Hardest red-team challenge:** Is a clear visible caveat sufficient to avoid misleading donors; could funds lawfully be retained otherwise?
 
@@ -342,6 +366,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The smaller model reliably meets core needs and comes with a return period.
 - **D can be defended because:** You and your spouse previously agreed on a dated savings target, not an indefinite refusal.
 
+
 **Hardest red-team challenge:** Does the smaller purchase function as a cheap middle answer without durable savings or a real promise?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -354,6 +379,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your coworker publicly defended you during a prior unfair review and expects solidarity.
 - **C can be defended because:** The coworker is willing to co-sign a shared account if given a few hours.
 - **D can be defended because:** The review form permits a verified supplemental paragraph but no revisions later.
+
 
 **Hardest red-team challenge:** Is self-credit truthful, and do merit, loyalty and deadline exert equivalent pressure on all four routes?
 
@@ -368,6 +394,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A co-leader can take the sharer aside immediately without embarrassing them publicly.
 - **D can be defended because:** The couple has authorized a general prayer but not discussion of the private incident.
 
+
 **Hardest red-team challenge:** Can confidentiality be preserved without shaming a grieving person or silencing genuine communal prayer?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -380,6 +407,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The assessment can be rescheduled only once with a documented safety concern.
 - **C can be defended because:** A parent is legally permitted to accompany the group after registering tonight.
 - **D can be defended because:** Trusted classmates already helped report the threat and can alert staff quickly.
+
 
 **Hardest red-team challenge:** Are all attendance paths safe under a specific threat, with no reliance on a child's self-defense alone?
 
@@ -394,6 +422,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The gift consists of shared training equipment, not personal luxury items.
 - **D can be defended because:** The supplier previously offered the same volume discount to other clients.
 
+
 **Hardest red-team challenge:** Could a disclosed gift still create a real conflict beyond appearances, even where policy allows it?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -406,6 +435,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** A complainant fears any public support will discourage other witnesses from coming forward.
 - **C can be defended because:** Operational staff still need independent help and continuity while the report is pending.
 - **D can be defended because:** Temporary separation protects a witness from reporting to the person under investigation.
+
 
 **Hardest red-team challenge:** Do public support and suspension protect witnesses without pre-judging facts still under investigation?
 
@@ -420,6 +450,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Your friend has requested a letter limited to professional reliability rather than disputed events.
 - **D can be defended because:** The court permits supplemental testimony after records are reviewed, but the date is uncertain.
 
+
 **Hardest red-team challenge:** Would a character letter be honest and relevant, or falsely imply firsthand knowledge of alleged incidents?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -432,6 +463,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** A certified engineer can operate within an approved reduced-speed contingency procedure.
 - **C can be defended because:** The backup line meets safety requirements and can deliver most of the order.
 - **D can be defended because:** The safety officer is authorized to grant a documented exception to the schedule, not controls.
+
 
 **Hardest red-team challenge:** No option may bypass a safety interlock; only technically authorized safe contingencies count as valid paths.
 
@@ -446,6 +478,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Siblings have offered predictable rotating visits but live far apart.
 - **D can be defended because:** Your parent asked to move near grandchildren after becoming isolated in their neighborhood.
 
+
 **Hardest red-team challenge:** Was the parent's actual care preference heard, and are siblings really available for predictable shifts?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -458,6 +491,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** A direct loan is documented and affordable without affecting the child's essential needs.
 - **C can be defended because:** A verified lower-cost rental will become available in ten days with moving assistance.
 - **D can be defended because:** A second guarantor has volunteered freely and understands the full financial exposure.
+
 
 **Hardest red-team challenge:** Would co-signing knowingly sacrifice a dependent's home fund, and why would that be ethically defensible?
 
@@ -472,6 +506,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The witness offered verifiable timestamps and consented to careful publication.
 - **D can be defended because:** Rally organizers have withdrawn unverified material before without abandoning their cause.
 
+
 **Hardest red-team challenge:** How does each path distinguish established abuse from viral footage with unverified missing context?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -484,6 +519,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The board previously promised the community not to sell decision authority for funding.
 - **C can be defended because:** The donor has accepted nonvoting advisory roles in other organizations.
 - **D can be defended because:** A written sunset clause would trigger another vote before the donor could retain influence.
+
 
 **Hardest red-team challenge:** Can a donor's governance role be non-coercive, or is the offered board seat a purchase of influence?
 
@@ -498,6 +534,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A witness with first-hand knowledge of the offender's changed behavior is available.
 - **D can be defended because:** The underlying rules permit a compassionate exception for extraordinary hardship.
 
+
 **Hardest red-team challenge:** Is disciplinary leniency consistent with fairness to prior victims and published restitution standards?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -510,6 +547,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The contract defines reportable failure as observed defects with clear sample boundaries.
 - **C can be defended because:** Your metrology group can quantify an interval, and the customer values uncertainty disclosure.
 - **D can be defended because:** A hold can yield full additional measurements, preventing unnecessary scrap and rework.
+
 
 **Hardest red-team challenge:** Does precise measured disclosure prevent foreseeable customer misunderstanding about statistical uncertainty?
 
@@ -524,6 +562,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The teenager agreed to tell their parent in a supervised meeting within forty-eight hours.
 - **D can be defended because:** A counselor understands the household's history and can keep the initial conversation bounded.
 
+
 **Hardest red-team challenge:** Is withholding information from a parent justified by actual harm risk rather than mere dislike of conflict?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -536,6 +575,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The deputy has led previous sessions and other volunteers are nearing burnout.
 - **C can be defended because:** A mature co-leader has offered to cover cancellations with authority to change plans.
 - **D can be defended because:** Some families prefer a predictable smaller program to repeated last-minute cancellation.
+
 
 **Hardest red-team challenge:** Does appointing a co-lead genuinely solve repeated unreliability without transferring all burden to others?
 
@@ -550,6 +590,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The project manager can obtain a documented clarification before the next billing cycle.
 - **D can be defended because:** You validated every factual claim but do not have records of every initial draft prompt.
 
+
 **Hardest red-team challenge:** Is authorship representation consistent with the contract, even when substantial AI work was rewritten?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -562,6 +603,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** You and the mentee already agreed that support should build long-term independence.
 - **C can be defended because:** Several peers know the situation well and can share follow-up without breaching confidence.
 - **D can be defended because:** Your spouse has described a concrete boundary that your present schedule has repeatedly broken.
+
 
 **Hardest red-team challenge:** Which contact frequency is clinically or pastorally safe without making a spouse supply unpaid care?
 
@@ -576,6 +618,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** An accountant has agreed to inspect receipts in forty-eight hours; the delay means fewer meals.
 - **D can be defended because:** The organization can provide signed delivery records even though historical receipts are incomplete.
 
+
 **Hardest red-team challenge:** Can restricted meals funding be verified despite incomplete receipts, or does any channel enable misuse?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -587,7 +630,8 @@ The most common failure was an option with obvious Christian compassion or hones
 - **A can be defended because:** The applicant's last three projects were successful and their family faces imminent eviction.
 - **B can be defended because:** You have dated evaluations showing both the improvement and persistent weaker skills.
 - **C can be defended because:** A hiring manager previously offered to consider candidates with incomplete references.
-- **D can be defended because:** Recent reviews are accurate but do not capture a pattern critical to safety on the new job.
+- **D can be defended because:** The hiring firm explicitly accepts references limited to recent duties and will independently check earlier safety performance.
+
 
 **Hardest red-team challenge:** Can recent improvement support an enthusiastic endorsement without withholding essential safety-relevant history?
 
@@ -602,6 +646,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A confidential accredited adviser can mediate between repayment speed and necessary trust.
 - **D can be defended because:** Relatives have offered interest-free help before without demanding influence over your marriage.
 
+
 **Hardest red-team challenge:** Are any financial boundaries imposed unilaterally, or did each spouse meaningfully agree to the solution?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -614,6 +659,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your treatment team warned that selective stories can mislead seriously ill listeners.
 - **C can be defended because:** A vulnerable attendee explicitly asked you not to present a certain recovery as typical.
 - **D can be defended because:** Your specialist approves a report that includes continuing treatment and uncertain symptoms.
+
 
 **Hardest red-team challenge:** Does every form of testimony clearly disclose ongoing treatment and uncertainty without manufacturing hope?
 
@@ -628,6 +674,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Your lawyer can submit the file securely after advising on unrelated policy exposure.
 - **D can be defended because:** The investigator accepts authenticated anonymous leads before deciding on formal disclosure.
 
+
 **Hardest red-team challenge:** Is the evidence obtained lawfully, and can counsel preserve a colleague's innocence without misrepresenting facts?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -640,6 +687,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The evidence points to an immediate environmental release if the equipment restarts tonight.
 - **C can be defended because:** Another test could separate a harmless sensor fault from the critical failure.
 - **D can be defended because:** The manager previously corrected serious hazards promptly but may be implicated in this one.
+
 
 **Hardest red-team challenge:** What immediate danger would force outside escalation, and who protects the innocent manager from false claims?
 
@@ -654,6 +702,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Your sibling has offered part-time caregiving before and wants to discuss a fair division.
 - **D can be defended because:** The company already permits remote work in rare cases for employees with documented caregiving duties.
 
+
 **Hardest red-team challenge:** Can the caregiving plan actually function, or does each path assume somebody else can absorb unpaid labor?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -666,6 +715,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The betrayed spouse deserves agency over intimate and financial commitments made on false assumptions.
 - **C can be defended because:** Your friend has disclosed severe distress, and abrupt withdrawal could interrupt needed support.
 - **D can be defended because:** The counselor has an appointment today and a clear process for supported disclosure.
+
 
 **Hardest red-team challenge:** When does a betrayed spouse's informed consent justify overriding a friend who has scheduled disclosure?
 
@@ -680,6 +730,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A neighboring organization can supply meals tomorrow morning, though some households will go hungry tonight.
 - **D can be defended because:** The policy permits several independent vendors for separate needs, but audit staff will scrutinize splitting.
 
+
 **Hardest red-team challenge:** Are procurement limits lawfully waivable, and does separate procurement represent real needs rather than evasion?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -692,6 +743,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The audit agenda explicitly limits questions, and you are not the authorized presenter.
 - **C can be defended because:** The customer has agreed to correct submitted material before live discussion when errors emerge.
 - **D can be defended because:** Your manager is accountable for official process claims and has led similar difficult disclosures.
+
 
 **Hardest red-team challenge:** Can an auditor reasonably rely on a misleading slide even when the omitted manual step meets written limits?
 
@@ -706,6 +758,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** An outside investigator is already vetted and can make a preliminary safety decision quickly.
 - **D can be defended because:** Reporters have requested a private, voluntary reconciliation process but reject coercive mediation.
 
+
 **Hardest red-team challenge:** Reported harm requires safeguarding and an independent fact-finding path; voluntary listening must never coerce witnesses.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -718,6 +771,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The children report recurring nightmares, making an adults-only trust test safer for now.
 - **C can be defended because:** The relative recognizes prior harm and accepts that forgiveness need not mean access.
 - **D can be defended because:** A neutral setting allows immediate departure and has a separate quiet area for the children.
+
 
 **Hardest red-team challenge:** Have children given meaningful assent, and can they safely withdraw from a proposed family reunion?
 
@@ -732,6 +786,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The child has agreed to a serious personal conversation and values honest respect afterward.
 - **D can be defended because:** The event has a separate family celebration without the symbolic act you cannot affirm.
 
+
 **Hardest red-team challenge:** What specific public act would violate conscience; avoid making family presence a proxy for ideological agreement.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -744,6 +799,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The funding match is substantial yet the family explicitly regards anonymity as essential.
 - **C can be defended because:** The broadcaster can label a reenactment clearly; viewers know it is not direct testimony.
 - **D can be defended because:** The donor may reconsider a segment featuring only your experiences without identifying recipients.
+
 
 **Hardest red-team challenge:** Document genuine renewed consent rather than treating vulnerable families as fundraising illustrations.
 
@@ -758,6 +814,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The venue agreed to hold a later date for accessibility if families approve rescheduling.
 - **D can be defended because:** The license is affordable out of your personal funds only by postponing a planned household expense.
 
+
 **Hardest red-team challenge:** A licensed tool can still discriminate by accessibility; validate an actual accessible fallback for each user.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -770,6 +827,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The organization previously adopted an independent conflict-review rule for related-party bids.
 - **C can be defended because:** The next bidder has excellent safety records and can begin only one day later.
 - **D can be defended because:** The board retains a majority of independent voters able to supervise the entire procurement.
+
 
 **Hardest red-team challenge:** Does independent review handle urgency with a genuine conflict of interest, not merely perceived nepotism?
 
@@ -784,6 +842,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A trusted representative is able to submit authenticated documents while you avoid direct exposure.
 - **D can be defended because:** The mutual friend is an authenticated eyewitness who can testify without repeating rumors.
 
+
 **Hardest red-team challenge:** A trauma survivor need not publicly perform forgiveness, but should the truth still reach a fair process?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -796,6 +855,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Your child has documented support needs that cannot reasonably be deferred.
 - **C can be defended because:** Both ministry and school can tolerate a planned rotating calendar but not weekly uncertainty.
 - **D can be defended because:** Your employer has formally offered reversible reduced hours for caregivers.
+
 
 **Hardest red-team challenge:** Do both spouses and the child meaningfully agree, or is the labor burden just reassigned invisibly?
 
@@ -810,6 +870,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Two siblings have agreed in writing to specific shifts and contingency cover.
 - **D can be defended because:** Your employer has a family-care leave program that protects the role but reduces salary.
 
+
 **Hardest red-team challenge:** Are proposed sibling shifts reliable, affordable and consented, or only an imaginary shared-care compromise?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -822,6 +883,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The initial findings remain disputed, and the victim has asked primarily for compassion.
 - **C can be defended because:** The injured employee needs transport and therapy more urgently than a public statement.
 - **D can be defended because:** A neutral mediator is booked tomorrow and will facilitate factual and compassionate contact.
+
 
 **Hardest red-team challenge:** Separate compassion, factual responsibility and liability; never imply legal prudence requires ignoring an injured person.
 
@@ -836,6 +898,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Major customers have paid for retraining before and some demand may recover after certification.
 - **D can be defended because:** A lender offers capped interest and a fixed maturity, but the board rejects a second bailout.
 
+
 **Hardest red-team challenge:** Check that retraining finance, payroll floors and creditor terms are real, not miraculous ways to save every job.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -848,6 +911,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The candidate has been offered other references, and yours may be misconstrued without context.
 - **C can be defended because:** A probationary plan with transparent milestones is standard practice at the hiring firm.
 - **D can be defended because:** The hiring manager requested a recent six-month assessment rather than lifelong performance history.
+
 
 **Hardest red-team challenge:** When a reference is deliberately limited to recent work, does omission still hide disqualifying past history?
 
@@ -862,6 +926,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** Your spouse consents to housing the family for one month, though your own child needs quiet study space.
 - **D can be defended because:** A verified family shelter has a confirmed private unit tonight and school transport, while your child's tuition is contractually due next week.
 
+
 **Hardest red-team challenge:** A family shelter must be verified, appropriate and available; declining funds is abandonment only if safe alternatives fail.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -874,6 +939,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** Previous donors pledged to protect church teaching from financial conditions.
 - **C can be defended because:** Families are informed when sponsors influence educational materials and may opt out.
 - **D can be defended because:** The sponsor previously accepted ordinary acknowledgments, leaving room for genuine negotiation.
+
 
 **Hardest red-team challenge:** A sponsor's truthful but agenda-setting material can still distort discipleship; define actual editorial authority.
 
@@ -888,6 +954,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The borrower has paid for vacations while ignoring repayment promises, harming trust.
 - **D can be defended because:** The hospital accepts direct charitable payments, which can be documented without a further loan.
 
+
 **Hardest red-team challenge:** Forgiveness, collection pause and direct medical help must not coerce a borrower or expose dependents.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -901,6 +968,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** An alternative assessment is available to all students under a published remediation policy.
 - **D can be defended because:** The teacher accepts a signed disclosure note with an unchanged grading penalty.
 
+
 **Hardest red-team challenge:** Do self-disclosure options comply with school rules and consequences applied to other scholarship applicants?
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -912,7 +980,8 @@ The most common failure was an option with obvious Christian compassion or hones
 - **A can be defended because:** The pastor has broken written leadership standards and agrees to a confidential leave.
 - **B can be defended because:** The congregation's covenant expressly promises disclosure of sustained public hypocrisy.
 - **C can be defended because:** The eldership includes disinterested members who can apply established disciplinary procedures.
-- **D can be defended because:** The undisclosed wrongdoing ended, restitution was made, and all affected parties accepted counseling.
+- **D can be defended because:** The wrongdoing ended, restitution was made, and affected parties accepted counseling before a confidential elder review.
+
 
 **Hardest red-team challenge:** Private repentance cannot automatically settle leadership eligibility; distinguish confidential care from accountable oversight.
 
@@ -927,6 +996,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** The payroll reserve includes funds legally available for emergency reallocations by the board.
 - **D can be defended because:** The board is empowered to authorize a restricted-fund loan only if donors already consented in advance.
 
+
 **Hardest red-team challenge:** Restricted funds cannot be repurposed without authorization merely because relief needs are urgent.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -940,6 +1010,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **C can be defended because:** A pilot can run in isolation with limited cost but may miss a rare launch commitment.
 - **D can be defended because:** The tested half affects a separable subsystem with independent safeguards and live rollback.
 
+
 **Hardest red-team challenge:** A sister-line pilot does not validate unseen interactions; distinguish reversibility and irreversible yield risk.
 
 **Residual requirement:** Verify all four claims are consistent with the base case and sources, and obtain an independent blind-reader defense of the least popular option.
@@ -952,6 +1023,7 @@ The most common failure was an option with obvious Christian compassion or hones
 - **B can be defended because:** The elder will answer a direct call from you and has previously changed course when approached gently.
 - **C can be defended because:** The administrator is a medical professional trusted across family factions.
 - **D can be defended because:** The group administrator can temporarily pause new messages, and the clinician can review the claim early tomorrow.
+
 
 **Hardest red-team challenge:** Protect public health without manufacturing certainty or turning correction into unnecessary family humiliation.
 
