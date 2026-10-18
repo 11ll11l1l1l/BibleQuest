@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-emotion-hope-02",
+  "agentId": "visual-agent-5",
+  "createdAt": "2026-10-09T14:12:52+09:00",
+  "status": "candidate_pending_built_app_QA",
+  "bundleStatus": "three_real_webp_files_pending_release_QA",
+  "family": "emotion",
+  "visualRole": "emotion_tile",
+  "contentType": "emotion",
+  "contentId": "hopeful",
+  "canonicalEmotionId": "hopeful",
+  "queueConcept": "hope",
+  "concept": "A horticulture worker gently plants a new seedling in a real greenhouse, embodying patient renewed hope",
+  "usage": [
+    "feelings_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/emotion/bqv7-emotion-hope-02.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1024,
+  "aspectRatio": "1:1",
+  "fileBytes": 143934,
+  "sha256": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+  "focalPoint": {
+    "x": 0.53,
+    "y": 0.51
+  },
+  "textSafeRegion": "none",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-02.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1024,
+      "fileBytes": 143934,
+      "sha256": "7817e8ef3dc10d2d386d20172909a86e17dcb2f516bd596c574fa708da831d6f",
+      "altText": "A woman carefully presses soil around a new seedling in a sunlit greenhouse.",
+      "focalPoint": {
+        "x": 0.53,
+        "y": 0.52
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "cropReviewed": true,
+        "builtAppBrowserQA": "pending",
+        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app",
+        "anatomyAcceptable": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-02-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 147928,
+      "sha256": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+      "altText": "A woman plants a seedling in a greenhouse. Embedded English title Hopeful and reference Romans 15:13.",
+      "focalPoint": {
+        "x": 0.53,
+        "y": 0.61
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "typeReadableAt320px": false,
+        "builtAppBrowserQA": "pending_new_exact_head",
+        "isolatedChromiumQA": "producer-only local fixture Chromium 320/390/430/800 plus 320px 200% live text; not built app",
+        "independentLegibilityReview": "PENDING independent visual/context/rights QA",
+        "topSafeAreaAcceptable": true,
+        "topMarginRepairRequired": false
+      },
+      "locale": "en",
+      "embeddedWording": {
+        "label": "Hopeful",
+        "scriptureReference": "Romans 15:13",
+        "scriptureTextIncluded": false
+      },
+      "fontFamilies": [
+        "Noto Serif Display SemiBold",
+        "EB Garamond 12 Italic"
+      ],
+      "fontLicense": "SIL OFL 1.1",
+      "fontDistribution": "rasterized pixels only, no font files shipped",
+      "cropIntent": "Unscaled exact CLEAN photograph beneath 352px dark editorial header; 96px soil-only bottom trim; CLEAN and THUMB unchanged"
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/emotion/bqv7-emotion-hope-02-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 42358,
+      "sha256": "4f60530aefb863439905cd80d02f657567788f386ec7e538e7446d9038e51e1f",
+      "altText": "A woman tends a young seedling in a greenhouse.",
+      "focalPoint": {
+        "x": 0.53,
+        "y": 0.52
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "visualInspected": true,
+        "noBakedText": true,
+        "subjectReadableAtThumbnail": true,
+        "cropReviewed": true,
+        "builtAppBrowserQA": "pending",
+        "isolatedChromiumQA": "pass: local source-byte data URL fixture at 320/390/430; not built app"
+      },
+      "crop": {
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "x": 102,
+        "y": 0,
+        "width": 819,
+        "height": 1024,
+        "outputWidth": 384,
+        "outputHeight": 480,
+        "aspect": "4:5"
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalEmotionId": "hopeful",
+    "locale": "en",
+    "exactLabel": "Hopeful",
+    "reference": "Romans 15:13",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "fb95f42d-588b-4890-b4b7-7a1b789caa87",
+    "prompt": null,
+    "description": "Single original full-bleed cinematic photo of a woman in a greenhouse caring for a seedling; no collage or baked words in CLEAN.",
+    "sourcePNGSize": [
+      1278,
+      1230
+    ],
+    "sourcePNGSha256": "3cb18d4cc3b0d501d6cc2cad351c52a424d007d5c807d77cb43e0d1a20729042",
+    "sourceCropPixels": {
+      "x": 24,
+      "y": 0,
+      "width": 1230,
+      "height": 1230
+    },
+    "derivativeMethod": "Pillow high-quality LANCZOS crops; original photo TYPE with independently rasterized licensed editorial lettering"
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original image generated for BibleQuest, no supplied third-party source",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseEvidence": [
+      "/usr/share/doc/fonts-noto-core/copyright",
+      "/usr/share/doc/fonts-ebgaramond-extra/copyright"
+    ],
+    "fontDistribution": "rasterized glyph pixels only; no font binaries distributed",
+    "scriptureReference": "Romans 15:13",
+    "scriptureText": null
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A woman kneels in a sunlit greenhouse and gently plants a fresh green seedling in the soil.",
+    "fallback": "CLEAN plus live localized taxonomy label for tl, ceb, ilo and all unverified TYPE locales",
+    "essentialTextMustRemainLive": true
+  },
+  "qc": {
+    "threeSeparateDecodedWebPs": true,
+    "allMeasuredHashes": true,
+    "singleOriginalPhotoScene": true,
+    "cleanNoBakedText": true,
+    "thumbnailFocalAware": true,
+    "typeSpellingAgainstTaxonomy": true,
+    "typeReferenceOnly": true,
+    "localVisualInspection": "Producer fixture visual inspection only; independent QA pending",
+    "isolatedChromiumQA": "12/12 source-byte data-URI fixture checks at 320/390/430 EN/TL/CEB/ILO; browser blocked local HTTP/file navigation; not built app",
+    "builtAppBrowserQA": "pending_new_exact_head",
+    "publishedHttpHashQA": "pending_new_exact_head",
+    "officialRepositoryAudit": "pending_new_exact_head",
+    "exactHeadCI": "pending_new_exact_head",
+    "independentQA": "pending_new_exact_head",
+    "productionReady": false,
+    "localHttpHashQA": "3/3 exact source-byte hashes served to Python HTTP client; not browser HTTP verification",
+    "allThreeLocalWebPDecodingAndSHA256Verified": true,
+    "localTypeAndThumbnailInspected": true,
+    "localReviewEvidence": "Corrected TYPE replaces previously rejected 320px typography; producer visual previews only, no independent approval",
+    "browserHttpAttempt": "2026-10-09 JST: Chromium Page.goto to 127.0.0.1 was blocked by administrator (ERR_BLOCKED_BY_ADMINISTRATOR); no built-app or HTTP-served browser QA claimed.",
+    "correctedTypeCandidate": {
+      "sha256": "e31285e08237bf7bf27e5dbf1dce739759b340f9deb49efcc3823cc9fa2eea4c",
+      "fileBytes": 147928,
+      "width": 1024,
+      "height": 1280,
+      "committed": true,
+      "source": "own PR #1437 TYPE path; exact Git blob verified",
+      "titleInkTopPx": 143,
+      "referenceInkTopPx": 279,
+      "requiredInsetPx": 128,
+      "independentQA": "PENDING",
+      "builtAppQA": "PENDING",
+      "servedBytesQA": "PENDING",
+      "note": "Independent visual/rights/Scripture QA, exact-head CI, built app/served HTTP, Lane D remain PENDING"
+    }
+  },
+  "supersedesCandidateAssetId": "bqv7-emotion-hope-01"
+}
