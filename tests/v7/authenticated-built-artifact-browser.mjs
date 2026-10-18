@@ -237,7 +237,7 @@ async function installDisposableBackendRoute(context) {
       postData: requestRecord.postDataBuffer() || undefined,
       timeout: 15000,
     });
-    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations'].includes(source.pathname)) {
+    if (['/rest/v1/bible_congregation_members', '/rest/v1/bible_congregations', '/auth/v1/user', '/auth/v1/token', '/auth/v1/logout'].includes(source.pathname)) {
       let rowCount = null;
       try { const body = await response.json(); rowCount = Array.isArray(body) ? body.length : null; } catch {}
       backendMembershipReads.push({
@@ -252,7 +252,7 @@ async function installDisposableBackendRoute(context) {
 
 async function openRoute(page, route, selector) {
   await page.goto(`${baseUrl}/#/${route}`, { waitUntil: 'domcontentloaded' });
-  await page.locator(selector).waitFor({ state: 'visible' });
+  try{await page.locator(selector).waitFor({ state: 'visible' })}catch(error){const visible=await page.locator('#bq-view').innerText().catch(()=>'view unavailable');throw new Error(`${route} missing ${selector}: ${visible.slice(0,500)}; redacted backend=${JSON.stringify(backendMembershipReads.slice(-10))}`,{cause:error})}
   if (await page.locator('[data-startup-failure]').count()) throw new Error(`${route}: startup failure`);
 }
 
@@ -442,9 +442,9 @@ try {
   checks.push('authenticated-mentor-pair-authoring-assignment-surfaces');
 
   stage = 'v7-1-two-phone-session';
+  await signOut(page);
   await Promise.all([page.waitForEvent('load'),page.locator('[data-locale-select]').selectOption('en')]);
-  await openRoute(page,'account','[data-account-signout]');
-  await activateCongregation(page,mentor.congregationId);
+  await login(page,mentor);
   await openRoute(page,'one-to-one','[data-pair-conversation]');
   await page.locator('[data-pair-conversation]').click();
   await page.locator('[data-live-room-create]').waitFor({state:'visible'});
