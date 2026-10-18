@@ -1,4 +1,7 @@
 import { ADVANCED_WISDOM_ROWS } from './advanced-content.js';
+import { HARD_FOUNDATION } from './hard-foundation.js';
+import { HARD_ADVANCED } from './hard-advanced.js';
+import { HARD_EXPERT } from './hard-expert.js';
 import { EXPERT_WISDOM_ROWS } from './expert-content.js';
 import { TL_WISDOM_BASE } from './locales/tl-base.js';
 import { TL_WISDOM_ADVANCED } from './locales/tl-advanced.js';
@@ -34,41 +37,62 @@ const foundationRows = [
   {id:'hw24',title:'A good cause with bad methods',tension:'Ends × means × urgency',scenario:'A group is campaigning for a cause you strongly support. Their message is broadly true, but they knowingly use exaggerated examples because accurate nuance does not attract attention. They argue that the urgency of the cause justifies persuasive simplification.',options:['Support the campaign because the overall cause is true and the exaggerations point in the right direction.','Reject the entire cause because dishonest advocacy discredits it.','Support the legitimate goal but refuse claims you know are exaggerated, press for accurate advocacy, and separate loyalty to the cause from loyalty to every tactic.','Stay publicly silent about the exaggeration until the campaign succeeds, then push for better standards afterward.'],best:2,why:'A worthy end does not make knowingly misleading means harmless. The stronger response protects the cause without allowing urgency to erase truthfulness.',rationales:['Recognizes urgency and the broader truth, but normalizes deception as strategy.','Protects integrity, but wrongly treats a flawed campaign as proof the underlying cause is false.','Separates the truth of the goal from the morality and accuracy of the method.','Avoids weakening the campaign now, but knowingly benefits from tactics you believe are wrong.'],refs:['Romans 3:8','Ephesians 4:25','2 Corinthians 4:2'],difficulty:5}
 ];
 
-const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS]);
+const HARD_CASES=Object.freeze({...HARD_FOUNDATION,...HARD_ADVANCED,...HARD_EXPERT});
+const splitHardChoice=(source,cost2)=>{
+  const divider=source.indexOf('; ');
+  const tradeoff=source.indexOf(' but ',divider+2);
+  if(divider<0||tradeoff<0||!cost2)throw new Error('Every Wisdom option needs a meaningful benefit and two costs.');
+  return Object.freeze({
+    action:source.slice(0,divider),
+    benefit:source.slice(divider+2,tradeoff),
+    cost1:source.slice(tradeoff+5).replace(/[.]$/,''),
+    cost2:String(cost2).replace(/[.]$/,'')
+  });
+};
+const formatHardChoice=({action,benefit,cost1,cost2})=>
+  `${action}. Benefit: ${benefit}. Cost 1: ${cost1}. Cost 2: ${cost2}.`;
+const applyHardCase=raw=>{
+  const hard=HARD_CASES[raw.id];
+  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Array.isArray(hard.cost2)||hard.cost2.length!==4||!Array.isArray(hard.basis)||hard.basis.length!==4||hard.basis.some(value=>String(value).length<35)||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or without grounded alternatives: ${raw.id}`);
+  const outcomes=hard.options.map((option,index)=>splitHardChoice(option,hard.cost2[index]));
+  return {
+    ...raw,
+    scenario:hard.scene||`${raw.scenario}\n\nDecision constraints: ${hard.context}`,
+    options:outcomes.map(formatHardChoice),
+    basis:hard.basis,
+    best:hard.best,
+    why:hard.why,
+    rationales:outcomes.map(({benefit,cost1,cost2},i)=>`Why a Christian could choose this: ${hard.basis[i]} Benefit: ${benefit}. First sacrifice: ${cost1}. Second sacrifice: ${cost2}.`),
+    difficulty:8
+  };
+};
+const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS].map(applyHardCase));
 const TL_BY_ID=Object.freeze({...TL_WISDOM_BASE,...TL_WISDOM_ADVANCED,...TL_WISDOM_EXPERT});
 const CEB_BY_ID=Object.freeze({...CEB_WISDOM_BASE,...CEB_WISDOM_ADVANCED,...CEB_WISDOM_EXPERT});
 const LOCALES=Object.freeze({tl:TL_BY_ID,ceb:CEB_BY_ID});
 
-function freezeLocalized(raw){
-  return Object.freeze({
-    title:String(raw.title||''),tension:String(raw.tension||''),scenario:String(raw.scenario||''),
-    options:Object.freeze([...(raw.options||[])]),why:String(raw.why||''),
-    rationales:Object.freeze([...(raw.rationales||[])])
-  });
-}
-
 export function localizeWisdomSituation(item,locale='en'){
-  const normalized=String(locale||'en').toLowerCase().split(/[-_]/)[0];
-  if(normalized==='en')return item;
-  const translated=LOCALES[normalized]?.[item.id];
-  if(!translated)return item;
-  const copy=freezeLocalized(translated);
-  return Object.freeze({...item,...copy});
+  void locale;
+  // The previous TL/CEB alternatives no longer match the English scenario, ordering,
+  // or preferred response. Until reviewed translations are complete, preserve the
+  // identical English dilemma rather than serving unsafe mismatched answer indices.
+  return item;
 }
 
 function freezeSituation(raw) {
   const options=Object.freeze([...raw.options]);
   const rationales=Object.freeze([...raw.rationales]);
+  const basis=Object.freeze([...raw.basis]);
   const refs=Object.freeze([...raw.refs]);
   const step=Object.freeze({
     id:'judgment',type:'choice',prompt:raw.scenario,choices:options,answer:raw.best,
-    reference:refs.join(' · '),feedback:Object.freeze({correct:'Strong judgment.',incorrect:'A stronger judgment is available.'})
+    reference:refs.join(' · '),feedback:Object.freeze({correct:'Trade-off examined.',incorrect:'Trade-off examined.'})
   });
   const number=Number(String(raw.id).replace(/^hw/,''));
   const pack=number<=24?'foundation':number<=48?'advanced':'expert';
   return Object.freeze({
-    id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
-    definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:1,title:raw.title,steps:Object.freeze([step])})
+    id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,basis,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
+    definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:2,title:raw.title,steps:Object.freeze([step])})
   });
 }
 
