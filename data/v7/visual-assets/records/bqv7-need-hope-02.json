@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-hope-02",
+  "agentId": "visual-agent-2",
+  "createdAt": "2026-10-10T10:06:17+09:00",
+  "status": "candidate_scene_revision_required",
+  "bundleStatus": "three_real_files_qa_pending",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "hope",
+  "canonicalNeedId": "hope",
+  "concept": "Hope beyond immediate circumstances: a person quietly watches daylight return to a city after rain, without promising a particular outcome. Distinct from the Feeling Hopeful seedling scene.",
+  "usage": [
+    "needs_carousel",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-hope-02.webp",
+  "format": "webp",
+  "width": 1024,
+  "height": 1280,
+  "fileBytes": 116390,
+  "sha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+  "focalPoint": {
+    "x": 0.77,
+    "y": 0.67
+  },
+  "textSafeRegion": "top",
+  "generation": {
+    "provider": "OpenAI image generation",
+    "genId": "11c6d163-414e-4d83-8b5b-b9660a3fe3a1",
+    "sourceImageWasComposite": false,
+    "sourceOriginalFile": "contemplation_over_the_rainy_city.png",
+    "sourceOriginalSha256": "fde9e405225ed7c7606c8edb3781562206c738f8e98cf45906352de7c20e72d8",
+    "sourceOriginalPixels": [
+      1122,
+      1402
+    ],
+    "sourceDescription": "Genuinely standalone, single-frame cinematic generated city-overlook scene; no third-party photos supplied. Original generated image is not a collage.",
+    "cleanSceneOriginalToThisGeneration": true,
+    "noThirdPartyPhotosSupplied": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "notes": "Original first-party AI-generated scene with no third-party photos or logos supplied. Independent rights/provenance/publication suitability review remains required.",
+    "fontLicense": "SIL Open Font License 1.1",
+    "fontLicenseSource": "https://github.com/georgd/EB-Garamond",
+    "fontFilesDistributed": false,
+    "scripture": "Reference only; no Scripture prose"
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A person in a navy raincoat looks across a rain-wet city overlook as the clouds begin to break and warm light reaches the skyline.",
+    "essentialTextRemainsLive": true,
+    "localeFallback": "CLEAN with live TL Pag-asa / CEB Paglaom / ILO Namnama and accessible live reference; EN TYPE not localized."
+  },
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "hope",
+    "locale": "en",
+    "exactLabel": "Hope",
+    "reference": "Romans 15:13",
+    "scriptureTextIncluded": false,
+    "contextReview": "Romans 15:13 is Paul’s prayer that the God of hope fill believers with joy and peace in believing. The urban dawn suggests endurance and hope without a guaranteed material outcome."
+  },
+  "qc": {
+    "threeDistinctRealWebPFiles": true,
+    "localDecodeAndHashMeasured": true,
+    "imageSceneStandaloneAfterCrop": true,
+    "originalGeneratedOutputWasCollage": false,
+    "repoVisualAudit": "not_run",
+    "builtAppBrowserQA": "not_run",
+    "publishedServedBytes": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "candidateOnly": true,
+    "localHttpExactBytes": true,
+    "localIsolatedChromium320390430": true,
+    "replacementFor": "bqv7-need-hope-01 (independent QA near-duplicate and title safe-area defect; old PR #1448 must be closed/superseded before new PR)",
+    "localQaReport": "producer-local-qa.json",
+    "guidebookSceneMatch": false,
+    "producerSceneHold": "Current lone-person rain-wet city overlook violates guidebook section 6, which requires neighbors fitting the last timber slat into a repaired public bus shelter after rough weather.",
+    "rejectedSourceCleanSha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+    "requiredNextAction": "Replace CLEAN, TYPE, THUMB and sidecar with one standalone original community bus-shelter-repair scene. Independent QA and Lane D published-byte certification still required.",
+    "guidebookBlobSha": "3e4fd5d15199d017fe535dc2394c17a693bec9fd"
+  },
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "imagePath": "/v7/images/need/bqv7-need-hope-02.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 116390,
+      "sha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6",
+      "locale": null,
+      "altText": "A person in a navy raincoat looks across a rain-wet city overlook as the clouds begin to break and warm light reaches the skyline.",
+      "focalPoint": {
+        "x": 0.77,
+        "y": 0.67
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      }
+    },
+    {
+      "kind": "TYPE",
+      "imagePath": "/v7/images/need/bqv7-need-hope-02-with-text-en.webp",
+      "format": "webp",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 139054,
+      "sha256": "7508a2f40da7e2a68470db9527ec56f49b90ae3be75d1aa8adfca08779a1c2d9",
+      "locale": "en",
+      "altText": "A person in a navy raincoat looks across a rain-wet city overlook as the clouds begin to break and warm light reaches the skyline. Embedded English text: Hope; Romans 15:13.",
+      "focalPoint": {
+        "x": 0.77,
+        "y": 0.67
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      },
+      "embeddedWording": {
+        "label": "Hope",
+        "scriptureReference": "Romans 15:13",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "titleFont": "EB Garamond 12 Regular",
+        "accentFont": "EB Garamond 12 Italic",
+        "license": "SIL Open Font License 1.1",
+        "fontFilesDistributed": false,
+        "fontSource": "https://github.com/georgd/EB-Garamond",
+        "compositingMethod": "Pillow independently typeset on immutable CLEAN, subtle continuous feathered shadow, top-left safe glyph margins >=128px",
+        "sourceCleanSha256": "d10fde4b9c4e8233604c4c90909a783a61276a4fa3605758ff389d40a2b0fbc6"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "imagePath": "/v7/images/need/bqv7-need-hope-02-thumbnail.webp",
+      "format": "webp",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 25132,
+      "sha256": "60897befe7138ae3e47c90555392557d56b513ac1ebe0351f4a88d8f0540a8a5",
+      "locale": null,
+      "altText": "A person in a navy raincoat looks across a rain-wet city overlook as the clouds begin to break and warm light reaches the skyline.",
+      "focalPoint": {
+        "x": 0.77,
+        "y": 0.67
+      },
+      "qa": {
+        "imageDecoded": true,
+        "dimensionsMeasured": true,
+        "sha256Measured": true,
+        "builtAppBrowserQA": false,
+        "visualInspected": true,
+        "noLogo": true
+      },
+      "crop": {
+        "sourceRegionNormalized": {
+          "x": 0,
+          "y": 0,
+          "width": 1,
+          "height": 1
+        },
+        "outputAspect": "4:5",
+        "method": "Pillow LANCZOS full-scene resize; focal-safe composition"
+      }
+    }
+  ]
+}
