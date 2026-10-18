@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "assetId": "bqv7-teaching-forgiveness-reconciliation-01",
+  "agentId": "visual-agent-1",
+  "createdAt": "2026-10-10T06:00:00+09:00",
+  "status": "candidate_built_app_qa_pending",
+  "family": "teaching",
+  "visualRole": "teaching_art",
+  "contentType": "past_teaching",
+  "contentId": "teaching.forgiveness-reconciliation",
+  "concept": "After a conflict, a remorseful adult speaks with open hands and lowered eyes while another adult listens from a separate seat without surrendering boundaries or immediately embracing.",
+  "usage": [
+    "past_teachings_library",
+    "teaching_feature_card"
+  ],
+  "imagePath": "/v7/images/teaching/bqv7-teaching-forgiveness-reconciliation-01.webp",
+  "format": "webp",
+  "width": 1536,
+  "height": 864,
+  "fileBytes": 113738,
+  "sha256": "16cbd68d16b5b3e8dd73368e9d1f4eefc06e4717ca6d6c451233ab72a7b0da03",
+  "gitBlobSha": "e94e490c80fdf04a28594ba18bd955ca2e6641b7",
+  "aspectRatio": "16:9",
+  "focalPoint": {
+    "x": 0.43,
+    "y": 0.49
+  },
+  "textSafeRegion": "right",
+  "contentSource": {
+    "path": "data/v7/past-teachings/launch-set-additional.json",
+    "gitBlobSha": "8393ea24f8326a31c2b6e94a57aa071b872720ab",
+    "id": "teaching.forgiveness-reconciliation",
+    "revision": "forgiveness-reconciliation-r1",
+    "sourceChecksum": "sha256:9ed3ea9a7b6f9e4a7ca6afa03fc2c4fad0ff0836a81fcb89442dd36357691402",
+    "exactEnglishTitle": "Forgiveness without pretending nothing happened",
+    "scriptureReference": "Ephesians 4:32",
+    "sourceReviewStatus": "pending_review",
+    "sourceRights": "verified first-party; display, translate, modify, distribute"
+  },
+  "generation": {
+    "provider": "OpenAI image generation",
+    "generationId": "75db0549-13e3-4eb9-ab0f-0d076dca65c9",
+    "model": null,
+    "modelAvailability": "not exposed by tool",
+    "promptAvailability": "generation tool did not expose prompt metadata",
+    "sourceType": "generated",
+    "sourceOriginalName": "a_realistic_cinematic_indoor_living_room_kitchen.png",
+    "sourceBytes": 2085972,
+    "sourceSha256": "327d0a03afdbe681eb1dc4ba1bfc6e7b52a649b5a3980ae1e267db733dc575a2",
+    "sourceWidth": 1672,
+    "sourceHeight": 941,
+    "sourceCropRect": {
+      "left": 0,
+      "top": 0,
+      "right": 1672,
+      "bottom": 940
+    },
+    "sourceRevision": "v7/development ac4b6c1568931272698b8823522f558c1375b102",
+    "noExternalSourceArt": true
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "imageUsage": "OpenAI-generated output for BibleQuest, subject to OpenAI terms; no third-party source artwork supplied",
+    "teachingRights": "Original first-party BibleQuest content, separate from generated image rights",
+    "scriptureQuoteRights": "reference_only_no_quote",
+    "fontFilesRedistributed": false
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "In a sunlit living room, a remorseful man speaks with open hands and lowered eyes while a woman listens thoughtfully from her own seat, leaving space between them.",
+    "fallback": "CLEAN with live localized title and reference; no embedded English lettering",
+    "essentialLiveTextRequired": true
+  },
+  "localeHandling": {
+    "en": "CLEAN with live English teaching title and reference",
+    "tl": "CLEAN with live translated title and reference",
+    "ceb": "CLEAN with live translated title and reference",
+    "ilo": "CLEAN with live translated title and reference",
+    "translationApproval": "defer to first-party teaching content review; no translated prose fabricated"
+  },
+  "variantPolicy": {
+    "cleanMaster": true,
+    "withText": false,
+    "thumbnail": false,
+    "reason": "Past Teaching artwork is one CLEAN 16:9 thematic editorial image with live localized text; no unsupported baked TYPE or derivative THUMB."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "anatomyAcceptable": true,
+    "subjectReadableAtThumbnail": true,
+    "cropSafe": true,
+    "matchesVisualSystem": true,
+    "duplicateChecked": true,
+    "conceptAccurate": true,
+    "imageDecoded": true,
+    "dimensionsMeasured": true,
+    "sha256Measured": true,
+    "localPillowVisualQA": "passed_preliminary",
+    "localChromium320390430": "not_run",
+    "builtAppHttpSha": "not_run",
+    "officialNodeAudit": "not_run",
+    "independentVisualQA": "pending",
+    "productionReady": false,
+    "reviewNote": "Candidate only; source teaching pending review. Scene shows accountability without automatic reconciliation."
+  },
+  "rejectedPriorCandidates": [
+    {
+      "generationId": "01871f6d-bd3c-4169-9f0f-6f49d25c560a",
+      "reason": "Generic comfort at scenic overlook did not depict accountability or boundaries; not used."
+    }
+  ]
+}
