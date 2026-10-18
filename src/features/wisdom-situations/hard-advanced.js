@@ -374,7 +374,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Disclose the AI contribution; protect trust but risk losing the contract and bonus.",
       "Certify responsibility for the final deliverable; preserve the project and bonus but invite questions about tool disclosure.",
       "Ask the client for a disclosure ruling; build consent but risk missing the submission deadline.",
-      "Credit only the tools you verified; avoid overstatement but leave the original draft’s AI role unclear."
+      "Disclose verified tools and note AI-assisted drafting; avoid unsupported claims but risk losing recognition for your revisions."
     ],
     "best": 0,
     "why": "Explicit provenance is a defensible professional standard when client expectations are unclear, even if the disclosure costs the deal.",
@@ -443,7 +443,7 @@ export const HARD_ADVANCED=Object.freeze({
       "Endorse the applicant's verified recent progress; protect their opportunity but risk an employer overgeneralizing improvement.",
       "Give a factual, qualified reference; help fairly and appropriately but risk eliminating the candidate from consideration.",
       "Refuse the request; protect yourself from misstatement but abandon someone who legitimately improved.",
-      "Describe only their recent strengths; provide encouraging facts but hide a performance pattern that may matter."
+      "Provide a clearly limited recent-work appraisal; document progress but leave earlier performance questions open."
     ],
     "best": 1,
     "why": "Specific qualified evidence gives the candidate a fair voice without making the hiring organization bear a concealed risk.",
@@ -457,7 +457,7 @@ export const HARD_ADVANCED=Object.freeze({
       "The applicant's last three projects were successful and their family faces imminent eviction.",
       "You have dated evaluations showing both the improvement and persistent weaker skills.",
       "A hiring manager previously offered to consider candidates with incomplete references.",
-      "Recent reviews are accurate but do not capture a pattern critical to safety on the new job."
+      "The hiring firm explicitly accepts references limited to recent duties and will independently check earlier safety performance."
     ]
   },
   "hw45": {
