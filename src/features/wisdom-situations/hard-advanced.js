@@ -59,7 +59,7 @@ export const HARD_ADVANCED=Object.freeze({
     "context": "An investigation report will reach staff tomorrow. You know the leader has helped many people, but several complainants may lose trust if you remain publicly supportive.",
     "options": [
       "Sign a statement of support; defend the leader’s past service but risk alienating complainants.",
-      "Withdraw public support pending findings; protect complainant confidence but punish a leader before evidence is tested.",
+      "Withdraw public support; reassure complainants but risk judging the leader before all evidence arrives.",
       "Offer practical aid to the affected team; preserve operations but be criticized for refusing to take a side.",
       "Ask for a public suspension; reduce perceived pressure but damage the leader’s reputation if allegations fail."
     ],
