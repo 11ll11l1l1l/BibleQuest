@@ -58,7 +58,7 @@ export const HARD_ADVANCED=Object.freeze({
   "hw30": {
     "context": "An investigation report will reach staff tomorrow. You know the leader has helped many people, but several complainants may lose trust if you remain publicly supportive.",
     "options": [
-      "Sign a statement praising their service; protect fairness but make complainants feel ignored.",
+      "Sign a statement of support; defend the leader’s past service but risk alienating complainants.",
       "Withdraw public support pending findings; protect complainant confidence but punish a leader before evidence is tested.",
       "Offer practical aid to the affected team; preserve operations but be criticized for refusing to take a side.",
       "Ask for a public suspension; reduce perceived pressure but damage the leader’s reputation if allegations fail."
@@ -148,7 +148,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Report the upper estimate; prioritize protection but possibly trigger rejection of good product.",
       "Report the observed failures only; remain strictly factual but understate plausible downstream exposure.",
-      "Report a reasoned range; equip the buyer but risk the contract due to uncertainty.",
+      "Report a bounded estimate; equip the buyer but risk losing the contract through disclosed uncertainty.",
       "Ask for a one-day hold; improve testing but miss the contractual window and incur penalties."
     ],
     "best": 2,
