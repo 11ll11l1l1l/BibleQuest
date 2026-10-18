@@ -1,4 +1,7 @@
 import { ADVANCED_WISDOM_ROWS } from './advanced-content.js';
+import { HARD_FOUNDATION } from './hard-foundation.js';
+import { HARD_ADVANCED } from './hard-advanced.js';
+import { HARD_EXPERT } from './hard-expert.js';
 import { EXPERT_WISDOM_ROWS } from './expert-content.js';
 import { TL_WISDOM_BASE } from './locales/tl-base.js';
 import { TL_WISDOM_ADVANCED } from './locales/tl-advanced.js';
@@ -34,7 +37,26 @@ const foundationRows = [
   {id:'hw24',title:'A good cause with bad methods',tension:'Ends × means × urgency',scenario:'A group is campaigning for a cause you strongly support. Their message is broadly true, but they knowingly use exaggerated examples because accurate nuance does not attract attention. They argue that the urgency of the cause justifies persuasive simplification.',options:['Support the campaign because the overall cause is true and the exaggerations point in the right direction.','Reject the entire cause because dishonest advocacy discredits it.','Support the legitimate goal but refuse claims you know are exaggerated, press for accurate advocacy, and separate loyalty to the cause from loyalty to every tactic.','Stay publicly silent about the exaggeration until the campaign succeeds, then push for better standards afterward.'],best:2,why:'A worthy end does not make knowingly misleading means harmless. The stronger response protects the cause without allowing urgency to erase truthfulness.',rationales:['Recognizes urgency and the broader truth, but normalizes deception as strategy.','Protects integrity, but wrongly treats a flawed campaign as proof the underlying cause is false.','Separates the truth of the goal from the morality and accuracy of the method.','Avoids weakening the campaign now, but knowingly benefits from tactics you believe are wrong.'],refs:['Romans 3:8','Ephesians 4:25','2 Corinthians 4:2'],difficulty:5}
 ];
 
-const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS]);
+const HARD_CASES=Object.freeze({...HARD_FOUNDATION,...HARD_ADVANCED,...HARD_EXPERT});
+const applyHardCase=raw=>{
+  const hard=HARD_CASES[raw.id];
+  if(!hard||!Array.isArray(hard.options)||hard.options.length!==4||!Number.isInteger(hard.best)||hard.best<0||hard.best>3)throw new Error(`Wisdom hard case missing or invalid: ${raw.id}`);
+  // Each option names both an action worth defending and the price of taking it.
+  const rationales=hard.options.map(option=>{
+    const tradeoff=option.split('; ').slice(1).join('; ').replace(/\\.$/,'');
+    return `Benefit and sacrifice: ${tradeoff}.`;
+  });
+  return {
+    ...raw,
+    scenario:`${raw.scenario} DECISION CONSTRAINTS: ${hard.context}`,
+    options:[...hard.options],
+    best:hard.best,
+    why:hard.why,
+    rationales,
+    difficulty:8
+  };
+};
+const rows=Object.freeze([...foundationRows,...ADVANCED_WISDOM_ROWS,...EXPERT_WISDOM_ROWS].map(applyHardCase));
 const TL_BY_ID=Object.freeze({...TL_WISDOM_BASE,...TL_WISDOM_ADVANCED,...TL_WISDOM_EXPERT});
 const CEB_BY_ID=Object.freeze({...CEB_WISDOM_BASE,...CEB_WISDOM_ADVANCED,...CEB_WISDOM_EXPERT});
 const LOCALES=Object.freeze({tl:TL_BY_ID,ceb:CEB_BY_ID});
@@ -68,7 +90,7 @@ function freezeSituation(raw) {
   const pack=number<=24?'foundation':number<=48?'advanced':'expert';
   return Object.freeze({
     id:raw.id,domain:raw.domain||'general',pack,title:raw.title,tension:raw.tension,scenario:raw.scenario,options,best:raw.best,why:raw.why,rationales,refs,difficulty:raw.difficulty,
-    definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:1,title:raw.title,steps:Object.freeze([step])})
+    definition:Object.freeze({id:`wisdom-situation:${raw.id}`,version:2,title:raw.title,steps:Object.freeze([step])})
   });
 }
 
