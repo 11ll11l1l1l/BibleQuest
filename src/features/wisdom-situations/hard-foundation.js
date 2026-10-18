@@ -15,6 +15,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you will carry the fear of a preventable delay",
       "you may be blamed for involving the wrong person",
       "you will bear guilt if the threat worsens overnight"
+    ],
+    "basis": [
+      "The support line accepts anonymous consultations and can advise without exposing an identity.",
+      "The threatened adult explicitly rejected unexpected family intervention after a previous incident.",
+      "A trusted relative has previously helped this household resolve an immediate emergency.",
+      "Your friend remains the only person still able to communicate safely with the threatened adult."
     ]
   },
   "hw02": {
@@ -32,10 +38,16 @@ export const HARD_FOUNDATION=Object.freeze({
       "you risk losing the income your family depends on",
       "you may lose your manager’s confidence before review",
       "you risk direct retaliation for changing approved wording"
+    ],
+    "basis": [
+      "The audit process accepts a signed dissent memo, and a delayed report would block payroll.",
+      "Your income covers a dependent's treatment, and replacement work is unavailable this quarter.",
+      "The manager asked for concerns before final submission, despite intense team pressure.",
+      "The report permits an uncertainty footnote, but your department promised a clean summary."
     ]
   },
   "hw03": {
-    "context": "The rent is due tomorrow. Your own emergency fund covers only one month, and the relative refuses noncash help. Their children could lose housing.",
+    "context": "The rent is due tomorrow. Your emergency fund covers only one month. Previous cash aid was not used for rent; paying the landlord directly would embarrass the relative, but they have not refused it. Their children could lose housing.",
     "options": [
       "Lend the entire sum today; protect the children’s housing but leave your household without emergency protection.",
       "Offer half immediately; share the burden but risk a failed payment and resentment from both households.",
@@ -49,6 +61,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may become responsible for the remaining shortfall",
       "your relative may never trust your judgment again",
       "you will lose privacy and space in your own home"
+    ],
+    "basis": [
+      "You promised emergency help before the relative exhausted every other option.",
+      "The landlord confirmed that a partial payment buys forty-eight hours for another arrangement.",
+      "Previous cash assistance was spent elsewhere, while the landlord accepts direct payment.",
+      "Your spouse has consented to a temporary stay, though the household has very little space."
     ]
   },
   "hw04": {
@@ -57,7 +75,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Restore shared access with a cosigner; keep the ministry staffed but still place funds and relationships at renewed risk.",
       "Keep the role vacant for a quarter; protect assets but delay services that families currently depend on.",
       "Move the person to nonfinancial service; preserve belonging but signal mistrust and lose their strongest skill.",
-      "Restore full control during probation; demonstrate trust but expose donors to damage that cannot easily be reversed."
+      "Restore a small supervised petty-cash role; demonstrate trust through responsibility but expose beneficiaries to renewed losses."
     ],
     "best": 0,
     "why": "Shared access faces both the staffing shortage and the loss of trust, without pretending the prior deception no longer matters.",
@@ -66,6 +84,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you will personally face families denied assistance",
       "you risk losing a valued volunteer relationship",
       "you will bear the blame if another loss occurs"
+    ],
+    "basis": [
+      "An independent co-signer is available, and the former treasurer completed restitution.",
+      "The organization can use a certified outside bookkeeper, but only at considerable cost.",
+      "The person has valuable pastoral skills and has asked for a way to rebuild trust.",
+      "A time-limited petty-cash role would allow restitution, but even small losses hurt recipients."
     ]
   },
   "hw05": {
@@ -83,6 +107,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "your marriage may carry resentment beyond six months",
       "you will keep carrying the escalating interest burden",
       "you may have no time left for physical recovery"
+    ],
+    "basis": [
+      "The higher interest will consume the household's ability to pay for a planned medical expense.",
+      "Your spouse has offered to handle three evenings but cannot manage every absence.",
+      "Your child is in a short-lived developmental season and has requested your presence.",
+      "Your employer needs weekend coverage most urgently and pays a much larger premium."
     ]
   },
   "hw06": {
@@ -100,6 +130,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "your reputation may become tied to a public dispute",
       "you may be accused of controlling the church’s message",
       "you may have to live with a foreseeable public error"
+    ],
+    "basis": [
+      "The teacher is generally receptive to private corrections and is reachable within minutes.",
+      "Listeners will circulate clips before a leader could acknowledge a private concern.",
+      "The media editor has established authority to pause an upload to verify quotations.",
+      "A formal written objection activates a church accountability process with a record."
     ]
   },
   "hw07": {
@@ -117,6 +153,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you could be held responsible for losing the meeting place",
       "you may be accused of hiding behind a flawed process",
       "you may damage your standing with the majority"
+    ],
+    "basis": [
+      "The proposed compromise protects smaller households from immediate exclusion.",
+      "One excluded family has a legitimate worship-access concern that a quick vote cannot cure.",
+      "Several members have confided that open voting exposes them to pressure from donors.",
+      "The dissenters have already drafted a revision that many undecided members respect."
     ]
   },
   "hw08": {
@@ -134,6 +176,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may be unable to pay for your parent’s care",
       "you could lose the entire opportunity without recourse",
       "your work reputation may become attached to that product"
+    ],
+    "basis": [
+      "The income would immediately fund a parent's urgent care, and claims are legally permitted.",
+      "Your parent values your truthful work and has rejected income earned through questionable claims.",
+      "An operations vacancy may open, but asking would forfeit a guaranteed offer tonight.",
+      "Your manager has promised a ninety-day trial with the option to resign without penalty."
     ]
   },
   "hw09": {
@@ -142,7 +190,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Finish the task tonight; preserve their qualification but sacrifice home commitments and deepen dependence.",
       "Review their draft for one difficult hour; give useful help but risk being blamed when they still miss the deadline.",
       "Refuse to assist; stop the rescuing pattern but jeopardize their livelihood and your friendship.",
-      "Ask your spouse to cover home duties; support your friend but transfer the cost to someone who never agreed."
+      "Request your spouse's one-time consent; support your friend but strain family agreements and risk normalizing rescue."
     ],
     "best": 1,
     "why": "Limited review offers substantial help without taking ownership of the work, and still risks both a damaged friendship and an imperfect outcome.",
@@ -151,6 +199,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "your friend may resent what you refused to complete",
       "you may lose an important long-standing friendship",
       "you may create lasting resentment with your spouse"
+    ],
+    "basis": [
+      "This licensing result would prevent your friend from losing housing with their children.",
+      "The friend can finish the work but needs a technical review you are uniquely qualified to provide.",
+      "Repeated rescue has caused a serious financial crisis in your own marriage.",
+      "Your spouse has offered to exchange this evening for a future weekend together."
     ]
   },
   "hw10": {
@@ -159,7 +213,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Tell them your conclusion bluntly now; possibly save their savings but jeopardize trust if your evidence is wrong.",
       "Share only the underlying facts; preserve their choice but risk being too indirect before noon.",
       "Ask another expert to call them; add credibility but lose precious time and expose private information.",
-      "Wait until they ask for feedback; respect autonomy but knowingly surrender the last useful warning."
+      "Request permission to share urgent evidence; honor a stated boundary but risk receiving consent after the deadline."
     ],
     "best": 1,
     "why": "Evidence without a forced conclusion honors agency under time pressure, though the friend may not recognize its urgency.",
@@ -168,6 +222,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may still be blamed for not expressing the urgency",
       "you could be accused of exposing someone’s private finances",
       "you may carry the shame of having withheld a warning"
+    ],
+    "basis": [
+      "The flaw is based on documents your friend has not received and the deadline is near.",
+      "Your friend has asked for facts rather than advice because earlier counsel felt controlling.",
+      "An independent professional already holds the relevant documents and can call confidentially.",
+      "Your friend has repeatedly required permission before financial advice after a past betrayal."
     ]
   },
   "hw11": {
@@ -185,6 +245,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may damage a partnership needed for future work",
       "you may be seen as manipulating a fair hiring process",
       "your manager may distrust your behind-the-scenes advocacy"
+    ],
+    "basis": [
+      "Your colleague's family faces relocation within weeks, and your own career has alternatives.",
+      "You earned the promotion through years of work, and your family depends on the increase.",
+      "The division can split two responsibilities but might reject both applicants as unsuitable.",
+      "Company policy allows extraordinary personal hardship to be considered in assignment."
     ]
   },
   "hw12": {
@@ -202,6 +268,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may regret losing the opportunity to multiply the gift",
       "you may have to default if income falls unexpectedly",
       "you may face judgment for giving time instead of cash"
+    ],
+    "basis": [
+      "The named-donor list is used by a major employer to unlock a public matching pool.",
+      "You already pledged to keep one month's emergency savings for your dependents.",
+      "The charity has successfully collected written installment pledges from donors before.",
+      "Your practical skill could repair essential distribution equipment before tomorrow."
     ]
   },
   "hw13": {
@@ -210,7 +282,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Pause the lot and disclose uncertainty now; protect the customer but expose colleagues to a large financial loss.",
       "Quietly recheck the measurements; gather certainty but lose the window for full containment.",
       "Tell only the shift manager; respect reporting lines but risk a decision made without the customer’s knowledge.",
-      "Approve shipment with a caveat; preserve schedules but transfer the unresolved risk to the customer."
+      "Release only pre-screened units with disclosure; keep a partial shipment but expose the buyer to residual uncertainty."
     ],
     "best": 0,
     "why": "Containment before certainty is expensive but can prevent irreversible downstream exposure; it deserves the highest weight under the stated deadline.",
@@ -219,6 +291,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may be blamed for detecting the defect too late",
       "you may be accused of avoiding your own accountability",
       "your name could be tied to an expensive customer failure"
+    ],
+    "basis": [
+      "The suspected defect could create a downstream safety problem that recalls cannot fully undo.",
+      "A second measurement can be completed in thirty minutes and usually rules out false positives.",
+      "The shift manager has authority to quarantine lots while keeping technicians anonymous.",
+      "The customer permits conditional acceptance of isolated lots with traceability requirements."
     ]
   },
   "hw14": {
@@ -236,6 +314,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may lose credibility with the youth and their families",
       "you may damage a volunteer relationship through pressure",
       "you could strain the promises made to your spouse"
+    ],
+    "basis": [
+      "The youth include several isolated teenagers who arranged travel around your appearance.",
+      "A trained backup facilitator can deliver an abbreviated gathering if you cancel.",
+      "The assistant leader offered to take over if you can orient them in twenty minutes.",
+      "Your spouse explicitly offered a recovery day later, but your household is already strained."
     ]
   },
   "hw15": {
@@ -253,6 +337,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may be blamed for withholding serious information",
       "your child may face discipline for delaying the report",
       "you may be accused of disguising your child’s deception"
+    ],
+    "basis": [
+      "The school's policy requires an accurate signed account before any investigation can begin.",
+      "The teacher has handled vulnerable-family concerns sensitively and can keep names confidential.",
+      "A scheduled safeguarding officer can meet both children first if paperwork is postponed.",
+      "School rules allow a protected statement omitting identities until a safeguarding meeting."
     ]
   },
   "hw16": {
@@ -270,6 +360,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "your livelihood could suffer from an unanswered allegation",
       "you may be forced into weeks of public uncertainty",
       "you may be criticized for releasing an incomplete defense"
+    ],
+    "basis": [
+      "The allegations threaten your livelihood and the third party already consented to disclosure.",
+      "The third party has expressly refused publication and has no way to defend the privacy breach.",
+      "The accuser previously corrected a mistaken claim privately when given reliable evidence.",
+      "A dated public timeline can establish a key fact without exposing the protected messages."
     ]
   },
   "hw17": {
@@ -287,6 +383,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may lose the newcomer’s trust for staying silent",
       "you may be accused of making the newcomer speak for you",
       "you may be remembered as someone who avoided the issue"
+    ],
+    "basis": [
+      "The newcomer later told you the joke felt hostile but feared creating a scene.",
+      "The host has privately asked friends to identify insensitive jokes rather than challenge publicly.",
+      "The newcomer asked to be heard before others speak on their behalf.",
+      "The gathering is ending, and stopping the laughter may be the only non-public intervention."
     ]
   },
   "hw18": {
@@ -304,15 +406,21 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may rupture a family relationship for years",
       "you may carry anxiety through an uncertain extra week",
       "you may be unable to fund a future household emergency"
+    ],
+    "basis": [
+      "The child's grandparents are trusted caregivers and have an available quiet room.",
+      "The relative has refused agreed safety boundaries even after being warned.",
+      "A supervised final week is supported by another adult who can be present continuously.",
+      "A hotel near medical services has offered a reduced rate for urgent family separation."
     ]
   },
   "hw19": {
-    "context": "A colleague asks your advice on stopping prescribed treatment. They trust you more than professionals and will act tonight if you offer a confident answer.",
+    "context": "A colleague is considering stopping prescribed treatment after frightening side effects. They trust you more than professionals; there is a same-day nurse line, and their prescribing clinician can review the issue tomorrow. You have not assessed whether the symptoms are urgent.",
     "options": [
       "Share published treatment information; support informed choice but risk your friend misreading urgent symptoms.",
       "Decline any opinion; avoid false authority but leave them alone during an anxious decision.",
       "Help them reach a qualified service today; improve safety but risk being seen as withholding needed friendship.",
-      "Ask them to wait until tomorrow; prevent impulsive action but leave serious symptoms untreated overnight."
+      "Arrange a clinician consultation tomorrow; avoid false advice but leave symptoms and anxiety unresolved overnight."
     ],
     "best": 2,
     "why": "Connecting them with qualified help is a concrete action, not an easy escape; the risk is damaged trust at the most vulnerable moment.",
@@ -321,6 +429,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may lose a friendship that relied on your support",
       "you may be resented for delegating an intimate conversation",
       "you may miss the chance to respond to a true emergency"
+    ],
+    "basis": [
+      "Your friend is scared by confusing official advice and needs help finding trustworthy sources.",
+      "A clear refusal may prevent a dangerous impression that your personal opinion is medical advice.",
+      "A registered after-hours nurse can assess symptoms and connect them to immediate care.",
+      "The prescribing clinician has agreed to a morning consultation, with emergency help if symptoms worsen."
     ]
   },
   "hw20": {
@@ -338,6 +452,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may quietly resent the person who takes the role",
       "you may still become dependent on recognition from peers",
       "you may lose meaningful opportunities to serve others"
+    ],
+    "basis": [
+      "A real teaching vacancy exists, and people who cannot travel rely on your lessons.",
+      "A gifted junior leader can step up if you accept an intentionally hidden supporting role.",
+      "A peer mentor has agreed to confront you if you confuse applause with spiritual fruit.",
+      "A sabbatical would let a wounded relationship heal before you resume a public platform."
     ]
   },
   "hw21": {
@@ -355,6 +475,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may be blamed for worsening the injured party’s need",
       "you may be seen as trading principle for a quick resolution",
       "you may lose your chance to secure any agreement"
+    ],
+    "basis": [
+      "The injured family needs funds this week to avoid losing housing after prolonged negotiation.",
+      "An experienced mediator believes the original evidence may support a more equitable agreement.",
+      "The injured party wants confidentiality to avoid fresh harassment and keep the settlement usable.",
+      "A public record would protect future victims, and the opposing side might still agree."
     ]
   },
   "hw22": {
@@ -363,7 +489,7 @@ export const HARD_FOUNDATION=Object.freeze({
       "Accept tonight; serve the waiting community but uproot your child without a clear plan.",
       "Decline tonight; protect current family stability but leave urgent ministry needs unmet.",
       "Ask for a two-week extension; gain discernment time but likely lose the invitation.",
-      "Follow your spouse’s preference; honor their voice but risk assigning them blame if things go badly."
+      "Follow your spouse's informed preference; honor joint trust but risk resenting the decision if your child struggles."
     ],
     "best": 2,
     "why": "Seeking a short extension openly pays the cost of potentially losing the opportunity instead of confusing uncertainty with certainty.",
@@ -372,6 +498,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may resent the needs that limited your vocation",
       "you may lose the opportunity that brought you hope",
       "you may begin blaming your spouse for the outcome"
+    ],
+    "basis": [
+      "A trusted school already has support available for your child in the new community.",
+      "Your child is undergoing care that cannot safely transfer at short notice.",
+      "The inviting organization understands that serious decisions require joint discernment.",
+      "Your spouse has experienced the unmet needs firsthand and has a coherent, informed preference."
     ]
   },
   "hw23": {
@@ -389,13 +521,19 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may share responsibility for any overnight spread",
       "you may look evasive to those who saw the original post",
       "you may be accused of sabotaging a friend’s livelihood"
+    ],
+    "basis": [
+      "The claim will reach an international audience tomorrow, and the evidence is decisive.",
+      "The friend has corrected errors voluntarily when approached privately in the past.",
+      "The independent source is understandable without naming the person who shared the claim.",
+      "The organizer has a clear correction policy and can remove an inaccurate slide before the event."
     ]
   },
   "hw24": {
     "context": "A charity campaign uses an inflated statistic. The launch begins in two hours; pulling your endorsement may cost the campaign a critical matching donor.",
     "options": [
       "Withdraw your support publicly; protect credibility but risk depriving beneficiaries of urgent funding.",
-      "Sign with a written caveat; preserve some funding but lend your name to a potentially misleading appeal.",
+      "Condition your endorsement on a visible caveat; keep access to funding but risk readers missing the qualification.",
       "Ask the organizer to publish a corrected number; keep the cause but risk losing the donor before launch.",
       "Support the fundraiser privately; help recipients but avoid publicly challenging the damaging method."
     ],
@@ -406,6 +544,12 @@ export const HARD_FOUNDATION=Object.freeze({
       "you may permanently compromise your own public credibility",
       "you may be blamed if beneficiaries lose their funding",
       "you may lose your influence to reform the campaign"
+    ],
+    "basis": [
+      "The statistic's distortion threatens the credibility of other appeals you publicly endorse.",
+      "The sponsor has said an explicit caveat preserves funding if visible in the campaign materials.",
+      "The organizer can replace the number without changing the campaign's underlying purpose.",
+      "Beneficiaries will lose transport today without a quiet contribution even if you refuse publicity."
     ]
   }
 });
