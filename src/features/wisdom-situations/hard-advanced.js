@@ -15,6 +15,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may damage your spouse’s confidence in your promises",
       "you may feel responsible if the substitute disappoints",
       "you may keep reopening the same dispute each month"
+    ],
+    "basis": [
+      "The item would replace a repeatedly failing appliance used daily by your spouse.",
+      "The emergency reserve must cover a relative's medication before the next payday.",
+      "The smaller model reliably meets core needs and comes with a return period.",
+      "You and your spouse previously agreed on a dated savings target, not an indefinite refusal."
     ]
   },
   "hw26": {
@@ -32,6 +38,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may lose a promotion you helped make possible",
       "you could be blamed for a late, disputed account",
       "you may still be overlooked when promotion is decided"
+    ],
+    "basis": [
+      "Project logs independently show you resolved the most serious production problem.",
+      "Your coworker publicly defended you during a prior unfair review and expects solidarity.",
+      "The coworker is willing to co-sign a shared account if given a few hours.",
+      "The review form permits a verified supplemental paragraph but no revisions later."
     ]
   },
   "hw27": {
@@ -49,6 +61,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you could lose the sharer’s confidence and friendship",
       "you may be accused of avoiding a difficult public boundary",
       "you may lose the group’s trust as a responsible leader"
+    ],
+    "basis": [
+      "The person asking prayer believes some listeners already know the sensitive facts.",
+      "The affected couple specifically asked the leaders to prevent identifying details being shared.",
+      "A co-leader can take the sharer aside immediately without embarrassing them publicly.",
+      "The couple has authorized a general prayer but not discussion of the private incident."
     ]
   },
   "hw28": {
@@ -66,6 +84,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may struggle to repair the lost school opportunity",
       "you may risk your job for repeated emergency absences",
       "you may lose your child’s confidence in your judgment"
+    ],
+    "basis": [
+      "The child prefers to attend and an adult coach is nearby, though no escort is assigned.",
+      "The assessment can be rescheduled only once with a documented safety concern.",
+      "A parent is legally permitted to accompany the group after registering tonight.",
+      "Trusted classmates already helped report the threat and can alert staff quickly."
     ]
   },
   "hw29": {
@@ -83,6 +107,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may lose supplier access your team needs",
       "you could bear responsibility for disputed procurement",
       "you may damage your standing with both negotiating teams"
+    ],
+    "basis": [
+      "The compliance officer confirmed team gifts under the ceiling are allowed if disclosed.",
+      "A previous supplier abused hospitality to pressure buyer decisions, increasing suspicion.",
+      "The gift consists of shared training equipment, not personal luxury items.",
+      "The supplier previously offered the same volume discount to other clients."
     ]
   },
   "hw30": {
@@ -100,6 +130,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may regret judging a leader before findings emerge",
       "you could be condemned as evasive by both factions",
       "you may help create a reputation that cannot be repaired"
+    ],
+    "basis": [
+      "The leader personally helped victims before and has cooperated with outside investigators.",
+      "A complainant fears any public support will discourage other witnesses from coming forward.",
+      "Operational staff still need independent help and continuity while the report is pending.",
+      "Temporary separation protects a witness from reporting to the person under investigation."
     ]
   },
   "hw31": {
@@ -117,13 +153,19 @@ export const HARD_ADVANCED=Object.freeze({
       "you may feel complicit if your evidence was important",
       "you may be challenged for claiming more than you know",
       "your refusal could permanently fracture the friendship"
+    ],
+    "basis": [
+      "The judge asked specifically for observations about a particular meeting you attended.",
+      "Your lawyer cautions that memories of stressful arguments can be unreliable.",
+      "Your friend has requested a letter limited to professional reliability rather than disputed events.",
+      "The court permits supplemental testimony after records are reviewed, but the date is uncertain."
     ]
   },
   "hw32": {
     "context": "A safety interlock bypass would meet tonight’s delivery. No accident has occurred, but the alternative stops production and risks missing payroll next week.",
     "options": [
       "Keep the line stopped; protect the safety boundary but jeopardize wages for colleagues already struggling.",
-      "Run a reduced-speed supervised shift; preserve pay but normalize bypassing a control during pressure.",
+      "Use an approved reduced-speed contingency; preserve wages while meeting safety rules but risk a partial missed shipment.",
       "Transfer the work to a slower backup line; avoid bypassing but risk missing the order and losing the customer.",
       "Seek an emergency engineering waiver; preserve oversight but risk a delay that makes payroll difficult."
     ],
@@ -134,6 +176,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may be accountable if the bypass injures someone",
       "you may be blamed for the costlier production route",
       "you may be criticized for seeking a slow exception"
+    ],
+    "basis": [
+      "The stop procedure preserves all mandatory interlocks, and the team has used it before.",
+      "A certified engineer can operate within an approved reduced-speed contingency procedure.",
+      "The backup line meets safety requirements and can deliver most of the order.",
+      "The safety officer is authorized to grant a documented exception to the schedule, not controls."
     ]
   },
   "hw33": {
@@ -151,6 +199,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may carry the stress of ongoing care expenses",
       "you may resent siblings who miss their assigned shifts",
       "you may lose the personal space needed for recovery"
+    ],
+    "basis": [
+      "Your parent's preferred support has always been care by relatives rather than strangers.",
+      "The caregiver has excellent references and the parent explicitly requested help at home.",
+      "Siblings have offered predictable rotating visits but live far apart.",
+      "Your parent asked to move near grandchildren after becoming isolated in their neighborhood."
     ]
   },
   "hw34": {
@@ -168,12 +222,18 @@ export const HARD_ADVANCED=Object.freeze({
       "you may be blamed if the smaller gift achieves nothing",
       "you may suffer guilt for refusing a reliable friend",
       "you may be drawn into a debt dispute among relatives"
+    ],
+    "basis": [
+      "The borrower's income has been restored and the bank confirms guarantee releases in six months.",
+      "A direct loan is documented and affordable without affecting the child's essential needs.",
+      "A verified lower-cost rental will become available in ten days with moving assistance.",
+      "A second guarantor has volunteered freely and understands the full financial exposure."
     ]
   },
   "hw35": {
     "context": "A video appears to show an official harming a protester. A credible witness says the clip is incomplete; a rally starts in twenty minutes.",
     "options": [
-      "Repost with a note of uncertainty; alert participants but amplify a potentially misleading narrative.",
+      "Share the clip with a verification volunteer now; enable urgent scrutiny but risk it spreading before verification.",
       "Do not share it; avoid misinformation but weaken immediate accountability if the harm was real.",
       "Post only the witness’s competing account; add nuance but risk minimizing a serious abuse.",
       "Ask to pause use of the clip; improve accuracy but risk weakening solidarity at the rally."
@@ -185,6 +245,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may be judged indifferent if the harm proves real",
       "you may look like an apologist for the official involved",
       "you may lose standing with fellow campaign supporters"
+    ],
+    "basis": [
+      "A volunteer fact-checker can investigate the recording if warned before it goes viral.",
+      "The original clip lacks minutes of surrounding context and the witness is credible.",
+      "The witness offered verifiable timestamps and consented to careful publication.",
+      "Rally organizers have withdrawn unverified material before without abandoning their cause."
     ]
   },
   "hw36": {
@@ -202,6 +268,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you will answer to families whose sessions disappear",
       "you may be accused of sidelining an important donor",
       "you may bear responsibility when funding ends suddenly"
+    ],
+    "basis": [
+      "The donor has funded similar programs responsibly and possesses useful governance experience.",
+      "The board previously promised the community not to sell decision authority for funding.",
+      "The donor has accepted nonvoting advisory roles in other organizations.",
+      "A written sunset clause would trigger another vote before the donor could retain influence."
     ]
   },
   "hw37": {
@@ -219,13 +291,19 @@ export const HARD_ADVANCED=Object.freeze({
       "you could lose colleagues’ trust in your consistency",
       "you may become the target of both sides’ suspicions",
       "you may be held responsible if the misconduct repeats"
+    ],
+    "basis": [
+      "Past penalties have been applied consistently, and earlier victims still carry losses.",
+      "The offender paid restitution from limited earnings and accepted full responsibility.",
+      "A witness with first-hand knowledge of the offender's changed behavior is available.",
+      "The underlying rules permit a compassionate exception for extraordinary hardship."
     ]
   },
   "hw38": {
     "context": "The defect rate estimate is uncertain, and the customer must decide a shipment by noon. The sales director warns that a higher estimate could cancel the contract.",
     "options": [
       "Report the upper estimate; prioritize protection but possibly trigger rejection of good product.",
-      "Report the observed failures only; remain strictly factual but understate plausible downstream exposure.",
+      "Report observed failures and sampling limits; honor measured facts but risk customers undervaluing plausible exposure.",
       "Report a clear bounded estimate; equip the buyer but risk losing the contract through disclosed uncertainty.",
       "Ask for a one-day hold; improve testing but miss the contractual window and incur penalties."
     ],
@@ -236,6 +314,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may face responsibility for failures left unmentioned",
       "you may become the focus of a commercial dispute",
       "you may be held responsible for shipment delay costs"
+    ],
+    "basis": [
+      "Customers have accepted conservative estimates when they must protect patient safety.",
+      "The contract defines reportable failure as observed defects with clear sample boundaries.",
+      "Your metrology group can quantify an interval, and the customer values uncertainty disclosure.",
+      "A hold can yield full additional measurements, preventing unnecessary scrap and rework."
     ]
   },
   "hw39": {
@@ -253,6 +337,12 @@ export const HARD_ADVANCED=Object.freeze({
       "your child may never again trust you with painful news",
       "you may be blamed for keeping another parent outside",
       "you could lose trust in your ability to support your child"
+    ],
+    "basis": [
+      "The teenager has a safety plan with a trusted teacher and asks for time to prepare.",
+      "The other parent is a legal caregiver and has taken emergencies seriously in the past.",
+      "The teenager agreed to tell their parent in a supervised meeting within forty-eight hours.",
+      "A counselor understands the household's history and can keep the initial conversation bounded."
     ]
   },
   "hw40": {
@@ -270,13 +360,19 @@ export const HARD_ADVANCED=Object.freeze({
       "you could lose a gifted friend from the ministry team",
       "you may be resented by the overburdened co-leader",
       "you may be blamed for reducing a cherished program"
+    ],
+    "basis": [
+      "The lead has crucial expertise for a group that would otherwise lack qualified supervision.",
+      "The deputy has led previous sessions and other volunteers are nearing burnout.",
+      "A mature co-leader has offered to cover cancellations with authority to change plans.",
+      "Some families prefer a predictable smaller program to repeated last-minute cancellation."
     ]
   },
   "hw41": {
     "context": "You substantially rewrote an AI draft, but the client contract is ambiguous about disclosure. Claiming full authorship earns a bonus; disclosure may make the client reject the project.",
     "options": [
       "Disclose the AI contribution; protect trust but risk losing the contract and bonus.",
-      "Claim sole authorship; protect the project and bonus but invite future questions about transparency.",
+      "Certify responsibility for the final deliverable; preserve the project and bonus but invite questions about tool disclosure.",
       "Ask the client for a disclosure ruling; build consent but risk missing the submission deadline.",
       "Credit only the tools you verified; avoid overstatement but leave the original draft’s AI role unclear."
     ],
@@ -287,6 +383,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you risk reputational damage when the draft is traced",
       "you may be blamed for missing a binding deadline",
       "you may lose the ability to defend your own contribution"
+    ],
+    "basis": [
+      "The client evaluates final professional responsibility rather than who typed each sentence.",
+      "The contract only warrants accuracy and ownership of deliverables, not every tool used.",
+      "The project manager can obtain a documented clarification before the next billing cycle.",
+      "You validated every factual claim but do not have records of every initial draft prompt."
     ]
   },
   "hw42": {
@@ -304,6 +406,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may feel guilt when an urgent call goes unanswered",
       "you may lose a close relationship built through trust",
       "you may be judged as abandoning a vulnerable person"
+    ],
+    "basis": [
+      "The mentee is in a major transition and has no close contacts beyond your calls.",
+      "You and the mentee already agreed that support should build long-term independence.",
+      "Several peers know the situation well and can share follow-up without breaching confidence.",
+      "Your spouse has described a concrete boundary that your present schedule has repeatedly broken."
     ]
   },
   "hw43": {
@@ -321,6 +429,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may exhaust yourself maintaining parallel distribution",
       "you may be blamed when hungry families are turned away",
       "you may damage relationships by demanding special treatment"
+    ],
+    "basis": [
+      "The ministry has delivered hundreds of meals and never been accused of diversion.",
+      "You have access to a registered wholesale supplier and can deliver tonight.",
+      "An accountant has agreed to inspect receipts in forty-eight hours; the delay means fewer meals.",
+      "The organization can provide signed delivery records even though historical receipts are incomplete."
     ]
   },
   "hw44": {
@@ -338,6 +452,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may regret refusing to support real improvement",
       "you could be blamed if the new hire struggles",
       "you may carry guilt if omitted history later causes harm"
+    ],
+    "basis": [
+      "The applicant's last three projects were successful and their family faces imminent eviction.",
+      "You have dated evaluations showing both the improvement and persistent weaker skills.",
+      "A hiring manager previously offered to consider candidates with incomplete references.",
+      "Recent reviews are accurate but do not capture a pattern critical to safety on the new job."
     ]
   },
   "hw45": {
@@ -355,13 +475,19 @@ export const HARD_ADVANCED=Object.freeze({
       "you may resent monitoring rather than partnering",
       "you may fear that others now know your marriage’s struggles",
       "you may lose autonomy in decisions about your own family"
+    ],
+    "basis": [
+      "The hidden debt is accruing penalties faster than either spouse can earn in a month.",
+      "Your spouse has now committed to independent oversight and full access to statements.",
+      "A confidential accredited adviser can mediate between repayment speed and necessary trust.",
+      "Relatives have offered interest-free help before without demanding influence over your marriage."
     ]
   },
   "hw46": {
     "context": "Your friend wants your health testimony onstage tomorrow, but treatment is continuing and your symptoms have recently returned. The church hopes it will encourage others.",
     "options": [
       "Share the full uncertain story; model candor but potentially extinguish hope among fragile listeners.",
-      "Present only the improvement; inspire the room but create a misleading picture of recovery.",
+      "Describe only verified improvement with a clear status note; offer hope but risk audiences overlooking ongoing treatment.",
       "Decline to speak; avoid confusion but withhold a testimony that could comfort other patients.",
       "Share progress with treatment status; encourage others but expose your uncertain recovery."
     ],
@@ -372,6 +498,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may feel complicit if listeners expect guaranteed healing",
       "you may lose the chance to help someone else through fear",
       "you may have to explain a future setback publicly"
+    ],
+    "basis": [
+      "Your measured improvement was real and may encourage patients who feel abandoned.",
+      "Your treatment team warned that selective stories can mislead seriously ill listeners.",
+      "A vulnerable attendee explicitly asked you not to present a certain recovery as typical.",
+      "Your specialist approves a report that includes continuing treatment and uncertain symptoms."
     ]
   },
   "hw47": {
@@ -379,7 +511,7 @@ export const HARD_ADVANCED=Object.freeze({
     "options": [
       "Submit the relevant evidence; protect an innocent person but invite scrutiny of your own violation.",
       "Give only a witness statement; support the colleague but invite doubts from withholding documents.",
-      "Keep the evidence private; protect yourself but allow a likely injustice to proceed.",
+      "Seek confidential legal review before submission; protect your rights but risk the investigator ruling without the evidence.",
       "Send the evidence anonymously; help the investigation but weaken provenance and invite suspicion."
     ],
     "best": 0,
@@ -389,6 +521,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may lose credibility when documents are requested",
       "you may carry regret if an innocent person is sanctioned",
       "you may be suspected of trying to evade accountability"
+    ],
+    "basis": [
+      "The document has an authentic timestamp relevant to a wrongful disciplinary claim.",
+      "A truthful witness statement can establish core facts without revealing protected records.",
+      "Your lawyer can submit the file securely after advising on unrelated policy exposure.",
+      "The investigator accepts authenticated anonymous leads before deciding on formal disclosure."
     ]
   },
   "hw48": {
@@ -406,6 +544,12 @@ export const HARD_ADVANCED=Object.freeze({
       "you may be accused of reckless allegations if proved wrong",
       "you may carry responsibility for harms during the delay",
       "you may lose control of evidence and become vulnerable"
+    ],
+    "basis": [
+      "The protected reporting system offers anonymous review with a legal anti-retaliation process.",
+      "The evidence points to an immediate environmental release if the equipment restarts tonight.",
+      "Another test could separate a harmless sensor fault from the critical failure.",
+      "The manager previously corrected serious hazards promptly but may be implicated in this one."
     ]
   }
 });
