@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 2,
+  "assetId": "bqv7-need-rest-01",
+  "agentId": "visual-agent-1",
+  "status": "candidate_visual_quality_repair_required",
+  "bundleStatus": "complete_three_file_svg_bundle_technical_browser_pass_visual_quality_rejected",
+  "family": "need",
+  "visualRole": "need_tile",
+  "contentType": "need",
+  "contentId": "rest",
+  "canonicalNeedId": "rest",
+  "concept": "After a demanding day, a soft upholstered chair with draped wool blanket, unlaced shoes and a warm tea cup beside an open window; a single quiet interior conveys permission to rest.",
+  "usage": [
+    "needs_carousel",
+    "library_discovery",
+    "devotional_discovery"
+  ],
+  "imagePath": "/v7/images/need/bqv7-need-rest-01.svg",
+  "format": "svg",
+  "width": 1024,
+  "height": 1280,
+  "aspectRatio": "4:5",
+  "fileBytes": 6153,
+  "sha256": "82705ad316db6c2c1c6adda3af51949a26893158eafa82f850a9cd272cfa4b6e",
+  "focalPoint": {
+    "x": 0.49,
+    "y": 0.59
+  },
+  "textSafeRegion": "top",
+  "variants": [
+    {
+      "kind": "CLEAN",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-rest-01.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 6153,
+      "sha256": "82705ad316db6c2c1c6adda3af51949a26893158eafa82f850a9cd272cfa4b6e",
+      "altText": "A wool blanket draped over a comfortable armchair, a cup of tea on a wooden table, and shoes set aside by a sunlit window.",
+      "qa": {
+        "svgStructuralReview": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "THUMB",
+      "locale": null,
+      "imagePath": "/v7/images/need/bqv7-need-rest-01-thumbnail.svg",
+      "format": "svg",
+      "width": 384,
+      "height": 480,
+      "fileBytes": 6153,
+      "sha256": "ee723643a8df1f3f056c470e914766469e2f8b1af4a286b8056b246e6c42dc36",
+      "altText": "A wool-covered armchair in a warm, quiet room.",
+      "crop": {
+        "sourceRectPixels": {
+          "left": 110,
+          "top": 98,
+          "right": 910,
+          "bottom": 1098
+        },
+        "targetAspectRatio": "4:5",
+        "method": "focal-aware SVG viewBox"
+      },
+      "qa": {
+        "svgStructuralReview": true,
+        "visualInspected": false,
+        "builtAppBrowserQA": "pending"
+      }
+    },
+    {
+      "kind": "TYPE",
+      "locale": "en",
+      "imagePath": "/v7/images/need/bqv7-need-rest-01-with-text-en.svg",
+      "format": "svg",
+      "width": 1024,
+      "height": 1280,
+      "fileBytes": 7003,
+      "sha256": "6da797800f3675c911a999edbac28e7846b0ec0244ae897651f01258fe208d47",
+      "gitBlobSha": "4821995a80d18d8b151952d3b0d99e367fbea680",
+      "altText": "An armchair with a draped blanket in a quiet sunlit room. Embedded English title: Rest. Reference: Matthew 11:28-30.",
+      "embeddedWording": {
+        "label": "Rest",
+        "scriptureReference": "Matthew 11:28-30",
+        "scriptureTextIncluded": false
+      },
+      "typography": {
+        "fontFamily": "Georgia or local serif fallback",
+        "fontFilesDistributed": false,
+        "thirdPartyFontDownloaded": false,
+        "titlePixelSizeInSource": 112,
+        "referencePixelSizeInSource": 41,
+        "visualQARequired": true
+      },
+      "qa": {
+        "svgStructuralReview": true,
+        "spellingCheckedAgainstTaxonomy": true,
+        "scriptureReferenceOnly": true,
+        "visualInspected": true,
+        "typeReadableAt320px": false,
+        "builtAppBrowserQA": "pending",
+        "visualReviewResult": "Needs stronger mobile reference lettering as well as overall photographic-quality scene."
+      }
+    }
+  ],
+  "wordingEvidence": {
+    "sourcePath": "src/features/library/emotion-taxonomy.js",
+    "sourceBlobSha": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+    "canonicalNeedId": "rest",
+    "locale": "en",
+    "exactLabel": "Rest",
+    "reference": "Matthew 11:28-30",
+    "scriptureTextIncluded": false
+  },
+  "generation": {
+    "provider": "original programmatic vector illustration",
+    "method": "Original hand-assembled single-scene SVG editorial interior; CLEAN/THUMB are text-free; TYPE reuses art and overlays only exact EN taxonomy label and reference. No contact-sheet source.",
+    "modelGeneratedImageUsed": false
+  },
+  "rights": {
+    "sourceType": "generated",
+    "thirdPartyAsset": false,
+    "attributionRequired": false,
+    "artRights": "Original SVG geometry composed for BibleQuest; no external images or fonts or copyrighted characters.",
+    "scriptureTextIncluded": false
+  },
+  "accessibility": {
+    "decorative": false,
+    "altText": "A wool blanket draped over a comfortable armchair beside a cup of tea and shoes set aside, with sunlight filtering through a window.",
+    "essentialTextMustRemainLive": true,
+    "localizedFallback": "CLEAN plus live localized labels for TL/CEB/ILO; EN TYPE is candidate only, use CLEAN until verified."
+  },
+  "qc": {
+    "noBakedText": true,
+    "noLogo": true,
+    "svgSelfContained": true,
+    "duplicateSceneCheckedAgainstKnownBrief": true,
+    "assetSpecificSha256Measured": true,
+    "localRenderedVisualQA": "pending",
+    "builtAppBrowserQA": "pending",
+    "officialNodeAudit": "not_run",
+    "productionReady": false,
+    "unverifiedAestheticQuality": false,
+    "assetSpecificSha256MeasureMethod": "Source-ASCII exact UTF-8 bytes; independent pure-JS SHA-256 with abc vector self-test and GitHub readback",
+    "typeEmbeddedWordsSourceVerified": true,
+    "threeDistinctRealFiles": true,
+    "allThreeLocalWebPDecodingAndSHA256Verified": false,
+    "aestheticReview": "FAIL: exact-head Chromium 320px screenshots show a flat, simple vector interior, not the required cinematic editorial/photographic treatment for production V7",
+    "matchesVisualSystem": false,
+    "exactHeadCandidateBrowserQA": {
+      "candidateSha": "f4b7f387325da779cd5376e12fc9fe574643c2bd",
+      "runId": 37996649857,
+      "artifactId": 11647880331,
+      "result": "technical_browser_pass_only",
+      "viewports": [
+        320,
+        390,
+        430
+      ],
+      "screenshotEvidence": [
+        "draft-bqv7-need-rest-01-with_text-320.png",
+        "draft-bqv7-need-rest-01-thumbnail-320.png"
+      ],
+      "publishedHttpConfirmed": false,
+      "visuallyApproved": false
+    },
+    "visualQaDecision": "REJECT_AS_RELEASE_ART; replace with original premium single-scene photographic artwork while preserving canonical Need title/reference/metadata",
+    "independentPixelReview": "completed_rejected_2026-10-10"
+  },
+  "publicationBlockers": [
+    "independent rendered image inspection",
+    "asset size and thumbnail source-crop QA",
+    "320/390/430 CSS px built-app browser QA",
+    "official V7 visual audit",
+    "Lane D production index certification",
+    "TYPE visual typography legibility at 320/390/430 CSS px",
+    "Independent visual QA REJECTED existing flat-vector art direction; generate a new standalone photoreal master instead of promoting SVG."
+  ]
+}
