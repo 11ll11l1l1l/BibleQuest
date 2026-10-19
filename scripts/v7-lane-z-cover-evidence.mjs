@@ -8,6 +8,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readLaneZCoverQueue } from './v7-lane-z-devotional-cover-queue.mjs';
+import { knownRejectedLaneZCoverReason } from './v7-visual-candidate-policy.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const RECORD_DIR = 'data/v7/visual-assets/records';
@@ -84,6 +85,8 @@ export async function auditLaneZImageCoverage(queue, records, readImage) {
         const bytes=await readImage(record.imagePath);
         if(bytes.length!==record.fileBytes)issues.push('file byte count mismatch');
         const actual=sha256(bytes);
+        const rejectedScene=knownRejectedLaneZCoverReason(actual);
+        if(rejectedScene)issues.push('known rejected devotional scene: '+rejectedScene);
         if(actual!==record.sha256)issues.push('file SHA-256 mismatch');
         const [w,h]=imageSize(bytes,record.format);
         if(w!==record.width||h!==record.height)issues.push('geometry mismatch');
