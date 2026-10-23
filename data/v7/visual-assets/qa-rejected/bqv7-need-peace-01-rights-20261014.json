@@ -38,7 +38,32 @@
     "productionApproved": false,
     "source": "Live GitHub PR changed files, development fetch 404, open PR search, record and independent rights FAIL"
   },
-  "deletionStatus": "OWNERSHIP_VERIFIED_PENDING_DELETION",
+  "deletionStatus": "DELETED_EXCLUSIVE_UNAPPROVED_CANDIDATE_FILES",
   "release": "NOT_APPROVED",
-  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011"
+  "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011",
+  "deletionDate": "2026-10-24",
+  "deletionEvidence": {
+    "preDeletionPrHead": "f5830068f1a9641ddad738763c785e198ffad2a5",
+    "deletedPixelPaths": [
+      {
+        "path": "public/v7/images/need/bqv7-need-peace-01.svg",
+        "commit": "3b3adc7d5e478082a1c72cd5f220cc41130b7267"
+      },
+      {
+        "path": "public/v7/images/need/bqv7-need-peace-01-with-text-en.svg",
+        "commit": "75b1fdb7861545250bbab4b273e1619a1b92660a"
+      },
+      {
+        "path": "public/v7/images/need/bqv7-need-peace-01-thumbnail.svg",
+        "commit": "99f219d3eb9ba7a5ffacfabef57060118e95e004"
+      }
+    ],
+    "deletedCandidateOnlyRecord": {
+      "path": "data/v7/visual-assets/records/bqv7-need-peace-01.json",
+      "commit": "4d295d581472ae0b27f90716f81e555065c5a9a7"
+    },
+    "tombstoneRetained": true,
+    "productionPathsUntouched": true,
+    "reason": "Previously independently rejected procedural SVG candidate is not a native CLEAN PNG/WebP; all three exclusive SVG candidate files and their pending-only sidecar removed from unmerged PR branch."
+  }
 }
