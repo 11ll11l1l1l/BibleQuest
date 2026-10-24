@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "role": "rights",
+  "verdict": "FAIL_PROVENANCE",
+  "canonicalId": "guidance",
+  "contentType": "need",
+  "candidatePr": 1456,
+  "reviewedPrHead": "e915a12c941fc0f2f58e0de3bd5a12f5e30a7ab2",
+  "sourceRecordBlob": "7198aa089f3a8db7076d3b4ca0a90157b01b8cd6",
+  "taxonomyBlob": "e64366970838d62c11ea602dd606e0acfe5b0cb2",
+  "contractBlob": "058734a629ea64cda86a2f69097b47fc04e2104c",
+  "rejectedCleanSha256": "1a554460fc4cb806c6aadc9793d27c2994ccd976086c69624a95350049473e22",
+  "reason": "Sidecar declares three-panel source composite and isolated single-scene panel crop; prohibited by one-original-CLEAN contract. Actual pixels depict hikers at forest fork, not the construction guide bus-terminal map.",
+  "wording": "Guidance / Proverbs 3:5-6 historical TYPE checked; no verse prose",
+  "deletionStatus": "COMPLETED_EXCLUSIVE_CANDIDATE_CLEANUP",
+  "release": "HOLD_POLICY_MIGRATION",
+  "approval": false,
+  "deletionAttempted": true,
+  "cleanupEvidence": {
+    "completedAt": "2026-10-24",
+    "lastDeletionCommit": "a5c02403c258338dafa8f7ebcd1da3d4daf853e5",
+    "deletedExclusivePaths": [
+      "public/v7/images/need/bqv7-need-guidance-01.webp",
+      "public/v7/images/need/bqv7-need-guidance-01-with-text-en.webp",
+      "public/v7/images/need/bqv7-need-guidance-01-thumbnail.webp",
+      "data/v7/visual-assets/records/bqv7-need-guidance-01.json"
+    ],
+    "priorGitBlobs": {
+      "CLEAN": "cf1928f1d40b9aed4a1665660465a069776f8a93",
+      "TYPE": "4ecc11cad4ff9ec24b417ef50fdc2e85d9622211",
+      "THUMB": "fa4b15ec1cc4588f2821a317607d0896e2ebc737",
+      "record": "cb1ffc1fe92107bbee5a160d52fc3b4747d7f026"
+    },
+    "preservedHashTombstone": true,
+    "approvedDevelopmentBytesUntouched": true
+  }
+}
