@@ -8,7 +8,7 @@
   "sourceRecordBlob": "2a41b74c2488c1ca5dae606c506d1b0c11749a2a",
   "reason": "generation.sourceImageWasComposite=true, isolatedSingleScenePanelCropPixels populated; CLEAN cropped from a three-panel collage, prohibited by one-original-CLEAN policy. Competing Need Hope PR #1479; no source-original PNG proof. No approval; exclusive candidate files only eligible for deletion after tombstone.",
   "release": "NOT_APPROVED",
-  "deletionStatus": "PENDING_SAFE_CLEANUP",
+  "deletionStatus": "COMPLETED_EXCLUSIVE_CANDIDATE_CLEANUP",
   "policy": "V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011",
   "coordinatorReconciliation": {
     "date": "2026-10-16",
@@ -22,5 +22,24 @@
     },
     "supersedingCandidate": "https://github.com/11ll11l1l1l/BibleQuest/pull/1479",
     "cleanupScope": "exclusive PR #1448 candidate binaries and candidate-only record, no development/approved files"
+  },
+  "cleanupEvidence": {
+    "completedAt": "2026-10-24",
+    "finalDeletionCommit": "74a520728ff21f6923836e2fb884076ce4ae38ef",
+    "deletedExclusivePaths": [
+      "public/v7/images/need/bqv7-need-hope-01.webp",
+      "public/v7/images/need/bqv7-need-hope-01-with-text-en.webp",
+      "public/v7/images/need/bqv7-need-hope-01-thumbnail.webp",
+      "data/v7/visual-assets/records/bqv7-need-hope-01.json"
+    ],
+    "priorGitBlobs": {
+      "CLEAN": "53ba85ade7eb2cb7dfdc49f95e0523e7c1fb46b7",
+      "TYPE": "4853aefd6e97bbc8e99e57905caafcfe63d027b1",
+      "THUMB": "0c044d6f54d86b67a4ae83aa8c060df3c384bb7e",
+      "record": "34eeaca701411945cc4bc25dba9f96f979009a8f"
+    },
+    "preservedHashTombstone": true,
+    "approvedDevelopmentBytesUntouched": true,
+    "supersedingPR": 1479
   }
 }
