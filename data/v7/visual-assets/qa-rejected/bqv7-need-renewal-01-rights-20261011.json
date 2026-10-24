@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "role": "rights",
+  "verdict": "FAIL",
+  "contentType": "need",
+  "canonicalId": "renewal",
+  "candidatePr": 1457,
+  "reviewedPrHead": "1692530929fc73f9a54e979c2b853db6f25d9851",
+  "sourceRecord": "data/v7/visual-assets/records/bqv7-need-renewal-01.json",
+  "sourceOriginalSha256": "396ed74d535eea38f41302ae0c2fc6fa228ff277021f5eff3a6befb8813810ef",
+  "rejectedCleanSha256": "ffdfa9d0fb948c1a3b3631f494009791529694a5b010809b9ebb3302a9f23cfc",
+  "rejectedTypeSha256": "1035a43b50e560d95d44f93b4e089a9f0937358d100f63b59f9dcfece1d3d491",
+  "rejectedThumbSha256": "c4949e67d061afa78c50bf2953337e0ed9ffc731adf55e2ae04a7707cc4b2578",
+  "reason": "Source sidecar explicitly states sourceImageWasComposite=true and original renewal_window_painting_triptych.png; CLEAN is isolated from a triptych. The single-master contract forbids salvaging a collage by cropping; original must be one standalone image. Actual CLEAN pixels independently visually inspected and CLEAN SHA256 recomputed. Source provenance remains independently unlinked.",
+  "pixelDeletionStatus": "COMPLETED_EXCLUSIVE_CANDIDATE_CLEANUP",
+  "approval": false,
+  "cleanupEvidence": {
+    "completedAt": "2026-10-24",
+    "lastDeletionCommit": "f33b0fffc69f6ee8ac65dbe934aadd856042a4d7",
+    "deletedExclusivePaths": [
+      "public/v7/images/need/bqv7-need-renewal-01.webp",
+      "public/v7/images/need/bqv7-need-renewal-01-with-text-en.webp",
+      "public/v7/images/need/bqv7-need-renewal-01-thumbnail.webp",
+      "data/v7/visual-assets/records/bqv7-need-renewal-01.json"
+    ],
+    "priorGitBlobs": {
+      "CLEAN": "293ea8ce73dd49f54e3e8096b2d87c4de06b1139",
+      "TYPE": "0ea4ed2370f4c5934353ab0c820be419d7c04bd1",
+      "THUMB": "3c068298dff58f1e1908981c691b0b42063debc1",
+      "record": "78e82de76161a350fda2691da9eecab94dd1d3ed"
+    },
+    "preservedHashTombstone": true,
+    "approvedDevelopmentBytesUntouched": true
+  }
+}
