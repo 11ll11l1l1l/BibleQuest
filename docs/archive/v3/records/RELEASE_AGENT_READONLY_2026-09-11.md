@@ -3,7 +3,7 @@
 Date: 2026-09-11
 Deadline: **18:00 JST**
 Repository: `11ll11l1l1l/BibleQuest`
-Primary control: `RELEASE_6PM_2026-09-11.md`
+Primary control: `docs/archive/v3/records/RELEASE_6PM_2026-09-11.md`
 
 These instructions override older agent missions until the production release is complete.
 
@@ -33,7 +33,7 @@ Their only deliverable is a **finding/report in chat** for the captain/release e
 
 Before investigating, every agent must read:
 
-1. `RELEASE_6PM_2026-09-11.md`
+1. `docs/archive/v3/records/RELEASE_6PM_2026-09-11.md`
 2. `DEVELOPMENT_HANDOFF_V3.md`
 3. `DEVELOPMENT_STATUS_V3.md`
 4. this file

@@ -2,7 +2,7 @@
 
 Updated: 2026-09-12 JST after guarded field-harness preparation, Live Room acceptance reconciliation, and release-control consolidation.
 
-This checklist is subordinate to the latest explicit user instruction, `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, and `DEVELOPMENT_STATUS_V3.md`. The date-specific sequencing in `RELEASE_6PM_2026-09-11.md` is historical release-control context; do not revive expired clock deadlines or old development branches when current repository evidence has advanced.
+This checklist is subordinate to the latest explicit user instruction, `DEVELOPMENT_PRIORITY_V3.md`, `RECONCILIATION_V3.md`, `DEVELOPMENT_HANDOFF_V3.md`, and `DEVELOPMENT_STATUS_V3.md`. The date-specific sequencing in `docs/archive/v3/records/RELEASE_6PM_2026-09-11.md` is historical release-control context; do not revive expired clock deadlines or old development branches when current repository evidence has advanced.
 
 ## Recover truth before writing
 
