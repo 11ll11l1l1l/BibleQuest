@@ -27,3 +27,11 @@ export function normalizeConversationDeck(value) {
   if(ids.length!==value.cardIds.length||ids.some(id=>conversationCard(id)?.seriesId!==series.id)||!ids.includes(value.activeCardId))return null;
   return Object.freeze({activity:'conversation-deck',version:1,seriesId:series.id,cardIds:Object.freeze(ids),activeCardId:value.activeCardId});
 }
+
+// A Library link is a local preview preference. A valid joined session always
+// wins, and unknown URL input can never introduce noncanonical series/cards.
+export function conversationPreviewSeries(roomState, preferredId='') {
+  return normalizeConversationDeck(roomState)?.seriesId
+    || CONVERSATION_SERIES.find(row => row.id === preferredId)?.id
+    || CONVERSATION_SERIES[0].id;
+}

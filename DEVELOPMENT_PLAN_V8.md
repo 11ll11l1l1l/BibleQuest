@@ -1,12 +1,12 @@
-# BibleQuest V8 Deferred Scope
+# BibleQuest V8 development plan
 
-Updated: 2026-10-27 JST
-Status: **CONTRACT REFRESH NEXT — cleanup before implementation**
+Updated: 2026-10-28 JST
+Status: **ACTIVE — P0 inheritance refreshed; first P1 implementation in review**
 Current release and handoff authority: [V7_ACTIVE_STATUS.md](V7_ACTIVE_STATUS.md)
 
 ## Purpose
 
-This file preserves the future scope originally deferred from V7. The owner requested V7 cleanup before V8 work. Reconcile the provisional phases with released V7.1 before selecting implementation tasks; this cleanup does not expand product scope.
+This file preserves the future scope originally deferred from V7. The owner authorized accelerated V8 development on 2026-10-28 after the V7 cleanup. Reuse released V7.1 contracts; implement only verified gaps. Production promotion still requires exact-candidate gates.
 
 ## Inherited from released V7.1
 
@@ -58,18 +58,30 @@ V8 should build on the released V7 Library and discipleship foundations rather t
 - Scripture-reference audit for expanded content.
 - Structured Couples content integration with the broader Library/content system.
 
-## Provisional phase shape
+## Execution phases
 
-V8 phases remain provisional. V7.1 is released; P0 must reconcile inherited contracts and identify remaining gaps.
+Released runtime baseline: `main` at `87cb9dd4c3b60b9679e0acecda519300194b6d55`. Cleanup PR #1554 is a prerequisite; its runner repair head is `7440cbb1df2fa54b25e898c66fe76a57ccbc79d9`. V8 begins on a stacked isolated branch until cleanup integrates. Never replace production with a stale V7 development branch.
 
-- **V8-P0 — Contract refresh:** confirm V7 inheritance, realtime/media/security/content boundaries.
-- **V8-P1 — Group/realtime gaps:** reuse the shipped V7.1 engine and shells; implement only verified remaining group/Library/discipleship integration gaps.
-- **V8-P2 — Media/moderation foundation:** central media pipeline, metadata, moderation and operational controls.
-- **V8-P3 — Ilocano rollout:** Bible first, then UI.
-- **V8-P4 — Content expansion:** devotionals, teachings, books and Couples using bounded ingestion lanes.
-- **V8-P5 — Integrated hardening/release:** exact-SHA certification under the canonical rulebook.
+| Phase | Bounded outcome | Current state / gate |
+|---|---|---|
+| P0 — Inheritance and scope | Retain Library/ONE 2 ONE/Auth/tenancy/PWA and V7.1 session engine; identify actual missing capabilities | Refreshed for first P1 slice; media/provider and Ilocano licensing contracts still require task-specific validation |
+| P1 — Group/content integration | Public Library reading → related canonical discussion series; retain explicit host-send and joined-session authority | First implementation in review; browser/authenticated CI still required. Private lesson responses and arbitrary reading prose are excluded from broadcasts |
+| P2 — Media and moderation | Central Drive ingest, metadata ownership, pending-review lifecycle, moderation and provider/quota recovery | Next contract task: validate existing media ownership and Drive integration before schema/provider writes; no uploads or publication authorized by a test fixture |
+| P3 — Ilocano | Source/license-valid full Bible through existing provider, then full UI | Bible source/rights/coverage and provider/offline compatibility first; existing English fallback is not full Ilocano |
+| P4 — Content expansion | Bounded devotional/teaching/book/Couples batches using existing provenance, review and reference checks | Do not reimport the 300 existing devotionals or bypass rights/translation review; use verified missing-ID queues |
+| P5 — Integrated release | Existing exact-SHA, backend/tenant/privacy, responsive/localization, PWA/offline/performance and deployment verification | OPEN; no source/unit-only release claim |
 
-When V8 activates, replace this provisional shape with a task-owned phase plan using exact starting SHA, explicit lane ownership, at least four genuinely independent parallel lanes where the work supports it, and serialized integration.
+For the current single bounded P1 task, one executor owns Library presentation, canonical series preference, route wiring and its tests; no concurrent shared-file writers. [Task handoff](work/tasks/20261028-v8-library-group-handoff.md).
+
+When broader independent execution is enabled, use at least four disjoint lanes where the work supports it: A group/content UX, B media/provider and moderation, C Ilocano/source/localization, D integration/security/release. Assign exact baseline, owned files, exclusions and existing checks before parallel writes. One integration owner serializes shared schema/router/workflow/status changes. These are work boundaries, not claims that four workers are running or that external provider access exists.
+
+## First P1 acceptance
+
+- Only validated published, rights-verified devotional/teaching records with explicit supported topic links offer a related series. Books and unsupported topics do not invent a match.
+- Handoff URL contains a canonical series ID only, never source prose, reading IDs or private learner answers. Topic matching is deterministic, not a new personalized recommendation engine.
+- Host starts with that local preview preference; existing canonical shared-session state wins on join/reload. Opening, previewing or changing series does not broadcast.
+- EN/TL/CEB labels, explicit source-language fallback, existing role/account/tenant denial, keyboard/phone controls, and licensed Scripture Reader remain intact.
+- Existing authenticated built-app journey covers Library → session creation → selected preview → explicit send → actual participant delivery. Report local and CI evidence separately.
 
 ## Guardrail
 

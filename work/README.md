@@ -1,6 +1,6 @@
 # BibleQuest work entry point
 
-V7.1 is released. The current task is repository cleanup before V8. Read [current status](../V7_ACTIVE_STATUS.md), then [rulebook section 1](RULEBOOK.md#1-authority-and-fast-start) and only the sections needed for your task.
+V7.1 is released. V8 development is active; cleanup integration precedes V8 release. Read [current status](../V7_ACTIVE_STATUS.md), then [rulebook section 1](RULEBOOK.md#1-authority-and-fast-start) and only the sections needed for your task.
 
 ## Authorities
 

@@ -4,7 +4,7 @@ Start at [work/README.md](work/README.md). [work/RULEBOOK.md](work/RULEBOOK.md) 
 
 ## Current work
 
-V7.1 is released; the owner requested repository cleanup before V8. Branch new work from current `main` on an isolated task branch. Do not resume old V7 lane queues or treat historical status as unfinished implementation. V8 scope is in [DEVELOPMENT_PLAN_V8.md](DEVELOPMENT_PLAN_V8.md); reconcile inherited features before building them again.
+V7.1 is released; the owner authorized accelerated V8 development on 2026-10-28. Branch new work from current `main` on an isolated task branch; a dependent V8 PR may stack on the cleanup PR until it integrates. Do not resume old V7 lane queues or treat historical status as unfinished implementation. V8 scope is in [DEVELOPMENT_PLAN_V8.md](DEVELOPMENT_PLAN_V8.md); reconcile inherited features before building them again.
 
 ## Content and artwork
 

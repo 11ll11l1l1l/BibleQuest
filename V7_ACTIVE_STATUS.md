@@ -1,6 +1,6 @@
 # BibleQuest current status
 
-Updated: 2026-10-27 JST. V7 and V7.1 have shipped. This is the current status authority; older pending-release/lane statements are historical.
+Updated: 2026-10-28 JST. V7 and V7.1 have shipped. This is the current status authority; older pending-release/lane statements are historical.
 
 ## Released baseline
 
@@ -12,9 +12,13 @@ The live repository `main` inspected for cleanup is `87cb9dd4c3b60b9679e0acecda5
 
 ## Current owner request and next work
 
-1. Clean and consolidate V7 documentation before V8. [Cleanup handoff](work/tasks/20261027-v7-workspace-cleanup.md).
-2. Refresh [V8 deferred scope](DEVELOPMENT_PLAN_V8.md) against released V7.1. Conversation Deck/realtime are inherited features, not an unimplemented new engine. Central media/moderation, full Ilocano Bible/UI, broader content and Couples expansion remain future scope.
-3. Implement the next bounded V8 task after the contract refresh; do not reactivate V7 image quotas or old phase assignments.
+The owner authorized accelerated V8 development on 2026-10-28. [V8 plan](DEVELOPMENT_PLAN_V8.md) owns phase scope; this file remains the current release/status authority.
+
+1. Cleanup [PR #1554](https://github.com/11ll11l1l1l/BibleQuest/pull/1554) is not merged. Its original head passed 8/9 workflows; convergence failed installing Playwright 1.55 on Ubuntu 26.04 before browser execution. Repair head `7440cbb1df2fa54b25e898c66fe76a57ccbc79d9` pins Ubuntu 24.04; new CI is running. No gate was removed.
+2. First V8 P1 slice: public Library reading → related canonical discussion series. Uses published topic metadata only; source prose, reading IDs and private answers do not enter the session. Local preview never sends automatically; joined-session state remains authoritative. [Implementation handoff](work/tasks/20261028-v8-library-group-handoff.md).
+3. Next independent scope is P2 media/provider/moderation contract refresh or P3 Ilocano source/licensing validation, while first-slice CI runs. Do not rebuild the already shipped V7.1 engine or reopen old image queues.
+
+V8 implementation is not deployed or certified. Published V7.1 and its rollback remain unchanged.
 
 ## Preserved boundaries
 
