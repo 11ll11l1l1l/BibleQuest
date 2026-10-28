@@ -452,8 +452,20 @@ try {
   await openRoute(page,'one-to-one','[data-pair-conversation]');
   await page.locator('[data-pair-conversation]').click();
   await page.locator('[data-live-room-create]').waitFor({state:'visible'});
+  // V8 inherits this engine; a public Library reading can prepare an existing
+  // series without broadcasting the reading, its ID, or any private response.
+  await openRoute(page,'library-item?id=devotional.biblequest.loneliness.01','[data-library-conversation-series="together"]');
+  await page.locator('[data-library-conversation-series="together"]').click();
+  assert.equal(await page.evaluate(()=>location.hash),'#/conversation-deck?series=together');
   await page.locator('[data-live-room-create] button[type=submit]').click();
   await page.locator('[data-deck-next]').waitFor({state:'visible'});
+  assert.equal(await page.locator('[data-deck-series]').inputValue(),'together');
+  assert.match(await page.locator('[data-deck-preview]').textContent(),/Listen before answering/);
+  assert.match(await page.locator('[data-deck-current]').textContent(),/Waiting/);
+  if(!await page.locator('[data-deck-setup]').evaluate(node=>node.open))await page.locator('[data-deck-setup] summary').click();
+  await page.locator('[data-deck-series]').selectOption('trust');
+  await page.locator('[data-deck-setup] summary').click();
+  checks.push('v8-public-library-series-handoff-preview-only-no-broadcast');
   const headerColors=await page.locator('.bq-conversation-session .bq-community-head').evaluate(node=>({background:getComputedStyle(node).backgroundColor,colors:[node.querySelector('h1'),node.querySelector('[data-live-room-connection]')].map(n=>getComputedStyle(n).color)}));
   const luminance=color=>{const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4});return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722};
   for(const color of headerColors.colors){const levels=[luminance(color),luminance(headerColors.background)].sort((a,b)=>b-a);assert.ok((levels[0]+0.05)/(levels[1]+0.05)>=4.5,'Session header text must retain 4.5:1 contrast');}

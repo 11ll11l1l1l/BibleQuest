@@ -10,6 +10,4 @@ Apply [rulebook sections 8–9](RULEBOOK.md) and use the existing [exact-SHA gat
 6. Run essential production smoke: exact SHA, site load, login/session, Reader, BSB Audio, navigation, PWA/service worker, assignments/notifications and protected routes. Reuse `scripts/v6-live-smoke.mjs` and existing browser checks; distinguish machine contracts from actual device/account observations.
 7. Update release status, acceptance and sanitized evidence with actual results. Keep outstanding human checks visible and rollback identity intact.
 
-Current release/rollback identities are maintained only in [backup manifest](../BACKUP_MANIFEST.md) and [V6 production status](../V6_ACTIVE_STATUS.md).
-
-V7 preparation note: existing workflows allow exact-SHA dispatch, but their PR branch filters currently target older integration branches. Adopt the existing gates for V7 explicitly before relying on automatic V7 PR checks.
+Current release evidence is linked from [V7_ACTIVE_STATUS.md](../V7_ACTIVE_STATUS.md); frozen rollback identities remain in [BACKUP_MANIFEST.md](../BACKUP_MANIFEST.md). V6 status describes its historical release. V7.1 uses the existing strict V7 convergence workflow in addition to inherited gates; inspect live branch/path filters for the intended task rather than assuming older preparation notes describe current CI.

@@ -1,10 +1,8 @@
 # BibleQuest
 
-Start repository work at [work/README.md](work/README.md). Agent instructions: [AGENTS.md](AGENTS.md).
+BibleQuest V7.1 is released at https://mybiblequest.pages.dev. [Current status](V7_ACTIVE_STATUS.md) links the sealed release evidence and next work.
 
-BibleQuest V6 is live at https://mybiblequest.pages.dev. Production `main` is pinned to certified SHA `7997d60e6069aa406ec005c32e33e46fee39bc12`.
-
-V7 preparation starts on `v7/development`. Read [V7 starting point](docs/V7_STARTING_POINT.md) and [documentation index](DOCUMENTATION_INDEX.md) before changing code.
+Start repository work at [work/README.md](work/README.md). [AGENTS.md](AGENTS.md) provides agent entry instructions; [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) maps maintained contracts and historical records. [V8 scope](DEVELOPMENT_PLAN_V8.md) is the starting point for the next release's contract refresh.
 
 ## Development
 
@@ -18,13 +16,12 @@ npm run unit
 npm run build:v6
 ```
 
-The existing Cloudflare production build command is `npm run build:v6`, with output `dist-v6`. Keep this deployment contract until an intentional, tested V7 release change.
+The Cloudflare production build command remains `npm run build:v6`, with output `dist-v6`. Historical V6 naming is part of the inherited build contract.
 
-## Release records
+## Release and history
 
-- [V6 production status](V6_ACTIVE_STATUS.md)
-- [V6 acceptance checklist](V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md)
+- [Release procedure](work/RELEASE.md)
 - [Release backups](BACKUP_MANIFEST.md)
-- [Historical documentation](docs/archive/README.md)
+- [Documentation archive](docs/archive/README.md)
 
-Versioned runtime, migrations, regression tests and workflows remain active where inherited by V6. A historical name alone does not make code disposable.
+Preserve inherited runtime, source/rights metadata, migrations, tests and release evidence. New work uses isolated branches from the current released baseline.
