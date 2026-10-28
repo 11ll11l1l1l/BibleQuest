@@ -1,25 +1,25 @@
-# BibleQuest Documentation Index
+# BibleQuest documentation index
 
-Start repository work at [work/README.md](work/README.md). Agent instructions: [AGENTS.md](AGENTS.md).
+Updated: 2026-10-27 JST. Start at [work/README.md](work/README.md); operating policy lives in [work/RULEBOOK.md](work/RULEBOOK.md).
 
-Updated: 2026-10-04 JST
+## Current release and future scope
 
-## Current production: V6
+- [Current status](V7_ACTIVE_STATUS.md): released baseline, evidence and next work.
+- [V7.1 scope and acceptance](docs/v7-1/V7_1_LEADER_SMALL_GROUP_RELEASE.md); [sealed release PR #1550](https://github.com/11ll11l1l1l/BibleQuest/pull/1550).
+- [V8 scope](DEVELOPMENT_PLAN_V8.md): future features and inherited V7.1 work.
+- [Release procedure](work/RELEASE.md), [exact-SHA gate](docs/v6/V6_RC_EXACT_SHA_GATE.md) and [rollback manifest](BACKUP_MANIFEST.md).
 
-- [V6 active status](V6_ACTIVE_STATUS.md): released SHA and production verification.
-- [V6 acceptance checklist](V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md): 203 PASS / 8 OPEN. Owner waivers remain waivers; physical evidence is still outstanding.
-- [Production evidence](docs/v6/evidence/RC_20261003/v6-production-promotion-evidence.json).
-- [Backup manifest](BACKUP_MANIFEST.md): exact release and rollback references.
+## Maintained V7 contracts
 
-## Current development: V7 preparation
+- [Text-first content/artwork policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md).
+- [UI/UX requirements](docs/v7/V7_UI_UX_RELEASE_REQUIREMENTS_20261008.md) and [motion/accessibility requirements](docs/v7/V7_MOTION_AND_ANIMATION_REQUIREMENTS_20261008.md).
+- [Single-master image presentation](docs/v7/V7_SINGLE_MASTER_CROP_QA_CONTRACT_20261011.md) and [existing-image QA policy](docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md). Neither reopens V7 artwork production.
+- [Phone UI phase evidence](docs/v7/V7_POST_RELEASE_UI_QA_PHASE_LEDGER_20261017.md): historical implementation trail; final release outcome is PR #1549, followed by #1550.
 
-- [V7 starting point](docs/V7_STARTING_POINT.md): baseline, branch and development rules.
-- [V7 active status](V7_ACTIVE_STATUS.md): current scope and next work.
+## Organization and history
 
-`main` remains the deployed V6 source. V7 development must use `v7/development`, not production or rollback branches. No V7 feature scope or architecture replacement has been approved yet.
+- [Documentation policy](work/DOCUMENTATION.md) and [lessons](work/LESSONS_LEARNED.md).
+- [V3–V7 archive](docs/archive/README.md), including [V7 planning/status/task history](docs/archive/v7/README.md).
+- [V6 status](V6_ACTIVE_STATUS.md) and [V6 acceptance](V6_REQUESTED_FEATURES_ACCEPTANCE_CHECKLIST.md) describe that release period and retained evidence, not current production identity.
 
-## Historical records
-
-[Archive index](docs/archive/README.md) routes V3–V6 history. Unreferenced historical root documents are archived by version. Documents referenced by executable contracts remain at their original paths. Historical status statements do not override the current production and V7 authorities above.
-
-Repository, CI and deployed build evidence take precedence over older narrative summaries. Retain inherited safety contracts until equivalent coverage replaces them in an intentional change.
+Many older root documents are consumed by executable validation contracts. They remain at their required paths; their presence does not make historical lane instructions current. Repository, CI and release evidence take precedence over narrative age or filename.

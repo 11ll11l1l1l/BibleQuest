@@ -1,12 +1,16 @@
 # BibleQuest V8 Deferred Scope
 
-Updated: 2026-10-04 JST
-Status: **DEFERRED / NOT ACTIVE**
-Current active development authority: `DEVELOPMENT_PLAN_V7.md` and `V7_ACTIVE_STATUS.md`
+Updated: 2026-10-27 JST
+Status: **CONTRACT REFRESH NEXT — cleanup before implementation**
+Current release and handoff authority: [V7_ACTIVE_STATUS.md](V7_ACTIVE_STATUS.md)
 
 ## Purpose
 
-This file records features intentionally removed from V7 so they do not leak back into the focused Library + ONE 2 ONE release. It is a future-scope holding document, not authorization to begin V8 implementation while V7 is active.
+This file preserves the future scope originally deferred from V7. The owner requested V7 cleanup before V8 work. Reconcile the provisional phases with released V7.1 before selecting implementation tasks; this cleanup does not expand product scope.
+
+## Inherited from released V7.1
+
+[PR #1550](https://github.com/11ll11l1l1l/BibleQuest/pull/1550) already delivered Conversation Deck selection/preview/explicit send, participant Scripture handoff, congregation-scoped realtime sessions, late join/reconnect and EN/TL/CEB presentation. Treat the group/realtime list below as an original planning record to reconcile, not proof those features remain unimplemented. New Library/discipleship integration or richer structured discussion requires a bounded gap assessment. Full Ilocano Bible/UI and central media/moderation remain future scope.
 
 ## V8 product theme
 
@@ -56,10 +60,10 @@ V8 should build on the released V7 Library and discipleship foundations rather t
 
 ## Provisional phase shape
 
-V8 phases are deliberately provisional until V7 is released and the inherited contracts are known.
+V8 phases remain provisional. V7.1 is released; P0 must reconcile inherited contracts and identify remaining gaps.
 
 - **V8-P0 — Contract refresh:** confirm V7 inheritance, realtime/media/security/content boundaries.
-- **V8-P1 — Group/realtime foundation:** Conversation Deck session engine plus leader/participant shells.
+- **V8-P1 — Group/realtime gaps:** reuse the shipped V7.1 engine and shells; implement only verified remaining group/Library/discipleship integration gaps.
 - **V8-P2 — Media/moderation foundation:** central media pipeline, metadata, moderation and operational controls.
 - **V8-P3 — Ilocano rollout:** Bible first, then UI.
 - **V8-P4 — Content expansion:** devotionals, teachings, books and Couples using bounded ingestion lanes.

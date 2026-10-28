@@ -60,7 +60,7 @@ env:
 jobs:
   converge:
     name: Exact-SHA integrated V7 certification
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright 1.55 supports this runner; ubuntu-latest may advance.
     timeout-minutes: 60
     steps:
       - name: Validate exact candidate identity
