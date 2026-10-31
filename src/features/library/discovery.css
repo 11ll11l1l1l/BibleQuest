@@ -308,3 +308,7 @@
 .bq-library-conversation { margin-top:24px; padding-top:16px; border-top:1px solid var(--bq-border,#364039); }
 .bq-library-conversation .bq-account-actions { display:flex; flex-wrap:wrap; gap:12px; }
 .bq-library-conversation a { min-height:44px; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+
+.bq-library [data-library-reading-list] ul { list-style:none; padding:0; display:grid; gap:12px; }
+.bq-library [data-library-reading-list] li { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
+.bq-library [data-library-reading-list] button, [data-library-reading-save] button { min-height:44px; max-width:100%; white-space:normal; overflow-wrap:anywhere; }

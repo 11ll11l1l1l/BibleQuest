@@ -220,6 +220,18 @@ try {
       // Follow a real public reading to its canonical practice guide. No timer
       // starts on navigation; a persisted session wins over a new suggestion.
       await page.goto(`${baseUrl}/#/library-item?id=devotional.biblequest.anxiety_worry.01`, { waitUntil: 'networkidle' });
+      await page.locator('[data-reading-list-save-action="toggle"]').waitFor();
+      await page.locator('[data-reading-list-save-action="toggle"]').click();
+      await page.locator('[data-library-back]').click();
+      await page.locator('[data-library-reading-list]').waitFor();
+      await page.reload({ waitUntil: 'networkidle' });
+      const readingList = page.locator('[data-library-reading-list]');
+      await readingList.waitFor();
+      const savedDisclosure = readingList.locator('xpath=..');
+      if (!(await savedDisclosure.evaluate(node => node.open))) await savedDisclosure.locator('summary').click();
+      await readingList.locator('[data-reading-list-action="open"][data-id="devotional.biblequest.anxiety_worry.01"]').click();
+      await page.locator('[data-library-detail] h1').waitFor();
+      await page.locator('[data-reading-list-save-action="toggle"]').click();
       const practiceLink = page.locator('[data-library-practice="morning-10"]');
       await practiceLink.waitFor();
       assert.equal(await practiceLink.getAttribute('href'), '#/spiritual-practices?practice=morning-10');

@@ -35,6 +35,8 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 
 11. Practice reminder plans now support selected weekdays and any of the eleven fixed timed routines. Home offers a localized chosen-routine setup button without auto-start/dismissal. Legacy daily schedules, quiet hours and per-account storage remain; 67 affected checks and build pass locally. This is app-open only; closed-app delivery is still open. [Implementation and evidence](work/tasks/20261101-v8-routine-plans.md).
 
+12. Library now has an account-scoped device-local Saved for later list for published books/devotionals/teachings. Saves only canonical link/title/type/time metadata; opening reuses the normal published lookup. EN/TL/CEB controls, explicit capacity, stale-owner denial and return focus are coded; 132 Library checks and build pass locally. [Implementation and evidence](work/tasks/20261101-v8-library-reading-list.md).
+
 ## Preserved boundaries
 
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.

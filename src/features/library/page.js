@@ -1,3 +1,5 @@
+import {createLibraryReadingList, readingListCopy} from './reading-list.js';
+import {mountReadingListPanel} from './reading-list-panel.js';
 import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { localization } from '../../app/localization.js';
 import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
@@ -14,7 +16,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 }[character]));
 
 export function createLibraryPage({
-  service, onPractices, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
+  service, onPractices, readingListStorage, getReadingListOwner, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
   isContextReady = () => true, subscribeContext = () => () => {},
   visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
@@ -23,6 +25,7 @@ export function createLibraryPage({
     throw new Error('Library page requires a Library service.');
   }
   if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
+  const readingList = readingListStorage && getReadingListOwner ? createLibraryReadingList({storage:readingListStorage,getOwner:getReadingListOwner}) : null;
   const t = (key, values) => localization.t(key, { values });
   const filterLabel = ({ en: 'Refine results', tl: 'Salain ang resulta', ceb: 'Pinoha ang resulta', ilo: 'Pasayaaten dagiti resulta' }[localization.getLocale()] || 'Refine results');
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
@@ -48,6 +51,7 @@ export function createLibraryPage({
         ${onPractices ? `<button type="button" class="bq-secondary-button" data-library-practices lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).title)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}
 
       </header>
+      ${readingList ? `<details><summary>${escapeHtml(readingListCopy(localization.getLocale()).title)}</summary><div data-library-reading-list></div></details>` : ''}
       <form data-library-search>
         <div class="bq-library-tabs" role="group" aria-label="${escapeHtml(t('v7.library.type'))}">${registry.list().map(type => `<button type="button" data-library-type="${escapeHtml(type.id)}" aria-pressed="false">${escapeHtml(typeLabel(type))}</button>`).join('')}</div>
         <div class="bq-library__search-row">
@@ -85,6 +89,7 @@ export function createLibraryPage({
       const page = root.querySelector('[data-library-page]');
       if (!page) throw new Error('Library page host is missing.');
       page.querySelector('[data-library-practices]')?.addEventListener('click', () => onPractices?.());
+      const savedPanel = readingList ? mountReadingListPanel({host:page.querySelector('[data-library-reading-list]'),readingList,locale:localization.getLocale(),navigate}) : null;
       const status = page.querySelector('[data-library-status]');
       const results = page.querySelector('[data-library-results]');
       const form = page.querySelector('[data-library-search]');
@@ -213,7 +218,8 @@ export function createLibraryPage({
         const candidates = typeof results.querySelectorAll === 'function'
           ? Array.from(results.querySelectorAll('[data-library-item]')) : [];
         const origin = candidates.find(candidate => candidate.getAttribute?.('data-library-item') === itemId);
-        (origin || status).focus?.({ preventScroll: true });
+        if (origin) origin.focus?.({ preventScroll: true });
+        else if (!savedPanel?.focus(itemId)) status.focus?.({ preventScroll: true });
         if (Number.isFinite(returnScrollY)) globalThis.window?.scrollTo?.(0, returnScrollY);
       };
       let renderedItemsKey = null;
@@ -404,6 +410,7 @@ export function createLibraryPage({
       const unsubscribe = service.subscribe(render);
       const unsubscribeContext = subscribeContext(() => {
         if (disposed) return;
+        savedPanel?.refresh();
         if (!isContextReady()) {
           service.reset?.();
           return;
@@ -426,6 +433,7 @@ export function createLibraryPage({
       void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
+        savedPanel?.dispose();
         clearTimeout(searchTimer);
         form.removeEventListener('input', onInput);
         form.removeEventListener('compositionend', onInput);
