@@ -12,7 +12,7 @@ const source = (await readFile(new URL('../../src/features/spiritual-practices/i
   .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-function fixture(initial = null, passages = null, reminders = null, locale = 'en') {
+function fixture(initial = null, passages = null, reminders = null, locale = 'en', initialPractice = '') {
   let owner = 'guest', notify, tick, now = 1000, body = '', reflection = '';
   const listeners = new Map(), saved = new Map();
   if (initial) saved.set('spiritual-practices.v1.guest', initial);
@@ -24,7 +24,7 @@ function fixture(initial = null, passages = null, reminders = null, locale = 'en
   globalThis.FormData = class { get(key) { return reflection && typeof reflection === 'object' ? reflection[key] : reflection; } };
   Date.now = () => now;
   const storage = { read: (key, fallback) => saved.get(key) || fallback, write: (key, value) => saved.set(key, structuredClone(value)) };
-  const page = spiritualPracticesPage({ storage, passages, reminders, getLocale: () => locale, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
+  const page = spiritualPracticesPage({ initialPractice, storage, passages, reminders, getLocale: () => locale, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
   const dispose = page.mount({ querySelector: () => host });
   return {
     host, saved, storage, get body() { return body; },
@@ -207,4 +207,58 @@ test('unsupported practice language is explicitly identified as English fallback
   const f = fixture(null, null, null, 'ilo');
   try { assert.match(f.host.innerHTML, /English fallback/); assert.match(f.host.innerHTML, /Choose a practice/); }
   finally { f.close(); }
+});
+
+
+test('practice deep link previews canonical routine and starts only by explicit choice', () => {
+  const f = fixture(null, null, null, 'en', 'morning-10');
+  try {
+    assert.match(f.host.innerHTML, /data-practice-suggestion/);
+    assert.match(f.host.innerHTML, /Morning surrender/);
+    assert.doesNotMatch(f.host.innerHTML, /data-practice-clock/);
+    assert.equal(f.saved.size, 0);
+    f.click({ practiceStart: 'morning-10' });
+    const current = f.saved.get('spiritual-practices.v1.guest').current;
+    assert.equal(current.templateId, 'morning-10');
+    f.click({ practiceStart: 'silencio-10' });
+    f.custom('17');
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').current.id, current.id);
+  } finally { f.close(); }
+});
+
+test('suggestion preserves restored session and reflections; guide opens without any saved mutation', () => {
+  const original = fixture();
+  let snapshot;
+  try {
+    original.click({ practiceStart: 'presence-30' });
+    original.click({ practiceAction: 'end' });
+    original.submit('PRIVATE_REFLECTION');
+    snapshot = structuredClone(original.saved.get('spiritual-practices.v1.guest'));
+  } finally { original.close(); }
+  const resumed = fixture(snapshot, null, null, 'en', 'silencio-10');
+  try {
+    assert.match(resumed.host.innerHTML, /Your current session is kept/);
+    assert.match(resumed.host.innerHTML, /PRIVATE_REFLECTION/);
+    resumed.click({ practiceStart: 'silencio-10' });
+    assert.equal(resumed.saved.get('spiritual-practices.v1.guest').current.id, snapshot.current.id);
+    assert.deepEqual(resumed.saved.get('spiritual-practices.v1.guest').history, snapshot.history);
+  } finally { resumed.close(); }
+  const guide = fixture(null, null, null, 'tl', 'fellowship');
+  try {
+    assert.match(guide.host.innerHTML, /data-practice-guide="fellowship" open/);
+    assert.match(guide.host.innerHTML, /Iminungkahing pagsasanay/);
+    assert.doesNotMatch(guide.host.innerHTML, /data-practice-clock/);
+    assert.equal(guide.saved.size, 0);
+  } finally { guide.close(); }
+});
+
+test('untrusted or incomplete deep links do not become practice content', () => {
+  for (const id of ['__proto__', '<script>bad</script>', 'https://evil.test', 'silencio-custom', 'missing']) {
+    const f = fixture(null, null, null, 'en', id);
+    try {
+      assert.doesNotMatch(f.host.innerHTML, /data-practice-suggestion|<script>bad|evil.test/);
+      f.click({ practiceStart: id });
+      assert.equal(f.saved.size, 0);
+    } finally { f.close(); }
+  }
 });

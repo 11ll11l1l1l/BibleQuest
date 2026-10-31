@@ -27,6 +27,8 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 
 7. Couples saved-card browsing and category/track-preserving navigation are coded in the integration continuation. Existing 64 cards, local storage and separate cloud authority are retained. New EN/TL/CEB saved-view copy, controller/service checks and build pass locally; browser changes await CI. [Implementation and evidence](work/tasks/20261101-v8-couples-navigation.md).
 
+8. Reviewed Library devotional/teaching topic tags now offer bounded canonical practice links. The practice route previews a routine or opens the daily-life guide without auto-starting or replacing a current session; private prose/answers/reflections are excluded. EN/TL/CEB handoff copy and 31 affected checks pass locally; built-browser steps await CI. [Implementation and evidence](work/tasks/20261101-v8-library-practice-handoff.md).
+
 ## Preserved boundaries
 
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.

@@ -7,10 +7,11 @@ import { advance, createSession, validSession } from './timer.js';
 import './practice.css';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const clock = ms => { const seconds = Math.ceil(ms / 1000); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; };
-export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLibrary, onReader, passages = null, reminders = null, books = [], offlineShell = null, getLocale = () => 'en' }) {
+export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLibrary, onReader, passages = null, reminders = null, books = [], offlineShell = null, getLocale = () => 'en', initialPractice = '' }) {
   const locale = practiceLocale(getLocale());
   const t = text => practiceText(locale, text);
   const h = text => esc(t(text));
+  const suggested = typeof initialPractice === 'string' && (getPractice(initialPractice) || DISCIPLINE_GUIDES.find(guide => guide.id === initialPractice));
   return {
     title: t('Spiritual Practices'),
     html: `<main class="bq-panel bq-practice" lang="${locale}" data-practice></main>`,
@@ -85,6 +86,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         </header>
         <p role="status" data-practice-message lang="${locale !== 'en' && t(message) === message ? 'en' : locale}">${h(message)}</p>
         <section aria-label="${h('Selected Scripture')}"><p class="bq-practice-note" data-practice-scripture></p></section>
+        ${suggested ? `<section data-practice-suggestion><h2>${h('Suggested practice')}</h2>${suggested.stages ? `<h3>${esc(practiceTitle(locale, suggested.title))}</h3>` : `<details data-practice-guide="${esc(suggested.id)}" open><summary>${h(suggested.title)}</summary><ol>${suggested.steps.map(step => `<li>${h(step)}</li>`).join('')}</ol></details>`}<p>${h(current ? 'Your current session is kept. Finish it and choose another practice when ready.' : 'Opening this guide does not start a timer. Choose when you are ready.')}</p>${!current && suggested.stages ? `<button class="bq-secondary-button" type="button" data-practice-start="${esc(suggested.id)}">${h('Begin suggested practice')}</button>` : ''}</section>` : ''}
         <div class="bq-practice-actions">${button('library', 'Library')}${!running ? button('reader', 'Read a passage first') : ''}</div>
         ${current ? `<section class="bq-practice-player"><h2>${esc(practice.title)}</h2>
           <p>${h(practice.adapted ? 'Adapted app routine' : 'Original two-hour stage sequence')}</p>
@@ -101,7 +103,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         ${reminder ? `<section><h2>${h('Daily app-open reminder')}</h2><p>${h('Shown on Home while BibleQuest is open. This device only; no closed-app alert. Uses your notification master switch, Bible reading category and device-local quiet hours.')}</p>
           <form data-practice-reminder-form><label><input name="enabled" type="checkbox" ${reminder.enabled ? 'checked' : ''}> ${h('Enable daily reminder')}</label><label>${h('Time')}<input name="time" type="time" required value="${esc(reminder.time)}"></label><label>${h('Time zone')}<input name="timeZone" required maxlength="100" value="${esc(reminder.timeZone)}"></label><button type="submit" class="bq-secondary-button">${h('Save reminder')}</button></form></section>` : ''}
         ${offline ? `<section><h2>${h('Offline practice')}</h2><div data-practice-offline></div>${button('offline-status', 'Refresh offline status')}</section>` : ''}
-        <section><h2>${h('Practice in daily life')}</h2>${DISCIPLINE_GUIDES.map(guide => `<details><summary>${h(guide.title)}</summary><ol>${guide.steps.map(step => `<li>${h(step)}</li>`).join('')}</ol></details>`).join('')}</section>
+        <section><h2>${h('Practice in daily life')}</h2>${DISCIPLINE_GUIDES.filter(guide => guide.id !== suggested?.id).map(guide => `<details data-practice-guide="${esc(guide.id)}"><summary>${h(guide.title)}</summary><ol>${guide.steps.map(step => `<li>${h(step)}</li>`).join('')}</ol></details>`).join('')}</section>
         <section><h2>${h('Recent reflections')}</h2>${history.length ? history.map(row => `<details><summary>${esc(practiceTitle(locale, getPractice(row.session.templateId, row.session.durationMinutes).title))} · ${h(row.session.state)}</summary><p class="bq-practice-note">${row.reflection ? esc(row.reflection) : h('No written reflection.')}</p><button type="button" class="bq-secondary-button" data-practice-delete="${esc(row.session.id)}">${h('Delete saved reflection')}</button></details>`).join('') : `<p>${h('No saved reflections yet.')}</p>`}</section>`;
         void renderPassage(); void renderOffline();
       }
@@ -140,6 +142,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         if (action === 'library') return onLibrary();
         if (action === 'reader') return onReader();
         if (target.dataset.practiceStart) {
+          if (current || !getPractice(target.dataset.practiceStart)) return;
           const ref = passages?.selection();
           if (target.dataset.practiceStart === 'meditation-10' && !ref) { message = 'Read a passage first, tap a verse, then choose Meditate on this verse.'; render(); return; }
           current = createSession(target.dataset.practiceStart);
@@ -162,6 +165,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         }
         if (event.target.matches('[data-practice-custom]')) {
           event.preventDefault();
+          if (current) return;
           if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
           const minutes = Number(new FormData(event.target).get('minutes'));
           if (!Number.isInteger(minutes) || minutes < 1 || minutes > 120) { message = 'Choose a whole number from 1 to 120 minutes.'; render(); return; }

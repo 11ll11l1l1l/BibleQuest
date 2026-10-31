@@ -217,6 +217,27 @@ try {
       assert.equal(await query.inputValue(), '', `${locale}/${width}: Clear survives reload`);
       assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
 
+      // Follow a real public reading to its canonical practice guide. No timer
+      // starts on navigation; a persisted session wins over a new suggestion.
+      await page.goto(`${baseUrl}/#/library-item?id=devotional.biblequest.anxiety_worry.01`, { waitUntil: 'networkidle' });
+      const practiceLink = page.locator('[data-library-practice="morning-10"]');
+      await practiceLink.waitFor();
+      assert.equal(await practiceLink.getAttribute('href'), '#/spiritual-practices?practice=morning-10');
+      await practiceLink.click();
+      await page.locator('[data-practice-suggestion]').waitFor();
+      assert.equal(await page.locator('[data-practice-clock]').count(), 0, 'opening a guide must not start the timer');
+      await page.locator('[data-practice-suggestion] [data-practice-start="morning-10"]').click();
+      await page.locator('[data-practice-clock]').waitFor();
+      await page.locator('[data-practice-action="pause"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-action="resume"]').waitFor();
+      await page.goto(`${baseUrl}/#/spiritual-practices?practice=fellowship`, { waitUntil: 'networkidle' });
+      await page.locator('[data-practice-guide="fellowship"][open]').waitFor();
+      await page.locator('[data-practice-action="resume"]').waitFor();
+      assert.equal(await page.locator('[data-practice-suggestion] [data-practice-start]').count(), 0, 'a new suggestion cannot replace the restored session');
+      const practiceMetrics = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
+      assert.ok(practiceMetrics.scroll <= practiceMetrics.width + 1, `${locale}/${width}: practice handoff overflow`);
+
       await page.goto(`${baseUrl}/#/library-item`, { waitUntil: 'networkidle' });
       await page.locator('[data-library-detail]').waitFor();
       assert.ok((await page.locator('[data-library-detail]').textContent()).trim());

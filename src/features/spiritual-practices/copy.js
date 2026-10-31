@@ -1,5 +1,9 @@
 // Authored EN/TL/CEB practice copy. Scripture and private notes are never translated here.
 const ROWS = `
+Suggested practice|Iminungkahing pagsasanay|Gisugyot nga pagbansay
+Your current session is kept. Finish it and choose another practice when ready.|Nananatili ang kasalukuyan mong session. Tapusin ito at pumili ng ibang pagsasanay kapag handa ka na.|Gipabilin ang imong kasamtangang sesyon. Taposa kini ug pagpili og laing pagbansay kon andam ka na.
+Opening this guide does not start a timer. Choose when you are ready.|Hindi nagsisimula ang timer sa pagbukas ng gabay. Pumili kapag handa ka na.|Dili magsugod ang timer sa pag-abli sa giya. Pagpili kon andam ka na.
+Begin suggested practice|Simulan ang iminungkahing pagsasanay|Sugdi ang gisugyot nga pagbansay
 Spiritual Practices|Mga Espirituwal na Pagsasanay|Mga Espirituhanong Pagbansay
 PRIVATE · THIS DEVICE|PRIBADO · SA DEVICE NA ITO|PRIBADO · NIINING DEVICE
 Make space for God, reflection and a loving response.|Maglaan ng puwang para sa Diyos, pagninilay at pagtugon nang may pag-ibig.|Paggahin og luna alang sa Diyos, pagpamalandong ug mahigugmaong pagtubag.
