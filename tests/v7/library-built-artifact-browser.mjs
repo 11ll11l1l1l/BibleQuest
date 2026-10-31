@@ -258,6 +258,16 @@ try {
       await page.reload({ waitUntil: 'networkidle' });
       await page.locator('[data-practice-reflection] [name="answer-notice"]').waitFor();
       assert.equal(await page.locator('[data-practice-reflection] [name="answer-notice"]').inputValue(), 'Edited disposable answer');
+      const reminderPlan = page.locator('[data-practice-reminder-form]');
+      await reminderPlan.locator('[name="practiceId"]').selectOption('morning-20');
+      for (const day of ['0','1','2','3','4','5','6']) await reminderPlan.locator(`[name="days"][value="${day}"]`).setChecked(['1','3','5'].includes(day));
+      await reminderPlan.locator('[name="enabled"]').setChecked(false);
+      await reminderPlan.locator('button[type="submit"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-reminder-form]').waitFor();
+      assert.equal(await reminderPlan.locator('[name="practiceId"]').inputValue(), 'morning-20');
+      assert.equal(await reminderPlan.locator('[name="days"]:checked').count(), 3);
+      assert.equal(await reminderPlan.locator('[name="enabled"]').isChecked(), false);
       const practiceMetrics = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
       assert.ok(practiceMetrics.scroll <= practiceMetrics.width + 1, `${locale}/${width}: practice handoff overflow`);
 

@@ -33,6 +33,8 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 
 10. Daily-practice completion: 10/15/20-minute Morning Surrender choices now use explicit adapted allocations. Evening sessions have five optional source-question answers, and saved reflections/answers can be edited with draft/cancel handling in the existing private store. Fifty-eight affected practice/Library checks and build pass locally; full browser/device acceptance remains separate. [Implementation and evidence](work/tasks/20261101-v8-daily-practice-journal.md).
 
+11. Practice reminder plans now support selected weekdays and any of the eleven fixed timed routines. Home offers a localized chosen-routine setup button without auto-start/dismissal. Legacy daily schedules, quiet hours and per-account storage remain; 67 affected checks and build pass locally. This is app-open only; closed-app delivery is still open. [Implementation and evidence](work/tasks/20261101-v8-routine-plans.md).
+
 ## Preserved boundaries
 
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.

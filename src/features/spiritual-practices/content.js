@@ -1,3 +1,4 @@
+export { REMINDER_ROUTINES } from './routine-catalog.js';
 // Original short guides adapted from the owner's Spiritual Disciplines and Silencio PDFs.
 const stage = (title, seconds, guide) => Object.freeze({ title, seconds, guide });
 const template = (id, title, stages, adapted = true) => Object.freeze({ id, title, version: 1, adapted, stages: Object.freeze(stages) });

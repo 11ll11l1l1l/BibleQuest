@@ -1,3 +1,4 @@
+import { reminderRoutineTitle, isReminderRoutine } from '../spiritual-practices/routine-catalog.js';
 import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
@@ -213,13 +214,18 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         try {
           const state = practiceReminders.status();
           reminderOwner = state.owner;
-          const signature = JSON.stringify([state.owner, state.due, state.blockedBySettings, state.quietNow, state.day]);
+          const signature = JSON.stringify([state.owner, state.due, state.blockedBySettings, state.quietNow, state.day, state.practiceId]);
           if (signature === reminderSignature) return;
           reminderSignature = signature;
-          reminderHost.innerHTML = state.due ? `<p role="status">${escapeHtml(practiceEntry(locale).due)}</p><button type="button" class="bq-secondary-button" data-dismiss-practice-reminder>${escapeHtml(practiceEntry(locale).dismiss)}</button>` : '';
-        } catch { reminderHost.textContent = practiceEntry(locale).unavailable; }
+          reminderHost.innerHTML = state.due ? `<p role="status">${escapeHtml(practiceEntry(locale).due)}</p>${isReminderRoutine(state.practiceId) ? `<button type="button" class="bq-secondary-button" data-open-due-practice>${escapeHtml(reminderRoutineTitle(state.practiceId, locale))}</button>` : ''}<button type="button" class="bq-secondary-button" data-dismiss-practice-reminder>${escapeHtml(practiceEntry(locale).dismiss)}</button>` : '';
+        } catch { reminderSignature = ''; reminderOwner = ''; reminderHost.textContent = practiceEntry(locale).unavailable; }
       };
       const dismissPracticeReminder = event => {
+        if (event.target.closest?.('[data-open-due-practice]')) {
+          try { const current = practiceReminders?.status(); if (current?.due && current.owner === reminderOwner && isReminderRoutine(current.practiceId)) onPractices?.(current.practiceId); else renderPracticeReminder(); }
+          catch { if (reminderHost) reminderHost.textContent = practiceEntry(locale).unavailable; }
+          return;
+        }
         if (!event.target.closest?.('[data-dismiss-practice-reminder]')) return;
         try { practiceReminders?.dismiss(reminderOwner); renderPracticeReminder(); }
         catch { if (reminderHost) reminderHost.textContent = practiceEntry(locale).dismissError; }

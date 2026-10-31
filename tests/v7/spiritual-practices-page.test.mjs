@@ -21,7 +21,7 @@ function fixture(initial = null, passages = null, reminders = null, locale = 'en
   globalThis.document = { hidden: false, addEventListener() {}, removeEventListener() {} };
   globalThis.setInterval = fn => { tick = fn; return 1; };
   globalThis.clearInterval = () => {};
-  globalThis.FormData = class { get(key) { return reflection && typeof reflection === 'object' ? reflection[key] : reflection; } };
+  globalThis.FormData = class { getAll(key) { return reflection && typeof reflection === 'object' && Array.isArray(reflection[key]) ? reflection[key] : key === 'days' ? ['0','1','2','3','4','5','6'] : []; } get(key) { return reflection && typeof reflection === 'object' ? reflection[key] : reflection; } };
   Date.now = () => now;
   const storage = { read: (key, fallback) => saved.get(key) || fallback, write: (key, value) => saved.set(key, structuredClone(value)) };
   const page = spiritualPracticesPage({ initialPractice, storage, passages, reminders, getLocale: () => locale, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
@@ -149,12 +149,12 @@ test('reminder form labels app-open scope and reports saves or storage errors tr
   try {
     assert.match(f.host.innerHTML, /no closed-app alert/);
     f.reminder({ enabled: 'on', time: '20:00', timeZone: 'Asia/Tokyo' });
-    assert.deepEqual(saved, { enabled: true, time: '20:00', timeZone: 'Asia/Tokyo' });
-    assert.match(f.host.innerHTML, /app-open reminder saved/);
+    assert.deepEqual(saved, { enabled: true, time: '20:00', timeZone: 'Asia/Tokyo', days: [0,1,2,3,4,5,6] });
+    assert.match(f.host.innerHTML, /reminder plan saved/);
     reminders.save = () => { throw new Error('Storage unavailable'); };
     f.reminder({ enabled: 'on', time: '20:00', timeZone: 'Asia/Tokyo' });
     assert.match(f.host.innerHTML, /Storage unavailable/);
-    assert.doesNotMatch(f.host.innerHTML, /app-open reminder saved/);
+    assert.doesNotMatch(f.host.innerHTML, /reminder plan saved/);
   } finally { f.close(); }
 });
 
@@ -365,4 +365,21 @@ test('current reflection draft survives redraw and malformed legacy answers do n
   const restored=fixture(snapshot);
   try { assert.match(restored.host.innerHTML,/legacy valid prose/); assert.match(restored.host.innerHTML,/retained answer/); assert.doesNotMatch(restored.host.innerHTML,/must not render/); }
   finally { restored.close(); }
+});
+
+test('reminder form renders chosen routine/weekdays, submits bounded setup and denies stale-account changes', () => {
+  let saved;
+  const reminders = {config:()=>({enabled:true,time:'08:00',timeZone:'Asia/Tokyo',days:[1,3],practiceId:'morning-20'}),save:value=>{saved=value;}};
+  const f=fixture(null,null,reminders,'tl');
+  try {
+    assert.match(f.host.innerHTML,/name="practiceId"/);
+    assert.match(f.host.innerHTML,/value="morning-20" selected/);
+    assert.equal((f.host.innerHTML.match(/name="days" value="[13]" checked/g)||[]).length,2);
+    assert.match(f.host.innerHTML,/Mga araw ng pagsasanay/);
+    f.reminder({enabled:'on',time:'21:00',timeZone:'Asia/Tokyo',days:['1','3','5'],practiceId:'evening-5'});
+    assert.deepEqual(saved,{enabled:true,time:'21:00',timeZone:'Asia/Tokyo',days:[1,3,5],practiceId:'evening-5'});
+    saved=null;f.switch('account:other',false);
+    f.reminder({enabled:'on',time:'21:00',timeZone:'Asia/Tokyo',days:['0'],practiceId:'silencio-10'});
+    assert.equal(saved,null);
+  } finally {f.close();}
 });

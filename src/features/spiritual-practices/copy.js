@@ -1,3 +1,4 @@
+import { formatPracticeTitle } from './routine-catalog.js';
 // Authored EN/TL/CEB practice copy. Scripture and private notes are never translated here.
 const ROWS = `
 Suggested practice|Iminungkahing pagsasanay|Gisugyot nga pagbansay
@@ -9,6 +10,16 @@ Saved reflection updated on this device.|Na-update ang naka-save na pagninilay s
 Save changes on this device|I-save ang pagbabago sa device na ito|Tipigi ang kausaban niining device
 Cancel editing|Kanselahin ang pag-edit|Kanselaha ang pag-edit
 Edit saved reflection|I-edit ang naka-save na pagninilay|I-edit ang gi-save nga pagpamalandong
+Reminder practice|Pagsasanay para sa paalala|Pagbansay alang sa pahinumdom
+Practice days|Mga araw ng pagsasanay|Mga adlaw sa pagbansay
+Sunday|Linggo|Dominggo
+Monday|Lunes|Lunes
+Tuesday|Martes|Martes
+Wednesday|Miyerkules|Miyerkules
+Thursday|Huwebes|Huwebes
+Friday|Biyernes|Biyernes
+Saturday|Sabado|Sabado
+Choose at least one weekday and a listed practice.|Pumili ng kahit isang araw at isang pagsasanay sa listahan.|Pagpili og labing menos usa ka adlaw ug pagbansay sa listahan.
 Spiritual Practices|Mga Espirituwal na Pagsasanay|Mga Espirituhanong Pagbansay
 PRIVATE · THIS DEVICE|PRIBADO · SA DEVICE NA ITO|PRIBADO · NIINING DEVICE
 Make space for God, reflection and a loving response.|Maglaan ng puwang para sa Diyos, pagninilay at pagtugon nang may pag-ibig.|Paggahin og luna alang sa Diyos, pagpamalandong ug mahigugmaong pagtubag.
@@ -46,9 +57,9 @@ Choose a practice|Pumili ng pagsasanay|Pagpili og pagbansay
 Custom Silencio minutes (adapted)|Sariling haba ng Silencio sa minuto (inangkop)|Kaugalingong gidugayon sa Silencio sa minuto (gipahaom)
 Start custom silence|Simulan ang sariling haba ng katahimikan|Sugdi ang kaugalingong gidugayon sa kahilom
 Silence is an invitation to relationship with God. Minutes are not a measure of spiritual worth.|Ang katahimikan ay paanyaya sa pakikipag-ugnayan sa Diyos. Hindi sukatan ng espirituwal na halaga ang dami ng minuto.|Ang kahilom usa ka pagdapit sa relasyon sa Diyos. Dili sukdanan sa espirituhanong bili ang gidaghanon sa minuto.
-Daily app-open reminder|Araw-araw na paalala habang bukas ang app|Adlaw-adlaw nga pahinumdom samtang bukas ang app
+Practice reminder plan|Plano ng paalala sa pagsasanay|Plano sa pahinumdom sa pagbansay
 Shown on Home while BibleQuest is open. This device only; no closed-app alert. Uses your notification master switch, Bible reading category and device-local quiet hours.|Ipinapakita sa Home habang bukas ang BibleQuest. Sa device na ito lamang; walang alert kapag sarado ang app. Sinusunod ang pangunahing notification switch, kategorya ng pagbabasa ng Biblia at quiet hours ng device.|Ipakita sa Home samtang bukas ang BibleQuest. Niining device lamang; walay alert kon sirado ang app. Mosunod sa pangunang notification switch, kategoriya sa pagbasa sa Biblia ug quiet hours sa device.
-Enable daily reminder|Buksan ang araw-araw na paalala|Paandara ang adlaw-adlaw nga pahinumdom
+Enable app-open reminder|Buksan ang paalala habang bukas ang app|Paandara ang pahinumdom samtang abli ang app
 Time|Oras|Oras
 Time zone|Time zone|Time zone
 Save reminder|I-save ang paalala|Tipigi ang pahinumdom
@@ -85,7 +96,7 @@ Screen awake while this page remains visible. Your browser may release it.|Bukas
 Could not keep the screen awake.|Hindi mapanatiling bukas ang screen.|Dili mapabiling bukas ang screen.
 Read a passage first, tap a verse, then choose Meditate on this verse.|Magbasa muna, pindutin ang bersikulo, at piliin ang Pagnilayan ang bersikulong ito.|Pagbasa una, pislita ang bersikulo, ug pilia ang Pamalandongi kini nga bersikulo.
 Could not dismiss the reminder on this device.|Hindi maisara ang paalala sa device na ito.|Dili masira ang pahinumdom niining device.
-Daily app-open reminder saved on this device.|Na-save sa device na ito ang araw-araw na paalala habang bukas ang app.|Natipig niining device ang adlaw-adlaw nga pahinumdom samtang bukas ang app.
+App-open reminder plan saved on this device.|Na-save sa device na ito ang plano ng paalala habang bukas ang app.|Natipig niining device ang plano sa pahinumdom samtang abli ang app.
 Could not save reminder.|Hindi ma-save ang paalala.|Dili matipig ang pahinumdom.
 Choose a whole number from 1 to 120 minutes.|Pumili ng buong bilang mula 1 hanggang 120 minuto.|Pagpili og tibuok nga numero gikan 1 hangtod 120 minuto.
 Reflection saved on this device.|Na-save ang pagninilay sa device na ito.|Natipig ang pagpamalandong niining device.
@@ -200,12 +211,7 @@ export const PRACTICE_TRANSLATIONS = Object.freeze({
 });
 export function practiceLocale(locale) { return ['en', 'tl', 'ceb'].includes(locale) ? locale : 'en'; }
 export function practiceText(locale, text) { return PRACTICE_TRANSLATIONS[practiceLocale(locale)]?.[text] || text; }
-export function practiceTitle(locale, title) {
-  const match = title.match(/^(.*?) · (\d+) (minutes|seconds)$/);
-  if (!match || practiceLocale(locale) === 'en') return title;
-  const name = { 'Morning surrender': ['Pagsuko sa Diyos sa umaga', 'Pagtugyan sa Diyos sa buntag'], 'Scripture meditation': ['Pagninilay sa Kasulatan', 'Pagpamalandong sa Kasulatan'], 'Daytime pause': ['Paghinto sa maghapon', 'Paghunong sa adlaw'], 'Evening reflection': ['Pagninilay sa gabi', 'Pagpamalandong sa gabii'], Silencio: ['Silencio', 'Silencio'] }[match[1]];
-  return `${name?.[locale === 'tl' ? 0 : 1] || match[1]} · ${match[2]} ${match[3] === 'minutes' ? 'minuto' : locale === 'tl' ? 'segundo' : 'segundo'}`;
-}
+export function practiceTitle(locale, title) { return formatPracticeTitle(practiceLocale(locale), title); }
 export function localizePractice(practice, locale) {
   return { ...practice, title: practiceTitle(locale, practice.title), stages: practice.stages.map(row => ({ ...row, title: practiceText(locale, row.title), guide: practiceText(locale, row.guide) })) };
 }

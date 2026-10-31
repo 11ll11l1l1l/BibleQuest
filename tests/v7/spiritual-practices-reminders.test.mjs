@@ -61,3 +61,41 @@ test('timezone validation and DST use calendar dates without fixed 24-hour offse
   f.setTime('2026-11-01T06:30:00Z'); assert.equal(f.service.status().due, false);
   f.setTime('2026-11-02T06:00:00Z'); assert.equal(f.service.status().due, true);
 });
+
+test('weekly plan evaluates weekdays in the selected time zone and preserves routine/days after dismissal', () => {
+  const f=fixture();
+  f.service.save({...daily,days:[3,1,5],practiceId:'morning-20'});
+  assert.deepEqual(f.service.config().days,[1,3,5]);
+  assert.equal(f.service.status().due,false,'Sunday is not scheduled');
+  f.setTime('2026-11-01T23:30:00Z');
+  assert.equal(f.service.status().day,'2026-11-02');
+  assert.equal(f.service.status().due,true,'Monday in Tokyo, despite Sunday UTC');
+  f.service.dismiss();
+  assert.deepEqual(f.service.config().days,[1,3,5]);assert.equal(f.service.config().practiceId,'morning-20');
+  f.setTime('2026-11-03T00:00:00Z');assert.equal(f.service.status().due,false,'Tuesday is not scheduled');
+  f.setTime('2026-11-04T00:00:00Z');assert.equal(f.service.status().due,true);
+});
+test('legacy daily schedules migrate; malformed stored plans disable rather than broaden reminders', () => {
+  const f=fixture();
+  const key='spiritual-practices.reminders.v1.guest';
+  f.values.set(key,{...daily,dismissedDay:''});
+  assert.deepEqual(f.service.config().days,[0,1,2,3,4,5,6]);assert.equal(f.service.status().due,true);
+  for(const patch of [{days:[]},{days:[1,1]},{days:[8]},{days:['1']},{practiceId:'__proto__'},{practiceId:'silencio-custom'}]){
+    f.values.set(key,{...daily,...patch});assert.equal(f.service.status().due,false);
+  }
+});
+test('schedule edits validate before writes and reset dismissal only when the plan changes', () => {
+  const f=fixture();const plan={...daily,days:[0,1],practiceId:'evening-5'};
+  f.service.save(plan);f.service.dismiss();assert.equal(f.service.status().due,false);
+  f.service.save({...plan,days:[1,0]});assert.equal(f.service.status().due,false);
+  f.service.save({...plan,practiceId:'morning-15'});assert.equal(f.service.status().due,true);
+  const before=structuredClone([...f.values]);
+  for(const patch of [{days:[]},{days:[0,0]},{days:[-1]},{practiceId:'<script>'}])assert.throws(()=>f.service.save({...plan,...patch}),/weekday/);
+  assert.deepEqual([...f.values],before);
+});
+
+test('turning a plan off remains possible after unchecking every weekday',()=>{
+  const f=fixture();f.service.save({...daily,days:[1,3],practiceId:'morning-15'});
+  f.service.save({...daily,enabled:false,days:[],practiceId:'morning-15'});
+  assert.equal(f.service.status().enabled,false);assert.deepEqual(f.service.config().days,[1,3]);
+});
