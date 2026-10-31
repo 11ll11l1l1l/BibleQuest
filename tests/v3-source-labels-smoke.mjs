@@ -16,7 +16,8 @@ async function run(){
   await open('learn');
   await page.locator('[data-source-guide]').waitFor();
   assert((await page.locator('main h1').first().textContent())?.trim()==='Learn','Source guide changed the stable Learn heading.');
-  assert(await page.locator('[data-source-guide-id]').count()===11,'Learn source guide must show 5 translations + recall source + 5 BibleQuest content types.');
+  assert(await page.locator('[data-source-guide-id]').count()===12,'Learn source guide must show 6 translations + recall source + 5 BibleQuest content types.');
+  assert(await page.locator('[data-source-guide-id="translation:ilo"]').count()===1,'Learn source guide must expose exactly one Ilocano translation source entry.');
   const guideText=await page.locator('[data-source-guide]').textContent();
   assert(guideText?.includes('Berean Standard Bible'),'Learn source guide lost Bible-owner BSB attribution.');
   assert(guideText?.includes('Cebuano/Bisaya · OCCB')&&guideText?.includes('Biblica® Open Ang Pulong sa Dios™')&&guideText?.includes('CC BY-SA 4.0'),'Learn source guide lost CEBOCB Cebuano/Bisaya source and open-license attribution.');

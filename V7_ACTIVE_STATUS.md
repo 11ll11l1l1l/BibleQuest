@@ -23,7 +23,9 @@ The owner authorized accelerated V8 development on 2026-10-28. [V8 plan](DEVELOP
 5. Combined V8 integration on `v8/integration-20261031` retains cleanup/Library/group/media/practices. [Integration evidence](work/tasks/20261031-v8-integration.md). Latest local aggregate: V6 880, V7 785, media V8 9 (1,674/1,674) and build PASS. Exact-head CI for the newest changes remains separate. Original source PRs remain open.
 6. Ilocano ULB text/provider priority is implemented: 66 books, 1,189 chapters and 31,090 nonempty source records, with 12 source-empty addresses preserved in provenance. [Source/license, implementation and remaining UI/device work](work/tasks/20261101-v8-ilocano-bible.md). Full Ilocano UI is not complete.
 
-V8 implementation is not deployed or certified. Published V7.1 and its rollback remain unchanged.
+V8 has an automatically deployed Cloudflare PR preview; it is not promoted to production or release-certified. Published V7.1 and its rollback remain unchanged.
+
+7. Couples saved-card browsing and category/track-preserving navigation are coded in the integration continuation. Existing 64 cards, local storage and separate cloud authority are retained. New EN/TL/CEB saved-view copy, controller/service checks and build pass locally; browser changes await CI. [Implementation and evidence](work/tasks/20261101-v8-couples-navigation.md).
 
 ## Preserved boundaries
 
