@@ -1,3 +1,4 @@
+import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { requestNavigation } from '../../app/router.js';
 import { localization } from '../../app/localization.js';
 import { iconSvg } from '../../ui/icons.js';
@@ -158,7 +159,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       </section>
       <div class="bq-home-secondary" data-home-today-composition>
-        ${onPractices ? '<section class="bq-panel bq-home-tile" lang="en"><button type="button" class="bq-home-tile-button" data-open-practices><span class="bq-home-tile-text"><b>Spiritual Practices</b><small>Silencio, prayer and reflection · English guides</small></span></button><div data-home-practice-reminder lang="en"></div></section>' : ''}
+        ${onPractices ? `<section class="bq-panel bq-home-tile" lang="${practiceEntry(locale).locale}"><button type="button" class="bq-home-tile-button" data-open-practices><span class="bq-home-tile-text"><b>${escapeHtml(practiceEntry(locale).title)}</b><small>${escapeHtml(practiceEntry(locale).hint)}${practiceEntry(locale).fallback ? ' · English' : ''}</small></span></button><div data-home-practice-reminder></div></section>` : ''}
         <section class="bq-panel bq-home-tile" data-home-next-event>
           <button type="button" class="bq-home-tile-button" data-open-home-next-event aria-label="${escapeHtml(tx('nav.calendar'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('calendar', { size: 20 })}</span>
@@ -215,13 +216,13 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
           const signature = JSON.stringify([state.owner, state.due, state.blockedBySettings, state.quietNow, state.day]);
           if (signature === reminderSignature) return;
           reminderSignature = signature;
-          reminderHost.innerHTML = state.due ? '<p role="status">Your daily practice reminder · open Spiritual Practices when ready.</p><button type="button" class="bq-secondary-button" data-dismiss-practice-reminder>Dismiss for today</button>' : '';
-        } catch { reminderHost.textContent = 'Practice reminder unavailable on this device.'; }
+          reminderHost.innerHTML = state.due ? `<p role="status">${escapeHtml(practiceEntry(locale).due)}</p><button type="button" class="bq-secondary-button" data-dismiss-practice-reminder>${escapeHtml(practiceEntry(locale).dismiss)}</button>` : '';
+        } catch { reminderHost.textContent = practiceEntry(locale).unavailable; }
       };
       const dismissPracticeReminder = event => {
         if (!event.target.closest?.('[data-dismiss-practice-reminder]')) return;
         try { practiceReminders?.dismiss(reminderOwner); renderPracticeReminder(); }
-        catch { if (reminderHost) reminderHost.textContent = 'Could not dismiss this reminder.'; }
+        catch { if (reminderHost) reminderHost.textContent = practiceEntry(locale).dismissError; }
       };
       renderPracticeReminder();
       const reminderInterval = practiceReminders ? setInterval(renderPracticeReminder, 30000) : null;

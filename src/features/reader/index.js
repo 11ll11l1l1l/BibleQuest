@@ -1,3 +1,4 @@
+import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { localization } from '../../app/localization.js';
 import { createContextLab } from './context.js';
 import { japaneseVocabularyBlock, japaneseVocabularyControl } from './vocabulary.js';
@@ -342,7 +343,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           const vocabularyHtml = japanese && vocabulary && vocabularyState?.enabled ? japaneseVocabularyBlock({notes:vocabulary.notesFor(peek.text)}) : '';
           dialog.dataset.peekVerse = String(peek.verse);
           const audioAction = audio?.isAvailable?.() && audio?.hasVerseAlignment?.(reader.getState().book, reader.getState().chapter) && reader.getState().translation === 'bsb' ? `<button type="button" class="bq-secondary-button" data-reader-audio-verse="${peek.verse}">Play from verse ${peek.verse}</button>` : '';
-          body.innerHTML = `<p class="bq-eyebrow">VERSE PEEK</p><h2 id="bq-verse-peek-title">${escapeHtml(peek.reference)}</h2><p class="bq-peek-text">${escapeHtml(peek.text)}</p>${audioAction}${onMeditate ? '<button type="button" class="bq-secondary-button" data-peek-meditate lang="en">Meditate on this verse · English guide</button>' : ''}${vocabularyHtml}<button type="button" class="bq-secondary-button bq-peek-context-button" data-peek-context>אΩ Hebrew / Greek context</button><div class="bq-external-links">${peek.links.map(link => `<a ${externalAttrs} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
+          body.innerHTML = `<p class="bq-eyebrow">VERSE PEEK</p><h2 id="bq-verse-peek-title">${escapeHtml(peek.reference)}</h2><p class="bq-peek-text">${escapeHtml(peek.text)}</p>${audioAction}${onMeditate ? `<button type="button" class="bq-secondary-button" data-peek-meditate lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).meditate)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}${vocabularyHtml}<button type="button" class="bq-secondary-button bq-peek-context-button" data-peek-context>אΩ Hebrew / Greek context</button><div class="bq-external-links">${peek.links.map(link => `<a ${externalAttrs} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
           if (!dialog.open) dialog.showModal();
         } catch (error) { message(error?.message || 'Could not open verse.'); }
       };

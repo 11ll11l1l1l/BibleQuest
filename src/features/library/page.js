@@ -1,3 +1,4 @@
+import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { localization } from '../../app/localization.js';
 import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
 import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscoveryTerms } from './discovery.js';
@@ -44,7 +45,7 @@ export function createLibraryPage({
       <header class="bq-library__header">
         <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
         <h1>${escapeHtml(t('v7.library.title'))}</h1>
-        ${onPractices ? '<button type="button" class="bq-secondary-button" data-library-practices lang="en">Spiritual Practices · English guides</button>' : ''}
+        ${onPractices ? `<button type="button" class="bq-secondary-button" data-library-practices lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).title)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}
 
       </header>
       <form data-library-search>

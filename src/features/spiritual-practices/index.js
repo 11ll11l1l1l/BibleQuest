@@ -1,3 +1,4 @@
+import { practiceLocale, practiceText, practiceTitle, localizePractice } from './copy.js';
 import { createPracticeOffline } from './offline.js';
 import { createPracticeCue } from './cue.js';
 import { createPracticeWakeLock } from './wake-lock.js';
@@ -6,10 +7,13 @@ import { advance, createSession, validSession } from './timer.js';
 import './practice.css';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const clock = ms => { const seconds = Math.ceil(ms / 1000); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; };
-export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLibrary, onReader, passages = null, reminders = null, books = [], offlineShell = null }) {
+export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLibrary, onReader, passages = null, reminders = null, books = [], offlineShell = null, getLocale = () => 'en' }) {
+  const locale = practiceLocale(getLocale());
+  const t = text => practiceText(locale, text);
+  const h = text => esc(t(text));
   return {
-    title: 'Spiritual Practices',
-    html: '<main class="bq-panel bq-practice" lang="en" data-practice></main>',
+    title: t('Spiritual Practices'),
+    html: `<main class="bq-panel bq-practice" lang="${locale}" data-practice></main>`,
     mount(root) {
       const host = root.querySelector('[data-practice]');
       const wakeLock = createPracticeWakeLock();
@@ -39,41 +43,66 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         if (playCue && recent && wasRunning && !document.hidden && before !== `${current.stage}:${current.state}`) { try { cue.play(); } catch { message = 'Transition sound could not play.'; } }
         if (before !== `${current.stage}:${current.state}`) { if (current.state === 'completed') { awake = false; void wakeLock.release(); } save(); }
       }
-      const button = (action, text) => `<button type="button" class="bq-secondary-button" data-practice-action="${action}">${text}</button>`;
+      const button = (action, text) => `<button type="button" class="bq-secondary-button" data-practice-action="${action}">${h(text)}</button>`;
       async function renderPassage() {
         const id = ++passageOperation, expectedOwner = owner;
         const ref = current?.passage || (!current ? passages?.selection() : null);
         const node = host.querySelector('[data-practice-scripture]');
         if (!node || !ref || !passages) return;
-        node.textContent = 'Loading selected Scripture…';
+        node.textContent = t('Loading selected Scripture…');
         try {
           const result = await passages.resolve(ref);
           if (!alive || id !== passageOperation || expectedOwner !== getOwner() || !node.isConnected) return;
           node.textContent = `${result.reference} · ${result.translation}\n${result.text}\n${result.attribution}`;
         } catch (error) {
-          if (alive && id === passageOperation && expectedOwner === getOwner() && node.isConnected) node.textContent = error?.message || 'Passage unavailable. Open the Bible Reader and retry.';
+          if (alive && id === passageOperation && expectedOwner === getOwner() && node.isConnected) node.textContent = t(error?.message || 'Passage unavailable. Open the Bible Reader and retry.');
         }
       }
       async function renderOffline() {
         const node = host.querySelector('[data-practice-offline]');
         if (!node || !offline) return;
         const token = ++offlineOperation, expectedOwner = owner, ref = current?.passage || (!current ? passages?.selection() : null);
-        node.textContent = 'Checking offline availability…';
+        node.textContent = t('Checking offline availability…');
         try {
           const result = await offline.status(ref);
           if (!alive || token !== offlineOperation || expectedOwner !== getOwner() || !node.isConnected) return;
           const shellText = result.guidesReady ? 'Practice guide code is prepared in the existing offline shell.' : 'Offline shell is not ready. Open the app online and try again; offline launch is not guaranteed.';
           const book = result.book;
-          node.innerHTML = `<p>${esc(shellText)}</p>${book ? `<p>${book.installed ? (book.updateAvailable ? 'Saved Bible book has an update available.' : 'Selected Bible book is saved in managed offline storage.') : esc(book.reason || 'Selected Bible book is not downloaded.')}</p>${offlineBusy ? button('offline-cancel', 'Cancel preparation') : `${book.downloadable ? button('offline-prepare', book.installed ? 'Refresh selected Bible book' : 'Prepare selected Bible book') : ''}${book.installed ? button('offline-remove', 'Remove selected offline Bible book') : ''}`}<p>Uses the Bible Reader’s verified book downloads. Removing a book affects the Bible Reader too. Browser storage can be cleared by the device.</p>` : '<p>Choose a verse in the Bible Reader to prepare its book for meditation offline.</p>'}`;
-        } catch (error) { if (alive && token === offlineOperation && expectedOwner === getOwner() && node.isConnected) node.textContent = error?.message || 'Offline status unavailable. Retry after opening the passage online.'; }
+          node.innerHTML = `<p>${h(shellText)}</p>${book ? `<p>${book.installed ? h(book.updateAvailable ? 'Saved Bible book has an update available.' : 'Selected Bible book is saved in managed offline storage.') : h(book.reason || 'Selected Bible book is not downloaded.')}</p>${offlineBusy ? button('offline-cancel', 'Cancel preparation') : `${book.downloadable ? button('offline-prepare', book.installed ? 'Refresh selected Bible book' : 'Prepare selected Bible book') : ''}${book.installed ? button('offline-remove', 'Remove selected offline Bible book') : ''}`}<p>${h('Uses the Bible Reader’s verified book downloads. Removing a book affects the Bible Reader too. Browser storage can be cleared by the device.')}</p>` : `<p>${h('Choose a verse in the Bible Reader to prepare its book for meditation offline.')}</p>`}`;
+        } catch (error) { if (alive && token === offlineOperation && expectedOwner === getOwner() && node.isConnected) node.textContent = t(error?.message || 'Offline status unavailable. Retry after opening the passage online.'); }
       }
       function render() {
         if (!alive) return;
         sync();
-        const practice = current && getPractice(current.templateId, current.durationMinutes);
+        const practice = current && localizePractice(getPractice(current.templateId, current.durationMinutes), locale);
         const reminder = reminders?.config();
         const running = current && ['running', 'paused'].includes(current.state);
-        host.innerHTML = `<header><p class="bq-eyebrow">PRIVATE · THIS DEVICE</p><h1>Spiritual Practices</h1><p>Make space for God, reflection and a loving response.</p><p>Guides are currently in English. No cloud sync. On a shared device, anyone using the same account or guest profile may access saved reflections.</p></header><p role="status" data-practice-message>${esc(message)}</p><section aria-label="Selected Scripture"><p class="bq-practice-note" data-practice-scripture></p></section><div class="bq-practice-actions">${button('library', 'Library')}${!running ? button('reader', 'Read a passage first') : ''}</div>${current ? `<section class="bq-practice-player"><h2>${esc(practice.title)}</h2><p>${practice.adapted ? 'Adapted app routine' : 'Original two-hour stage sequence'}</p><h3 data-stage-title>${esc(practice.stages[current.stage].title)}</h3><output class="bq-practice-clock" aria-label="Remaining in this stage" aria-live="off" data-practice-clock>${clock(current.remaining)}</output><p role="status" aria-live="polite" data-practice-state>${esc(current.state)} · stage ${current.stage + 1} of ${practice.stages.length}</p><details><summary>Stage guide</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div><p>Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.</p>` : `<p>${current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.'}</p><form data-practice-reflection><label>Optional private reflection<textarea name="reflection" maxlength="6000" rows="5">${esc(history.find(row => row.session.id === current.id)?.reflection || '')}</textarea></label><button class="bq-primary-button" type="submit">Save reflection on this device</button></form>${button('new', 'Choose another practice')}`}</section>` : `<section><h2>Choose a practice</h2><div class="bq-practice-list">${[...PRACTICES, ...SILENCIO_PRESETS].map(item => `<button class="bq-secondary-button" type="button" data-practice-start="${esc(item.id)}">${esc(item.title)}</button>`).join('')}</div><form data-practice-custom><label>Custom Silencio minutes (adapted)<input name="minutes" type="number" min="1" max="120" step="1" required value="10"></label><button type="submit" class="bq-secondary-button">Start custom silence</button></form><p>Silence is an invitation to relationship with God. Minutes are not a measure of spiritual worth.</p></section>`}${reminder ? `<section><h2>Daily app-open reminder</h2><p>Shown on Home while BibleQuest is open. This device only; no closed-app alert. Uses your notification master switch, Bible reading category and device-local quiet hours.</p><form data-practice-reminder-form><label><input name="enabled" type="checkbox" ${reminder.enabled ? 'checked' : ''}> Enable daily reminder</label><label>Time<input name="time" type="time" required value="${esc(reminder.time)}"></label><label>Time zone<input name="timeZone" required maxlength="100" value="${esc(reminder.timeZone)}"></label><button type="submit" class="bq-secondary-button">Save reminder</button></form></section>` : ''}${offline ? '<section><h2>Offline practice</h2><div data-practice-offline></div><button type="button" class="bq-secondary-button" data-practice-action="offline-status">Refresh offline status</button></section>' : ''}<section><h2>Practice in daily life</h2>${DISCIPLINE_GUIDES.map(guide => `<details><summary>${esc(guide.title)}</summary><ol>${guide.steps.map(step => `<li>${esc(step)}</li>`).join('')}</ol></details>`).join('')}</section><section><h2>Recent reflections</h2>${history.length ? history.map(row => `<details><summary>${esc(getPractice(row.session.templateId, row.session.durationMinutes).title)} · ${esc(row.session.state)}</summary><p class="bq-practice-note">${esc(row.reflection || 'No written reflection.')}</p><button type="button" class="bq-secondary-button" data-practice-delete="${esc(row.session.id)}">Delete saved reflection</button></details>`).join('') : '<p>No saved reflections yet.</p>'}</section>`;
+        host.innerHTML = `<header>
+          <p class="bq-eyebrow">${h('PRIVATE · THIS DEVICE')}</p><h1>${h('Spiritual Practices')}</h1>
+          <p>${h('Make space for God, reflection and a loving response.')}</p>
+          <p>${h('No cloud sync. On a shared device, anyone using the same account or guest profile may access saved reflections.')}</p>
+          <p>${h('Some provider details remain in their source language.')}${practiceLocale(getLocale()) !== getLocale() ? ` · ${h('English fallback')}` : ''}</p>
+        </header>
+        <p role="status" data-practice-message lang="${locale !== 'en' && t(message) === message ? 'en' : locale}">${h(message)}</p>
+        <section aria-label="${h('Selected Scripture')}"><p class="bq-practice-note" data-practice-scripture></p></section>
+        <div class="bq-practice-actions">${button('library', 'Library')}${!running ? button('reader', 'Read a passage first') : ''}</div>
+        ${current ? `<section class="bq-practice-player"><h2>${esc(practice.title)}</h2>
+          <p>${h(practice.adapted ? 'Adapted app routine' : 'Original two-hour stage sequence')}</p>
+          <h3 data-stage-title>${esc(practice.stages[current.stage].title)}</h3>
+          <output class="bq-practice-clock" aria-label="${h('Remaining in this stage')}" aria-live="off" data-practice-clock>${clock(current.remaining)}</output>
+          <p role="status" aria-live="polite" data-practice-state>${h(current.state)} · ${h('stage')} ${current.stage + 1} ${h('of')} ${practice.stages.length}</p>
+          <details><summary>${h('Stage guide')}</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>
+          ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
+            <p>${h('Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.')}</p>` : `<p>${h(current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.')}</p>
+            <form data-practice-reflection><label>${h('Optional private reflection')}<textarea name="reflection" maxlength="6000" rows="5">${esc(history.find(row => row.session.id === current.id)?.reflection || '')}</textarea></label><button class="bq-primary-button" type="submit">${h('Save reflection on this device')}</button></form>${button('new', 'Choose another practice')}`}
+        </section>` : `<section><h2>${h('Choose a practice')}</h2><div class="bq-practice-list">${[...PRACTICES, ...SILENCIO_PRESETS].map(item => `<button class="bq-secondary-button" type="button" data-practice-start="${esc(item.id)}">${esc(practiceTitle(locale, item.title))}</button>`).join('')}</div>
+          <form data-practice-custom><label>${h('Custom Silencio minutes (adapted)')}<input name="minutes" type="number" min="1" max="120" step="1" required value="10"></label><button type="submit" class="bq-secondary-button">${h('Start custom silence')}</button></form>
+          <p>${h('Silence is an invitation to relationship with God. Minutes are not a measure of spiritual worth.')}</p></section>`}
+        ${reminder ? `<section><h2>${h('Daily app-open reminder')}</h2><p>${h('Shown on Home while BibleQuest is open. This device only; no closed-app alert. Uses your notification master switch, Bible reading category and device-local quiet hours.')}</p>
+          <form data-practice-reminder-form><label><input name="enabled" type="checkbox" ${reminder.enabled ? 'checked' : ''}> ${h('Enable daily reminder')}</label><label>${h('Time')}<input name="time" type="time" required value="${esc(reminder.time)}"></label><label>${h('Time zone')}<input name="timeZone" required maxlength="100" value="${esc(reminder.timeZone)}"></label><button type="submit" class="bq-secondary-button">${h('Save reminder')}</button></form></section>` : ''}
+        ${offline ? `<section><h2>${h('Offline practice')}</h2><div data-practice-offline></div>${button('offline-status', 'Refresh offline status')}</section>` : ''}
+        <section><h2>${h('Practice in daily life')}</h2>${DISCIPLINE_GUIDES.map(guide => `<details><summary>${h(guide.title)}</summary><ol>${guide.steps.map(step => `<li>${h(step)}</li>`).join('')}</ol></details>`).join('')}</section>
+        <section><h2>${h('Recent reflections')}</h2>${history.length ? history.map(row => `<details><summary>${esc(practiceTitle(locale, getPractice(row.session.templateId, row.session.durationMinutes).title))} · ${h(row.session.state)}</summary><p class="bq-practice-note">${row.reflection ? esc(row.reflection) : h('No written reflection.')}</p><button type="button" class="bq-secondary-button" data-practice-delete="${esc(row.session.id)}">${h('Delete saved reflection')}</button></details>`).join('') : `<p>${h('No saved reflections yet.')}</p>`}</section>`;
         void renderPassage(); void renderOffline();
       }
       function act(event) {

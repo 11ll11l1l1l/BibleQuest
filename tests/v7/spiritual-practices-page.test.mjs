@@ -5,13 +5,14 @@ import { readFile } from 'node:fs/promises';
 // omitted; this is a controller test, not browser/layout evidence.
 const source = (await readFile(new URL('../../src/features/spiritual-practices/index.js', import.meta.url), 'utf8'))
   .replace("import './practice.css';", '')
+  .replace("'./copy.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/copy.js', import.meta.url).href))
   .replace("'./content.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/content.js', import.meta.url).href))
   .replace("'./offline.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/offline.js', import.meta.url).href))
   .replace("'./cue.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/cue.js', import.meta.url).href))
   .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-function fixture(initial = null, passages = null, reminders = null) {
+function fixture(initial = null, passages = null, reminders = null, locale = 'en') {
   let owner = 'guest', notify, tick, now = 1000, body = '', reflection = '';
   const listeners = new Map(), saved = new Map();
   if (initial) saved.set('spiritual-practices.v1.guest', initial);
@@ -23,7 +24,7 @@ function fixture(initial = null, passages = null, reminders = null) {
   globalThis.FormData = class { get(key) { return reflection && typeof reflection === 'object' ? reflection[key] : reflection; } };
   Date.now = () => now;
   const storage = { read: (key, fallback) => saved.get(key) || fallback, write: (key, value) => saved.set(key, structuredClone(value)) };
-  const page = spiritualPracticesPage({ storage, passages, reminders, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
+  const page = spiritualPracticesPage({ storage, passages, reminders, getLocale: () => locale, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
   const dispose = page.mount({ querySelector: () => host });
   return {
     host, saved, storage, get body() { return body; },
@@ -176,4 +177,34 @@ test('page plays opted-in foreground transitions but never replays missed backgr
     f.time(400000);
     assert.equal(tones, 1, 'a long suspended interval must not replay missed transitions');
   } finally { f.close(); globalThis.AudioContext = previous; }
+});
+
+
+test('TL and CEB pages localize controls and guides while session identity and private prose stay unchanged', () => {
+  let snapshot;
+  const tl = fixture(null, null, null, 'tl');
+  try {
+    assert.match(tl.host.innerHTML, /Mga Espirituwal na Pagsasanay/);
+    assert.match(tl.host.innerHTML, /Pagsasanay sa araw-araw/);
+    tl.click({ practiceStart: 'silencio-10' });
+    assert.match(tl.host.innerHTML, /Maghanda/);
+    assert.match(tl.host.innerHTML, /Ihinto sandali/);
+    tl.click({ practiceAction: 'end' });
+    tl.submit('My private <b>English</b> thought');
+    assert.match(tl.host.innerHTML, /Na-save ang pagninilay/);
+    assert.match(tl.host.innerHTML, /My private &lt;b&gt;English&lt;\/b&gt; thought/);
+    snapshot = tl.saved.get('spiritual-practices.v1.guest');
+    assert.equal(snapshot.current.templateId, 'silencio-10');
+  } finally { tl.close(); }
+  const ceb = fixture(snapshot, null, null, 'ceb');
+  try {
+    assert.match(ceb.host.innerHTML, /Mga Espirituhanong Pagbansay/);
+    assert.match(ceb.host.innerHTML, /My private &lt;b&gt;English&lt;\/b&gt; thought/);
+    assert.equal(snapshot.history[0].reflection, 'My private <b>English</b> thought');
+  } finally { ceb.close(); }
+});
+test('unsupported practice language is explicitly identified as English fallback', () => {
+  const f = fixture(null, null, null, 'ilo');
+  try { assert.match(f.host.innerHTML, /English fallback/); assert.match(f.host.innerHTML, /Choose a practice/); }
+  finally { f.close(); }
 });
