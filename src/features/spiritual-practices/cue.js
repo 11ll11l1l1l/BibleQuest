@@ -15,9 +15,9 @@ export function createPracticeCue({ createContext = () => { const Context = glob
     if (!enabled || context?.state !== 'running') return false;
     stop();
     const tone = context.createOscillator(), gain = context.createGain(), now = context.currentTime;
-    tone.type = 'sine'; tone.frequency.setValueAtTime(440, now);
-    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.035, now + 0.02); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-    tone.connect(gain); gain.connect(context.destination); tone.start(now); tone.stop(now + 0.5); oscillator = tone;
+    tone.type = 'sine'; tone.frequency.setValueAtTime(660, now);
+    gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.10, now + 0.02); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+    tone.connect(gain); gain.connect(context.destination); tone.start(now); tone.stop(now + 0.7); oscillator = tone;
     tone.onended = () => { tone.disconnect(); gain.disconnect(); if (oscillator === tone) oscillator = null; };
     return true;
   }
