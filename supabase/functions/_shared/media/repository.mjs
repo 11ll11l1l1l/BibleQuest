@@ -1,4 +1,4 @@
-import {deny} from './policy.mjs';
+import {deny, normalizeMediaListFilters} from './policy.mjs';
 
 export function mediaRecord(row) {
   if (!row) return null;
@@ -25,8 +25,13 @@ export function createSupabaseMediaRepository({admin, actorUserId}) {
     async get(congregationId, assetId) {
       return mediaRecord(unwrap(await admin.from('bible_v8_media_assets').select('*').eq('congregation_id', congregationId).eq('id', assetId).maybeSingle()));
     },
-    async list(congregationId, {reviewer = false, cursor = /** @type {{createdAt:string,id:string}|null} */ (null), limit = 30} = {}) {
+    async list(congregationId, {reviewer = false, cursor = /** @type {{createdAt:string,id:string}|null} */ (null), limit = 30, filters = {}} = {}) {
+      const selected = normalizeMediaListFilters(filters);
       let query = admin.from('bible_v8_media_assets').select('*').eq('congregation_id', congregationId);
+      if (selected.scope === 'mine') query = query.eq('owner_user_id', actorUserId);
+      if (selected.state) query = query.eq('state', selected.state);
+      // Escape SQL LIKE wildcards; the user text stays a filter value, never an OR expression.
+      if (selected.query) query = query.ilike('name', `%${selected.query.replace(/[\\%_]/g, '\\$&')}%`);
       const predicates = [];
       if (!reviewer) predicates.push(`or(state.eq.published,owner_user_id.eq.${actorUserId})`);
       if (cursor) {

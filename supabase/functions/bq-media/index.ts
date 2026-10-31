@@ -1,6 +1,6 @@
 import {activeMembership, adminClient, corsHeaders, json, requireUser} from '../_shared/bq.ts';
 import {createMediaService, publicRecord} from '../_shared/media/service.mjs';
-import {createSupabaseMediaRepository, mediaRecord} from '../_shared/media/repository.mjs';
+import {createSupabaseMediaRepository} from '../_shared/media/repository.mjs';
 import {createDriveProvider} from '../_shared/media/drive-provider.mjs';
 import {createDriveTokenOwner} from '../_shared/media/drive-token.mjs';
 import {deny} from '../_shared/media/policy.mjs';
@@ -63,13 +63,8 @@ Deno.serve(async (req: Request) => {
     const canReview = reviewerRoles.has(actor.role);
     const action = String(body!.action || '');
     if (action === 'list') {
-      const rows = await repository.list(congregationId, {reviewer: canReview, cursor: (body!.cursor || null) as {createdAt:string,id:string}|null, limit: 31});
-      const quota = await repository.quota();
-      const current = await authorize(req, congregationId);
-      if (current.role !== actor.role) deny('MEDIA_SCOPE_DENIED');
-      const page = rows.slice(0,30);
-      const cursor = rows.length > 30 ? {createdAt: page[page.length-1].createdAt, id: page[page.length-1].id} : null;
-      return json({cursor, assets: page.map((row: NonNullable<ReturnType<typeof mediaRecord>>) => ({...publicRecord(row), own: row.ownerUserId === user.id, rightsVerified: canReview ? row.rightsVerified : undefined, safetyVerified: canReview ? row.safetyVerified : undefined})), canReview, quota});
+      const listing = await createMediaService({authorize, repository, provider: {}}).list(req, {congregationId, filters: body!.filters ?? {}, cursor: (body!.cursor ?? null) as {createdAt:string,id:string,filters?:object}|null});
+      return json(listing);
     }
     if (action !== 'upload' && !uuid(body!.assetId)) deny('MEDIA_ASSET_ID');
     if (action === 'reconcile' || action === 'cleanup_removed') {

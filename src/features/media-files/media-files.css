@@ -6,3 +6,6 @@
 .bq-media-files button { min-height:44px; max-width:100%; white-space:normal; margin:.2rem; }
 .bq-media-files input[type=file], .bq-media-files textarea { max-width:100%; min-height:44px; }
 .bq-media-files textarea { min-height:6rem; }
+
+.bq-media-files input[type=search], .bq-media-files select { box-sizing:border-box; width:100%; max-width:100%; min-width:0; min-height:44px; }
+.bq-media-files [data-media-filters] { border-block:1px solid var(--bq-border, #64748b); padding-block:.75rem; }

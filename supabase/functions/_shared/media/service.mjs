@@ -1,4 +1,4 @@
-import {authorizeScope, authorizeDelivery, deny, inspectUpload, moderationChange} from './policy.mjs';
+import {authorizeScope, authorizeDelivery, deny, inspectUpload, moderationChange, normalizeMediaListFilters} from './policy.mjs';
 
 /**
  * Server composition boundary. No browser-supplied actor or provider object is trusted.
@@ -21,6 +21,19 @@ export function createMediaService({authorize, repository, provider, now = () =>
     if (!asset || asset.congregationId !== congregationId || asset.id !== assetId) deny('MEDIA_NOT_FOUND');
     return asset;
   };
+  async function list(request, {congregationId, filters = {}, cursor = /** @type {{createdAt:string,id:string,filters?:object}|null} */ (null)}) {
+    const actor = await scopeActor(request, congregationId);
+    const selected = normalizeMediaListFilters(filters);
+    const reviewer = ['leader', 'pastor', 'admin'].includes(actor.role);
+    if (cursor && JSON.stringify(normalizeMediaListFilters(cursor.filters || {})) !== JSON.stringify(selected)) deny('MEDIA_CURSOR_FILTER_MISMATCH');
+    const rows = await repository.list(congregationId, {reviewer, cursor, limit: 31, filters: selected});
+    const quota = await repository.quota();
+    const current = await scopeActor(request, congregationId);
+    if (current.userId !== actor.userId || current.role !== actor.role || rows.some(row => row.congregationId !== congregationId || (!reviewer && row.state !== 'published' && row.ownerUserId !== actor.userId))) deny('MEDIA_SCOPE_DENIED');
+    const page = rows.slice(0, 30), last = page.at(-1);
+    return {cursor: rows.length > 30 ? {createdAt: last.createdAt, id: last.id, filters: selected} : null,
+      assets: page.map(row => ({...publicRecord(row), own: row.ownerUserId === actor.userId, rightsVerified: reviewer ? row.rightsVerified : undefined, safetyVerified: reviewer ? row.safetyVerified : undefined})), canReview: reviewer, quota};
+  }
   async function submit(request, {congregationId, idempotencyKey, name, mimeType, bytes}) {
     const actor = await scopeActor(request, congregationId);
     if (typeof idempotencyKey !== 'string' || !/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) deny('MEDIA_IDEMPOTENCY_REQUIRED');
@@ -83,7 +96,7 @@ export function createMediaService({authorize, repository, provider, now = () =>
       'Content-Security-Policy': "default-src 'none'; sandbox",
     }});
   }
-  return Object.freeze({submit, moderate, download});
+  return Object.freeze({list, submit, moderate, download});
 }
 
 export function publicRecord(asset) {

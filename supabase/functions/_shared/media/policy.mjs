@@ -69,3 +69,14 @@ export function authorizeDelivery(asset, actor) {
   if (asset.state !== 'published' && actor.userId !== asset.ownerUserId && !REVIEWERS.has(actor.role)) deny('MEDIA_NOT_PUBLISHED');
   return true;
 }
+
+// Filters narrow the existing tenant/visibility predicate; they never grant access.
+export function normalizeMediaListFilters(input = {}) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) deny('MEDIA_FILTER_INVALID');
+  const {scope = 'all', state = '', query = ''} = input;
+  if (!['all', 'mine'].includes(scope) || !['', 'pending_review', 'published', 'changes_requested', 'rejected', 'removed', 'uploading', 'upload_failed'].includes(state)
+      || typeof query !== 'string' || query.length > 80 || /[\x00-\x1f\x7f*]/.test(query)) deny('MEDIA_FILTER_INVALID');
+  const text = query.normalize('NFKC').trim().replace(/\s+/g, ' ');
+  if (text.length > 80 || text.includes('*')) deny('MEDIA_FILTER_INVALID');
+  return Object.freeze({scope, state, query: text});
+}
