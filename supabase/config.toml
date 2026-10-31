@@ -18,3 +18,7 @@ verify_jwt = false
 # through auth.getUser before using narrowly-scoped service-role operations.
 [functions.bq-congregation-settings]
 verify_jwt = false
+
+# V8 central media revalidates session and congregation per operation.
+[functions.bq-media]
+verify_jwt = false

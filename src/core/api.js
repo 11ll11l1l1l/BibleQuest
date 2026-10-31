@@ -981,5 +981,18 @@ export function createApi() {
     }
   });
 
-  return Object.freeze({ discipleship, discipleshipPairs, library, auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
+
+  const centralMedia = Object.freeze({
+    async request(body, signal) {
+      const client = await getClient();
+      const timeout = AbortSignal.timeout(60000);
+      const combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
+      const {data, error} = await client.functions.invoke('bq-media', {body, signal: combined});
+      if (error) throw new Error(await functionMessage(error, 'MEDIA_UNAVAILABLE'));
+      if (data?.error) throw new Error(String(data.error));
+      return data;
+    }
+  });
+
+  return Object.freeze({ centralMedia, discipleship, discipleshipPairs, library, auth, telemetry, account, progressSnapshots, congregation, presence, teamCenter, scoreEvents, leaderboards, avatarVault, calendar, congregationRecognition, assignments, ministryAnnouncements, notifications, pushSubscriptions, cloudNotes, couples, journeyGroups, liveRooms, encouragements, contentDecisions, contentReports, contentReview, adminConsole, adminOperations, media, diagnostics });
 }

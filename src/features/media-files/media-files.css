@@ -1,0 +1,8 @@
+.bq-media-files header { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.bq-media-files ul { list-style:none; padding:0; display:grid; gap:1rem; }
+.bq-media-files li { border:1px solid var(--bq-border, #64748b); border-radius:1rem; padding:1rem; overflow-wrap:anywhere; }
+.bq-media-files form, .bq-media-files label { display:grid; gap:.6rem; margin-block:.75rem; }
+.bq-media-files input[type=checkbox] { width:1.5rem; height:1.5rem; }
+.bq-media-files button { min-height:44px; max-width:100%; white-space:normal; margin:.2rem; }
+.bq-media-files input[type=file], .bq-media-files textarea { max-width:100%; min-height:44px; }
+.bq-media-files textarea { min-height:6rem; }
