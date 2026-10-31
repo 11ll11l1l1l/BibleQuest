@@ -48,9 +48,13 @@ export function customSilencio(minutes, id = 'silencio-custom') {
   return template(id, `Silencio · ${minutes} minutes`, beginner.stages.map(row => stage(row.title, row.seconds * minutes / 10, row.guide)));
 }
 export const SILENCIO_PRESETS = Object.freeze([5, 20, 30].map(minutes => customSilencio(minutes, `silencio-${minutes}`)));
+// Explicit adapted morning allocations retain the five-stage sequence.
+const morning = PRACTICES.find(item => item.id === 'morning-10');
+export const MORNING_PRESETS = Object.freeze([15, 20].map(minutes => template(`morning-${minutes}`, `Morning surrender · ${minutes} minutes`, morning.stages.map(row => stage(row.title, row.seconds * minutes / 10, row.guide)))));
+export const EVENING_QUESTIONS = Object.freeze(['notice', 'resistance', 'gratitude', 'confession', 'learning'].map((id, index) => Object.freeze({id, question: PRACTICES.find(item => item.id === 'evening-5').stages[index].guide})));
 export function getPractice(id, durationMinutes = null) {
   if (id === 'silencio-custom') return customSilencio(durationMinutes);
-  return PRACTICES.find(item => item.id === id) || SILENCIO_PRESETS.find(item => item.id === id);
+  return PRACTICES.find(item => item.id === id) || SILENCIO_PRESETS.find(item => item.id === id) || MORNING_PRESETS.find(item => item.id === id);
 }
 export const DISCIPLINE_GUIDES = Object.freeze([
   { id: 'digital-fast', title: 'Digital fasting', steps: ['Choose a realistic period without scrolling, videos or unnecessary notifications.', 'Set aside the phone. Attend to God and the people with you.', 'When you return, notice what distracted you and what helped you be present.'] },

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PRACTICES } from '../../src/features/spiritual-practices/content.js';
+import { PRACTICES, MORNING_PRESETS, getPractice } from '../../src/features/spiritual-practices/content.js';
 import { advance, createSession, validSession } from '../../src/features/spiritual-practices/timer.js';
 test('source-exact Silencio stages sum to two hours and beginner to ten minutes', () => {
   assert.deepEqual(PRACTICES[0].stages.map(row => row.seconds / 60), [10, 20, 20, 20, 20, 15, 10, 5]);
@@ -67,4 +67,22 @@ test('shorter presets and every custom minute retain exact allocations through r
     assert.equal(ended.elapsed, minutes * 60000);
   }
   for (const invalid of [0, 121, 1.5, NaN, '10']) assert.throws(() => createSession('silencio-custom', 1000, 'bad', invalid));
+});
+
+test('15/20-minute morning adaptations preserve stage order, exact allocation and persisted timer identity', () => {
+  const original = getPractice('morning-10');
+  for (const [minutes, seconds] of [[15, [180, 90, 270, 180, 180]], [20, [240, 120, 360, 240, 240]]]) {
+    const practice = getPractice(`morning-${minutes}`);
+    assert.ok(MORNING_PRESETS.includes(practice));
+    assert.equal(practice.adapted, true);
+    assert.deepEqual(practice.stages.map(row => row.title), original.stages.map(row => row.title));
+    assert.deepEqual(practice.stages.map(row => row.seconds), seconds);
+    assert.equal(seconds.reduce((sum, value) => sum + value, 0), minutes * 60);
+    const session = JSON.parse(JSON.stringify(advance(createSession(practice.id, 1000, 'morning'), 'pause', 61000)));
+    assert.equal(validSession(session), true);
+    const resumed = advance(session, 'resume', 1000000);
+    const completed = advance(resumed, 'tick', 1000000 + (minutes * 60 - 60) * 1000);
+    assert.equal(completed.state, 'completed');
+    assert.equal(completed.elapsed, minutes * 60000);
+  }
 });

@@ -235,6 +235,29 @@ try {
       await page.locator('[data-practice-guide="fellowship"][open]').waitFor();
       await page.locator('[data-practice-action="resume"]').waitFor();
       assert.equal(await page.locator('[data-practice-suggestion] [data-practice-start]').count(), 0, 'a new suggestion cannot replace the restored session');
+      await page.locator('[data-practice-action="end"]').click();
+      await page.locator('[data-practice-action="new"]').click();
+      await page.locator('[data-practice-start="morning-15"]').click();
+      await page.locator('[data-practice-action="end"]').click();
+      await page.locator('[data-practice-action="new"]').click();
+      await page.locator('[data-practice-start="evening-5"]').click();
+      await page.locator('[data-practice-action="end"]').click();
+      const eveningForm = page.locator('[data-practice-reflection]');
+      await eveningForm.locator('[name="reflection"]').fill('Disposable journal summary');
+      await eveningForm.locator('[name="answer-notice"]').fill('Disposable evening answer');
+      assert.equal(await eveningForm.locator('textarea[name^="answer-"]').count(), 5);
+      await eveningForm.locator('button[type="submit"]').click();
+      const editButton = page.locator('[data-practice-edit]').first();
+      const reflectionId = await editButton.getAttribute('data-practice-edit');
+      // History is intentionally expandable; open its actual disclosure first.
+      await editButton.locator('xpath=..').locator('summary').click();
+      await editButton.click();
+      const editForm = page.locator(`[data-practice-history-edit="${reflectionId}"]`);
+      await editForm.locator('[name="answer-notice"]').fill('Edited disposable answer');
+      await editForm.locator('button[type="submit"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-reflection] [name="answer-notice"]').waitFor();
+      assert.equal(await page.locator('[data-practice-reflection] [name="answer-notice"]').inputValue(), 'Edited disposable answer');
       const practiceMetrics = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
       assert.ok(practiceMetrics.scroll <= practiceMetrics.width + 1, `${locale}/${width}: practice handoff overflow`);
 

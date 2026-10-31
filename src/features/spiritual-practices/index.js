@@ -2,7 +2,7 @@ import { practiceLocale, practiceText, practiceTitle, localizePractice } from '.
 import { createPracticeOffline } from './offline.js';
 import { createPracticeCue } from './cue.js';
 import { createPracticeWakeLock } from './wake-lock.js';
-import { PRACTICES, SILENCIO_PRESETS, DISCIPLINE_GUIDES, getPractice } from './content.js';
+import { PRACTICES, SILENCIO_PRESETS, MORNING_PRESETS, EVENING_QUESTIONS, DISCIPLINE_GUIDES, getPractice } from './content.js';
 import { advance, createSession, validSession } from './timer.js';
 import './practice.css';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -22,14 +22,39 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
       const offline = offlineShell ? createPracticeOffline({ books, shell: offlineShell, getOwner }) : null;
       let offlineOperation = 0, offlineTask = 0, offlineBusy = false;
       let awake = false;
+      let drafts = new Map(), editingId = '';
       let owner = getOwner(), current = null, history = [], message = '', alive = true, passageOperation = 0;
       const key = () => `spiritual-practices.v1.${owner}`;
       function load() {
+        drafts.clear(); editingId = '';
         awake = false; void wakeLock.release(); cue.disable(); offline?.cancel(); offlineBusy = false; offlineTask++; offlineOperation++;
         const saved = storage.read(key(), null);
         current = validSession(saved?.current) ? saved.current : null;
-        history = Array.isArray(saved?.history) ? saved.history.filter(row => validSession(row?.session) && ['completed', 'ended'].includes(row.session.state) && typeof row.reflection === 'string' && row.reflection.length <= 6000).slice(0, 50) : [];
+        history = Array.isArray(saved?.history) ? saved.history.filter(row => validSession(row?.session) && ['completed', 'ended'].includes(row.session.state) && typeof row.reflection === 'string' && row.reflection.length <= 6000).slice(0, 50).map(row => ({session: row.session, reflection: row.reflection, answers: answersFor(row.session, row.answers)})) : [];
         message = saved?.current && !current ? 'The saved timer could not be restored. Your saved reflections have been kept.' : '';
+      }
+      function answersFor(session, value) {
+        if (session.templateId !== 'evening-5') return {};
+        return Object.fromEntries(EVENING_QUESTIONS.map(({id}) => [id, typeof value?.[id] === 'string' ? value[id].slice(0, 1200) : '']));
+      }
+      function draftFor(session) {
+        if (!drafts.has(session.id)) {
+          const saved = history.find(row => row.session.id === session.id);
+          drafts.set(session.id, {reflection: saved?.reflection || '', answers: answersFor(session, saved?.answers)});
+        }
+        return drafts.get(session.id);
+      }
+      function reflectionFields(session) {
+        const draft = draftFor(session);
+        return `<label>${h('Optional private reflection')}<textarea name="reflection" maxlength="6000" rows="5">${esc(draft.reflection)}</textarea></label>${session.templateId === 'evening-5' ? EVENING_QUESTIONS.map(({id, question}) => `<label>${h(question)}<textarea name="answer-${id}" maxlength="1200" rows="3">${esc(draft.answers[id])}</textarea></label>`).join('') : ''}<p>${h('Answers are optional. Unsaved changes stay only on this page until you leave.')}</p>`;
+      }
+      function saveReflection(session, data, editing = false) {
+        const answers = session.templateId === 'evening-5' ? answersFor(session, Object.fromEntries(EVENING_QUESTIONS.map(({id}) => [id, String(data.get(`answer-${id}`) || '')]))) : {};
+        const reflection = String(data.get('reflection') || '').slice(0, 6000), row = {session, reflection, answers};
+        const previous = history;
+        history = editing ? history.map(old => old.session.id === session.id ? row : old) : [row, ...history.filter(old => old.session.id !== session.id)].slice(0, 50);
+        if (save()) { drafts.delete(session.id); if (editing || editingId === session.id) editingId = ''; message = editing ? 'Saved reflection updated on this device.' : 'Reflection saved on this device.'; }
+        else { history = previous; drafts.set(session.id, {reflection, answers}); }
       }
       function save() {
         if (getOwner() !== owner) return false;
@@ -96,15 +121,15 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           <details><summary>${h('Stage guide')}</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>
           ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
             <p>${h('Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.')}</p>` : `<p>${h(current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.')}</p>
-            <form data-practice-reflection><label>${h('Optional private reflection')}<textarea name="reflection" maxlength="6000" rows="5">${esc(history.find(row => row.session.id === current.id)?.reflection || '')}</textarea></label><button class="bq-primary-button" type="submit">${h('Save reflection on this device')}</button></form>${button('new', 'Choose another practice')}`}
-        </section>` : `<section><h2>${h('Choose a practice')}</h2><div class="bq-practice-list">${[...PRACTICES, ...SILENCIO_PRESETS].map(item => `<button class="bq-secondary-button" type="button" data-practice-start="${esc(item.id)}">${esc(practiceTitle(locale, item.title))}</button>`).join('')}</div>
+            <form data-practice-reflection data-practice-session="${esc(current.id)}">${reflectionFields(current)}<button class="bq-primary-button" type="submit">${h('Save reflection on this device')}</button></form>${button('new', 'Choose another practice')}`}
+        </section>` : `<section><h2>${h('Choose a practice')}</h2><div class="bq-practice-list">${[...PRACTICES, ...SILENCIO_PRESETS, ...MORNING_PRESETS].map(item => `<button class="bq-secondary-button" type="button" data-practice-start="${esc(item.id)}">${esc(practiceTitle(locale, item.title))}</button>`).join('')}</div>
           <form data-practice-custom><label>${h('Custom Silencio minutes (adapted)')}<input name="minutes" type="number" min="1" max="120" step="1" required value="10"></label><button type="submit" class="bq-secondary-button">${h('Start custom silence')}</button></form>
           <p>${h('Silence is an invitation to relationship with God. Minutes are not a measure of spiritual worth.')}</p></section>`}
         ${reminder ? `<section><h2>${h('Daily app-open reminder')}</h2><p>${h('Shown on Home while BibleQuest is open. This device only; no closed-app alert. Uses your notification master switch, Bible reading category and device-local quiet hours.')}</p>
           <form data-practice-reminder-form><label><input name="enabled" type="checkbox" ${reminder.enabled ? 'checked' : ''}> ${h('Enable daily reminder')}</label><label>${h('Time')}<input name="time" type="time" required value="${esc(reminder.time)}"></label><label>${h('Time zone')}<input name="timeZone" required maxlength="100" value="${esc(reminder.timeZone)}"></label><button type="submit" class="bq-secondary-button">${h('Save reminder')}</button></form></section>` : ''}
         ${offline ? `<section><h2>${h('Offline practice')}</h2><div data-practice-offline></div>${button('offline-status', 'Refresh offline status')}</section>` : ''}
         <section><h2>${h('Practice in daily life')}</h2>${DISCIPLINE_GUIDES.filter(guide => guide.id !== suggested?.id).map(guide => `<details data-practice-guide="${esc(guide.id)}"><summary>${h(guide.title)}</summary><ol>${guide.steps.map(step => `<li>${h(step)}</li>`).join('')}</ol></details>`).join('')}</section>
-        <section><h2>${h('Recent reflections')}</h2>${history.length ? history.map(row => `<details><summary>${esc(practiceTitle(locale, getPractice(row.session.templateId, row.session.durationMinutes).title))} · ${h(row.session.state)}</summary><p class="bq-practice-note">${row.reflection ? esc(row.reflection) : h('No written reflection.')}</p><button type="button" class="bq-secondary-button" data-practice-delete="${esc(row.session.id)}">${h('Delete saved reflection')}</button></details>`).join('') : `<p>${h('No saved reflections yet.')}</p>`}</section>`;
+        <section><h2>${h('Recent reflections')}</h2>${history.length ? history.map(row => `<details ${editingId === row.session.id ? 'open' : ''}><summary>${esc(practiceTitle(locale, getPractice(row.session.templateId, row.session.durationMinutes).title))} · ${h(row.session.state)}</summary>${editingId === row.session.id ? `<form data-practice-history-edit="${esc(row.session.id)}" data-practice-session="${esc(row.session.id)}">${reflectionFields(row.session)}<button class="bq-secondary-button" type="submit">${h('Save changes on this device')}</button>${button('cancel-edit', 'Cancel editing')}</form>` : `<p class="bq-practice-note">${row.reflection ? esc(row.reflection) : h('No written reflection.')}</p>${row.session.templateId === 'evening-5' ? EVENING_QUESTIONS.filter(({id}) => row.answers[id]).map(({id, question}) => `<h3>${h(question)}</h3><p class="bq-practice-note">${esc(row.answers[id])}</p>`).join('') : ''}<button type="button" class="bq-secondary-button" data-practice-edit="${esc(row.session.id)}">${h('Edit saved reflection')}</button>`}<button type="button" class="bq-secondary-button" data-practice-delete="${esc(row.session.id)}">${h('Delete saved reflection')}</button></details>`).join('') : `<p>${h('No saved reflections yet.')}</p>`}</section>`;
         void renderPassage(); void renderOffline();
       }
       function act(event) {
@@ -139,6 +164,12 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           }).catch(error => { if (alive && expectedOwner === getOwner()) { message = error?.message || 'Could not keep the screen awake.'; render(); } });
           return;
         }
+        if (target.dataset.practiceEdit) {
+          const row = history.find(item => item.session.id === target.dataset.practiceEdit);
+          if (row) { editingId = row.session.id; draftFor(row.session); render(); }
+          return;
+        }
+        if (action === 'cancel-edit') { drafts.delete(editingId); editingId = ''; render(); return; }
         if (action === 'library') return onLibrary();
         if (action === 'reader') return onReader();
         if (target.dataset.practiceStart) {
@@ -149,12 +180,33 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           if (target.dataset.practiceStart === 'meditation-10') current.passage = ref;
           message = ''; try { reminders?.dismiss(owner); } catch { message = 'Could not dismiss the reminder on this device.'; } save();
         }
-        else if (target.dataset.practiceDelete) { history = history.filter(row => row.session.id !== target.dataset.practiceDelete); save(); }
-        else if (action === 'new') { current = null; save(); }
+        else if (target.dataset.practiceDelete) { const previous = history; history = history.filter(row => row.session.id !== target.dataset.practiceDelete); if (save()) { drafts.delete(target.dataset.practiceDelete); if (editingId === target.dataset.practiceDelete) editingId = ''; } else history = previous; }
+        else if (action === 'new') { if (current) drafts.delete(current.id); current = null; save(); }
         else if (current && ['pause', 'resume', 'skip', 'end'].includes(action)) { current = advance(current, action); if (['paused', 'ended', 'completed'].includes(current.state)) { cue.stop(); awake = false; void wakeLock.release(); } save(); }
         render();
       }
+      function input(event) {
+        if (!alive) return;
+        if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
+        const form = event.target.closest?.('[data-practice-session]');
+        if (!form || !host.contains(form)) return;
+        const id = form.dataset.practiceSession;
+        const session = current?.id === id ? current : history.find(row => row.session.id === id)?.session;
+        if (!session || !['completed', 'ended'].includes(session.state)) return;
+        const draft = draftFor(session), value = String(event.target.value || '');
+        if (event.target.name === 'reflection') draft.reflection = value.slice(0, 6000);
+        const question = EVENING_QUESTIONS.find(row => `answer-${row.id}` === event.target.name);
+        if (question && session.templateId === 'evening-5') draft.answers[question.id] = value.slice(0, 1200);
+      }
       function submit(event) {
+        if (event.target.matches('[data-practice-history-edit]')) {
+          event.preventDefault();
+          if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
+          const id = event.target.dataset.practiceHistoryEdit;
+          const row = history.find(item => item.session.id === id);
+          if (!row || id !== editingId) return;
+          saveReflection(row.session, new FormData(event.target), true); render(); return;
+        }
         if (event.target.matches('[data-practice-reminder-form]') && reminders) {
           event.preventDefault();
           if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
@@ -175,9 +227,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         event.preventDefault();
         if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
         if (!current || !['completed', 'ended'].includes(current.state)) return;
-        const reflection = String(new FormData(event.target).get('reflection') || '').slice(0, 6000);
-        history = [{ session: current, reflection }, ...history.filter(row => row.session.id !== current.id)].slice(0, 50);
-        message = save() ? 'Reflection saved on this device.' : message;
+        saveReflection(current, new FormData(event.target));
         render();
       }
       function tick(playCue = true) {
@@ -194,10 +244,11 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
       load(); render();
       host.addEventListener('click', act);
       host.addEventListener('submit', submit);
+      host.addEventListener('input', input);
       document.addEventListener('visibilitychange', visibility);
       const interval = setInterval(tick, 1000);
       const unsubscribe = subscribeOwner(() => { if (getOwner() !== owner) { owner = getOwner(); load(); render(); } });
-      return () => { alive = false; cue.dispose(); offline?.dispose(); offlineTask++; offlineOperation++; void wakeLock.release(); passageOperation++; save(); clearInterval(interval); unsubscribe(); document.removeEventListener('visibilitychange', visibility); host.removeEventListener('click', act); host.removeEventListener('submit', submit); };
+      return () => { alive = false; cue.dispose(); offline?.dispose(); offlineTask++; offlineOperation++; void wakeLock.release(); passageOperation++; save(); clearInterval(interval); unsubscribe(); document.removeEventListener('visibilitychange', visibility); host.removeEventListener('click', act); host.removeEventListener('submit', submit); host.removeEventListener('input', input); drafts.clear(); };
     },
   };
 }

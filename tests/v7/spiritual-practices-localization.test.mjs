@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PRACTICE_TRANSLATIONS, localizePractice, practiceLocale, practiceText, practiceTitle } from '../../src/features/spiritual-practices/copy.js';
 import { practiceEntry } from '../../src/features/spiritual-practices/entry-copy.js';
-import { PRACTICES, SILENCIO_PRESETS, DISCIPLINE_GUIDES, customSilencio } from '../../src/features/spiritual-practices/content.js';
+import { PRACTICES, SILENCIO_PRESETS, MORNING_PRESETS, DISCIPLINE_GUIDES, customSilencio } from '../../src/features/spiritual-practices/content.js';
 test('every timed stage and daily-life guide has aligned TL/CEB copy without changing allocations', () => {
   for (const locale of ['tl', 'ceb']) {
-    for (const original of [...PRACTICES, ...SILENCIO_PRESETS, customSilencio(17)]) {
+    for (const original of [...PRACTICES, ...SILENCIO_PRESETS, ...MORNING_PRESETS, customSilencio(17)]) {
       const translated = localizePractice(original, locale);
       assert.equal(translated.id, original.id);
       assert.equal(translated.version, original.version);

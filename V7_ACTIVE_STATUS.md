@@ -31,6 +31,8 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 
 9. Files now has server-backed filename search, My uploads and lifecycle-state filters with bound pagination, post-read membership checks and account-safe UI reset. Existing visibility/rights/provider boundaries remain. Twenty focused media tests and a disposable Postgres filter query pass; live provider/deployed QA remains open. [Implementation and evidence](work/tasks/20261101-v8-media-filters.md).
 
+10. Daily-practice completion: 10/15/20-minute Morning Surrender choices now use explicit adapted allocations. Evening sessions have five optional source-question answers, and saved reflections/answers can be edited with draft/cancel handling in the existing private store. Fifty-eight affected practice/Library checks and build pass locally; full browser/device acceptance remains separate. [Implementation and evidence](work/tasks/20261101-v8-daily-practice-journal.md).
+
 ## Preserved boundaries
 
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.

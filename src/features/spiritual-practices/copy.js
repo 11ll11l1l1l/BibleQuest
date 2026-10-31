@@ -4,6 +4,11 @@ Suggested practice|Iminungkahing pagsasanay|Gisugyot nga pagbansay
 Your current session is kept. Finish it and choose another practice when ready.|Nananatili ang kasalukuyan mong session. Tapusin ito at pumili ng ibang pagsasanay kapag handa ka na.|Gipabilin ang imong kasamtangang sesyon. Taposa kini ug pagpili og laing pagbansay kon andam ka na.
 Opening this guide does not start a timer. Choose when you are ready.|Hindi nagsisimula ang timer sa pagbukas ng gabay. Pumili kapag handa ka na.|Dili magsugod ang timer sa pag-abli sa giya. Pagpili kon andam ka na.
 Begin suggested practice|Simulan ang iminungkahing pagsasanay|Sugdi ang gisugyot nga pagbansay
+Answers are optional. Unsaved changes stay only on this page until you leave.|Opsyonal ang mga sagot. Mananatili lang sa pahinang ito ang hindi na-save na pagbabago hanggang umalis ka.|Opsyonal ang mga tubag. Ang wala ma-save nga kausaban magpabilin ra niining panid hangtod mobiya ka.
+Saved reflection updated on this device.|Na-update ang naka-save na pagninilay sa device na ito.|Na-update ang gi-save nga pagpamalandong niining device.
+Save changes on this device|I-save ang pagbabago sa device na ito|Tipigi ang kausaban niining device
+Cancel editing|Kanselahin ang pag-edit|Kanselaha ang pag-edit
+Edit saved reflection|I-edit ang naka-save na pagninilay|I-edit ang gi-save nga pagpamalandong
 Spiritual Practices|Mga Espirituwal na Pagsasanay|Mga Espirituhanong Pagbansay
 PRIVATE · THIS DEVICE|PRIBADO · SA DEVICE NA ITO|PRIBADO · NIINING DEVICE
 Make space for God, reflection and a loving response.|Maglaan ng puwang para sa Diyos, pagninilay at pagtugon nang may pag-ibig.|Paggahin og luna alang sa Diyos, pagpamalandong ug mahigugmaong pagtubag.

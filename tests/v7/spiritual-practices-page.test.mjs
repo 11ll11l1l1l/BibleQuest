@@ -30,6 +30,8 @@ function fixture(initial = null, passages = null, reminders = null, locale = 'en
     host, saved, storage, get body() { return body; },
     click(dataset) { const target = { dataset }; target.closest = () => target; listeners.get('click')({ target }); },
     reminder(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-reminder-form]' } }); },
+    editSubmit(id, value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { dataset: {practiceHistoryEdit: id}, matches: selector => selector === '[data-practice-history-edit]' } }); },
+    input(id, name, value) { listeners.get('input')({target: {name, value, closest: () => ({dataset: {practiceSession: id}})}}); },
     custom(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-custom]' } }); },
     switch(value, emit = true) { owner = value; if (emit) notify(); },
     time(value) { now = value; tick(); },
@@ -261,4 +263,106 @@ test('untrusted or incomplete deep links do not become practice content', () => 
       assert.equal(f.saved.size, 0);
     } finally { f.close(); }
   }
+});
+
+
+test('both longer morning routines are available through the real player and restore unchanged', () => {
+  for (const minutes of [15, 20]) {
+    const f = fixture(); let snapshot;
+    try {
+      assert.match(f.host.innerHTML, new RegExp(`data-practice-start="morning-${minutes}"`));
+      f.click({ practiceStart: `morning-${minutes}` });
+      f.click({ practiceAction: 'pause' });
+      snapshot = structuredClone(f.saved.get('spiritual-practices.v1.guest'));
+    } finally { f.close(); }
+    const reload = fixture(snapshot);
+    try { assert.match(reload.host.innerHTML, new RegExp(`Morning surrender · ${minutes} minutes`)); assert.match(reload.host.innerHTML, /Resume/); }
+    finally { reload.close(); }
+  }
+});
+
+test('five evening answers are optional, bounded, escaped and restored separately from timer metadata', () => {
+  const f = fixture(); let snapshot;
+  try {
+    f.click({ practiceStart: 'evening-5' });
+    f.click({ practiceAction: 'end' });
+    assert.equal((f.host.innerHTML.match(/name="answer-/g) || []).length, 5);
+    f.submit({reflection: 'summary', 'answer-notice': '<script>private</script>', 'answer-confession': 'x'.repeat(1500)});
+    snapshot = structuredClone(f.saved.get('spiritual-practices.v1.guest'));
+    assert.equal(snapshot.history[0].answers.notice, '<script>private</script>');
+    assert.equal(snapshot.history[0].answers.confession.length, 1200);
+    assert.equal(snapshot.history[0].answers.learning, '');
+    assert.equal(snapshot.current.answers, undefined);
+    assert.doesNotMatch(f.host.innerHTML, /<script>private/);
+    assert.match(f.host.innerHTML, /&lt;script&gt;private/);
+  } finally { f.close(); }
+  const reload = fixture(snapshot, null, null, 'ceb');
+  try {
+    assert.match(reload.host.innerHTML, /&lt;script&gt;private/); assert.match(reload.host.innerHTML, /I-edit ang gi-save/);
+    const id = snapshot.current.id;
+    reload.click({practiceEdit: id});
+    reload.editSubmit(id, {reflection:'edited summary', 'answer-learning':'Private edited learning'});
+    assert.equal(reload.saved.get('spiritual-practices.v1.guest').history[0].answers.learning, 'Private edited learning');
+    assert.match(reload.host.innerHTML, /Na-update ang gi-save/);
+  }
+  finally { reload.close(); }
+});
+
+test('older reflection can be edited during another running session and draft survives timer redraw', () => {
+  const f = fixture();
+  try {
+    f.click({ practiceStart: 'presence-30' }); f.click({ practiceAction: 'end' }); f.submit('old note');
+    const id = f.saved.get('spiritual-practices.v1.guest').current.id;
+    f.click({ practiceAction: 'new' }); f.click({ practiceStart: 'silencio-10' });
+    const activeId = f.saved.get('spiritual-practices.v1.guest').current.id;
+    f.click({ practiceEdit: id }); f.input(id, 'reflection', 'unsaved draft');
+    f.time(61000);
+    assert.match(f.host.innerHTML, /unsaved draft/);
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').history[0].reflection, 'old note');
+    f.editSubmit(id, {reflection: 'updated journal'});
+    const state = f.saved.get('spiritual-practices.v1.guest');
+    assert.equal(state.current.id, activeId); assert.equal(state.current.state, 'running');
+    assert.equal(state.history.length, 1); assert.equal(state.history[0].reflection, 'updated journal');
+    assert.match(f.host.innerHTML, /Saved reflection updated/);
+  } finally { f.close(); }
+});
+
+test('cancel, storage denial, deletion and stale-account editor keep saved notes safe', () => {
+  const f = fixture();
+  try {
+    f.click({ practiceStart: 'evening-5' }); f.click({ practiceAction: 'end' }); f.submit({reflection:'original', 'answer-notice':'private answer'});
+    const id = f.saved.get('spiritual-practices.v1.guest').current.id;
+    f.click({ practiceEdit: id }); f.input(id, 'reflection', 'cancel this draft'); f.click({practiceAction:'cancel-edit'});
+    assert.doesNotMatch(f.host.innerHTML, /cancel this draft/);
+    f.click({ practiceEdit: id }); const write = f.storage.write;
+    f.storage.write = () => {throw new Error('quota');};
+    f.editSubmit(id, {reflection:'retry draft'});
+    assert.match(f.host.innerHTML, /Device storage is unavailable/); assert.doesNotMatch(f.host.innerHTML, /Saved reflection updated/);
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').history[0].reflection, 'original');
+    f.storage.write = write;
+    f.switch('account:alice', false); f.editSubmit(id, {reflection:'do not cross accounts'});
+    assert.equal(f.saved.has('spiritual-practices.v1.account:alice'), false);
+    assert.doesNotMatch(f.host.innerHTML, /retry draft|private answer|original/);
+    f.switch('guest'); f.click({practiceEdit:id}); f.click({practiceDelete:id});
+    f.editSubmit(id, {reflection:'do not resurrect'});
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').history.length, 0);
+  } finally { f.close(); }
+});
+
+test('current reflection draft survives redraw and malformed legacy answers do not discard valid prose', () => {
+  const f = fixture(); let snapshot;
+  try {
+    f.click({practiceStart:'evening-5'}); f.click({practiceAction:'end'});
+    const id = f.saved.get('spiritual-practices.v1.guest').current.id;
+    f.input(id,'reflection','unsaved current note'); f.input(id,'answer-gratitude','unsaved thanks');
+    // An unrelated journal action redraws the page without saving the draft.
+    f.click({practiceAction:'cancel-edit'});
+    assert.match(f.host.innerHTML,/unsaved current note/); assert.match(f.host.innerHTML,/unsaved thanks/);
+    f.submit({reflection:'legacy valid prose'});
+    snapshot=structuredClone(f.saved.get('spiritual-practices.v1.guest'));
+    snapshot.history[0].answers={notice:123,unknown:'must not render',gratitude:'retained answer'};
+  } finally { f.close(); }
+  const restored=fixture(snapshot);
+  try { assert.match(restored.host.innerHTML,/legacy valid prose/); assert.match(restored.host.innerHTML,/retained answer/); assert.doesNotMatch(restored.host.innerHTML,/must not render/); }
+  finally { restored.close(); }
 });
