@@ -1,3 +1,4 @@
+import { ILOCANO_BOOK_TITLES } from './ilocano-book-titles.js';
 import {
   SCRIPTURE_PACKAGE_METADATA_CACHE_NAME,
   SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME,
@@ -35,6 +36,15 @@ for (const book of BIBLE_BOOKS) {
   BOOK_ALIASES.set(normalizeBookToken(book.name), book);
   BOOK_ALIASES.set(normalizeBookToken(book.code), book);
   for (const alias of aliases[book.code] || []) BOOK_ALIASES.set(normalizeBookToken(alias), book);
+}
+// This edition's published Ilocano names are additional validated aliases.
+// Never replace canonical book IDs or unrelated translation names.
+for (const book of BIBLE_BOOKS) {
+  const localized = ILOCANO_BOOK_TITLES[book.code];
+  if (!localized) throw new Error(`Missing Ilocano publisher book title for ${book.code}.`);
+  const token = normalizeBookToken(localized), previous = BOOK_ALIASES.get(token);
+  if (previous && previous.code !== book.code) throw new Error(`Ambiguous Ilocano Bible book title: ${book.code}.`);
+  BOOK_ALIASES.set(token, book);
 }
 
 export function parseBibleReference(input) {
