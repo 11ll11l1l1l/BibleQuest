@@ -27,7 +27,7 @@ import {
 const abcSha = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
 
 test('source-derived downloadable manifests cover all 66 books with immutable metadata', () => {
-  assert.deepEqual(SCRIPTURE_PACKAGE_SOURCES.map(source => source.translationId), ['bsb', 'tl', 'cebocb']);
+  assert.deepEqual(SCRIPTURE_PACKAGE_SOURCES.map(source => source.translationId), ['bsb', 'tl', 'cebocb', 'ilo']);
   for (const source of SCRIPTURE_PACKAGE_SOURCES) {
     const generated = buildScripturePackageManifest(process.cwd(), source);
     assert.equal(generated.translationId, source.translationId);

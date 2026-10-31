@@ -5,6 +5,7 @@ const TRANSLATION_BY_FOLDER = Object.freeze({
   bible: 'bsb',
   tagalog: 'tl',
   cebuano: 'cebocb',
+  ilocano: 'ilo',
 });
 
 export function scripturePackageMetadataUrl(
@@ -22,7 +23,7 @@ export function scripturePackageMetadataUrl(
 export function scripturePackageIdentityForPath(
   path: string,
 ): Readonly<{ translationId: string; bookCode: string }> | null {
-  const match = /^data\/packs\/(bible|tagalog|cebuano)\/((?:[1-3])?[A-Za-z]{2,3})\.json$/.exec(String(path ?? '').replace(/^\.\//, ''));
+  const match = /^data\/packs\/(bible|tagalog|cebuano|ilocano)\/((?:[1-3])?[A-Za-z]{2,3})\.json$/.exec(String(path ?? '').replace(/^\.\//, ''));
   if (!match) return null;
   const translationId = TRANSLATION_BY_FOLDER[match[1] as keyof typeof TRANSLATION_BY_FOLDER];
   if (!translationId) return null;

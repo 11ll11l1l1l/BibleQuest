@@ -31,3 +31,10 @@ Redistributions of these CEBOCB-derived packs must preserve the required attribu
 ## Question packs
 
 Question/answer recall decks are generated from unfoldingWord Translation Questions v90 and retain the CC BY-SA 4.0 license. These browser packs are reduced delivery formats of the source datasets; they are not independent theological authorities.
+
+
+## Ilocano Bible packs
+
+`data/packs/ilocano/` reproduces **Ti Biblia / Ilocano Unlocked Literal Bible (iloulb)**, copyright © 2019 Door43 World Missions Community, from eBible.org's VPL export. These derived per-book delivery packs are distributed under **CC BY-SA 4.0**: https://creativecommons.org/licenses/by-sa/4.0/ . Source: https://ebible.org/iloulb/ ; download: https://ebible.org/Scriptures/iloulb_vpl.zip . The archive's complete attribution, contributors and license are retained in `ilocano/LICENSE.html`; hashes, packaging changes and coverage are in `ilocano/SOURCE.json`.
+
+Changes: source reference codes are mapped to BibleQuest canonical book codes and records are packaged as JSON. Source words and punctuation are unchanged; no endorsement by the original authors is implied. Contributions to this Scripture delivery text remain under the same CC BY-SA 4.0 license. Twelve source-empty verse addresses are recorded explicitly; BibleQuest does not invent text for them or borrow from another translation. No source images are included.

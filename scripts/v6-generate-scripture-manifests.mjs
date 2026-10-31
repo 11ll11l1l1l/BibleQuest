@@ -37,6 +37,7 @@ export const SCRIPTURE_PACKAGE_SOURCES = Object.freeze([
       redistribution: 'allowed',
     }),
   }),
+  Object.freeze({ translationId: 'ilo', label: 'Ilocano · ULB', folder: 'ilocano', license: Object.freeze({ source: 'Ti Biblia / Ilocano Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2019 Door43 World Missions Community · https://ebible.org/iloulb/ · JSON packaging only; wording unchanged · See data/packs/ilocano/LICENSE.html and SOURCE.json', redistribution: 'allowed' }) }),
 ]);
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');

@@ -1,4 +1,4 @@
-export type ReaderTranslationId = 'bsb' | 'tl' | 'cebocb' | 'jko' | 'nlt';
+export type ReaderTranslationId = 'bsb' | 'tl' | 'cebocb' | 'ilo' | 'jko' | 'nlt';
 
 export type ReaderBookRef = Readonly<{
   code: string;

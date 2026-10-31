@@ -28,6 +28,7 @@ const TRANSLATION_FOLDERS = Object.freeze<Record<string, string>>({
   bsb: 'bible',
   tl: 'tagalog',
   cebocb: 'cebuano',
+  ilo: 'ilocano',
 });
 
 export interface BrowserScripturePackageSnapshot {
