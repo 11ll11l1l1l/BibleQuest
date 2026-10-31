@@ -468,3 +468,18 @@ test('spoken-guide controls localize for Filipino and Cebuano without changing s
     } finally { f.close(); }
   }
 });
+
+
+test('form submission click keeps the form connected until submit is dispatched', () => {
+  const f = fixture();
+  try {
+    f.click({practiceStart:'evening-5'});
+    f.click({practiceAction:'end'});
+    const before = f.host.innerHTML;
+    f.click({}); // Native submit button: no data-practice-action.
+    assert.equal(f.host.innerHTML,before,'click must not detach the native submit form');
+    f.submit({reflection:'A valid reflection saved after click', 'answer-notice':'Today I noticed grace'});
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').history[0].reflection,'A valid reflection saved after click');
+    assert.match(f.host.innerHTML,/data-practice-edit=/);
+  } finally { f.close(); }
+});
