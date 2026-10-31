@@ -20,9 +20,11 @@ async function runMobile(){
   const errors=[];page.on('console',message=>{if(message.type()==='error')errors.push(message.text())});page.on('pageerror',error=>errors.push(error.message));
   await openCouples(page);
   const modes=await page.locator('.bq-couples-mode-grid [data-couples-mode]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-couples-mode')));
-  assert(modes.length===7,'Couples dashboard must expose six retained modes plus Communication Journey.');
-  for(const id of['journey','card','listen','checkin','repair','god','date'])assert(modes.includes(id),`Couples dashboard lost mode: ${id}.`);
-
+  assert(modes.length===8,'Couples dashboard must expose six retained modes, Communication Journey and Saved cards.');
+  for(const id of['saved','journey','card','listen','checkin','repair','god','date'])assert(modes.includes(id),`Couples dashboard lost mode: ${id}.`);
+  // V8 adds Saved cards without removing any of the prior seven modes.
+  await page.locator('[data-couples-mode="saved"]').click();
+  await page.locator('[data-couples-go="dashboard"]').click();
   await page.locator('[data-couples-mode="journey"]').click();
   await page.locator('[data-couples-journey]').waitFor({state:'visible'});
   assert(await page.locator('[data-journey-rating]').count()===12,'Communication Journey must render 12 self-assessment ratings.');
