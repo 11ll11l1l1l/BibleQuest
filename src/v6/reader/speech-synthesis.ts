@@ -30,6 +30,7 @@ type SpeechSynthesisLike = {
 const LANGUAGE_BY_TRANSLATION: Readonly<Partial<Record<ReaderTranslationId, string>>> = Object.freeze({
   tl: 'fil-PH',
   cebocb: 'ceb-PH',
+  ilo: 'ilo-PH',
   jko: 'ja-JP',
 });
 const MIN_RATE = 0.75;
@@ -113,7 +114,7 @@ export function createReaderSpeechSynthesis(input: {
       if (disposed) throw new Error('Browser speech provider has been disposed.');
       if (!available) return state;
       const language = LANGUAGE_BY_TRANSLATION[chapter?.translationId];
-      if (!language) throw new Error('Browser speech is available only for the Tagalog, Cebuano, and Japanese Reader text.');
+      if (!language) throw new Error('Browser speech is available only for the Tagalog, Cebuano, Ilocano, and Japanese Reader text.');
       if (!chapter.book?.code || !Number.isInteger(chapter.chapter) || chapter.chapter < 1
         || !Number.isInteger(chapter.book.chapters) || chapter.chapter > chapter.book.chapters
         || !Array.isArray(chapter.verses) || chapter.verses.length === 0) {

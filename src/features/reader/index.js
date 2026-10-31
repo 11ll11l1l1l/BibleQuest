@@ -65,11 +65,11 @@ const readerAudioHtml = (audio, state, licensed) => {
 };
 
 const readerSpeechHtml = (speech, state, licensed) => {
-  if (!speech?.isAvailable?.() || licensed || !['tl', 'cebocb', 'jko'].includes(state.translation)) return '';
+  if (!speech?.isAvailable?.() || licensed || !['tl', 'cebocb', 'ilo', 'jko'].includes(state.translation)) return '';
   const playback = speech.getState?.();
   const status = playback?.status === 'speaking' ? 'Reading aloud' : playback?.status === 'paused' ? 'Paused' : playback?.status === 'error' ? playback.error : 'Ready';
   const action = playback?.status === 'speaking' ? 'Pause reading' : playback?.status === 'paused' ? 'Resume reading' : playback?.status === 'ended' ? 'Read chapter again' : 'Read chapter aloud';
-  return `<section class="bq-reader-speech" data-reader-speech aria-label="Browser speech reading"><b>Read aloud · browser voice</b><span data-reader-speech-status role="status" aria-live="polite">${escapeHtml(status)}</span><div class="bq-reader-speech-controls"><button type="button" class="bq-secondary-button" data-reader-speech-toggle>${action}</button><button type="button" class="bq-secondary-button" data-reader-speech-stop ${['speaking', 'paused'].includes(playback?.status) ? '' : 'disabled'}>Stop reading</button><label>Speed<select data-reader-speech-rate aria-label="Speech reading speed">${[0.75, 1, 1.25, 1.5, 1.75, 2].map(value => `<option value="${value}" ${value === (playback?.playbackRate || 1) ? 'selected' : ''}>${value}×</option>`).join('')}</select></label></div><small>Uses the browser’s default speech service, which may be local or remote. Voice and language support vary.</small></section>`;
+  return `<section class="bq-reader-speech" data-reader-speech aria-label="Browser speech reading"><b>Read aloud · browser voice</b><span data-reader-speech-status role="status" aria-live="polite">${escapeHtml(status)}</span><div class="bq-reader-speech-controls"><button type="button" class="bq-secondary-button" data-reader-speech-toggle>${action}</button><button type="button" class="bq-secondary-button" data-reader-speech-stop ${['speaking', 'paused'].includes(playback?.status) ? '' : 'disabled'}>Stop reading</button><label>Speed<select data-reader-speech-rate aria-label="Speech reading speed">${[0.75, 1, 1.25, 1.5, 1.75, 2].map(value => `<option value="${value}" ${value === (playback?.playbackRate || 1) ? 'selected' : ''}>${value}×</option>`).join('')}</select></label></div><small>Uses the browser’s default speech service, which may be local or remote. Voice and language support vary.${state.translation === 'ilo' ? ' An Ilocano voice may not be installed; playback or pronunciation may be limited. This is synthetic speech, not a human-narrated Bible.' : ''}</small></section>`;
 };
 
 const formatBytes = value => {
@@ -293,7 +293,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const presentation = licensed ? null : presentReaderChapter(chapter);
         currentChapter=chapter;
         if (speech?.isAvailable?.()) {
-          if (!licensed && ['tl', 'cebocb', 'jko'].includes(state.translation)) speech.loadChapter(chapter);
+          if (!licensed && ['tl', 'cebocb', 'ilo', 'jko'].includes(state.translation)) speech.loadChapter(chapter);
           else speech.stop();
         }
         const furiganaControl = japanese && furigana ? `${japaneseFuriganaControl(furigana.getState())}<div data-reader-furigana-status aria-live="polite"></div>` : '';
