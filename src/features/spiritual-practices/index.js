@@ -84,7 +84,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           if (voice.isEnabled()) { if (!readStage()) speechError(); }
           else { try { cue.play(); } catch { message = 'Transition sound could not play.'; } }
         }
-        if (before !== `${current.stage}:${current.state}`) { if (current.state === 'completed') { awake = false; void wakeLock.release(); } save(); }
+        if (before !== `${current.stage}:${current.state}`) { if (current.state === 'completed') { voice.stop(); cue.stop(); awake = false; void wakeLock.release(); } save(); }
       }
       const button = (action, text) => `<button type="button" class="bq-secondary-button" data-practice-action="${action}">${h(text)}</button>`;
       async function renderPassage() {
