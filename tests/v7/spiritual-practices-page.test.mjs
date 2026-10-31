@@ -6,6 +6,8 @@ import { readFile } from 'node:fs/promises';
 const source = (await readFile(new URL('../../src/features/spiritual-practices/index.js', import.meta.url), 'utf8'))
   .replace("import './practice.css';", '')
   .replace("'./content.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/content.js', import.meta.url).href))
+  .replace("'./offline.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/offline.js', import.meta.url).href))
+  .replace("'./cue.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/cue.js', import.meta.url).href))
   .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
@@ -151,4 +153,27 @@ test('reminder form labels app-open scope and reports saves or storage errors tr
     assert.match(f.host.innerHTML, /Storage unavailable/);
     assert.doesNotMatch(f.host.innerHTML, /app-open reminder saved/);
   } finally { f.close(); }
+});
+
+test('page plays opted-in foreground transitions but never replays missed background intervals', async () => {
+  const previous = globalThis.AudioContext;
+  let tones = 0;
+  globalThis.AudioContext = class {
+    state = 'running'; currentTime = 0; destination = {};
+    async resume() {} async close() {}
+    createOscillator() { tones++; return { frequency: { setValueAtTime() {} }, connect() {}, disconnect() {}, start() {}, stop() {} }; }
+    createGain() { return { gain: { setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {}, disconnect() {} }; }
+  };
+  const f = fixture();
+  try {
+    f.click({ practiceStart: 'silencio-10' });
+    f.click({ practiceAction: 'cue' });
+    await Promise.resolve(); await Promise.resolve();
+    f.time(58000);
+    assert.equal(tones, 0);
+    f.time(61000);
+    assert.equal(tones, 1);
+    f.time(400000);
+    assert.equal(tones, 1, 'a long suspended interval must not replay missed transitions');
+  } finally { f.close(); globalThis.AudioContext = previous; }
 });
