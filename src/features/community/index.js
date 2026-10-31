@@ -1,3 +1,4 @@
+import { mediaCopy } from '../media-files/copy.js';
 import { localization } from '../../app/localization.js';
 
 const esc=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -29,7 +30,7 @@ export function communityPage({bridge,onNavigate,onBack,onAccount}={}){
       view.querySelector('[data-community-retry]')?.addEventListener('click',load,{once:true});
       view.querySelectorAll('[data-community-route]').forEach(button=>button.addEventListener('click',()=>onNavigate?.(button.dataset.communityRoute),{once:true}));
     };
-    const actions=state=>`<section class="bq-community-grid">${communityActions.map(action=>`<button type="button" data-community-route="${action.route}" ${action.enabled(state)?'':'disabled'}><img class="bq-community-art" src="${action.art}" alt="" aria-hidden="true"><b>${esc(tx(action.title))}</b><small>${esc(tx(action.description))}</small></button>`).join('')}</section>`;
+    const actions=state=>`<section class="bq-community-grid"><button type="button" data-community-route="media-files"><b>${esc((mediaCopy[locale]||mediaCopy.en).title)}</b></button>${communityActions.map(action=>`<button type="button" data-community-route="${action.route}" ${action.enabled(state)?'':'disabled'}><img class="bq-community-art" src="${action.art}" alt="" aria-hidden="true"><b>${esc(tx(action.title))}</b><small>${esc(tx(action.description))}</small></button>`).join('')}</section>`;
     const render=state=>{if(disposed)return;const intro=`<div class="bq-community-head"><div><p class="bq-eyebrow">${esc(tx('community.eyebrow'))}</p><h1>${esc(tx('community.intro.heading'))}</h1><p>${esc(tx('community.intro.description'))}</p></div><button type="button" class="bq-secondary-button" data-community-back>${esc(tx('community.backMore'))}</button></div>`;
       if(state.status==='signed-out')view.innerHTML=`${intro}<section class="bq-panel"><h2>${esc(tx('community.signedOut.heading'))}</h2><p>${esc(tx('community.signedOut.description'))}</p><button type="button" class="bq-primary-button" data-community-account>${esc(tx('community.openAccount'))}</button></section>${actions(state)}`;
       else if(state.status==='local-preview')view.innerHTML=`${intro}<section class="bq-panel"><h2>${esc(tx('community.localPreview.heading'))}</h2><p>${esc(tx('community.localPreview.description'))}</p></section>${actions(state)}`;

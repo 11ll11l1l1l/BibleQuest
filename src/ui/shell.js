@@ -31,7 +31,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
          'explorer', 'adaptive-learning', 'open-review',
          'private-notes', 'cloud-notes', 'spiritual-practices'].includes(route)) return 'library';
     if (route === 'grow' || route.startsWith('one-to-one-')
-        || ['community', 'journey-groups', 'conversation-deck'].includes(route)) return 'one-to-one';
+        || ['community', 'media-files', 'journey-groups', 'conversation-deck'].includes(route)) return 'one-to-one';
     if (['account', 'my-journey', 'transform', 'personality-profile',
          'psychometrics', 'avatar-vault', 'accessibility', 'backup',
          'help', 'content-review', 'congregation', 'leader-center',

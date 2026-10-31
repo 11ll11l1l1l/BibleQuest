@@ -135,6 +135,7 @@ const oneToOneWorkspacePage = ({api,...options}) => createLazyPage({
 });
 const spiritualPracticesPage = args => lazyFeaturePage('spiritual-practices', 'spiritualPracticesPage', args);
 const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
+const mediaFilesPage = args => lazyFeaturePage('media-files', 'mediaFilesPage', args);
 const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
 const guidedStudyPage = args => lazyFeaturePage('study', 'guidedStudyPage', args);
@@ -416,6 +417,7 @@ function boot(root){
       const context=Object.fromEntries(['pairId','trackId','moduleId','revisionId','stepId'].map(key=>[key,libraryParams().get(key)||'']));
       return lessonRoutePage({service:discipleship,session,membership:congregation,...context,isContextReady:v7ContextReady,subscribeContext:subscribeV7Context,onBack:()=>router.navigate(discipleshipRoute({routeKey:context.moduleId?'one-to-one-module':'one-to-one-track',...context})),onScripture:(ref,identity)=>router.navigate(lessonReaderRoute(ref,{...context,...identity}))});
     },
+    'media-files':()=>mediaFilesPage({api,session,congregation,subscribeContext:subscribeV7Context,onBack:()=>router.navigate('community'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation')}),
     'library-item':()=>libraryItemPage({service:library,id:libraryParams().get('id')||'',isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,onBack:()=>navigateLibrary({routeKey:'library',query:libraryParams().get('query'),contentType:libraryParams().get('contentType'),taxonomyId:libraryParams().get('taxonomyId')||'',discoveryQuery:libraryDiscoveryQuery()})}),
     learn:()=>learnPage({onLibrary:()=>router.navigate('library'),translations:reader.translations,recallSource:recall.sourceInfo(),onReader:openFreeReader,onStudy:()=>router.navigate('study'),onDeepQuestions:()=>router.navigate('deep-questions'),onStoryJourney:()=>router.navigate('story-journey'),onWisdomSituations:()=>router.navigate('wisdom-situations'),onBibleWorld:()=>router.navigate('bible-world'),onExplorer:()=>router.navigate('explorer'),onAdaptiveLearning:()=>router.navigate('adaptive-learning'),onOpenReview:()=>router.navigate('open-review'),onPrivateNotes:()=>router.navigate('private-notes'),onCloudNotes:()=>router.navigate('cloud-notes')}),
     study:()=>guidedStudyPage({study,onReader:openFreeReader,onLearn:()=>router.navigate('learn')}),
