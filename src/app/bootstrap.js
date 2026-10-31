@@ -451,7 +451,7 @@ function boot(root){
     reader:()=>{
       const context=lessonReaderContext(libraryParams());
       if(context){bibleQuest.deactivate();reader.setBook(context.book,context.chapter);}
-      return readerPage({reader,vocabulary,furigana,onMeditate:async ref=>{await meditationPassages.select(ref);const selected=reader.getState();if(router.current()==='reader'&&selected.translation===ref.translation&&selected.book===ref.book&&selected.chapter===ref.chapter)router.navigate('spiritual-practices')},audioStore:privateStorage,initialVerse:context?.verseStart,onBack:context?()=>router.navigate(context.back):null});
+      return readerPage({reader,vocabulary,furigana,audioStore:privateStorage,initialVerse:context?.verseStart,onBack:context?()=>router.navigate(context.back):null,onMeditate:async ref=>{await meditationPassages.select(ref);const selected=reader.getState();if(router.current()==='reader'&&selected.translation===ref.translation&&selected.book===ref.book&&selected.chapter===ref.chapter)router.navigate('spiritual-practices')}});
     },challenges:()=>challengesPage({challenges:personalChallenges,onBack:()=>router.navigate('more'),onReader:openChallengeScripture}),play:()=>gamesPage({games,onHome:()=>router.navigate('home')}),
     grow:()=>progressPage({onOneToOne:()=>router.navigate('one-to-one'),progress,onTransform:()=>router.navigate('transform'),onPersonalityProfile:()=>router.navigate('personality-profile'),onPsychometrics:()=>router.navigate('psychometrics'),onAvatarVault:()=>router.navigate('avatar-vault'),onMyJourney:()=>router.navigate('my-journey')}),
     'my-journey':()=>myJourneyPage({myJourney,onBack:()=>router.navigate('grow'),onBibleQuest:()=>router.navigate('bible-quest')}),

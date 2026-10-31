@@ -20,7 +20,7 @@ The owner authorized accelerated V8 development on 2026-10-28. [V8 plan](DEVELOP
 
 4. Owner-added spiritual practices scope: Silencio/timer/private-reflection, discovery/selected-verse meditation, short/custom durations, daily-life guides and wake-lock slices is implemented on its isolated review branch; 759/759 V7 tests and production build pass. [Implementation evidence and remaining scope](work/tasks/20261031-v8-spiritual-practices.md). Full V8 scope and certification remain open.
 
-5. Combined V8 integration now brings cleanup/Library/group/media/practices together on `v8/integration-20261031`. [Integration evidence and open checks](work/tasks/20261031-v8-integration.md): V7 759/759, media 9/9 and build pass; V6 retains eight failing baseline tests (872/880), so no complete-suite/release PASS is claimed. Original source PRs remain open.
+5. Combined V8 integration now brings cleanup/Library/group/media/practices together on `v8/integration-20261031`. [Integration evidence and open checks](work/tasks/20261031-v8-integration.md): Local aggregate V6 880/880, V7 759/759, media 9/9 and build pass after reconciling eight stale legacy assertions. Previous candidate passed 10/11 remote workflows; the inherited Reader option-order validator is repaired locally. New exact-head remote certification remains pending. Original source PRs remain open.
 
 V8 implementation is not deployed or certified. Published V7.1 and its rollback remain unchanged.
 

@@ -27,8 +27,10 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
     .split('\n')
     .filter(line => line.startsWith('const ') && line.includes(" = args => lazyFeaturePage('"));
 
-  assert.equal(lazyProxyLines.length, 49);
+  assert.equal(lazyProxyLines.length, 52);
   for (const route of [
+    "const spiritualPracticesPage = args => lazyFeaturePage('spiritual-practices', 'spiritualPracticesPage', args);",
+    "const mediaFilesPage = args => lazyFeaturePage('media-files', 'mediaFilesPage', args);",
     "const pairingPage = args => lazyFeaturePage('pairing', 'pairingPage', args);",
     "const assignedCurriculumPage = args => lazyFeaturePage('discipleship-curriculum', 'assignedCurriculumPage', args);",
     "const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);",
@@ -57,6 +59,7 @@ test('V6 route pages are discovered lazily instead of statically bundled into bo
 
   for (const line of lazyProxyLines) {
     const name = line.slice('const '.length, line.indexOf(' = args'));
-    assert.equal(line.includes(`, '${name}', args);`), true);
+    const factory = name === 'liveRoomsPage' ? 'liveRoomsWithDeck' : name;
+    assert.equal(line.includes(`, '${factory}', args);`), true);
   }
 });

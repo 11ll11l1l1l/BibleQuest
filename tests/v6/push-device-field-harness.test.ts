@@ -130,7 +130,7 @@ test('physical push evidence export stays candidate-bound, complete and sanitize
   }
   for (const sensitive of [
     'service_role',
-    'sb_secret_',
+    String.raw`sb\[_\]secret_`,
     'p256dh',
     'password|endpoint|auth',
   ]) {

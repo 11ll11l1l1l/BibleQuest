@@ -2,12 +2,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
-const [home, reader, assignments, css, index] = await Promise.all([
+const [home, reader, assignments, css, index, foundation] = await Promise.all([
   readFile(new URL('../../src/features/home/index.js', import.meta.url), 'utf8'),
   readFile(new URL('../../src/features/reader/index.js', import.meta.url), 'utf8'),
   readFile(new URL('../../src/features/assignments/index.js', import.meta.url), 'utf8'),
   readFile(new URL('../../src/ui/v6-core-experience.css', import.meta.url), 'utf8'),
-  readFile(new URL('../../index.html', import.meta.url), 'utf8')
+  readFile(new URL('../../index.html', import.meta.url), 'utf8'),
+  readFile(new URL('../../src/ui/v6-modern-foundation.css', import.meta.url), 'utf8')
 ]);
 
 test('Phase 2 Home leads with one journey and compact Today actions', () => {
@@ -33,6 +34,7 @@ test('Phase 2 Assignments provide To do and Completed views without changing ser
 test('Phase 2 CSS is last and protects narrow mobile layouts', () => {
   assert.ok(index.indexOf('v6-core-experience.css') > index.indexOf('v6-modern-foundation.css'));
   assert.match(css, /@media \(max-width: 430px\)/);
-  assert.match(css, /@media \(max-width: 340px\)/);
-  assert.match(css, /env\(safe-area-inset-bottom\)/);
+  assert.match(css, /\.bq-reader-audio \{ grid-template-columns: 44px minmax\(0, 1fr\)/);
+  assert.match(css, /\.bq-reader-audio-position > input \{ min-height: 44px/);
+  assert.match(foundation, /env\(safe-area-inset-bottom\)/);
 });

@@ -10,7 +10,7 @@ describe('live bootstrap account-resume cutover', () => {
     for (const key of ['general','bible-quest','weekly-journey','personal-challenges','explorer','leaderboard-delivery']) {
       assert.ok(source.includes(key + ':') || source.includes("'" + key + "':"), `missing account resume owner ${key}`);
     }
-    assert.ok(source.includes('()=>router.navigate(router.current())'));
+    assert.ok(source.includes("()=>router.navigate(readNavigationTarget().replace(/^#\\/?/, ''))"), 'account resume must preserve deep-link query parameters');
     assert.match(source, /console\.warn\('Resume unavailable',owner,error\)/);
   });
 

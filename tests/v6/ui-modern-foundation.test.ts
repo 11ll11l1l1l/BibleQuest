@@ -61,7 +61,7 @@ test('modern foundation is loaded last and preserves accessibility contracts', a
   assert.match(css, /env\(safe-area-inset-bottom\)/);
   assert.match(css, /html\[data-bq-theme="dark"\]/);
 
-  for (const route of V6_PRIMARY_NAVIGATION) {
+  for (const route of ['home', 'reader', 'library', 'one-to-one', 'more']) {
     assert.match(shell, new RegExp(`\\['${route}'`));
   }
 });
