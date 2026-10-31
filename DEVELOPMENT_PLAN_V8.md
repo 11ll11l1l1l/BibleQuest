@@ -1,6 +1,6 @@
 # BibleQuest V8 development plan
 
-Updated: 2026-10-28 JST
+Updated: 2026-10-31 JST
 Status: **ACTIVE — P0 inheritance refreshed; first P1 implementation in review**
 Current release and handoff authority: [V7_ACTIVE_STATUS.md](V7_ACTIVE_STATUS.md)
 
@@ -51,6 +51,14 @@ V8 should build on the released V7 Library and discipleship foundations rather t
 - Expanded Books catalog and hosted content where licensing permits.
 - Advanced/personalized content recommendation and deeper discovery.
 
+### Spiritual practices and guided formation — owner-added V8 scope
+See [source mapping, timer contract, guides and acceptance](docs/v8/V8_SPIRITUAL_PRACTICES_SILENCIO_20261031.md), based on the two owner-supplied Spiritual Disciplines/Silencio PDFs.
+- Add a shared guided/silent practice player, with exact 120-minute Silencio and clearly labeled shorter adaptations.
+- Connect Library/Home practice discovery, Bible passage meditation, private reflections, You routines/history and existing reminders/offline support.
+- Include morning surrender, daytime 30-second presence pause, evening examination and practical rest/service/simplicity/digital-fast guides.
+- Keep private confession/reflections out of group broadcasts, analytics and ALAM inputs. Formation is grace-centered; no holiness score or competitive silence.
+- Scope is accepted; implementation, affected verification and release remain OPEN. Preserve coding-first execution while deferring full QA/release certification honestly.
+
 ### Couples expansion
 
 - Expanded Couples question bank.
@@ -69,6 +77,7 @@ Released runtime baseline: `main` at `87cb9dd4c3b60b9679e0acecda519300194b6d55`.
 | P2 — Media and moderation | Central Drive ingest, metadata ownership, pending-review lifecycle, moderation and provider/quota recovery | Next contract task: validate existing media ownership and Drive integration before schema/provider writes; no uploads or publication authorized by a test fixture |
 | P3 — Ilocano | Source/license-valid full Bible through existing provider, then full UI | Bible source/rights/coverage and provider/offline compatibility first; existing English fallback is not full Ilocano |
 | P4 — Content expansion | Bounded devotional/teaching/book/Couples batches using existing provenance, review and reference checks | Do not reimport the 300 existing devotionals or bypass rights/translation review; use verified missing-ID queues |
+| P4a — Spiritual practices | Shared timer/player, Silencio, Scripture meditation and daily routines; then additional practice guides using existing owners | ACCEPTED SCOPE; implementation OPEN. Start with timer/content core, then connected flows and persistence. See linked source mapping and acceptance |
 | P5 — Integrated release | Existing exact-SHA, backend/tenant/privacy, responsive/localization, PWA/offline/performance and deployment verification | OPEN; no source/unit-only release claim |
 
 For the current single bounded P1 task, one executor owns Library presentation, canonical series preference, route wiring and its tests; no concurrent shared-file writers. [Task handoff](work/tasks/20261028-v8-library-group-handoff.md).
