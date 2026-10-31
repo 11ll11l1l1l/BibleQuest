@@ -156,6 +156,9 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         // Never apply a stale visible action to another account after hydration/switch.
         if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
         const action = target.dataset.practiceAction;
+        // Form submit buttons have no practice action. Do not replace their
+        // form during the click before the browser dispatches submit.
+        if (!action && !target.dataset.practiceStart && !target.dataset.practiceEdit && !target.dataset.practiceDelete) return;
         if (action === 'cue') {
           if (cue.isEnabled()) { cue.disable(); audioChoice++; render(); return; }
           voice.disable(); const choice = ++audioChoice, expectedOwner = owner;
