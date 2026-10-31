@@ -226,9 +226,12 @@ try {
       await page.locator('[data-library-reading-list]').waitFor();
       await page.reload({ waitUntil: 'networkidle' });
       const readingList = page.locator('[data-library-reading-list]');
-      await readingList.waitFor();
+      // The saved list lives inside a native <details> which closes on reload.
+      // Check existence before opening; require visibility after disclosure.
+      await readingList.waitFor({ state: 'attached' });
       const savedDisclosure = readingList.locator('xpath=..');
       if (!(await savedDisclosure.evaluate(node => node.open))) await savedDisclosure.locator('summary').click();
+      await readingList.waitFor({ state: 'visible' });
       await readingList.locator('[data-reading-list-action="open"][data-id="devotional.biblequest.anxiety_worry.01"]').click();
       await page.locator('[data-library-detail] h1').waitFor();
       await page.locator('[data-reading-list-save-action="toggle"]').click();
