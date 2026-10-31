@@ -2,6 +2,7 @@
 export class MediaError extends Error {
   constructor(code) { super(code); this.name = 'MediaError'; this.code = code; }
 }
+/** @returns {never} */
 export const deny = code => { throw new MediaError(code); };
 const REVIEWERS = new Set(['leader', 'pastor', 'admin']);
 const STATES = Object.freeze({

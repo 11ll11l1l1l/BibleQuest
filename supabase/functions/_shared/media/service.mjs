@@ -1,4 +1,4 @@
-import {authorizeScope, authorizeDelivery, deny, inspectUpload, moderationChange, uploadQuota} from './policy.mjs';
+import {authorizeScope, authorizeDelivery, deny, inspectUpload, moderationChange} from './policy.mjs';
 
 /**
  * Server composition boundary. No browser-supplied actor or provider object is trusted.
@@ -27,17 +27,19 @@ export function createMediaService({authorize, repository, provider, now = () =>
     const file = inspectUpload({name, mimeType, bytes});
     const digest = await crypto.subtle.digest('SHA-256', bytes);
     const checksum = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
-    // Fast feedback only; reserveUpload MUST repeat this check inside its transaction.
-    uploadQuota(await repository.quota(congregationId), file.byteSize);
+    // Transactional reserve owns quota AND duplicate detection. A completed replay
+    // must work even when uploads were subsequently disabled or quota exhausted.
     const reservation = await repository.reserveUpload({congregationId, ownerUserId: actor.userId, idempotencyKey, checksum, ...file, state: 'uploading', at: now()});
     if (!reservation?.asset || reservation.asset.congregationId !== congregationId || reservation.asset.ownerUserId !== actor.userId || reservation.asset.checksum !== checksum) deny('MEDIA_RESERVATION_INVALID');
     if (!reservation.acquired) {
       if (reservation.asset.state === 'uploading') deny('MEDIA_UPLOAD_IN_PROGRESS');
+      if (reservation.asset.state === 'upload_failed') deny('MEDIA_RECONCILIATION_REQUIRED');
       return publicRecord(reservation.asset);
     }
     let object;
     try {
-      await scopeActor(request, congregationId);
+      const beforeUpload = await scopeActor(request, congregationId);
+      if (beforeUpload.userId !== actor.userId) deny('MEDIA_SCOPE_DENIED');
       object = await provider.upload({assetId: reservation.asset.id, name: file.name, mimeType, bytes});
       const current = await scopeActor(request, congregationId);
       if (current.userId !== actor.userId) deny('MEDIA_SCOPE_DENIED');
@@ -46,7 +48,9 @@ export function createMediaService({authorize, repository, provider, now = () =>
     } catch (error) {
       // Never trash automatically: finalize may have committed before a transport failure.
       // Preserve object identity and reservation for an explicit reconciliation operation.
-      await repository.markUploadFailed({congregationId, assetId: reservation.asset.id, leaseId: reservation.leaseId, object: object ?? null, code: error?.code ?? 'MEDIA_UPLOAD_FAILED', at: now()});
+      try {
+        await repository.markUploadFailed({congregationId, assetId: reservation.asset.id, leaseId: reservation.leaseId, object: object ?? null, code: error?.code ?? 'MEDIA_UPLOAD_FAILED', at: now()});
+      } catch { /* Existing uploading reservation remains held for reconciliation. */ }
       throw error;
     }
   }
@@ -82,7 +86,7 @@ export function createMediaService({authorize, repository, provider, now = () =>
   return Object.freeze({submit, moderate, download});
 }
 
-function publicRecord(asset) {
+export function publicRecord(asset) {
   // Never serialize tokens, internal provider IDs, paths or moderation audit notes.
   return Object.freeze({id: asset.id, congregationId: asset.congregationId, name: asset.name, mimeType: asset.mimeType, byteSize: asset.byteSize, state: asset.state, revision: asset.revision});
 }
