@@ -85,7 +85,7 @@ const dueLabelForHome = (assignment, locale) => assignment?.dueAt
   ? new Intl.DateTimeFormat(locale === 'tl' ? 'fil-PH' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(assignment.dueAt))
   : 'No deadline';
 
-export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onBibleQuest, onBibleQuestContinue, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications }) {
+export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onBibleQuest, onBibleQuestContinue, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications, onPractices }) {
   const locale = localization.getLocale();
   const tx = (key, values) => localization.t(key, { locale, values });
   const homeTx = (key, values) => localization.t(key, { locale, values, dictionaries: HOME_COMPOSITION_COPY });
@@ -158,6 +158,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       </section>
       <div class="bq-home-secondary" data-home-today-composition>
+        ${onPractices ? '<section class="bq-panel bq-home-tile" lang="en"><button type="button" class="bq-home-tile-button" data-open-practices><span class="bq-home-tile-text"><b>Spiritual Practices</b><small>Silencio, prayer and reflection · English guides</small></span></button></section>' : ''}
         <section class="bq-panel bq-home-tile" data-home-next-event>
           <button type="button" class="bq-home-tile-button" data-open-home-next-event aria-label="${escapeHtml(tx('nav.calendar'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('calendar', { size: 20 })}</span>
@@ -204,6 +205,9 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         </section>
       </div>`,
     mount(root) {
+      const practicesButton = root.querySelector('[data-open-practices]');
+      const openPractices = () => onPractices?.();
+      practicesButton?.addEventListener('click', openPractices);
       const dailyButton = root.querySelector('[data-open-daily]');
       const heroReaderButton = root.querySelector('[data-home-hero-reader]');
       const bibleQuestButton = root.querySelector('[data-open-bible-quest]');
@@ -325,6 +329,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       return () => {
         disposed = true;
         heroReaderButton?.removeEventListener('click', openContinueReading);
+        practicesButton?.removeEventListener('click', openPractices);
         dailyButton?.removeEventListener('click', openDaily);
         bibleQuestButton?.removeEventListener('click', openBibleQuest);
         bibleQuestContinueButton?.removeEventListener('click', continueBibleQuest);

@@ -18,7 +18,7 @@ class ElementStub {
 
 function fixture() {
   const nodes = Object.fromEntries([
-    '[data-library-status]', '[data-library-results]', '[data-library-search]',
+    '[data-library-practices]', '[data-library-status]', '[data-library-results]', '[data-library-search]',
     '[name="query"]', '[name="contentType"]', '[name="taxonomyId"]', '[data-library-retry]', '[data-library-more]',
   ].map(key => [key, new ElementStub()]));
   const page = new ElementStub();
@@ -228,4 +228,16 @@ test('live filters debounce in place, retain results while loading and cancel pe
     await new Promise(resolve => setTimeout(resolve, 300));
     assert.equal(f.requests.length, count, 'leaving the page cancels pending input');
   } finally { globalThis.Element = priorElement; }
+});
+
+
+test('Library practice launcher invokes the provided canonical route callback', () => {
+  const f = fixture();
+  let opened = 0;
+  const page = createLibraryPage({ service: f.service, navigate() {}, onPractices() { opened += 1; } });
+  assert.match(page.html, /data-library-practices lang="en"/);
+  const dispose = page.mount(f.root);
+  f.nodes['[data-library-practices]'].listeners.get('click')();
+  assert.equal(opened, 1);
+  dispose();
 });

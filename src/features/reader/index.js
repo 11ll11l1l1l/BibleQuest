@@ -103,7 +103,7 @@ const offlinePackageHtml = (snapshot, active = false, inventory = [], translatio
   return `<div class="bq-reader-offline-manager" data-reader-offline-manager data-managed-installed="false" data-offline-update-available="${snapshot.updateAvailable ? 'true' : 'false'}"><b>Managed offline copy</b><span>${escapeHtml(snapshot.reason || 'Download this book for offline use.')}</span><small>Current book${escapeHtml(size)} · Storage: ${escapeHtml(usage)}</small><button type="button" class="bq-secondary-button" data-reader-offline-download>${action}</button>${bulkDownload}${inventoryHtml}</div>`;
 };
 
-export function readerPage({ reader, vocabulary = null, furigana = null, offlinePackages = null, audio = null, speech = null, initialVerse = null, onBack = null }) {
+export function readerPage({ reader, vocabulary = null, furigana = null, offlinePackages = null, audio = null, speech = null, initialVerse = null, onBack = null, onMeditate = null }) {
   return {
     title: 'Bible Reader',
     html: `${onBack ? `<button type="button" data-reader-lesson-back>${escapeHtml(localization.t('backToLesson', { dictionaries: { en: { backToLesson: 'Back to lesson' }, tl: { backToLesson: 'Bumalik sa aralin' }, ceb: { backToLesson: 'Balik sa leksyon' } } }))}</button>` : ''}<section data-reader-page><div class="bq-panel"><p>Loading Bible Reader…</p></div></section>`,
@@ -342,7 +342,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           const vocabularyHtml = japanese && vocabulary && vocabularyState?.enabled ? japaneseVocabularyBlock({notes:vocabulary.notesFor(peek.text)}) : '';
           dialog.dataset.peekVerse = String(peek.verse);
           const audioAction = audio?.isAvailable?.() && audio?.hasVerseAlignment?.(reader.getState().book, reader.getState().chapter) && reader.getState().translation === 'bsb' ? `<button type="button" class="bq-secondary-button" data-reader-audio-verse="${peek.verse}">Play from verse ${peek.verse}</button>` : '';
-          body.innerHTML = `<p class="bq-eyebrow">VERSE PEEK</p><h2 id="bq-verse-peek-title">${escapeHtml(peek.reference)}</h2><p class="bq-peek-text">${escapeHtml(peek.text)}</p>${audioAction}${vocabularyHtml}<button type="button" class="bq-secondary-button bq-peek-context-button" data-peek-context>אΩ Hebrew / Greek context</button><div class="bq-external-links">${peek.links.map(link => `<a ${externalAttrs} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
+          body.innerHTML = `<p class="bq-eyebrow">VERSE PEEK</p><h2 id="bq-verse-peek-title">${escapeHtml(peek.reference)}</h2><p class="bq-peek-text">${escapeHtml(peek.text)}</p>${audioAction}${onMeditate ? '<button type="button" class="bq-secondary-button" data-peek-meditate lang="en">Meditate on this verse · English guide</button>' : ''}${vocabularyHtml}<button type="button" class="bq-secondary-button bq-peek-context-button" data-peek-context>אΩ Hebrew / Greek context</button><div class="bq-external-links">${peek.links.map(link => `<a ${externalAttrs} href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join('')}</div>`;
           if (!dialog.open) dialog.showModal();
         } catch (error) { message(error?.message || 'Could not open verse.'); }
       };
@@ -559,6 +559,13 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const vocabToggle = target.closest('[data-jp-vocab-toggle]');
         if (vocabToggle && vocabulary) { const next = vocabulary.setEnabled(!vocabulary.getState().enabled); vocabToggle.outerHTML = japaneseVocabularyControl(next); message(next.enabled ? 'Japanese vocabulary notes enabled.' : 'Japanese vocabulary notes disabled.'); return; }
         const mark = target.closest('[data-reader-mark]'); if (mark) { if (mark.disabled) { message('Already marked read.'); return; } try { const result = reader.markRead(); mark.textContent = 'Marked read'; mark.disabled = true; if (result.newlyRead) message(result.progress?.awardedXp ? `Marked read · +${result.progress.awardedXp} XP` : 'Marked read · progress already credited'); else message('Already marked read.'); } catch (error) { message(error?.message || 'Could not mark chapter read.'); } return; }
+        if (target.closest('[data-peek-meditate]') && onMeditate) {
+          const dialog = host.querySelector('[data-verse-dialog]');
+          const state = reader.getState(), verse = Number(dialog?.dataset.peekVerse);
+          try { audio?.pause(); speech?.stop(); await onMeditate({ translation: state.translation, book: state.book, chapter: state.chapter, verse }); dialog?.close(); }
+          catch (error) { message(error?.message || 'Could not prepare meditation.'); dialog?.close(); }
+          return;
+        }
         const verse = target.closest('[data-verse]'); if (verse) return showPeek(Number(verse.dataset.verse));
         if (target.closest('[data-peek-context]')) { const dialog = host.querySelector('[data-verse-dialog]'), verseNumber = Number(dialog?.dataset.peekVerse); dialog?.close(); const state = reader.getState(); return openContext({ code: state.book, chapter: state.chapter, verse: verseNumber }); }
         if (target.closest('[data-verse-close]')) { host.querySelector('[data-verse-dialog]')?.close(); return; }

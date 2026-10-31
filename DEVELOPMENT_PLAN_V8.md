@@ -1,7 +1,7 @@
 # BibleQuest V8 development plan
 
 Updated: 2026-10-31 JST
-Status: **ACTIVE — P0 inheritance refreshed; first P1 implementation in review**
+Status: **ACTIVE — Library/group, media and spiritual-practice implementations in review; integrated release OPEN**
 Current release and handoff authority: [V7_ACTIVE_STATUS.md](V7_ACTIVE_STATUS.md)
 
 ## Purpose
@@ -74,10 +74,10 @@ Released runtime baseline: `main` at `87cb9dd4c3b60b9679e0acecda519300194b6d55`.
 |---|---|---|
 | P0 — Inheritance and scope | Retain Library/ONE 2 ONE/Auth/tenancy/PWA and V7.1 session engine; identify actual missing capabilities | Refreshed for first P1 slice; media/provider and Ilocano licensing contracts still require task-specific validation |
 | P1 — Group/content integration | Public Library reading → related canonical discussion series; retain explicit host-send and joined-session authority | First implementation in review; browser/authenticated CI still required. Private lesson responses and arbitrary reading prose are excluded from broadcasts |
-| P2 — Media and moderation | Central Drive ingest, metadata ownership, pending-review lifecycle, moderation and provider/quota recovery | Next contract task: validate existing media ownership and Drive integration before schema/provider writes; no uploads or publication authorized by a test fixture |
+| P2 — Media and moderation | Central Drive ingest, metadata ownership, pending-review lifecycle, moderation and provider/quota recovery | Bounded Files/upload/moderation/Drive recovery implementation in draft PR #1556. Provider credentials/restricted folder/quota configuration, real backend/Drive/browser validation and integrated deployment remain OPEN; migration is unapplied |
 | P3 — Ilocano | Source/license-valid full Bible through existing provider, then full UI | Bible source/rights/coverage and provider/offline compatibility first; existing English fallback is not full Ilocano |
 | P4 — Content expansion | Bounded devotional/teaching/book/Couples batches using existing provenance, review and reference checks | Do not reimport the 300 existing devotionals or bypass rights/translation review; use verified missing-ID queues |
-| P4a — Spiritual practices | Shared timer/player, Silencio, Scripture meditation and daily routines; then additional practice guides using existing owners | ACCEPTED SCOPE; implementation OPEN. Start with timer/content core, then connected flows and persistence. See linked source mapping and acceptance |
+| P4a — Spiritual practices | Shared timer/player, Silencio, Scripture meditation and daily routines; then additional practice guides using existing owners | Timer/content/player/reflections plus Library/Home/You discovery and selected-verse Reader meditation implemented on PR #1557; short/custom durations, daily-life guides and optional wake lock; full V7 suite (759/759) and build PASS. Owner authorized push/review PR; browser/device/offline certification OPEN. See [implementation handoff](work/tasks/20261031-v8-spiritual-practices.md) and linked source mapping for remaining scope |
 | P5 — Integrated release | Existing exact-SHA, backend/tenant/privacy, responsive/localization, PWA/offline/performance and deployment verification | OPEN; no source/unit-only release claim |
 
 For the current single bounded P1 task, one executor owns Library presentation, canonical series preference, route wiring and its tests; no concurrent shared-file writers. [Task handoff](work/tasks/20261028-v8-library-group-handoff.md).
@@ -95,3 +95,15 @@ When broader independent execution is enabled, use at least four disjoint lanes 
 ## Guardrail
 
 A useful V8 extension point may be left in V7 only when it is the simplest clean contract needed by V7 itself. Do not implement a V8 backend, realtime engine, storage pipeline, bulk importer or localization rollout early merely to make V7 appear future-proof.
+
+
+## Current remaining work and accelerated execution order — 2026-10-31
+
+1. Finish the remaining practice coding gaps: reviewed localization, existing-reminder integration, managed offline packaging and optional transition cues. Short/custom durations, additional daily-life guides and wake lock are now coded; do not rebuild them.
+2. Reconcile cleanup #1554, Library/group #1555, media #1556 and practices #1557 onto one current candidate. These PRs are still open; individual source trees are not proof of a combined build or deployment. Preserve distinct media/runtime changes and serialize shared-file conflicts.
+3. Complete central-media configuration and actual provider/backend validation against the setup contract in #1556. The code exists, but no production migration, Drive setup or real upload/moderation PASS is implied.
+4. Complete source/license-valid full Ilocano Bible, provider/offline compatibility and UI rollout. Do not represent existing fallback as full Ilocano support.
+5. Complete verified missing devotional/teaching/book/Couples expansion and personalized discovery/ALAM gaps through existing rights, review and privacy boundaries. Do not duplicate the 300 existing devotionals or feed private confessions into recommendations.
+6. Run the existing pinned-toolchain, exact-candidate integration/browser/auth/tenant/privacy/offline/performance/deployment checks once coding converges; diagnose any failed gate and promote only the certified candidate. Current local browser installation is blocked by truncated download; physical-device evidence remains separate.
+
+This is sequencing for faster execution, not silent removal of accepted V8 scope or certification. No complete-V8 percentage or release date is claimed without a reconciled acceptance inventory.

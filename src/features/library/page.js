@@ -13,7 +13,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 }[character]));
 
 export function createLibraryPage({
-  service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
+  service, onPractices, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
   isContextReady = () => true, subscribeContext = () => () => {},
   visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
@@ -44,6 +44,7 @@ export function createLibraryPage({
       <header class="bq-library__header">
         <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
         <h1>${escapeHtml(t('v7.library.title'))}</h1>
+        ${onPractices ? '<button type="button" class="bq-secondary-button" data-library-practices lang="en">Spiritual Practices · English guides</button>' : ''}
 
       </header>
       <form data-library-search>
@@ -82,6 +83,7 @@ export function createLibraryPage({
     mount(root) {
       const page = root.querySelector('[data-library-page]');
       if (!page) throw new Error('Library page host is missing.');
+      page.querySelector('[data-library-practices]')?.addEventListener('click', () => onPractices?.());
       const status = page.querySelector('[data-library-status]');
       const results = page.querySelector('[data-library-results]');
       const form = page.querySelector('[data-library-search]');

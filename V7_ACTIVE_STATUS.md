@@ -18,6 +18,8 @@ The owner authorized accelerated V8 development on 2026-10-28. [V8 plan](DEVELOP
 2. First V8 P1 slice: public Library reading → related canonical discussion series. Uses published topic metadata only; source prose, reading IDs and private answers do not enter the session. Local preview never sends automatically; joined-session state remains authoritative. [Implementation handoff](work/tasks/20261028-v8-library-group-handoff.md).
 3. Next independent scope is P2 media/provider/moderation contract refresh or P3 Ilocano source/licensing validation, while first-slice CI runs. Do not rebuild the already shipped V7.1 engine or reopen old image queues.
 
+4. Owner-added spiritual practices scope: Silencio/timer/private-reflection, discovery/selected-verse meditation, short/custom durations, daily-life guides and wake-lock slices is implemented on its isolated review branch; 759/759 V7 tests and production build pass. [Implementation evidence and remaining scope](work/tasks/20261031-v8-spiritual-practices.md). Full V8 scope and certification remain open.
+
 V8 implementation is not deployed or certified. Published V7.1 and its rollback remain unchanged.
 
 ## Preserved boundaries
