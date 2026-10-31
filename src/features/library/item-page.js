@@ -39,7 +39,6 @@ export function createLibraryItemPage({service,id,onBack,onRelated,readingListSt
         try{const saved=readingList.list(listOwner).some(row=>row.id===selectedItem.id);if(saved)readingList.remove(selectedItem.id,listOwner);else readingList.save(selectedItem,listOwner);renderSaved(saved?copy.removed:copy.saved);}
         catch(error){renderSaved(error?.code==='BQ_READING_LIST_FULL'?copy.full:copy.error);}
       };
-      host.addEventListener?.('click',saveClick);
       const relatedClick=event=>{
         const button=event.target.closest?.('[data-library-related-action]');
         if(disposed||!button||!host.contains?.(button)||!selectedItem||!isContextReady())return;
@@ -70,7 +69,8 @@ export function createLibraryItemPage({service,id,onBack,onRelated,readingListSt
           button.disabled=false;
         });
       };
-      host.addEventListener?.('click',relatedClick);
+      const detailClick=event=>{saveClick(event);relatedClick(event);};
+      host.addEventListener?.('click',detailClick);
       const render=state=>{
         if(disposed)return;
         relatedRequest+=1;
@@ -119,7 +119,7 @@ export function createLibraryItemPage({service,id,onBack,onRelated,readingListSt
         if(isContextReady())void service.getItem(id);
         else service.reset?.();
       }else host.textContent=localization.t('v7.library.item.required');
-      return ()=>{disposed=true;relatedRequest+=1;relatedRows.clear();host.removeEventListener?.('click',relatedClick);host.removeEventListener?.('click',saveClick);unsubscribe();unsubscribeContext?.();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
+      return ()=>{disposed=true;relatedRequest+=1;relatedRows.clear();host.removeEventListener?.('click',detailClick);unsubscribe();unsubscribeContext?.();back.removeEventListener('click',goBack);retry.removeEventListener('click',reload)};
     }
   };
 }
