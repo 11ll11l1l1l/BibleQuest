@@ -31,7 +31,8 @@
     "field:v6-validate": "node scripts/v6-field-certification-package.mjs validate",
     "unit:v7": "node --test tests/v7/*.test.mjs && npm run check:v7-image-ledger",
     "check:v7-image-ledger": "node scripts/v7-image-work-ledger.mjs audit",
-    "unit:v8": "node --test tests/v8/*.test.mjs"
+    "unit:v8": "node --test tests/v8/*.test.mjs",
+    "intake:v8": "node scripts/v8-library-intake.mjs"
   },
   "devDependencies": {
     "typescript": "7.0.2",

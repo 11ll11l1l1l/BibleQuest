@@ -37,6 +37,8 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 
 12. Library now has an account-scoped device-local Saved for later list for published books/devotionals/teachings. Saves only canonical link/title/type/time metadata; opening reuses the normal published lookup. EN/TL/CEB controls, explicit capacity, stale-owner denial and return focus are coded; 132 Library checks and build pass locally. [Implementation and evidence](work/tasks/20261101-v8-library-reading-list.md).
 
+13. V8 bulk text intake is coded for new devotional/teaching sources: bounded UTF-8 preprocessing, source/packet hashes, deterministic revisions, published-catalog duplicate checks and existing-contract draft packets. No automatic article authorship, rights verification or publication. Ten intake tests plus affected content/media checks pass; real content ingestion/review remains open. [Usage](docs/v8/BULK_LIBRARY_INTAKE.md) and [handoff](work/tasks/20261101-v8-content-intake.md).
+
 ## Preserved boundaries
 
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.
