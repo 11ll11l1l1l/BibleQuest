@@ -408,6 +408,7 @@ test('spoken guide is a user-enabled foreground alternative and follows stage, p
     assert.doesNotMatch(spoken[0].text, /private|reflection|account:alice/i);
     assert.match(f.host.innerHTML, /Read current guide again/);
     assert.deepEqual(Object.keys(f.saved.get('spiritual-practices.v1.guest')), ['current', 'history'], 'speech mode is visit-only');
+    f.time(58000); // Real foreground ticks keep the transition within the cue window.
     f.time(61000);
     assert.equal(spoken.length, 2, 'the next stage is spoken during a visible foreground tick');
     assert.match(spoken[1].text, /^Stillness\./);
