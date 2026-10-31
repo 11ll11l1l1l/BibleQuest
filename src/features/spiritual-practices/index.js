@@ -136,7 +136,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           <output class="bq-practice-clock" aria-label="${h('Remaining in this stage')}" aria-live="off" data-practice-clock>${clock(current.remaining)}</output>
           <p role="status" aria-live="polite" data-practice-state>${h(current.state)} · ${h('stage')} ${current.stage + 1} ${h('of')} ${practice.stages.length}</p>
           <details><summary>${h('Stage guide')}</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>
-          ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${button('voice', voice.isEnabled() ? 'Turn spoken guide off' : 'Read stage guides aloud')}${voice.isEnabled() ? button('voice-repeat', 'Read current guide again') : ''}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
+          ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${cue.isEnabled() ? button('cue-test', 'Test transition sound') : ''}${button('voice', voice.isEnabled() ? 'Turn spoken guide off' : 'Read stage guides aloud')}${voice.isEnabled() ? button('voice-repeat', 'Read current guide again') : ''}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
             <p>${h('Spoken guide uses your device text-to-speech voice. It reads each new stage while this page is open and visible. Try Read current guide again to test your volume. Background narration is not guaranteed.')}</p>
             <p>${h('Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.')}</p>` : `<p>${h(current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.')}</p>
             <form data-practice-reflection data-practice-session="${esc(current.id)}">${reflectionFields(current)}<button class="bq-primary-button" type="submit">${h('Save reflection on this device')}</button></form>${button('new', 'Choose another practice')}`}
@@ -166,6 +166,10 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           }).catch(error => {
             if (alive && expectedOwner === getOwner() && choice === audioChoice) { message = error?.message || 'Could not enable transition sound.'; render(); }
           });
+          return;
+        }
+        if (action === 'cue-test') {
+          if (cue.isEnabled() && !cue.play()) { message = 'Transition sound could not play. Check media volume and keep the page visible.'; render(); }
           return;
         }
         if (action === 'voice') {
