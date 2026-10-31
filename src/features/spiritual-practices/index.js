@@ -1,6 +1,7 @@
 import { practiceLocale, practiceText, practiceTitle, localizePractice } from './copy.js';
 import { createPracticeOffline } from './offline.js';
 import { createPracticeCue } from './cue.js';
+import { createPracticeVoice } from './voice.js';
 import { createPracticeWakeLock } from './wake-lock.js';
 import { PRACTICES, SILENCIO_PRESETS, MORNING_PRESETS, EVENING_QUESTIONS, REMINDER_ROUTINES, DISCIPLINE_GUIDES, getPractice } from './content.js';
 import { advance, createSession, validSession } from './timer.js';
@@ -19,15 +20,27 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
       const host = root.querySelector('[data-practice]');
       const wakeLock = createPracticeWakeLock();
       const cue = createPracticeCue();
+      const voice = createPracticeVoice();
       const offline = offlineShell ? createPracticeOffline({ books, shell: offlineShell, getOwner }) : null;
       let offlineOperation = 0, offlineTask = 0, offlineBusy = false;
       let awake = false;
       let drafts = new Map(), editingId = '';
-      let owner = getOwner(), current = null, history = [], message = '', alive = true, passageOperation = 0;
+      let owner = getOwner(), current = null, history = [], message = '', alive = true, passageOperation = 0, audioChoice = 0;
+      const speechError = () => {
+        if (!alive || owner !== getOwner()) return;
+        message = 'Spoken guide could not play. Check your media volume and device text-to-speech settings.';
+        const status = host.querySelector('[data-practice-message]');
+        if (status) status.textContent = t(message);
+      };
+      const readStage = () => {
+        if (!current || !['running', 'paused'].includes(current.state) || document.hidden || owner !== getOwner()) return false;
+        const practice = localizePractice(getPractice(current.templateId, current.durationMinutes), locale);
+        return voice.read(practice.stages[current.stage], locale, speechError);
+      };
       const key = () => `spiritual-practices.v1.${owner}`;
       function load() {
         drafts.clear(); editingId = '';
-        awake = false; void wakeLock.release(); cue.disable(); offline?.cancel(); offlineBusy = false; offlineTask++; offlineOperation++;
+        awake = false; void wakeLock.release(); cue.disable(); voice.disable(); audioChoice++; offline?.cancel(); offlineBusy = false; offlineTask++; offlineOperation++;
         const saved = storage.read(key(), null);
         current = validSession(saved?.current) ? saved.current : null;
         history = Array.isArray(saved?.history) ? saved.history.filter(row => validSession(row?.session) && ['completed', 'ended'].includes(row.session.state) && typeof row.reflection === 'string' && row.reflection.length <= 6000).slice(0, 50).map(row => ({session: row.session, reflection: row.reflection, answers: answersFor(row.session, row.answers)})) : [];
@@ -66,8 +79,12 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         if (!current) return;
         const before = `${current.stage}:${current.state}`, recent = Date.now() - current.updatedAt <= 5000, wasRunning = current.state === 'running';
         current = advance(current);
-        if (playCue && recent && wasRunning && !document.hidden && before !== `${current.stage}:${current.state}`) { try { cue.play(); } catch { message = 'Transition sound could not play.'; } }
-        if (before !== `${current.stage}:${current.state}`) { if (current.state === 'completed') { awake = false; void wakeLock.release(); } save(); }
+        if (playCue && recent && wasRunning && !document.hidden && current.state === 'running'
+            && before !== `${current.stage}:${current.state}`) {
+          if (voice.isEnabled()) { if (!readStage()) speechError(); }
+          else { try { cue.play(); } catch { message = 'Transition sound could not play.'; } }
+        }
+        if (before !== `${current.stage}:${current.state}`) { if (current.state === 'completed') { voice.stop(); cue.stop(); awake = false; void wakeLock.release(); } save(); }
       }
       const button = (action, text) => `<button type="button" class="bq-secondary-button" data-practice-action="${action}">${h(text)}</button>`;
       async function renderPassage() {
@@ -119,7 +136,8 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           <output class="bq-practice-clock" aria-label="${h('Remaining in this stage')}" aria-live="off" data-practice-clock>${clock(current.remaining)}</output>
           <p role="status" aria-live="polite" data-practice-state>${h(current.state)} · ${h('stage')} ${current.stage + 1} ${h('of')} ${practice.stages.length}</p>
           <details><summary>${h('Stage guide')}</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>
-          ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
+          ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${cue.isEnabled() ? button('cue-test', 'Test transition sound') : ''}${button('voice', voice.isEnabled() ? 'Turn spoken guide off' : 'Read stage guides aloud')}${voice.isEnabled() ? button('voice-repeat', 'Read current guide again') : ''}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
+            <p>${h('Spoken guide uses your device text-to-speech voice. It reads each new stage while this page is open and visible. Try Read current guide again to test your volume. Background narration is not guaranteed.')}</p>
             <p>${h('Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.')}</p>` : `<p>${h(current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.')}</p>
             <form data-practice-reflection data-practice-session="${esc(current.id)}">${reflectionFields(current)}<button class="bq-primary-button" type="submit">${h('Save reflection on this device')}</button></form>${button('new', 'Choose another practice')}`}
         </section>` : `<section><h2>${h('Choose a practice')}</h2><div class="bq-practice-list">${[...PRACTICES, ...SILENCIO_PRESETS, ...MORNING_PRESETS].map(item => `<button class="bq-secondary-button" type="button" data-practice-start="${esc(item.id)}">${esc(practiceTitle(locale, item.title))}</button>`).join('')}</div>
@@ -139,9 +157,32 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         if (getOwner() !== owner) { owner = getOwner(); load(); render(); return; }
         const action = target.dataset.practiceAction;
         if (action === 'cue') {
-          if (cue.isEnabled()) { cue.disable(); render(); return; }
-          const expectedOwner = owner;
-          void cue.enable().then(enabled => { if (!alive || expectedOwner !== getOwner()) { cue.disable(); return; } message = enabled ? 'Transition sound enabled for this visit. Missed background cues are not replayed.' : ''; render(); }).catch(error => { if (alive && expectedOwner === getOwner()) { message = error?.message || 'Could not enable transition sound.'; render(); } });
+          if (cue.isEnabled()) { cue.disable(); audioChoice++; render(); return; }
+          voice.disable(); const choice = ++audioChoice, expectedOwner = owner;
+          void cue.enable().then(enabled => {
+            if (!alive || expectedOwner !== getOwner() || choice !== audioChoice) { cue.disable(); return; }
+            message = enabled ? 'Transition sound enabled for this visit. Missed background cues are not replayed.' : '';
+            render();
+          }).catch(error => {
+            if (alive && expectedOwner === getOwner() && choice === audioChoice) { message = error?.message || 'Could not enable transition sound.'; render(); }
+          });
+          return;
+        }
+        if (action === 'cue-test') {
+          if (cue.isEnabled() && !cue.play()) { message = 'Transition sound could not play. Check media volume and keep the page visible.'; render(); }
+          return;
+        }
+        if (action === 'voice') {
+          ++audioChoice;
+          if (voice.isEnabled()) { voice.disable(); message = 'Spoken guide turned off.'; render(); return; }
+          cue.disable();
+          if (!voice.enable()) { message = 'Device text-to-speech is unavailable in this browser.'; render(); return; }
+          message = 'Spoken guide enabled for this visit. Check your media volume. Background narration is not guaranteed.';
+          if (current?.state === 'running' && !readStage()) speechError();
+          render(); return;
+        }
+        if (action === 'voice-repeat') {
+          if (voice.isEnabled() && !readStage()) speechError();
           return;
         }
         if (action?.startsWith('offline-') && offline) {
@@ -181,8 +222,18 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           message = ''; try { reminders?.dismiss(owner); } catch { message = 'Could not dismiss the reminder on this device.'; } save();
         }
         else if (target.dataset.practiceDelete) { const previous = history; history = history.filter(row => row.session.id !== target.dataset.practiceDelete); if (save()) { drafts.delete(target.dataset.practiceDelete); if (editingId === target.dataset.practiceDelete) editingId = ''; } else history = previous; }
-        else if (action === 'new') { if (current) drafts.delete(current.id); current = null; save(); }
-        else if (current && ['pause', 'resume', 'skip', 'end'].includes(action)) { current = advance(current, action); if (['paused', 'ended', 'completed'].includes(current.state)) { cue.stop(); awake = false; void wakeLock.release(); } save(); }
+        else if (action === 'new') { if (current) drafts.delete(current.id); voice.disable(); cue.disable(); audioChoice++; current = null; save(); }
+        else if (current && ['pause', 'resume', 'skip', 'end'].includes(action)) {
+          const beforeStage = current.stage;
+          current = advance(current, action);
+          if (['paused', 'ended', 'completed'].includes(current.state)) {
+            cue.stop(); voice.stop(); awake = false; void wakeLock.release();
+          } else if (current.state === 'running' && (action === 'resume' || current.stage !== beforeStage)
+              && voice.isEnabled() && !document.hidden) {
+            if (!readStage()) speechError();
+          }
+          save();
+        }
         render();
       }
       function input(event) {
@@ -240,7 +291,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         const output = host.querySelector('[data-practice-clock]');
         if (output && current) output.textContent = clock(current.remaining);
       }
-      const visibility = () => { if (!document.hidden) { tick(false); render(); } else { cue.stop(); awake = false; void wakeLock.release(); save(); } };
+      const visibility = () => { if (!document.hidden) { tick(false); render(); } else { cue.stop(); voice.stop(); awake = false; void wakeLock.release(); save(); } };
       load(); render();
       host.addEventListener('click', act);
       host.addEventListener('submit', submit);
@@ -248,7 +299,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
       document.addEventListener('visibilitychange', visibility);
       const interval = setInterval(tick, 1000);
       const unsubscribe = subscribeOwner(() => { if (getOwner() !== owner) { owner = getOwner(); load(); render(); } });
-      return () => { alive = false; cue.dispose(); offline?.dispose(); offlineTask++; offlineOperation++; void wakeLock.release(); passageOperation++; save(); clearInterval(interval); unsubscribe(); document.removeEventListener('visibilitychange', visibility); host.removeEventListener('click', act); host.removeEventListener('submit', submit); host.removeEventListener('input', input); drafts.clear(); };
+      return () => { alive = false; audioChoice++; cue.dispose(); voice.dispose(); offline?.dispose(); offlineTask++; offlineOperation++; void wakeLock.release(); passageOperation++; save(); clearInterval(interval); unsubscribe(); document.removeEventListener('visibilitychange', visibility); host.removeEventListener('click', act); host.removeEventListener('submit', submit); host.removeEventListener('input', input); drafts.clear(); };
     },
   };
 }

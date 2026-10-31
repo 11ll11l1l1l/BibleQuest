@@ -45,6 +45,16 @@ Skip stage|Laktawan ang bahaging ito|Laktawi kini nga bahin
 End early|Tapusin nang maaga|Taposa og sayo
 Turn transition sound off|Patayin ang tunog ng paglipat|Palonga ang tingog sa pagbalhin
 Enable transition sound|Buksan ang tunog ng paglipat|Paandara ang tingog sa pagbalhin
+Read stage guides aloud|Basahin nang malakas ang gabay sa bawat bahagi|Basaha og kusog ang giya sa matag bahin
+Turn spoken guide off|Patayin ang binabasang gabay|Palonga ang gibasang giya
+Read current guide again|Basahin muli ang kasalukuyang gabay|Basaha pag-usab ang giya karon
+Test transition sound|Subukan ang tunog ng paglipat|Sulayi ang tingog sa pagbalhin
+Transition sound could not play. Check media volume and keep the page visible.|Hindi tumunog ang paglipat. Suriin ang media volume at panatilihing bukas ang pahina.|Dili mapatukar ang tingog sa pagbalhin. Susiha ang media volume ug ipabiling makita ang pahina.
+Spoken guide uses your device text-to-speech voice. It reads each new stage while this page is open and visible. Try Read current guide again to test your volume. Background narration is not guaranteed.|Ginagamit ng binabasang gabay ang text-to-speech ng device. Binabasa nito ang bawat bagong bahagi habang nakabukas at nakikita ang pahina. Gamitin ang Basahin muli upang subukan ang lakas ng tunog. Hindi garantisado ang pagbasa sa background.|Ang gibasang giya naggamit sa text-to-speech sa device. Basahon ang matag bag-ong bahin samtang bukas ug makita ang pahina. Pislita ang Basaha pag-usab aron sulayan ang volume. Dili garantiya ang pagbasa sa background.
+Spoken guide enabled for this visit. Check your media volume. Background narration is not guaranteed.|Aktibo ang binabasang gabay habang narito ka. Suriin ang media volume. Hindi garantisado ang pagbasa sa background.|Aktibo ang gibasang giya niining pagbisita. Susiha ang media volume. Dili garantiya ang pagbasa sa background.
+Spoken guide turned off.|Napatay ang binabasang gabay.|Gipalong ang gibasang giya.
+Device text-to-speech is unavailable in this browser.|Hindi available ang text-to-speech ng device sa browser na ito.|Dili magamit ang text-to-speech sa device niining browser.
+Spoken guide could not play. Check your media volume and device text-to-speech settings.|Hindi ma-play ang binabasang gabay. Suriin ang media volume at text-to-speech settings ng device.|Dili mapatukar ang gibasang giya. Susiha ang media volume ug text-to-speech settings sa device.
 Allow screen sleep|Payagang matulog ang screen|Tugoti nga mopalong ang screen
 Keep screen awake|Panatilihing bukas ang screen|Ipabiling bukas ang screen
 Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.|Itabi ang telepono kung makatutulong. Hindi garantisado ang alert kapag nasa background. Bumalik dito para makita ang lumipas na oras.|Ipadaplin ang telepono kon makatabang. Dili garantiya ang alert sa background. Balik dinhi aron makita ang milabay nga oras.
