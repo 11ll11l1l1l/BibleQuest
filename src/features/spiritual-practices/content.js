@@ -26,6 +26,13 @@ export const PRACTICES = Object.freeze([
     stage('Formation', 120, 'What Christlike quality do you need to practice today?'),
     stage('Surrender', 120, 'Entrust your schedule to God and choose one response.'),
   ]),
+  template('meditation-10', 'Scripture meditation · 10 minutes', [
+    stage('Read slowly', 120, 'Read the selected verse in its chapter context. Notice what it says about God.'),
+    stage('Dwell', 180, 'Stay with a word or phrase. Consider its meaning in context without rushing.'),
+    stage('Respond in prayer', 120, 'Speak honestly to God about what you have read.'),
+    stage('Rest in silence', 120, 'Rest attentively before God. Gently return to the passage when distracted.'),
+    stage('Live it', 60, 'Choose one concrete, loving response to this Scripture.'),
+  ]),
   template('presence-30', 'Daytime pause · 30 seconds', [stage('Remember', 30, 'Pause. Acknowledge Jesus’ presence and ask for help to love faithfully in this moment.')]),
   template('evening-5', 'Evening reflection · 5 minutes', [
     stage('Notice', 60, 'Where did I see God today?'),

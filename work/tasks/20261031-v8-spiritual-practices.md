@@ -24,4 +24,13 @@ Follow-up alignment review hardened malformed-history recovery, disabled per-sec
 
 ## Remaining scope
 
-This first slice does not complete the full spiritual-practices roadmap. Next: selected-passage Reader handoff and Home/You integration, additional duration presets and custom allocation, reviewed localization, reminder and offline package integration, additional discipline guides, optional transition cues and wake lock. Full browser/device QA and release certification remain deferred/open per owner direction. Preserve existing exact-SHA production boundaries.
+This first slice does not complete the full spiritual-practices roadmap. Next: additional duration presets and custom allocation, reviewed localization, reminder and offline package integration, additional discipline guides, optional transition cues and wake lock. Full browser/device QA and release certification remain deferred/open per owner direction. Preserve existing exact-SHA production boundaries.
+
+
+## Continuation: discovery and selected-verse meditation
+
+Added Home and You entry points using existing phone tile/shortcut patterns. Bible Reader verse peek now offers an English meditation action, pauses reader audio/speech, validates the selected canonical identity through the existing Bible provider and opens Practices. A new ten-minute Scripture meditation guide carries that reference into its own session snapshot; choosing a new passage cannot silently replace an active session. Reload uses the stored reference and provider-owned Scripture, preserving attribution without storing copied Scripture text or adding prose to URLs.
+
+The passage service rejects invalid book/chapter/verse/translation, licensed-link-only text, mismatched provider responses, missing verses, offline failures and cross-account late responses. Practice rendering also discards detached/old-account async results. Entering Practices disposes background Bible audio so silence is not accompanied by a previous narration. A completed Reader navigation does not steal focus back after the user has moved to a different passage/route.
+
+Validation: full V7 suite 754/754 PASS, including five new selected-passage/controller cases; 31-attempt ledger audit, typecheck, production build, lint/format and diff whitespace PASS on Node 24.22.1. Browser/device/offline UI certification remains OPEN, as before. New service tests verify failure handling; they do not certify a physical offline device journey. Remaining scope above is retained explicitly.

@@ -8,7 +8,7 @@ const source = (await readFile(new URL('../../src/features/spiritual-practices/i
   .replace("'./content.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/content.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-function fixture(initial = null) {
+function fixture(initial = null, passages = null) {
   let owner = 'guest', notify, tick, now = 1000, body = '', reflection = '';
   const listeners = new Map(), saved = new Map();
   if (initial) saved.set('spiritual-practices.v1.guest', initial);
@@ -20,7 +20,7 @@ function fixture(initial = null) {
   globalThis.FormData = class { get() { return reflection; } };
   Date.now = () => now;
   const storage = { read: (key, fallback) => saved.get(key) || fallback, write: (key, value) => saved.set(key, structuredClone(value)) };
-  const page = spiritualPracticesPage({ storage, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
+  const page = spiritualPracticesPage({ storage, passages, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
   const dispose = page.mount({ querySelector: () => host });
   return {
     host, saved, storage, get body() { return body; },
@@ -92,5 +92,24 @@ test('malformed saved history does not prevent opening and countdown is not anno
     f.click({ practiceStart: 'silencio-10' });
     assert.match(f.host.innerHTML, /aria-live="off" data-practice-clock/);
     assert.match(f.host.innerHTML, /role="status" aria-live="polite" data-practice-state/);
+  } finally { f.close(); }
+});
+
+
+test('meditation requires a selected passage and persists its reference without replacing an active session', () => {
+  const empty = fixture();
+  try {
+    empty.click({ practiceStart: 'meditation-10' });
+    assert.match(empty.host.innerHTML, /Read a passage first, tap a verse/);
+    assert.equal(empty.saved.size, 0);
+  } finally { empty.close(); }
+  let selected = { translation: 'bsb', book: 'PSA', chapter: 46, verse: 10 };
+  const f = fixture(null, { selection: () => selected });
+  try {
+    f.click({ practiceStart: 'meditation-10' });
+    assert.deepEqual(f.saved.get('spiritual-practices.v1.guest').current.passage, selected);
+    selected = { translation: 'bsb', book: 'JHN', chapter: 1, verse: 1 };
+    f.click({ practiceAction: 'pause' });
+    assert.equal(f.saved.get('spiritual-practices.v1.guest').current.passage.book, 'PSA');
   } finally { f.close(); }
 });
