@@ -384,3 +384,86 @@ test('reminder form renders chosen routine/weekdays, submits bounded setup and d
     assert.equal(saved,null);
   } finally {f.close();}
 });
+
+
+test('spoken guide is a user-enabled foreground alternative and follows stage, pause and owner lifecycle', () => {
+  const originalSynth = globalThis.speechSynthesis;
+  const originalUtterance = globalThis.SpeechSynthesisUtterance;
+  const spoken = [];
+  let cancellations = 0;
+  globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  globalThis.speechSynthesis = {
+    cancel() { cancellations++; },
+    speak(utterance) { spoken.push(utterance); },
+    getVoices() { return []; },
+  };
+  const f = fixture();
+  try {
+    f.click({ practiceStart: 'silencio-10' });
+    assert.equal(spoken.length, 0, 'a timer never speaks without a user choice');
+    assert.match(f.host.innerHTML, /Read stage guides aloud/);
+    f.click({ practiceAction: 'voice' });
+    assert.equal(spoken.length, 1);
+    assert.match(spoken[0].text, /^Prepare\. Set aside distractions/);
+    assert.doesNotMatch(spoken[0].text, /private|reflection|account:alice/i);
+    assert.match(f.host.innerHTML, /Read current guide again/);
+    assert.deepEqual(Object.keys(f.saved.get('spiritual-practices.v1.guest')), ['current', 'history'], 'speech mode is visit-only');
+    f.time(61000);
+    assert.equal(spoken.length, 2, 'the next stage is spoken during a visible foreground tick');
+    assert.match(spoken[1].text, /^Stillness\./);
+    f.click({ practiceAction: 'pause' });
+    const atPause = spoken.length;
+    f.time(120000);
+    assert.equal(spoken.length, atPause, 'paused timer cannot queue automatic speech');
+    f.click({ practiceAction: 'voice-repeat' });
+    assert.equal(spoken.length, atPause + 1, 'explicit replay is available even during pause');
+    f.click({ practiceAction: 'resume' });
+    assert.equal(spoken.length, atPause + 2, 'resume restates the current guide');
+    const beforeOwnerSwitch = cancellations;
+    f.switch('account:other');
+    assert.ok(cancellations > beforeOwnerSwitch, 'owner switch cancels narration');
+    assert.doesNotMatch(f.host.innerHTML, /Read current guide again/);
+    assert.equal(f.saved.has('spiritual-practices.v1.account:other'), false);
+  } finally {
+    f.close();
+    globalThis.speechSynthesis = originalSynth;
+    globalThis.SpeechSynthesisUtterance = originalUtterance;
+  }
+});
+
+test('voice is not replayed after hidden-tab catch-up, opt-out, or session end', () => {
+  const originalSynth = globalThis.speechSynthesis, originalUtterance = globalThis.SpeechSynthesisUtterance;
+  const heard = [];
+  globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  globalThis.speechSynthesis = { cancel() {}, speak(utterance) { heard.push(utterance.text); }, getVoices() { return []; } };
+  const f = fixture();
+  try {
+    f.click({practiceStart:'silencio-10'});
+    f.click({practiceAction:'voice'});
+    const initial = heard.length;
+    globalThis.document.hidden = true;
+    f.time(61000);
+    assert.equal(heard.length, initial);
+    globalThis.document.hidden = false;
+    f.click({practiceAction:'voice'});
+    f.time(185000);
+    assert.equal(heard.length, initial);
+    f.click({practiceAction:'end'});
+    assert.doesNotMatch(f.host.innerHTML, /data-practice-action="voice"/);
+  } finally {
+    f.close();
+    globalThis.speechSynthesis = originalSynth;
+    globalThis.SpeechSynthesisUtterance = originalUtterance;
+  }
+});
+
+test('spoken-guide controls localize for Filipino and Cebuano without changing session identity', () => {
+  for (const [locale,label] of [['tl','Basahin nang malakas ang gabay'],['ceb','Basaha og kusog ang giya']]) {
+    const f = fixture(null,null,null,locale);
+    try {
+      f.click({practiceStart:'silencio-10'});
+      assert.match(f.host.innerHTML,new RegExp(label));
+      assert.match(f.host.innerHTML,/data-practice-action="voice"/);
+    } finally { f.close(); }
+  }
+});
