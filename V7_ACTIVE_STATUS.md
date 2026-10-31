@@ -1,6 +1,6 @@
 # BibleQuest current status
 
-Updated: 2026-10-28 JST. V7 and V7.1 have shipped. This is the current status authority; older pending-release/lane statements are historical.
+Updated: 2026-10-31 JST. V7 and V7.1 have shipped. This is the current status authority; older pending-release/lane statements are historical.
 
 ## Released baseline
 
@@ -16,7 +16,7 @@ The owner authorized accelerated V8 development on 2026-10-28. [V8 plan](DEVELOP
 
 1. Cleanup [PR #1554](https://github.com/11ll11l1l1l/BibleQuest/pull/1554) is not merged. Its original head passed 8/9 workflows; convergence failed installing Playwright 1.55 on Ubuntu 26.04 before browser execution. Repair head `7440cbb1df2fa54b25e898c66fe76a57ccbc79d9` pins Ubuntu 24.04; new CI is running. No gate was removed.
 2. First V8 P1 slice: public Library reading → related canonical discussion series. Uses published topic metadata only; source prose, reading IDs and private answers do not enter the session. Local preview never sends automatically; joined-session state remains authoritative. [Implementation handoff](work/tasks/20261028-v8-library-group-handoff.md).
-3. Next independent scope is P2 media/provider/moderation contract refresh or P3 Ilocano source/licensing validation, while first-slice CI runs. Do not rebuild the already shipped V7.1 engine or reopen old image queues.
+3. P2 server media policy, Drive adapter and service orchestration are implemented on the stacked coding branch. Durable repository, authenticated endpoint, upload/review UI and configured provider integration remain coding work. Full QA is deferred by owner instruction; no media feature/release completion is claimed. [Coding handoff](work/tasks/20261031-v8-media-coding.md). P3 Ilocano source/licensing remains open. Do not rebuild the shipped V7.1 engine or reopen image queues.
 
 V8 implementation is not deployed or certified. Published V7.1 and its rollback remain unchanged.
 
