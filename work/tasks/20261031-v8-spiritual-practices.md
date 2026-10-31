@@ -24,7 +24,7 @@ Follow-up alignment review hardened malformed-history recovery, disabled per-sec
 
 ## Remaining scope
 
-This first slice does not complete the full spiritual-practices roadmap. Next: additional duration presets and custom allocation, reviewed localization, reminder and offline package integration, additional discipline guides, optional transition cues and wake lock. Full browser/device QA and release certification remain deferred/open per owner direction. Preserve existing exact-SHA production boundaries.
+This first slice does not complete the full spiritual-practices roadmap. Next: reviewed localization, reminder and offline package integration and optional transition cues. Full browser/device QA and release certification remain deferred/open per owner direction. Preserve existing exact-SHA production boundaries.
 
 
 ## Continuation: discovery and selected-verse meditation
@@ -34,3 +34,12 @@ Added Home and You entry points using existing phone tile/shortcut patterns. Bib
 The passage service rejects invalid book/chapter/verse/translation, licensed-link-only text, mismatched provider responses, missing verses, offline failures and cross-account late responses. Practice rendering also discards detached/old-account async results. Entering Practices disposes background Bible audio so silence is not accompanied by a previous narration. A completed Reader navigation does not steal focus back after the user has moved to a different passage/route.
 
 Validation: full V7 suite 754/754 PASS, including five new selected-passage/controller cases; 31-attempt ledger audit, typecheck, production build, lint/format and diff whitespace PASS on Node 24.22.1. Browser/device/offline UI certification remains OPEN, as before. New service tests verify failure handling; they do not certify a physical offline device journey. Remaining scope above is retained explicitly.
+
+
+## Continuation: duration choices, daily-life guides and wake lock
+
+Added adapted 5/20/30-minute Silencio presets and custom whole-minute sessions from 1 to 120. The source-exact two-hour template remains unchanged. Custom snapshots retain their duration through reload; tests exhaust all 120 allowed values and reject invalid inputs. Daily-life action guides cover digital fasting, Sabbath/rest, service, simplicity, giving, fellowship, worship and prayer-focused fasting without artificial activity timers or money-transfer features.
+
+Keep-screen-awake is optional and user-requested. The lock releases on pause/end/completion, visibility loss, owner change and disposal. Late permission requests cannot retain the lock after exit. Unsupported/denied/browser-released locks are reported without claiming background support. No browser/device wake-lock PASS is claimed.
+
+Verification: 759/759 V7 tests and the existing 31-attempt ledger audit PASS; typecheck, production build, existing lint/format policies and diff whitespace PASS on local Node 24.22.1. Pinned release and integrated browser/device/offline evidence remain OPEN. Live PR #1556 confirms media code is also in review; the V8 roadmap now records that progress and separates provider setup/validation from implementation.

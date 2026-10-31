@@ -11,3 +11,7 @@
 .bq-practice-note { white-space: pre-wrap; overflow-wrap: anywhere; }
 .bq-practice details { margin-block: 12px; }
 .bq-practice :focus-visible { outline: 3px solid #db9a30; outline-offset: 3px; }
+.bq-practice [data-practice-custom] { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-block: 16px; }
+.bq-practice [data-practice-custom] label { display: grid; gap: 8px; }
+.bq-practice [data-practice-custom] input { min-height: 44px; width: 9rem; padding: 8px; font: inherit; box-sizing: border-box; }
+.bq-practice li { margin-block: 10px; line-height: 1.6; }

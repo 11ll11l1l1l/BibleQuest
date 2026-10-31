@@ -42,4 +42,23 @@ export const PRACTICES = Object.freeze([
     stage('Learning and prayer', 60, 'What is God teaching me? Close in prayer.'),
   ]),
 ]);
-export const getPractice = id => PRACTICES.find(item => item.id === id);
+const beginner = PRACTICES.find(item => item.id === 'silencio-10');
+export function customSilencio(minutes, id = 'silencio-custom') {
+  if (!Number.isInteger(minutes) || minutes < 1 || minutes > 120) return null;
+  return template(id, `Silencio · ${minutes} minutes`, beginner.stages.map(row => stage(row.title, row.seconds * minutes / 10, row.guide)));
+}
+export const SILENCIO_PRESETS = Object.freeze([5, 20, 30].map(minutes => customSilencio(minutes, `silencio-${minutes}`)));
+export function getPractice(id, durationMinutes = null) {
+  if (id === 'silencio-custom') return customSilencio(durationMinutes);
+  return PRACTICES.find(item => item.id === id) || SILENCIO_PRESETS.find(item => item.id === id);
+}
+export const DISCIPLINE_GUIDES = Object.freeze([
+  { id: 'digital-fast', title: 'Digital fasting', steps: ['Choose a realistic period without scrolling, videos or unnecessary notifications.', 'Set aside the phone. Attend to God and the people with you.', 'When you return, notice what distracted you and what helped you be present.'] },
+  { id: 'sabbath', title: 'Sabbath and rest', steps: ['Choose a protected time to stop ordinary work and prepare what you can beforehand.', 'Make room for worship, rest and unhurried relationships.', 'Reflect on what you can entrust to God instead of controlling.'] },
+  { id: 'service', title: 'Service', steps: ['Notice one person you can help and ask what would be useful.', 'Choose a practical act of care that respects their needs and consent.', 'Serve without seeking recognition, then reflect on how you loved.'] },
+  { id: 'simplicity', title: 'Simplicity', steps: ['Name one possession, commitment or habit competing for your attention.', 'Choose one small way to simplify it today.', 'Use the space you gain for presence, generosity or rest.'] },
+  { id: 'giving', title: 'Giving', steps: ['Prayerfully consider time, skills or resources you can offer responsibly.', 'Choose a real need and a trustworthy way to help.', 'Give freely without comparison or pressure. This app does not process payments.'] },
+  { id: 'fellowship', title: 'Fellowship', steps: ['Reach out to someone for an unhurried conversation or shared prayer.', 'Listen attentively and encourage them from Scripture.', 'Choose a simple way to stay connected; sharing private reflections is optional.'] },
+  { id: 'worship', title: 'Worship', steps: ['Remember a truth about God from a passage you have read.', 'Respond with gratitude, a prayer or a song you may lawfully use.', 'Carry that attention to God into one ordinary activity.'] },
+  { id: 'fasting-prayer', title: 'Fasting and prayer', steps: ['Name your intention: making room for prayer and attention to God.', 'A digital or entertainment fast is one practical option. This guide does not prescribe food restriction.', 'During the pause, pray, read Scripture and reflect on what you are learning.'] },
+]);

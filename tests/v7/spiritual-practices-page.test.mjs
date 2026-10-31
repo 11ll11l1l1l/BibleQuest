@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises';
 const source = (await readFile(new URL('../../src/features/spiritual-practices/index.js', import.meta.url), 'utf8'))
   .replace("import './practice.css';", '')
   .replace("'./content.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/content.js', import.meta.url).href))
+  .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 function fixture(initial = null, passages = null) {
@@ -25,9 +26,10 @@ function fixture(initial = null, passages = null) {
   return {
     host, saved, storage, get body() { return body; },
     click(dataset) { const target = { dataset }; target.closest = () => target; listeners.get('click')({ target }); },
+    custom(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-custom]' } }); },
     switch(value, emit = true) { owner = value; if (emit) notify(); },
     time(value) { now = value; tick(); },
-    submit(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: () => true } }); },
+    submit(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-reflection]' } }); },
     close() { dispose(); globalThis.document = originals.document; globalThis.setInterval = originals.setInterval; globalThis.clearInterval = originals.clearInterval; globalThis.FormData = originals.FormData; Date.now = originals.now; },
   };
 }
@@ -112,4 +114,23 @@ test('meditation requires a selected passage and persists its reference without 
     f.click({ practiceAction: 'pause' });
     assert.equal(f.saved.get('spiritual-practices.v1.guest').current.passage.book, 'PSA');
   } finally { f.close(); }
+});
+
+
+test('custom duration is validated by the controller and survives stored-session restoration', () => {
+  const f = fixture();
+  let snapshot;
+  try {
+    f.custom('1.5');
+    assert.match(f.host.innerHTML, /whole number from 1 to 120/);
+    assert.equal(f.saved.size, 0);
+    f.custom('17');
+    snapshot = f.saved.get('spiritual-practices.v1.guest');
+    assert.equal(snapshot.current.durationMinutes, 17);
+    assert.match(f.host.innerHTML, /Silencio · 17 minutes/);
+    assert.match(f.host.innerHTML, /Adapted app routine/);
+  } finally { f.close(); }
+  const restored = fixture(snapshot);
+  try { assert.match(restored.host.innerHTML, /Silencio · 17 minutes/); }
+  finally { restored.close(); }
 });

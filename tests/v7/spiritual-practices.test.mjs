@@ -53,3 +53,18 @@ test('reject malformed snapshots and tolerate backwards wall-clock movement', ()
   assert.equal(advance(state, 'tick', 0).remaining, 60000);
   assert.throws(() => advance({}, 'tick', 1000));
 });
+
+test('shorter presets and every custom minute retain exact allocations through reload', () => {
+  for (const minutes of [5, 20, 30]) {
+    const state = createSession(`silencio-${minutes}`, 1000, `preset-${minutes}`);
+    assert.equal(advance(state, 'tick', 1000 + minutes * 60000).elapsed, minutes * 60000);
+  }
+  for (let minutes = 1; minutes <= 120; minutes++) {
+    const state = JSON.parse(JSON.stringify(createSession('silencio-custom', 1000, `custom-${minutes}`, minutes)));
+    assert.equal(validSession(state), true);
+    const ended = advance(state, 'tick', 1000 + minutes * 60000);
+    assert.equal(ended.state, 'completed');
+    assert.equal(ended.elapsed, minutes * 60000);
+  }
+  for (const invalid of [0, 121, 1.5, NaN, '10']) assert.throws(() => createSession('silencio-custom', 1000, 'bad', invalid));
+});
