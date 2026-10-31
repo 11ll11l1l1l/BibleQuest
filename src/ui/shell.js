@@ -29,7 +29,7 @@ export function mountShell(root, { onNavigate, onAccountOpen }) {
     if (['library-item', 'learn', 'study', 'deep-questions',
          'story-journey', 'wisdom-situations', 'bible-world',
          'explorer', 'adaptive-learning', 'open-review',
-         'private-notes', 'cloud-notes'].includes(route)) return 'library';
+         'private-notes', 'cloud-notes', 'spiritual-practices'].includes(route)) return 'library';
     if (route === 'grow' || route.startsWith('one-to-one-')
         || ['community', 'journey-groups', 'conversation-deck'].includes(route)) return 'one-to-one';
     if (['account', 'my-journey', 'transform', 'personality-profile',

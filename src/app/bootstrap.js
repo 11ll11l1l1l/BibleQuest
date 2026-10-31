@@ -132,6 +132,7 @@ const oneToOneWorkspacePage = ({api,...options}) => createLazyPage({
   load:()=>api.discipleship.createWorkspace(options),
   create:page=>page,
 });
+const spiritualPracticesPage = args => lazyFeaturePage('spiritual-practices', 'spiritualPracticesPage', args);
 const libraryPage = args => lazyFeaturePage('library', 'libraryPage', args);
 const libraryItemPage = args => lazyFeaturePage('library', 'libraryItemPage', args);
 const learnPage = args => lazyFeaturePage('learn', 'learnPage', args);
@@ -404,7 +405,8 @@ function boot(root){
       return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,canUseMentorTools:()=>{const active=congregation.getActive();return Boolean(active?.congregationId&&congregation.can(active.congregationId,'ministry'));},...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair'),onConversation:()=>router.navigate('conversation-deck')});
     },
     'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
-    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),onFiltersChange:target=>navigateLibrary({...target,replace:true}),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'devotional',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery()}),
+    'spiritual-practices':()=>spiritualPracticesPage({storage:privateStorage,getOwner:()=>{const state=session.getState();return state.authenticated&&state.user?.id?`account:${state.user.id}`:'guest'},subscribeOwner:listener=>store.subscribe(listener),onLibrary:()=>router.navigate('library'),onReader:openFreeReader}),
+    library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),onFiltersChange:target=>navigateLibrary({...target,replace:true}),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'devotional',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery(),onPractices:()=>router.navigate('spiritual-practices')}),
     'one-to-one-track':()=>assignedPage('track'),
     'one-to-one-module':()=>assignedPage('module'),
     'one-to-one-lesson':()=>{

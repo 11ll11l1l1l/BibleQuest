@@ -1,0 +1,13 @@
+.bq-practice { max-width: 760px; margin-inline: auto; }
+.bq-practice p { line-height: 1.6; }
+.bq-practice-actions, .bq-practice-list { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 16px; }
+.bq-practice button, .bq-practice summary { min-height: 44px; cursor: pointer; }
+.bq-practice-list { flex-direction: column; }
+.bq-practice-player { margin-block: 24px; padding: clamp(16px, 4vw, 32px); border-radius: 20px; background: #142c2a; color: #f2f7ef; }
+.bq-practice-player h2, .bq-practice-player h3, .bq-practice-player p { color: #f2f7ef; }
+.bq-practice-player button { background: #f2f7ef; color: #142c2a; }
+.bq-practice-clock { display: block; font-size: clamp(48px, 14vw, 88px); font-variant-numeric: tabular-nums; }
+.bq-practice textarea { display: block; width: 100%; max-width: 100%; box-sizing: border-box; margin-block: 12px; padding: 12px; background: #fff; color: #142c2a; font: inherit; }
+.bq-practice-note { white-space: pre-wrap; overflow-wrap: anywhere; }
+.bq-practice details { margin-block: 12px; }
+.bq-practice :focus-visible { outline: 3px solid #db9a30; outline-offset: 3px; }
