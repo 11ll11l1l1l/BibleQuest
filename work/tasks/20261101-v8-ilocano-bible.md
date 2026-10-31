@@ -23,3 +23,9 @@ Local aggregate units 1,674/1,674 PASS: V6 880, V7 785, V8 media 9; plus existin
 ## Remaining
 
 Full Ilocano UI/localized book-name rollout, new exact-head integrated/backend/browser/device/offline/reference validation and the broader V8 media/content/Couples/discovery scope remain open. No production deployment, DB migration/provider mutation, paid source, new dependency, source speech/audio generation or real-user notification was performed.
+
+## Preview and inherited regression follow-up
+
+Remote candidate `b4bcdba5cd4d46bd8ac7fe70bd4b9bf19dd97318` deployed automatically through the existing Cloudflare PR integration to https://9849ef1c.mybiblequest.pages.dev (moving branch preview: https://v8-integration-20261031.mybiblequest.pages.dev). Workflow run 41237169378 passed deployed critical routes, PWA install and offline-shell smoke. This is a PR preview, not a production promotion. The existing whole-app browser, build/PWA/performance and release-convergence workflows also passed.
+
+Inherited regression run 41237169303 failed because `tests/v3-source-labels-edge.mjs` still expected five translations. Updated the expected six and required Ilocano publisher/license/provenance metadata; all per-translation source-guide coverage and existing escaping/denial checks remain. Affected source-label edge and architecture checks and diff whitespace PASS locally. Follow-up exact-head CI remains pending; prior green checks are not transferred to a new SHA.

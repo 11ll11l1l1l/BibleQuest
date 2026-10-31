@@ -22,7 +22,8 @@ let invalid='';try{sourceLabel({label:'Incomplete',detail:'No id'})}catch(error)
 assert(/requires id/i.test(invalid),'Source label must reject metadata without stable identity.');
 
 const bible=createBibleDataService({fetcher:async()=>{throw new Error('Source guide metadata must not fetch Scripture.')}});
-assert(bible.translations.length===5,'Source guide must consume all current translation metadata from Bible owner.');
+assert(bible.translations.length===6,'Source guide must consume all current translation metadata from Bible owner.');
+assert(bible.translations.some(row=>row.id==='ilo'&&row.mode==='bundled'&&/CC BY-SA 4.0/.test(row.license)&&/Door43/.test(row.attribution)&&/SOURCE.json/.test(row.attribution)),'Ilocano source guide must retain publisher, license and source/change provenance.');
 assert(bible.translations.some(row=>row.id==='bsb'&&/Berean Standard Bible/.test(row.source)),'BSB source metadata missing from Bible owner.');
 assert(bible.translations.some(row=>row.id==='cebocb'&&row.mode==='bundled'&&row.label.includes('Cebuano/Bisaya')&&row.license==='CC BY-SA 4.0'&&/Biblica/.test(row.source)),'CEBOCB open-source attribution/Reader metadata missing from Bible owner.');
 assert(bible.translations.some(row=>row.id==='nlt'&&row.mode==='licensed-link'&&/does not redistribute/i.test(row.attribution)),'NLT licensed attribution missing from Bible owner.');
