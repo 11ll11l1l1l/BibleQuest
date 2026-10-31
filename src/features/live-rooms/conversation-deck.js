@@ -1,5 +1,5 @@
 import { localization } from '../../app/localization.js';
-import { CONVERSATION_SERIES, CONVERSATION_CARDS, conversationText, conversationCard, normalizeConversationDeck } from '../../content/conversation-decks.js';
+import { CONVERSATION_SERIES, CONVERSATION_CARDS, conversationText, conversationCard, normalizeConversationDeck, conversationPreviewSeries } from '../../content/conversation-decks.js';
 import './conversation-deck.css';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy={
@@ -12,11 +12,11 @@ export const conversationLanding=(state,message='')=>{
   const t=deckCopy,rows=state.memberships.filter(row=>row.canHost);
   return `<header class="bq-community-head"><div><p class="bq-eyebrow">BIBLEQUEST · 7.1</p><h1>${esc(t('title'))}</h1><p>${esc(t('intro'))}</p></div><button type="button" class="bq-secondary-button" data-live-rooms-back>${esc(t('back'))}</button></header>${message?`<p role="status">${esc(message)}</p>`:''}<section class="bq-panel"><h2>${esc(t('join'))}</h2><form class="bq-account-form" data-live-room-join><label>${esc(t('code'))}<input name="code" maxlength="8" minlength="4" autocomplete="off" autocapitalize="characters" required></label><button type="submit" class="bq-primary-button" ${state.memberships.length?'':'disabled'}>${esc(t('join'))}</button></form><p>${esc(t('scope'))}</p></section>${rows.length?`<section class="bq-panel"><h2>${esc(t('create'))}</h2><form class="bq-account-form" data-live-room-create><label>${esc(t('congregation'))}<select name="congregation_id" required>${rows.map(row=>`<option value="${esc(row.congregationId)}">${esc(row.congregation?.name||t('congregation'))}</option>`).join('')}</select></label><label>${esc(t('name'))}<input name="title" maxlength="80" value="${esc(t('title'))}" required></label><button type="submit" class="bq-primary-button">${esc(t('create'))}</button></form></section>`:`<p>${esc(t('hostOnly'))}</p>`}`;
 };
-export function mountConversationDeck(host,{liveRooms,onScripture=()=>{},initialState}){
+export function mountConversationDeck(host,{liveRooms,onScripture=()=>{},initialState,initialSeries=''}){
   const locale=localization.getLocale(),t=key=>deckCopy(key,locale),text=value=>conversationText(value,locale);
   let state=initialState,disposed=false,busy=false,index=0,pointer=null,sharedKey='',refreshing=false;
   const restored=normalizeConversationDeck(state.room?.state);
-  let seriesId=restored?.seriesId||CONVERSATION_SERIES[0].id;
+  let seriesId=conversationPreviewSeries(state.room?.state,initialSeries);
   let selected=restored?[...restored.cardIds]:CONVERSATION_CARDS.filter(row=>row.seriesId===seriesId).map(row=>row.id);
   if(restored)index=Math.max(0,selected.indexOf(restored.activeCardId));
   const cardHtml=card=>card?`<h3>${esc(text(card.title))}</h3><p class="bq-deck-reference">${esc(card.reference)}</p><p>${esc(text(card.prompt))}</p><button type="button" class="bq-secondary-button" data-deck-read="${esc(card.id)}">${esc(t('read'))}</button>`:`<p>${esc(t('waiting'))}</p>`;
