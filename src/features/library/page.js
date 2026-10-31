@@ -51,7 +51,7 @@ export function createLibraryPage({
         ${onPractices ? `<button type="button" class="bq-secondary-button" data-library-practices lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).title)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}
 
       </header>
-      ${readingList ? `<details><summary>${escapeHtml(readingListCopy(localization.getLocale()).title)}</summary><div data-library-reading-list></div></details>` : ''}
+      ${readingList ? `<details class="bq-library-reading-list-disclosure"><summary>${escapeHtml(readingListCopy(localization.getLocale()).title)}</summary><div data-library-reading-list></div></details>` : ''}
       <form data-library-search>
         <div class="bq-library-tabs" role="group" aria-label="${escapeHtml(t('v7.library.type'))}">${registry.list().map(type => `<button type="button" data-library-type="${escapeHtml(type.id)}" aria-pressed="false">${escapeHtml(typeLabel(type))}</button>`).join('')}</div>
         <div class="bq-library__search-row">
