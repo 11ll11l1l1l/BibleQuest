@@ -85,7 +85,7 @@ const dueLabelForHome = (assignment, locale) => assignment?.dueAt
   ? new Intl.DateTimeFormat(locale === 'tl' ? 'fil-PH' : 'en-US', { month: 'short', day: 'numeric' }).format(new Date(assignment.dueAt))
   : 'No deadline';
 
-export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onBibleQuest, onBibleQuestContinue, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications, onPractices }) {
+export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, assignments, presence, calendar, reader, recordings, transform, notifications, onBibleQuest, onBibleQuestContinue, onAssignments, onMission, onRecordings, onMedia, onTutorial, onReader, onCalendar, onGrow, onTransformation, onNotifications, onPractices, practiceReminders = null }) {
   const locale = localization.getLocale();
   const tx = (key, values) => localization.t(key, { locale, values });
   const homeTx = (key, values) => localization.t(key, { locale, values, dictionaries: HOME_COMPOSITION_COPY });
@@ -158,7 +158,7 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         <section class="bq-panel bq-home-assignments" data-home-assignments aria-live="polite">${homeAssignmentPanelHtml({status:'loading'})}</section>
       </section>
       <div class="bq-home-secondary" data-home-today-composition>
-        ${onPractices ? '<section class="bq-panel bq-home-tile" lang="en"><button type="button" class="bq-home-tile-button" data-open-practices><span class="bq-home-tile-text"><b>Spiritual Practices</b><small>Silencio, prayer and reflection · English guides</small></span></button></section>' : ''}
+        ${onPractices ? '<section class="bq-panel bq-home-tile" lang="en"><button type="button" class="bq-home-tile-button" data-open-practices><span class="bq-home-tile-text"><b>Spiritual Practices</b><small>Silencio, prayer and reflection · English guides</small></span></button><div data-home-practice-reminder lang="en"></div></section>' : ''}
         <section class="bq-panel bq-home-tile" data-home-next-event>
           <button type="button" class="bq-home-tile-button" data-open-home-next-event aria-label="${escapeHtml(tx('nav.calendar'))}">
             <span class="bq-home-tile-icon" aria-hidden="true">${iconSvg('calendar', { size: 20 })}</span>
@@ -205,6 +205,27 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
         </section>
       </div>`,
     mount(root) {
+      const reminderHost = root.querySelector('[data-home-practice-reminder]');
+      let reminderSignature = '', reminderOwner = '';
+      const renderPracticeReminder = () => {
+        if (!reminderHost || !practiceReminders) return;
+        try {
+          const state = practiceReminders.status();
+          reminderOwner = state.owner;
+          const signature = JSON.stringify([state.owner, state.due, state.blockedBySettings, state.quietNow, state.day]);
+          if (signature === reminderSignature) return;
+          reminderSignature = signature;
+          reminderHost.innerHTML = state.due ? '<p role="status">Your daily practice reminder · open Spiritual Practices when ready.</p><button type="button" class="bq-secondary-button" data-dismiss-practice-reminder>Dismiss for today</button>' : '';
+        } catch { reminderHost.textContent = 'Practice reminder unavailable on this device.'; }
+      };
+      const dismissPracticeReminder = event => {
+        if (!event.target.closest?.('[data-dismiss-practice-reminder]')) return;
+        try { practiceReminders?.dismiss(reminderOwner); renderPracticeReminder(); }
+        catch { if (reminderHost) reminderHost.textContent = 'Could not dismiss this reminder.'; }
+      };
+      renderPracticeReminder();
+      const reminderInterval = practiceReminders ? setInterval(renderPracticeReminder, 30000) : null;
+      root.addEventListener('click', dismissPracticeReminder);
       const practicesButton = root.querySelector('[data-open-practices]');
       const openPractices = () => onPractices?.();
       practicesButton?.addEventListener('click', openPractices);
@@ -329,6 +350,8 @@ export function homePage({ progress, bibleQuest, dailyMission, weeklyJourney, as
       return () => {
         disposed = true;
         heroReaderButton?.removeEventListener('click', openContinueReading);
+        if (reminderInterval !== null) clearInterval(reminderInterval);
+        root.removeEventListener('click', dismissPracticeReminder);
         practicesButton?.removeEventListener('click', openPractices);
         dailyButton?.removeEventListener('click', openDaily);
         bibleQuestButton?.removeEventListener('click', openBibleQuest);

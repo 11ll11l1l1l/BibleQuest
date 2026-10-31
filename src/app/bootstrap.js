@@ -1,3 +1,4 @@
+import { createPracticeReminders } from '../features/spiritual-practices/reminders.js';
 import { createMeditationPassageService } from '../features/spiritual-practices/passage.js';
 import { discipleshipRoute, discipleshipHydrationTarget, lessonReaderRoute, lessonReaderContext } from './discipleship-navigation.js';
 import { createLibraryService } from '../features/library/service.js';
@@ -343,6 +344,7 @@ function boot(root){
   const ministryHub=createMinistryHubService({congregation});
   const notifications=createNotificationCenterService({api:api.notifications,session});
   const notificationSettings=createNotificationSettingsController(authStorage);
+  const practiceReminders=createPracticeReminders({storage:privateStorage,getOwner:practiceOwner,settings:()=>notificationSettings.surface()});
   const workspace=createWorkspaceService({session,cloudNotes,congregation,reader,storage});
   const presence=createPresenceService({api:api.presence,session,congregation,store});
   const teamCenter=createTeamCenterService({api:api.teamCenter,session,congregation});
@@ -399,7 +401,7 @@ function boot(root){
     router.navigate('reader');
   };
   const routes=Object.freeze({
-    home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center'),onPractices:()=>router.navigate('spiritual-practices')}),
+    home:()=>homePage({progress,bibleQuest,dailyMission,weeklyJourney,assignments,presence,calendar,reader,recordings,transform,notifications,onBibleQuest:()=>router.navigate('bible-quest'),onBibleQuestContinue:openBibleQuestNext,onAssignments:()=>router.navigate('assignments'),onMission:()=>router.navigate('mission'),onRecordings:()=>router.navigate('recordings'),onMedia:()=>router.navigate('media'),onTutorial:()=>tutorial.open({force:true}),onReader:openFreeReader,onCalendar:()=>router.navigate('calendar'),onGrow:()=>router.navigate('grow'),onTransformation:()=>router.navigate('transform'),onNotifications:()=>router.navigate('notification-center'),onPractices:()=>router.navigate('spiritual-practices'),practiceReminders}),
     'bible-quest':()=>bibleQuestPage({bibleQuest,reader,onContinue:openBibleQuestNext,onFreeRead:openFreeReader,onBack:()=>router.navigate('home')}),
     mission:()=>dailyMissionPage({mission:dailyMission,onReader:openFreeReader,onHome:()=>router.navigate('home')}),
     'one-to-one':()=>{
@@ -409,7 +411,7 @@ function boot(root){
       return oneToOnePage({service:discipleship,isContextReady:v7ContextReady,canUseMentorTools:()=>{const active=congregation.getActive();return Boolean(active?.congregationId&&congregation.can(active.congregationId,'ministry'));},...navigation,onBack:()=>router.navigate('grow'),onAuthoring:()=>router.navigate('one-to-one?view=authoring'),onAssignments:()=>router.navigate('one-to-one?view=assignment'),onPair:id=>router.navigate(`one-to-one-pair?id=${encodeURIComponent(id)}`),onInvite:()=>router.navigate('one-to-one-pair'),onConversation:()=>router.navigate('conversation-deck')});
     },
     'one-to-one-pair':()=>pairingPage({service:discipleship,session,isContextReady:v7ContextReady,pairId:libraryParams().get('id')||'',subscribeContext:subscribeV7Context,onBack:()=>router.navigate('one-to-one'),onAccount:()=>router.navigate('account'),onCongregation:()=>router.navigate('congregation'),onLessons:id=>router.navigate(`one-to-one-track?pairId=${encodeURIComponent(id)}`)}),
-    'spiritual-practices':()=>{disposeReaderAudioProvider();return spiritualPracticesPage({storage:privateStorage,passages:meditationPassages,getOwner:practiceOwner,subscribeOwner:listener=>store.subscribe(listener),onLibrary:()=>router.navigate('library'),onReader:openFreeReader})},
+    'spiritual-practices':()=>{disposeReaderAudioProvider();return spiritualPracticesPage({storage:privateStorage,reminders:practiceReminders,passages:meditationPassages,getOwner:practiceOwner,subscribeOwner:listener=>store.subscribe(listener),onLibrary:()=>router.navigate('library'),onReader:openFreeReader})},
     library:()=>libraryPage({service:library,navigate:navigateLibrary,discoverySearch:request=>library.list(request),onFiltersChange:target=>navigateLibrary({...target,replace:true}),isContextReady:libraryContextReady,subscribeContext:subscribeV7Context,initialQuery:libraryParams().get('query')||'',initialContentType:libraryParams().get('contentType')||'devotional',initialTaxonomyId:libraryParams().get('taxonomyId')||'',initialDiscoveryQuery:libraryDiscoveryQuery(),onPractices:()=>router.navigate('spiritual-practices')}),
     'one-to-one-track':()=>assignedPage('track'),
     'one-to-one-module':()=>assignedPage('module'),

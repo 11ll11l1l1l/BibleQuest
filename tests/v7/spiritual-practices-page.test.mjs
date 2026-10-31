@@ -9,7 +9,7 @@ const source = (await readFile(new URL('../../src/features/spiritual-practices/i
   .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-function fixture(initial = null, passages = null) {
+function fixture(initial = null, passages = null, reminders = null) {
   let owner = 'guest', notify, tick, now = 1000, body = '', reflection = '';
   const listeners = new Map(), saved = new Map();
   if (initial) saved.set('spiritual-practices.v1.guest', initial);
@@ -18,14 +18,15 @@ function fixture(initial = null, passages = null) {
   globalThis.document = { hidden: false, addEventListener() {}, removeEventListener() {} };
   globalThis.setInterval = fn => { tick = fn; return 1; };
   globalThis.clearInterval = () => {};
-  globalThis.FormData = class { get() { return reflection; } };
+  globalThis.FormData = class { get(key) { return reflection && typeof reflection === 'object' ? reflection[key] : reflection; } };
   Date.now = () => now;
   const storage = { read: (key, fallback) => saved.get(key) || fallback, write: (key, value) => saved.set(key, structuredClone(value)) };
-  const page = spiritualPracticesPage({ storage, passages, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
+  const page = spiritualPracticesPage({ storage, passages, reminders, getOwner: () => owner, subscribeOwner: fn => { notify = fn; return () => {}; }, onLibrary: () => { body = 'library'; }, onReader: () => { body = 'reader'; } });
   const dispose = page.mount({ querySelector: () => host });
   return {
     host, saved, storage, get body() { return body; },
     click(dataset) { const target = { dataset }; target.closest = () => target; listeners.get('click')({ target }); },
+    reminder(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-reminder-form]' } }); },
     custom(value) { reflection = value; listeners.get('submit')({ preventDefault() {}, target: { matches: selector => selector === '[data-practice-custom]' } }); },
     switch(value, emit = true) { owner = value; if (emit) notify(); },
     time(value) { now = value; tick(); },
@@ -133,4 +134,21 @@ test('custom duration is validated by the controller and survives stored-session
   const restored = fixture(snapshot);
   try { assert.match(restored.host.innerHTML, /Silencio · 17 minutes/); }
   finally { restored.close(); }
+});
+
+
+test('reminder form labels app-open scope and reports saves or storage errors truthfully', () => {
+  let saved;
+  const reminders = { config: () => ({ enabled: false, time: '08:00', timeZone: 'Asia/Tokyo' }), save: value => { saved = value; } };
+  const f = fixture(null, null, reminders);
+  try {
+    assert.match(f.host.innerHTML, /no closed-app alert/);
+    f.reminder({ enabled: 'on', time: '20:00', timeZone: 'Asia/Tokyo' });
+    assert.deepEqual(saved, { enabled: true, time: '20:00', timeZone: 'Asia/Tokyo' });
+    assert.match(f.host.innerHTML, /app-open reminder saved/);
+    reminders.save = () => { throw new Error('Storage unavailable'); };
+    f.reminder({ enabled: 'on', time: '20:00', timeZone: 'Asia/Tokyo' });
+    assert.match(f.host.innerHTML, /Storage unavailable/);
+    assert.doesNotMatch(f.host.innerHTML, /app-open reminder saved/);
+  } finally { f.close(); }
 });
