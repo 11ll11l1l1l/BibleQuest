@@ -92,7 +92,7 @@ test('detail UI requires an explicit click, escapes titles and ignores late cont
   };
   render({ status: 'ready', selectedItem: item('first') });
   assert.match(host.innerHTML, /data-library-related-action="load"/);
-  assert.doesNotMatch(host.innerHTML.match(/<section data-library-related[\\s\\S]*?<\\/section>/)?.[0] ?? '', /PRIVATE_REFLECTION_NEVER_SHARED/);
+  assert.doesNotMatch(host.innerHTML.split('<section data-library-related')[1]?.split('</section>')[0] ?? '', /PRIVATE_REFLECTION_NEVER_SHARED/);
   click('load');
   await new Promise(resolve => setImmediate(resolve));
   done([{ id: 'second', title: '<script>safe title</script>' }]);
