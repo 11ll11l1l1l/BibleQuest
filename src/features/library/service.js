@@ -7,6 +7,7 @@ import {
 
 import { normalizeLibraryTaxonomy, normalizeLibraryTaxonomyId } from './discovery.js';
 import { normalizeLibraryDiscoveryRequest } from './discovery-query-contract.js';
+import { findRelatedPublishedReadings } from './related-readings.js';
 
 const cleanQuery = value => String(value ?? '').trim().slice(0, 120);
 const sameDiscoveryRequest = (left, right) => JSON.stringify(left) === JSON.stringify(right);
@@ -51,6 +52,8 @@ export function createLibraryService({ repository, registry = createLibraryConte
 
   return Object.freeze({
     getState: snapshot,
+    // Separate read: never replace the selected item or mutate search/pagination state.
+    findRelated: item => findRelatedPublishedReadings(repository, item),
     reset() {
       invalidateRead();
       return publish(createLibraryViewState(emptyDiscovery()));
