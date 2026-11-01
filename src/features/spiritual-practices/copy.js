@@ -39,6 +39,8 @@ paused|nakahinto|gihunong kadiyot
 completed|tapos|nahuman
 ended|tinapos|gitapos
 Stage guide|Gabay sa bahaging ito|Giya niini nga bahin
+Total time remaining|Kabuuang natitirang oras|Kinatibuk-ang nahibiling oras
+Next stage preview|Silipin ang susunod na bahagi|Tan-awa ang sunod nga bahin
 Resume|Ituloy|Ipadayon
 Pause|Ihinto sandali|Hunong kadiyot
 Skip stage|Laktawan ang bahaging ito|Laktawi kini nga bahin

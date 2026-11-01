@@ -10,6 +10,7 @@ const source = (await readFile(new URL('../../src/features/spiritual-practices/i
   .replace("'./offline.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/offline.js', import.meta.url).href))
   .replace("'./cue.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/cue.js', import.meta.url).href))
   .replace("'./voice.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/voice.js', import.meta.url).href))
+  .replace("'./stage-summary.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/stage-summary.js', import.meta.url).href))
   .replace("'./wake-lock.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/wake-lock.js', import.meta.url).href))
   .replace("'./timer.js'", JSON.stringify(new URL('../../src/features/spiritual-practices/timer.js', import.meta.url).href));
 const { spiritualPracticesPage } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
@@ -482,4 +483,36 @@ test('form submission click keeps the form connected until submit is dispatched'
     assert.equal(f.saved.get('spiritual-practices.v1.guest').history[0].reflection,'A valid reflection saved after click');
     assert.match(f.host.innerHTML,/data-practice-edit=/);
   } finally { f.close(); }
+});
+
+
+test('actual practice player previews the next stage and accurate total time in every timer state', () => {
+  const f = fixture();
+  try {
+    f.click({practiceStart:'silencio-10'});
+    assert.match(f.host.innerHTML,/data-practice-total-clock>10:00/);
+    assert.match(f.host.innerHTML,/data-practice-next-stage/);
+    assert.match(f.host.innerHTML,/<summary>Next stage preview<\/summary>/);
+    assert.match(f.host.innerHTML,/<strong>Stillness<\/strong> · 2:00/);
+    f.time(61000);
+    assert.match(f.host.innerHTML,/data-practice-total-clock>9:00/);
+    assert.match(f.host.innerHTML,/<strong>Scripture meditation<\/strong> · 3:00/);
+    f.click({practiceAction:'skip'});
+    assert.match(f.host.innerHTML,/data-practice-total-clock>7:00/);
+    f.click({practiceAction:'pause'});
+    assert.match(f.host.innerHTML,/data-practice-total-clock>7:00/);
+    f.click({practiceAction:'end'});
+    assert.doesNotMatch(f.host.innerHTML,/data-practice-total-clock/);
+    assert.doesNotMatch(f.host.innerHTML,/data-practice-next-stage/);
+  } finally {f.close();}
+});
+test('timer preview copy is translated for TL and CEB and never auto-reads ahead', () => {
+  for (const [locale,summary] of [['tl','Silipin ang susunod na bahagi'],['ceb','Tan-awa ang sunod nga bahin']]) {
+    const f=fixture(null,null,null,locale);
+    try {
+      f.click({practiceStart:'silencio-10'});
+      assert.match(f.host.innerHTML,new RegExp(summary));
+      assert.match(f.host.innerHTML,/data-practice-total-clock/);
+    } finally {f.close();}
+  }
 });
