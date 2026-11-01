@@ -27,7 +27,7 @@ test('every expanded card is reachable without repeating a discussed card in its
   }
 });
 
-test('all 80 displayed references agree with Reader handoff; existing source coverage gap stays explicit', () => {
+test('all 80 displayed references agree with Reader handoff and bundled source coverage', () => {
   const missing = new Set();
   for (const card of COUPLES_CARDS) {
     const match = card.ref.match(/^(.+) (\d+):(\d+)(?:[–-](\d+))?$/);
@@ -41,7 +41,7 @@ test('all 80 displayed references agree with Reader handoff; existing source cov
       if (!verses.some(row => row.c === card.chapter && row.v === verse && row.t.trim())) missing.add(`${card.id}:${card.code}:${card.chapter}:${verse}`);
     }
   }
-  assert.deepEqual(missing, new Set(['c29:PSA:127:1', 'c49:PSA:127:1']), 'No additional missing source text is allowed; existing gap is NOT an availability PASS.');
+  assert.deepEqual(missing, new Set(), 'Every cited verse must have source-backed delivery text.');
 });
 
 test('new card favorites, history and practice survive reload through the existing local owner', () => {

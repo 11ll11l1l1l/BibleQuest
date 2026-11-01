@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "translation": "bsb",
+  "upstreamRepository": "https://github.com/BSB-publishing/bsb-data-output",
+  "upstreamCommit": "1f6fe37c8997a173182c78205695790d8b440b74",
+  "upstreamPath": "base/text-only/PSA_127_BSB.txt",
+  "sourceSha256": "0aa7a89994dc1ab7c66e3dc1d6dd6a413c762cd380c0ef186c195082985c5348",
+  "licensePath": "LICENSE-CC0.md",
+  "licenseSha256": "a6cf2ec3e781adc03152deab3058bb6d44b2dae82143fd70218d4d8d7791c7d5",
+  "repair": {
+    "book": "PSA",
+    "chapter": 127,
+    "verse": 1,
+    "sourceLine": 1
+  },
+  "basis": "Display-token export omits verse 1. Same pinned revision plain-text chapter has five lines; lines 2–5 exactly match the existing delivery pack. No word or punctuation changes. Retained raw display index remains a snapshot; browser delivery uses this source-bound repair.",
+  "previousDeliverySha256": "ac3b03eb6093e2abaa6f46c18b31ac8bd3e6f9ba7cd0808eb5e3d74b676c581b",
+  "alignment": {
+    "revision": "bdb859afc427b215b78e12ee4a7798c32b7b91e0",
+    "runner": "scripts/v6-run-bsb-alignment-shard.py",
+    "wordsPath": "PSA_127_words.json",
+    "wordsSha256": "f0119cf9e051c23e205f779445673aa76a3802564932992aa8ef166cb30168fe",
+    "audioSha256": "247f3659eb2ac645909a916eaf1c56488001229a92a7a93888bb3075086dac38",
+    "audioBytes": 668426,
+    "audioDurationSeconds": 52.140408,
+    "torch": "2.8.0+cpu",
+    "torchaudio": "2.8.0+cpu",
+    "uroman": "1.3.1.1",
+    "words": 102,
+    "averageScore": 0.9712156862745102,
+    "lowConfidenceWords": 0,
+    "unscoredWords": 0,
+    "previousScriptureContentVersion": "sha256-381de303bc2e07dc645d",
+    "scriptureContentVersion": "sha256-dadec90dc4d4540bfb69",
+    "unchangedChapterReuse": "1,188 chapters retain their timings after the original complete manifest and prior content version are validated against the same 65 book bytes plus the original PSA pack; only PSA 127 is regenerated.",
+    "previousInventorySha256": "20bd19cd78c0985ed4df77c2dd66b936683f13b5a956d978d0fd35e26c7c70f4",
+    "previousPsalmVerses": [
+      {
+        "verse": 2,
+        "startSeconds": 12.46,
+        "endSeconds": 27.43
+      },
+      {
+        "verse": 3,
+        "startSeconds": 28.81,
+        "endSeconds": 35.13
+      },
+      {
+        "verse": 4,
+        "startSeconds": 36.13,
+        "endSeconds": 41.31
+      },
+      {
+        "verse": 5,
+        "startSeconds": 42.37,
+        "endSeconds": 50.53
+      }
+    ]
+  }
+}

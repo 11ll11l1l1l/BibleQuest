@@ -2,6 +2,7 @@
 import csv, json, re, shutil, subprocess, sys, tempfile, urllib.request, zipfile
 from collections import defaultdict
 from pathlib import Path
+from bsb_source_repairs import apply_bsb_source_repairs
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "library"
@@ -167,6 +168,7 @@ def build_browser_question_packs(rows):
     return books
 
 def build_browser_bible_packs(verses):
+    verses = apply_bsb_source_repairs(verses, ROOT)
     grouped=defaultdict(list)
     for row in verses:
         grouped[row["b"]].append({"c":row["c"],"v":row["v"],"t":row["t"]})
