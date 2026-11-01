@@ -2,6 +2,7 @@ import { practiceLocale, practiceText, practiceTitle, localizePractice } from '.
 import { createPracticeOffline } from './offline.js';
 import { createPracticeCue } from './cue.js';
 import { createPracticeVoice } from './voice.js';
+import { nextPracticeStage, remainingPracticeMs } from './stage-summary.js';
 import { createPracticeWakeLock } from './wake-lock.js';
 import { PRACTICES, SILENCIO_PRESETS, MORNING_PRESETS, EVENING_QUESTIONS, REMINDER_ROUTINES, DISCIPLINE_GUIDES, getPractice } from './content.js';
 import { advance, createSession, validSession } from './timer.js';
@@ -120,6 +121,7 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         const practice = current && localizePractice(getPractice(current.templateId, current.durationMinutes), locale);
         const reminder = reminders?.config();
         const running = current && ['running', 'paused'].includes(current.state);
+        const nextStage = running ? nextPracticeStage(current, practice) : null;
         host.innerHTML = `<header>
           <p class="bq-eyebrow">${h('PRIVATE · THIS DEVICE')}</p><h1>${h('Spiritual Practices')}</h1>
           <p>${h('Make space for God, reflection and a loving response.')}</p>
@@ -134,8 +136,10 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
           <p>${h(practice.adapted ? 'Adapted app routine' : 'Original two-hour stage sequence')}</p>
           <h3 data-stage-title>${esc(practice.stages[current.stage].title)}</h3>
           <output class="bq-practice-clock" aria-label="${h('Remaining in this stage')}" aria-live="off" data-practice-clock>${clock(current.remaining)}</output>
+          ${running ? `<p class="bq-practice-total">${h('Total time remaining')}: <output aria-label="${h('Total time remaining')}" aria-live="off" data-practice-total-clock>${clock(remainingPracticeMs(current, practice))}</output></p>` : ''}
           <p role="status" aria-live="polite" data-practice-state>${h(current.state)} · ${h('stage')} ${current.stage + 1} ${h('of')} ${practice.stages.length}</p>
           <details><summary>${h('Stage guide')}</summary><p>${esc(practice.stages[current.stage].guide)}</p></details>
+          ${nextStage ? `<details data-practice-next-stage><summary>${h('Next stage preview')}</summary><p><strong>${esc(nextStage.title)}</strong> · ${clock(nextStage.seconds * 1000)}</p><p>${esc(nextStage.guide)}</p></details>` : ''}
           ${running ? `<div class="bq-practice-actions">${button(current.state === 'paused' ? 'resume' : 'pause', current.state === 'paused' ? 'Resume' : 'Pause')}${button('skip', 'Skip stage')}${button('end', 'End early')}${button('cue', cue.isEnabled() ? 'Turn transition sound off' : 'Enable transition sound')}${cue.isEnabled() ? button('cue-test', 'Test transition sound') : ''}${button('voice', voice.isEnabled() ? 'Turn spoken guide off' : 'Read stage guides aloud')}${voice.isEnabled() ? button('voice-repeat', 'Read current guide again') : ''}${button('awake', awake ? 'Allow screen sleep' : 'Keep screen awake')}</div>
             <p>${h('Spoken guide uses your device text-to-speech voice. It reads each new stage while this page is open and visible. Try Read current guide again to test your volume. Background narration is not guaranteed.')}</p>
             <p>${h('Put your phone aside if helpful. Background alerts are not guaranteed. Return here to see elapsed time.')}</p>` : `<p>${h(current.state === 'completed' ? 'The scheduled time has elapsed. Reflect on what you practiced.' : 'Session ended early. You can still reflect.')}</p>
@@ -293,6 +297,11 @@ export function spiritualPracticesPage({ storage, getOwner, subscribeOwner, onLi
         if (oldOwner !== owner || before !== (current && `${current.id}:${current.stage}:${current.state}`)) return render();
         const output = host.querySelector('[data-practice-clock]');
         if (output && current) output.textContent = clock(current.remaining);
+        const total = host.querySelector('[data-practice-total-clock]');
+        if (total && current) {
+          const practice = getPractice(current.templateId, current.durationMinutes);
+          total.textContent = clock(remainingPracticeMs(current, practice));
+        }
       }
       const visibility = () => { if (!document.hidden) { tick(false); render(); } else { cue.stop(); voice.stop(); awake = false; void wakeLock.release(); save(); } };
       load(); render();
