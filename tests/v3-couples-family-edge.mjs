@@ -9,8 +9,8 @@ let now=new Date('2026-09-08T03:00:00.000Z');
 const couples=createCouplesFamilyService({storage,clock:()=>new Date(now),rng:()=>0});
 
 assert(couples.categories().length===8,'Couples local source must expose the eight recovered categories.');
-assert(COUPLES_CARDS.length===64,'Couples connection bank must expose 64 cards.');
-for(const category of couples.categories())assert(COUPLES_CARDS.filter(card=>card.cat===category.id).length===8,`Couples category ${category.id} must expose eight cards.`);
+assert(COUPLES_CARDS.length===80,'Couples connection bank must expose 80 cards.');
+for(const category of couples.categories())assert(COUPLES_CARDS.filter(card=>card.cat===category.id).length===10,`Couples category ${category.id} must expose ten cards.`);
 // Context-reviewed reference allowlist. Any reference change requires a fresh passage-level context audit.
 const approvedReferences=Object.freeze({
   c01:'Colossians 3:12–17',c02:'Psalm 139:23–24',c03:'Philippians 1:9–11',c04:'Ephesians 4:1–3',
@@ -28,7 +28,11 @@ const approvedReferences=Object.freeze({
   c49:'Psalm 127:1–2',c50:'Galatians 6:2–5',c51:'Philippians 2:3–4',c52:'1 Timothy 6:17–19',
   c53:'Ephesians 4:31–32',c54:'1 Corinthians 13:4–5',c55:'Philippians 2:3–4',c56:'Colossians 3:12–14',
   c57:'James 1:19–20',c58:'Psalm 78:4–7',c59:'Genesis 2:23–24',c60:'Philippians 2:2–4',
-  c61:'Proverbs 16:9',c62:'Romans 12:9–13',c63:'Ecclesiastes 4:9–12',c64:'Matthew 5:14–16'
+  c61:'Proverbs 16:9',c62:'Romans 12:9–13',c63:'Ecclesiastes 4:9–12',c64:'Matthew 5:14–16',
+  c65:'Philippians 4:4–9',c66:'Galatians 6:1–5',c67:'Proverbs 18:13–17',c68:'Ephesians 4:25–29',
+  c69:'Ephesians 4:25–32',c70:'Romans 12:17–18',c71:'Romans 12:9–10',c72:'Romans 12:15–16',
+  c73:'Galatians 6:2–5',c74:'Philippians 2:3–4',c75:'1 Corinthians 13:4–7',c76:'Colossians 3:12–14',
+  c77:'Colossians 3:19–21',c78:'Philippians 2:3–4',c79:'James 4:13–17',c80:'1 Peter 4:9–11'
 });
 assert(Object.keys(approvedReferences).length===COUPLES_CARDS.length,'Every Couples card must have a context-reviewed Scripture reference.');
 for(const card of COUPLES_CARDS)assert(card.ref===approvedReferences[card.id],`Couples Scripture reference drifted without context review: ${card.id} -> ${card.ref}.`);

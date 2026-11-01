@@ -107,3 +107,5 @@ A useful V8 extension point may be left in V7 only when it is the simplest clean
 6. Run the existing pinned-toolchain, exact-candidate integration/browser/auth/tenant/privacy/offline/performance/deployment checks once coding converges; diagnose any failed gate and promote only the certified candidate. Current local browser installation is blocked by truncated download; physical-device evidence remains separate.
 
 This is sequencing for faster execution, not silent removal of accepted V8 scope or certification. No complete-V8 percentage or release date is claimed without a reconciled acceptance inventory.
+
+V8 Couples continuation (2026-11-01): c65–c80 expands the local bank to 80 cards (ten/category), with a Library collection entry and author passage-context audit. Existing 64 IDs/content are retained. Independent review and newly identified inherited PSA 127:1 source availability repair remain open. [Implementation/evidence](work/tasks/20261101-v8-couples-expansion.md). This completes this bounded expansion, not all V8 content or release acceptance.

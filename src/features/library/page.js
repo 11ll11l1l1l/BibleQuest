@@ -16,7 +16,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 }[character]));
 
 export function createLibraryPage({
-  service, onPractices, readingListStorage, getReadingListOwner, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
+  service, onPractices, onCouples, readingListStorage, getReadingListOwner, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
   isContextReady = () => true, subscribeContext = () => () => {},
   visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
@@ -28,6 +28,7 @@ export function createLibraryPage({
   const readingList = readingListStorage && getReadingListOwner ? createLibraryReadingList({storage:readingListStorage,getOwner:getReadingListOwner}) : null;
   const t = (key, values) => localization.t(key, { values });
   const filterLabel = ({ en: 'Refine results', tl: 'Salain ang resulta', ceb: 'Pinoha ang resulta', ilo: 'Pasayaaten dagiti resulta' }[localization.getLocale()] || 'Refine results');
+  const couplesLabel = ({en:'Grow Together · Couples cards',tl:'Lumago nang magkasama · Mga card para sa mag-asawa',ceb:'Motubo nga magkauban · Mga card alang sa magtiayon'}[localization.getLocale()] || 'Grow Together · Couples cards');
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
     ? t('v7.library.type.' + type.id) : type.label;
   const typeOptions = () => registry.list().map(type =>
@@ -50,6 +51,7 @@ export function createLibraryPage({
         <h1>${escapeHtml(t('v7.library.title'))}</h1>
         ${onPractices ? `<button type="button" class="bq-secondary-button" data-library-practices lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).title)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}
 
+        ${onCouples ? `<button type="button" class="bq-secondary-button" data-library-couples>${escapeHtml(couplesLabel)}</button>` : ''}
       </header>
       ${readingList ? `<details class="bq-library-reading-list-disclosure"><summary>${escapeHtml(readingListCopy(localization.getLocale()).title)}</summary><div data-library-reading-list></div></details>` : ''}
       <form data-library-search>
@@ -333,8 +335,9 @@ export function createLibraryPage({
       };
       const onClick = event => {
         const target = event.target instanceof Element
-          ? event.target.closest('[data-library-type], [data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
+          ? event.target.closest('[data-library-couples], [data-library-type], [data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
         if (!target) return;
+        if (target.hasAttribute('data-library-couples')) { onCouples?.(); return; }
         if (target.hasAttribute('data-library-type')) {
           const selectedType = target.getAttribute('data-library-type');
           if (typeInput.value !== selectedType) { typeInput.value = selectedType; submit(); }
