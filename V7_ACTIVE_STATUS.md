@@ -44,3 +44,5 @@ V8 has an automatically deployed Cloudflare PR preview; it is not promoted to pr
 The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) still governs V7 maintenance. Keep approved artwork, source/rights/Scripture evidence, unpublished candidates and rejection tombstones distinct. No artwork generation is part of this cleanup. Existing security, tenant/privacy, PWA/offline and exact-SHA release gates remain enforced.
 
 The previous cumulative status is preserved in the [V7 historical status snapshot](docs/archive/v7/records/V7_STATUS_BEFORE_CONSOLIDATION_20261027.md). Its dates, counts, OPEN gates and lane assignments are time-bound history; consult live evidence before acting.
+
+Ilocano Reader continuation: an opt-in, visit-scoped ten-label controls preview is implemented with English fallback, chapter-navigation retention and unchanged provider text. Ten affected checks, typecheck and build pass locally; independent language review, visual/device acceptance, full-app localization and exact-head CI remain open. [Handoff](work/tasks/20261101-v8-ilocano-reader-controls.md).
