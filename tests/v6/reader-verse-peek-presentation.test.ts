@@ -22,7 +22,9 @@ const click = boundedSource(
 );
 
 test('Verse Peek keeps Scripture/reference/link presentation escaped at the live UI boundary', () => {
-  assert.match(peek, /escapeHtml\(peek\.reference\)/);
+  assert.match(peek, /escapeHtml\(visibleReference\)/);
+  assert.match(peek, /const visibleReference = reader\.getState\(\)\.translation === 'ilo'/);
+  assert.match(peek, /: peek\.reference/);
   assert.match(peek, /escapeHtml\(peek\.text\)/);
   assert.match(peek, /escapeHtml\(link\.href\)/);
   assert.match(peek, /escapeHtml\(link\.label\)/);
@@ -31,10 +33,10 @@ test('Verse Peek keeps Scripture/reference/link presentation escaped at the live
 
 test('Verse Peek exposes a named heading, explicit close action, and modal presentation', () => {
   assert.match(peek, /<p class="bq-eyebrow">VERSE PEEK<\/p>/);
-  assert.match(peek, /<h2 id="bq-verse-peek-title">\$\{escapeHtml\(peek\.reference\)\}<\/h2>/);
+  assert.match(peek, /<h2 id="bq-verse-peek-title">\$\{escapeHtml\(visibleReference\)\}<\/h2>/);
   assert.match(source, /data-verse-dialog aria-labelledby="bq-verse-peek-title"/);
   assert.match(peek, /dialog\.showModal\(\)/);
-  assert.match(source, /data-verse-close>Close<\/button>/);
+  assert.match(source, /data-verse-close>\$\{ui\("close"\)\}<\/button>/);
 });
 
 test('Verse Peek context handoff preserves the exact resolved verse and closes the modal first', () => {

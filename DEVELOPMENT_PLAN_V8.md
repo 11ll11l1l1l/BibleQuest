@@ -109,3 +109,5 @@ A useful V8 extension point may be left in V7 only when it is the simplest clean
 This is sequencing for faster execution, not silent removal of accepted V8 scope or certification. No complete-V8 percentage or release date is claimed without a reconciled acceptance inventory.
 
 V8 Couples continuation (2026-11-01): c65–c80 expands the local bank to 80 cards (ten/category), with a Library collection entry and author passage-context audit. Existing 64 IDs/content are retained. Independent review and newly identified inherited PSA 127:1 source availability repair remain open. [Implementation/evidence](work/tasks/20261101-v8-couples-expansion.md). This completes this bounded expansion, not all V8 content or release acceptance.
+
+PSA 127:1 delivery gap follow-up: source-backed text repair and exact-audio chapter realignment are implemented; [evidence](work/tasks/20261101-v8-bsb-psalm-127-repair.md). This supersedes the earlier open-gap note for delivery, not remaining review/release acceptance.
