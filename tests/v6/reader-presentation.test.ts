@@ -102,3 +102,13 @@ test('chapter and verse presentation fail closed on malformed Scripture metadata
     /another chapter/i,
   );
 });
+
+
+test('read-status labels are escaped and do not replace Scripture', () => {
+  const chapter = presentReaderChapter({ book: {code: 'JHN', name: 'John', chapters: 21}, chapter: 1, verses: [{chapter: 1, verse: 1, text: 'Original Scripture'}] });
+  const html = renderReaderChapterPresentation(chapter, { translationLabel: 'Source', isRead: false, readLabels: {markRead: '<img src=x>', markedRead: 'Done'} });
+  assert.match(html, /&lt;img src=x&gt;/);
+  assert.doesNotMatch(html, /<img/);
+  assert.match(html, /Original Scripture/);
+  assert.throws(() => renderReaderChapterPresentation(chapter, {translationLabel: 'Source', isRead: false, readLabels: {markRead: ' ', markedRead: 'Done'}}), /mark-read label/);
+});
