@@ -46,3 +46,5 @@ The [V7 text-first policy](docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md) stil
 The previous cumulative status is preserved in the [V7 historical status snapshot](docs/archive/v7/records/V7_STATUS_BEFORE_CONSOLIDATION_20261027.md). Its dates, counts, OPEN gates and lane assignments are time-bound history; consult live evidence before acting.
 
 Ilocano Reader continuation: an opt-in, visit-scoped ten-label controls preview is implemented with English fallback, chapter-navigation retention and unchanged provider text. Ten affected checks, typecheck and build pass locally; independent language review, visual/device acceptance, full-app localization and exact-head CI remain open. [Handoff](work/tasks/20261101-v8-ilocano-reader-controls.md).
+
+Couples continuation: 16 new authored Taglish prompts expand the bank to 80 cards, with Library collection access, canonical Reader reference checks and existing private local state. [Audit and verification](work/tasks/20261101-v8-couples-expansion.md). Inherited PSA 127:1 source text is absent for c29/c49 and remains an explicit repair item; no text substitution or full release PASS is claimed.

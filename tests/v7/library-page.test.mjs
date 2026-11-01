@@ -241,3 +241,20 @@ test('Library practice launcher invokes the provided canonical route callback', 
   assert.equal(opened, 1);
   dispose();
 });
+
+test('Library Couples collection opens only through its callback and removes its event on disposal', () => {
+  const priorElement = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const f = fixture();
+    let opened = 0;
+    const page = createLibraryPage({service: f.service, navigate() { throw new Error('No reading payload expected'); }, onCouples() { opened++; }});
+    assert.match(page.html, /data-library-couples/);
+    const dispose = page.mount(f.root);
+    f.page.listeners.get('click')({target: new ElementStub({'data-library-couples': ''})});
+    assert.equal(opened, 1);
+    dispose();
+    assert.equal(f.page.listeners.has('click'), false);
+    assert.doesNotMatch(createLibraryPage({service: f.service, navigate() {}}).html, /data-library-couples/);
+  } finally { globalThis.Element = priorElement; }
+});
