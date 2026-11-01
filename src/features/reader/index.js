@@ -114,6 +114,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
     mount(root) {
       const host = root.querySelector('[data-reader-page]'); let useIlocanoControls = false;
       let currentOfflineStatus = null;
+      const interfaceText = (key, count) => readerInterfaceText(useIlocanoControls && reader.getState().translation === 'ilo' ? 'ilo' : 'en', key, count);
       let searchResults = null, highlightVerse = Number.isInteger(initialVerse) && initialVerse > 0 ? initialVerse : null, operation = 0, furiganaPass = 0, currentChapter = null, activeOfflineDownload = null, activeOfflineTranslation = null, offlineInventory = null;
       const backButton = root.querySelector('[data-reader-lesson-back]');
       if (backButton) backButton.addEventListener('click', onBack);
@@ -288,14 +289,18 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
       const renderSearch = () => {
         if (!searchResults) return '';
         const presentation = presentReaderSearchResults(reader.getState().translation === 'ilo' ? displayIlocanoReaderSearch(searchResults) : searchResults);
-        const warning = presentation.warning ? `<p class="bq-reader-note">${escapeHtml(presentation.warning)}</p>` : '';
-        if (!presentation.items.length) return `<section class="bq-search-results" aria-labelledby="bq-reader-search-results-title"><h2 id="bq-reader-search-results-title">${escapeHtml(presentation.heading)}</h2><p>${escapeHtml(presentation.emptyMessage || 'No matches found.')}</p>${warning}</section>`;
-        return `<section class="bq-search-results" aria-labelledby="bq-reader-search-results-title"><div class="bq-reader-title"><h2 id="bq-reader-search-results-title">${escapeHtml(presentation.heading)}</h2><small>${escapeHtml(presentation.countLabel || '')}</small></div><div class="bq-search-list">${presentation.items.map(item => `<button type="button" data-search-result="${item.index}"><b>${escapeHtml(item.reference)}</b><span>${escapeHtml(item.text)}</span></button>`).join('')}</div>${warning}</section>`;
+        const searchCopy = useIlocanoControls && reader.getState().translation === 'ilo' ? {
+          heading: interfaceText('results'), countLabel: presentation.items.length ? interfaceText('shown', presentation.items.length) : null,
+          emptyMessage: interfaceText('empty'), warning: searchResults.skippedBooks.length ? interfaceText('skipped', searchResults.skippedBooks.length) : null,
+        } : presentation;
+        const warning = searchCopy.warning ? `<p class="bq-reader-note">${escapeHtml(searchCopy.warning)}</p>` : '';
+        if (!presentation.items.length) return `<section class="bq-search-results" aria-labelledby="bq-reader-search-results-title"><h2 id="bq-reader-search-results-title">${escapeHtml(searchCopy.heading)}</h2><p>${escapeHtml(searchCopy.emptyMessage || 'No matches found.')}</p>${warning}</section>`;
+        return `<section class="bq-search-results" aria-labelledby="bq-reader-search-results-title"><div class="bq-reader-title"><h2 id="bq-reader-search-results-title">${escapeHtml(searchCopy.heading)}</h2><small>${escapeHtml(searchCopy.countLabel || '')}</small></div><div class="bq-search-list">${presentation.items.map(item => `<button type="button" data-search-result="${item.index}"><b>${escapeHtml(item.reference)}</b><span>${escapeHtml(item.text)}</span></button>`).join('')}</div>${warning}</section>`;
       };
       const renderChapter = (chapter, offlineStatus = null) => {
         const state = reader.getState(), links = reader.externalLinks(), japanese = state.translation === 'jko', licensed = chapter.translation.mode === 'licensed-link';
         const ilocano = state.translation === 'ilo';
-        const ui = key => readerInterfaceText(ilocano && useIlocanoControls ? 'ilo' : 'en', key);
+        const ui = interfaceText;
         currentOfflineStatus = offlineStatus;
         const bookLabel = ilocano ? ilocanoReaderBookName(chapter.book.code, chapter.book.name) : chapter.book.name;
         const heading = readerChapterHeading({ name: bookLabel }, chapter.chapter);
@@ -317,12 +322,12 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const questBanner=!questState?.active||questState?.complete?'':questMatches
           ? `<section class="bq-panel bq-reader-note" data-reader-quest><p class="bq-eyebrow">MAIN BIBLE QUEST</p><h3>${escapeHtml(questTarget.book)} ${questTarget.chapter}</h3><p>${questState.completedChapters}/${questState.totalChapters} chapters complete · ${questState.percent}%</p><p>Complete this chapter to advance the Genesis → Revelation Quest. Free reading elsewhere does not skip this required chapter.</p><button type="button" class="bq-primary-button" data-reader-quest-complete>${licensed?'I finished this chapter externally · Continue':'Complete Quest chapter · Continue'}</button></section>`
           : `<section class="bq-panel bq-reader-note" data-reader-quest-away><p class="bq-eyebrow">MAIN BIBLE QUEST</p><p>Your Quest is waiting at <b>${escapeHtml(questTarget.book)} ${questTarget.chapter}</b>. This page is free reading and will not move the ordered Quest.</p><button type="button" class="bq-secondary-button" data-reader-quest-return>Return to Quest chapter</button></section>`;
-        const scripture = licensed ? `<section class="bq-panel bq-scripture-panel" data-licensed-reader><div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(chapter.translation.label)}</p><h2>${escapeHtml(heading)}</h2></div></div><div class="bq-licensed-reader-panel"><h3>Open NLT in a licensed reader</h3><p>The New Living Translation is copyrighted. BibleQuest does not redistribute its full text or expose a private translation API key in the browser.</p><p>Your selected book and chapter remain saved in BibleQuest. The button below opens that exact passage externally.</p><a class="bq-primary-button bq-licensed-reader-link" data-nlt-open ${externalAttrs} href="${escapeHtml(chapter.external?.href || '')}">Open ${escapeHtml(heading)} · NLT</a></div></section>` : `<section class="bq-panel bq-scripture-panel">${renderReaderChapterPresentation(displayedPresentation, { translationLabel: chapter.translation.label, highlightedVerse: highlightVerse, isRead: reader.isRead() })}${renderSearch()}</section>`;
+        const scripture = licensed ? `<section class="bq-panel bq-scripture-panel" data-licensed-reader><div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(chapter.translation.label)}</p><h2>${escapeHtml(heading)}</h2></div></div><div class="bq-licensed-reader-panel"><h3>Open NLT in a licensed reader</h3><p>The New Living Translation is copyrighted. BibleQuest does not redistribute its full text or expose a private translation API key in the browser.</p><p>Your selected book and chapter remain saved in BibleQuest. The button below opens that exact passage externally.</p><a class="bq-primary-button bq-licensed-reader-link" data-nlt-open ${externalAttrs} href="${escapeHtml(chapter.external?.href || '')}">Open ${escapeHtml(heading)} · NLT</a></div></section>` : `<section class="bq-panel bq-scripture-panel">${renderReaderChapterPresentation(displayedPresentation, { translationLabel: chapter.translation.label, highlightedVerse: highlightVerse, isRead: reader.isRead(), readLabels: { markRead: ui('markRead'), markedRead: ui('markedRead') } })}${renderSearch()}</section>`;
         host.innerHTML = `<header class="bq-reader-passage"><label><span class="bq-reader-passage__book">${escapeHtml(heading)} <span aria-hidden="true">⌄</span></span><select data-reader-book aria-label="${ilocano ? 'Libro' : 'Book'}">${options(bookChoices, state.book, 'code', ilocano ? 'displayName' : 'name')}</select></label><label><span>${escapeHtml(chapter.translation.label)} · ${escapeHtml(chapter.translation.language || 'English')}</span><select data-reader-translation aria-label="${ui("translation")}">${options(reader.translations, state.translation)}</select></label><label class="bq-reader-passage__chapter"><span>${ilocano ? 'Kapitulo' : 'Chapter'}</span><select data-reader-chapter aria-label="${ilocano ? 'Kapitulo' : 'Chapter'}">${Array.from({ length: chapter.book.chapters }, (_, index) => `<option value="${index + 1}" ${index + 1 === state.chapter ? 'selected' : ''}>${index + 1}</option>`).join('')}</select></label></header>${questBanner}<div class="bq-reader-layout">${scripture}<aside class="bq-reader-controls"><div class="bq-reader-toolbar" aria-label="${ui("tools")}">${searchControl}<button type="button" data-reader-context>אΩ <span>${ui("context")}</span></button>${furiganaControl}${vocabularyControl}</div><details class="bq-reader-settings"><summary>${ui("settings")}</summary>${readerSpeechHtml(speech, state, licensed)}${offlineStatusHtml(offlineStatus)}<div data-reader-offline-package><p class="bq-reader-note">Checking managed offline storage…</p></div><div class="bq-reader-source"><b>${escapeHtml(chapter.translation.source)}</b><span>${escapeHtml(chapter.translation.license)}</span><span>${escapeHtml(chapter.translation.attribution)}</span></div>${externalControl}</details><div class="bq-reader-nav"><button type="button" class="bq-secondary-button" data-reader-prev>← ${ui("previous")}</button><button type="button" class="bq-secondary-button" data-reader-next>${ui("next")} →</button></div><p class="bq-form-message" data-reader-message aria-live="polite"></p></aside></div>${readerAudioHtml(audio, state, licensed)}<dialog class="bq-verse-dialog" data-verse-dialog aria-labelledby="bq-verse-peek-title"><div data-verse-dialog-body></div><button type="button" class="bq-secondary-button" data-verse-close>${ui("close")}</button></dialog><dialog class="bq-context-dialog" data-context-dialog aria-label="Hebrew and Greek Context Lab"></dialog>`;
         host.querySelector('.bq-reader-passage')?.insertAdjacentHTML('afterbegin', `<h1 class="bq-reader-app-title">${ilocano ? 'Ti Biblia · ' : ''}Bible Reader</h1>`);
         if (ilocano) {
           if (useIlocanoControls) {
-            host.querySelectorAll('[data-reader-search], [data-reader-context] span, .bq-reader-settings summary, .bq-reader-nav, [data-verse-close], .bq-external-links > span').forEach(node => node.setAttribute('lang', 'ilo'));
+            host.querySelectorAll('[data-reader-search], [data-reader-context] span, .bq-reader-settings summary, .bq-reader-nav, [data-verse-close], .bq-external-links > span, [data-reader-mark], .bq-search-results h2, .bq-search-results small, .bq-search-results > p').forEach(node => node.setAttribute('lang', 'ilo'));
           }
           host.querySelector('.bq-scripture-panel .bq-verse-list')?.setAttribute('lang', 'ilo');
           host.querySelector('.bq-reader-passage')?.insertAdjacentHTML('beforeend',
@@ -588,7 +593,7 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         if (target.closest('[data-reader-context]')) { const state = reader.getState(); return openContext({ code: state.book, chapter: state.chapter, verse: 1 }); }
         const vocabToggle = target.closest('[data-jp-vocab-toggle]');
         if (vocabToggle && vocabulary) { const next = vocabulary.setEnabled(!vocabulary.getState().enabled); vocabToggle.outerHTML = japaneseVocabularyControl(next); message(next.enabled ? 'Japanese vocabulary notes enabled.' : 'Japanese vocabulary notes disabled.'); return; }
-        const mark = target.closest('[data-reader-mark]'); if (mark) { if (mark.disabled) { message('Already marked read.'); return; } try { const result = reader.markRead(); mark.textContent = 'Marked read'; mark.disabled = true; if (result.newlyRead) message(result.progress?.awardedXp ? `Marked read · +${result.progress.awardedXp} XP` : 'Marked read · progress already credited'); else message('Already marked read.'); } catch (error) { message(error?.message || 'Could not mark chapter read.'); } return; }
+        const mark = target.closest('[data-reader-mark]'); if (mark) { if (mark.disabled) { message(interfaceText('alreadyRead')); return; } try { const result = reader.markRead(); mark.textContent = interfaceText('markedRead'); mark.disabled = true; if (result.newlyRead) message(result.progress?.awardedXp ? interfaceText('awarded', result.progress.awardedXp) : interfaceText('credited')); else message(interfaceText('alreadyRead')); } catch (error) { message(error?.message || interfaceText('markError')); } return; }
         if (target.closest('[data-peek-meditate]') && onMeditate) {
           const dialog = host.querySelector('[data-verse-dialog]');
           const state = reader.getState(), verse = Number(dialog?.dataset.peekVerse);
@@ -610,8 +615,8 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
         const button = form.querySelector('button[type="submit"]');
         const offline = globalThis.navigator?.onLine === false;
         button.disabled = true;
-        button.textContent = offline ? 'Searching downloads…' : 'Searching…';
-        message(offline ? 'Searching downloaded Bible books…' : 'Searching Scripture source…');
+        button.textContent = interfaceText(offline ? 'searchingDownloads' : 'searching');
+        message(interfaceText(offline ? 'searchingBooks' : 'searchingSource'));
         try {
           const results = offline && typeof offlinePackages?.searchOfflineText === 'function'
             ? await offlinePackages.searchOfflineText(reader.getState().translation, query, 30)
@@ -627,9 +632,9 @@ export function readerPage({ reader, vocabulary = null, furigana = null, offline
           host.querySelector('.bq-search-results')?.scrollIntoView({ block: 'start' });
         } catch (error) {
           if (id !== operation) return;
-          message(error?.message || 'Search failed.');
+          message(error?.message || interfaceText('searchError'));
           button.disabled = false;
-          button.textContent = 'Search';
+          button.textContent = interfaceText('search');
         }
       };
       const unsubscribeAudio = audio?.subscribe?.(refreshAudioPresentation);

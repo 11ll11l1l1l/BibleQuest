@@ -25,6 +25,7 @@ export type ReaderChapterHtmlOptions = Readonly<{
   translationLabel: string;
   highlightedVerse?: number | null;
   isRead: boolean;
+  readLabels?: Readonly<{ markRead: string; markedRead: string }>;
 }>;
 
 function escapeHtml(value: unknown): string {
@@ -115,6 +116,8 @@ export function renderReaderChapterPresentation(
   }
   const translationLabel = requiredText(options.translationLabel, 'a translation label');
   if (typeof options.isRead !== 'boolean') throw new Error('Reader chapter HTML requires read status.');
+  const markRead = requiredText(options.readLabels?.markRead ?? 'Mark read', 'a mark-read label');
+  const markedRead = requiredText(options.readLabels?.markedRead ?? 'Marked read', 'a marked-read label');
   const highlightedVerse = options.highlightedVerse ?? null;
   if (highlightedVerse !== null && !positiveInteger(highlightedVerse)) {
     throw new Error('Reader chapter HTML requires a valid highlighted verse.');
@@ -123,5 +126,5 @@ export function renderReaderChapterPresentation(
     const highlighted = verse.verse === highlightedVerse ? ' is-highlighted' : '';
     return `<button type="button" class="bq-verse${highlighted}" data-verse="${verse.verse}"><span>${escapeHtml(verse.label)}</span><p data-reader-verse-text>${escapeHtml(verse.text)}</p></button>`;
   }).join('');
-  return `<div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(translationLabel)}</p><h2>${escapeHtml(chapter.heading)}</h2></div><button type="button" class="bq-secondary-button" data-reader-mark ${options.isRead ? 'disabled' : ''}>${options.isRead ? 'Marked read' : 'Mark read'}</button></div><div class="bq-verse-list">${verses}</div>`;
+  return `<div class="bq-reader-title"><div><p class="bq-eyebrow">${escapeHtml(translationLabel)}</p><h2>${escapeHtml(chapter.heading)}</h2></div><button type="button" class="bq-secondary-button" data-reader-mark ${options.isRead ? 'disabled' : ''}>${escapeHtml(options.isRead ? markedRead : markRead)}</button></div><div class="bq-verse-list">${verses}</div>`;
 }
