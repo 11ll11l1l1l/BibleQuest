@@ -16,6 +16,7 @@ on:
       - 'packages/db/**'
       - 'supabase/**'
       - 'tests/v7/**'
+      - 'tests/v8/**'
       - 'tests/v6/**'
       - 'tests/v3-*.mjs'
       - 'tests/v4-*.mjs'
@@ -60,7 +61,7 @@ env:
 jobs:
   converge:
     name: Exact-SHA integrated V7 certification
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright 1.55 supports this runner; ubuntu-latest may advance.
     timeout-minutes: 60
     steps:
       - name: Validate exact candidate identity
@@ -103,6 +104,7 @@ jobs:
           npm run format:check
           npm run typecheck
           npm run unit:v7
+          npm run unit:v8
 
       - name: Build Lane A and Lane B content evidence
         shell: bash

@@ -158,7 +158,7 @@ const largestFeatureRouteStylesheet = featureRoutePerformance.reduce(
 
 const scriptureManifestFailures = [];
 const scriptureManifestEvidence = [];
-for (const translationId of ['bsb', 'tl', 'cebocb']) {
+for (const translationId of ['bsb', 'tl', 'cebocb', 'ilo']) {
   const manifestPath = join(outDir, 'data', 'v6-scripture-manifests', `${translationId}.json`);
   try {
     const scriptureManifest = JSON.parse(await readFile(manifestPath, 'utf8'));

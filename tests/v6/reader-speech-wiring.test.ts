@@ -13,14 +13,16 @@ test('Reader exposes browser speech only for text translations without an audio 
   ]);
   assert.match(boot, /import\('\.\.\/v6\/reader\/speech-synthesis\.ts'\)/);
   assert.match(boot, /speechModule\.createReaderSpeechSynthesis/);
-  assert.match(page, /\['tl', 'cebocb', 'jko'\]\.includes\(state\.translation\)/);
+  assert.match(page, /\['tl', 'cebocb', 'ilo', 'jko'\]\.includes\(state\.translation\)/);
   assert.match(page, /speech\.loadChapter\(chapter\)/);
   assert.match(page, /data-reader-speech-toggle/);
+  assert.match(page, /An Ilocano voice may not be installed/);
   assert.match(page, /data-reader-speech-rate/);
   assert.match(page, /speech\.setPlaybackRate\(Number\(target\.value\)\)/);
   assert.match(page, /speech\?\.dispose\?\.\(\)/);
   assert.match(speech, /tl: 'fil-PH'/);
   assert.match(speech, /cebocb: 'ceb-PH'/);
+  assert.match(speech, /ilo: 'ilo-PH'/);
   assert.match(speech, /jko: 'ja-JP'/);
   assert.match(speech, /LANGUAGE_BY_TRANSLATION/);
   assert.match(stylesheet, /\.bq-verse\.is-speech-current/);

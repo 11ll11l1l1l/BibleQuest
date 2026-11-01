@@ -12,7 +12,10 @@ import {
 } from '../../src/v6/reader/package-manager.ts';
 
 const serviceWorkerSource = readFileSync(new URL('../../offline-shell-sw.js', import.meta.url), 'utf8');
-const currentShellCache = 'biblequest-v3-offline-shell-v2';
+// Exercise the current production worker version, not the historical V2 cache.
+const currentShellVersion = serviceWorkerSource.match(/const CACHE_NAME=`\$\{CACHE_PREFIX\}(v\d+)`/)?.[1];
+assert.ok(currentShellVersion, 'worker must declare a versioned shell cache');
+const currentShellCache = `biblequest-v3-offline-shell-${currentShellVersion}`;
 const staleShellCache = 'biblequest-v3-offline-shell-v1';
 
 async function activateServiceWorker(cacheNames: string[]) {

@@ -18,7 +18,7 @@ class ElementStub {
 
 function fixture() {
   const nodes = Object.fromEntries([
-    '[data-library-status]', '[data-library-results]', '[data-library-search]',
+    '[data-library-practices]', '[data-library-status]', '[data-library-results]', '[data-library-search]',
     '[name="query"]', '[name="contentType"]', '[name="taxonomyId"]', '[data-library-retry]', '[data-library-more]',
   ].map(key => [key, new ElementStub()]));
   const page = new ElementStub();
@@ -227,5 +227,34 @@ test('live filters debounce in place, retain results while loading and cancel pe
     dispose();
     await new Promise(resolve => setTimeout(resolve, 300));
     assert.equal(f.requests.length, count, 'leaving the page cancels pending input');
+  } finally { globalThis.Element = priorElement; }
+});
+
+
+test('Library practice launcher invokes the provided canonical route callback', () => {
+  const f = fixture();
+  let opened = 0;
+  const page = createLibraryPage({ service: f.service, navigate() {}, onPractices() { opened += 1; } });
+  assert.match(page.html, /data-library-practices lang="en"/);
+  const dispose = page.mount(f.root);
+  f.nodes['[data-library-practices]'].listeners.get('click')();
+  assert.equal(opened, 1);
+  dispose();
+});
+
+test('Library Couples collection opens only through its callback and removes its event on disposal', () => {
+  const priorElement = globalThis.Element;
+  globalThis.Element = ElementStub;
+  try {
+    const f = fixture();
+    let opened = 0;
+    const page = createLibraryPage({service: f.service, navigate() { throw new Error('No reading payload expected'); }, onCouples() { opened++; }});
+    assert.match(page.html, /data-library-couples/);
+    const dispose = page.mount(f.root);
+    f.page.listeners.get('click')({target: new ElementStub({'data-library-couples': ''})});
+    assert.equal(opened, 1);
+    dispose();
+    assert.equal(f.page.listeners.has('click'), false);
+    assert.doesNotMatch(createLibraryPage({service: f.service, navigate() {}}).html, /data-library-couples/);
   } finally { globalThis.Element = priorElement; }
 });

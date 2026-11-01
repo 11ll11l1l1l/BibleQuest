@@ -139,6 +139,13 @@ test('evidence rejects obvious account identifiers, endpoints and credentials in
     /account, credential, endpoint, key, or token material/i,
   );
 
+  const secret = gate('p1');
+  secret.notes = 'Credential accidentally pasted: sb_secret_sample123';
+  assert.throws(
+    () => record({ gates: [secret, gate('p2'), gate('p3')] }),
+    /account, credential, endpoint, key, or token material/i,
+  );
+
   const p1 = gate('p1');
   p1.notes = 'Observed notification for user 11111111-1111-4111-8111-111111111111.';
   assert.throws(

@@ -65,10 +65,12 @@ test('checksum helper verifies immutable package bytes', async () => {
 });
 
 test('packaging policy preserves current V5 redistribution boundaries', () => {
-  assert.equal(V6_TRANSLATION_PACKAGING_POLICY.length, 5);
+  assert.equal(V6_TRANSLATION_PACKAGING_POLICY.length, 6);
   assert.equal(translationPackagingPolicy('bsb')?.license.redistribution, 'allowed');
   assert.equal(translationPackagingPolicy('tl')?.license.redistribution, 'allowed');
   assert.equal(translationPackagingPolicy('cebocb')?.license.redistribution, 'allowed');
+  assert.equal(translationPackagingPolicy('ilo')?.license.redistribution, 'allowed');
+  assert.equal(translationPackagingPolicy('ilo')?.delivery, 'downloadable');
   assert.equal(translationPackagingPolicy('jko')?.delivery, 'live');
   assert.equal(translationPackagingPolicy('jko')?.license.redistribution, 'review-required');
   assert.equal(translationPackagingPolicy('nlt')?.delivery, 'external');

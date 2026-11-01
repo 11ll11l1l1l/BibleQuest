@@ -1,7 +1,7 @@
 import type { ContentDelivery, ScriptureLicenseMetadata } from './content-manifest.ts';
 
 export interface TranslationPackagingPolicy {
-  readonly translationId: 'bsb' | 'tl' | 'cebocb' | 'jko' | 'nlt';
+  readonly translationId: 'bsb' | 'tl' | 'cebocb' | 'ilo' | 'jko' | 'nlt';
   readonly delivery: ContentDelivery;
   readonly license: ScriptureLicenseMetadata;
 }
@@ -36,6 +36,11 @@ export const V6_TRANSLATION_PACKAGING_POLICY: readonly TranslationPackagingPolic
       attribution: '© 2009, 2010, 2014, 2024 Biblica, Inc. · See data/packs/ATTRIBUTION.md',
       redistribution: 'allowed',
     }),
+  }),
+  Object.freeze({
+    translationId: 'ilo',
+    delivery: 'downloadable',
+    license: Object.freeze({ source: 'Ti Biblia / Ilocano Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2019 Door43 World Missions Community · https://ebible.org/iloulb/ · JSON packaging only; wording unchanged · See data/packs/ilocano/LICENSE.html and SOURCE.json', redistribution: 'allowed' }),
   }),
   Object.freeze({
     translationId: 'jko',

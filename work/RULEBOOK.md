@@ -2,14 +2,14 @@
 
 Canonical operational policy for development, maintenance, multi-agent work and production releases. Updated 2026-10-04 JST. Applies from V7 onward; preserves V1–V6 lessons without importing obsolete workflow machinery.
 
-> **V7 image scope override (2026-10-11):** Read [central automated image QA and ledger contract](../docs/v7/V7_AUTOMATED_IMAGE_QA_AND_LEDGER_20261011.md) before new image generation or QA. It supersedes historical scheduled visual producer instructions: five agents do *only independent QA*, human QA approval is not a gate, ChatGPT interactive manual generation only, persistent unique claims, reject-and-delete candidate bytes, and continue immediately to the next review. Preserve non-waivable Scripture, privacy, rights and exact-build release gates.
+> **Current V7 maintenance policy:** Artwork production is frozen by the [text-first contract](../docs/v7/V7_TEXT_FIRST_RELEASE_RESET_20261017.md). [AGENTS.md](../AGENTS.md#content-and-artwork) links the existing-image validation authorities. Historical production quotas do not create active work.
 
 ## 1. Authority and fast start
 
 1. Follow the current user's scope and authorization. Do not restart permission checks for already authorized work.
 2. Fetch the assigned branch once, record HEAD, and check local changes. Read the current status, this section and only the task-specific sections below. Inspect the smallest relevant files and existing checks.
 3. Live repository, CI and deployed evidence determine what exists. Accepted requirements determine intended behavior. Historical reports and recovered chat claims are leads, not current certification.
-4. `V7_ACTIVE_STATUS.md` owns development progress; `V6_ACTIVE_STATUS.md` and its checklist retain released V6 evidence; `BACKUP_MANIFEST.md` owns rollback references. This file owns operating rules. Do not create another competing authority.
+4. `V7_ACTIVE_STATUS.md` owns current release status and next work; `V6_ACTIVE_STATUS.md` and its checklist retain historical V6 evidence; `BACKUP_MANIFEST.md` owns rollback references. This file owns operating rules. Do not create another competing authority.
 5. Produce a bounded fix, integrated feature or durable evidence. When blocked, record the exact failed operation, completed work and next action. Analysis, polling and restated status are not implementation progress.
 6. Stop when the requested outcome and affected checks are complete. Do not extend into an audit, architecture rewrite or unrelated cleanup.
 
@@ -88,22 +88,9 @@ Before parallel writes, assign each worker: one concrete outcome, starting branc
 
 ### Persistent named project lanes
 
-A project may define persistent lane letters such as A, B, C and D across multiple phases. The lane letter is the durable identity; the phase-specific assignment changes as the roadmap advances.
+A project may define persistent lane letters across phases. Resolve a continuation command from current status and the active plan, then advance through eligible bounded work without requiring the user to identify the phase. Reconcile stale status against live integrated evidence. Do not invent readiness when a shared exit gate is unmet.
 
-For BibleQuest V7, a command such as **`Continue V7 lane A`** is complete instruction. The executor must not ask the user which phase is current. It must:
-
-1. fetch the live `v7/development` head and read `V7_ACTIVE_STATUS.md` plus the lane table in `DEVELOPMENT_PLAN_V7.md`;
-2. resolve the current eligible assignment for lane A from repository state, not from chat memory;
-3. continue unfinished lane-A work if it is still active;
-4. if the current lane-A assignment is complete and the next phase/lane-A assignment is eligible, advance to it automatically in the same run;
-5. if a shared phase gate is still genuinely unmet, perform a bounded, non-overlapping action that helps close that gate or record the exact dependency; do not invent the next phase early;
-6. continue crossing phase boundaries without requiring a new user prompt until the requested execution window ends, a genuine external/human boundary is reached, or V7 is complete.
-
-A lane may advance when either the active-status authority already marks the next phase READY/ACTIVE or the governing phase exit gate is objectively satisfied by integrated repository/evidence state. When status is stale, reconcile it as a bounded integration action only if doing so does not race another active status owner; otherwise use the live integrated evidence and leave one concise handoff for the status owner.
-
-Phase transitions do not erase the lane identity. Example: lane A may be P0-A in Phase 0, then P1-A, P2-A, P3-A, P4-A and P5-A without the user ever naming those phases. Optional extra lanes such as P3-E do not change A–D continuity.
-
-The continuation command never authorizes scope expansion. A V7 lane stops after V7 completion; it does not silently begin V8.
+V7/V7.1 are released. Their earlier lane maps are archived with the original V7 plan; do not restart those queues. A future V8 lane uses its refreshed plan and assigned baseline. Lane continuation never expands scope into the next major version without owner authorization.
 
 - One integration owner serializes merges and current-status/checklist edits. Workers do not repeatedly rewrite shared status files.
 - Shared shell, schema, workflow, generated manifest and shared owner changes are assigned to one worker or sequenced explicitly. Do not let two agents patch the same failure independently.
@@ -163,13 +150,3 @@ This policy replaces older operational prescriptions for new work, while frozen 
 - Repeated owner confirmation for reversible authorized work.
 
 Do not use simplification to remove a required exact-SHA release gate, real authorization check, data-preservation rule or genuine physical-evidence requirement. Review only the task-relevant sections; the comprehensive rulebook is a reference, not a command to execute every check.
-
-## V7 image construction — all executors and all sessions
-
-**Required task-specific art authority:** [V7 complete unfinished-image construction guidebook](../docs/v7/unfinished-artwork-guide/00_COMPLETE_CONSTRUCTION_GUIDEBOOK.md), 11 exact-ID scene chapters and [eight-stream ownership](../docs/v7/V7_EIGHT_STREAM_ARTWORK_EXECUTION_20261009.md). This instruction applies to **every future V7 image decision**, including regular A–D chats, manual X/Y/Z, the scheduled four image producers, independent QA, and release owner D. Check current image inventory and source text before following an assignment. Old scene proposals and automation context are historical if contradicted by the guide.
-
-1. **No image generation before** the exact content ID, source body/rights/revision, prescribed art scene, and approved/open/rejected-image novelty preflight are known. Do not reuse rejected bytes, a similar scene with changed headline, contact sheet, generic mountain/sunset, SVG clip-art, or unauthorized official book art. A new scene alternative requires recorded material differentiation and guide revision before generating.
-2. Require true high-resolution individually stored photographic-style **raster** CLEAN; only derive locale-exact professional TYPE and cropped text-free THUMB after actual CLEAN pixels pass. Preserve existing lawful CLEAN when only derivatives fail. Keep essential title/Scripture live, respect locale/reference/source-blob identity, >=10% title edge safety, separate 320/390/430/thumbnail examination, exact real hashes/bytes/dimensions/rights/alt. Structural CI is not aesthetic/context certification.
-3. Production status is forbidden without independent source/rights/Scripture-context/art QA and the existing actual built/served-byte release gates. Keep correct candidate/quarantine state and CLEAN/live-language fallback. Lane D is the sole release integrator; scripted checks never replace independent visual review.
-4. Run `node scripts/v7-unfinished-image-guidebook-audit.mjs` as the existing workflow's cheap source/brief consistency prerequisite. The chapter integrity checker validates 300 **briefs**, not 300 approved image files or subjective image quality.
-5. If the guide has not landed on an older task branch, load the version in review PR #1481, then rebase/refresh the task branch rather than bypassing missing instructions. All chats and agents use the same guide path; do not fork multiple competing private rulebooks.

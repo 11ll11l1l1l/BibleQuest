@@ -48,7 +48,7 @@ env:
 jobs:
   certify:
     name: Exact-SHA build, PWA, and performance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Keep the pinned Playwright 1.55 browser on a supported OS.
     timeout-minutes: 25
     steps:
       - name: Validate selected candidate identity

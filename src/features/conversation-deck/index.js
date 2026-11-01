@@ -7,7 +7,7 @@ function activeRoom(state,message,conversationMode=true){
   if(conversationMode)return `<header class="bq-community-head"><div><p class="bq-eyebrow">${esc(deckCopy('title'))}</p><h1>${esc(room.title)}</h1><p data-live-room-connection role="status"></p></div><button type="button" class="bq-secondary-button" data-live-rooms-back>${esc(deckCopy('back'))}</button></header><section class="bq-panel" data-live-room-active><p>${esc(deckCopy('code'))}: <code data-live-room-code>${esc(room.roomCode)}</code></p><details data-live-room-details><summary>${esc(deckCopy('details'))} · ${esc(deckCopy('participants'))} (<span data-live-room-count>${state.participants.length}</span>)</summary><p>${esc(deckCopy(state.isHost?'host':'member'))} ${esc(deckCopy('scope'))}</p><ul data-live-room-participants></ul><div class="bq-account-actions"><button type="button" class="bq-secondary-button" data-live-room-reconnect>${esc(deckCopy('reconnect'))}</button><button type="button" class="bq-secondary-button" data-live-room-leave>${esc(deckCopy('leave'))}</button>${state.isHost?`<button type="button" class="bq-secondary-button" data-live-room-end>${esc(deckCopy('end'))}</button>`:''}</div></details></section><p data-live-room-message role="status"></p><div data-conversation-panel></div>`;
 
 }
-export function conversationDeckPage({liveRooms,onBack,onAccount,conversationMode=true,onScripture,onConversation,subscribeContext=()=>()=>{},initialCode='',onRoom=()=>{}}={}){
+export function conversationDeckPage({liveRooms,onBack,onAccount,conversationMode=true,onScripture,onConversation,subscribeContext=()=>()=>{},initialCode='',initialSeries='',onRoom=()=>{}}={}){
   return{title:conversationMode?deckCopy('title'):'Live Rooms',html:'<section class="bq-community bq-conversation-session" data-live-rooms-view></section>',mount(root){
     const view=root.querySelector('[data-live-rooms-view]');let disposed=false,busy=false,message='',activeKey='',deckPanel=null,pendingContext=false,initialJoinAttempted=false,lastCode='';
     const contextIdentity=()=>{const s=liveRooms.snapshot();return JSON.stringify([s.userId,s.activeCongregationId,s.activeRole,s.authenticated,s.remoteAvailable])};
@@ -35,7 +35,7 @@ export function conversationDeckPage({liveRooms,onBack,onAccount,conversationMod
       clearDeck();
       if(conversationMode&&(!state.authenticated||!state.remoteAvailable)){view.innerHTML=`<h1>${esc(deckCopy('title'))}</h1><p>${esc(deckCopy(state.authenticated?'unavailable':'signIn'))}</p><button type="button" class="bq-primary-button" data-live-rooms-account>${esc(deckCopy('account'))}</button><button type="button" class="bq-secondary-button" data-live-rooms-back>${esc(deckCopy('back'))}</button>`;bind();return;}
       view.innerHTML=state.room?activeRoom(state,message,true):conversationLanding(state,message);bind();
-      if(key){activeKey=key;deckPanel=mountConversationDeck(view.querySelector('[data-conversation-panel]'),{liveRooms,onScripture,initialState:state});render(state)}
+      if(key){activeKey=key;deckPanel=mountConversationDeck(view.querySelector('[data-conversation-panel]'),{liveRooms,onScripture,initialState:state,initialSeries});render(state)}
     };
 
     const subscription=liveRooms.subscribe(render);

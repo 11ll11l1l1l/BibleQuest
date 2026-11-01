@@ -217,6 +217,75 @@ try {
       assert.equal(await query.inputValue(), '', `${locale}/${width}: Clear survives reload`);
       assert.equal(await page.locator('#bq-library-type').inputValue(), 'devotional');
 
+      // Follow a real public reading to its canonical practice guide. No timer
+      // starts on navigation; a persisted session wins over a new suggestion.
+      await page.goto(`${baseUrl}/#/library-item?id=devotional.biblequest.anxiety_worry.01`, { waitUntil: 'networkidle' });
+      await page.locator('[data-reading-list-save-action="toggle"]').waitFor();
+      await page.locator('[data-reading-list-save-action="toggle"]').click();
+      await page.locator('[data-library-back]').click();
+      await page.locator('[data-library-reading-list]').waitFor();
+      await page.reload({ waitUntil: 'networkidle' });
+      const readingList = page.locator('[data-library-reading-list]');
+      // The saved list lives inside a native <details> which closes on reload.
+      // Check existence before opening; require visibility after disclosure.
+      await readingList.waitFor({ state: 'attached' });
+      const savedDisclosure = readingList.locator('xpath=..');
+      if (!(await savedDisclosure.evaluate(node => node.open))) await savedDisclosure.locator('summary').click();
+      await readingList.waitFor({ state: 'visible' });
+      await readingList.locator('[data-reading-list-action="open"][data-id="devotional.biblequest.anxiety_worry.01"]').click();
+      await page.locator('[data-library-detail] h1').waitFor();
+      await page.locator('[data-reading-list-save-action="toggle"]').click();
+      const practiceLink = page.locator('[data-library-practice="morning-10"]');
+      await practiceLink.waitFor();
+      assert.equal(await practiceLink.getAttribute('href'), '#/spiritual-practices?practice=morning-10');
+      await practiceLink.click();
+      await page.locator('[data-practice-suggestion]').waitFor();
+      assert.equal(await page.locator('[data-practice-clock]').count(), 0, 'opening a guide must not start the timer');
+      await page.locator('[data-practice-suggestion] [data-practice-start="morning-10"]').click();
+      await page.locator('[data-practice-clock]').waitFor();
+      await page.locator('[data-practice-action="pause"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-action="resume"]').waitFor();
+      await page.goto(`${baseUrl}/#/spiritual-practices?practice=fellowship`, { waitUntil: 'networkidle' });
+      await page.locator('[data-practice-guide="fellowship"][open]').waitFor();
+      await page.locator('[data-practice-action="resume"]').waitFor();
+      assert.equal(await page.locator('[data-practice-suggestion] [data-practice-start]').count(), 0, 'a new suggestion cannot replace the restored session');
+      await page.locator('[data-practice-action="end"]').click();
+      await page.locator('[data-practice-action="new"]').click();
+      await page.locator('[data-practice-start="morning-15"]').click();
+      await page.locator('[data-practice-action="end"]').click();
+      await page.locator('[data-practice-action="new"]').click();
+      await page.locator('[data-practice-start="evening-5"]').click();
+      await page.locator('[data-practice-action="end"]').click();
+      const eveningForm = page.locator('[data-practice-reflection]');
+      await eveningForm.locator('[name="reflection"]').fill('Disposable journal summary');
+      await eveningForm.locator('[name="answer-notice"]').fill('Disposable evening answer');
+      assert.equal(await eveningForm.locator('textarea[name^="answer-"]').count(), 5);
+      await eveningForm.locator('button[type="submit"]').click();
+      const editButton = page.locator('[data-practice-edit]').first();
+      const reflectionId = await editButton.getAttribute('data-practice-edit');
+      // History is intentionally expandable; open its actual disclosure first.
+      await editButton.locator('xpath=..').locator('summary').click();
+      await editButton.click();
+      const editForm = page.locator(`[data-practice-history-edit="${reflectionId}"]`);
+      await editForm.locator('[name="answer-notice"]').fill('Edited disposable answer');
+      await editForm.locator('button[type="submit"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-reflection] [name="answer-notice"]').waitFor();
+      assert.equal(await page.locator('[data-practice-reflection] [name="answer-notice"]').inputValue(), 'Edited disposable answer');
+      const reminderPlan = page.locator('[data-practice-reminder-form]');
+      await reminderPlan.locator('[name="practiceId"]').selectOption('morning-20');
+      for (const day of ['0','1','2','3','4','5','6']) await reminderPlan.locator(`[name="days"][value="${day}"]`).setChecked(['1','3','5'].includes(day));
+      await reminderPlan.locator('[name="enabled"]').setChecked(false);
+      await reminderPlan.locator('button[type="submit"]').click();
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.locator('[data-practice-reminder-form]').waitFor();
+      assert.equal(await reminderPlan.locator('[name="practiceId"]').inputValue(), 'morning-20');
+      assert.equal(await reminderPlan.locator('[name="days"]:checked').count(), 3);
+      assert.equal(await reminderPlan.locator('[name="enabled"]').isChecked(), false);
+      const practiceMetrics = await page.evaluate(() => ({ width: innerWidth, scroll: document.documentElement.scrollWidth }));
+      assert.ok(practiceMetrics.scroll <= practiceMetrics.width + 1, `${locale}/${width}: practice handoff overflow`);
+
       await page.goto(`${baseUrl}/#/library-item`, { waitUntil: 'networkidle' });
       await page.locator('[data-library-detail]').waitFor();
       assert.ok((await page.locator('[data-library-detail]').textContent()).trim());

@@ -1,3 +1,6 @@
+import {createLibraryReadingList, readingListCopy} from './reading-list.js';
+import {mountReadingListPanel} from './reading-list-panel.js';
+import { practiceEntry } from '../spiritual-practices/entry-copy.js';
 import { localization } from '../../app/localization.js';
 import { LIBRARY_ROUTE_KEYS, createLibraryContentTypeRegistry, presentLibraryItem } from './contracts.js';
 import { libraryTaxonomyLabel, normalizeLibraryTaxonomyId, resolveLibraryDiscoveryTerms } from './discovery.js';
@@ -13,7 +16,7 @@ const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character =>
 }[character]));
 
 export function createLibraryPage({
-  service, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
+  service, onPractices, onCouples, readingListStorage, getReadingListOwner, registry = createLibraryContentTypeRegistry(), navigate, discoverySearch, onFiltersChange,
   isContextReady = () => true, subscribeContext = () => () => {},
   visualRegistryLoader = loadV7VisualRegistry,
   initialQuery = '', initialContentType = '', initialTaxonomyId, initialDiscoveryQuery = {},
@@ -22,8 +25,10 @@ export function createLibraryPage({
     throw new Error('Library page requires a Library service.');
   }
   if (typeof navigate !== 'function') throw new Error('Library page requires the app route integration callback.');
+  const readingList = readingListStorage && getReadingListOwner ? createLibraryReadingList({storage:readingListStorage,getOwner:getReadingListOwner}) : null;
   const t = (key, values) => localization.t(key, { values });
   const filterLabel = ({ en: 'Refine results', tl: 'Salain ang resulta', ceb: 'Pinoha ang resulta', ilo: 'Pasayaaten dagiti resulta' }[localization.getLocale()] || 'Refine results');
+  const couplesLabel = ({en:'Grow Together · Couples cards',tl:'Lumago nang magkasama · Mga card para sa mag-asawa',ceb:'Motubo nga magkauban · Mga card alang sa magtiayon'}[localization.getLocale()] || 'Grow Together · Couples cards');
   const typeLabel = type => ['book', 'devotional', 'past_teaching'].includes(type.id)
     ? t('v7.library.type.' + type.id) : type.label;
   const typeOptions = () => registry.list().map(type =>
@@ -44,8 +49,11 @@ export function createLibraryPage({
       <header class="bq-library__header">
         <p class="bq-eyebrow">${escapeHtml(t('v7.library.learn'))}</p>
         <h1>${escapeHtml(t('v7.library.title'))}</h1>
+        ${onPractices ? `<button type="button" class="bq-secondary-button" data-library-practices lang="${practiceEntry(localization.getLocale()).locale}">${escapeHtml(practiceEntry(localization.getLocale()).title)}${practiceEntry(localization.getLocale()).fallback ? ' · English' : ''}</button>` : ''}
 
+        ${onCouples ? `<button type="button" class="bq-secondary-button" data-library-couples>${escapeHtml(couplesLabel)}</button>` : ''}
       </header>
+      ${readingList ? `<details class="bq-library-reading-list-disclosure"><summary>${escapeHtml(readingListCopy(localization.getLocale()).title)}</summary><div data-library-reading-list></div></details>` : ''}
       <form data-library-search>
         <div class="bq-library-tabs" role="group" aria-label="${escapeHtml(t('v7.library.type'))}">${registry.list().map(type => `<button type="button" data-library-type="${escapeHtml(type.id)}" aria-pressed="false">${escapeHtml(typeLabel(type))}</button>`).join('')}</div>
         <div class="bq-library__search-row">
@@ -82,6 +90,8 @@ export function createLibraryPage({
     mount(root) {
       const page = root.querySelector('[data-library-page]');
       if (!page) throw new Error('Library page host is missing.');
+      page.querySelector('[data-library-practices]')?.addEventListener('click', () => onPractices?.());
+      const savedPanel = readingList ? mountReadingListPanel({host:page.querySelector('[data-library-reading-list]'),readingList,locale:localization.getLocale(),navigate}) : null;
       const status = page.querySelector('[data-library-status]');
       const results = page.querySelector('[data-library-results]');
       const form = page.querySelector('[data-library-search]');
@@ -210,7 +220,8 @@ export function createLibraryPage({
         const candidates = typeof results.querySelectorAll === 'function'
           ? Array.from(results.querySelectorAll('[data-library-item]')) : [];
         const origin = candidates.find(candidate => candidate.getAttribute?.('data-library-item') === itemId);
-        (origin || status).focus?.({ preventScroll: true });
+        if (origin) origin.focus?.({ preventScroll: true });
+        else if (!savedPanel?.focus(itemId)) status.focus?.({ preventScroll: true });
         if (Number.isFinite(returnScrollY)) globalThis.window?.scrollTo?.(0, returnScrollY);
       };
       let renderedItemsKey = null;
@@ -324,8 +335,9 @@ export function createLibraryPage({
       };
       const onClick = event => {
         const target = event.target instanceof Element
-          ? event.target.closest('[data-library-type], [data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
+          ? event.target.closest('[data-library-couples], [data-library-type], [data-library-item], [data-library-retry], [data-library-clear], [data-library-more], [data-library-discovery-term], [data-library-discovery-kind][data-library-discovery-id]') : null;
         if (!target) return;
+        if (target.hasAttribute('data-library-couples')) { onCouples?.(); return; }
         if (target.hasAttribute('data-library-type')) {
           const selectedType = target.getAttribute('data-library-type');
           if (typeInput.value !== selectedType) { typeInput.value = selectedType; submit(); }
@@ -401,6 +413,7 @@ export function createLibraryPage({
       const unsubscribe = service.subscribe(render);
       const unsubscribeContext = subscribeContext(() => {
         if (disposed) return;
+        savedPanel?.refresh();
         if (!isContextReady()) {
           service.reset?.();
           return;
@@ -423,6 +436,7 @@ export function createLibraryPage({
       void executeWhenReady({ ...lastRequest });
       return () => {
         disposed = true;
+        savedPanel?.dispose();
         clearTimeout(searchTimer);
         form.removeEventListener('input', onInput);
         form.removeEventListener('compositionend', onInput);

@@ -15,20 +15,38 @@ async function run(){
   assert(overview.includes('Couples cloud remains separate'),'Couples local UI must state its cloud boundary.');
   assert(await page.locator('[data-couples-category]').count()===8,'Couples dashboard must expose all eight recovered categories.');
   const modeIds=await page.locator('.bq-couples-mode-grid [data-couples-mode]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('data-couples-mode')));
-  assert(modeIds.length===7,'Couples dashboard must expose the six recovered local modes plus Communication Journey.');
+  assert(modeIds.length===8,'Couples dashboard must expose the six recovered modes, Communication Journey and saved cards.');
   for(const id of['card','listen','checkin','repair','god','date'])assert(modeIds.includes(id),`Recovered Couples mode disappeared: ${id}.`);
+  assert(modeIds.includes('saved'),'Saved cards mode is missing.');
   assert(modeIds.includes('journey'),'Communication Journey mode is missing.');
   let metrics=await page.evaluate(()=>({innerWidth,scrollWidth:document.documentElement.scrollWidth,minTarget:Math.min(...[...document.querySelectorAll('[data-couples-view] button')].map(node=>node.getBoundingClientRect().height))}));
   assert(metrics.scrollWidth<=metrics.innerWidth+1,`Couples overview mobile overflow: ${metrics.scrollWidth}px > ${metrics.innerWidth}px.`);assert(metrics.minTarget>=44,`Couples overview touch target below 44px: ${metrics.minTarget}px.`);
 
   await page.locator('[data-couples-category="communication"]').click();await page.locator('[data-couples-card-id]').waitFor();
-  const cardId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');assert(/^c(?:0[5-8]|3[7-9]|40)$/.test(cardId||''),'Communication category opened a card outside the expanded communication deck.');
+  const cardId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');assert(COUPLES_CARDS.some(card=>card.id===cardId&&card.cat==='communication'),'Communication category opened a card outside the expanded communication deck.');
   await page.locator('[data-couples-favorite]').click();await page.locator('[data-couples-favorite]').waitFor();assert((await page.locator('[data-couples-favorite]').textContent())?.includes('Saved'),'Saved-card UI did not update.');
   await page.locator('[data-couples-practice]').click();await page.locator('[data-couples-complete-practice]').waitFor();
   let stored=await localState(page);assert(stored.favorites?.includes(cardId)&&stored.commitments?.length===1&&!stored.commitments[0]?.done,'Saved card/practice did not persist through shared browser storage.');
 
   await page.reload({waitUntil:'networkidle'});await page.locator('[data-couples-complete-practice]').waitFor();stored=await localState(page);assert(stored.favorites?.includes(cardId)&&stored.commitments?.length===1,'Couples local saved state did not survive browser reload.');
   await page.locator('[data-couples-complete-practice]').click();stored=await localState(page);assert(stored.commitments?.[0]?.done===true,'Completing a recovered 7-day practice did not persist.');
+
+  await page.locator('[data-couples-mode="saved"]').click();
+  await page.locator(`[data-couples-saved-card="${cardId}"]`).click();
+  assert(await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id')===cardId,'Saved browser did not reopen the persisted card.');
+  await page.locator('[data-couples-next]').click();
+  assert(await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id')===cardId,'A single saved card must not broaden to the full deck.');
+  await page.locator('[data-couples-favorite]').click();
+  assert((await page.locator('[data-couples-view]').textContent()).includes('No saved cards yet'),'Removing the last saved card must show a recoverable empty state.');
+  await page.locator('[data-couples-go="dashboard"]').click();
+  await page.locator('[data-couples-category="communication"]').click();
+  await page.locator('[data-couples-next]').click();
+  let nextId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');
+  assert(COUPLES_CARDS.find(card=>card.id===nextId)?.cat==='communication','Another card left the selected category.');
+  await page.locator('[data-couples-discussed]').click();
+  nextId=await page.locator('[data-couples-card-id]').getAttribute('data-couples-card-id');
+  assert(COUPLES_CARDS.find(card=>card.id===nextId)?.cat==='communication','Discussed left the selected category.');
+  await page.locator('[data-couples-go="dashboard"]').click();
 
   await page.locator('[data-couples-mode="listen"]').click();await page.locator('[data-listen-next]').waitFor();for(let i=0;i<5;i+=1){await page.locator('[data-listen-next]').click();if(i<4)await page.locator('[data-listen-next]').waitFor()}await page.locator('[data-couples-mode="checkin"]').waitFor();stored=await localState(page);assert(stored.listenCount===1,'Listen First completion did not persist locally.');
 

@@ -183,7 +183,7 @@ test('Vite owns compatibility CSS/assets/images and inherited language/Japanese 
   const vite=read('vite.config.mjs');
   assert.match(vite,/publicDir:\s*false/);
   assert.match(vite,/compatibilityDirectories = new Set\(\['assets', 'data', 'kids-games'\]\)/);
-  assert.match(vite,/cpSync\(source, target, \{ recursive: true, force: true \}\)/);
+  assert.match(vite,/cpSync\(source, target, \{ recursive: true, force: true,[\s\S]*?filter: path => mayCopyCompatibilityData\(path, root\) \}\)/);
   assert.match(vite,/\.css/);
   assert.match(vite,/\.png/);
   assert.match(vite,/\.svg/);

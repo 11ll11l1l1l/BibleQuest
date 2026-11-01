@@ -36,7 +36,7 @@ test('Reader search suppresses stale success and failure UI after navigation inv
 
   const failure = submit.indexOf('catch (error)');
   const failureGuard = submit.indexOf('if (id !== operation) return;', failure);
-  const failureMessage = submit.indexOf("message(error?.message || 'Search failed.')", failure);
+  const failureMessage = submit.indexOf("message(error?.message || interfaceText('searchError'))", failure);
   assert.ok(failureGuard > failure);
   assert.ok(failureMessage > failureGuard);
 });

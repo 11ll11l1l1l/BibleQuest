@@ -1,3 +1,4 @@
+import { ILOCANO_BOOK_TITLES } from './ilocano-book-titles.js';
 import {
   SCRIPTURE_PACKAGE_METADATA_CACHE_NAME,
   SCRIPTURE_PACKAGE_PAYLOAD_CACHE_NAME,
@@ -18,6 +19,7 @@ const TRANSLATIONS = Object.freeze({
   bsb: Object.freeze({ id: 'bsb', label: 'English · BSB', folder: 'bible', language: 'English', bundled: true, mode: 'bundled', source: 'Berean Standard Bible', license: 'Public-domain / CC0 browser source', attribution: 'See data/packs/ATTRIBUTION.md' }),
   tl: Object.freeze({ id: 'tl', label: 'Tagalog · ULB', folder: 'tagalog', language: 'Tagalog', bundled: true, mode: 'bundled', source: 'Tagalog Unlocked Literal Bible', license: 'CC BY-SA 4.0', attribution: '© 2018 Door43 World Missions Community' }),
   cebocb: Object.freeze({ id: 'cebocb', label: 'Cebuano/Bisaya · OCCB', folder: 'cebuano', language: 'Cebuano', bundled: true, mode: 'bundled', source: 'Biblica® Open Ang Pulong sa Dios™ / Biblica® Open Cebuano Contemporary Bible™ 2024', license: 'CC BY-SA 4.0', attribution: '© 2009, 2010, 2014, 2024 Biblica, Inc. · See data/packs/ATTRIBUTION.md' }),
+  ilo: Object.freeze({ id: 'ilo', label: 'Ilocano · ULB', folder: 'ilocano', language: 'Ilocano', bundled: true, mode: 'bundled', source: 'Ti Biblia / Ilocano Unlocked Literal Bible · eBible.org iloulb', license: 'CC BY-SA 4.0 · https://creativecommons.org/licenses/by-sa/4.0/', attribution: '© 2019 Door43 World Missions Community · Source: https://ebible.org/iloulb/ · JSON packaging only; wording unchanged; no endorsement implied · See data/packs/ilocano/LICENSE.html and SOURCE.json' }),
   jko: Object.freeze({ id: 'jko', label: '日本語 · 口語訳', language: 'Japanese', bundled: false, mode: 'live-kougo', source: '口語訳聖書 (1954/1955) · GetBible japkougo', license: '1955 edition copyright term expired; moral rights remain; later corrected wording may be protected', attribution: 'GetBible/CrossWire japkougo public-domain module · Scripture text displayed without modification' }),
   nlt: Object.freeze({ id: 'nlt', label: 'English · NLT', language: 'English', bundled: false, mode: 'licensed-link', externalVersion: 'NLT', source: 'New Living Translation', license: 'Copyrighted translation · licensed external reader only', attribution: 'Tyndale House Publishers · BibleQuest does not redistribute the NLT text' })
 });
@@ -34,6 +36,15 @@ for (const book of BIBLE_BOOKS) {
   BOOK_ALIASES.set(normalizeBookToken(book.name), book);
   BOOK_ALIASES.set(normalizeBookToken(book.code), book);
   for (const alias of aliases[book.code] || []) BOOK_ALIASES.set(normalizeBookToken(alias), book);
+}
+// This edition's published Ilocano names are additional validated aliases.
+// Never replace canonical book IDs or unrelated translation names.
+for (const book of BIBLE_BOOKS) {
+  const localized = ILOCANO_BOOK_TITLES[book.code];
+  if (!localized) throw new Error(`Missing Ilocano publisher book title for ${book.code}.`);
+  const token = normalizeBookToken(localized), previous = BOOK_ALIASES.get(token);
+  if (previous && previous.code !== book.code) throw new Error(`Ambiguous Ilocano Bible book title: ${book.code}.`);
+  BOOK_ALIASES.set(token, book);
 }
 
 export function parseBibleReference(input) {

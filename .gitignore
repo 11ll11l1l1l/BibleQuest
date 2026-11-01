@@ -7,3 +7,6 @@ node_modules/
 dist-v6/
 .vite/
 .v6-source-maps/
+
+# Private, unpublished V8 source intake packets; never deployment inputs.
+/work/intake/

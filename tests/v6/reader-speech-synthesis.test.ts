@@ -83,13 +83,31 @@ test('Reader device speech selects Japanese and Cebuano voice languages and canc
   h.speech.dispose();
 });
 
+test('Reader Ilocano Bible text can be read with explicit browser speech and cancels across translation switches', () => {
+  const h = fixture('ilo');
+  assert.equal(h.speech.isAvailable(), true);
+  h.speech.loadChapter(h.chapter);
+  assert.equal(h.speech.getState().translationId, 'ilo');
+  h.speech.play();
+  assert.equal(h.utterances[0]?.lang, 'ilo-PH');
+  assert.equal(h.utterances[0]?.text, h.chapter.verses[0]?.text);
+  const previous = h.utterances[0];
+  h.speech.stop();
+  h.speech.loadChapter({ ...h.chapter, translationId: 'tl' });
+  h.speech.play();
+  assert.equal(h.utterances.at(-1)?.lang, 'fil-PH');
+  previous?.onend?.();
+  assert.equal(h.utterances.length, 2, 'a canceled Ilocano verse cannot speak after switching language');
+  h.speech.dispose();
+});
+
 test('Reader device speech fails closed when unavailable, unsupported for the translation, or given an invalid rate', () => {
   const unavailable = createReaderSpeechSynthesis();
   assert.equal(unavailable.getState().status, 'unavailable');
   assert.throws(() => unavailable.play(), /unavailable/i);
 
   const h = fixture('bsb');
-  assert.throws(() => h.speech.loadChapter(h.chapter), /only for the Tagalog, Cebuano, and Japanese/i);
+  assert.throws(() => h.speech.loadChapter(h.chapter), /only for the Tagalog, Cebuano, Ilocano, and Japanese/i);
   assert.throws(() => h.speech.setPlaybackRate(2.1), /rate must be/i);
   h.speech.dispose();
 });
